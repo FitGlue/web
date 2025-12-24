@@ -1,7 +1,6 @@
-# NOTE: Firebase APIs are enabled by scripts/setup_web_deployer.sh
-# Terraform does not manage these to avoid permission issues.
-# The bootstrap script enables:
-# - firebasehosting.googleapis.com
-# - firebase.googleapis.com
-# - storage.googleapis.com
-# - iamcredentials.googleapis.com
+# Firebase Hosting site
+# Note: This creates the hosting site. The actual content deployment is handled by Firebase CLI.
+resource "google_firebase_hosting_site" "default" {
+  project = var.project_id
+  site_id = var.project_id
+}
