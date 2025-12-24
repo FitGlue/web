@@ -1,0 +1,39 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|css|js)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/hooks/hevy",
+        "function": "hevy-webhook-handler"
+      },
+      {
+        "source": "/api/**",
+        "function": "api-service"
+      },
+      {
+        "source": "/auth/strava/callback",
+        "function": "strava-oauth-handler"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
