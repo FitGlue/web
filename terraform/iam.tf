@@ -30,9 +30,11 @@ data "google_iam_workload_identity_pool_provider" "circleci_provider" {
   workload_identity_pool_provider_id = "circleci-provider"
 }
 
-# Allow the web repo's CircleCI context to impersonate the web deployer service account
+# Allow the CircleCI OIDC tokens to impersonate the web deployer service account
+# Note: Uses the same attribute filter as the server deployer (CircleCI org ID)
+# Both server and web repos can use the same workload identity pool
 resource "google_service_account_iam_member" "circleci_web_workload_identity" {
   service_account_id = google_service_account.circleci_web_deployer.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${data.google_iam_workload_identity_pool.circleci_pool.name}/attribute.project_id/fitglue-web"
+  member             = "principalSet://iam.googleapis.com/${data.google_iam_workload_identity_pool.circleci_pool.name}/attribute.project_id/b2fc92f7-4f8d-4676-95b1-94d7f15c0a8e"
 }
