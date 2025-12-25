@@ -50,9 +50,10 @@ echo "✓ Workload Identity Pool exists"
 echo ""
 
 # Enable required APIs for web deployment
-# Note: Firebase APIs (firebase.googleapis.com, firebasehosting.googleapis.com) are enabled by Terraform
 echo "🔌 Enabling required APIs..."
 gcloud services enable \
+  firebasehosting.googleapis.com \
+  firebase.googleapis.com \
   storage.googleapis.com \
   iamcredentials.googleapis.com \
   --project="$PROJECT_ID"
