@@ -31,6 +31,10 @@
         "function": "strava-oauth-handler"
       },
       {
+        "source": "/auth/fitbit/callback",
+        "function": "fitbit-oauth-handler"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
