@@ -129,6 +129,15 @@ jobs:
           command: |
             sudo npm install -g firebase-tools
       - run:
+          name: Initialize Firebase (if needed)
+          command: |
+            export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_cred_config.json
+            # Add Firebase to the GCP project if not already added
+            # This is required before creating hosting sites
+            gcloud services enable firebase.googleapis.com --project=fitglue-server-<< parameters.target >>
+            # Initialize Firebase project (this is idempotent)
+            gcloud alpha firebase projects:addfirebase fitglue-server-<< parameters.target >> || echo "Firebase already initialized, continuing..."
+      - run:
           name: Create Firebase Hosting Site (if needed)
           command: |
             export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_cred_config.json
