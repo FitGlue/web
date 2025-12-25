@@ -102,6 +102,29 @@ gcloud iam service-accounts add-iam-policy-binding \
   --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$POOL_NAME/*"
 
 echo ""
+echo "🔥 Initializing Firebase for project..."
+# Add Firebase to the GCP project using Firebase Management API
+# This is equivalent to clicking "Add Firebase" in the console
+ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
+curl -X POST \
+  "https://firebase.googleapis.com/v1beta1/projects/$PROJECT_ID:addFirebase" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{}' || echo "Firebase already initialized or initialization failed (may already exist), continuing..."
+
+echo ""
+echo "🏠 Creating Firebase Hosting site..."
+# Install firebase-tools if not already installed
+if ! command -v firebase &> /dev/null; then
+  echo "Installing Firebase CLI..."
+  npm install -g firebase-tools
+fi
+
+# Create the hosting site (this is idempotent)
+# Note: We don't need to authenticate separately - gcloud auth is sufficient
+firebase hosting:sites:create "$PROJECT_ID" --project="$PROJECT_ID" --non-interactive || echo "Site already exists, continuing..."
+
+echo ""
 echo "✅ Web Deployer Setup Complete!"
 echo ""
 echo "📋 Configuration Summary:"
