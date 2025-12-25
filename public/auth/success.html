@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Authorization Successful - FitGlue">
+    <title>Connected! | FitGlue</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      .success-icon {
+        font-size: clamp(4rem, 10vw, 6rem);
+        margin-bottom: 1rem;
+        animation: bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: inline-block;
+      }
+
+      .home-link {
+        display: inline-block;
+        margin-top: 2.5rem;
+        text-decoration: none;
+        padding: 1rem 2.5rem;
+        background: linear-gradient(135deg, var(--color-success), var(--color-accent));
+        color: #000;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        box-shadow: 0 4px 20px rgb(6 255 165 / 30%);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .home-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgb(6 255 165 / 50%);
+      }
+
+      .provider-name {
+        color: var(--color-primary);
+        text-transform: capitalize;
+      }
+
+      @keyframes bounce-in {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+
+        60% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+
+        100% {
+          transform: scale(1);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="container">
+      <div class="content">
+        <div class="success-icon">🎉</div>
+
+        <h1 class="title" style="font-size: clamp(2.5rem, 6vw, 4rem);">
+          Success!
+        </h1>
+
+        <div class="description">
+          <p style="font-size: 1.5rem; margin-bottom: 2rem;">
+            Your <span id="provider-name" class="provider-name"></span> account has been successfully connected to
+            FitGlue.
+          </p>
+
+          <p style="color: var(--color-text-muted);">
+            You can now close this window or return to the app.
+          </p>
+
+          <a href="/" class="home-link">
+            Return Home
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Parse provider from URL query param
+      const params = new URLSearchParams(window.location.search);
+      let provider = params.get('provider');
+
+      // Default text if no provider specified
+      if (!provider || provider === 'unknown') {
+        provider = 'Integration';
+      }
+
+      // Capitalize responsibly (handle acronyms if needed, though simple CSS capitalize works for simple names)
+      // Strava, Fitbit are simple.
+      document.getElementById('provider-name').textContent = provider;
+    </script>
+  </body>
+
+</html>

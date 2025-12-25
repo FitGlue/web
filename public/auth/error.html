@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Authorization Failed - FitGlue">
+    <title>Connection Failed | FitGlue</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      .error-icon {
+        font-size: clamp(4rem, 10vw, 6rem);
+        margin-bottom: 1rem;
+        animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        display: inline-block;
+      }
+
+      .home-link {
+        display: inline-block;
+        margin-top: 2.5rem;
+        text-decoration: none;
+        padding: 1rem 2.5rem;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        color: white;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        box-shadow: 0 4px 20px rgb(255 0 110 / 30%);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .home-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgb(255 0 110 / 50%);
+      }
+
+      @keyframes shake {
+
+        10%,
+        90% {
+          transform: translate3d(-1px, 0, 0);
+        }
+
+        20%,
+        80% {
+          transform: translate3d(2px, 0, 0);
+        }
+
+        30%,
+        50%,
+        70% {
+          transform: translate3d(-4px, 0, 0);
+        }
+
+        40%,
+        60% {
+          transform: translate3d(4px, 0, 0);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="container">
+      <div class="content">
+        <div class="success-icon error-icon">⚠️</div>
+
+        <h1 class="title" style="font-size: clamp(2rem, 5vw, 3.5rem);">
+          Connection Failed
+        </h1>
+
+        <div class="description">
+          <p id="error-message" style="font-size: 1.25rem; margin-bottom: 2rem;">
+            Something went wrong while connecting your account.
+          </p>
+
+          <p style="color: var(--color-text-muted);">
+            Please try again later or contact support if the issue persists.
+          </p>
+
+          <a href="/" class="home-link">
+            Return Home
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Parse reason from URL query param
+      const params = new URLSearchParams(window.location.search);
+      const reason = params.get('reason');
+      const messageEl = document.getElementById('error-message');
+
+      // Map error codes to user-friendly messages
+      switch (reason) {
+        case 'denied':
+          messageEl.textContent = "It looks like you denied the authorization request. We can't connect your account without your permission.";
+          break;
+        case 'server_error':
+          messageEl.textContent = "We encountered a server error while processing your request. Please try again in a few moments.";
+          break;
+        case 'invalid_state':
+        case 'missing_params':
+          messageEl.textContent = "The connection request was invalid or expired. Please start the connection process again from the app.";
+          break;
+        default:
+          messageEl.textContent = "Something went wrong while connecting your account. Please try again.";
+      }
+    </script>
+  </body>
+
+</html>
