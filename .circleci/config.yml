@@ -125,10 +125,20 @@ jobs:
             # Set credentials for Firebase
             echo "export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_cred_config.json" >> $BASH_ENV
       - run:
+          name: Install Firebase CLI
+          command: |
+            sudo npm install -g firebase-tools
+      - run:
+          name: Create Firebase Hosting Site (if needed)
+          command: |
+            export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_cred_config.json
+            # Create the default hosting site if it doesn't exist
+            # This command will fail gracefully if the site already exists
+            firebase hosting:sites:create fitglue-server-<< parameters.target >> --project fitglue-server-<< parameters.target >> || echo "Site already exists or using default, continuing..."
+      - run:
           name: Deploy to Firebase Hosting
           command: |
             export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_cred_config.json
-            sudo npm install -g firebase-tools
             # Deploy to the default Firebase Hosting site for the project
             firebase deploy --only hosting --project fitglue-server-<< parameters.target >> --non-interactive --force
 
