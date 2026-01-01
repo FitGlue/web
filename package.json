@@ -9,6 +9,7 @@
     "lint": "npm run lint:html && npm run lint:css",
     "lint:html": "htmlhint public/**/*.html",
     "lint:css": "stylelint public/**/*.css",
+    "lint:css:fix": "stylelint public/**/*.css --fix",
     "build": "tsc",
     "watch": "tsc -w"
   },

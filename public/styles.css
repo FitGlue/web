@@ -164,7 +164,6 @@ body {
 }
 
 @keyframes pulse {
-
     0%,
     100% {
         transform: scale(1);
@@ -281,8 +280,8 @@ input {
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgb(255 255 255 / 5%);
+    border: 1px solid rgb(255 255 255 / 10%);
     padding: 1.5rem;
     border-radius: 12px;
     margin-bottom: 1rem;
