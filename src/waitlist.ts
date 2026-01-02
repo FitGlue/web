@@ -31,8 +31,11 @@ async function submitWaitlist() {
     });
 
     if (response.ok) {
-      formDiv.style.display = 'none';
-      successDiv.style.display = 'block';
+      // 200 OK - default success message
+      showSuccess("You're on the list!");
+    } else if (response.status === 409) {
+      // 409 Conflict - user already exists, treat as success but change text
+      showSuccess("You're already on the list!");
     } else {
       const data = await response.json().catch(() => ({}));
       showError(data.error || 'Something went wrong. Please try again.');
@@ -54,6 +57,13 @@ async function submitWaitlist() {
   function showError(msg: string) {
     errorDiv.innerText = msg;
     errorDiv.style.display = 'block';
+  }
+
+  function showSuccess(title: string) {
+    const titleEl = document.getElementById('success-title');
+    if (titleEl) titleEl.innerText = title;
+    formDiv.style.display = 'none';
+    successDiv.style.display = 'block';
   }
 }
 
