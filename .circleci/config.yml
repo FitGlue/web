@@ -132,10 +132,10 @@ jobs:
           command: |
              if [ "<< parameters.target >>" = "prod" ]; then
                echo "Generating Robots.txt for PROD (Allowing)"
-               cp robots.allow.txt public/robots.txt
+               cp robots.allow.txt dist/robots.txt
              else
                echo "Generating Robots.txt for << parameters.target >> (Disallowing)"
-               cp robots.disallow.txt public/robots.txt
+               cp robots.disallow.txt dist/robots.txt
              fi
       - run:
           name: Install Firebase CLI

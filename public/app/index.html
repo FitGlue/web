@@ -5,34 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - FitGlue</title>
-    <link rel="stylesheet" href="/styles.css">
-    <script type="module" src="/js/auth.js"></script>
+    <link rel="stylesheet" href="/src/styles/main.css">
   </head>
 
   <body>
-    <div class="container">
-      <header class="app-header">
-        <h1 class="title small">
-          <span class="fit">Fit</span><span class="glue">Glue</span>
-        </h1>
-        <div class="nav-actions">
-          <a href="/app/inputs" class="btn text">Pending Inputs</a>
-          <button id="btn-logout" class="btn text">Logout</button>
-        </div>
-      </header>
-
-      <main class="dashboard">
-        <h2>Your Dashboard</h2>
-        <div class="card">
-          <h3>Welcome back!</h3>
-          <p>Your fitness data is being synchronized.</p>
-        </div>
-
-        <div class="card status-card">
-          <p><strong>Status:</strong> <span class="status-badge small">Active</span></p>
-        </div>
-      </main>
-    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/app/main.tsx"></script>
   </body>
 
 </html>

@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "description": "FitGlue web frontend and Firebase Hosting configuration",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build && npm run postbuild",
+    "postbuild": "sh -c 'mv dist/public/* dist/ 2>/dev/null || true' && sh -c 'rmdir dist/public 2>/dev/null || true' && sh -c 'if [ -d dist/app ]; then mv dist/app dist/app-temp && mkdir -p dist/app && mv dist/app-temp/index.html dist/app/ && rmdir dist/app-temp; fi'",
+    "preview": "vite preview",
     "serve": "npx http-server public -p 5000 -o",
     "serve:firebase": "firebase serve",
     "deploy": "firebase deploy --only hosting",
-    "lint": "npm run lint:html && npm run lint:css",
-    "lint:html": "htmlhint public/**/*.html",
-    "lint:css": "stylelint public/**/*.css",
-    "lint:css:fix": "stylelint public/**/*.css --fix",
-    "build": "esbuild src/auth.ts --bundle --outfile=public/js/auth.js --format=esm --target=es2020 && esbuild src/waitlist.ts --bundle --outfile=public/js/waitlist.js --format=esm --target=es2020 && esbuild src/pending_inputs.ts --bundle --outfile=public/js/pending_inputs.js --format=esm --target=es2020",
-    "watch": "esbuild src/auth.ts --bundle --outfile=public/js/auth.js --format=esm --target=es2020 --watch & esbuild src/waitlist.ts --bundle --outfile=public/js/waitlist.js --format=esm --target=es2020 --watch & esbuild src/pending_inputs.ts --bundle --outfile=public/js/pending_inputs.js --format=esm --target=es2020 --watch",
-    "gen-api": "npx openapi-typescript src/openapi/swagger.json -o src/openapi/schema.ts"
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "gen-api": "npx openapi-typescript src/openapi/swagger.json -o src/shared/api/schema.ts"
   },
   "repository": {
     "type": "git",
@@ -21,16 +21,29 @@
   "author": "James King",
   "license": "MIT",
   "devDependencies": {
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "esbuild": "^0.27.2",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "firebase-tools": "^13.24.1",
     "htmlhint": "^1.1.4",
     "openapi-fetch": "^0.15.0",
     "openapi-typescript": "^7.10.1",
     "stylelint": "^16.12.0",
     "stylelint-config-standard": "^36.0.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vite": "^6.0.7"
   },
   "dependencies": {
-    "firebase": "^10.0.0"
+    "firebase": "^10.0.0",
+    "jotai": "^2.16.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-router-dom": "^6.30.2"
   }
 }
