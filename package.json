@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && npm run postbuild",
-    "postbuild": "sh -c 'mv dist/public/* dist/ 2>/dev/null || true' && sh -c 'rmdir dist/public 2>/dev/null || true' && sh -c 'if [ -d dist/app ]; then mv dist/app dist/app-temp && mkdir -p dist/app && mv dist/app-temp/index.html dist/app/ && rmdir dist/app-temp; fi'",
+    "postbuild": "sh -c 'if [ -d dist/app ]; then mv dist/app dist/app-temp && mkdir -p dist/app && mv dist/app-temp/index.html dist/app/ && rmdir dist/app-temp; fi'",
     "preview": "vite preview",
     "serve": "npx http-server public -p 5000 -o",
     "local-prod": "npm run build && npx firebase serve --only hosting",

@@ -3,9 +3,10 @@ import { getToken, onMessage } from 'firebase/messaging';
 import { getFirebaseMessaging } from '../../shared/firebase';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '../state/authState';
-import api from '../../shared/api/client';
+import { InputsService } from '../services/InputsService';
 
-const VAPID_KEY = 'REPLACE_WITH_YOUR_VAPID_KEY'; // User will need to provide this or we use a placeholder
+// TODO: Use env var
+const VAPID_KEY = 'BBAdaqfQEccFWedGJ6xOFER9v7hB9A-pjpe4tRCLe57_BSpDaPZug8HdotnEKKw8gHx_84Vg77w8Ky5rqqa94UU';
 
 export function useFCM() {
   const user = useAtomValue(userAtom);
@@ -29,8 +30,7 @@ export function useFCM() {
 
           if (currentToken) {
             console.log('FCM Token:', currentToken);
-            // Send to backend
-            await api.post('/api/inputs/fcm-token', { token: currentToken });
+            await InputsService.setFCMToken(currentToken);
           } else {
             console.warn('No registration token available. Request permission to generate one.');
           }

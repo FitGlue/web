@@ -8,6 +8,7 @@ export type InputResolutionRequest = components['schemas']['InputResolutionReque
 export interface IInputsService {
   getPendingInputs(): Promise<PendingInput[]>;
   resolveInput(request: InputResolutionRequest): Promise<boolean>;
+  setFCMToken(token: string): Promise<boolean>;
 }
 
 const getAuthHeader = async () => {
@@ -39,6 +40,22 @@ export const InputsService: IInputsService = {
 
     if (error) {
       throw new Error('Failed to resolve input');
+    }
+
+    return data?.success || false;
+  },
+
+  async setFCMToken(token: string) {
+    const headers = await getAuthHeader();
+    const { data, error } = await client.POST('/inputs/fcm-token', {
+      headers,
+      body: {
+        token,
+      },
+    });
+
+    if (error) {
+      throw new Error('Failed to set FCM token');
     }
 
     return data?.success || false;
