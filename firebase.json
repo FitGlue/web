@@ -36,6 +36,10 @@
         "function": "inputs-handler"
       },
       {
+        "source": "/api/inputs/fcm-token",
+        "function": "inputs-handler"
+      },
+      {
         "source": "/auth/strava/callback",
         "function": "strava-oauth-handler"
       },

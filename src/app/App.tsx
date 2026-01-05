@@ -6,10 +6,13 @@ import { initFirebase } from '../shared/firebase';
 import { userAtom, authLoadingAtom } from './state/authState';
 import DashboardPage from './pages/DashboardPage';
 import PendingInputsPage from './pages/PendingInputsPage';
+import { useFCM } from './hooks/useFCM';
 
 const App: React.FC = () => {
   const [user, setUser] = useAtom(userAtom);
   const [loading, setLoading] = useAtom(authLoadingAtom);
+
+  useFCM();
 
   useEffect(() => {
     const setup = async () => {

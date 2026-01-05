@@ -1,8 +1,10 @@
 import { initializeApp, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
+import { getMessaging, Messaging } from 'firebase/messaging';
 
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
+let messaging: Messaging | undefined;
 
 async function getFirebaseConfig() {
   try {
@@ -23,8 +25,17 @@ export async function initFirebase(): Promise<{ app: FirebaseApp; auth: Auth } |
 
   app = initializeApp(config);
   auth = getAuth(app);
+
+  // Messaging only works in browser with SW support
+  try {
+    messaging = getMessaging(app);
+  } catch (e) {
+    console.warn('Messaging not supported in this environment', e);
+  }
+
   return { app, auth };
 }
 
 export const getFirebaseApp = () => app;
 export const getFirebaseAuth = () => auth;
+export const getFirebaseMessaging = () => messaging;

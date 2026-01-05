@@ -1,0 +1,59 @@
+import { useEffect } from 'react';
+import { getToken, onMessage } from 'firebase/messaging';
+import { getFirebaseMessaging } from '../../shared/firebase';
+import { useAtomValue } from 'jotai';
+import { userAtom } from '../state/authState';
+import api from '../../shared/api/client';
+
+const VAPID_KEY = 'REPLACE_WITH_YOUR_VAPID_KEY'; // User will need to provide this or we use a placeholder
+
+export function useFCM() {
+  const user = useAtomValue(userAtom);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const setupFCM = async () => {
+      const messaging = getFirebaseMessaging();
+      if (!messaging) return;
+
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          const currentToken = await getToken(messaging, {
+            vapidKey: VAPID_KEY,
+          });
+
+          if (currentToken) {
+            console.log('FCM Token:', currentToken);
+            // Send to backend
+            await api.post('/api/inputs/fcm-token', { token: currentToken });
+          } else {
+            console.warn('No registration token available. Request permission to generate one.');
+          }
+        }
+      } catch (err) {
+        console.error('An error occurred while retrieving token. ', err);
+      }
+    };
+
+    setupFCM();
+
+    // Foreground message handler
+    const messaging = getFirebaseMessaging();
+    if (messaging) {
+      const unsubscribe = onMessage(messaging, (payload) => {
+        console.log('Message received. ', payload);
+        // You can use a toast library here or just native notifications
+        if (payload.notification) {
+          new Notification(payload.notification.title || 'Notification', {
+            body: payload.notification.body,
+            icon: '/favicon.ico',
+          });
+        }
+      });
+
+      return () => unsubscribe();
+    }
+  }, [user]);
+}
