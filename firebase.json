@@ -21,15 +21,24 @@
     "rewrites": [
       {
         "source": "/hooks/hevy",
-        "function": "hevy-webhook-handler"
+        "run": {
+          "serviceId": "hevy-webhook-handler",
+          "region": "us-central1"
+        }
       },
       {
         "source": "/hooks/fitbit",
-        "function": "fitbit-handler"
+        "run": {
+          "serviceId": "fitbit-handler",
+          "region": "us-central1"
+        }
       },
       {
         "source": "/api/waitlist",
-        "function": "waitlist-handler"
+        "run": {
+          "serviceId": "waitlist-handler",
+          "region": "us-central1"
+        }
       },
       {
         "source": "/api/inputs/fcm-token",
@@ -40,6 +49,13 @@
       },
       {
         "source": "/api/inputs",
+        "run": {
+          "serviceId": "inputs-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/inputs/**",
         "run": {
           "serviceId": "inputs-handler",
           "region": "us-central1"
@@ -60,12 +76,25 @@
         }
       },
       {
+        "source": "/api/activities/**",
+        "run": {
+          "serviceId": "activities-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/auth/strava/callback",
-        "function": "strava-oauth-handler"
+        "run": {
+          "serviceId": "strava-oauth-handler",
+          "region": "us-central1"
+        }
       },
       {
         "source": "/auth/fitbit/callback",
-        "function": "fitbit-oauth-handler"
+        "run": {
+          "serviceId": "fitbit-oauth-handler",
+          "region": "us-central1"
+        }
       },
       {
         "source": "/app/**",
