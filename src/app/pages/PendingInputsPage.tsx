@@ -50,7 +50,7 @@ const PendingInputsPage: React.FC = () => {
     <div className="container">
       <header className="app-header">
         <h1 className="title small">
-          <span className="fit">Fit</span><span class="glue">Glue</span>
+          <span className="fit">Fit</span><span className="glue">Glue</span>
         </h1>
         <div className="nav-actions">
            <button onClick={() => window.location.href = '/app/'} className="btn text">Back to Dashboard</button>

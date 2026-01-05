@@ -110,7 +110,7 @@ async function loadInputs(user: User) {
         inp.name = field;
         inp.placeholder = `Enter ${field}...`;
         form.appendChild(inp);
-        fieldInputs[field] = inp as any;
+        fieldInputs[field] = inp as HTMLInputElement | HTMLTextAreaElement;
       });
 
       const btn = document.createElement('button');
@@ -131,8 +131,8 @@ async function loadInputs(user: User) {
           if (listEl.children.length === 0) {
             listEl.innerHTML = '<p>No pending inputs.</p>';
           }
-        } catch (err: any) { // Type as any to access message
-          alert('Failed to resolve: ' + (err.message || err));
+        } catch (err: unknown) {
+          alert('Failed to resolve: ' + (err instanceof Error ? err.message : err));
           btn.disabled = false;
           btn.innerText = 'Resolve & Process';
         }

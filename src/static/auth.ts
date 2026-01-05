@@ -4,8 +4,6 @@ import {
   onAuthStateChanged,
   signInWithPopup,
   GoogleAuthProvider,
-  FacebookAuthProvider,
-  OAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -113,9 +111,9 @@ async function init() {
 
     try {
       await signInWithEmailAndPassword(auth, emailEl.value, passEl.value);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login Error', error);
-      alert(error.message);
+      alert(error instanceof Error ? error.message : 'Login failed');
     }
   });
 
@@ -127,9 +125,9 @@ async function init() {
 
     try {
       await createUserWithEmailAndPassword(auth, emailEl.value, passEl.value);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Registration Error', error);
-      alert(error.message);
+      alert(error instanceof Error ? error.message : 'Registration failed');
     }
   });
 
