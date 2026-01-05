@@ -22,8 +22,6 @@ async function getFirebaseConfig() {
     return await response.json();
   } catch (e) {
     // Fallback for local development without 'firebase serve'
-    // In a strictly "real" app, we might bake these in via build vars for local dev,
-    // but checking for the emulator/hosting environment is robust.
     console.error('Could not load Firebase config. Ensure you are running via "firebase serve" or "firebase emulators:start".');
 
     // Show a visible error to the user
