@@ -32,20 +32,32 @@
         "function": "waitlist-handler"
       },
       {
-        "source": "/api/inputs",
-        "function": "inputs-handler"
+        "source": "/api/inputs/fcm-token",
+        "run": {
+          "serviceId": "inputs-handler",
+          "region": "us-central1"
+        }
       },
       {
-        "source": "/api/inputs/**",
-        "function": "inputs-handler"
+        "source": "/api/inputs",
+        "run": {
+          "serviceId": "inputs-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/activities/stats",
+        "run": {
+          "serviceId": "activities-handler",
+          "region": "us-central1"
+        }
       },
       {
         "source": "/api/activities",
-        "function": "activities-handler"
-      },
-      {
-        "source": "/api/activities/**",
-        "function": "activities-handler"
+        "run": {
+          "serviceId": "activities-handler",
+          "region": "us-central1"
+        }
       },
       {
         "source": "/auth/strava/callback",
