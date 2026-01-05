@@ -22,6 +22,7 @@ export async function initFirebase(): Promise<{ app: FirebaseApp; auth: Auth } |
 
   const config = await getFirebaseConfig();
   if (!config) return null;
+  console.log('Firebase Config Loaded:', config); // Debugging
 
   app = initializeApp(config);
   auth = getAuth(app);

@@ -15,7 +15,10 @@ export function useFCM() {
 
     const setupFCM = async () => {
       const messaging = getFirebaseMessaging();
-      if (!messaging) return;
+      if (!messaging) {
+        // App might not be initialized yet, or messaging not supported
+        return;
+      }
 
       try {
         const permission = await Notification.requestPermission();
