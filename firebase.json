@@ -42,6 +42,10 @@
       {
         "source": "/auth/fitbit/callback",
         "function": "fitbit-oauth-handler"
+      },
+      {
+        "source": "/app/**",
+        "destination": "/app/index.html"
       }
     ]
   }

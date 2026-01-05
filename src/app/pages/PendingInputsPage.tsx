@@ -1,27 +1,8 @@
-import React, { useEffect } from 'react';
-import { useAtom } from 'jotai';
-import { pendingInputsAtom, isLoadingInputsAtom } from '../state/inputsState';
+import { useInputs } from '../hooks/useInputs';
 import { InputsService, PendingInput } from '../services/InputsService';
 
 const PendingInputsPage: React.FC = () => {
-  const [inputs, setInputs] = useAtom(pendingInputsAtom);
-  const [isLoading, setIsLoading] = useAtom(isLoadingInputsAtom);
-
-  useEffect(() => {
-    const fetchInputs = async () => {
-      setIsLoading(true);
-      try {
-        const data = await InputsService.getPendingInputs();
-        setInputs(data);
-      } catch (error) {
-        console.error('Error fetching inputs:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchInputs();
-  }, [setInputs, setIsLoading]);
+  const { inputs, loading, refresh } = useInputs();
 
   const handleResolve = async (input: PendingInput) => {
     // Basic logic to demonstrate resolution
@@ -39,7 +20,7 @@ const PendingInputsPage: React.FC = () => {
         });
         if (success) {
             alert('Resolved successfully!');
-            setInputs(prev => prev.filter(i => i.id !== input.id));
+            refresh(); // Refresh total list
         }
     } catch (error) {
         alert('Failed to resolve input');
@@ -47,7 +28,7 @@ const PendingInputsPage: React.FC = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container dashboard-container">
       <header className="app-header">
         <h1 className="title small">
           <span className="fit">Fit</span><span className="glue">Glue</span>
@@ -58,8 +39,11 @@ const PendingInputsPage: React.FC = () => {
       </header>
       <main className="dashboard">
         <h2>Pending Inputs</h2>
-        {isLoading ? (
-          <p>Loading...</p>
+        {loading && inputs.length === 0 ? (
+          <div className="loading-container">
+            <div className="spinner"></div>
+            <p>Fetching your activities...</p>
+          </div>
         ) : inputs.length === 0 ? (
           <p>No pending inputs found.</p>
         ) : (

@@ -1,10 +1,8 @@
 import createClient from "openapi-fetch";
 import type { paths } from "./schema";
 
-// This should be configurable via env or detect from window.location
-const BASE_URL = window.location.origin.includes("localhost")
-  ? "http://localhost:8080"
-  : "https://api.fitglue.app";
+// For Firebase Hosting, we use a relative path so rewrites work correctly
+const BASE_URL = "/api";
 
 export const client = createClient<paths>({
   baseUrl: BASE_URL,

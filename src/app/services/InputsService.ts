@@ -1,5 +1,6 @@
 import { client } from '../../shared/api/client';
 import { components } from '../../shared/api/schema';
+import { getFirebaseAuth } from '../../shared/firebase';
 
 export type PendingInput = components['schemas']['PendingInput'];
 export type InputResolutionRequest = components['schemas']['InputResolutionRequest'];
@@ -9,12 +10,17 @@ export interface IInputsService {
   resolveInput(request: InputResolutionRequest): Promise<boolean>;
 }
 
+const getAuthHeader = async () => {
+  const auth = getFirebaseAuth();
+  const token = await auth?.currentUser?.getIdToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 export const InputsService: IInputsService = {
   async getPendingInputs() {
+    const headers = await getAuthHeader();
     const { data, error } = await client.GET('/inputs', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`, // Placeholder for real auth
-      }
+      headers,
     });
 
     if (error) {
@@ -25,10 +31,9 @@ export const InputsService: IInputsService = {
   },
 
   async resolveInput(request) {
+    const headers = await getAuthHeader();
     const { data, error } = await client.POST('/inputs', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`, // Placeholder for real auth
-      },
+      headers,
       body: request,
     });
 
@@ -36,6 +41,6 @@ export const InputsService: IInputsService = {
       throw new Error('Failed to resolve input');
     }
 
-    return data.success || false;
+    return data?.success || false;
   },
 };

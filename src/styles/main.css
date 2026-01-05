@@ -50,6 +50,19 @@ body {
     max-width: 800px;
     width: 100%;
     text-align: center;
+    padding: 0 1rem;
+}
+
+/* Ensure root takes full width in the flex body */
+#root {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Dashboard-specific container */
+.dashboard-container {
+    max-width: 1200px !important;
 }
 
 .content {
@@ -164,6 +177,7 @@ body {
 }
 
 @keyframes pulse {
+
     0%,
     100% {
         transform: scale(1);
@@ -330,4 +344,108 @@ input {
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+/* Dashboard Styles */
+.dashboard,
+.dashboard-grid {
+    animation: fade-in 0.5s ease-out;
+    width: 100%;
+    margin-top: 2rem;
+    text-align: left;
+    max-width: 1200px;
+    /* Allow more width on large screens */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h2,
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+    letter-spacing: -0.01em;
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* minimum card width increased */
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    /* More padding for cleaner look */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.stat-value {
+    font-size: 3.5rem;
+    /* Larger numbers */
+    font-weight: 800;
+    color: var(--color-primary);
+    margin: 1rem 0;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    max-width: 100%;
+}
+
+/* Loading Spinner */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    gap: 1rem;
+    color: var(--color-text-muted);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--color-primary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
