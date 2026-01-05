@@ -24,46 +24,46 @@
           "id": {
             "type": "string"
           },
-          "activity_id": {
+          "activityId": {
             "type": "string"
           },
-          "user_id": {
+          "userId": {
             "type": "string"
           },
           "status": {
             "type": "integer",
             "description": "1=WAITING, 2=COMPLETED"
           },
-          "required_fields": {
+          "requiredFields": {
             "type": "array",
             "items": {
               "type": "string"
             }
           },
-          "input_data": {
+          "inputData": {
             "type": "object",
             "additionalProperties": {
               "type": "string"
             }
           },
-          "created_at": {
+          "createdAt": {
             "type": "string",
             "format": "date-time"
           }
         },
         "required": [
           "id",
-          "activity_id",
+          "activityId",
           "status"
         ]
       },
       "InputResolutionRequest": {
         "type": "object",
         "properties": {
-          "activity_id": {
+          "activityId": {
             "type": "string"
           },
-          "input_data": {
+          "inputData": {
             "type": "object",
             "additionalProperties": {
               "type": "string"
@@ -71,14 +71,14 @@
           }
         },
         "required": [
-          "activity_id",
-          "input_data"
+          "activityId",
+          "inputData"
         ]
       },
       "SynchronizedActivity": {
         "type": "object",
         "properties": {
-          "activity_id": {
+          "activityId": {
             "type": "string"
           },
           "title": {
@@ -94,15 +94,15 @@
           "source": {
             "type": "string"
           },
-          "start_time": {
+          "startTime": {
             "type": "string",
             "format": "date-time"
           },
-          "synced_at": {
+          "syncedAt": {
             "type": "string",
             "format": "date-time"
           },
-          "pipeline_id": {
+          "pipelineId": {
             "type": "string"
           },
           "destinations": {
@@ -241,7 +241,7 @@
                   "email": {
                     "type": "string"
                   },
-                  "website_url": {
+                  "websiteUrl": {
                     "type": "string"
                   }
                 },
@@ -278,7 +278,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "synchronized_count": {
+                    "synchronizedCount": {
                       "type": "integer"
                     }
                   }

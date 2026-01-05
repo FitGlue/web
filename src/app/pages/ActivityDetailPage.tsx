@@ -11,7 +11,7 @@ const ActivityDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (id && activities.length > 0) {
-        setActivity(activities.find(a => a.activity_id === id) || null);
+        setActivity(activities.find(a => a.activityId === id) || null);
     }
   }, [id, activities]);
 
@@ -40,8 +40,8 @@ const ActivityDetailPage: React.FC = () => {
             <p><strong>Description:</strong> {activity.description}</p>
             <p><strong>Type:</strong> {activity.type}</p>
             <p><strong>Source:</strong> {activity.source}</p>
-             <p><strong>Start Time:</strong> {activity.start_time ? new Date(activity.start_time).toLocaleString() : 'N/A'}</p>
-             <p><strong>Synced At:</strong> {activity.synced_at ? new Date(activity.synced_at).toLocaleString() : 'N/A'}</p>
+             <p><strong>Start Time:</strong> {activity.startTime ? new Date(activity.startTime).toLocaleString() : 'N/A'}</p>
+             <p><strong>Synced At:</strong> {activity.syncedAt ? new Date(activity.syncedAt).toLocaleString() : 'N/A'}</p>
         </div>
 
         <h3>Destinations</h3>

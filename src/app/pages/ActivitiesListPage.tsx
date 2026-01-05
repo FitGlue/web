@@ -32,10 +32,10 @@ const ActivitiesListPage: React.FC = () => {
         ) : (
           <div className="inputs-list">
             {activities.map(activity => (
-              <div key={activity.activity_id} className="card clickable" onClick={() => handleActivityClick(activity.activity_id!)}>
+              <div key={activity.activityId} className="card clickable" onClick={() => handleActivityClick(activity.activityId!)}>
                 <h3>{activity.title}</h3>
                 <p>Type: {activity.type} | Source: {activity.source}</p>
-                <p>Synced At: {activity.synced_at ? new Date(activity.synced_at).toLocaleString() : 'N/A'}</p>
+                <p>Synced At: {activity.syncedAt ? new Date(activity.syncedAt).toLocaleString() : 'N/A'}</p>
               </div>
             ))}
           </div>

@@ -51,7 +51,7 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
   const fetchSingle = useCallback(async () => {
     if (!id) return;
     // Check if already in list
-    const existing = activities.find(a => a.activity_id === id);
+    const existing = activities.find(a => a.activityId === id);
     if (existing) return;
 
     setLoading(true);
@@ -60,7 +60,7 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
       if (activity) {
         // Update list with this single activity if not present
         setActivities(prev => {
-          if (prev.find(p => p.activity_id === activity.activity_id)) return prev;
+          if (prev.find(p => p.activityId === activity.activityId)) return prev;
           return [...prev, activity];
         });
       }

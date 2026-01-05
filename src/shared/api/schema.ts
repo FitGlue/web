@@ -143,7 +143,7 @@ export interface paths {
                 content: {
                     "application/json": {
                         email: string;
-                        website_url?: string;
+                        websiteUrl?: string;
                     };
                 };
             };
@@ -194,7 +194,7 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            synchronized_count?: number;
+                            synchronizedCount?: number;
                         };
                     };
                 };
@@ -301,35 +301,35 @@ export interface components {
     schemas: {
         PendingInput: {
             id: string;
-            activity_id: string;
-            user_id?: string;
+            activityId: string;
+            userId?: string;
             /** @description 1=WAITING, 2=COMPLETED */
             status: number;
-            required_fields?: string[];
-            input_data?: {
+            requiredFields?: string[];
+            inputData?: {
                 [key: string]: string;
             };
             /** Format: date-time */
-            created_at?: string;
+            createdAt?: string;
         };
         InputResolutionRequest: {
-            activity_id: string;
-            input_data: {
+            activityId: string;
+            inputData: {
                 [key: string]: string;
             };
         };
         SynchronizedActivity: {
-            activity_id?: string;
+            activityId?: string;
             title?: string;
             description?: string;
             /** @description ActivityType enum */
             type?: number;
             source?: string;
             /** Format: date-time */
-            start_time?: string;
+            startTime?: string;
             /** Format: date-time */
-            synced_at?: string;
-            pipeline_id?: string;
+            syncedAt?: string;
+            pipelineId?: string;
             destinations?: {
                 [key: string]: string;
             };

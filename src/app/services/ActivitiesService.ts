@@ -5,7 +5,7 @@ import { getFirebaseAuth } from '../../shared/firebase';
 export type SynchronizedActivity = components['schemas']['SynchronizedActivity'];
 
 export interface IActivitiesService {
-  getStats(): Promise<{ synchronized_count: number }>;
+  getStats(): Promise<{ synchronizedCount: number }>;
   list(limit?: number): Promise<SynchronizedActivity[]>;
   get(id: string): Promise<SynchronizedActivity | null>;
 }
@@ -25,10 +25,10 @@ export const ActivitiesService: IActivitiesService = {
 
     if (error) {
       console.error('Failed to fetch activity stats', error);
-      return { synchronized_count: 0 };
+      return { synchronizedCount: 0 };
     }
 
-    return data || { synchronized_count: 0 };
+    return { synchronizedCount: data?.synchronizedCount || 0 };
   },
 
   async list(limit = 20) {

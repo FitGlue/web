@@ -9,7 +9,7 @@ const PendingInputsPage: React.FC = () => {
   const handleResolve = async (input: PendingInput) => {
     // Basic logic to demonstrate resolution
     const inputData: Record<string, string> = {};
-    for (const field of input.required_fields || []) {
+    for (const field of input.requiredFields || []) {
         const val = prompt(`Enter ${field}:`);
         if (val === null) return;
         inputData[field] = val;
@@ -17,8 +17,8 @@ const PendingInputsPage: React.FC = () => {
 
     try {
         const success = await InputsService.resolveInput({
-            activity_id: input.activity_id,
-            input_data: inputData,
+            activityId: input.activityId,
+            inputData: inputData,
         });
         if (success) {
             alert('Resolved successfully!');
@@ -52,9 +52,9 @@ const PendingInputsPage: React.FC = () => {
           <div className="inputs-list">
             {inputs.map(input => (
               <div key={input.id} className="card">
-                <h3>Activity: {input.activity_id}</h3>
+                <h3>Activity: {input.activityId}</h3>
                 <p>Status: {input.status === 1 ? 'WAITING' : 'COMPLETED'}</p>
-                <p>Required Fields: {input.required_fields?.join(', ')}</p>
+                <p>Required Fields: {input.requiredFields?.join(', ')}</p>
                 <button onClick={() => handleResolve(input)} className="btn primary">Resolve</button>
               </div>
             ))}

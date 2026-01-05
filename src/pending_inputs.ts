@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import createClient from 'openapi-fetch';
-import type { paths, components } from './openapi/schema';
+import type { paths, components } from './shared/api/schema';
 
 // --- Client Setup ---
 const client = createClient<paths>({ baseUrl: '/api' });
@@ -79,14 +79,14 @@ async function loadInputs(user: User) {
       card.className = 'input-card';
 
       const title = document.createElement('h3');
-      title.innerText = `Activity: ${input.activity_id}`; // Note: schema says activity_id, verify logic maps id->activity_id
+      title.innerText = `Activity: ${input.activityId}`; // Note: schema says activity_id, verify logic maps id->activity_id
       card.appendChild(title);
 
       const meta = document.createElement('p');
       meta.style.fontSize = '0.8rem';
       meta.style.color = '#666';
 
-      const createdAt = input.created_at ? new Date(input.created_at) : new Date();
+      const createdAt = input.createdAt ? new Date(input.createdAt) : new Date();
       meta.innerText = `Created: ${createdAt.toLocaleString()}`;
       card.appendChild(meta);
 
@@ -96,12 +96,12 @@ async function loadInputs(user: User) {
 
       const fieldInputs: Record<string, HTMLInputElement | HTMLTextAreaElement> = {};
 
-      if (!input.required_fields) {
+      if (!input.requiredFields) {
         // If there's no required fields, then this is a dodgy pending_inputs request and we should ignore it
         return;
       }
 
-      input.required_fields.forEach(field => {
+      input.requiredFields.forEach(field => {
         const label = document.createElement('label');
         label.innerText = field.charAt(0).toUpperCase() + field.slice(1);
         form.appendChild(label);
@@ -126,7 +126,7 @@ async function loadInputs(user: User) {
         }
 
         try {
-          await resolveInput(user, input.activity_id, inputData); // Use activity_id from schema
+          await resolveInput(user, input.activityId, inputData); // Use activity_id from schema
           card.remove();
           if (listEl.children.length === 0) {
             listEl.innerHTML = '<p>No pending inputs.</p>';
@@ -158,8 +158,8 @@ async function resolveInput(user: User, activityId: string, inputData: Record<st
       'Authorization': `Bearer ${token}`
     },
     body: {
-      activity_id: activityId,
-      input_data: inputData
+      activityId: activityId,
+      inputData: inputData
     }
   });
 

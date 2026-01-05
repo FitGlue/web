@@ -32,7 +32,7 @@ const DashboardPage: React.FC = () => {
                 <div className="card stat-card" onClick={() => navigate('/activities')}>
                     <h3>Synchronized</h3>
                     <p className="stat-value">
-                        {statsLoading ? '...' : stats.synchronized_count}
+                        {statsLoading ? '...' : stats.synchronizedCount}
                     </p>
                     <p className="stat-label">Activities this week</p>
                 </div>
