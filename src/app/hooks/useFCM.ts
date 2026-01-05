@@ -5,8 +5,8 @@ import { useAtomValue } from 'jotai';
 import { userAtom } from '../state/authState';
 import { InputsService } from '../services/InputsService';
 
-// TODO: Use env var
-const VAPID_KEY = 'BBAdaqfQEccFWedGJ6xOFER9v7hB9A-pjpe4tRCLe57_BSpDaPZug8HdotnEKKw8gHx_84Vg77w8Ky5rqqa94UU';
+const FIREBASE_VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
+
 
 export function useFCM() {
   const user = useAtomValue(userAtom);
@@ -25,7 +25,7 @@ export function useFCM() {
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
           const currentToken = await getToken(messaging, {
-            vapidKey: VAPID_KEY,
+            vapidKey: FIREBASE_VAPID_KEY,
           });
 
           if (currentToken) {

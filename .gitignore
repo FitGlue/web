@@ -27,7 +27,8 @@ terraform/terraform.tfstate.d/
 Thumbs.db
 
 # Environment
-.env
+# We are checking in specific env files for CI
+#.env - We want to allow specific env files
 .env.local
 
 # Generated
