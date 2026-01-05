@@ -40,6 +40,10 @@
         "function": "inputs-handler"
       },
       {
+        "source": "/api/activities",
+        "function": "activities-handler"
+      },
+      {
         "source": "/auth/strava/callback",
         "function": "strava-oauth-handler"
       },

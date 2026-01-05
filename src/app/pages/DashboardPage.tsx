@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useInputs } from '../hooks/useInputs';
+import { useActivities } from '../hooks/useActivities';
 
 const DashboardPage: React.FC = () => {
   const { inputs, loading } = useInputs();
+  const { stats, loading: statsLoading } = useActivities('stats');
   const navigate = useNavigate();
 
   return (
@@ -27,9 +29,11 @@ const DashboardPage: React.FC = () => {
                     </p>
                     <p className="stat-label">Items requiring attention</p>
                 </div>
-                <div className="card stat-card">
+                <div className="card stat-card" onClick={() => navigate('/activities')}>
                     <h3>Synchronized</h3>
-                    <p className="stat-value">0</p>
+                    <p className="stat-value">
+                        {statsLoading ? '...' : stats.synchronized_count}
+                    </p>
                     <p className="stat-label">Activities this week</p>
                 </div>
             </div>

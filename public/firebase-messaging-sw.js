@@ -6,8 +6,13 @@ importScripts('https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-comp
 // automatically provided by Firebase Hosting.
 fetch('/__/firebase/init.json').then(async response => {
   const config = await response.json();
-  firebase.initializeApp(config);
 
+  // Dev isn't returning an appId for some reason - so add it here
+  if (config.appId == undefined || config.appId == "" || config.appId == null) {
+    config.appId = "1:911679924866:web:33a1ae4ab3c00b2f41229b"
+  }
+
+  firebase.initializeApp(config);
   const messaging = firebase.messaging();
 
   messaging.onBackgroundMessage((payload) => {
