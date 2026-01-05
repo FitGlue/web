@@ -24,14 +24,8 @@ export function useFCM() {
       try {
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
-          // Convert VAPID key from Base64URL to Base64 (handle -/_ and padding)
-          // This prevents "InvalidCharacterError: Failed to execute 'atob'" issues
-          const safeKey = FIREBASE_VAPID_KEY.replace(/-/g, '+').replace(/_/g, '/');
-          const pad = safeKey.length % 4;
-          const paddedKey = pad ? safeKey + '='.repeat(4 - pad) : safeKey;
-
           const currentToken = await getToken(messaging, {
-            vapidKey: paddedKey,
+            vapidKey: FIREBASE_VAPID_KEY,
           });
 
           if (currentToken) {
