@@ -1,8 +1,10 @@
 import { useInputs } from '../hooks/useInputs';
 import { InputsService, PendingInput } from '../services/InputsService';
+import { useNavigate } from 'react-router-dom';
 
 const PendingInputsPage: React.FC = () => {
   const { inputs, loading, refresh } = useInputs();
+  const navigate = useNavigate();
 
   const handleResolve = async (input: PendingInput) => {
     // Basic logic to demonstrate resolution
@@ -34,7 +36,7 @@ const PendingInputsPage: React.FC = () => {
           <span className="fit">Fit</span><span className="glue">Glue</span>
         </h1>
         <div className="nav-actions">
-           <button onClick={() => window.location.href = '/app/'} className="btn text">Back to Dashboard</button>
+           <button onClick={() => navigate('/')} className="btn text">Back to Dashboard</button>
         </div>
       </header>
       <main className="dashboard">

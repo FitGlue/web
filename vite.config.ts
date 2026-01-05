@@ -4,7 +4,6 @@ import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  publicDir: false, // Don't copy public dir, only process through rollup inputs
   resolve: {
     dedupe: ['react', 'react-dom'],
   },
