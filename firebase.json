@@ -36,11 +36,15 @@
         "function": "inputs-handler"
       },
       {
-        "source": "/api/inputs/fcm-token",
+        "source": "/api/inputs/**",
         "function": "inputs-handler"
       },
       {
         "source": "/api/activities",
+        "function": "activities-handler"
+      },
+      {
+        "source": "/api/activities/**",
         "function": "activities-handler"
       },
       {
