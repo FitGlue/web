@@ -37,7 +37,8 @@ const ActivityDetailPage: React.FC = () => {
       <main className="dashboard">
         <h2>{activity.title}</h2>
         <div className="card">
-            <p><strong>Description:</strong> {activity.description}</p>
+            <p><strong>Description:</strong></p>
+            <p className="activity-description">{activity.description}</p>
             <p><strong>Type:</strong> {activity.type}</p>
             <p><strong>Source:</strong> {activity.source}</p>
              <p><strong>Start Time:</strong> {activity.startTime ? new Date(activity.startTime).toLocaleString() : 'N/A'}</p>
@@ -47,7 +48,7 @@ const ActivityDetailPage: React.FC = () => {
         <h3>Destinations</h3>
         <div className="card">
              {activity.destinations && Object.keys(activity.destinations).length > 0 ? (
-                 <ul>
+                 <ul className="destinations-list">
                      {Object.entries(activity.destinations).map(([k, v]) => (
                          <li key={k}>{k}: {v as string}</li>
                      ))}
