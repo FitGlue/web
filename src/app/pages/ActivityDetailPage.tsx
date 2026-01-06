@@ -57,6 +57,26 @@ const ActivityDetailPage: React.FC = () => {
                  <p>No destinations recorded.</p>
              )}
         </div>
+
+        {activity.pipelineExecution && activity.pipelineExecution.length > 0 && (
+          <>
+            <h3>Pipeline Execution Trace</h3>
+            <div className="card">
+                <div className="trace-timeline">
+                    {activity.pipelineExecution.map((exec) => (
+                        <div key={exec.executionId} className={`trace-item status-${exec.status?.toLowerCase()}`}>
+                            <div className="trace-header">
+                                <span className="trace-service">{exec.service}</span>
+                                <span className="trace-status">{exec.status}</span>
+                                <span className="trace-time">{exec.timestamp ? new Date(exec.timestamp).toLocaleTimeString() : ''}</span>
+                            </div>
+                            {exec.errorMessage && <div className="trace-error">{exec.errorMessage}</div>}
+                        </div>
+                    ))}
+                </div>
+            </div>
+          </>
+        )}
       </main>
     </div>
   );

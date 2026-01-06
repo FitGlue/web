@@ -105,11 +105,52 @@
           "pipelineId": {
             "type": "string"
           },
+          "pipelineExecutionId": {
+            "type": "string"
+          },
+          "pipelineExecution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExecutionRecord"
+            }
+          },
           "destinations": {
             "type": "object",
             "additionalProperties": {
               "type": "string"
             }
+          }
+        }
+      },
+      "ExecutionRecord": {
+        "type": "object",
+        "properties": {
+          "executionId": {
+            "type": "string"
+          },
+          "service": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "triggerType": {
+            "type": "string"
           }
         }
       }

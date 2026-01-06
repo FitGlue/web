@@ -330,9 +330,24 @@ export interface components {
             /** Format: date-time */
             syncedAt?: string;
             pipelineId?: string;
+            pipelineExecutionId?: string;
+            pipelineExecution?: components["schemas"]["ExecutionRecord"][];
             destinations?: {
                 [key: string]: string;
             };
+        };
+        ExecutionRecord: {
+            executionId?: string;
+            service?: string;
+            status?: string;
+            /** Format: date-time */
+            timestamp?: string;
+            /** Format: date-time */
+            startTime?: string;
+            /** Format: date-time */
+            endTime?: string;
+            errorMessage?: string;
+            triggerType?: string;
         };
     };
     responses: never;
