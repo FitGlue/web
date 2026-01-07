@@ -8,6 +8,7 @@ import DashboardPage from './pages/DashboardPage';
 import PendingInputsPage from './pages/PendingInputsPage';
 import ActivitiesListPage from './pages/ActivitiesListPage';
 import ActivityDetailPage from './pages/ActivityDetailPage';
+import UnsynchronizedDetailPage from './pages/UnsynchronizedDetailPage';
 import { useFCM } from './hooks/useFCM';
 
 const App: React.FC = () => {
@@ -52,6 +53,7 @@ const App: React.FC = () => {
         <Route path="/" element={<DashboardPage />} />
         <Route path="/inputs" element={<PendingInputsPage />} />
         <Route path="/activities" element={<ActivitiesListPage />} />
+        <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<UnsynchronizedDetailPage />} />
         <Route path="/activities/:id" element={<ActivityDetailPage />} />
       </Routes>
     </Router>

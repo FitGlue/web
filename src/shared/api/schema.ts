@@ -295,6 +295,97 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/activities/unsynchronized": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List unsynchronized pipeline executions
+         * @description Lists pipeline executions that did not result in a synchronized activity
+         */
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of unsynchronized executions */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            executions?: components["schemas"]["UnsynchronizedEntry"][];
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/activities/unsynchronized/{pipelineExecutionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get unsynchronized pipeline execution trace */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    pipelineExecutionId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Pipeline execution trace */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            pipelineExecutionId?: string;
+                            pipelineExecution?: components["schemas"]["ExecutionRecord"][];
+                        };
+                    };
+                };
+                /** @description Pipeline execution not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -352,6 +443,16 @@ export interface components {
             inputsJson?: string;
             /** @description JSON-encoded output/result */
             outputsJson?: string;
+        };
+        UnsynchronizedEntry: {
+            pipelineExecutionId?: string;
+            title?: string;
+            activityType?: string;
+            source?: string;
+            status?: string;
+            errorMessage?: string;
+            /** Format: date-time */
+            timestamp?: string;
         };
     };
     responses: never;

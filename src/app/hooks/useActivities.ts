@@ -5,11 +5,13 @@ import {
   activityStatsAtom,
   isLoadingActivitiesAtom,
   isActivitiesLoadedAtom,
-  isStatsLoadedAtom
+  isStatsLoadedAtom,
+  unsynchronizedAtom,
+  isUnsynchronizedLoadedAtom
 } from '../state/activitiesState';
-import { ActivitiesService } from '../services/ActivitiesService';
+import { ActivitiesService, ExecutionRecord } from '../services/ActivitiesService';
 
-type FetchMode = 'stats' | 'list' | 'single';
+type FetchMode = 'stats' | 'list' | 'single' | 'unsynchronized' | 'unsynchronized-trace';
 
 export const useActivities = (mode: FetchMode = 'list', id?: string) => {
   const [activities, setActivities] = useAtom(activitiesAtom);
@@ -17,6 +19,8 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
   const [loading, setLoading] = useAtom(isLoadingActivitiesAtom);
   const [loaded, setLoaded] = useAtom(isActivitiesLoadedAtom);
   const [statsLoaded, setStatsLoaded] = useAtom(isStatsLoadedAtom);
+  const [unsynchronized, setUnsynchronized] = useAtom(unsynchronizedAtom);
+  const [unsyncLoaded, setUnsyncLoaded] = useAtom(isUnsynchronizedLoadedAtom);
 
   const fetchStats = useCallback(async (force = false) => {
     if (!force && statsLoaded) return;
@@ -69,6 +73,21 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
     }
   }, [id, setActivities, setLoading]);
 
+  const fetchUnsynchronized = useCallback(async (force = false) => {
+    if (!force && unsyncLoaded) return;
+
+    setLoading(true);
+    try {
+      const data = await ActivitiesService.listUnsynchronized();
+      setUnsynchronized(data);
+      setUnsyncLoaded(true);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [unsyncLoaded, setUnsynchronized, setUnsyncLoaded, setLoading]);
+
   useEffect(() => {
     if (mode === 'stats') {
       fetchStats();
@@ -76,18 +95,51 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
       fetchList();
     } else if (mode === 'single' && id) {
       fetchSingle();
+    } else if (mode === 'unsynchronized') {
+      fetchUnsynchronized();
     }
-  }, [mode, id, fetchStats, fetchList, fetchSingle]);
+  }, [mode, id, fetchStats, fetchList, fetchSingle, fetchUnsynchronized]);
 
 
   return {
     activities,
     stats,
     loading,
+    unsynchronized,
     refresh: () => {
       if (mode === 'stats') fetchStats(true);
       if (mode === 'list') fetchList(true);
       if (mode === 'single') fetchSingle();
+      if (mode === 'unsynchronized') fetchUnsynchronized(true);
     }
   };
+};
+
+// Separate hook for fetching unsynchronized trace (not cached in global state)
+export const useUnsynchronizedTrace = (pipelineExecutionId?: string) => {
+  const [loading, setLoading] = useAtom(isLoadingActivitiesAtom);
+  const [trace, setTrace] = useAtom<{ pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null>(
+    () => null as { pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null
+  );
+
+  const fetchTrace = useCallback(async () => {
+    if (!pipelineExecutionId) return;
+    setLoading(true);
+    try {
+      const data = await ActivitiesService.getUnsynchronizedTrace(pipelineExecutionId);
+      setTrace(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [pipelineExecutionId, setLoading, setTrace]);
+
+  useEffect(() => {
+    if (pipelineExecutionId) {
+      fetchTrace();
+    }
+  }, [pipelineExecutionId, fetchTrace]);
+
+  return { trace, loading, refresh: fetchTrace };
 };

@@ -161,6 +161,33 @@
             "description": "JSON-encoded output/result"
           }
         }
+      },
+      "UnsynchronizedEntry": {
+        "type": "object",
+        "properties": {
+          "pipelineExecutionId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "activityType": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       }
     }
   },
@@ -414,6 +441,93 @@
           },
           "404": {
             "description": "Activity not found"
+          }
+        }
+      }
+    },
+    "/activities/unsynchronized": {
+      "get": {
+        "summary": "List unsynchronized pipeline executions",
+        "description": "Lists pipeline executions that did not result in a synchronized activity",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of unsynchronized executions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "executions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/UnsynchronizedEntry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/unsynchronized/{pipelineExecutionId}": {
+      "get": {
+        "summary": "Get unsynchronized pipeline execution trace",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pipelineExecutionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pipeline execution trace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pipelineExecutionId": {
+                      "type": "string"
+                    },
+                    "pipelineExecution": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ExecutionRecord"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pipeline execution not found"
           }
         }
       }

@@ -782,3 +782,73 @@ h3 {
     color: var(--text-secondary);
     margin-bottom: 1.5rem;
 }
+
+/* Tabs for Activities Page */
+.tabs-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tab-button {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    color: var(--color-text-muted);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-button:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text);
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    border-color: transparent;
+}
+
+/* Unsynchronized list items */
+.unsync-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.error-preview {
+    color: #FF453A;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    background: rgba(255, 69, 58, 0.1);
+    border-radius: 4px;
+}
+
+.timestamp {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.unsync-note {
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+/* Status badge variants */
+.status-badge.status-skipped,
+.badge-skipped {
+    background: rgba(255, 159, 64, 0.15);
+    color: #FF9F40;
+}
+
+.trace-item.status-skipped {
+    border-left-color: #FF9F40;
+}
+

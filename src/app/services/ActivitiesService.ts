@@ -3,11 +3,15 @@ import { components } from '../../shared/api/schema';
 import { getFirebaseAuth } from '../../shared/firebase';
 
 export type SynchronizedActivity = components['schemas']['SynchronizedActivity'];
+export type UnsynchronizedEntry = components['schemas']['UnsynchronizedEntry'];
+export type ExecutionRecord = components['schemas']['ExecutionRecord'];
 
 export interface IActivitiesService {
   getStats(): Promise<{ synchronizedCount: number }>;
   list(limit?: number): Promise<SynchronizedActivity[]>;
   get(id: string): Promise<SynchronizedActivity | null>;
+  listUnsynchronized(limit?: number): Promise<UnsynchronizedEntry[]>;
+  getUnsynchronizedTrace(pipelineExecutionId: string): Promise<{ pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null>;
 }
 
 const getAuthHeader = async () => {
@@ -65,5 +69,40 @@ export const ActivitiesService: IActivitiesService = {
     }
 
     return data?.activity || null;
+  },
+
+  async listUnsynchronized(limit = 20) {
+    const headers = await getAuthHeader();
+    const { data, error } = await client.GET('/activities/unsynchronized', {
+      headers,
+      params: {
+        query: {
+          limit
+        }
+      }
+    });
+
+    if (error) {
+      console.error('Failed to fetch unsynchronized executions', error);
+      return [];
+    }
+
+    return data?.executions || [];
+  },
+
+  async getUnsynchronizedTrace(pipelineExecutionId: string) {
+    const headers = await getAuthHeader();
+    const { data, error } = await client.GET('/activities/unsynchronized/{pipelineExecutionId}', {
+      headers,
+      params: {
+        path: { pipelineExecutionId }
+      }
+    });
+
+    if (error) {
+      return null;
+    }
+
+    return data ? { pipelineExecutionId: data.pipelineExecutionId || pipelineExecutionId, pipelineExecution: data.pipelineExecution || [] } : null;
   }
 };
