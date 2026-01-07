@@ -128,8 +128,8 @@ const PendingInputsPage: React.FC = () => {
         <h1 className="title small">
           <span className="fit">Fit</span><span className="glue">Glue</span>
         </h1>
-        <div className="nav-actions">
-           <button onClick={() => navigate('/')} className="back-button">← Back to Dashboard</button>
+       <div className="nav-actions">
+           <button onClick={() => navigate('/')} className="btn text">← Back to Dashboard</button>
         </div>
       </header>
       <main className="dashboard">
@@ -142,10 +142,12 @@ const PendingInputsPage: React.FC = () => {
             <p>Checking for pending items...</p>
           </div>
         ) : inputs.length === 0 ? (
-          <div className="empty-state">
-            <p>All caught up! No pending actions.</p>
-            <button className="btn secondary" onClick={refresh}>Check Again</button>
-          </div>
+            <div className="empty-state-card">
+              <div className="empty-icon">🎉</div>
+              <h3>All Caught Up!</h3>
+              <p>There are no activities waiting for your input right now.</p>
+              <button className="btn primary" onClick={refresh} style={{ maxWidth: '200px' }}>Check Again</button>
+            </div>
         ) : (
           <div className="inputs-grid">
             {inputs.map(input => (

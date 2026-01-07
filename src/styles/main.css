@@ -769,18 +769,42 @@ h3 {
     width: 100%;
 }
 
-.empty-state {
+.empty-state-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 4rem 2rem;
-    background: var(--bg-surface);
-    border-radius: var(--radius-lg);
-    border: 1px dashed var(--border-subtle);
+    padding: 6rem 2rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    margin-top: 2rem;
 }
 
-.empty-state p {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
+.empty-icon {
+    font-size: 4rem;
     margin-bottom: 1.5rem;
+    animation: bounce 2s infinite;
+}
+
+.empty-state-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+}
+
+.empty-state-card p {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+    max-width: 400px;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-20px);}
+    60% {transform: translateY(-10px);}
 }
 
 /* Tabs for Activities Page */
