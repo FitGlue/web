@@ -46,23 +46,13 @@ export const RefreshControl: React.FC<RefreshControlProps> = ({ onRefresh, lastU
   }, [lastUpdated]);
 
   return (
-    <div className="refresh-control" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-      {lastUpdated && (
-        <span style={{ fontSize: '0.8rem', color: '#666', whiteSpace: 'nowrap' }}>
-          Updated {timeAgo}
-        </span>
-      )}
-      <button
-        onClick={onRefresh}
-        className="btn text"
-        disabled={loading}
-        title="Refresh"
-        style={{ padding: '0.2rem', minWidth: 'auto' }}
-      >
-        <span className={loading ? 'spinning' : ''} style={{ display: 'inline-block' }}>
-            ↻
-        </span>
-      </button>
+    <div className="refresh-pill" onClick={!loading ? onRefresh : undefined} title="Click to refresh">
+        <div className={`refresh-icon ${loading ? 'spinning' : ''}`}>
+             ↻
+        </div>
+        <div className="refresh-text">
+            {loading ? 'Updating...' : (lastUpdated ? `Updated ${timeAgo}` : 'Update Now')}
+        </div>
       <style>{`
         .spinning {
             animation: spin 1s linear infinite;
@@ -74,3 +64,4 @@ export const RefreshControl: React.FC<RefreshControlProps> = ({ onRefresh, lastU
     </div>
   );
 };
+

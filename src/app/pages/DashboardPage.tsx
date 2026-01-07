@@ -1,26 +1,31 @@
 import { useNavigate } from 'react-router-dom';
 import { useInputs } from '../hooks/useInputs';
 import { useActivities } from '../hooks/useActivities';
+import { AppHeader } from '../components/layout/AppHeader';
+import { PageHeader } from '../components/layout/PageHeader';
+import { RefreshControl } from '../components/RefreshControl';
 
 const DashboardPage: React.FC = () => {
   const { inputs, loading } = useInputs();
-  const { stats, loading: statsLoading } = useActivities('stats');
+  const { stats, loading: statsLoading, refresh } = useActivities('stats');
   const navigate = useNavigate();
 
   return (
     <div className="container dashboard-container">
-      <header className="app-header">
-        <h1 className="title small">
-          <span className="fit">Fit</span><span className="glue">Glue</span>
-        </h1>
-        <div className="nav-actions">
-           <button onClick={() => window.location.href = '/logout'} className="btn text">Logout</button>
-        </div>
-      </header>
+      <AppHeader />
+      <div className="content">
+        <PageHeader
+            title="Overview"
+            actions={
+                <>
+                    <RefreshControl onRefresh={refresh} loading={statsLoading} lastUpdated={null} />
+                    <button onClick={() => window.location.href = '/logout'} className="btn text" style={{marginLeft: '1rem'}}>Logout</button>
+                </>
+            }
+        />
 
       <main className="dashboard-grid">
         <section className="dashboard-section">
-            <h2 className="section-title">Overview</h2>
             <div className="stats-grid">
                 <div className="card stat-card" onClick={() => navigate('/inputs')}>
                     <h3>Pending Inputs</h3>
@@ -40,6 +45,7 @@ const DashboardPage: React.FC = () => {
         </section>
 
       </main>
+      </div>
     </div>
   );
 };

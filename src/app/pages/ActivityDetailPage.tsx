@@ -4,6 +4,9 @@ import { useActivities } from '../hooks/useActivities';
 import { SynchronizedActivity } from '../services/ActivitiesService';
 import { MetaBadge } from '../components/MetaBadge';
 import { PipelineTrace } from '../components/PipelineTrace';
+import { AppHeader } from '../components/layout/AppHeader';
+import { PageHeader } from '../components/layout/PageHeader';
+import { RefreshControl } from '../components/RefreshControl';
 
 // Helper to derive original trigger source from pipeline execution trace
 const deriveOriginalSource = (activity: SynchronizedActivity): string => {
@@ -25,7 +28,7 @@ const deriveOriginalSource = (activity: SynchronizedActivity): string => {
 
 const ActivityDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { activities, loading } = useActivities('single', id);
+  const { activities, loading, refresh } = useActivities('single', id);
   const navigate = useNavigate();
   const [activity, setActivity] = useState<SynchronizedActivity | null>(null);
 
@@ -48,16 +51,17 @@ const ActivityDetailPage: React.FC = () => {
 
   return (
     <div className="container dashboard-container">
-      <header className="app-header">
-        <h1 className="title small">
-          <span className="fit">Fit</span><span className="glue">Glue</span>
-        </h1>
-        <div className="nav-actions">
-           <button onClick={() => navigate('/activities')} className="btn text">← Back to Activities</button>
-        </div>
-      </header>
+      <AppHeader />
+      <div className="content">
+        <PageHeader
+            title={activity.title}
+            backTo="/activities"
+            backLabel="Activities"
+            actions={
+                <RefreshControl onRefresh={refresh} loading={loading} lastUpdated={null} />
+            }
+        />
       <main className="dashboard">
-        <h2>{activity.title}</h2>
         <div className="card">
             <div className="card-meta-row" style={{ marginTop: 0, marginBottom: '1rem' }}>
                <MetaBadge label="Type" value={String(activity.type) || 'Unknown'} />
@@ -90,6 +94,7 @@ const ActivityDetailPage: React.FC = () => {
           />
         )}
       </main>
+      </div>
     </div>
   );
 };

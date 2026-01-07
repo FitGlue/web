@@ -3,6 +3,8 @@ import { useInputs } from '../hooks/useInputs';
 import { InputsService, PendingInput } from '../services/InputsService';
 import { useNavigate } from 'react-router-dom';
 import { RefreshControl } from '../components/RefreshControl';
+import { AppHeader } from '../components/layout/AppHeader';
+import { PageHeader } from '../components/layout/PageHeader';
 
 const PendingInputsPage: React.FC = () => {
   const { inputs, loading, refresh, lastUpdated } = useInputs();
@@ -158,17 +160,17 @@ const PendingInputsPage: React.FC = () => {
 
   return (
     <div className="container dashboard-container">
-      <header className="app-header">
-        <h1 className="title small">
-          <span className="fit">Fit</span><span className="glue">Glue</span>
-        </h1>
-       <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-           <RefreshControl onRefresh={refresh} loading={loading} lastUpdated={lastUpdated} />
-           <button onClick={() => navigate('/')} className="btn text">← Back to Dashboard</button>
-        </div>
-      </header>
+      <AppHeader />
+      <div className="content">
+        <PageHeader
+            title="Action Required"
+            backTo="/"
+            backLabel="Dashboard"
+            actions={
+            <RefreshControl onRefresh={refresh} loading={loading} lastUpdated={lastUpdated} />
+            }
+        />
       <main className="dashboard">
-        <h2 className="page-title">Action Required</h2>
         <p className="page-subtitle">These activities need a bit more info before they can be synced.</p>
 
         {loading && inputs.length === 0 ? (
@@ -235,6 +237,7 @@ const PendingInputsPage: React.FC = () => {
           </div>
         )}
       </main>
+      </div>
     </div>
   );
 };

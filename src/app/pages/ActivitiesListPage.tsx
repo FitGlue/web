@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useActivities } from '../hooks/useActivities';
 import { ActivityCard } from '../components/ActivityCard';
 import { RefreshControl } from '../components/RefreshControl';
+import { AppHeader } from '../components/layout/AppHeader';
+import { PageHeader } from '../components/layout/PageHeader';
 
 type TabMode = 'synchronized' | 'unsynchronized';
 
@@ -34,17 +36,17 @@ const ActivitiesListPage: React.FC = () => {
 
   return (
     <div className="container dashboard-container">
-      <header className="app-header">
-        <h1 className="title small">
-          <span className="fit">Fit</span><span className="glue">Glue</span>
-        </h1>
-        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}> {/* Added style for alignment */}
-           <RefreshControl onRefresh={refresh} loading={loading} lastUpdated={lastUpdated} /> {/* Added RefreshControl */}
-           <button onClick={() => navigate('/')} className="btn text">← Back to Dashboard</button>
-        </div>
-      </header>
+      <AppHeader />
+      <div className="content">
+        <PageHeader
+          title="Activities"
+          backTo="/"
+          backLabel="Dashboard"
+          actions={
+            <RefreshControl onRefresh={refresh} loading={loading} lastUpdated={lastUpdated} />
+          }
+        />
       <main className="dashboard">
-        <h2>Activities</h2>
 
         {/* Tab Buttons */}
         <div className="tabs-container">
@@ -116,6 +118,7 @@ const ActivitiesListPage: React.FC = () => {
           </>
         )}
       </main>
+      </div>
     </div>
   );
 };
