@@ -544,3 +544,83 @@ h3 {
     font-size: 0.9rem;
     white-space: pre-wrap;
 }
+
+/* Enhanced Pipeline Timeline */
+.pipeline-id {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.pipeline-id code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+.pipeline-trace-card {
+    padding: 1rem;
+}
+
+.trace-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.trace-step-number {
+    min-width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.trace-content {
+    flex: 1;
+}
+
+.trace-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 0.25rem;
+}
+
+.trace-duration {
+    color: var(--color-accent);
+}
+
+.trace-trigger {
+    color: var(--color-secondary);
+}
+
+/* Status badges */
+.badge-success {
+    background: rgba(6, 255, 165, 0.15);
+    color: var(--color-success);
+}
+
+.badge-failed {
+    background: rgba(255, 69, 58, 0.15);
+    color: #FF453A;
+}
+
+.badge-started {
+    background: rgba(76, 201, 240, 0.15);
+    color: var(--color-accent);
+}
+
+.badge-waiting {
+    background: rgba(255, 214, 10, 0.15);
+    color: #FFD60A;
+}

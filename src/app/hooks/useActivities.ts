@@ -50,18 +50,16 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
 
   const fetchSingle = useCallback(async () => {
     if (!id) return;
-    // Check if already in list
-    const existing = activities.find(a => a.activityId === id);
-    if (existing) return;
 
+    // Always fetch fresh data for single activity view to get pipelineExecution
     setLoading(true);
     try {
       const activity = await ActivitiesService.get(id);
       if (activity) {
-        // Update list with this single activity if not present
+        // Update list with this single activity (replace if exists, add if not)
         setActivities(prev => {
-          if (prev.find(p => p.activityId === activity.activityId)) return prev;
-          return [...prev, activity];
+          const filtered = prev.filter(p => p.activityId !== activity.activityId);
+          return [...filtered, activity];
         });
       }
     } catch (e) {
@@ -69,7 +67,7 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
     } finally {
       setLoading(false);
     }
-  }, [id, activities, setActivities, setLoading]);
+  }, [id, setActivities, setLoading]);
 
   useEffect(() => {
     if (mode === 'stats') {
