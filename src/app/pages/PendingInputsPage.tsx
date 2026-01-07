@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { useInputs } from '../hooks/useInputs';
 import { InputsService, PendingInput } from '../services/InputsService';
-import { RefreshControl } from '../components/RefreshControl';
-import { AppHeader } from '../components/layout/AppHeader';
-import { PageHeader } from '../components/layout/PageHeader';
+import { PageLayout } from '../components/layout/PageLayout';
 import { EmptyState } from '../components/EmptyState';
+import { DataList } from '../components/data/DataList';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Text } from '../components/ui/Text';
 
 const PendingInputsPage: React.FC = () => {
   const { inputs, loading, refresh, lastUpdated } = useInputs();
 
   // Local state to track form values for each pending input
-  // Keyed by activityId -> fieldName -> value
   const [formValues, setFormValues] = useState<Record<string, Record<string, string>>>({});
   const [submittingIds, setSubmittingIds] = useState<Set<string>>(new Set());
 
@@ -32,7 +33,6 @@ const PendingInputsPage: React.FC = () => {
     const activityId = input.activityId;
     const values = formValues[activityId] || {};
 
-    // Validate all required fields are present
     const missingFields = input.requiredFields?.filter(f => !values[f] || values[f].trim() === '');
     if (missingFields && missingFields.length > 0) {
       alert(`Please fill in: ${missingFields.join(', ')}`);
@@ -52,9 +52,7 @@ const PendingInputsPage: React.FC = () => {
         });
 
         if (success) {
-            // Optimistic removal or wait for refresh
             refresh();
-            // Clear form state for this ID
             setFormValues(prev => {
                 const next = { ...prev };
                 delete next[activityId];
@@ -87,8 +85,7 @@ const PendingInputsPage: React.FC = () => {
     try {
         const success = await InputsService.dismissInput(activityId);
         if (success) {
-            refresh(); // Refresh list to remove item
-            // Clear form state
+            refresh();
             setFormValues(prev => {
                 const next = { ...prev };
                 delete next[activityId];
@@ -110,7 +107,6 @@ const PendingInputsPage: React.FC = () => {
   const renderField = (activityId: string, field: string) => {
      const value = getFieldValue(activityId, field);
 
-     // Future-proofing for select inputs
      if (field === 'activity_type') {
          return (
              <select
@@ -123,7 +119,6 @@ const PendingInputsPage: React.FC = () => {
                  <option value="RIDE">Ride</option>
                  <option value="WEIGHT_TRAINING">Weight Training</option>
                  <option value="WORKOUT">Workout</option>
-                 {/* Add more as needed */}
              </select>
          );
      }
@@ -140,7 +135,6 @@ const PendingInputsPage: React.FC = () => {
         );
      }
 
-     // Default text input
      return (
         <input
             type="text"
@@ -152,93 +146,82 @@ const PendingInputsPage: React.FC = () => {
      );
   };
 
-  // Helper for nice labels
   const formatLabel = (field: string) => {
       return field.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   };
 
   return (
-    <div className="container dashboard-container">
-      <AppHeader />
-      <div className="content">
-        <PageHeader
-            title="Action Required"
-            backTo="/"
-            backLabel="Dashboard"
-            actions={
-            <RefreshControl onRefresh={refresh} loading={loading} lastUpdated={lastUpdated} />
+    <PageLayout
+        title="Action Required"
+        backTo="/"
+        backLabel="Dashboard"
+        onRefresh={refresh}
+        loading={loading}
+        lastUpdated={lastUpdated}
+    >
+        <Text variant="muted">These activities need a bit more info before they can be synced.</Text>
+
+        <DataList
+            items={inputs}
+            loading={loading}
+            loadingMessage="Checking for pending items..."
+            className="inputs-grid"
+            keyExtractor={(input) => input.id}
+            renderItem={(input) => (
+                <Card
+                    className="input-card"
+                    footer={input.createdAt && (
+                        <Text variant="small">Created: {new Date(input.createdAt).toLocaleString()}</Text>
+                    )}
+                >
+                    <div className="card-header">
+                        <div className="header-info">
+                            <span className="header-label">Activity ID</span>
+                            <code className="activity-id-pill">{input.activityId}</code>
+                        </div>
+                        <span className="status-badge waiting">Needs Info</span>
+                    </div>
+
+                    <div className="card-body">
+                        {input.requiredFields?.map(field => (
+                            <div key={field} className="form-group">
+                                <label>{formatLabel(field)}</label>
+                                {renderField(input.activityId, field)}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="card-actions">
+                        <Button
+                            variant="primary"
+                            fullWidth
+                            onClick={() => handleSubmit(input)}
+                            disabled={submittingIds.has(input.activityId)}
+                        >
+                            {submittingIds.has(input.activityId) ? 'Completing...' : 'Complete Activity'}
+                        </Button>
+                        <Button
+                            variant="danger"
+                            onClick={() => handleDismiss(input.activityId)}
+                            disabled={submittingIds.has(input.activityId)}
+                            style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}
+                        >
+                            Dismiss
+                        </Button>
+                    </div>
+                </Card>
+            )}
+            emptyState={
+                <EmptyState
+                    icon="🎉"
+                    title="All Caught Up!"
+                    message="There are no activities waiting for your input right now."
+                    actionLabel="Check Again"
+                    onAction={refresh}
+                />
             }
         />
-      <main className="dashboard">
-        <p className="page-subtitle">These activities need a bit more info before they can be synced.</p>
-
-        {loading && inputs.length === 0 ? (
-          <div className="loading-container">
-            <div className="spinner"></div>
-            <p>Checking for pending items...</p>
-          </div>
-        ) : inputs.length === 0 ? (
-            <EmptyState
-                icon="🎉"
-                title="All Caught Up!"
-                message="There are no activities waiting for your input right now."
-                actionLabel="Check Again"
-                onAction={refresh}
-            />
-        ) : (
-          <div className="inputs-grid">
-            {inputs.map(input => (
-              <div key={input.id} className="card input-card">
-                <div className="card-header">
-                    <div className="header-info">
-                        <span className="header-label">Activity ID</span>
-                        <code className="activity-id-pill">{input.activityId}</code>
-                    </div>
-                    <span className="status-badge waiting">Needs Info</span>
-                </div>
-
-                <div className="card-body">
-                    {input.requiredFields?.map(field => (
-                        <div key={field} className="form-group">
-                            <label>{formatLabel(field)}</label>
-                            {renderField(input.activityId, field)}
-                        </div>
-                    ))}
-                </div>
-
-                <div className="card-actions">
-                    <button
-                        onClick={() => handleSubmit(input)}
-                        className="btn primary full-width"
-                        disabled={submittingIds.has(input.activityId)}
-                    >
-                        {submittingIds.has(input.activityId) ? 'Completing...' : 'Complete Activity'}
-                    </button>
-                    <button
-                        onClick={() => handleDismiss(input.activityId)}
-                        type="button"
-                        className="btn text"
-                        style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#d32f2f' }}
-                        disabled={submittingIds.has(input.activityId)}
-                    >
-                        Dismiss
-                    </button>
-                </div>
-
-                {input.createdAt && (
-                  <div className="card-footer" style={{ marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                    <span className="timestamp-label" style={{ fontSize: '0.85rem', color: '#666' }}>
-                      Created: {new Date(input.createdAt).toLocaleString()}
-                    </span>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </main>
-      </div>
-    </div>
+    </PageLayout>
   );
 };
 
