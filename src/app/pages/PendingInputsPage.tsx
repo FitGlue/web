@@ -161,7 +161,8 @@ const PendingInputsPage: React.FC = () => {
         <h1 className="title small">
           <span className="fit">Fit</span><span className="glue">Glue</span>
         </h1>
-       <div className="nav-actions">
+       <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+           <RefreshControl onRefresh={refresh} loading={loading} lastUpdated={lastUpdated} />
            <button onClick={() => navigate('/')} className="btn text">← Back to Dashboard</button>
         </div>
       </header>

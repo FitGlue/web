@@ -7,7 +7,9 @@ import {
   isActivitiesLoadedAtom,
   isStatsLoadedAtom,
   unsynchronizedAtom,
-  isUnsynchronizedLoadedAtom
+  isUnsynchronizedLoadedAtom,
+  activitiesLastUpdatedAtom,
+  unsynchronizedLastUpdatedAtom
 } from '../state/activitiesState';
 import { ActivitiesService, ExecutionRecord } from '../services/ActivitiesService';
 
@@ -21,6 +23,9 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
   const [statsLoaded, setStatsLoaded] = useAtom(isStatsLoadedAtom);
   const [unsynchronized, setUnsynchronized] = useAtom(unsynchronizedAtom);
   const [unsyncLoaded, setUnsyncLoaded] = useAtom(isUnsynchronizedLoadedAtom);
+
+  const [activitiesLastUpdated, setActivitiesLastUpdated] = useAtom(activitiesLastUpdatedAtom);
+  const [unsynchronizedLastUpdated, setUnsynchronizedLastUpdated] = useAtom(unsynchronizedLastUpdatedAtom);
 
   const fetchStats = useCallback(async (force = false) => {
     if (!force && statsLoaded) return;
@@ -45,12 +50,13 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
       const data = await ActivitiesService.list();
       setActivities(data);
       setLoaded(true);
+      setActivitiesLastUpdated(new Date());
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
-  }, [loaded, setActivities, setLoaded, setLoading]);
+  }, [loaded, setActivities, setLoaded, setLoading, setActivitiesLastUpdated]);
 
   const fetchSingle = useCallback(async () => {
     if (!id) return;
@@ -81,12 +87,13 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
       const data = await ActivitiesService.listUnsynchronized();
       setUnsynchronized(data);
       setUnsyncLoaded(true);
+      setUnsynchronizedLastUpdated(new Date());
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
-  }, [unsyncLoaded, setUnsynchronized, setUnsyncLoaded, setLoading]);
+  }, [unsyncLoaded, setUnsynchronized, setUnsyncLoaded, setLoading, setUnsynchronizedLastUpdated]);
 
   useEffect(() => {
     if (mode === 'stats') {
@@ -100,12 +107,17 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
     }
   }, [mode, id, fetchStats, fetchList, fetchSingle, fetchUnsynchronized]);
 
+  // Determine which lastUpdated to return
+  let lastUpdated: Date | null = null;
+  if (mode === 'list') lastUpdated = activitiesLastUpdated;
+  if (mode === 'unsynchronized') lastUpdated = unsynchronizedLastUpdated;
 
   return {
     activities,
     stats,
     loading,
     unsynchronized,
+    lastUpdated,
     refresh: () => {
       if (mode === 'stats') fetchStats(true);
       if (mode === 'list') fetchList(true);

@@ -5,6 +5,10 @@ export const activitiesAtom = atom<SynchronizedActivity[]>([]);
 export const activityStatsAtom = atom<{ synchronizedCount: number }>({ synchronizedCount: 0 });
 export const unsynchronizedAtom = atom<UnsynchronizedEntry[]>([]);
 
+// Last updated timestamps
+export const activitiesLastUpdatedAtom = atom<Date | null>(null);
+export const unsynchronizedLastUpdatedAtom = atom<Date | null>(null);
+
 // Separate loading states for different contexts could be better, but simple atoms for now
 export const isLoadingActivitiesAtom = atom<boolean>(false);
 export const isActivitiesLoadedAtom = atom<boolean>(false);

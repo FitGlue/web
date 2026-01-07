@@ -18,7 +18,8 @@ const ActivitiesListPage: React.FC = () => {
   };
 
   // Fetch based on current tab
-  const { activities, unsynchronized, loading } = useActivities(
+  // Modified useActivities call to include refresh and lastUpdated
+  const { activities, unsynchronized, loading, refresh, lastUpdated } = useActivities(
     tabMode === 'synchronized' ? 'list' : 'unsynchronized'
   );
 
@@ -36,7 +37,8 @@ const ActivitiesListPage: React.FC = () => {
         <h1 className="title small">
           <span className="fit">Fit</span><span className="glue">Glue</span>
         </h1>
-        <div className="nav-actions">
+        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}> {/* Added style for alignment */}
+           <RefreshControl onRefresh={refresh} loading={loading} lastUpdated={lastUpdated} /> {/* Added RefreshControl */}
            <button onClick={() => navigate('/')} className="btn text">← Back to Dashboard</button>
         </div>
       </header>
