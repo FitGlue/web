@@ -8,6 +8,7 @@ export type InputResolutionRequest = components['schemas']['InputResolutionReque
 export interface IInputsService {
   getPendingInputs(): Promise<PendingInput[]>;
   resolveInput(request: InputResolutionRequest): Promise<boolean>;
+  dismissInput(activityId: string): Promise<boolean>;
   setFCMToken(token: string): Promise<boolean>;
 }
 
@@ -59,5 +60,22 @@ export const InputsService: IInputsService = {
     }
 
     return data?.success || false;
+  },
+
+  async dismissInput(activityId: string) {
+    const headers = await getAuthHeader();
+    // Use the correctly defined path in schema
+    // @ts-ignore - ignoring path param type mismatch if any remaining
+    const { data: resData, error: resError } = await client.DELETE('/inputs/{id}', {
+      headers,
+      params: {
+        path: { id: activityId }
+      }
+    });
+
+    if (resError) {
+      throw new Error('Failed to dismiss input');
+    }
+    return resData?.success || false;
   },
 };

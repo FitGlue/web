@@ -71,6 +71,39 @@ const PendingInputsPage: React.FC = () => {
     }
   };
 
+  const handleDismiss = async (activityId: string) => {
+    if (!confirm('Are you sure you want to dismiss this input request? The activity might remain unsynchronized.')) {
+        return;
+    }
+
+    setSubmittingIds(prev => {
+        const next = new Set(prev);
+        next.add(activityId);
+        return next;
+    });
+
+    try {
+        const success = await InputsService.dismissInput(activityId);
+        if (success) {
+            refresh(); // Refresh list to remove item
+            // Clear form state
+            setFormValues(prev => {
+                const next = { ...prev };
+                delete next[activityId];
+                return next;
+            });
+        }
+    } catch (error) {
+        alert('Failed to dismiss input.');
+    } finally {
+        setSubmittingIds(prev => {
+            const next = new Set(prev);
+            next.delete(activityId);
+            return next;
+        });
+    }
+  };
+
   // Helper to render appropriate input type based on field name
   const renderField = (activityId: string, field: string) => {
      const value = getFieldValue(activityId, field);
@@ -176,6 +209,14 @@ const PendingInputsPage: React.FC = () => {
                         disabled={submittingIds.has(input.activityId)}
                     >
                         {submittingIds.has(input.activityId) ? 'Completing...' : 'Complete Activity'}
+                    </button>
+                    <button
+                        onClick={() => handleDismiss(input.activityId)}
+                        className="btn text"
+                        style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}
+                        disabled={submittingIds.has(input.activityId)}
+                    >
+                        Dismiss
                     </button>
                 </div>
 
