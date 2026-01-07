@@ -212,8 +212,9 @@ const PendingInputsPage: React.FC = () => {
                     </button>
                     <button
                         onClick={() => handleDismiss(input.activityId)}
+                        type="button"
                         className="btn text"
-                        style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}
+                        style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#d32f2f' }}
                         disabled={submittingIds.has(input.activityId)}
                     >
                         Dismiss
