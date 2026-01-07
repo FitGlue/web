@@ -151,9 +151,12 @@ const PendingInputsPage: React.FC = () => {
         ) : (
           <div className="inputs-grid">
             {inputs.map(input => (
-              <div key={input.id} className="detail-card input-card">
+              <div key={input.id} className="card input-card">
                 <div className="card-header">
-                    <h3>Activity <span className="mono">{input.activityId}</span></h3>
+                    <div className="header-info">
+                        <span className="header-label">Activity ID</span>
+                        <code className="activity-id-pill">{input.activityId}</code>
+                    </div>
                     <span className="status-badge waiting">Needs Info</span>
                 </div>
 
@@ -175,6 +178,14 @@ const PendingInputsPage: React.FC = () => {
                         {submittingIds.has(input.activityId) ? 'Completing...' : 'Complete Activity'}
                     </button>
                 </div>
+
+                {input.createdAt && (
+                  <div className="card-footer" style={{ marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                    <span className="timestamp-label" style={{ fontSize: '0.85rem', color: '#666' }}>
+                      Created: {new Date(input.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                )}
               </div>
             ))}
           </div>

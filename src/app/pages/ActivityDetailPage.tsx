@@ -53,7 +53,7 @@ const ActivityDetailPage: React.FC = () => {
           <span className="fit">Fit</span><span className="glue">Glue</span>
         </h1>
         <div className="nav-actions">
-           <button onClick={() => navigate('/activities')} className="btn text">Back to Activities</button>
+           <button onClick={() => navigate('/activities')} className="btn text">← Back to Activities</button>
         </div>
       </header>
       <main className="dashboard">

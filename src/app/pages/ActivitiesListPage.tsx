@@ -37,7 +37,7 @@ const ActivitiesListPage: React.FC = () => {
           <span className="fit">Fit</span><span className="glue">Glue</span>
         </h1>
         <div className="nav-actions">
-           <button onClick={() => navigate('/')} className="btn text">Back to Dashboard</button>
+           <button onClick={() => navigate('/')} className="btn text">← Back to Dashboard</button>
         </div>
       </header>
       <main className="dashboard">

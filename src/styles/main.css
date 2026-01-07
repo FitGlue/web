@@ -676,9 +676,11 @@ h3 {
 }
 
 .inputs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    margin-top: 1rem;
 }
 
 .input-card {
@@ -701,10 +703,28 @@ h3 {
     margin: 0;
 }
 
-.mono {
+.header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.header-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    font-weight: 600;
+}
+
+.activity-id-pill {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
     font-family: 'Fira Code', monospace;
     font-size: 0.9em;
-    color: var(--text-secondary);
+    color: var(--color-text);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .status-badge {
@@ -802,9 +822,22 @@ h3 {
 }
 
 @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-    40% {transform: translateY(-20px);}
-    60% {transform: translateY(-10px);}
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-20px);
+    }
+
+    60% {
+        transform: translateY(-10px);
+    }
 }
 
 /* Tabs for Activities Page */
