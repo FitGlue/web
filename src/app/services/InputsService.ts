@@ -65,7 +65,6 @@ export const InputsService: IInputsService = {
   async dismissInput(activityId: string) {
     const headers = await getAuthHeader();
     // Use the correctly defined path in schema
-    // @ts-ignore - ignoring path param type mismatch if any remaining
     const { data: resData, error: resError } = await client.DELETE('/inputs/{id}', {
       headers,
       params: {

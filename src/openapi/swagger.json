@@ -259,6 +259,50 @@
         }
       }
     },
+    "/inputs/{id}": {
+      "delete": {
+        "summary": "Dismiss a pending input",
+        "description": "Dismiss a pending input activity",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Input dismissed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Pending input not found"
+          }
+        }
+      }
+    },
     "/inputs/fcm-token": {
       "post": {
         "summary": "Register FCM Token",

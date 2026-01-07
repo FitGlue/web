@@ -69,355 +69,380 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Dismiss a pending input */
-    delete: {
+    "/inputs/{id}": {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                id: string; // The handler treats path /:id
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Input dismissed */
-            200: {
-                headers: {
-                    [name: string]: unknown;
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Dismiss a pending input
+         * @description Dismiss a pending input activity
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
                 };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Input dismissed */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success?: boolean;
+                        };
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Pending input not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/inputs/fcm-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Register FCM Token
+         * @description Register a Firebase Cloud Messaging token for the user
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
                 content: {
                     "application/json": {
-                        success?: boolean;
+                        token: string;
                     };
                 };
             };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-};
-"/inputs/fcm-token": {
-    parameters: {
-        query ?: never;
-        header ?: never;
-        path ?: never;
-        cookie ?: never;
-    };
-    get ?: never;
-    put ?: never;
-    /**
-     * Register FCM Token
-     * @description Register a Firebase Cloud Messaging token for the user
-     */
-    post: {
-        parameters: {
-            query ?: never;
-            header ?: never;
-            path ?: never;
-            cookie ?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    token: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Token registered successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success ?: boolean;
+            responses: {
+                /** @description Token registered successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
                     };
-                };
-            };
-        };
-    };
-    delete?: never;
-    options ?: never;
-    head ?: never;
-    patch ?: never;
-    trace ?: never;
-};
-"/waitlist": {
-    parameters: {
-        query ?: never;
-        header ?: never;
-        path ?: never;
-        cookie ?: never;
-    };
-    get ?: never;
-    put ?: never;
-    /** Join waitlist */
-    post: {
-        parameters: {
-            query ?: never;
-            header ?: never;
-            path ?: never;
-            cookie ?: never;
-        };
-        requestBody ?: {
-            content: {
-                "application/json": {
-                    email: string;
-                    websiteUrl?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Successfully joined */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content ?: never;
-            };
-            /** @description Already on waitlist */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content ?: never;
-            };
-        };
-    };
-    delete?: never;
-    options ?: never;
-    head ?: never;
-    patch ?: never;
-    trace ?: never;
-};
-"/activities/stats": {
-    parameters: {
-        query ?: never;
-        header ?: never;
-        path ?: never;
-        cookie ?: never;
-    };
-    /** Get activity stats */
-    get: {
-        parameters: {
-            query ?: never;
-            header ?: never;
-            path ?: never;
-            cookie ?: never;
-        };
-        requestBody ?: never;
-        responses: {
-            /** @description Activity statistics */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        synchronizedCount ?: number;
+                    content: {
+                        "application/json": {
+                            success?: boolean;
+                        };
                     };
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    put ?: never;
-    post ?: never;
-    delete?: never;
-    options ?: never;
-    head ?: never;
-    patch ?: never;
-    trace ?: never;
-};
-"/activities": {
-    parameters: {
-        query ?: never;
-        header ?: never;
-        path ?: never;
-        cookie ?: never;
-    };
-    /** List synchronized activities */
-    get: {
+    "/waitlist": {
         parameters: {
-            query ?: {
-                limit?: number;
-            };
-            header ?: never;
-            path ?: never;
-            cookie ?: never;
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        requestBody ?: never;
-        responses: {
-            /** @description List of activities */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
+        get?: never;
+        put?: never;
+        /** Join waitlist */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
                 content: {
                     "application/json": {
-                        activities ?: components["schemas"]["SynchronizedActivity"][];
+                        email: string;
+                        websiteUrl?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Successfully joined */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Already on waitlist */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/activities/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get activity stats */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Activity statistics */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            synchronizedCount?: number;
+                        };
                     };
                 };
             };
         };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    put ?: never;
-    post ?: never;
-    delete?: never;
-    options ?: never;
-    head ?: never;
-    patch ?: never;
-    trace ?: never;
-};
-"/activities/{id}": {
-    parameters: {
-        query ?: never;
-        header ?: never;
-        path ?: never;
-        cookie ?: never;
-    };
-    /** Get activity details */
-    get: {
+    "/activities": {
         parameters: {
-            query ?: never;
-            header ?: never;
-            path: {
-                id: string;
-            };
-            cookie ?: never;
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        requestBody ?: never;
-        responses: {
-            /** @description Activity Details */
-            200: {
-                headers: {
-                    [name: string]: unknown;
+        /** List synchronized activities */
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number;
                 };
-                content: {
-                    "application/json": {
-                        activity ?: components["schemas"]["SynchronizedActivity"];
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of activities */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
                     };
-                };
-            };
-            /** @description Activity not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content ?: never;
-            };
-        };
-    };
-    put ?: never;
-    post ?: never;
-    delete?: never;
-    options ?: never;
-    head ?: never;
-    patch ?: never;
-    trace ?: never;
-};
-"/activities/unsynchronized": {
-    parameters: {
-        query ?: never;
-        header ?: never;
-        path ?: never;
-        cookie ?: never;
-    };
-    /**
-     * List unsynchronized pipeline executions
-     * @description Lists pipeline executions that did not result in a synchronized activity
-     */
-    get: {
-        parameters: {
-            query ?: {
-                limit?: number;
-            };
-            header ?: never;
-            path ?: never;
-            cookie ?: never;
-        };
-        requestBody ?: never;
-        responses: {
-            /** @description List of unsynchronized executions */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        executions ?: components["schemas"]["UnsynchronizedEntry"][];
+                    content: {
+                        "application/json": {
+                            activities?: components["schemas"]["SynchronizedActivity"][];
+                        };
                     };
                 };
             };
         };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    put ?: never;
-    post ?: never;
-    delete?: never;
-    options ?: never;
-    head ?: never;
-    patch ?: never;
-    trace ?: never;
-};
-"/activities/unsynchronized/{pipelineExecutionId}": {
-    parameters: {
-        query ?: never;
-        header ?: never;
-        path ?: never;
-        cookie ?: never;
-    };
-    /** Get unsynchronized pipeline execution trace */
-    get: {
+    "/activities/{id}": {
         parameters: {
-            query ?: never;
-            header ?: never;
-            path: {
-                pipelineExecutionId: string;
-            };
-            cookie ?: never;
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        requestBody ?: never;
-        responses: {
-            /** @description Pipeline execution trace */
-            200: {
-                headers: {
-                    [name: string]: unknown;
+        /** Get activity details */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
                 };
-                content: {
-                    "application/json": {
-                        pipelineExecutionId ?: string;
-                        pipelineExecution ?: components["schemas"]["ExecutionRecord"][];
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Activity Details */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            activity?: components["schemas"]["SynchronizedActivity"];
+                        };
+                    };
+                };
+                /** @description Activity not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/activities/unsynchronized": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List unsynchronized pipeline executions
+         * @description Lists pipeline executions that did not result in a synchronized activity
+         */
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of unsynchronized executions */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            executions?: components["schemas"]["UnsynchronizedEntry"][];
+                        };
                     };
                 };
             };
-            /** @description Pipeline execution not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/activities/unsynchronized/{pipelineExecutionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get unsynchronized pipeline execution trace */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    pipelineExecutionId: string;
                 };
-                content ?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Pipeline execution trace */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            pipelineExecutionId?: string;
+                            pipelineExecution?: components["schemas"]["ExecutionRecord"][];
+                        };
+                    };
+                };
+                /** @description Pipeline execution not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
             };
         };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    put ?: never;
-    post ?: never;
-    delete?: never;
-    options ?: never;
-    head ?: never;
-    patch ?: never;
-    trace ?: never;
-};
 }
 export type webhooks = Record<string, never>;
 export interface components {
