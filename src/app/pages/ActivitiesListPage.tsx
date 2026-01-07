@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useActivities } from '../hooks/useActivities';
 import { ActivityCard } from '../components/ActivityCard';
+import { RefreshControl } from '../components/RefreshControl';
 
 type TabMode = 'synchronized' | 'unsynchronized';
 

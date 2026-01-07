@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useInputs } from '../hooks/useInputs';
 import { InputsService, PendingInput } from '../services/InputsService';
 import { useNavigate } from 'react-router-dom';
+import { RefreshControl } from '../components/RefreshControl';
 
 const PendingInputsPage: React.FC = () => {
-  const { inputs, loading, refresh } = useInputs();
+  const { inputs, loading, refresh, lastUpdated } = useInputs();
   const navigate = useNavigate();
 
   // Local state to track form values for each pending input

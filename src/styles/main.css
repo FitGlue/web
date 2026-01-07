@@ -665,6 +665,7 @@ h3 {
     font-weight: 700;
     margin-bottom: 0.5rem;
     background: var(--gradient-primary);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
