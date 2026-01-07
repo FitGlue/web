@@ -60,8 +60,8 @@ const ActivityDetailPage: React.FC = () => {
         <h2>{activity.title}</h2>
         <div className="card">
             <div className="card-meta-row" style={{ marginTop: 0, marginBottom: '1rem' }}>
-               <MetaBadge label="Type" value={activity.type || 'Unknown'} variant="type" />
-               <MetaBadge label="Source" value={originalSource} variant="source" />
+               <MetaBadge label="Type" value={String(activity.type) || 'Unknown'} />
+               <MetaBadge label="Source" value={originalSource} />
             </div>
 
             <p><strong>Description:</strong></p>

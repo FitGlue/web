@@ -1,12 +1,12 @@
+import React from 'react';
 import { stringToColor } from '../../lib/colorUtils';
 
 interface MetaBadgeProps {
   label: string;
   value: string;
-  variant?: 'type' | 'source' | 'default';
 }
 
-export const MetaBadge: React.FC<MetaBadgeProps> = ({ label, value, variant = 'default' }) => {
+export const MetaBadge: React.FC<MetaBadgeProps> = ({ label, value }) => {
   const { style, className } = stringToColor(value);
 
   return (

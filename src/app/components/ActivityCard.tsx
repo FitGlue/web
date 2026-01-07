@@ -42,8 +42,8 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
       </div>
 
       <div className="card-meta-row">
-        <MetaBadge label="Type" value={type} variant="type" />
-        <MetaBadge label="Source" value={source} variant="source" />
+        <MetaBadge label="Type" value={type} />
+        <MetaBadge label="Source" value={source} />
       </div>
 
       {errorMessage && (
