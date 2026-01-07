@@ -6,9 +6,13 @@ import { PageHeader } from '../components/layout/PageHeader';
 import { RefreshControl } from '../components/RefreshControl';
 
 const DashboardPage: React.FC = () => {
-  const { inputs, loading } = useInputs();
-  const { stats, loading: statsLoading, refresh } = useActivities('stats');
+  const { inputs, loading: inputsLoading, refresh: inputsRefresh } = useInputs();
+  const { stats, loading: statsLoading, refresh: statsRefresh } = useActivities('stats');
   const navigate = useNavigate();
+  const refresh = () => {
+    inputsRefresh();
+    statsRefresh();
+  };
 
   return (
     <div className="container dashboard-container">
@@ -18,7 +22,7 @@ const DashboardPage: React.FC = () => {
             title="Overview"
             actions={
                 <>
-                    <RefreshControl onRefresh={refresh} loading={statsLoading} lastUpdated={null} />
+                    <RefreshControl onRefresh={refresh} loading={statsLoading || inputsLoading} lastUpdated={null} />
                     <button onClick={() => window.location.href = '/logout'} className="btn text" style={{marginLeft: '1rem'}}>Logout</button>
                 </>
             }
@@ -30,7 +34,7 @@ const DashboardPage: React.FC = () => {
                 <div className="card stat-card" onClick={() => navigate('/inputs')}>
                     <h3>Pending Inputs</h3>
                     <p className="stat-value">
-                        {loading && inputs.length === 0 ? '...' : inputs.length}
+                        {inputsLoading ? '...' : inputs.length}
                     </p>
                     <p className="stat-label">Items requiring attention</p>
                 </div>

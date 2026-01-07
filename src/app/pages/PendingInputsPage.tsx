@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { useInputs } from '../hooks/useInputs';
 import { InputsService, PendingInput } from '../services/InputsService';
-import { useNavigate } from 'react-router-dom';
 import { RefreshControl } from '../components/RefreshControl';
 import { AppHeader } from '../components/layout/AppHeader';
 import { PageHeader } from '../components/layout/PageHeader';
+import { EmptyState } from '../components/EmptyState';
 
 const PendingInputsPage: React.FC = () => {
   const { inputs, loading, refresh, lastUpdated } = useInputs();
-  const navigate = useNavigate();
 
   // Local state to track form values for each pending input
   // Keyed by activityId -> fieldName -> value
@@ -179,12 +178,13 @@ const PendingInputsPage: React.FC = () => {
             <p>Checking for pending items...</p>
           </div>
         ) : inputs.length === 0 ? (
-            <div className="empty-state-card">
-              <div className="empty-icon">🎉</div>
-              <h3>All Caught Up!</h3>
-              <p>There are no activities waiting for your input right now.</p>
-              <button className="btn primary" onClick={refresh} style={{ maxWidth: '200px' }}>Check Again</button>
-            </div>
+            <EmptyState
+                icon="🎉"
+                title="All Caught Up!"
+                message="There are no activities waiting for your input right now."
+                actionLabel="Check Again"
+                onAction={refresh}
+            />
         ) : (
           <div className="inputs-grid">
             {inputs.map(input => (

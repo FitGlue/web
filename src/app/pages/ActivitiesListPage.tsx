@@ -5,6 +5,7 @@ import { ActivityCard } from '../components/ActivityCard';
 import { RefreshControl } from '../components/RefreshControl';
 import { AppHeader } from '../components/layout/AppHeader';
 import { PageHeader } from '../components/layout/PageHeader';
+import { EmptyState } from '../components/EmptyState';
 
 type TabMode = 'synchronized' | 'unsynchronized';
 
@@ -73,7 +74,13 @@ const ActivitiesListPage: React.FC = () => {
                 <p>Fetching your activities...</p>
               </div>
             ) : activities.length === 0 ? (
-              <p>No synchronized activities found.</p>
+              <EmptyState
+                icon="🏃"
+                title="No Activities Yet"
+                message="Your synchronized activities will appear here once you connect your fitness apps."
+                actionLabel="Refresh"
+                onAction={refresh}
+              />
             ) : (
               <div className="inputs-list">
                 {activities.map(activity => (
@@ -97,7 +104,13 @@ const ActivitiesListPage: React.FC = () => {
                 <p>Fetching unsynchronized executions...</p>
               </div>
             ) : unsynchronized.length === 0 ? (
-              <p>No unsynchronized executions found. All your activities have been synced!</p>
+              <EmptyState
+                icon="✅"
+                title="All Synced!"
+                message="No unsynchronized executions found. All your activities have been synced!"
+                actionLabel="Refresh"
+                onAction={refresh}
+              />
             ) : (
               <div className="inputs-list">
                 {unsynchronized.map(entry => (
