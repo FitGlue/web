@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useActivities } from '../hooks/useActivities';
+import { ActivityCard } from '../components/ActivityCard';
 
 type TabMode = 'synchronized' | 'unsynchronized';
 
 const ActivitiesListPage: React.FC = () => {
-  const [tabMode, setTabMode] = useState<TabMode>('synchronized');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab = (searchParams.get('tab') as TabMode) || 'synchronized';
+  const [tabMode, setTabMode] = useState<TabMode>(initialTab);
   const navigate = useNavigate();
+
+  // Sync state with URL when tab changes
+  const handleTabChange = (mode: TabMode) => {
+    setTabMode(mode);
+    setSearchParams({ tab: mode });
+  };
 
   // Fetch based on current tab
   const { activities, unsynchronized, loading } = useActivities(
@@ -38,13 +47,13 @@ const ActivitiesListPage: React.FC = () => {
         <div className="tabs-container">
           <button
             className={`tab-button ${tabMode === 'synchronized' ? 'active' : ''}`}
-            onClick={() => setTabMode('synchronized')}
+            onClick={() => handleTabChange('synchronized')}
           >
             Synchronized
           </button>
           <button
             className={`tab-button ${tabMode === 'unsynchronized' ? 'active' : ''}`}
-            onClick={() => setTabMode('unsynchronized')}
+            onClick={() => handleTabChange('unsynchronized')}
           >
             Unsynchronized
           </button>
@@ -63,11 +72,14 @@ const ActivitiesListPage: React.FC = () => {
             ) : (
               <div className="inputs-list">
                 {activities.map(activity => (
-                  <div key={activity.activityId} className="card clickable" onClick={() => handleActivityClick(activity.activityId!)}>
-                    <h3>{activity.title}</h3>
-                    <p>Type: {activity.type} | Source: {activity.source}</p>
-                    <p>Synced At: {activity.syncedAt ? new Date(activity.syncedAt).toLocaleString() : 'N/A'}</p>
-                  </div>
+                  <ActivityCard
+                    key={activity.activityId}
+                    title={activity.title || 'Untitled'}
+                    type={String(activity.type || 'Unknown')}
+                    source={activity.source || 'Unknown'}
+                    timestamp={activity.syncedAt || null}
+                    onClick={() => handleActivityClick(activity.activityId!)}
+                  />
                 ))}
               </div>
             )}
@@ -84,25 +96,17 @@ const ActivitiesListPage: React.FC = () => {
             ) : (
               <div className="inputs-list">
                 {unsynchronized.map(entry => (
-                  <div
+                  <ActivityCard
                     key={entry.pipelineExecutionId}
-                    className="card clickable"
+                    title={entry.title || 'Unknown Activity'}
+                    type={entry.activityType || 'Unknown'}
+                    source={entry.source || 'Unknown'}
+                    timestamp={entry.timestamp || null}
+                    status={entry.status}
+                    errorMessage={entry.errorMessage}
+                    isUnsynchronized={true}
                     onClick={() => handleUnsyncClick(entry.pipelineExecutionId!)}
-                  >
-                    <h3>{entry.title || 'Unknown Activity'}</h3>
-                    <div className="unsync-meta">
-                      <span className={`status-badge status-${entry.status?.toLowerCase()}`}>
-                        {entry.status}
-                      </span>
-                      <span>Type: {entry.activityType} | Source: {entry.source}</span>
-                    </div>
-                    {entry.errorMessage && (
-                      <p className="error-preview">{entry.errorMessage}</p>
-                    )}
-                    <p className="timestamp">
-                      {entry.timestamp ? new Date(entry.timestamp).toLocaleString() : 'N/A'}
-                    </p>
-                  </div>
+                  />
                 ))}
               </div>
             )}

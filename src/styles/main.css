@@ -852,3 +852,137 @@ h3 {
     border-left-color: #FF9F40;
 }
 
+/* --- New UI Components --- */
+
+/* Meta Badge (Type/Source) */
+.meta-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.meta-label {
+    opacity: 0.6;
+    margin-right: 0.4rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Source Colors */
+.meta-fitbit {
+    background: rgba(0, 186, 188, 0.1);
+    color: #00BABC;
+    border-color: rgba(0, 186, 188, 0.2);
+}
+
+.meta-strava {
+    background: rgba(252, 76, 2, 0.1);
+    color: #FC4C02;
+    border-color: rgba(252, 76, 2, 0.2);
+}
+
+.meta-hevy {
+    background: rgba(58, 134, 255, 0.1);
+    color: #3A86FF;
+    border-color: rgba(58, 134, 255, 0.2);
+}
+
+/* Type Colors */
+.meta-run {
+    background: rgba(255, 0, 110, 0.1);
+    color: #FF006E;
+    border-color: rgba(255, 0, 110, 0.2);
+}
+
+.meta-ride {
+    background: rgba(131, 56, 236, 0.1);
+    color: #8338EC;
+    border-color: rgba(131, 56, 236, 0.2);
+}
+
+.meta-swim {
+    background: rgba(0, 119, 182, 0.1);
+    color: #0077B6;
+    border-color: rgba(0, 119, 182, 0.2);
+}
+
+.meta-workout {
+    background: rgba(255, 190, 11, 0.1);
+    color: #FFBE0B;
+    border-color: rgba(255, 190, 11, 0.2);
+}
+
+/* Activity Card */
+.activity-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    border-left: 4px solid transparent;
+}
+
+.activity-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border-color: var(--color-text-muted);
+}
+
+.unsync-card {
+    border-left-color: #FF453A;
+    background: linear-gradient(145deg, rgba(255, 69, 58, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.card-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+}
+
+.error-preview-box {
+    background: rgba(255, 69, 58, 0.1);
+    border-left: 2px solid #FF453A;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    color: #FF453A;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 0.75rem;
+}
+
+.timestamp-label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-family: 'Geist Mono', monospace;
+}

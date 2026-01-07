@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ActivitiesService, ExecutionRecord } from '../services/ActivitiesService';
+import { StatusBadge } from '../components/StatusBadge';
 
 // Helper to format duration between two timestamps
 const formatDuration = (start?: string | null, end?: string | null): string => {
@@ -102,7 +103,7 @@ const UnsynchronizedDetailPage: React.FC = () => {
                 <div className="trace-content">
                   <div className="trace-header">
                     <span className="trace-service">{exec.service}</span>
-                    <span className={`trace-status badge-${exec.status?.toLowerCase()}`}>{exec.status}</span>
+                    <StatusBadge status={exec.status || 'UNKNOWN'} />
                   </div>
                   <div className="trace-meta">
                     <span className="trace-time">{exec.timestamp ? new Date(exec.timestamp).toLocaleTimeString() : ''}</span>
