@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useInputs } from '../hooks/useInputs';
 import { InputsService, PendingInput } from '../services/InputsService';
 import { useNavigate } from 'react-router-dom';
@@ -6,27 +7,119 @@ const PendingInputsPage: React.FC = () => {
   const { inputs, loading, refresh } = useInputs();
   const navigate = useNavigate();
 
-  const handleResolve = async (input: PendingInput) => {
-    // Basic logic to demonstrate resolution
-    const inputData: Record<string, string> = {};
-    for (const field of input.requiredFields || []) {
-        const val = prompt(`Enter ${field}:`);
-        if (val === null) return;
-        inputData[field] = val;
+  // Local state to track form values for each pending input
+  // Keyed by activityId -> fieldName -> value
+  const [formValues, setFormValues] = useState<Record<string, Record<string, string>>>({});
+  const [submittingIds, setSubmittingIds] = useState<Set<string>>(new Set());
+
+  const handleInputChange = (activityId: string, field: string, value: string) => {
+    setFormValues(prev => ({
+      ...prev,
+      [activityId]: {
+        ...(prev[activityId] || {}),
+        [field]: value
+      }
+    }));
+  };
+
+  const getFieldValue = (activityId: string, field: string) => {
+    return formValues[activityId]?.[field] || '';
+  };
+
+  const handleSubmit = async (input: PendingInput) => {
+    const activityId = input.activityId;
+    const values = formValues[activityId] || {};
+
+    // Validate all required fields are present
+    const missingFields = input.requiredFields?.filter(f => !values[f] || values[f].trim() === '');
+    if (missingFields && missingFields.length > 0) {
+      alert(`Please fill in: ${missingFields.join(', ')}`);
+      return;
     }
+
+    setSubmittingIds(prev => {
+        const next = new Set(prev);
+        next.add(activityId);
+        return next;
+    });
 
     try {
         const success = await InputsService.resolveInput({
             activityId: input.activityId,
-            inputData: inputData,
+            inputData: values,
         });
+
         if (success) {
-            alert('Resolved successfully!');
-            refresh(); // Refresh total list
+            // Optimistic removal or wait for refresh
+            refresh();
+            // Clear form state for this ID
+            setFormValues(prev => {
+                const next = { ...prev };
+                delete next[activityId];
+                return next;
+            });
         }
     } catch (error) {
-        alert('Failed to resolve input');
+        alert('Failed to submit details. Please try again.');
+        console.error(error);
+    } finally {
+        setSubmittingIds(prev => {
+            const next = new Set(prev);
+            next.delete(activityId);
+            return next;
+        });
     }
+  };
+
+  // Helper to render appropriate input type based on field name
+  const renderField = (activityId: string, field: string) => {
+     const value = getFieldValue(activityId, field);
+
+     // Future-proofing for select inputs
+     if (field === 'activity_type') {
+         return (
+             <select
+                className="input-select"
+                value={value}
+                onChange={(e) => handleInputChange(activityId, field, e.target.value)}
+             >
+                 <option value="">Select Type...</option>
+                 <option value="RUN">Run</option>
+                 <option value="RIDE">Ride</option>
+                 <option value="WEIGHT_TRAINING">Weight Training</option>
+                 <option value="WORKOUT">Workout</option>
+                 {/* Add more as needed */}
+             </select>
+         );
+     }
+
+     if (field === 'description') {
+        return (
+            <textarea
+                className="input-textarea"
+                placeholder="Enter description..."
+                value={value}
+                onChange={(e) => handleInputChange(activityId, field, e.target.value)}
+                rows={3}
+            />
+        );
+     }
+
+     // Default text input
+     return (
+        <input
+            type="text"
+            className="input-text"
+            placeholder={`Enter ${field}...`}
+            value={value}
+            onChange={(e) => handleInputChange(activityId, field, e.target.value)}
+        />
+     );
+  };
+
+  // Helper for nice labels
+  const formatLabel = (field: string) => {
+      return field.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   };
 
   return (
@@ -36,26 +129,50 @@ const PendingInputsPage: React.FC = () => {
           <span className="fit">Fit</span><span className="glue">Glue</span>
         </h1>
         <div className="nav-actions">
-           <button onClick={() => navigate('/')} className="btn text">Back to Dashboard</button>
+           <button onClick={() => navigate('/')} className="back-button">← Back to Dashboard</button>
         </div>
       </header>
       <main className="dashboard">
-        <h2>Pending Inputs</h2>
+        <h2 className="page-title">Action Required</h2>
+        <p className="page-subtitle">These activities need a bit more info before they can be synced.</p>
+
         {loading && inputs.length === 0 ? (
           <div className="loading-container">
             <div className="spinner"></div>
-            <p>Fetching your activities...</p>
+            <p>Checking for pending items...</p>
           </div>
         ) : inputs.length === 0 ? (
-          <p>No pending inputs found.</p>
+          <div className="empty-state">
+            <p>All caught up! No pending actions.</p>
+            <button className="btn secondary" onClick={refresh}>Check Again</button>
+          </div>
         ) : (
-          <div className="inputs-list">
+          <div className="inputs-grid">
             {inputs.map(input => (
-              <div key={input.id} className="card">
-                <h3>Activity: {input.activityId}</h3>
-                <p>Status: {input.status === 1 ? 'WAITING' : 'COMPLETED'}</p>
-                <p>Required Fields: {input.requiredFields?.join(', ')}</p>
-                <button onClick={() => handleResolve(input)} className="btn primary">Resolve</button>
+              <div key={input.id} className="detail-card input-card">
+                <div className="card-header">
+                    <h3>Activity <span className="mono">{input.activityId}</span></h3>
+                    <span className="status-badge waiting">Needs Info</span>
+                </div>
+
+                <div className="card-body">
+                    {input.requiredFields?.map(field => (
+                        <div key={field} className="form-group">
+                            <label>{formatLabel(field)}</label>
+                            {renderField(input.activityId, field)}
+                        </div>
+                    ))}
+                </div>
+
+                <div className="card-actions">
+                    <button
+                        onClick={() => handleSubmit(input)}
+                        className="btn primary full-width"
+                        disabled={submittingIds.has(input.activityId)}
+                    >
+                        {submittingIds.has(input.activityId) ? 'Completing...' : 'Complete Activity'}
+                    </button>
+                </div>
               </div>
             ))}
           </div>

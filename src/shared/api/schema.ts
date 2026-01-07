@@ -348,6 +348,10 @@ export interface components {
             endTime?: string;
             errorMessage?: string;
             triggerType?: string;
+            /** @description JSON-encoded input payload */
+            inputsJson?: string;
+            /** @description JSON-encoded output/result */
+            outputsJson?: string;
         };
     };
     responses: never;

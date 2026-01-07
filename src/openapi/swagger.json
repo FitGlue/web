@@ -151,6 +151,14 @@
           },
           "triggerType": {
             "type": "string"
+          },
+          "inputsJson": {
+            "type": "string",
+            "description": "JSON-encoded input payload"
+          },
+          "outputsJson": {
+            "type": "string",
+            "description": "JSON-encoded output/result"
           }
         }
       }

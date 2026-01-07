@@ -498,7 +498,8 @@ h3 {
 }
 
 .trace-item.status-failed {
-    border-left-color: #FF453A; /* Explicit red */
+    border-left-color: #FF453A;
+    /* Explicit red */
 }
 
 .trace-item.status-started {
@@ -506,7 +507,8 @@ h3 {
 }
 
 .trace-item.status-waiting {
-    border-left-color: #FFD60A; /* Yellow */
+    border-left-color: #FFD60A;
+    /* Yellow */
 }
 
 .trace-header {
@@ -623,4 +625,160 @@ h3 {
 .badge-waiting {
     background: rgba(255, 214, 10, 0.15);
     color: #FFD60A;
+}
+
+/* Execution Trace Outputs */
+.trace-outputs {
+    margin-top: 0.75rem;
+    margin-top: 0.75rem;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 0.5rem;
+}
+
+.trace-outputs summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    user-select: none;
+    margin-bottom: 0.25rem;
+}
+
+.trace-outputs summary:hover {
+    color: var(--text-primary);
+}
+
+.trace-json {
+    background: var(--bg-surface-alt);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    font-family: 'Fira Code', 'Roboto Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    margin: 0;
+    border: 1px solid var(--border-subtle);
+}
+
+/* --- Pending Inputs --- */
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.inputs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.input-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.mono {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.waiting {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.input-text,
+.input-select,
+.input-textarea {
+    width: 100%;
+    background: var(--bg-surface-alt);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.input-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.input-text:focus,
+.input-select:focus,
+.input-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.card-actions {
+    margin-top: auto;
+    padding-top: 1.5rem;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    border: 1px dashed var(--border-subtle);
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
 }

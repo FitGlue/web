@@ -30,6 +30,44 @@ const formatDuration = (start?: string | null, end?: string | null): string => {
   return `${(ms / 60000).toFixed(1)}m`;
 };
 
+// Helper to truncate large arrays/objects for display
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const truncateJson = (obj: any, depth = 0): any => {
+  if (depth > 5) return '[Max Depth]';
+  if (!obj) return obj;
+
+  if (Array.isArray(obj)) {
+    if (obj.length > 5) {
+      const truncated = obj.slice(0, 5).map((item) => truncateJson(item, depth + 1));
+      truncated.push(`... ${obj.length - 5} more items ...`);
+      return truncated;
+    }
+    return obj.map((item) => truncateJson(item, depth + 1));
+  }
+
+  if (typeof obj === 'object') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const newObj: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      // Aggressive truncation for known large arrays in FIT data
+      if (['sessions', 'laps', 'records', 'points', 'heart_rate_stream', 'power_stream', 'position_lat_stream', 'position_long_stream'].includes(key) && Array.isArray(value)) {
+         if (value.length > 3) {
+            const truncated = value.slice(0, 3).map((item) => truncateJson(item, depth + 1));
+            truncated.push(`... ${value.length - 3} more items ...`);
+            newObj[key] = truncated;
+         } else {
+             newObj[key] = truncateJson(value, depth + 1);
+         }
+      } else {
+        newObj[key] = truncateJson(value, depth + 1);
+      }
+    }
+    return newObj;
+  }
+
+  return obj;
+};
+
 const ActivityDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { activities, loading } = useActivities('single', id);
@@ -112,7 +150,35 @@ const ActivityDetailPage: React.FC = () => {
                                   <span className="trace-trigger">Trigger: {exec.triggerType}</span>
                                 )}
                               </div>
+                              {exec.inputsJson && (
+                                <details className="trace-outputs">
+                                  <summary>Inputs</summary>
+                                  <pre className="trace-json">{(() => {
+                                    try {
+                                      const parsed = JSON.parse(exec.inputsJson);
+                                      const truncated = truncateJson(parsed);
+                                      return JSON.stringify(truncated, null, 2);
+                                    } catch {
+                                      return exec.inputsJson;
+                                    }
+                                  })()}</pre>
+                                </details>
+                              )}
                               {exec.errorMessage && <div className="trace-error">{exec.errorMessage}</div>}
+                              {exec.outputsJson && (
+                                <details className="trace-outputs">
+                                  <summary>Outputs</summary>
+                                  <pre className="trace-json">{(() => {
+                                    try {
+                                      const parsed = JSON.parse(exec.outputsJson);
+                                      const truncated = truncateJson(parsed);
+                                      return JSON.stringify(truncated, null, 2);
+                                    } catch {
+                                      return exec.outputsJson;
+                                    }
+                                  })()}</pre>
+                                </details>
+                              )}
                             </div>
                         </div>
                     ))}
