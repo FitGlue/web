@@ -78,14 +78,63 @@ const ActivityDetailPage: React.FC = () => {
             <Card>
                 {hasDestinations ? (
                     <ul className="destinations-list">
-                        {Object.entries(activity.destinations!).map(([k, v]) => (
-                            <li key={k}>{k}: {v as string}</li>
-                        ))}
+                        {Object.entries(activity.destinations!).map(([k, v]) => {
+                            const val = v as string;
+                            let url = '';
+                            if (k === 'strava') url = `https://www.strava.com/activities/${val}`;
+                            // Fitbit activity URLs are complex and usually require auth, so we might skip or link to a generic dashboard
+                            // if (k === 'fitbit') url = `...`;
+
+                            return (
+                                <li key={k} className="destination-item">
+                                    <span className="destination-name">{k}</span>
+                                    {url ? (
+                                        <a href={url} target="_blank" rel="noopener noreferrer" className="destination-link">
+                                            {val} ↗
+                                        </a>
+                                    ) : (
+                                        <span className="destination-value">{val}</span>
+                                    )}
+                                </li>
+                            );
+                        })}
                     </ul>
                 ) : (
                     <Text variant="muted">No destinations recorded.</Text>
                 )}
             </Card>
+            <style>{`
+                .destinations-list {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                }
+                .destination-item {
+                    display: flex;
+                    align-items: center;
+                    padding: 0.5rem 0;
+                    border-bottom: 1px solid var(--border-color);
+                }
+                .destination-item:last-child {
+                    border-bottom: none;
+                }
+                .destination-name {
+                    font-weight: 500;
+                    width: 120px;
+                    text-transform: capitalize;
+                }
+                .destination-link {
+                    color: var(--primary-color);
+                    text-decoration: none;
+                }
+                .destination-link:hover {
+                    text-decoration: underline;
+                }
+                .destination-value {
+                    color: var(--text-color);
+                    font-family: monospace;
+                }
+            `}</style>
         </Section>
 
         {activity.pipelineExecution && activity.pipelineExecution.length > 0 && (

@@ -10,6 +10,7 @@ import ActivitiesListPage from './pages/ActivitiesListPage';
 import ActivityDetailPage from './pages/ActivityDetailPage';
 import UnsynchronizedDetailPage from './pages/UnsynchronizedDetailPage';
 import { useFCM } from './hooks/useFCM';
+import { NerdModeProvider } from './state/NerdModeContext';
 
 const App: React.FC = () => {
   const [user, setUser] = useAtom(userAtom);
@@ -48,15 +49,17 @@ const App: React.FC = () => {
   }
 
   return (
-    <Router basename="/app">
-      <Routes>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/inputs" element={<PendingInputsPage />} />
-        <Route path="/activities" element={<ActivitiesListPage />} />
-        <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<UnsynchronizedDetailPage />} />
-        <Route path="/activities/:id" element={<ActivityDetailPage />} />
-      </Routes>
-    </Router>
+    <NerdModeProvider>
+      <Router basename="/app">
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/inputs" element={<PendingInputsPage />} />
+          <Route path="/activities" element={<ActivitiesListPage />} />
+          <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<UnsynchronizedDetailPage />} />
+          <Route path="/activities/:id" element={<ActivityDetailPage />} />
+        </Routes>
+      </Router>
+    </NerdModeProvider>
   );
 };
 

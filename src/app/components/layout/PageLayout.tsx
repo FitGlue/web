@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { AppHeader } from './AppHeader';
 import { PageHeader } from './PageHeader';
 import { RefreshControl } from '../RefreshControl';
+import { Footer } from './Footer';
 
 interface PageLayoutProps {
     /** Page title displayed in PageHeader */
@@ -60,6 +61,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
                 <main className="dashboard">
                     {children}
                 </main>
+                <Footer />
             </div>
         </div>
     );
