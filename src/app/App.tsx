@@ -9,6 +9,11 @@ import PendingInputsPage from './pages/PendingInputsPage';
 import ActivitiesListPage from './pages/ActivitiesListPage';
 import ActivityDetailPage from './pages/ActivityDetailPage';
 import UnsynchronizedDetailPage from './pages/UnsynchronizedDetailPage';
+import SettingsPage from './pages/SettingsPage';
+import IntegrationsPage from './pages/IntegrationsPage';
+import PipelinesPage from './pages/PipelinesPage';
+import PipelineWizardPage from './pages/PipelineWizardPage';
+import AccountSettingsPage from './pages/AccountSettingsPage';
 import { useFCM } from './hooks/useFCM';
 import { NerdModeProvider } from './state/NerdModeContext';
 
@@ -57,6 +62,11 @@ const App: React.FC = () => {
           <Route path="/activities" element={<ActivitiesListPage />} />
           <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<UnsynchronizedDetailPage />} />
           <Route path="/activities/:id" element={<ActivityDetailPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/settings/integrations" element={<IntegrationsPage />} />
+          <Route path="/settings/pipelines" element={<PipelinesPage />} />
+          <Route path="/settings/pipelines/new" element={<PipelineWizardPage />} />
+          <Route path="/settings/account" element={<AccountSettingsPage />} />
         </Routes>
       </Router>
     </NerdModeProvider>

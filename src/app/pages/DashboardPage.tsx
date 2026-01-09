@@ -3,7 +3,6 @@ import { useInputs } from '../hooks/useInputs';
 import { useActivities } from '../hooks/useActivities';
 import { PageLayout } from '../components/layout/PageLayout';
 import { StatCard } from '../components/data/StatCard';
-import { Button } from '../components/ui/Button';
 
 const DashboardPage: React.FC = () => {
   const { inputs, loading: inputsLoading, refresh: inputsRefresh } = useInputs();
@@ -20,11 +19,6 @@ const DashboardPage: React.FC = () => {
         title="Overview"
         onRefresh={refresh}
         loading={statsLoading || inputsLoading}
-        headerActions={
-            <Button variant="text" onClick={() => window.location.href = '/logout'} style={{marginLeft: '1rem'}}>
-                Logout
-            </Button>
-        }
     >
         <div className="stats-grid">
             <StatCard

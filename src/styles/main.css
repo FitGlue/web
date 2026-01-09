@@ -1090,6 +1090,7 @@ h3 {
 .app-header-global {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 1rem 0;
     width: 100%;
     margin-bottom: 1.5rem;
@@ -1104,6 +1105,106 @@ h3 {
     font-size: 1.75rem;
     margin: 0;
 }
+
+/* User Menu */
+.user-menu-container {
+    position: relative;
+}
+
+.user-avatar-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    border: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-avatar-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 220px;
+    background: var(--color-bg);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+    overflow: hidden;
+    animation: dropdown-fade-in 0.15s ease-out;
+}
+
+@keyframes dropdown-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-dropdown-header {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-email {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    word-break: break-all;
+}
+
+.user-dropdown-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0;
+}
+
+.user-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: var(--color-text);
+    font-size: 0.9rem;
+    transition: background 0.15s;
+}
+
+.user-dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.user-dropdown-item-danger {
+    color: #FF453A;
+}
+
+.user-dropdown-item-danger:hover {
+    background: rgba(255, 69, 58, 0.1);
+}
+
+.dropdown-icon {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+}
+
 
 /* Page Header (Contextual) */
 .page-header {
@@ -1353,4 +1454,570 @@ h3 {
 
 .external-link:hover {
     text-decoration: underline;
+}
+
+/* --- Settings Pages --- */
+
+.settings-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.settings-link-card {
+    text-decoration: none;
+    color: inherit;
+}
+
+.settings-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.settings-card:hover {
+    transform: translateX(4px);
+}
+
+.settings-card-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.settings-card-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.settings-card-text {
+    flex: 1;
+}
+
+.settings-card-text h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+}
+
+.settings-card-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.settings-card-arrow {
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+}
+
+/* --- Integrations Page --- */
+
+.integrations-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.integration-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.integration-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.integration-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.integration-info h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.2rem;
+}
+
+.integration-description {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.integration-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+}
+
+.connection-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.connection-badge.connected {
+    background: rgba(6, 255, 165, 0.15);
+    color: var(--color-success);
+}
+
+.connection-badge.disconnected {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-muted);
+}
+
+.external-id,
+.last-used {
+    color: var(--color-text-muted);
+}
+
+.integration-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.integration-actions .btn {
+    width: auto;
+    margin: 0;
+}
+
+.api-key-note {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* --- Pipelines Page --- */
+
+.pipelines-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.pipeline-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.pipeline-flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.pipeline-source,
+.pipeline-destination {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.pipeline-icon {
+    font-size: 1.25rem;
+}
+
+.pipeline-arrow {
+    color: var(--color-text-muted);
+    font-size: 1.25rem;
+}
+
+.pipeline-enrichers {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.enricher-badge {
+    font-size: 1rem;
+}
+
+.pipeline-destinations {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.pipeline-details {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.pipeline-details .label {
+    font-weight: 500;
+}
+
+.pipeline-details code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.8rem;
+}
+
+.pipeline-enricher-list {
+    margin-top: 0.5rem;
+}
+
+.pipeline-enricher-list ul {
+    margin: 0.25rem 0 0 1.25rem;
+    padding: 0;
+}
+
+.enricher-inputs {
+    color: var(--color-accent);
+}
+
+.pipeline-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.pipeline-actions .btn {
+    width: auto;
+    margin: 0;
+}
+
+/* Empty State */
+.empty-state-card {
+    text-align: center;
+}
+
+.empty-state {
+    padding: 2rem;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.empty-state .btn {
+    width: auto;
+}
+
+/* --- Account Settings Page --- */
+
+.account-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.account-info-card h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+}
+
+.account-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.account-field {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.field-label {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    min-width: 80px;
+}
+
+.field-value {
+    font-size: 0.95rem;
+}
+
+.field-value code {
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Danger Zone */
+.danger-zone-card {
+    border: 1px solid rgba(255, 69, 58, 0.3) !important;
+    background: rgba(255, 69, 58, 0.05) !important;
+}
+
+.danger-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.danger-icon {
+    font-size: 1.5rem;
+}
+
+.danger-header h3 {
+    margin: 0;
+    color: #FF453A;
+}
+
+.danger-content h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+}
+
+.danger-warning {
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.danger-list {
+    margin: 0 0 1.5rem 1.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+}
+
+.danger-list li {
+    margin-bottom: 0.25rem;
+}
+
+.delete-confirmation {
+    margin-top: 1rem;
+}
+
+.delete-confirmation label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.delete-input {
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 69, 58, 0.3);
+}
+
+.delete-input:focus {
+    border-color: #FF453A;
+    outline: none;
+}
+
+.error-message {
+    color: #FF453A;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+/* --- Pipeline Wizard --- */
+
+.pipeline-wizard {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.wizard-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.wizard-steps::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 30px;
+    right: 30px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 0;
+}
+
+.wizard-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.step-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.wizard-step.active .step-number {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+}
+
+.wizard-step.completed .step-number {
+    background: var(--color-success);
+    color: #0A0A0A;
+}
+
+.step-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.wizard-step.active .step-label {
+    color: var(--color-text);
+}
+
+.wizard-content {
+    margin-bottom: 2rem;
+}
+
+.wizard-content h3 {
+    margin: 0 0 0.5rem 0;
+}
+
+.wizard-description {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.option-card {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.option-card:hover {
+    border-color: var(--color-accent);
+}
+
+.option-card.selected {
+    border-color: var(--color-primary);
+    background: rgba(255, 0, 110, 0.1);
+}
+
+.option-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.option-card h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+}
+
+.option-card p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.selected-check {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 20px;
+    height: 20px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.wizard-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.wizard-actions .btn {
+    width: auto;
+    margin: 0;
+}
+
+/* Review Step */
+.review-card {
+    padding: 1.5rem;
+}
+
+.review-flow {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.review-section {
+    flex: 1;
+    min-width: 120px;
+}
+
+.review-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.review-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.review-arrow {
+    color: var(--color-text-muted);
+    font-size: 1.5rem;
+    margin-top: 0.75rem;
 }
