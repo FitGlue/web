@@ -152,6 +152,35 @@ jobs:
             # Note: Site must be created first (done by bootstrap script)
             firebase deploy --only hosting --project fitglue-server-<< parameters.target >> --non-interactive --force
 
+  create-release:
+    executor: node-executor
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:NAIwwcPaAY9VoTIpgAakr26H38ILSSrgjfbgTn4NPKg"
+      - run:
+          name: Setup Git User
+          command: |
+             git config --global user.email "ci@fitglue.com"
+             git config --global user.name "CircleCI Bot"
+      - restore_cache:
+          keys:
+            - npm-v1-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm ci
+      - run:
+          name: Run Standard Version
+          command: |
+             npm run release
+             git push --follow-tags origin main
+      # Persist the workspace so downstream jobs use the bumped version
+      - persist_to_workspace:
+          root: .
+          paths:
+             - .
+
 workflows:
   version: 2
   pipeline:
@@ -191,12 +220,18 @@ workflows:
           type: approval
           requires:
             - firebase-deploy-test
+      - create-release:
+           requires:
+              - approve-prod
+           filters:
+              branches:
+                 only: main
       - terraform-apply:
           name: terraform-apply-prod
           target: prod
           project_number: "605889586984"
           requires:
-            - approve-prod
+            - create-release
       - firebase-deploy:
           name: firebase-deploy-prod
           target: prod
