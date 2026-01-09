@@ -17,7 +17,7 @@
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "gen-api": "npx openapi-typescript src/openapi/swagger.json -o src/shared/api/schema.ts",
-    "release": "standard-version --message \"chore(release): %s [skip ci]\""
+    "release": "standard-version --releaseCommitMessageFormat \"chore(release): {{currentTag}} [skip ci]\""
   },
   "repository": {
     "type": "git",

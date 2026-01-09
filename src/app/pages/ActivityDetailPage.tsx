@@ -137,12 +137,11 @@ const ActivityDetailPage: React.FC = () => {
             `}</style>
         </Section>
 
-        {activity.pipelineExecution && activity.pipelineExecution.length > 0 && (
-            <PipelineTrace
-                trace={activity.pipelineExecution}
-                pipelineExecutionId={activity.pipelineExecutionId}
-            />
-        )}
+        <PipelineTrace
+            trace={activity.pipelineExecution || []}
+            pipelineExecutionId={activity.pipelineExecutionId}
+            isLoading={loading}
+        />
     </PageLayout>
   );
 };

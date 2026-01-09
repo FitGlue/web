@@ -6,7 +6,6 @@ import { PageLayout } from '../components/layout/PageLayout';
 import { Card } from '../components/ui/Card';
 import { KeyValue } from '../components/ui/KeyValue';
 import { Text } from '../components/ui/Text';
-import { LoadingState } from '../components/ui/LoadingState';
 
 const UnsynchronizedDetailPage: React.FC = () => {
   const { pipelineExecutionId } = useParams<{ pipelineExecutionId: string }>();
@@ -23,15 +22,7 @@ const UnsynchronizedDetailPage: React.FC = () => {
     }
   }, [pipelineExecutionId]);
 
-  if (loading) {
-    return (
-        <PageLayout title="Loading..." backTo="/activities?tab=unsynchronized" backLabel="Unsynchronized Activities">
-            <LoadingState message="Loading execution trace..." />
-        </PageLayout>
-    );
-  }
-
-  if (!trace || trace.length === 0) {
+  if (!loading && (!trace || trace.length === 0)) {
     return (
         <PageLayout title="Not Found" backTo="/activities?tab=unsynchronized" backLabel="Unsynchronized Activities">
             <Text variant="muted">Pipeline execution not found</Text>
@@ -53,7 +44,7 @@ const UnsynchronizedDetailPage: React.FC = () => {
             </Text>
         </Card>
 
-        <PipelineTrace trace={trace} />
+        <PipelineTrace trace={trace || []} isLoading={loading} />
     </PageLayout>
   );
 };
