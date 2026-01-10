@@ -105,7 +105,6 @@ async function init() {
     const isAuthPage = path.includes('login') || path.includes('register');
     const isVerifyPage = path.includes('verify-email');
     const isLogoutPage = path.includes('logout');
-    const isForgotPasswordPage = path.includes('forgot-password');
     const isAppPage = path.includes('app') || path.includes('dashboard');
 
     // Define clean redirects
