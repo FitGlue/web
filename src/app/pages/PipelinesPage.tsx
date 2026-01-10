@@ -169,12 +169,13 @@ const PipelinesPage: React.FC = () => {
             backLink="/settings"
             backLabel="Settings"
             onRefresh={fetchPipelines}
-            headerActions={
+        >
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
                 <Button variant="primary" onClick={() => navigate('/settings/pipelines/new')}>
                     + New Pipeline
                 </Button>
-            }
-        >
+            </div>
+
             {pipelines.length === 0 ? (
                 <Card className="empty-state-card">
                     <div className="empty-state">
