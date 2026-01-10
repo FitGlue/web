@@ -173,6 +173,23 @@ jobs:
       - run:
           name: Run Standard Version
           command: |
+             # Skip if commit message contains [skip release]
+             COMMIT_MSG=$(git log -1 --pretty=%B)
+             if echo "$COMMIT_MSG" | grep -q "\[skip release\]"; then
+               echo "Skipping release due to [skip release] in commit message"
+               exit 0
+             fi
+
+             # Check if release would create a tag that already exists
+             # Get what version standard-version would create
+             CURRENT_VERSION=$(node -p "require('./package.json').version")
+
+             # Check if this tag already exists on remote
+             if git ls-remote --tags origin | grep -q "refs/tags/v${CURRENT_VERSION}$"; then
+               echo "Tag v${CURRENT_VERSION} already exists on remote. Skipping release."
+               exit 0
+             fi
+
              npm run release
              git push --follow-tags origin main
       # Persist the workspace so downstream jobs use the bumped version
