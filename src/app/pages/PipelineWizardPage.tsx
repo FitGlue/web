@@ -12,9 +12,13 @@ const SOURCES = [
 ];
 
 const ENRICHERS = [
-    { type: 1, name: 'Static Metadata', icon: '📝', description: 'Add fixed metadata like sport type' },
-    { type: 2, name: 'AI Description', icon: '🤖', description: 'Generate activity descriptions with AI' },
-    { type: 3, name: 'User Input', icon: '✍️', description: 'Request additional input from user' }
+    { type: 1, name: 'Fitbit Heart Rate', icon: '❤️', description: 'Add heart rate data from Fitbit' },
+    { type: 2, name: 'Workout Summary', icon: '📊', description: 'Generate exercise set/rep summary' },
+    { type: 3, name: 'Muscle Heatmap', icon: '💪', description: 'Visualize muscle groups worked' },
+    { type: 5, name: 'Metadata Passthrough', icon: '📝', description: 'Pass through source metadata' },
+    { type: 7, name: 'Activity Type Mapper', icon: '🏃', description: 'Map activity types to Strava sports' },
+    { type: 11, name: 'User Input', icon: '✍️', description: 'Request additional input from user' },
+    { type: 12, name: 'Activity Filter', icon: '🚫', description: 'Filter out certain activity types' }
 ];
 
 const DESTINATIONS = [

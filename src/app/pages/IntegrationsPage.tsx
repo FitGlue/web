@@ -118,9 +118,9 @@ const IntegrationsPage: React.FC = () => {
         setConnecting(provider);
         try {
             const response = await api.post(`/users/me/integrations/${provider}/connect`);
-            const { authUrl } = response as { authUrl: string };
+            const { url } = response as { url: string };
             // Redirect to OAuth flow
-            window.location.href = authUrl;
+            window.location.href = url;
         } catch (error) {
             console.error(`Failed to connect ${provider}:`, error);
         } finally {
