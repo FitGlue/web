@@ -2,6 +2,77 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 0.1.1 (2026-01-10)
+
+
+### Features
+
+* Add API endpoint to dismiss pending inputs and implement dismiss functionality in the UI. ([44e15e1](https://github.com/ripixel/fitglue-web/commit/44e15e1228fe42adb3540c7a1788ed9e1addb696))
+* Add auth success and error pages and configure Firebase for clean URLs and caching headers. ([5cc4f1a](https://github.com/ripixel/fitglue-web/commit/5cc4f1ad09f205de4e2033ee1393a38707f13bc3))
+* Add comprehensive documentation for web project setup, local development, deployment, and architectural decisions. ([762bb9e](https://github.com/ripixel/fitglue-web/commit/762bb9ec6f2c25cad010332c5e505739ad14cade))
+* Add custom 404 page and remove catch-all rewrite to index.html in Firebase config. ([207d197](https://github.com/ripixel/fitglue-web/commit/207d197a50dba6d009e10f482bb220eed8d441aa))
+* add Firebase project initialization step to CircleCI configuration. ([a53179b](https://github.com/ripixel/fitglue-web/commit/a53179b08e769a27019c3a0af5bf1949f49dc10c))
+* Add Firebase rewrite for Fitbit OAuth callback. ([9448b7c](https://github.com/ripixel/fitglue-web/commit/9448b7cee158136f77b12a77f1dcfd5e2557413f))
+* Add Fitbit webhook handler rewrite rule to firebase.json ([9265b37](https://github.com/ripixel/fitglue-web/commit/9265b372245a24c46ff9358f81613d5c459e0679))
+* Add refresh control with last updated timestamp to activity and input pages. ([b57022c](https://github.com/ripixel/fitglue-web/commit/b57022c134c49189e48d06fa04605ca43bee873d))
+* Add routing for `/hooks/test` to `mock-source-handler` service. ([91a8252](https://github.com/ripixel/fitglue-web/commit/91a8252cb39b957e4e478a9467e4799b72d0d8ed))
+* add type attribute to dismiss button and change its text color to red. ([867248a](https://github.com/ripixel/fitglue-web/commit/867248ac8cb474451c428debae1aba985696e8cc))
+* Add waitlist page, form submission logic, and integrate necessary build and routing configurations. ([9ebd3ce](https://github.com/ripixel/fitglue-web/commit/9ebd3cee7208b108641d2067f68be576692689de))
+* allow viewing of unsynchronized activities ([49b7b6f](https://github.com/ripixel/fitglue-web/commit/49b7b6f697e667bd07497be32a3c9badfa79805a))
+* **auth:** implement enhanced authentication with social login ([5deddb8](https://github.com/ripixel/fitglue-web/commit/5deddb8940a88c241812416f748d3cc366e8b313))
+* **ci:** implement automatic versioning and changelog generation ([55249bc](https://github.com/ripixel/fitglue-web/commit/55249bc0bc89c9fb6d4f8c2a70b11db944cb5fa0))
+* Configure Firebase project aliases, add local serving script, and track package dependencies. ([474e4a7](https://github.com/ripixel/fitglue-web/commit/474e4a72b15a14bc88c8231de046fc6e6d417b2f))
+* create components for loads of stuff ([26ea224](https://github.com/ripixel/fitglue-web/commit/26ea224aef5bc034eca2f124ba47edf7afdb5744))
+* Display distinct waitlist success messages for new and existing subscribers. ([cf99977](https://github.com/ripixel/fitglue-web/commit/cf99977213b047bf10bf97699af1c68eaf006205))
+* empty state for synchronized page ([e09c16d](https://github.com/ripixel/fitglue-web/commit/e09c16df6ac08f0127588848485415dbbe8fc0d5))
+* grant Service Account Token Creator role for workload identity impersonation ([588a33e](https://github.com/ripixel/fitglue-web/commit/588a33e83f2038c814a61e3d1ce4d1bf5b5e7ebe))
+* Implement environment-specific builds and VAPID key management using Vite environment variables. ([e14ba8b](https://github.com/ripixel/fitglue-web/commit/e14ba8b295f605606e9263b41ff9bb18af96bde9))
+* Implement FCM token registration via InputsService and adjust postbuild script. ([68ae5a1](https://github.com/ripixel/fitglue-web/commit/68ae5a173286d471aa06e44024e305a0500fd3dc))
+* Implement Firebase authentication with login, registration, and user dashboard pages. ([750581d](https://github.com/ripixel/fitglue-web/commit/750581d7f7d2ddc8fb2e632597ec9c9d3fcc7708))
+* Implement Firebase authentication, add Dashboard page, and refactor input fetching into a custom hook. ([19818d5](https://github.com/ripixel/fitglue-web/commit/19818d52ef1c6656ca68b8a72f873b5cbc642857))
+* Implement input loading state for better caching and refactor navigation to use `react-router-dom`. ([32bd5d3](https://github.com/ripixel/fitglue-web/commit/32bd5d322bd555a2d30a5a20e9553599dccc11f5))
+* Implement pending inputs page, add OpenAPI schema and API definitions, and update build/watch scripts. ([07ede40](https://github.com/ripixel/fitglue-web/commit/07ede40e8919be5a53851911784782aae1c21a86))
+* Implement synchronized activity management with new API endpoints, UI pages, state, and dashboard integration. ([86480f2](https://github.com/ripixel/fitglue-web/commit/86480f2fd65e5a6aee0624a813d1a4d52a28f9a5))
+* improve rendering of pipeline executions ([e9c0361](https://github.com/ripixel/fitglue-web/commit/e9c0361fe204e9ab10cc4a0269b1618beb5c2f9a))
+* Introduce `ActivityCard`, `MetaBadge`, and `StatusBadge` components to enhance activity display and status handling across lists and details. ([2c5646d](https://github.com/ripixel/fitglue-web/commit/2c5646d1ee30d6912575a6f899c98841229b1bb2))
+* Introduce a new React frontend with Vite, including a pending inputs page, API client, and Firebase authentication. ([7c1a189](https://github.com/ripixel/fitglue-web/commit/7c1a189a811e9ce2d22c9a7e5c9c7964cbeedc7c))
+* Introduce API and service for dismissing inputs. ([bef5c7a](https://github.com/ripixel/fitglue-web/commit/bef5c7a99c77d81e80155a43bcbd3f9cd6b2f0b1))
+* Introduce pipeline execution trace component and dynamic HSL coloring for meta badges. ([6dcc349](https://github.com/ripixel/fitglue-web/commit/6dcc3499b3a0cbe03b6131c93254b2b29f532cf9))
+* Introduce SEO features with sitemap, favicon, structured data, and conditional robots.txt deployment via CircleCI. ([3200201](https://github.com/ripixel/fitglue-web/commit/3200201683568f572ac3482ce3db291a052e319a))
+* Manage Firebase Hosting site via Terraform and force CircleCI deployments. ([fe97a80](https://github.com/ripixel/fitglue-web/commit/fe97a8054ef43d86994ce55c4b23d4359c3a2263))
+* Migrate Firebase API enablement and project initialization to Terraform, removing manual steps from deploy scripts. ([1585fea](https://github.com/ripixel/fitglue-web/commit/1585feaa673c6a6e87c74ecd88c01f48d99e9b11))
+* **notifications:** implement frontend push notification registration ([0c68389](https://github.com/ripixel/fitglue-web/commit/0c683893eba65aac6d880862e693540e01d49479))
+* Relocate app HTML to a dedicated directory, update navigation paths, authentication redirects, and Firebase rewrites for clean URLs. ([5a11c0e](https://github.com/ripixel/fitglue-web/commit/5a11c0ec5207ce9a42dadd8fb6dfd06d71d33ee0))
+* snazzier design everywhere ([fa775b5](https://github.com/ripixel/fitglue-web/commit/fa775b530b71e59540c5aad890cbf2dc063b7bb7))
+* split deployment into dedicated `terraform-apply` and `firebase-deploy` jobs and refactor authentication. ([84413ec](https://github.com/ripixel/fitglue-web/commit/84413ec77a720efc8338bfa5debbecd0b23a39ec))
+* **tracing:** Visualize pipeline execution trace ([e493a60](https://github.com/ripixel/fitglue-web/commit/e493a60e009bfc4d39055f3067cac47e652efd03))
+* update CircleCI OIDC binding to use project number and grant service account token creator role. ([c359100](https://github.com/ripixel/fitglue-web/commit/c35910038d159cfabd202afedcc549407fdc9809))
+* update pending inputs page style ([2b2de51](https://github.com/ripixel/fitglue-web/commit/2b2de517839d4c5fe90156de83b400059948695a))
+* update pending inputs page to be prettier ([ad1ce99](https://github.com/ripixel/fitglue-web/commit/ad1ce994ff1de00caced2071f7c6e000b79028cd))
+* Use wildcard principal for Workload Identity binding in web deployer setup. ([41fc79a](https://github.com/ripixel/fitglue-web/commit/41fc79a67d48c3d6527c8c6233ef15571c4be68d))
+* **web:** enhance Activity Detail page with pipeline execution trace ([bb0aac5](https://github.com/ripixel/fitglue-web/commit/bb0aac5bc27de5a33a5cd6d0fd53c1605670d479))
+* **web:** enhance activity detail trace and overhaul pending inputs UI ([233f5f0](https://github.com/ripixel/fitglue-web/commit/233f5f0762a8a5f32b3b5fa23c53b966b2e2b145))
+* **web:** implement user management, integrations, and pipeline UI ([cf7aa01](https://github.com/ripixel/fitglue-web/commit/cf7aa01800dbd56934821355fd2766b060053b89))
+
+
+### Bug Fixes
+
+* **activities:** improve UI formatting and readability ([7d914f0](https://github.com/ripixel/fitglue-web/commit/7d914f09ad5f8eeb4b0973ce3102bca6e5abaa5c))
+* add eslint config and fix failures ([cd50efc](https://github.com/ripixel/fitglue-web/commit/cd50efc26a211d5a0b7554312e07a6a7d866ef58))
+* allow hand-rolled firebase config if init'd config does not contain appId ([51ed440](https://github.com/ripixel/fitglue-web/commit/51ed4406403191a14736de155f1825005830569d))
+* allow sub-paths for activities api ([90967c3](https://github.com/ripixel/fitglue-web/commit/90967c3bb02e7b697f08563099e197a6bd2d188a))
+* convert VAPID key into base64 from base64URL ([8105a54](https://github.com/ripixel/fitglue-web/commit/8105a54c4b39c02bb1b8c4bfea8598cf051d8e1f))
+* grant `iam.serviceAccountTokenCreator` role to the workload identity pool instead of the service account itself. ([195bff2](https://github.com/ripixel/fitglue-web/commit/195bff258c35d0f26a67fa01a9695fa85a8e6c9f))
+* lint ([46b35fe](https://github.com/ripixel/fitglue-web/commit/46b35fe254bacc133b9b266f3029f81edf62407f))
+* lint and build errors ([8c35ea5](https://github.com/ripixel/fitglue-web/commit/8c35ea5a533e38cf1cd8fbc3d2a6acdfe2f0d597))
+* lint issues ([f439241](https://github.com/ripixel/fitglue-web/commit/f439241bd300c93fa788d9aff8c3c8bd20276441))
+* linting ([f64239a](https://github.com/ripixel/fitglue-web/commit/f64239aee2a67ffdacd0c02539d643efe77db243))
+* linting ([bd04acc](https://github.com/ripixel/fitglue-web/commit/bd04accdca4f52aa22bbf3a94f18ac1cfc219e4c))
+* retain line breaks for descriptions ([1d9e33f](https://github.com/ripixel/fitglue-web/commit/1d9e33f92acd9cf820701fd5b47c9c9102f1e369))
+* revert env-file shenanigans ([110b718](https://github.com/ripixel/fitglue-web/commit/110b71878995b1cb565aef2f783a27306afa375b))
+* try concrete rewrites ([7356444](https://github.com/ripixel/fitglue-web/commit/7356444ac7422a5834e7406931df4106a5d3f124))
+* use run rather than function ([5099de4](https://github.com/ripixel/fitglue-web/commit/5099de4300a2b3b05d1686f4a106dcc716262201))
+
 ### 0.1.1 (2026-01-09)
 
 
