@@ -4,7 +4,6 @@ import {
   onAuthStateChanged,
   signInWithPopup,
   GoogleAuthProvider,
-  OAuthProvider,
   FacebookAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -204,28 +203,6 @@ async function init() {
     } catch (error) {
       console.error('Google Sign-up Error', error);
       showMessage('auth-error', error instanceof Error ? error.message : 'Google sign-up failed');
-    }
-  });
-
-  // Apple Login
-  bindClick('btn-login-apple', async () => {
-    const provider = new OAuthProvider('apple.com');
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error('Apple Sign-in Error', error);
-      showMessage('auth-error', error instanceof Error ? error.message : 'Apple sign-in failed');
-    }
-  });
-
-  // Apple Register
-  bindClick('btn-register-apple', async () => {
-    const provider = new OAuthProvider('apple.com');
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error('Apple Sign-up Error', error);
-      showMessage('auth-error', error instanceof Error ? error.message : 'Apple sign-up failed');
     }
   });
 
