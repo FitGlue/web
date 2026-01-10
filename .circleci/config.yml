@@ -173,15 +173,26 @@ jobs:
       - run:
           name: Run Standard Version
           command: |
-             # Skip if commit message contains [skip release]
              COMMIT_MSG=$(git log -1 --pretty=%B)
              if echo "$COMMIT_MSG" | grep -q "\[skip release\]"; then
                echo "Skipping release due to [skip release] in commit message"
                exit 0
              fi
 
+             # Check if main has moved on since this pipeline started
+             # If so, fail - those newer commits will get their own release
+             git fetch origin main
+             LOCAL_HEAD=$(git rev-parse HEAD)
+             REMOTE_HEAD=$(git rev-parse origin/main)
+             if [ "$LOCAL_HEAD" != "$REMOTE_HEAD" ]; then
+               echo "ERROR: main branch has newer commits since this pipeline started."
+               echo "This release is now stale. The newer commits will go through their own pipeline."
+               echo "Local HEAD:  $LOCAL_HEAD"
+               echo "Remote HEAD: $REMOTE_HEAD"
+               exit 1
+             fi
+
              # Check if release would create a tag that already exists
-             # Get what version standard-version would create
              CURRENT_VERSION=$(node -p "require('./package.json').version")
 
              # Check if this tag already exists on remote
