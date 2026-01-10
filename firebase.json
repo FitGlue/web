@@ -69,16 +69,30 @@
         }
       },
       {
+        "source": "/api/users/me/integrations",
+        "run": {
+          "serviceId": "user-integrations-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/users/me/integrations/**",
         "run": {
-          "serviceId": "user-profile-handler",
+          "serviceId": "user-integrations-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/users/me/pipelines",
+        "run": {
+          "serviceId": "user-pipelines-handler",
           "region": "us-central1"
         }
       },
       {
         "source": "/api/users/me/pipelines/**",
         "run": {
-          "serviceId": "user-profile-handler",
+          "serviceId": "user-pipelines-handler",
           "region": "us-central1"
         }
       },
