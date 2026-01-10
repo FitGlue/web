@@ -279,6 +279,137 @@ input {
     font-size: 0.9rem;
 }
 
+.switch-auth a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.switch-auth a:hover {
+    text-decoration: underline;
+}
+
+/* Auth Messages */
+.auth-message {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.auth-message.error {
+    background: rgba(255, 69, 58, 0.1);
+    color: #FF453A;
+    border: 1px solid rgba(255, 69, 58, 0.3);
+}
+
+.auth-message.success {
+    background: rgba(6, 255, 165, 0.1);
+    color: var(--color-success);
+    border: 1px solid rgba(6, 255, 165, 0.3);
+}
+
+.auth-message.warning {
+    background: rgba(255, 159, 10, 0.1);
+    color: #FF9F0A;
+    border: 1px solid rgba(255, 159, 10, 0.3);
+}
+
+.auth-description {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.redirect-message {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    opacity: 0.8;
+}
+
+/* Google Button */
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: white !important;
+    color: #1f1f1f !important;
+    border: 1px solid #ddd !important;
+}
+
+.google-btn:hover {
+    background: #f8f8f8 !important;
+}
+
+.google-btn svg {
+    flex-shrink: 0;
+}
+
+/* Apple Button */
+.apple-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: #000 !important;
+    color: white !important;
+    border: 1px solid #000 !important;
+}
+
+.apple-btn:hover {
+    background: #1a1a1a !important;
+}
+
+.apple-btn svg {
+    flex-shrink: 0;
+}
+
+/* Facebook Button */
+.facebook-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: #1877F2 !important;
+    color: white !important;
+    border: 1px solid #1877F2 !important;
+}
+
+.facebook-btn:hover {
+    background: #166FE5 !important;
+}
+
+.facebook-btn svg {
+    flex-shrink: 0;
+}
+
+
+/* Forgot Password Link */
+.forgot-password-link {
+    display: block;
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--color-primary);
+    text-decoration: none;
+    margin-bottom: 1rem;
+}
+
+.forgot-password-link:hover {
+    text-decoration: underline;
+}
+
+/* Verification Page */
+.verification-content {
+    text-align: center;
+}
+
+.verification-content .btn {
+    margin-top: 0.5rem;
+}
+
+
 .title.small {
     font-size: 2rem;
     margin-bottom: 0;

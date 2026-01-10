@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - FitGlue</title>
+    <link rel="stylesheet" href="/src/styles/main.css">
+    <script type="module" src="/src/static/auth.ts"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 class="title">
+        <a href="/" class="logo-link">
+          <span class="fit">Fit</span><span class="glue">Glue</span>
+        </a>
+      </h1>
+      <h2>Verify Your Email</h2>
+
+      <div class="auth-box">
+        <div id="auth-error" class="auth-message error" style="display: none;"></div>
+        <div id="auth-success" class="auth-message success" style="display: none;"></div>
+
+        <div id="verification-pending" class="verification-content">
+          <p class="auth-description">
+            📧 We've sent a verification email to <strong id="user-email"></strong>
+          </p>
+          <p class="auth-description">
+            Please check your inbox and click the verification link to activate your account.
+          </p>
+
+          <button id="btn-resend-verification" class="btn secondary">Resend Verification Email</button>
+          <button id="btn-continue-app" class="btn primary">Continue to App</button>
+        </div>
+
+        <div id="verification-required" class="verification-content" style="display: none;">
+          <p class="auth-description warning">
+            ⚠️ Your email has not been verified and your account is over 30 days old.
+          </p>
+          <p class="auth-description">
+            Please verify your email to continue using FitGlue.
+          </p>
+
+          <button id="btn-resend-verification-required" class="btn primary">Resend Verification Email</button>
+          <button id="btn-logout-verify" class="btn secondary">Logout</button>
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>
