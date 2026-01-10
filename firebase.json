@@ -69,6 +69,34 @@
         }
       },
       {
+        "source": "/api/users/me/integrations/**",
+        "run": {
+          "serviceId": "user-profile-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/users/me/pipelines/**",
+        "run": {
+          "serviceId": "user-profile-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/users/me/**",
+        "run": {
+          "serviceId": "user-profile-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/users/me",
+        "run": {
+          "serviceId": "user-profile-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/activities/stats",
         "run": {
           "serviceId": "activities-handler",
