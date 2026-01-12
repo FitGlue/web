@@ -187,7 +187,7 @@ const PipelinesPage: React.FC = () => {
 
     if (loading) {
         return (
-            <PageLayout title="Pipelines" backLink="/settings" backLabel="Settings">
+            <PageLayout title="Pipelines" backTo="/settings" backLabel="Settings">
                 <LoadingState />
             </PageLayout>
         );
@@ -196,7 +196,7 @@ const PipelinesPage: React.FC = () => {
     return (
         <PageLayout
             title="Pipelines"
-            backLink="/settings"
+            backTo="/settings"
             backLabel="Settings"
             onRefresh={fetchPipelines}
         >

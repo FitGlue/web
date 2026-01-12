@@ -37,7 +37,7 @@ const AccountSettingsPage: React.FC = () => {
     return (
         <PageLayout
             title="Account Settings"
-            backLink="/settings"
+            backTo="/settings"
             backLabel="Settings"
         >
             <div className="account-settings">

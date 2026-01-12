@@ -146,7 +146,7 @@ const IntegrationsPage: React.FC = () => {
 
     if (loading) {
         return (
-            <PageLayout title="Integrations" backLink="/settings" backLabel="Settings">
+            <PageLayout title="Integrations" backTo="/settings" backLabel="Settings">
                 <LoadingState />
             </PageLayout>
         );
@@ -155,7 +155,7 @@ const IntegrationsPage: React.FC = () => {
     return (
         <PageLayout
             title="Integrations"
-            backLink="/settings"
+            backTo="/settings"
             backLabel="Settings"
             onRefresh={fetchIntegrations}
         >

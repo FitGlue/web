@@ -262,7 +262,7 @@ const PipelineWizardPage: React.FC = () => {
     return (
         <PageLayout
             title="Create Pipeline"
-            backLink="/settings/pipelines"
+            backTo="/settings/pipelines"
             backLabel="Pipelines"
         >
             <div className="pipeline-wizard">
