@@ -15,7 +15,7 @@ interface PipelineConfig {
     id: string;
     source: string;
     enrichers: EnricherConfig[];
-    destinations: string[];
+    destinations: (string | number)[];
 }
 
 // Map enricher provider types to names
@@ -24,23 +24,53 @@ const ENRICHER_NAMES: Record<number, string> = {
     1: 'Static Metadata',
     2: 'AI Description',
     3: 'User Input',
-    4: 'Strava Route'
+    4: 'Strava Route',
+    7: 'Activity Type Rules',
+    9: 'Location Matcher',
+    10: 'Counter',
+    11: 'Field Selector',
+    12: 'Filter',
+    99: 'Test/Mock'
+};
+
+// Map destination IDs to names
+const DESTINATION_NAMES: Record<number, string> = {
+    1: 'Strava',
+    99: 'Mock'
 };
 
 const getSourceIcon = (source: string): string => {
-    switch (source.toLowerCase()) {
+    // Backend returns SOURCE_HEVY, SOURCE_FITBIT, etc.
+    const normalized = String(source).toLowerCase().replace('source_', '');
+    switch (normalized) {
         case 'hevy': return '🏋️';
         case 'fitbit': return '⌚';
+        case 'test': return '🧪';
         default: return '📥';
     }
 };
 
-const getDestinationIcon = (dest: string): string => {
-    switch (dest.toLowerCase()) {
-        case 'strava': return '🚴';
-        case 'mock': return '🧪';
+const getSourceName = (source: string): string => {
+    const normalized = String(source).toLowerCase().replace('source_', '');
+    return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+};
+
+const getDestinationIcon = (dest: string | number): string => {
+    const normalized = String(dest).toLowerCase();
+    switch (normalized) {
+        case 'strava':
+        case '1': return '🚴';
+        case 'mock':
+        case '99': return '🧪';
         default: return '📤';
     }
+};
+
+const getDestinationName = (dest: string | number): string => {
+    if (typeof dest === 'number') {
+        return DESTINATION_NAMES[dest] || `Destination ${dest}`;
+    }
+    return dest.charAt(0).toUpperCase() + dest.slice(1).toLowerCase();
 };
 
 interface PipelineCardProps {
@@ -56,7 +86,7 @@ const PipelineCard: React.FC<PipelineCardProps> = ({ pipeline, onDelete, deletin
                 <div className="pipeline-flow">
                     <span className="pipeline-source">
                         <span className="pipeline-icon">{getSourceIcon(pipeline.source)}</span>
-                        {pipeline.source}
+                        {getSourceName(pipeline.source)}
                     </span>
                     <span className="pipeline-arrow">→</span>
                     {pipeline.enrichers.length > 0 && (
@@ -75,7 +105,7 @@ const PipelineCard: React.FC<PipelineCardProps> = ({ pipeline, onDelete, deletin
                         {pipeline.destinations.map((dest, i) => (
                             <span key={i} className="pipeline-destination">
                                 <span className="pipeline-icon">{getDestinationIcon(dest)}</span>
-                                {dest}
+                                {getDestinationName(dest)}
                             </span>
                         ))}
                     </span>
