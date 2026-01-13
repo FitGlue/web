@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/ripixel/fitglue-web/compare/v0.1.1...v0.2.0) (2026-01-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **web:** Updated skier static site generator from v2 to v3.
+
+- Bump skier from ^2.0.0 to ^3.0.0
+- Remove npm overrides for chalk and feed (no longer needed after
+  skier's ESM conversion addressed the dependency compatibility issues)
+
+### Features
+
+* add marketing pages and plugin-driven pipeline UI ([933113d](https://github.com/ripixel/fitglue-web/commit/933113d118def9d033b4ee2f7b86727f37d972ba))
+* **dashboard:** redesign dashboard with connection status, pipeline overview, and activity feed ([f6a1d88](https://github.com/ripixel/fitglue-web/commit/f6a1d887e8e502e183e88529d85d972152fc859b))
+* fixes to integration and pipeline wizard ([f966fdc](https://github.com/ripixel/fitglue-web/commit/f966fdca2742a26f6757c867c51e99cae731c8d6))
+* **web:** upgrade skier to v3.0.0 ([d53121e](https://github.com/ripixel/fitglue-web/commit/d53121e41702400476d34adb9d7f941fa1879d8f))
+
+
+### Bug Fixes
+
+* backlinks ([ed8e16e](https://github.com/ripixel/fitglue-web/commit/ed8e16ec2ffd51a106204ad71b9826a7f5ba90ed))
+* build and remove static-dist ([d3fc184](https://github.com/ripixel/fitglue-web/commit/d3fc184681683773b53cea19a2548bdbfd79491b))
+* ci errors ([8740625](https://github.com/ripixel/fitglue-web/commit/87406250d9fc1aad4b5e28dfaa37013d3c7f3f43))
+* esm problems ([a2d2d6c](https://github.com/ripixel/fitglue-web/commit/a2d2d6c2a3fe5a9a64dadf5b297b5afcdecf9a91))
+* lookup enricher providers by number ([afa878c](https://github.com/ripixel/fitglue-web/commit/afa878c14853ea3846d2e077b738ce6eb5111755))
+* pipelines page ([152b22b](https://github.com/ripixel/fitglue-web/commit/152b22b24b8bbe335713c9a12f7c0f2f18c7878c))
+* remove copying scripts task ([5008a49](https://github.com/ripixel/fitglue-web/commit/5008a4901e94cb57f25b3ffbd851fc02c615ae3a))
+* skier ([057b14f](https://github.com/ripixel/fitglue-web/commit/057b14f5a252ef974e0c5e2a1420874df944428f))
+
 ### 0.1.1 (2026-01-10)
 
 
