@@ -57,7 +57,8 @@
   },
   "overrides": {
     "skier": {
-      "chalk": "^4.1.2"
+      "chalk": "^4.1.2",
+      "feed": "^4.2.2"
     }
   }
 }
