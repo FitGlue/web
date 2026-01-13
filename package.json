@@ -41,7 +41,7 @@
     "htmlhint": "^1.1.4",
     "openapi-fetch": "^0.15.0",
     "openapi-typescript": "^7.10.1",
-    "skier": "^2.0.0",
+    "skier": "^3.0.0",
     "standard-version": "^9.5.0",
     "stylelint": "^16.12.0",
     "stylelint-config-standard": "^36.0.1",
@@ -54,11 +54,5 @@
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-router-dom": "^6.30.2"
-  },
-  "overrides": {
-    "skier": {
-      "chalk": "^4.1.2",
-      "feed": "^4.2.2"
-    }
   }
 }
