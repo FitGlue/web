@@ -2583,3 +2583,333 @@ h3 {
     width: auto;
     margin: 0;
 }
+
+/* ========================================
+   Enhanced Tab Styling
+   ======================================== */
+
+.tabs-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tab-button {
+    flex: 1;
+    border-radius: 8px !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-weight: 600 !important;
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important;
+}
+
+/* ========================================
+   Enhanced Activity Card Styling
+   ======================================== */
+
+.activity-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.activity-card:hover {
+    border-color: rgba(255, 0, 110, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(131, 56, 236, 0.15);
+}
+
+.activity-card.unsync-card {
+    border-left: 3px solid #FF9F0A;
+}
+
+.activity-card.unsync-card:hover {
+    border-color: rgba(255, 159, 10, 0.4);
+    box-shadow: 0 8px 30px rgba(255, 159, 10, 0.15);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.card-meta-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+}
+
+.error-preview-box {
+    background: rgba(255, 69, 58, 0.1);
+    border: 1px solid rgba(255, 69, 58, 0.2);
+    color: #FF453A;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+}
+
+.error-icon {
+    margin-right: 0.25rem;
+}
+
+.timestamp-label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+/* ========================================
+   Status and Meta Badges
+   ======================================== */
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.synced,
+.status-badge.success {
+    background: rgba(6, 255, 165, 0.15);
+    color: var(--color-success);
+}
+
+.status-badge.failed,
+.status-badge.error {
+    background: rgba(255, 69, 58, 0.15);
+    color: #FF453A;
+}
+
+.status-badge.pending,
+.status-badge.waiting {
+    background: rgba(255, 214, 10, 0.15);
+    color: #FFD60A;
+}
+
+.meta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+}
+
+.meta-badge .label {
+    color: var(--color-text-muted);
+}
+
+.meta-badge .value {
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+/* ========================================
+   Enhanced Pending Inputs Styling
+   ======================================== */
+
+.inputs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.input-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 3px solid var(--color-secondary);
+}
+
+.input-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.header-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.activity-id-pill {
+    background: rgba(131, 56, 236, 0.15);
+    color: var(--color-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.85rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 0.35rem;
+}
+
+.input-text,
+.input-textarea,
+.input-select {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: var(--color-text);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-text:focus,
+.input-textarea:focus,
+.input-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(255, 0, 110, 0.15);
+}
+
+.input-select {
+    cursor: pointer;
+}
+
+.input-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* ========================================
+   App Button Enhancements
+   ======================================== */
+
+.btn.primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    box-shadow: 0 4px 15px rgba(255, 0, 110, 0.25);
+}
+
+.btn.primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 0, 110, 0.35);
+}
+
+.btn.secondary {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-text);
+}
+
+.btn.secondary:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    background: rgba(255, 0, 110, 0.1);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   Empty State Styling
+   ======================================== */
+
+.empty-state-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.empty-state {
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.empty-state p {
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+/* Light mode overrides for app */
+@media (prefers-color-scheme: light) {
+    .activity-card,
+    .dashboard-card,
+    .input-card,
+    .empty-state-card {
+        background: linear-gradient(145deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.04) 100%);
+        border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .tabs-container {
+        background: rgba(0, 0, 0, 0.02);
+        border-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .connection-item,
+    .enricher-row {
+        background: rgba(0, 0, 0, 0.02);
+    }
+
+    .input-text,
+    .input-textarea,
+    .input-select {
+        background: rgba(0, 0, 0, 0.02);
+        border-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .btn.secondary {
+        border-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .btn.secondary:hover:not(:disabled) {
+        border-color: var(--color-primary);
+        background: rgba(255, 0, 110, 0.05);
+    }
+}
