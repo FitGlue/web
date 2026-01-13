@@ -65,7 +65,7 @@ const VerifyEmailPage: React.FC = () => {
         </p>
 
         <p className="auth-description">
-          Click the link in the email to verify your account. If you don't see it, check your spam folder.
+          Click the link in the email to verify your account. If you don&apos;t see it, check your spam folder.
         </p>
 
         <button

@@ -112,7 +112,7 @@ const LoginPage: React.FC = () => {
         </button>
 
         <p className="switch-auth">
-          Don't have an account? <Link to="/register">Register</Link>
+          Don&apos;t have an account? <Link to="/register">Register</Link>
         </p>
       </div>
     </div>

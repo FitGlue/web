@@ -3,7 +3,6 @@ import { useAuth } from '../../hooks/useAuth';
 import '../../../styles/auth.css';
 
 const LogoutPage: React.FC = () => {
-  const navigate = useNavigate();
   const { logout } = useAuth();
 
   useEffect(() => {
