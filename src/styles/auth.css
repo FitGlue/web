@@ -1,4 +1,4 @@
-/* Auth pages styles - matches marketing site theme */
+/* Auth pages styles - always dark theme for consistent branding */
 
 .auth-container {
   min-height: 100vh;
@@ -8,6 +8,8 @@
   justify-content: center;
   padding: 2rem;
   background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1f 50%, #0f0a14 100%);
+  /* Force dark appearance regardless of system theme */
+  color-scheme: dark;
 }
 
 .auth-container .title {

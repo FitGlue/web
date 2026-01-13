@@ -6,27 +6,14 @@
 }
 
 :root {
-    /* Vibrant color palette - light mode */
-    --color-primary: #FF006E;
-    --color-secondary: #8338EC;
-    --color-accent: #3A86FF;
+    /* Dark mode only - FitGlue brand */
+    --color-primary: #FF1B8D;
+    --color-secondary: #9D4EDD;
+    --color-accent: #4CC9F0;
     --color-success: #06FFA5;
-    --color-bg: #FFF;
-    --color-text: #1A1A1A;
-    --color-text-muted: #666;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        /* Vibrant colors for dark mode */
-        --color-primary: #FF1B8D;
-        --color-secondary: #9D4EDD;
-        --color-accent: #4CC9F0;
-        --color-success: #06FFA5;
-        --color-bg: #0A0A0A;
-        --color-text: #FFF;
-        --color-text-muted: #AAA;
-    }
+    --color-bg: #0A0A0A;
+    --color-text: #FFF;
+    --color-text-muted: #AAA;
 }
 
 body {
@@ -43,6 +30,8 @@ body {
     align-items: center;
     justify-content: center;
     padding: 2rem;
+    /* Force dark color scheme - marketing site is designed for dark mode */
+    color-scheme: dark;
 }
 
 /* Container */
@@ -208,12 +197,6 @@ body {
     border-radius: 12px;
     margin-top: 2rem;
     text-align: left;
-}
-
-@media (prefers-color-scheme: dark) {
-    .auth-box {
-        background: #1a1a1a;
-    }
 }
 
 .input-group {
@@ -2873,45 +2856,7 @@ h3 {
 }
 
 .empty-state p {
-    color: var(--color-text-muted);
     margin-bottom: 1.5rem;
-}
-
-/* Light mode overrides for app */
-@media (prefers-color-scheme: light) {
-    .activity-card,
-    .dashboard-card,
-    .input-card,
-    .empty-state-card {
-        background: linear-gradient(145deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.04) 100%);
-        border-color: rgba(0, 0, 0, 0.08);
-    }
-
-    .tabs-container {
-        background: rgba(0, 0, 0, 0.02);
-        border-color: rgba(0, 0, 0, 0.05);
-    }
-
-    .connection-item,
-    .enricher-row {
-        background: rgba(0, 0, 0, 0.02);
-    }
-
-    .input-text,
-    .input-textarea,
-    .input-select {
-        background: rgba(0, 0, 0, 0.02);
-        border-color: rgba(0, 0, 0, 0.15);
-    }
-
-    .btn.secondary {
-        border-color: rgba(0, 0, 0, 0.2);
-    }
-
-    .btn.secondary:hover:not(:disabled) {
-        border-color: var(--color-primary);
-        background: rgba(255, 0, 110, 0.05);
-    }
 }
 
 /* ========================================
@@ -2935,9 +2880,19 @@ h3 {
 }
 
 @keyframes wave {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(20deg); }
-    75% { transform: rotate(-20deg); }
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(20deg);
+    }
+
+    75% {
+        transform: rotate(-20deg);
+    }
 }
 
 .logout-card h2 {
@@ -2972,13 +2927,5 @@ h3 {
 
 .logout-btn {
     display: inline-block;
-    width: auto;
     padding: 0.75rem 2rem;
-}
-
-@media (prefers-color-scheme: light) {
-    .logout-card {
-        background: linear-gradient(145deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.05) 100%);
-        border-color: rgba(0, 0, 0, 0.1);
-    }
 }
