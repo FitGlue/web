@@ -2913,3 +2913,72 @@ h3 {
         background: rgba(255, 0, 110, 0.05);
     }
 }
+
+/* ========================================
+   Logout Page Styling
+   ======================================== */
+
+.logout-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    text-align: center;
+    max-width: 400px;
+    margin: 2rem auto;
+}
+
+.logout-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: wave 1s ease-in-out infinite;
+}
+
+@keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(20deg); }
+    75% { transform: rotate(-20deg); }
+}
+
+.logout-card h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.logout-message {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.logout-countdown {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.countdown-number {
+    display: inline-block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    min-width: 1.5rem;
+}
+
+.logout-btn {
+    display: inline-block;
+    width: auto;
+    padding: 0.75rem 2rem;
+}
+
+@media (prefers-color-scheme: light) {
+    .logout-card {
+        background: linear-gradient(145deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.05) 100%);
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+}
