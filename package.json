@@ -58,5 +58,10 @@
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-router-dom": "^6.30.2"
+  },
+  "overrides": {
+    "skier": {
+      "chalk": "^4.1.2"
+    }
   }
 }

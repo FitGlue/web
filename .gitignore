@@ -34,3 +34,4 @@ Thumbs.db
 # Generated
 public/js/
 dist/
+static-dist/
