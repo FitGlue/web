@@ -1,16 +1,18 @@
+import { useMemo, useCallback } from 'react';
 import { getFirebaseAuth } from '../../shared/firebase';
 
 /**
  * Generic API hook for making authenticated requests
+ * Memoized to prevent infinite re-renders in consuming components
  */
 export const useApi = () => {
-  const getAuthHeader = async () => {
+  const getAuthHeader = useCallback(async () => {
     const auth = getFirebaseAuth();
     const token = await auth?.currentUser?.getIdToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
-  };
+  }, []);
 
-  const get = async (path: string) => {
+  const get = useCallback(async (path: string) => {
     const headers = await getAuthHeader();
     const response = await fetch(`/api${path}`, {
       method: 'GET',
@@ -25,9 +27,9 @@ export const useApi = () => {
     }
 
     return response.json();
-  };
+  }, [getAuthHeader]);
 
-  const post = async (path: string, body?: unknown) => {
+  const post = useCallback(async (path: string, body?: unknown) => {
     const headers = await getAuthHeader();
     const response = await fetch(`/api${path}`, {
       method: 'POST',
@@ -43,9 +45,9 @@ export const useApi = () => {
     }
 
     return response.json();
-  };
+  }, [getAuthHeader]);
 
-  const patch = async (path: string, body?: unknown) => {
+  const patch = useCallback(async (path: string, body?: unknown) => {
     const headers = await getAuthHeader();
     const response = await fetch(`/api${path}`, {
       method: 'PATCH',
@@ -61,9 +63,9 @@ export const useApi = () => {
     }
 
     return response.json();
-  };
+  }, [getAuthHeader]);
 
-  const del = async (path: string) => {
+  const del = useCallback(async (path: string) => {
     const headers = await getAuthHeader();
     const response = await fetch(`/api${path}`, {
       method: 'DELETE',
@@ -78,12 +80,13 @@ export const useApi = () => {
     }
 
     return response.json();
-  };
+  }, [getAuthHeader]);
 
-  return {
+  return useMemo(() => ({
     get,
     post,
     patch,
     delete: del,
-  };
+  }), [get, post, patch, del]);
 };
+
