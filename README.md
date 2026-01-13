@@ -54,13 +54,32 @@ Firebase Hosting rewrites route requests to the appropriate backend:
 # Install dependencies
 npm install
 
-# Serve locally
+# React app dev server (hot reload)
+npm run dev
+
+# Marketing pages dev server (hot reload)
+npm run dev:static
+
+# Build and serve full site locally
 npm run serve
-# Visit http://localhost:5000
 
 # Lint code
 npm run lint
 ```
+
+### Available Scripts
+
+| Command | Purpose |
+|---------|---------|
+| `dev` | Vite dev server for React app |
+| `dev:static` | Skier watch for marketing pages |
+| `build` | Production build (for CI) |
+| `build:dev` | Dev mode build |
+| `build:test` | Test mode build |
+| `serve` | Build + Firebase serve (local testing) |
+| `preview` | Vite preview of built app |
+| `deploy` | Deploy to Firebase Hosting |
+| `lint` | ESLint check |
 
 ### Deployment
 
