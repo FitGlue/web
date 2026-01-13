@@ -1,11 +1,11 @@
 // @ts-check
-const {
+import {
   prepareOutputTask,
   bundleCssTask,
   copyStaticTask,
   setGlobalsTask,
   generatePagesTask,
-} = require('skier');
+} from 'skier';
 
 // Generate a hash for cache busting
 const cacheHash = Date.now().toString(36);
@@ -48,7 +48,7 @@ const globalValues = {
   waitlistUrl: '/waitlist',
 };
 
-exports.tasks = [
+export const tasks = [
   // Clean & Create output directory
   prepareOutputTask({
     outDir: './static-dist',
