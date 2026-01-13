@@ -24,6 +24,7 @@ import SettingsPage from './pages/SettingsPage';
 import IntegrationsPage from './pages/IntegrationsPage';
 import PipelinesPage from './pages/PipelinesPage';
 import PipelineWizardPage from './pages/PipelineWizardPage';
+import PipelineEditPage from './pages/PipelineEditPage';
 import AccountSettingsPage from './pages/AccountSettingsPage';
 import { useFCM } from './hooks/useFCM';
 import { NerdModeProvider } from './state/NerdModeContext';
@@ -106,6 +107,7 @@ const App: React.FC = () => {
           <Route path="/settings/integrations" element={<ProtectedRoute><IntegrationsPage /></ProtectedRoute>} />
           <Route path="/settings/pipelines" element={<ProtectedRoute><PipelinesPage /></ProtectedRoute>} />
           <Route path="/settings/pipelines/new" element={<ProtectedRoute><PipelineWizardPage /></ProtectedRoute>} />
+          <Route path="/settings/pipelines/:pipelineId/edit" element={<ProtectedRoute><PipelineEditPage /></ProtectedRoute>} />
           <Route path="/settings/account" element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
         </Routes>
       </Router>

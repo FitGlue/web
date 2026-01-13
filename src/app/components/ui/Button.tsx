@@ -1,10 +1,13 @@
 import React, { ReactNode, ButtonHTMLAttributes } from 'react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'text' | 'danger';
+type ButtonSize = 'small' | 'default';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     /** Button style variant */
     variant?: ButtonVariant;
+    /** Button size */
+    size?: ButtonSize;
     /** Button content */
     children: ReactNode;
     /** Full width button */
@@ -16,6 +19,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  */
 export const Button: React.FC<ButtonProps> = ({
     variant = 'primary',
+    size = 'default',
     fullWidth = false,
     children,
     className = '',
@@ -26,12 +30,14 @@ export const Button: React.FC<ButtonProps> = ({
         ? 'text' // Use text style but with danger color override
         : variant;
 
+    const sizeClass = size === 'small' ? 'small' : '';
+
     const widthStyle = fullWidth ? { width: '100%' } : {};
     const dangerStyle = variant === 'danger' ? { color: '#d32f2f' } : {};
 
     return (
         <button
-            className={`btn ${variantClass} ${className}`.trim()}
+            className={`btn ${variantClass} ${sizeClass} ${className}`.trim()}
             style={{ ...widthStyle, ...dangerStyle, ...style }}
             {...props}
         >

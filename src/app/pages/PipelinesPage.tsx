@@ -21,6 +21,7 @@ interface PipelineConfig {
 
 interface PipelineCardProps {
     pipeline: PipelineConfig;
+    onEdit: () => void;
     onDelete: () => void;
     deleting: boolean;
     getEnricherName: (providerType: number) => string;
@@ -33,6 +34,7 @@ interface PipelineCardProps {
 
 const PipelineCard: React.FC<PipelineCardProps> = ({
     pipeline,
+    onEdit,
     onDelete,
     deleting,
     getEnricherName,
@@ -96,11 +98,17 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
             </div>
             <div className="pipeline-actions">
                 <Button
+                    variant="secondary"
+                    onClick={onEdit}
+                >
+                    Edit
+                </Button>
+                <Button
                     variant="danger"
                     onClick={onDelete}
                     disabled={deleting}
                 >
-                    {deleting ? 'Deleting...' : 'Delete Pipeline'}
+                    {deleting ? 'Deleting...' : 'Delete'}
                 </Button>
             </div>
         </Card>
@@ -229,6 +237,7 @@ const PipelinesPage: React.FC = () => {
                         <PipelineCard
                             key={pipeline.id}
                             pipeline={pipeline}
+                            onEdit={() => navigate(`/settings/pipelines/${pipeline.id}/edit`)}
                             onDelete={() => handleDelete(pipeline.id)}
                             deleting={deleting === pipeline.id}
                             getEnricherName={getEnricherName}
