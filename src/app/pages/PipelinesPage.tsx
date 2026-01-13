@@ -129,12 +129,12 @@ const PipelinesPage: React.FC = () => {
     };
 
     const getEnricherIcon = (providerType: number): string => {
-        const found = enrichers.find(e => e.enricherProviderType === providerType);
+        const found = enrichers.find(e => Number(e.enricherProviderType) === Number(providerType));
         return found?.icon || '✨';
     };
 
     const getEnricherName = (providerType: number): string => {
-        const found = enrichers.find(e => e.enricherProviderType === providerType);
+        const found = enrichers.find(e => Number(e.enricherProviderType) === Number(providerType));
         return found?.name || `Enricher ${providerType}`;
     };
 
