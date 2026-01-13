@@ -68,12 +68,6 @@ exports.tasks = [
     to: './static-dist/images',
   }),
 
-  // Copy scripts
-  copyStaticTask({
-    from: './assets/scripts',
-    to: './static-dist/scripts',
-  }),
-
   // Copy root assets (favicon, robots, etc.)
   copyStaticTask({
     from: './assets/root',
