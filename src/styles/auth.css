@@ -1,0 +1,230 @@
+/* Auth pages styles - matches marketing site theme */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1f 50%, #0f0a14 100%);
+}
+
+.auth-container .title {
+  margin-bottom: 0.5rem;
+}
+
+.auth-container .title .logo-link {
+  text-decoration: none;
+  font-size: 2.5rem;
+  font-weight: 900;
+}
+
+.auth-container .title .fit {
+  color: #FF006E;
+}
+
+.auth-container .title .glue {
+  color: #8338EC;
+}
+
+.auth-container h2 {
+  font-size: 1.5rem;
+  color: #f5f5f5;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.auth-box {
+  background: rgba(26, 26, 26, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  backdrop-filter: blur(10px);
+}
+
+.auth-description {
+  color: #a5a5a5;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.5rem;
+  color: #f5f5f5;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #FF006E;
+  box-shadow: 0 0 0 3px rgba(255, 0, 110, 0.15);
+}
+
+.input-group input::placeholder {
+  color: #666;
+}
+
+.forgot-password-link {
+  display: block;
+  text-align: right;
+  color: #8338EC;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.forgot-password-link:hover {
+  color: #FF006E;
+}
+
+.auth-box .btn {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+}
+
+.auth-box .btn.primary {
+  background: linear-gradient(135deg, #FF006E 0%, #8338EC 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 0, 110, 0.3);
+}
+
+.auth-box .btn.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 0, 110, 0.4);
+}
+
+.auth-box .btn.secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f5f5f5;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.auth-box .btn.secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.auth-box .btn.text {
+  background: transparent;
+  color: #a5a5a5;
+}
+
+.auth-box .btn.text:hover:not(:disabled) {
+  color: #f5f5f5;
+}
+
+.auth-box .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-box .btn.facebook-btn {
+  color: #1877F2;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.divider::before {
+  margin-right: 1rem;
+}
+
+.divider::after {
+  margin-left: 1rem;
+}
+
+.switch-auth {
+  text-align: center;
+  color: #a5a5a5;
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+.switch-auth a {
+  color: #8338EC;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.switch-auth a:hover {
+  color: #FF006E;
+}
+
+.auth-message {
+  padding: 0.875rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.auth-message.error {
+  background: rgba(255, 59, 48, 0.15);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  color: #FF6B6B;
+}
+
+.auth-message.success {
+  background: rgba(52, 199, 89, 0.15);
+  border: 1px solid rgba(52, 199, 89, 0.3);
+  color: #34C759;
+}
+
+.redirect-message {
+  color: #666;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+}
+
+.verification-content p {
+  text-align: center;
+}
+
+.verification-content strong {
+  color: #f5f5f5;
+}
+
+/* Social buttons icons */
+.google-btn svg,
+.facebook-btn svg {
+  flex-shrink: 0;
+}

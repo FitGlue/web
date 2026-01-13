@@ -1,0 +1,82 @@
+{
+  "connections": [
+    {
+      "id": "hevy",
+      "name": "Hevy",
+      "icon": "/images/integrations/hevy.svg",
+      "status": "live",
+      "description": "Strength training workouts"
+    },
+    {
+      "id": "fitbit",
+      "name": "Fitbit",
+      "icon": "/images/integrations/fitbit.svg",
+      "status": "live",
+      "description": "Heart rate & sleep data"
+    }
+  ],
+  "syncTargets": [
+    {
+      "id": "strava",
+      "name": "Strava",
+      "icon": "/images/integrations/strava.svg",
+      "status": "live",
+      "description": "Share your achievements"
+    }
+  ],
+  "comingSoon": [
+    {
+      "id": "garmin",
+      "name": "Garmin",
+      "icon": "/images/integrations/garmin.svg",
+      "status": "coming",
+      "description": "GPS activities"
+    },
+    {
+      "id": "apple-health",
+      "name": "Apple Health",
+      "icon": "/images/integrations/apple-health.svg",
+      "status": "coming",
+      "description": "Unified health data"
+    },
+    {
+      "id": "nike-run-club",
+      "name": "Nike Run Club",
+      "icon": "/images/integrations/nike-run-club.svg",
+      "status": "coming",
+      "description": "Running activities"
+    }
+  ],
+  "boosters": [
+    {
+      "id": "ai-description",
+      "name": "AI Descriptions",
+      "icon": "🤖",
+      "description": "Let AI write engaging summaries of your workouts"
+    },
+    {
+      "id": "muscle-heatmap",
+      "name": "Muscle Heatmaps",
+      "icon": "💪",
+      "description": "Visualize which muscles you trained"
+    },
+    {
+      "id": "heart-rate",
+      "name": "Heart Rate Analysis",
+      "icon": "❤️",
+      "description": "Pull heart rate data from your wearables"
+    },
+    {
+      "id": "achievements",
+      "name": "Achievement Badges",
+      "icon": "🏆",
+      "description": "Celebrate milestones automatically"
+    },
+    {
+      "id": "custom-notes",
+      "name": "Custom Notes",
+      "icon": "✏️",
+      "description": "Add your own insights and comments"
+    }
+  ]
+}

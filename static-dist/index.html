@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="FitGlue unifies your fitness data from Hevy, Fitbit, and more. Automatically sync workouts to Strava with AI-powered descriptions and rich enhancements.">
+        <meta name="keywords" content="fitness data, workout sync, Strava, Hevy, Fitbit, fitness aggregation">
+
+        <!-- Open Graph -->
+        <meta property="og:title"
+            content="FitGlue - Your Fitness Data, Unified">
+        <meta property="og:description" content="FitGlue unifies your fitness data from Hevy, Fitbit, and more. Automatically sync workouts to Strava with AI-powered descriptions and rich enhancements.">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://fitglue.com//">
+        <meta property="og:image" content="https://fitglue.com/images/og-image.png">
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title"
+            content="FitGlue - Your Fitness Data, Unified">
+        <meta name="twitter:description" content="FitGlue unifies your fitness data from Hevy, Fitbit, and more. Automatically sync workouts to Strava with AI-powered descriptions and rich enhancements.">
+
+        <!-- Canonical -->
+        <link rel="canonical" href="https://fitglue.com//">
+
+        <!-- Favicon -->
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
+            rel="stylesheet">
+
+        <!-- Styles -->
+        <link rel="stylesheet" href="/styles.min.mkceninb.css">
+
+        <title>FitGlue - Your Fitness Data, Unified</title>
+
+        <!-- Schema.org -->
+        <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "FitGlue",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "Web",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "GBP"
+        },
+        "description": "FitGlue unifies your fitness data from Hevy, Fitbit, and more. Automatically sync workouts to Strava with AI-powered descriptions and rich enhancements."
+    }
+    </script>
+    </head>
+
+    <body>
+        <header class="header">
+            <div class="container">
+                <div class="header-inner">
+                    <a href="/" class="logo">
+                        <span class="logo-fit">Fit</span><span class="logo-glue">Glue</span>
+                    </a>
+
+                    <nav class="nav">
+                        <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav()">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+
+                        <ul class="nav-links" id="nav-links">
+                            <li><a href="/features" class="nav-link ">Features</a></li>
+                            <li><a href="/how-it-works" class="nav-link ">How It
+                                    Works</a></li>
+                            <li><a href="/integrations"
+                                    class="nav-link ">Integrations</a></li>
+                            <li><a href="/pricing" class="nav-link ">Pricing</a></li>
+                        </ul>
+
+                        <div class="nav-actions">
+                            <a href="/app/login" class="btn btn-ghost btn-sm">Login</a>
+                            <a href="/app/register" class="btn btn-primary btn-sm">Get Started</a>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <script>
+            function toggleNav() {
+                document.getElementById('nav-links').classList.toggle('active');
+            }
+        </script>
+
+<main>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="fit">Fit</span><span class="glue">Glue</span>
+      </h1>
+      <p class="hero-tagline">Your fitness data, unified.</p>
+
+      <!-- Animated Data Flow -->
+      <div class="data-flow">
+        <div class="data-flow-node source">🏋️ Hevy</div>
+        <div class="data-flow-arrow"></div>
+        <div class="data-flow-node center">FitGlue</div>
+        <div class="data-flow-arrow"></div>
+        <div class="data-flow-node destination">🚴 Strava</div>
+      </div>
+
+      <div class="hero-cta">
+        <a href="/waitlist" class="btn btn-primary btn-lg">Join the Waitlist</a>
+        <a href="/how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="section">
+    <div class="container">
+      <h2 class="text-center mb-lg animate-on-scroll">The <span class="text-gradient">Problem</span> We Solve</h2>
+
+      <div class="problem-grid stagger-children">
+        <div class="problem-card">
+          <div class="problem-icon">📱</div>
+          <h3>Scattered Data</h3>
+          <p>Your workouts live in 5+ different apps. Hevy for lifting, Fitbit for cardio, Strava for sharing...</p>
+        </div>
+
+        <div class="problem-card">
+          <div class="problem-icon">📤</div>
+          <h3>Manual Exports</h3>
+          <p>Tired of downloading TCX files and uploading them manually? So were we.</p>
+        </div>
+
+        <div class="problem-card">
+          <div class="problem-icon">📊</div>
+          <h3>Missing Insights</h3>
+          <p>No single place to see all your fitness data enriched with meaningful analytics.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution Section -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="text-center mb-lg animate-on-scroll">How <span class="text-gradient">FitGlue</span> Works</h2>
+
+      <div class="feature-grid stagger-children">
+        <div class="feature-card">
+          <span class="feature-icon">🔗</span>
+          <h3>Connections</h3>
+          <p>Link your fitness apps in seconds. We pull your workouts automatically—no manual exports needed.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon">🚀</span>
+          <h3>Boosters</h3>
+          <p>Supercharge your data with AI descriptions, heart rate overlays, muscle heatmaps, and more.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon">🎯</span>
+          <h3>Sync Targets</h3>
+          <p>Send your enriched activities to Strava and other platforms—automatically, every time.</p>
+        </div>
+      </div>
+
+      <div class="text-center mt-lg animate-on-scroll">
+        <a href="/features" class="btn btn-secondary">Explore All Features →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boosters Showcase -->
+  <section class="section">
+    <div class="container">
+      <h2 class="text-center mb-lg animate-on-scroll">Supercharge with <span class="text-gradient">Boosters</span></h2>
+
+      <div class="feature-grid stagger-children">
+          <div class="feature-card">
+            <span class="feature-icon">🤖</span>
+            <h3>AI Descriptions</h3>
+            <p>Let AI write engaging summaries of your workouts</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">💪</span>
+            <h3>Muscle Heatmaps</h3>
+            <p>Visualize which muscles you trained</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">❤️</span>
+            <h3>Heart Rate Analysis</h3>
+            <p>Pull heart rate data from your wearables</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">🏆</span>
+            <h3>Achievement Badges</h3>
+            <p>Celebrate milestones automatically</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">✏️</span>
+            <h3>Custom Notes</h3>
+            <p>Add your own insights and comments</p>
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Integrations Preview -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="text-center mb-md animate-on-scroll">Works With Your <span class="text-gradient">Favorite Apps</span>
+      </h2>
+      <p class="text-center text-muted mb-lg animate-on-scroll">And more coming soon...</p>
+
+      <div class="integrations-grid stagger-children">
+          <div class="integration-card">
+            <div class="integration-logo">
+              <img src="/images/integrations/hevy.svg" alt="Hevy logo" width="48" height="48">
+            </div>
+            <div class="integration-name">Hevy</div>
+            <span class="integration-status live">live</span>
+          </div>
+          <div class="integration-card">
+            <div class="integration-logo">
+              <img src="/images/integrations/fitbit.svg" alt="Fitbit logo" width="48" height="48">
+            </div>
+            <div class="integration-name">Fitbit</div>
+            <span class="integration-status live">live</span>
+          </div>
+
+          <div class="integration-card">
+            <div class="integration-logo">
+              <img src="/images/integrations/strava.svg" alt="Strava logo" width="48" height="48">
+            </div>
+            <div class="integration-name">Strava</div>
+            <span class="integration-status live">live</span>
+          </div>
+
+          <div class="integration-card">
+            <div class="integration-logo">
+              <img src="/images/integrations/garmin.svg" alt="Garmin logo" width="48" height="48">
+            </div>
+            <div class="integration-name">Garmin</div>
+            <span class="integration-status coming">coming</span>
+          </div>
+          <div class="integration-card">
+            <div class="integration-logo">
+              <img src="/images/integrations/apple-health.svg" alt="Apple Health logo" width="48" height="48">
+            </div>
+            <div class="integration-name">Apple Health</div>
+            <span class="integration-status coming">coming</span>
+          </div>
+          <div class="integration-card">
+            <div class="integration-logo">
+              <img src="/images/integrations/nike-run-club.svg" alt="Nike Run Club logo" width="48" height="48">
+            </div>
+            <div class="integration-name">Nike Run Club</div>
+            <span class="integration-status coming">coming</span>
+          </div>
+      </div>
+
+      <div class="text-center mt-lg animate-on-scroll">
+        <a href="/integrations" class="btn btn-secondary">View All Integrations →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Unify</span> Your Fitness Data?
+        </h2>
+        <p class="cta-subtitle animate-on-scroll">Join the waitlist and be the first to experience seamless workout
+          syncing.</p>
+
+        <div class="waitlist-form animate-on-scroll">
+          <form id="waitlist-form" class="waitlist-input-group">
+            <input type="email" id="email" class="waitlist-input" placeholder="Enter your email" required>
+            <div class="hp-field">
+              <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-primary">Join Now</button>
+          </form>
+          <div id="waitlist-success" class="waitlist-success" style="display: none;">
+            <h3 style="color: var(--color-success);">🎉 You're on the list!</h3>
+            <p>We'll notify you as soon as a spot opens up.</p>
+          </div>
+          <div id="waitlist-error" class="waitlist-error" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  document.getElementById('waitlist-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const honeypot = document.getElementById('website_url').value;
+    const form = document.getElementById('waitlist-form');
+    const success = document.getElementById('waitlist-success');
+    const error = document.getElementById('waitlist-error');
+
+    // Honeypot check
+    if (honeypot) {
+      form.style.display = 'none';
+      success.style.display = 'block';
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      if (response.ok) {
+        form.style.display = 'none';
+        success.style.display = 'block';
+      } else {
+        const data = await response.json();
+        if (data.message && data.message.includes('already')) {
+          form.style.display = 'none';
+          success.querySelector('h3').textContent = '👋 Welcome back!';
+          success.querySelector('p').textContent = 'You\'re already on the list. We\'ll be in touch soon!';
+          success.style.display = 'block';
+        } else {
+          error.textContent = data.message || 'Something went wrong. Please try again.';
+          error.style.display = 'block';
+        }
+      }
+    } catch (err) {
+      error.textContent = 'Something went wrong. Please try again.';
+      error.style.display = 'block';
+    }
+  });
+</script>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo">
+          <span class="logo-fit">Fit</span><span class="logo-glue">Glue</span>
+        </a>
+        <p>Your fitness data, unified. Connecting your workouts from multiple sources into one seamless experience.</p>
+      </div>
+
+      <div class="footer-column">
+        <h4 class="footer-heading">Product</h4>
+        <ul class="footer-links">
+          <li><a href="/features">Features</a></li>
+          <li><a href="/how-it-works">How It Works</a></li>
+          <li><a href="/integrations">Integrations</a></li>
+          <li><a href="/waitlist">Join Waitlist</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4 class="footer-heading">Company</h4>
+        <ul class="footer-links">
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4 class="footer-heading">Legal</h4>
+        <ul class="footer-links">
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 FitGlue. All rights reserved.</p>
+
+      <div class="footer-social">
+        <a href="https://twitter.com/fitglueapp" aria-label="Twitter" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+        </a>
+        <a href="https://github.com/fitglue" aria-label="GitHub" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Scroll Animation Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Header scroll effect
+    const header = document.querySelector('.header');
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all animated elements
+    document.querySelectorAll('.animate-on-scroll, .stagger-children, .slide-in-left, .slide-in-right, .scale-in').forEach(el => {
+      observer.observe(el);
+    });
+  });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,118 @@
+{{> header}}
+
+<main>
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="container">
+      <h1 class="text-center animate-on-scroll">Get in <span class="text-gradient">Touch</span></h1>
+      <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
+        Have a question, suggestion, or just want to say hi? We'd love to hear from you.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Options -->
+  <section class="section">
+    <div class="container" style="max-width: 800px;">
+      <div class="feature-grid stagger-children">
+        <div class="feature-card text-center">
+          <span class="feature-icon">📧</span>
+          <h3>Email Us</h3>
+          <p class="text-muted mb-md">For general inquiries and support</p>
+          <a href="mailto:hello@fitglue.com" class="btn btn-secondary">hello@fitglue.com</a>
+        </div>
+
+        <div class="feature-card text-center">
+          <span class="feature-icon">🐦</span>
+          <h3>Twitter</h3>
+          <p class="text-muted mb-md">Follow for updates and announcements</p>
+          <a href="https://twitter.com/fitglueapp" target="_blank" rel="noopener"
+            class="btn btn-secondary">@fitglueapp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Request an Integration -->
+  <section class="section section-alt">
+    <div class="container" style="max-width: 600px;">
+      <h2 class="text-center mb-md animate-on-scroll">Request an <span class="text-gradient">Integration</span></h2>
+      <p class="text-center text-muted mb-lg animate-on-scroll">
+        Don't see your favorite fitness app? Let us know and we'll prioritize it based on demand.
+      </p>
+
+      <form id="integration-request-form" class="integration-request-form animate-on-scroll">
+        <div class="form-group">
+          <label for="integration-name" class="form-label">Integration Name</label>
+          <input type="text" id="integration-name" name="integration" class="form-input"
+            placeholder="e.g. Garmin, Whoop, Peloton..." required minlength="2">
+        </div>
+
+        <div class="form-group">
+          <label for="integration-email" class="form-label">Email (optional)</label>
+          <input type="email" id="integration-email" name="email" class="form-input"
+            placeholder="Get notified when we add it">
+        </div>
+
+        <!-- Honeypot -->
+        <input type="text" name="website_url" class="hp-field" tabindex="-1" autocomplete="off">
+
+        <button type="submit" class="btn btn-primary btn-block">Submit Request</button>
+      </form>
+
+      <div id="integration-success" class="integration-success" style="display: none;">
+        <span class="success-icon">🎉</span>
+        <h3>Thanks!</h3>
+        <p>Your request has been submitted. We'll consider adding this integration.</p>
+      </div>
+
+      <div id="integration-error" class="integration-error" style="display: none;">
+        <p>Something went wrong. Please try again.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  document.getElementById('integration-request-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const form = this;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const successEl = document.getElementById('integration-success');
+    const errorEl = document.getElementById('integration-error');
+
+    const formData = new FormData(form);
+    const data = {
+      integration: formData.get('integration'),
+      email: formData.get('email') || undefined,
+      website_url: formData.get('website_url') || undefined,
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    errorEl.style.display = 'none';
+
+    try {
+      const response = await fetch('/api/integrations/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        form.style.display = 'none';
+        successEl.style.display = 'block';
+      } else {
+        throw new Error('Request failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      errorEl.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Request';
+    }
+  });
+</script>
+
+{{> footer}}

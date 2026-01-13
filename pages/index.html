@@ -1,0 +1,222 @@
+{{> header}}
+
+<main>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="fit">Fit</span><span class="glue">Glue</span>
+      </h1>
+      <p class="hero-tagline">{{tagline}}</p>
+
+      <!-- Animated Data Flow -->
+      <div class="data-flow">
+        <div class="data-flow-node source">🏋️ Hevy</div>
+        <div class="data-flow-arrow"></div>
+        <div class="data-flow-node center">FitGlue</div>
+        <div class="data-flow-arrow"></div>
+        <div class="data-flow-node destination">🚴 Strava</div>
+      </div>
+
+      <div class="hero-cta">
+        <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg">Join the Waitlist</a>
+        <a href="/how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="section">
+    <div class="container">
+      <h2 class="text-center mb-lg animate-on-scroll">The <span class="text-gradient">Problem</span> We Solve</h2>
+
+      <div class="problem-grid stagger-children">
+        <div class="problem-card">
+          <div class="problem-icon">📱</div>
+          <h3>Scattered Data</h3>
+          <p>Your workouts live in 5+ different apps. Hevy for lifting, Fitbit for cardio, Strava for sharing...</p>
+        </div>
+
+        <div class="problem-card">
+          <div class="problem-icon">📤</div>
+          <h3>Manual Exports</h3>
+          <p>Tired of downloading TCX files and uploading them manually? So were we.</p>
+        </div>
+
+        <div class="problem-card">
+          <div class="problem-icon">📊</div>
+          <h3>Missing Insights</h3>
+          <p>No single place to see all your fitness data enriched with meaningful analytics.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution Section -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="text-center mb-lg animate-on-scroll">How <span class="text-gradient">FitGlue</span> Works</h2>
+
+      <div class="feature-grid stagger-children">
+        <div class="feature-card">
+          <span class="feature-icon">🔗</span>
+          <h3>Connections</h3>
+          <p>Link your fitness apps in seconds. We pull your workouts automatically—no manual exports needed.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon">🚀</span>
+          <h3>Boosters</h3>
+          <p>Supercharge your data with AI descriptions, heart rate overlays, muscle heatmaps, and more.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon">🎯</span>
+          <h3>Sync Targets</h3>
+          <p>Send your enriched activities to Strava and other platforms—automatically, every time.</p>
+        </div>
+      </div>
+
+      <div class="text-center mt-lg animate-on-scroll">
+        <a href="/features" class="btn btn-secondary">Explore All Features →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boosters Showcase -->
+  <section class="section">
+    <div class="container">
+      <h2 class="text-center mb-lg animate-on-scroll">Supercharge with <span class="text-gradient">Boosters</span></h2>
+
+      <div class="feature-grid stagger-children">
+        {{#each boosters}}
+          <div class="feature-card">
+            <span class="feature-icon">{{icon}}</span>
+            <h3>{{name}}</h3>
+            <p>{{description}}</p>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+  <!-- Integrations Preview -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="text-center mb-md animate-on-scroll">Works With Your <span class="text-gradient">Favorite Apps</span>
+      </h2>
+      <p class="text-center text-muted mb-lg animate-on-scroll">And more coming soon...</p>
+
+      <div class="integrations-grid stagger-children">
+        {{#each integrations.connections}}
+          <div class="integration-card">
+            <div class="integration-logo">
+              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+            </div>
+            <div class="integration-name">{{name}}</div>
+            <span class="integration-status {{status}}">{{status}}</span>
+          </div>
+        {{/each}}
+
+        {{#each integrations.syncTargets}}
+          <div class="integration-card">
+            <div class="integration-logo">
+              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+            </div>
+            <div class="integration-name">{{name}}</div>
+            <span class="integration-status {{status}}">{{status}}</span>
+          </div>
+        {{/each}}
+
+        {{#each integrations.comingSoon}}
+          <div class="integration-card">
+            <div class="integration-logo">
+              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+            </div>
+            <div class="integration-name">{{name}}</div>
+            <span class="integration-status {{status}}">{{status}}</span>
+          </div>
+        {{/each}}
+      </div>
+
+      <div class="text-center mt-lg animate-on-scroll">
+        <a href="/integrations" class="btn btn-secondary">View All Integrations →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Unify</span> Your Fitness Data?
+        </h2>
+        <p class="cta-subtitle animate-on-scroll">Join the waitlist and be the first to experience seamless workout
+          syncing.</p>
+
+        <div class="waitlist-form animate-on-scroll">
+          <form id="waitlist-form" class="waitlist-input-group">
+            <input type="email" id="email" class="waitlist-input" placeholder="Enter your email" required>
+            <div class="hp-field">
+              <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-primary">Join Now</button>
+          </form>
+          <div id="waitlist-success" class="waitlist-success" style="display: none;">
+            <h3 style="color: var(--color-success);">🎉 You're on the list!</h3>
+            <p>We'll notify you as soon as a spot opens up.</p>
+          </div>
+          <div id="waitlist-error" class="waitlist-error" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  document.getElementById('waitlist-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const honeypot = document.getElementById('website_url').value;
+    const form = document.getElementById('waitlist-form');
+    const success = document.getElementById('waitlist-success');
+    const error = document.getElementById('waitlist-error');
+
+    // Honeypot check
+    if (honeypot) {
+      form.style.display = 'none';
+      success.style.display = 'block';
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      if (response.ok) {
+        form.style.display = 'none';
+        success.style.display = 'block';
+      } else {
+        const data = await response.json();
+        if (data.message && data.message.includes('already')) {
+          form.style.display = 'none';
+          success.querySelector('h3').textContent = '👋 Welcome back!';
+          success.querySelector('p').textContent = 'You\'re already on the list. We\'ll be in touch soon!';
+          success.style.display = 'block';
+        } else {
+          error.textContent = data.message || 'Something went wrong. Please try again.';
+          error.style.display = 'block';
+        }
+      }
+    } catch (err) {
+      error.textContent = 'Something went wrong. Please try again.';
+      error.style.display = 'block';
+    }
+  });
+</script>
+
+{{> footer}}

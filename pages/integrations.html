@@ -1,0 +1,109 @@
+{{> header}}
+
+<main>
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="container">
+      <h1 class="text-center animate-on-scroll">All <span class="text-gradient">Integrations</span></h1>
+      <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
+        Connect your favorite fitness platforms and sync your data everywhere
+      </p>
+    </div>
+  </section>
+
+  <!-- Connections -->
+  <section class="section">
+    <div class="container">
+      <h2 class="mb-md animate-on-scroll">🔗 Connections <span class="text-muted"
+          style="font-size: 1rem; font-weight: 400;">(Import Sources)</span></h2>
+      <p class="text-muted mb-lg animate-on-scroll">These are the platforms we can pull your workout data from.</p>
+
+      <div class="integrations-grid stagger-children">
+        {{#each integrations.connections}}
+          <div class="integration-card">
+            <div class="integration-logo">
+              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+            </div>
+            <div class="integration-name">{{name}}</div>
+            <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
+            <span class="integration-status {{status}}">{{status}}</span>
+          </div>
+        {{/each}}
+
+        <!-- Coming Soon Connections -->
+        <div class="integration-card">
+          <div class="integration-logo">
+            <img src="/images/integrations/garmin.svg" alt="Garmin logo" width="48" height="48">
+          </div>
+          <div class="integration-name">Garmin</div>
+          <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">GPS activities</p>
+          <span class="integration-status coming">coming</span>
+        </div>
+        <div class="integration-card">
+          <div class="integration-logo">
+            <img src="/images/integrations/apple-health.svg" alt="Apple Health logo" width="48" height="48">
+          </div>
+          <div class="integration-name">Apple Health</div>
+          <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">Unified health data</p>
+          <span class="integration-status coming">coming</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sync Targets -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="mb-md animate-on-scroll">🎯 Sync Targets <span class="text-muted"
+          style="font-size: 1rem; font-weight: 400;">(Export Destinations)</span></h2>
+      <p class="text-muted mb-lg animate-on-scroll">These are the platforms we can send your enriched activities to.</p>
+
+      <div class="integrations-grid stagger-children">
+        {{#each integrations.syncTargets}}
+          <div class="integration-card">
+            <div class="integration-logo">
+              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+            </div>
+            <div class="integration-name">{{name}}</div>
+            <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
+            <span class="integration-status {{status}}">{{status}}</span>
+          </div>
+        {{/each}}
+
+        <!-- Nike Run Club coming soon -->
+        <div class="integration-card">
+          <div class="integration-logo">
+            <img src="/images/integrations/nike-run-club.svg" alt="Nike Run Club logo" width="48" height="48">
+          </div>
+          <div class="integration-name">Nike Run Club</div>
+          <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">Running activities</p>
+          <span class="integration-status coming">coming</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Request Integration -->
+  <section class="section">
+    <div class="container text-center">
+      <h2 class="mb-md animate-on-scroll">Don't See Your <span class="text-gradient">App</span>?</h2>
+      <p class="text-muted mb-lg animate-on-scroll" style="max-width: 500px; margin-left: auto; margin-right: auto;">
+        We're always adding new integrations. Let us know what you'd like to see and we'll prioritize it.
+      </p>
+      <a href="/contact" class="btn btn-secondary animate-on-scroll">Request an Integration →</a>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Connect</span>?</h2>
+        <p class="cta-subtitle animate-on-scroll">Join the waitlist and start syncing your fitness data.</p>
+        <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg animate-on-scroll">Join the Waitlist →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{> footer}}

@@ -23,15 +23,10 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'public/index.html'),
-        login: resolve(__dirname, 'public/login.html'),
-        register: resolve(__dirname, 'public/register.html'),
-        logout: resolve(__dirname, 'public/logout.html'),
-        forgotPassword: resolve(__dirname, 'public/forgot-password.html'),
-        verifyEmail: resolve(__dirname, 'public/verify-email.html'),
-        waitlist: resolve(__dirname, 'public/waitlist.html'),
+        // Static pages are now built by Skier, only React app entry point here
         app: resolve(__dirname, 'public/app/index.html'),
       },
     },
   },
 });
+

@@ -48,6 +48,20 @@
         }
       },
       {
+        "source": "/api/integrations/request",
+        "run": {
+          "serviceId": "integration-request-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/plugins",
+        "run": {
+          "serviceId": "plugin-registry-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/inputs/fcm-token",
         "run": {
           "serviceId": "inputs-handler",

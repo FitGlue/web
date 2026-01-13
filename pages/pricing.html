@@ -1,0 +1,126 @@
+{{> header}}
+
+<main>
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="container">
+      <h1 class="text-center animate-on-scroll">Simple, Honest <span class="text-gradient">Pricing</span></h1>
+      <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
+        Start free. Upgrade when you need more. Or run it yourself—it's open source.
+      </p>
+    </div>
+  </section>
+
+  <!-- Pricing Tiers -->
+  <section class="section">
+    <div class="container">
+      <div class="pricing-grid stagger-children">
+        <!-- Free Tier -->
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3>Free</h3>
+            <div class="pricing-price">
+              <span class="price">£0</span>
+              <span class="period">/forever</span>
+            </div>
+          </div>
+          <p class="pricing-description">Perfect for trying FitGlue and casual fitness trackers.</p>
+          <ul class="pricing-features">
+            <li>✓ 10 syncs per month</li>
+            <li>✓ 2 connections</li>
+            <li>✓ Basic boosters</li>
+            <li>✓ Community support</li>
+          </ul>
+          <a href="{{waitlistUrl}}" class="btn btn-secondary btn-block">Join Waitlist</a>
+        </div>
+
+        <!-- Pro Tier -->
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Most Popular</div>
+          <div class="pricing-header">
+            <h3>Pro</h3>
+            <div class="pricing-price">
+              <span class="price">£5</span>
+              <span class="period">/month</span>
+            </div>
+          </div>
+          <p class="pricing-description">For serious athletes who train regularly and want it all.</p>
+          <ul class="pricing-features">
+            <li>✓ Unlimited syncs</li>
+            <li>✓ Unlimited connections</li>
+            <li>✓ All boosters</li>
+            <li>✓ Priority sync</li>
+            <li>✓ Email support</li>
+            <li>✓ Early access to new features</li>
+          </ul>
+          <a href="{{waitlistUrl}}" class="btn btn-primary btn-block">Join Waitlist</a>
+        </div>
+
+        <!-- Self-Hosted -->
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3>Self-Hosted</h3>
+            <div class="pricing-price">
+              <span class="price">Free</span>
+              <span class="period">/open source</span>
+            </div>
+          </div>
+          <p class="pricing-description">Run FitGlue on your own infrastructure. Full control, zero cost.</p>
+          <ul class="pricing-features">
+            <li>✓ Everything in Pro</li>
+            <li>✓ Your data, your servers</li>
+            <li>✓ MIT Licensed</li>
+            <li>✓ Community contributions welcome</li>
+          </ul>
+          <a href="https://github.com/fitglue/fitglue" class="btn btn-ghost btn-block" target="_blank">View on GitHub
+            →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="text-center mb-lg animate-on-scroll">Frequently Asked <span class="text-gradient">Questions</span></h2>
+
+      <div class="faq-grid stagger-children">
+        <div class="faq-item">
+          <h4>Why open source?</h4>
+          <p>We believe in transparency and community. Open source means you can audit the code, contribute
+            improvements, and never worry about vendor lock-in.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>What happens if I hit my sync limit?</h4>
+          <p>Your syncs will pause until the next month. Upgrade to Pro anytime for unlimited syncs—or self-host for
+            free unlimited everything.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>Can I try Pro free first?</h4>
+          <p>Yes! When we launch, Pro will have a 14-day free trial. No credit card required to start.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>What boosters are included in Free?</h4>
+          <p>Basic boosters like workout summaries and achievement badges. AI descriptions, muscle heatmaps, and
+            advanced enrichments require Pro.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title animate-on-scroll">Ready to Get <span class="text-gradient">Started</span>?</h2>
+        <p class="cta-subtitle animate-on-scroll">Join the waitlist and be the first to know when we launch.</p>
+        <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg animate-on-scroll">Join the Waitlist →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{> footer}}

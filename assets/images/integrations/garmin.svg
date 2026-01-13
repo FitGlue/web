@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Garmin - GPS/Triangle icon -->
+  <defs>
+    <linearGradient id="garmin-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#007CC3"/>
+      <stop offset="100%" style="stop-color:#00A3E0"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 8L56 52H8L32 8Z" stroke="url(#garmin-grad)" stroke-width="4" fill="none"/>
+  <circle cx="32" cy="36" r="8" fill="url(#garmin-grad)"/>
+  <circle cx="32" cy="36" r="3" fill="#0A0A0A"/>
+</svg>

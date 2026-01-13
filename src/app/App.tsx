@@ -1,9 +1,20 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { onAuthStateChanged } from 'firebase/auth';
 import { initFirebase } from '../shared/firebase';
 import { userAtom, authLoadingAtom } from './state/authState';
+
+// Auth pages (public)
+import {
+  LoginPage,
+  RegisterPage,
+  ForgotPasswordPage,
+  LogoutPage,
+  VerifyEmailPage
+} from './pages/auth';
+
+// App pages (protected)
 import DashboardPage from './pages/DashboardPage';
 import PendingInputsPage from './pages/PendingInputsPage';
 import ActivitiesListPage from './pages/ActivitiesListPage';
@@ -17,9 +28,43 @@ import AccountSettingsPage from './pages/AccountSettingsPage';
 import { useFCM } from './hooks/useFCM';
 import { NerdModeProvider } from './state/NerdModeContext';
 
+// Protected route wrapper
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user] = useAtom(userAtom);
+  const [loading] = useAtom(authLoadingAtom);
+
+  if (loading) {
+    return <div className="container">Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+// Public route wrapper (redirects authenticated users to app)
+const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user] = useAtom(userAtom);
+  const [loading] = useAtom(authLoadingAtom);
+
+  if (loading) {
+    return <div className="container">Loading...</div>;
+  }
+
+  // Allow logout and verify-email for authenticated users
+  const path = window.location.pathname;
+  if (user && !path.includes('logout') && !path.includes('verify-email')) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 const App: React.FC = () => {
-  const [user, setUser] = useAtom(userAtom);
-  const [loading, setLoading] = useAtom(authLoadingAtom);
+  const [, setUser] = useAtom(userAtom);
+  const [, setLoading] = useAtom(authLoadingAtom);
 
   useFCM();
 
@@ -34,39 +79,34 @@ const App: React.FC = () => {
       onAuthStateChanged(fb.auth, (u) => {
         setUser(u);
         setLoading(false);
-
-        if (!u && !window.location.pathname.includes('login')) {
-          // If not logged in, redirect to static login page
-          window.location.href = '/login';
-        }
       });
     };
 
     setup();
   }, [setUser, setLoading]);
 
-  if (loading) {
-    return <div className="container">Loading...</div>;
-  }
-
-  if (!user) {
-    return null; // Redirecting
-  }
-
   return (
     <NerdModeProvider>
       <Router basename="/app">
         <Routes>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/inputs" element={<PendingInputsPage />} />
-          <Route path="/activities" element={<ActivitiesListPage />} />
-          <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<UnsynchronizedDetailPage />} />
-          <Route path="/activities/:id" element={<ActivityDetailPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/settings/integrations" element={<IntegrationsPage />} />
-          <Route path="/settings/pipelines" element={<PipelinesPage />} />
-          <Route path="/settings/pipelines/new" element={<PipelineWizardPage />} />
-          <Route path="/settings/account" element={<AccountSettingsPage />} />
+          {/* Public auth routes */}
+          <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
+          <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
+          <Route path="/logout" element={<LogoutPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
+
+          {/* Protected app routes */}
+          <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+          <Route path="/inputs" element={<ProtectedRoute><PendingInputsPage /></ProtectedRoute>} />
+          <Route path="/activities" element={<ProtectedRoute><ActivitiesListPage /></ProtectedRoute>} />
+          <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<ProtectedRoute><UnsynchronizedDetailPage /></ProtectedRoute>} />
+          <Route path="/activities/:id" element={<ProtectedRoute><ActivityDetailPage /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          <Route path="/settings/integrations" element={<ProtectedRoute><IntegrationsPage /></ProtectedRoute>} />
+          <Route path="/settings/pipelines" element={<ProtectedRoute><PipelinesPage /></ProtectedRoute>} />
+          <Route path="/settings/pipelines/new" element={<ProtectedRoute><PipelineWizardPage /></ProtectedRoute>} />
+          <Route path="/settings/account" element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
         </Routes>
       </Router>
     </NerdModeProvider>
