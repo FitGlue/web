@@ -1,0 +1,104 @@
+{{> header}}
+
+<main>
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="container">
+      <nav class="breadcrumb animate-on-scroll">
+        <a href="/integrations">Integrations</a> / <span>{{name}}</span>
+      </nav>
+      <h1 class="text-center animate-on-scroll">
+        <span class="integration-hero-emoji">{{icon}}</span>
+        <span class="text-gradient">{{name}}</span>
+      </h1>
+      <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
+        {{description}}
+      </p>
+      <div class="hero-badges">
+        <span class="integration-status live">Live</span>
+        {{#if isSource}}
+          <span class="integration-type-badge">📥 Source</span>
+        {{/if}}
+        {{#if isDestination}}
+          <span class="integration-type-badge">📤 Destination</span>
+        {{/if}}
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section">
+    <div class="container" style="max-width: 800px;">
+      <div class="integration-content animate-on-scroll">
+        {{#if marketingDescription}}
+          <div class="marketing-content">
+            {{{marketingDescription}}}
+          </div>
+        {{/if}}
+
+        {{#if features.length}}
+          <h2>Features</h2>
+          <ul class="feature-list">
+            {{#each features}}
+              <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        {{/if}}
+
+        <h2>How to Connect</h2>
+        {{#if (eq authType "oauth")}}
+          <div class="setup-steps">
+            <div class="setup-step">
+              <span class="step-number">1</span>
+              <div class="step-content">
+                <h4>Click Connect</h4>
+                <p>In FitGlue, go to Integrations and click "Connect" on {{name}}</p>
+              </div>
+            </div>
+            <div class="setup-step">
+              <span class="step-number">2</span>
+              <div class="step-content">
+                <h4>Authorize FitGlue</h4>
+                <p>You'll be redirected to {{name}} to sign in</p>
+              </div>
+            </div>
+            <div class="setup-step">
+              <span class="step-number">3</span>
+              <div class="step-content">
+                <h4>Grant Access</h4>
+                <p>Allow FitGlue to access your {{name}} data</p>
+              </div>
+            </div>
+          </div>
+        {{else}}
+          {{#if setupInstructions}}
+            <div class="setup-instructions">
+              {{{setupInstructions}}}
+            </div>
+          {{/if}}
+        {{/if}}
+
+        {{#if docsUrl}}
+          <h2>Documentation</h2>
+          <p>
+            For more information, visit the
+            <a href="{{docsUrl}}" target="_blank" rel="noopener">{{name}} Documentation</a>.
+          </p>
+        {{/if}}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Connect {{name}}</span>?</h2>
+        <p class="cta-subtitle animate-on-scroll">Start syncing your fitness data automatically.</p>
+        <a href="/app/register" class="btn btn-primary btn-lg animate-on-scroll">Get Started →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{> footer}}

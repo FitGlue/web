@@ -4,112 +4,60 @@
   <!-- Hero -->
   <section class="about-hero">
     <div class="container">
-      <h1 class="text-center animate-on-scroll">All <span class="text-gradient">Integrations</span></h1>
+      <h1 class="text-center animate-on-scroll">Supported <span class="text-gradient">Integrations</span></h1>
       <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
-        Connect your favorite fitness platforms and sync your data everywhere
+        Connect FitGlue to your favorite fitness platforms
       </p>
     </div>
   </section>
 
-  <!-- Sources (Import) -->
+  <!-- All Integrations -->
   <section class="section">
     <div class="container">
-      <h2 class="mb-md animate-on-scroll">📥 Import Sources</h2>
-      <p class="text-muted mb-lg animate-on-scroll">Pull your workout data from these platforms into FitGlue.</p>
+      <h2 class="mb-md animate-on-scroll">🔗 Vendor Connections</h2>
+      <p class="text-muted mb-lg animate-on-scroll">FitGlue connects to these third-party services. Set up a connection
+        to enable data flow.</p>
 
       <div class="integrations-grid stagger-children">
-        {{#each integrations.connections}}
+        {{#each integrations.all}}
           <a href="{{detailsUrl}}" class="integration-card-link">
             <div class="integration-card hoverable">
               <div class="integration-logo">
-                <span class="integration-emoji">{{icon}}</span>
+                {{#if image}}
+                  <img src="{{image}}" alt="{{name}}" class="integration-logo-img"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                  <span class="integration-emoji" style="display: none;">{{icon}}</span>
+                {{else}}
+                  <span class="integration-emoji">{{icon}}</span>
+                {{/if}}
               </div>
               <div class="integration-name">{{name}}</div>
               <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
-              <span class="integration-status {{status}}">{{status}}</span>
+              <div class="integration-badges">
+                <span class="integration-status {{status}}">{{status}}</span>
+                <span class="integration-auth-badge">{{authType}}</span>
+              </div>
               <span class="integration-arrow">→</span>
             </div>
           </a>
         {{/each}}
-
-        <!-- Coming Soon Sources (static for now) -->
-        <div class="integration-card coming-soon">
-          <div class="integration-logo">
-            <span class="integration-emoji">⌚</span>
-          </div>
-          <div class="integration-name">Garmin</div>
-          <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">GPS activities</p>
-          <span class="integration-status coming">coming soon</span>
-        </div>
-        <div class="integration-card coming-soon">
-          <div class="integration-logo">
-            <span class="integration-emoji">❤️</span>
-          </div>
-          <div class="integration-name">Apple Health</div>
-          <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">Unified health data</p>
-          <span class="integration-status coming">coming soon</span>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- Boosters (Enrichers) -->
+  <!-- What's Next -->
   <section class="section section-alt">
-    <div class="container">
-      <h2 class="mb-md animate-on-scroll">✨ Boosters</h2>
-      <p class="text-muted mb-lg animate-on-scroll">Enhance your activities with AI and smart data before syncing.</p>
-
-      <div class="integrations-grid stagger-children">
-        {{#each boosters}}
-          <div class="integration-card booster-card">
-            <div class="integration-logo">
-              <span class="integration-emoji">{{icon}}</span>
-            </div>
-            <div class="integration-name">{{name}}</div>
-            <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
-            <span class="integration-status booster">booster</span>
-          </div>
-        {{/each}}
-      </div>
-    </div>
-  </section>
-
-  <!-- Destinations (Export) -->
-  <section class="section">
-    <div class="container">
-      <h2 class="mb-md animate-on-scroll">📤 Export Destinations</h2>
-      <p class="text-muted mb-lg animate-on-scroll">Send your enriched activities to these platforms.</p>
-
-      <div class="integrations-grid stagger-children">
-        {{#each integrations.syncTargets}}
-          <a href="{{detailsUrl}}" class="integration-card-link">
-            <div class="integration-card hoverable">
-              <div class="integration-logo">
-                <span class="integration-emoji">{{icon}}</span>
-              </div>
-              <div class="integration-name">{{name}}</div>
-              <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
-              <span class="integration-status {{status}}">{{status}}</span>
-              <span class="integration-arrow">→</span>
-            </div>
-          </a>
-        {{/each}}
-
-        <!-- Coming Soon Destinations -->
-        <div class="integration-card coming-soon">
-          <div class="integration-logo">
-            <span class="integration-emoji">👟</span>
-          </div>
-          <div class="integration-name">Nike Run Club</div>
-          <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">Running activities</p>
-          <span class="integration-status coming">coming soon</span>
-        </div>
-      </div>
+    <div class="container text-center">
+      <h2 class="mb-md animate-on-scroll">What Can You Do With <span class="text-gradient">Integrations</span>?</h2>
+      <p class="text-muted mb-lg animate-on-scroll" style="max-width: 600px; margin-left: auto; margin-right: auto;">
+        Once connected, you can use these integrations as Sources and Targets in your FitGlue pipeline.
+      </p>
+      <a href="/plugins" class="btn btn-secondary animate-on-scroll">See Pipeline Features →</a>
     </div>
   </section>
 
   <!-- Request Integration -->
-  <section class="section section-alt">
+  <section class="section">
     <div class="container text-center">
       <h2 class="mb-md animate-on-scroll">Don't See Your <span class="text-gradient">App</span>?</h2>
       <p class="text-muted mb-lg animate-on-scroll" style="max-width: 500px; margin-left: auto; margin-right: auto;">
@@ -124,8 +72,8 @@
     <div class="container">
       <div class="cta-content">
         <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Connect</span>?</h2>
-        <p class="cta-subtitle animate-on-scroll">Join the waitlist and start syncing your fitness data.</p>
-        <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg animate-on-scroll">Join the Waitlist →</a>
+        <p class="cta-subtitle animate-on-scroll">Sign up and link your fitness accounts.</p>
+        <a href="/app/register" class="btn btn-primary btn-lg animate-on-scroll">Get Started →</a>
       </div>
     </div>
   </section>

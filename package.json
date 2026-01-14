@@ -8,6 +8,7 @@
     "build": "npm run _fetch-plugins && npm run _build:static && npm run _build:app && npm run _merge",
     "build:dev": "npm run _fetch-plugins && npm run _build:static && vite build --mode development && npm run _merge",
     "build:test": "npm run _fetch-plugins && npm run _build:static && vite build --mode test && npm run _merge",
+    "build:prod": "npm run build",
     "serve": "npm run build && npx firebase serve --only hosting",
     "preview": "vite preview",
     "_fetch-plugins": "node scripts/fetch-plugins.js",

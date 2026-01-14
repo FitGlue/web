@@ -81,28 +81,5 @@
       "icon": "🚴",
       "description": "Upload activities to Strava"
     }
-  ],
-  "comingSoon": [
-    {
-      "id": "garmin",
-      "name": "Garmin",
-      "icon": "⌚",
-      "image": "/images/integrations/garmin.svg",
-      "description": "GPS activities"
-    },
-    {
-      "id": "apple-health",
-      "name": "Apple Health",
-      "icon": "❤️",
-      "image": "/images/integrations/apple-health.svg",
-      "description": "Unified health data"
-    },
-    {
-      "id": "nike-run-club",
-      "name": "Nike Run Club",
-      "icon": "👟",
-      "image": "/images/integrations/nike-run-club.svg",
-      "description": "Running activities"
-    }
   ]
 }

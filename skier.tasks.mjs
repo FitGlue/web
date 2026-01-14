@@ -29,7 +29,6 @@ function loadPluginData() {
       sources: [],
       enrichers: [],
       destinations: [],
-      comingSoon: [],
     };
   }
 }
@@ -41,10 +40,26 @@ const integrations = {
   // Group by category for legacy template support
   connections: pluginData.integrations.filter(i => i.category === 'source'),
   syncTargets: pluginData.integrations.filter(i => i.category === 'destination'),
-  comingSoon: pluginData.comingSoon || [],
   // All integrations for new pages
   all: pluginData.integrations,
 };
+
+// Create lookup maps for dynamic page generation
+const integrationById = {};
+for (const integration of pluginData.integrations) {
+  integrationById[integration.id] = integration;
+}
+
+const pluginById = {};
+for (const source of pluginData.sources || []) {
+  pluginById[source.id] = { ...source, pluginType: 'source' };
+}
+for (const enricher of pluginData.enrichers || []) {
+  pluginById[enricher.id] = { ...enricher, pluginType: 'enricher' };
+}
+for (const destination of pluginData.destinations || []) {
+  pluginById[destination.id] = { ...destination, pluginType: 'destination' };
+}
 
 // Enrichers/Boosters
 const boosters = pluginData.enrichers || [];
@@ -114,6 +129,7 @@ export const tasks = [
         isFeatures: currentPage === 'features',
         isHowItWorks: currentPage === 'how-it-works',
         isIntegrations: currentPage === 'integrations',
+        isPlugins: currentPage === 'plugins',
         isPricing: currentPage === 'pricing',
         isAbout: currentPage === 'about',
         isContact: currentPage === 'contact',
@@ -130,7 +146,9 @@ export const tasks = [
             case 'how-it-works':
               return 'Learn how FitGlue connects your fitness apps, enhances your workout data, and syncs it to your favorite platforms.';
             case 'integrations':
-              return 'See all the fitness platforms FitGlue integrates with: Hevy, Fitbit, Strava, and more coming soon.';
+              return 'See all the fitness platforms FitGlue integrates with: Hevy, Fitbit, and Strava.';
+            case 'plugins':
+              return 'Explore FitGlue pipeline features: Sources, Boosters, and Targets for customizing your data flow.';
             case 'pricing':
               return 'FitGlue pricing plans: Free tier to get started, Pro for power users.';
             case 'about':
@@ -157,27 +175,20 @@ export const tasks = [
     partialsDir: './partials',
     outDir: './static-dist/integrations',
     additionalVarsFn: ({ currentPage }) => {
-      const integrationMeta = {
-        hevy: {
-          pageTitle: 'Hevy Integration',
-          description: 'Connect Hevy to FitGlue to import your strength training workouts. Step-by-step setup guide.',
-        },
-        fitbit: {
-          pageTitle: 'Fitbit Integration',
-          description: 'Connect Fitbit to FitGlue to import your activities, heart rate, and health data.',
-        },
-        strava: {
-          pageTitle: 'Strava Integration',
-          description: 'Upload your enriched FitGlue activities to Strava automatically.',
-        },
-      };
+      // Get full integration data from registry
+      const integration = integrationById[currentPage] || {};
 
-      const meta = integrationMeta[currentPage] || {};
       return {
-        pageTitle: meta.pageTitle || `${currentPage.charAt(0).toUpperCase() + currentPage.slice(1)} Integration`,
-        description: meta.description || `FitGlue ${currentPage} integration details.`,
+        // Page metadata
+        pageTitle: integration.name ? `${integration.name} Integration` : `${currentPage.charAt(0).toUpperCase() + currentPage.slice(1)} Integration`,
+        description: integration.description || `FitGlue ${currentPage} integration details.`,
         isIntegrations: true,
         canonicalPath: `/integrations/${currentPage}`,
+
+        // Integration data for template
+        ...integration,
+        isSource: integration.category === 'source',
+        isDestination: integration.category === 'destination',
       };
     },
   }),

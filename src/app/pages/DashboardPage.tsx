@@ -22,7 +22,7 @@ interface ActivitySummary {
 
 const DashboardPage: React.FC = () => {
     const navigate = useNavigate();
-    const { sources, destinations, loading: registryLoading } = usePluginRegistry();
+    const { sources, destinations, integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { inputs, loading: inputsLoading, refresh: inputsRefresh } = useInputs();
     const { activities, stats, loading: statsLoading, refresh: statsRefresh } = useActivities('list');
     const { integrations, loading: integrationsLoading, refresh: integrationsRefresh, fetchIfNeeded: fetchIntegrations } = useIntegrations();

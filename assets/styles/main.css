@@ -2203,3 +2203,91 @@ h4 {
 .auth-container .facebook-btn svg {
   flex-shrink: 0;
 }
+
+/* ========================================
+   Pipeline Flow Visualization
+   ======================================== */
+
+.pipeline-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+  flex-wrap: wrap;
+}
+
+.pipeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+  background: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  min-width: 120px;
+}
+
+.pipeline-icon {
+  font-size: 2.5rem;
+}
+
+.pipeline-label {
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+}
+
+.pipeline-arrow {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+@media (max-width: 640px) {
+  .pipeline-flow {
+    flex-direction: column;
+  }
+
+  .pipeline-arrow {
+    transform: rotate(90deg);
+  }
+}
+
+/* Additional Status Badge Types */
+.integration-status.source {
+  background: rgba(255, 0, 110, 0.15);
+  color: var(--color-primary-light);
+}
+
+.integration-status.destination,
+.integration-status.target {
+  background: rgba(131, 56, 236, 0.15);
+  color: var(--color-secondary-light);
+}
+
+/* Integration Auth Badge */
+.integration-badges {
+  display: flex;
+  gap: var(--space-xs);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: var(--space-xs);
+}
+
+.integration-auth-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+}
+
+/* Integration Logo Image */
+.integration-logo-img {
+  max-width: 48px;
+  max-height: 48px;
+  object-fit: contain;
+}

@@ -65,11 +65,6 @@ const FALLBACK_DATA = {
   destinations: [
     { id: 'strava', name: 'Strava', icon: '🚴', description: 'Upload activities to Strava' },
   ],
-  comingSoon: [
-    { id: 'garmin', name: 'Garmin', icon: '⌚', image: '/images/integrations/garmin.svg', description: 'GPS activities' },
-    { id: 'apple-health', name: 'Apple Health', icon: '❤️', image: '/images/integrations/apple-health.svg', description: 'Unified health data' },
-    { id: 'nike-run-club', name: 'Nike Run Club', icon: '👟', image: '/images/integrations/nike-run-club.svg', description: 'Running activities' },
-  ],
 };
 
 async function fetchPlugins() {
@@ -124,7 +119,6 @@ function transformPluginData(apiData) {
     sources: [],
     enrichers: [],
     destinations: [],
-    comingSoon: FALLBACK_DATA.comingSoon, // Keep static for now
   };
 
   // Transform integrations
@@ -144,6 +138,9 @@ function transformPluginData(apiData) {
         setupTitle: i.setupTitle || `Connect ${i.name}`,
         setupInstructions: i.setupInstructions || '',
         docsUrl: i.docsUrl || '',
+        // Marketing fields
+        marketingDescription: i.marketingDescription || '',
+        features: i.features || [],
       }));
   }
 
@@ -157,6 +154,10 @@ function transformPluginData(apiData) {
         icon: s.icon || '📥',
         description: s.description || '',
         detailsUrl: `/plugins/sources/${s.id}`,
+        // Marketing fields
+        marketingDescription: s.marketingDescription || '',
+        features: s.features || [],
+        requiredIntegrations: s.requiredIntegrations || [],
       }));
   }
 
@@ -171,6 +172,10 @@ function transformPluginData(apiData) {
         description: e.description || '',
         detailsUrl: `/plugins/boosters/${e.id}`,
         providerType: e.enricherProviderType,
+        // Marketing fields
+        marketingDescription: e.marketingDescription || '',
+        features: e.features || [],
+        requiredIntegrations: e.requiredIntegrations || [],
       }));
   }
 
@@ -184,6 +189,10 @@ function transformPluginData(apiData) {
         icon: d.icon || '📤',
         description: d.description || '',
         detailsUrl: `/plugins/destinations/${d.id}`,
+        // Marketing fields
+        marketingDescription: d.marketingDescription || '',
+        features: d.features || [],
+        requiredIntegrations: d.requiredIntegrations || [],
       }));
   }
 

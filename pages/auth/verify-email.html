@@ -28,18 +28,6 @@
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getAuth, onAuthStateChanged, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCVxFYGCw9RvZrVCKq6kSsqFRdDQ-SqOng",
-    authDomain: "fitglue-app.firebaseapp.com",
-    projectId: "fitglue-app",
-    storageBucket: "fitglue-app.firebasestorage.app",
-    messagingSenderId: "755405684317",
-    appId: "1:755405684317:web:ffc54f00d3b88ec5e06b56"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
   const errorEl = document.getElementById('auth-error');
   const successEl = document.getElementById('auth-success');
   const emailEl = document.getElementById('user-email');
@@ -56,34 +44,59 @@
     successEl.style.display = 'block';
   }
 
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = '/auth/login';
+  async function getFirebaseConfig() {
+    try {
+      const response = await fetch('/__/firebase/init.json');
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (e) {
+      console.warn('Could not load Firebase config:', e);
+    }
+    return null;
+  }
+
+  async function init() {
+    const firebaseConfig = await getFirebaseConfig();
+    if (!firebaseConfig) {
+      showError('Could not initialize authentication. Please try again later.');
       return;
     }
 
-    emailEl.textContent = user.email;
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    if (user.emailVerified) {
-      window.location.href = '/app';
-    }
-  });
-
-  document.getElementById('btn-resend').addEventListener('click', async () => {
-    const user = auth.currentUser;
-    if (user) {
-      try {
-        await sendEmailVerification(user);
-        showSuccess('Verification email sent!');
-      } catch (error) {
-        showError(error.message);
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = '/auth/login';
+        return;
       }
-    }
-  });
 
-  document.getElementById('btn-continue').addEventListener('click', () => {
-    window.location.href = '/app';
-  });
+      emailEl.textContent = user.email;
+
+      if (user.emailVerified) {
+        window.location.href = '/app';
+      }
+    });
+
+    document.getElementById('btn-resend').addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          await sendEmailVerification(user);
+          showSuccess('Verification email sent!');
+        } catch (error) {
+          showError(error.message);
+        }
+      }
+    });
+
+    document.getElementById('btn-continue').addEventListener('click', () => {
+      window.location.href = '/app';
+    });
+  }
+
+  init();
 </script>
 
 {{> auth-footer}}

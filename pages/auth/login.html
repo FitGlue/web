@@ -61,18 +61,6 @@
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCVxFYGCw9RvZrVCKq6kSsqFRdDQ-SqOng",
-    authDomain: "fitglue-app.firebaseapp.com",
-    projectId: "fitglue-app",
-    storageBucket: "fitglue-app.firebasestorage.app",
-    messagingSenderId: "755405684317",
-    appId: "1:755405684317:web:ffc54f00d3b88ec5e06b56"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
   const errorEl = document.getElementById('auth-error');
 
   function showError(message) {
@@ -84,45 +72,71 @@
     errorEl.style.display = 'none';
   }
 
-  document.getElementById('btn-login-email').addEventListener('click', async () => {
-    hideError();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
+  // Fetch Firebase config from hosting
+  async function getFirebaseConfig() {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = '/app';
-    } catch (error) {
-      showError(error.message);
+      const response = await fetch('/__/firebase/init.json');
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (e) {
+      console.warn('Could not load Firebase config:', e);
     }
-  });
+    return null;
+  }
 
-  document.getElementById('btn-login-google').addEventListener('click', async () => {
-    hideError();
-    try {
-      await signInWithPopup(auth, new GoogleAuthProvider());
-      window.location.href = '/app';
-    } catch (error) {
-      showError(error.message);
+  async function init() {
+    const firebaseConfig = await getFirebaseConfig();
+    if (!firebaseConfig) {
+      showError('Could not initialize authentication. Please try again later.');
+      return;
     }
-  });
 
-  document.getElementById('btn-login-facebook').addEventListener('click', async () => {
-    hideError();
-    try {
-      await signInWithPopup(auth, new FacebookAuthProvider());
-      window.location.href = '/app';
-    } catch (error) {
-      showError(error.message);
-    }
-  });
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-  // Allow enter key to submit
-  document.getElementById('password').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      document.getElementById('btn-login-email').click();
-    }
-  });
+    document.getElementById('btn-login-email').addEventListener('click', async () => {
+      hideError();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = '/app';
+      } catch (error) {
+        showError(error.message);
+      }
+    });
+
+    document.getElementById('btn-login-google').addEventListener('click', async () => {
+      hideError();
+      try {
+        await signInWithPopup(auth, new GoogleAuthProvider());
+        window.location.href = '/app';
+      } catch (error) {
+        showError(error.message);
+      }
+    });
+
+    document.getElementById('btn-login-facebook').addEventListener('click', async () => {
+      hideError();
+      try {
+        await signInWithPopup(auth, new FacebookAuthProvider());
+        window.location.href = '/app';
+      } catch (error) {
+        showError(error.message);
+      }
+    });
+
+    // Allow enter key to submit
+    document.getElementById('password').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('btn-login-email').click();
+      }
+    });
+  }
+
+  init();
 </script>
 
 {{> auth-footer}}
