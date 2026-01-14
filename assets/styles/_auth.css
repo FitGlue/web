@@ -2,23 +2,69 @@
 
 .auth-container {
   min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1f 50%, #0f0a14 100%);
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(255, 0, 110, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(131, 56, 236, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(131, 56, 236, 0.05) 0%, transparent 70%),
+    linear-gradient(180deg, #0a0a0a 0%, #0d0818 30%, #150a20 60%, #0f0a14 100%);
   /* Force dark appearance regardless of system theme */
   color-scheme: dark;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated glow orbs for visual interest */
+.auth-container::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(255, 0, 110, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  animation: float-slow 20s ease-in-out infinite;
+}
+
+.auth-container::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  right: -10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(131, 56, 236, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+  animation: float-slow 25s ease-in-out infinite reverse;
+}
+
+@keyframes float-slow {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(30px, -20px);
+  }
 }
 
 .auth-container .title {
   margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .auth-container .title .logo-link {
   text-decoration: none;
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   font-weight: 900;
 }
 
@@ -35,16 +81,23 @@
   color: #f5f5f5;
   margin-bottom: 2rem;
   font-weight: 600;
+  position: relative;
+  z-index: 1;
 }
 
 .auth-box {
-  background: rgba(26, 26, 26, 0.9);
+  background: rgba(26, 26, 26, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 2rem;
+  border-radius: 1.25rem;
+  padding: 2.5rem;
   width: 100%;
-  max-width: 400px;
-  backdrop-filter: blur(10px);
+  max-width: 480px;
+  backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 1;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(131, 56, 236, 0.08);
 }
 
 .auth-description {
