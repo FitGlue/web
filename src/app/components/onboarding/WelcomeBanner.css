@@ -1,0 +1,127 @@
+.welcome-banner {
+  background: linear-gradient(135deg, rgba(255, 0, 110, 0.1) 0%, rgba(131, 56, 236, 0.1) 100%);
+  border: 1px solid rgba(255, 0, 110, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #FF006E 0%, #8338EC 100%);
+}
+
+.welcome-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.welcome-icon {
+  font-size: 3rem;
+}
+
+.welcome-text h2 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+}
+
+.welcome-text h2 .fit {
+  color: #FF006E;
+}
+
+.welcome-text h2 .glue {
+  color: #8338EC;
+}
+
+.welcome-text p {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.onboarding-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.onboarding-step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.step-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FF006E 0%, #8338EC 100%);
+  color: white;
+  font-weight: 700;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.step-details {
+  flex: 1;
+}
+
+.step-details h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+}
+
+.step-details p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.onboarding-step button {
+  flex-shrink: 0;
+}
+
+.dismiss-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.dismiss-btn:hover {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .onboarding-step {
+    flex-wrap: wrap;
+  }
+
+  .step-details {
+    flex: 0 0 calc(100% - 52px);
+  }
+
+  .onboarding-step button {
+    margin-left: 52px;
+    width: calc(100% - 52px);
+  }
+}

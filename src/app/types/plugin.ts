@@ -57,8 +57,30 @@ export interface PluginManifest {
   destinationType?: number;
 }
 
+export enum IntegrationAuthType {
+  UNSPECIFIED = 0,
+  OAUTH = 1,
+  API_KEY = 2,
+}
+
+export interface IntegrationManifest {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  authType: IntegrationAuthType;
+  enabled: boolean;
+  docsUrl?: string;
+  // Setup configuration
+  setupTitle?: string;
+  setupInstructions?: string;
+  apiKeyLabel?: string;
+  apiKeyHelpUrl?: string;
+}
+
 export interface PluginRegistryResponse {
   sources: PluginManifest[];
   enrichers: PluginManifest[];
   destinations: PluginManifest[];
+  integrations: IntegrationManifest[];
 }

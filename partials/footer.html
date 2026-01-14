@@ -89,6 +89,40 @@
     });
   });
 </script>
+
+<!-- Firebase Auth Check for Header -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+
+  async function initAuthCheck() {
+    try {
+      const response = await fetch('/__/firebase/init.json');
+      if (!response.ok) return;
+      const config = await response.json();
+      if (!config.appId) return;
+
+      const app = initializeApp(config);
+      const auth = getAuth(app);
+
+      onAuthStateChanged(auth, (user) => {
+        const loginBtn = document.getElementById('login-btn');
+        const getStartedBtn = document.getElementById('get-started-btn');
+
+        if (user && loginBtn && getStartedBtn) {
+          // User is logged in - swap buttons
+          loginBtn.style.display = 'none';
+          getStartedBtn.href = '/app';
+          getStartedBtn.textContent = 'Go to Dashboard';
+        }
+      });
+    } catch (e) {
+      console.warn('Auth check failed:', e);
+    }
+  }
+
+  initAuthCheck();
+</script>
 </body>
 
 </html>

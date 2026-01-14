@@ -3,7 +3,11 @@ import { PageLayout } from '../components/layout/PageLayout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useApi } from '../hooks/useApi';
+import { useIntegrations } from '../hooks/useIntegrations';
+import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { LoadingState } from '../components/ui/LoadingState';
+import { ApiKeySetupModal } from '../components/integrations/ApiKeySetupModal';
+import { IntegrationAuthType, IntegrationManifest } from '../types/plugin';
 
 interface IntegrationStatus {
     connected: boolean;
@@ -27,7 +31,6 @@ interface IntegrationCardProps {
     onDisconnect: () => void;
     connecting: boolean;
     disconnecting: boolean;
-    supportsOAuth: boolean;
 }
 
 const IntegrationCard: React.FC<IntegrationCardProps> = ({
@@ -39,7 +42,6 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
     onDisconnect,
     connecting,
     disconnecting,
-    supportsOAuth
 }) => {
     const isConnected = status?.connected ?? false;
 
@@ -74,7 +76,7 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
                     >
                         {disconnecting ? 'Disconnecting...' : 'Disconnect'}
                     </Button>
-                ) : supportsOAuth ? (
+                ) : (
                     <Button
                         variant="primary"
                         onClick={onConnect}
@@ -82,8 +84,6 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
                     >
                         {connecting ? 'Connecting...' : 'Connect'}
                     </Button>
-                ) : (
-                    <span className="api-key-note">Configure via admin CLI</span>
                 )}
             </div>
         </Card>
@@ -92,27 +92,15 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
 
 const IntegrationsPage: React.FC = () => {
     const api = useApi();
-    const [integrations, setIntegrations] = useState<IntegrationsSummary | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
+    const { integrations, loading, refresh: refreshIntegrations, fetchIfNeeded } = useIntegrations();
     const [connecting, setConnecting] = useState<string | null>(null);
     const [disconnecting, setDisconnecting] = useState<string | null>(null);
-
-    const fetchIntegrations = async () => {
-        setLoading(true);
-        try {
-            const response = await api.get('/users/me/integrations');
-            setIntegrations(response as IntegrationsSummary);
-        } catch (error) {
-            console.error('Failed to fetch integrations:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const [setupModalIntegration, setSetupModalIntegration] = useState<IntegrationManifest | null>(null);
 
     useEffect(() => {
-        fetchIntegrations();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        fetchIfNeeded();
+    }, [fetchIfNeeded]);
 
     const handleConnect = async (provider: 'strava' | 'fitbit') => {
         setConnecting(provider);
@@ -128,6 +116,15 @@ const IntegrationsPage: React.FC = () => {
         }
     };
 
+    const handleApiKeyConnect = (integration: IntegrationManifest) => {
+        setSetupModalIntegration(integration);
+    };
+
+    const handleSetupSuccess = async () => {
+        setSetupModalIntegration(null);
+        await refreshIntegrations();
+    };
+
     const handleDisconnect = async (provider: 'strava' | 'fitbit' | 'hevy') => {
         if (!window.confirm(`Are you sure you want to disconnect ${provider}?`)) {
             return;
@@ -136,7 +133,7 @@ const IntegrationsPage: React.FC = () => {
         setDisconnecting(provider);
         try {
             await api.delete(`/users/me/integrations/${provider}`);
-            await fetchIntegrations();
+            await refreshIntegrations();
         } catch (error) {
             console.error(`Failed to disconnect ${provider}:`, error);
         } finally {
@@ -144,9 +141,9 @@ const IntegrationsPage: React.FC = () => {
         }
     };
 
-    if (loading) {
+    if (loading || registryLoading) {
         return (
-            <PageLayout title="Integrations" backTo="/settings" backLabel="Settings">
+            <PageLayout title="Integrations" backTo="/" backLabel="Dashboard">
                 <LoadingState />
             </PageLayout>
         );
@@ -155,48 +152,41 @@ const IntegrationsPage: React.FC = () => {
     return (
         <PageLayout
             title="Integrations"
-            backTo="/settings"
-            backLabel="Settings"
-            onRefresh={fetchIntegrations}
+            backTo="/"
+            backLabel="Dashboard"
+            onRefresh={refreshIntegrations}
         >
             <div className="integrations-grid">
-                <IntegrationCard
-                    name="hevy"
-                    displayName="Hevy"
-                    description="Strength training workout tracker"
-                    icon="🏋️"
-                    status={integrations?.hevy}
-                    onConnect={() => {}}
-                    onDisconnect={() => handleDisconnect('hevy')}
-                    connecting={false}
-                    disconnecting={disconnecting === 'hevy'}
-                    supportsOAuth={false}
-                />
-                <IntegrationCard
-                    name="strava"
-                    displayName="Strava"
-                    description="Upload activities to your Strava profile"
-                    icon="🚴"
-                    status={integrations?.strava}
-                    onConnect={() => handleConnect('strava')}
-                    onDisconnect={() => handleDisconnect('strava')}
-                    connecting={connecting === 'strava'}
-                    disconnecting={disconnecting === 'strava'}
-                    supportsOAuth={true}
-                />
-                <IntegrationCard
-                    name="fitbit"
-                    displayName="Fitbit"
-                    description="Sync activities from your Fitbit device"
-                    icon="⌚"
-                    status={integrations?.fitbit}
-                    onConnect={() => handleConnect('fitbit')}
-                    onDisconnect={() => handleDisconnect('fitbit')}
-                    connecting={connecting === 'fitbit'}
-                    disconnecting={disconnecting === 'fitbit'}
-                    supportsOAuth={true}
-                />
+                {registryIntegrations.map(integration => {
+                    const status = integrations?.[integration.id as keyof IntegrationsSummary];
+                    const supportsOAuth = integration.authType === IntegrationAuthType.OAUTH;
+                    return (
+                        <IntegrationCard
+                            key={integration.id}
+                            name={integration.id}
+                            displayName={integration.name}
+                            description={integration.description}
+                            icon={integration.icon}
+                            status={status}
+                            onConnect={() => supportsOAuth
+                                ? handleConnect(integration.id as 'strava' | 'fitbit')
+                                : handleApiKeyConnect(integration)
+                            }
+                            onDisconnect={() => handleDisconnect(integration.id as 'strava' | 'fitbit' | 'hevy')}
+                            connecting={connecting === integration.id}
+                            disconnecting={disconnecting === integration.id}
+                        />
+                    );
+                })}
             </div>
+
+            {setupModalIntegration && (
+                <ApiKeySetupModal
+                    integration={setupModalIntegration}
+                    onClose={() => setSetupModalIntegration(null)}
+                    onSuccess={handleSetupSuccess}
+                />
+            )}
         </PageLayout>
     );
 };

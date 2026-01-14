@@ -36,6 +36,7 @@ export const usePluginRegistry = () => {
     sources: registry?.sources ?? [],
     enrichers: registry?.enrichers ?? [],
     destinations: registry?.destinations ?? [],
+    integrations: registry?.integrations ?? [],
     loading,
     error,
   };

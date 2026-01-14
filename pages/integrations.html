@@ -11,80 +11,105 @@
     </div>
   </section>
 
-  <!-- Connections -->
+  <!-- Sources (Import) -->
   <section class="section">
     <div class="container">
-      <h2 class="mb-md animate-on-scroll">🔗 Connections <span class="text-muted"
-          style="font-size: 1rem; font-weight: 400;">(Import Sources)</span></h2>
-      <p class="text-muted mb-lg animate-on-scroll">These are the platforms we can pull your workout data from.</p>
+      <h2 class="mb-md animate-on-scroll">📥 Import Sources</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Pull your workout data from these platforms into FitGlue.</p>
 
       <div class="integrations-grid stagger-children">
         {{#each integrations.connections}}
-          <div class="integration-card">
-            <div class="integration-logo">
-              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+          <a href="{{detailsUrl}}" class="integration-card-link">
+            <div class="integration-card hoverable">
+              <div class="integration-logo">
+                <span class="integration-emoji">{{icon}}</span>
+              </div>
+              <div class="integration-name">{{name}}</div>
+              <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
+              <span class="integration-status {{status}}">{{status}}</span>
+              <span class="integration-arrow">→</span>
             </div>
-            <div class="integration-name">{{name}}</div>
-            <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
-            <span class="integration-status {{status}}">{{status}}</span>
-          </div>
+          </a>
         {{/each}}
 
-        <!-- Coming Soon Connections -->
-        <div class="integration-card">
+        <!-- Coming Soon Sources (static for now) -->
+        <div class="integration-card coming-soon">
           <div class="integration-logo">
-            <img src="/images/integrations/garmin.svg" alt="Garmin logo" width="48" height="48">
+            <span class="integration-emoji">⌚</span>
           </div>
           <div class="integration-name">Garmin</div>
           <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">GPS activities</p>
-          <span class="integration-status coming">coming</span>
+          <span class="integration-status coming">coming soon</span>
         </div>
-        <div class="integration-card">
+        <div class="integration-card coming-soon">
           <div class="integration-logo">
-            <img src="/images/integrations/apple-health.svg" alt="Apple Health logo" width="48" height="48">
+            <span class="integration-emoji">❤️</span>
           </div>
           <div class="integration-name">Apple Health</div>
           <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">Unified health data</p>
-          <span class="integration-status coming">coming</span>
+          <span class="integration-status coming">coming soon</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Sync Targets -->
+  <!-- Boosters (Enrichers) -->
   <section class="section section-alt">
     <div class="container">
-      <h2 class="mb-md animate-on-scroll">🎯 Sync Targets <span class="text-muted"
-          style="font-size: 1rem; font-weight: 400;">(Export Destinations)</span></h2>
-      <p class="text-muted mb-lg animate-on-scroll">These are the platforms we can send your enriched activities to.</p>
+      <h2 class="mb-md animate-on-scroll">✨ Boosters</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Enhance your activities with AI and smart data before syncing.</p>
 
       <div class="integrations-grid stagger-children">
-        {{#each integrations.syncTargets}}
-          <div class="integration-card">
+        {{#each boosters}}
+          <div class="integration-card booster-card">
             <div class="integration-logo">
-              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+              <span class="integration-emoji">{{icon}}</span>
             </div>
             <div class="integration-name">{{name}}</div>
             <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
-            <span class="integration-status {{status}}">{{status}}</span>
+            <span class="integration-status booster">booster</span>
           </div>
         {{/each}}
+      </div>
+    </div>
+  </section>
 
-        <!-- Nike Run Club coming soon -->
-        <div class="integration-card">
+  <!-- Destinations (Export) -->
+  <section class="section">
+    <div class="container">
+      <h2 class="mb-md animate-on-scroll">📤 Export Destinations</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Send your enriched activities to these platforms.</p>
+
+      <div class="integrations-grid stagger-children">
+        {{#each integrations.syncTargets}}
+          <a href="{{detailsUrl}}" class="integration-card-link">
+            <div class="integration-card hoverable">
+              <div class="integration-logo">
+                <span class="integration-emoji">{{icon}}</span>
+              </div>
+              <div class="integration-name">{{name}}</div>
+              <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
+              <span class="integration-status {{status}}">{{status}}</span>
+              <span class="integration-arrow">→</span>
+            </div>
+          </a>
+        {{/each}}
+
+        <!-- Coming Soon Destinations -->
+        <div class="integration-card coming-soon">
           <div class="integration-logo">
-            <img src="/images/integrations/nike-run-club.svg" alt="Nike Run Club logo" width="48" height="48">
+            <span class="integration-emoji">👟</span>
           </div>
           <div class="integration-name">Nike Run Club</div>
           <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">Running activities</p>
-          <span class="integration-status coming">coming</span>
+          <span class="integration-status coming">coming soon</span>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Request Integration -->
-  <section class="section">
+  <section class="section section-alt">
     <div class="container text-center">
       <h2 class="mb-md animate-on-scroll">Don't See Your <span class="text-gradient">App</span>?</h2>
       <p class="text-muted mb-lg animate-on-scroll" style="max-width: 500px; margin-left: auto; margin-right: auto;">

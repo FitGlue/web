@@ -1,32 +1,16 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useInputs } from '../hooks/useInputs';
 import { useActivities } from '../hooks/useActivities';
-import { useApi } from '../hooks/useApi';
+import { usePipelines } from '../hooks/usePipelines';
+import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { LoadingState } from '../components/ui/LoadingState';
-
-interface IntegrationStatus {
-    connected: boolean;
-    externalUserId?: string;
-    lastUsedAt?: string;
-}
-
-interface IntegrationsSummary {
-    hevy?: IntegrationStatus;
-    strava?: IntegrationStatus;
-    fitbit?: IntegrationStatus;
-}
-
-interface PipelineConfig {
-    id: string;
-    source: string;
-    enrichers: { providerType: number }[];
-    destinations: (string | number)[];
-}
+import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
+import { IntegrationsSummary } from '../state/integrationsState';
 
 interface ActivitySummary {
     activityId: string;
@@ -38,40 +22,13 @@ interface ActivitySummary {
 
 const DashboardPage: React.FC = () => {
     const navigate = useNavigate();
-    const api = useApi();
     const { sources, destinations, loading: registryLoading } = usePluginRegistry();
     const { inputs, loading: inputsLoading, refresh: inputsRefresh } = useInputs();
     const { activities, stats, loading: statsLoading, refresh: statsRefresh } = useActivities('list');
+    const { integrations, loading: integrationsLoading, refresh: integrationsRefresh, fetchIfNeeded: fetchIntegrations } = useIntegrations();
+    const { pipelines, loading: pipelinesLoading, refresh: pipelinesRefresh, fetchIfNeeded: fetchPipelines } = usePipelines();
 
-    const [integrations, setIntegrations] = useState<IntegrationsSummary | null>(null);
-    const [pipelines, setPipelines] = useState<PipelineConfig[]>([]);
-    const [integrationsLoading, setIntegrationsLoading] = useState(true);
-    const [pipelinesLoading, setPipelinesLoading] = useState(true);
-
-    const fetchIntegrations = useCallback(async () => {
-        setIntegrationsLoading(true);
-        try {
-            const response = await api.get('/users/me/integrations');
-            setIntegrations(response as IntegrationsSummary);
-        } catch (error) {
-            console.error('Failed to fetch integrations:', error);
-        } finally {
-            setIntegrationsLoading(false);
-        }
-    }, [api]);
-
-    const fetchPipelines = useCallback(async () => {
-        setPipelinesLoading(true);
-        try {
-            const response = await api.get('/users/me/pipelines');
-            setPipelines((response as { pipelines: PipelineConfig[] }).pipelines || []);
-        } catch (error) {
-            console.error('Failed to fetch pipelines:', error);
-        } finally {
-            setPipelinesLoading(false);
-        }
-    }, [api]);
-
+    // Fetch data on mount (only if stale or not loaded)
     useEffect(() => {
         fetchIntegrations();
         fetchPipelines();
@@ -80,8 +37,8 @@ const DashboardPage: React.FC = () => {
     const refresh = () => {
         inputsRefresh();
         statsRefresh();
-        fetchIntegrations();
-        fetchPipelines();
+        integrationsRefresh();
+        pipelinesRefresh();
     };
 
     const isLoading = statsLoading || inputsLoading || integrationsLoading || pipelinesLoading || registryLoading;
@@ -110,11 +67,9 @@ const DashboardPage: React.FC = () => {
             : `Destination ${dest}`);
     };
 
-    const connectedCount = [
-        integrations?.hevy?.connected,
-        integrations?.strava?.connected,
-        integrations?.fitbit?.connected
-    ].filter(Boolean).length;
+    const connectedCount = registryIntegrations.filter(
+        ri => integrations?.[ri.id as keyof IntegrationsSummary]?.connected
+    ).length;
 
     const recentActivities = activities.slice(0, 5);
 
@@ -128,6 +83,11 @@ const DashboardPage: React.FC = () => {
 
     return (
         <PageLayout title="Dashboard" onRefresh={refresh} loading={isLoading}>
+            {/* Welcome Banner for new users */}
+            {connectedCount === 0 && !isLoading && (
+                <WelcomeBanner />
+            )}
+
             {/* Quick Actions */}
             <div className="dashboard-quick-actions">
                 <Button variant="primary" onClick={() => navigate('/settings/pipelines/new')}>
@@ -147,30 +107,21 @@ const DashboardPage: React.FC = () => {
                         <Link to="/settings/integrations" className="card-link">Manage →</Link>
                     </div>
                     <div className="connections-list">
-                        <div className={`connection-item ${integrations?.hevy?.connected ? 'connected' : ''}`}>
-                            <span className="connection-icon">🏋️</span>
-                            <span className="connection-name">Hevy</span>
-                            <span className={`connection-status ${integrations?.hevy?.connected ? 'active' : 'inactive'}`}>
-                                {integrations?.hevy?.connected ? '✓' : '○'}
-                            </span>
-                        </div>
-                        <div className={`connection-item ${integrations?.fitbit?.connected ? 'connected' : ''}`}>
-                            <span className="connection-icon">⌚</span>
-                            <span className="connection-name">Fitbit</span>
-                            <span className={`connection-status ${integrations?.fitbit?.connected ? 'active' : 'inactive'}`}>
-                                {integrations?.fitbit?.connected ? '✓' : '○'}
-                            </span>
-                        </div>
-                        <div className={`connection-item ${integrations?.strava?.connected ? 'connected' : ''}`}>
-                            <span className="connection-icon">🚴</span>
-                            <span className="connection-name">Strava</span>
-                            <span className={`connection-status ${integrations?.strava?.connected ? 'active' : 'inactive'}`}>
-                                {integrations?.strava?.connected ? '✓' : '○'}
-                            </span>
-                        </div>
+                        {registryIntegrations.map(integration => {
+                            const status = integrations?.[integration.id as keyof IntegrationsSummary];
+                            return (
+                                <div key={integration.id} className={`connection-item ${status?.connected ? 'connected' : ''}`}>
+                                    <span className="connection-icon">{integration.icon}</span>
+                                    <span className="connection-name">{integration.name}</span>
+                                    <span className={`connection-status ${status?.connected ? 'active' : 'inactive'}`}>
+                                        {status?.connected ? '✓' : '○'}
+                                    </span>
+                                </div>
+                            );
+                        })}
                     </div>
                     <div className="card-footer-stat">
-                        <strong>{connectedCount}</strong> of 3 connected
+                        <strong>{connectedCount}</strong> of {registryIntegrations.length} connected
                     </div>
                 </Card>
 

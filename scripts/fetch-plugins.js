@@ -12,24 +12,63 @@ const OUTPUT_FILE = path.join(OUTPUT_DIR, 'plugins.json');
 
 // Fallback data if API is unavailable or in development
 const FALLBACK_DATA = {
-  connections: [
-    { id: 'hevy', name: 'Hevy', icon: '/images/integrations/hevy.svg', status: 'live', description: 'Strength training workouts' },
-    { id: 'fitbit', name: 'Fitbit', icon: '/images/integrations/fitbit.svg', status: 'live', description: 'Heart rate & sleep data' },
+  integrations: [
+    {
+      id: 'hevy',
+      name: 'Hevy',
+      icon: '🏋️',
+      image: '/images/integrations/hevy.svg',
+      status: 'live',
+      description: 'Import strength training workouts',
+      category: 'source',
+      authType: 'apikey',
+      detailsUrl: '/integrations/hevy',
+      setupTitle: 'Connect Hevy',
+      setupInstructions: 'Generate an API key from the Hevy app settings.',
+    },
+    {
+      id: 'fitbit',
+      name: 'Fitbit',
+      icon: '⌚',
+      image: '/images/integrations/fitbit.svg',
+      status: 'live',
+      description: 'Import activities and heart rate data',
+      category: 'source',
+      authType: 'oauth',
+      detailsUrl: '/integrations/fitbit',
+      setupTitle: 'Connect Fitbit',
+      setupInstructions: 'Authorize FitGlue to access your Fitbit data.',
+    },
+    {
+      id: 'strava',
+      name: 'Strava',
+      icon: '🚴',
+      image: '/images/integrations/strava.svg',
+      status: 'live',
+      description: 'Upload enriched activities to Strava',
+      category: 'destination',
+      authType: 'oauth',
+      detailsUrl: '/integrations/strava',
+      setupTitle: 'Connect Strava',
+      setupInstructions: 'Authorize FitGlue to upload to your Strava profile.',
+    },
   ],
-  syncTargets: [
-    { id: 'strava', name: 'Strava', icon: '/images/integrations/strava.svg', status: 'live', description: 'Share your achievements' },
+  sources: [
+    { id: 'hevy', name: 'Hevy', icon: '🏋️', description: 'Import strength training workouts from Hevy' },
+    { id: 'fitbit', name: 'Fitbit', icon: '⌚', description: 'Import activities from Fitbit' },
   ],
-  comingSoon: [
-    { id: 'garmin', name: 'Garmin', icon: '/images/integrations/garmin.svg', status: 'coming', description: 'GPS activities' },
-    { id: 'apple-health', name: 'Apple Health', icon: '/images/integrations/apple-health.svg', status: 'coming', description: 'Unified health data' },
-    { id: 'nike-run-club', name: 'Nike Run Club', icon: '/images/integrations/nike-run-club.svg', status: 'coming', description: 'Running activities' },
-  ],
-  boosters: [
+  enrichers: [
     { id: 'ai-description', name: 'AI Descriptions', icon: '🤖', description: 'Let AI write engaging summaries of your workouts' },
     { id: 'muscle-heatmap', name: 'Muscle Heatmaps', icon: '💪', description: 'Visualize which muscles you trained' },
     { id: 'heart-rate', name: 'Heart Rate Analysis', icon: '❤️', description: 'Pull heart rate data from your wearables' },
-    { id: 'achievements', name: 'Achievement Badges', icon: '🏆', description: 'Celebrate milestones automatically' },
-    { id: 'custom-notes', name: 'Custom Notes', icon: '✏️', description: 'Add your own insights and comments' },
+  ],
+  destinations: [
+    { id: 'strava', name: 'Strava', icon: '🚴', description: 'Upload activities to Strava' },
+  ],
+  comingSoon: [
+    { id: 'garmin', name: 'Garmin', icon: '⌚', image: '/images/integrations/garmin.svg', description: 'GPS activities' },
+    { id: 'apple-health', name: 'Apple Health', icon: '❤️', image: '/images/integrations/apple-health.svg', description: 'Unified health data' },
+    { id: 'nike-run-club', name: 'Nike Run Club', icon: '👟', image: '/images/integrations/nike-run-club.svg', description: 'Running activities' },
   ],
 };
 
@@ -63,11 +102,15 @@ async function fetchPlugins() {
 
     const data = await response.json();
 
-    // Transform API response to integration format
+    // Transform API response to our expected format
     const transformed = transformPluginData(data);
 
     fs.writeFileSync(OUTPUT_FILE, JSON.stringify(transformed, null, 2));
-    console.log(`✅ Wrote ${Object.keys(transformed).length} plugin categories to ${OUTPUT_FILE}`);
+    console.log(`✅ Wrote plugin data to ${OUTPUT_FILE}`);
+    console.log(`   - ${transformed.integrations.length} integrations`);
+    console.log(`   - ${transformed.sources.length} sources`);
+    console.log(`   - ${transformed.enrichers.length} enrichers`);
+    console.log(`   - ${transformed.destinations.length} destinations`);
   } catch (error) {
     console.warn(`⚠️ Failed to fetch plugins: ${error.message}`);
     console.log('📦 Using fallback plugin data');
@@ -76,21 +119,85 @@ async function fetchPlugins() {
 }
 
 function transformPluginData(apiData) {
-  // If API returns enrichers array, transform to our structure
-  if (apiData.enrichers) {
-    return {
-      ...FALLBACK_DATA,
-      boosters: apiData.enrichers.map(e => ({
-        id: e.name.toLowerCase().replace(/\s+/g, '-'),
-        name: e.displayName || e.name,
-        icon: e.icon || '🔧',
-        description: e.description || '',
-      })),
-    };
+  const result = {
+    integrations: [],
+    sources: [],
+    enrichers: [],
+    destinations: [],
+    comingSoon: FALLBACK_DATA.comingSoon, // Keep static for now
+  };
+
+  // Transform integrations
+  if (apiData.integrations && Array.isArray(apiData.integrations)) {
+    result.integrations = apiData.integrations
+      .filter(i => i.enabled)
+      .map(i => ({
+        id: i.id,
+        name: i.name,
+        icon: i.icon || '🔌',
+        image: `/images/integrations/${i.id}.svg`,
+        status: 'live',
+        description: i.description || '',
+        category: getIntegrationCategory(i),
+        authType: i.authType === 1 ? 'oauth' : 'apikey',
+        detailsUrl: `/integrations/${i.id}`,
+        setupTitle: i.setupTitle || `Connect ${i.name}`,
+        setupInstructions: i.setupInstructions || '',
+        docsUrl: i.docsUrl || '',
+      }));
   }
 
-  // If API returns our expected format, use it directly
-  return apiData;
+  // Transform sources
+  if (apiData.sources && Array.isArray(apiData.sources)) {
+    result.sources = apiData.sources
+      .filter(s => s.enabled)
+      .map(s => ({
+        id: s.id,
+        name: s.name,
+        icon: s.icon || '📥',
+        description: s.description || '',
+        detailsUrl: `/plugins/sources/${s.id}`,
+      }));
+  }
+
+  // Transform enrichers
+  if (apiData.enrichers && Array.isArray(apiData.enrichers)) {
+    result.enrichers = apiData.enrichers
+      .filter(e => e.enabled)
+      .map(e => ({
+        id: e.id,
+        name: e.name,
+        icon: e.icon || '✨',
+        description: e.description || '',
+        detailsUrl: `/plugins/boosters/${e.id}`,
+        providerType: e.enricherProviderType,
+      }));
+  }
+
+  // Transform destinations
+  if (apiData.destinations && Array.isArray(apiData.destinations)) {
+    result.destinations = apiData.destinations
+      .filter(d => d.enabled)
+      .map(d => ({
+        id: d.id,
+        name: d.name,
+        icon: d.icon || '📤',
+        description: d.description || '',
+        detailsUrl: `/plugins/destinations/${d.id}`,
+      }));
+  }
+
+  return result;
+}
+
+function getIntegrationCategory(integration) {
+  // Check if this integration is used as a source or destination based on ID
+  const sourceIds = ['hevy', 'fitbit'];
+  const destIds = ['strava'];
+
+  if (sourceIds.includes(integration.id)) return 'source';
+  if (destIds.includes(integration.id)) return 'destination';
+  return 'source'; // default
 }
 
 fetchPlugins();

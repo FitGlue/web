@@ -1,53 +1,60 @@
 {
-  "connections": [
+  "integrations": [
     {
       "id": "hevy",
       "name": "Hevy",
-      "icon": "/images/integrations/hevy.svg",
+      "icon": "🏋️",
+      "image": "/images/integrations/hevy.svg",
       "status": "live",
-      "description": "Strength training workouts"
+      "description": "Import strength training workouts",
+      "category": "source",
+      "authType": "apikey",
+      "detailsUrl": "/integrations/hevy",
+      "setupTitle": "Connect Hevy",
+      "setupInstructions": "Generate an API key from the Hevy app settings."
     },
     {
       "id": "fitbit",
       "name": "Fitbit",
-      "icon": "/images/integrations/fitbit.svg",
+      "icon": "⌚",
+      "image": "/images/integrations/fitbit.svg",
       "status": "live",
-      "description": "Heart rate & sleep data"
-    }
-  ],
-  "syncTargets": [
+      "description": "Import activities and heart rate data",
+      "category": "source",
+      "authType": "oauth",
+      "detailsUrl": "/integrations/fitbit",
+      "setupTitle": "Connect Fitbit",
+      "setupInstructions": "Authorize FitGlue to access your Fitbit data."
+    },
     {
       "id": "strava",
       "name": "Strava",
-      "icon": "/images/integrations/strava.svg",
+      "icon": "🚴",
+      "image": "/images/integrations/strava.svg",
       "status": "live",
-      "description": "Share your achievements"
+      "description": "Upload enriched activities to Strava",
+      "category": "destination",
+      "authType": "oauth",
+      "detailsUrl": "/integrations/strava",
+      "setupTitle": "Connect Strava",
+      "setupInstructions": "Authorize FitGlue to upload to your Strava profile."
     }
   ],
-  "comingSoon": [
+  "sources": [
     {
-      "id": "garmin",
-      "name": "Garmin",
-      "icon": "/images/integrations/garmin.svg",
-      "status": "coming",
-      "description": "GPS activities"
+      "id": "hevy",
+      "name": "Hevy",
+      "icon": "🏋️",
+      "description": "Import strength training workouts from Hevy"
     },
     {
-      "id": "apple-health",
-      "name": "Apple Health",
-      "icon": "/images/integrations/apple-health.svg",
-      "status": "coming",
-      "description": "Unified health data"
-    },
-    {
-      "id": "nike-run-club",
-      "name": "Nike Run Club",
-      "icon": "/images/integrations/nike-run-club.svg",
-      "status": "coming",
-      "description": "Running activities"
+      "id": "fitbit",
+      "name": "Fitbit",
+      "icon": "⌚",
+      "description": "Import activities from Fitbit"
     }
   ],
-  "boosters": [
+  "enrichers": [
     {
       "id": "ai-description",
       "name": "AI Descriptions",
@@ -65,18 +72,37 @@
       "name": "Heart Rate Analysis",
       "icon": "❤️",
       "description": "Pull heart rate data from your wearables"
+    }
+  ],
+  "destinations": [
+    {
+      "id": "strava",
+      "name": "Strava",
+      "icon": "🚴",
+      "description": "Upload activities to Strava"
+    }
+  ],
+  "comingSoon": [
+    {
+      "id": "garmin",
+      "name": "Garmin",
+      "icon": "⌚",
+      "image": "/images/integrations/garmin.svg",
+      "description": "GPS activities"
     },
     {
-      "id": "achievements",
-      "name": "Achievement Badges",
-      "icon": "🏆",
-      "description": "Celebrate milestones automatically"
+      "id": "apple-health",
+      "name": "Apple Health",
+      "icon": "❤️",
+      "image": "/images/integrations/apple-health.svg",
+      "description": "Unified health data"
     },
     {
-      "id": "custom-notes",
-      "name": "Custom Notes",
-      "icon": "✏️",
-      "description": "Add your own insights and comments"
+      "id": "nike-run-club",
+      "name": "Nike Run Club",
+      "icon": "👟",
+      "image": "/images/integrations/nike-run-club.svg",
+      "description": "Running activities"
     }
   ]
 }

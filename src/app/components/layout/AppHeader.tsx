@@ -53,17 +53,9 @@ export const AppHeader: React.FC = () => {
                             <span className="user-email">{user?.email || 'User'}</span>
                         </div>
                         <div className="user-dropdown-divider" />
-                        <Link to="/settings" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
-                            <span className="dropdown-icon">⚙️</span>
-                            Settings
-                        </Link>
-                        <Link to="/settings/integrations" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
-                            <span className="dropdown-icon">🔗</span>
-                            Integrations
-                        </Link>
-                        <Link to="/settings/pipelines" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
-                            <span className="dropdown-icon">🔀</span>
-                            Pipelines
+                        <Link to="/settings/account" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
+                            <span className="dropdown-icon">👤</span>
+                            Account
                         </Link>
                         <div className="user-dropdown-divider" />
                         <a href="/logout" className="user-dropdown-item user-dropdown-item-danger">

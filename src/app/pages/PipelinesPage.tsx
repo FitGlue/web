@@ -4,6 +4,7 @@ import { PageLayout } from '../components/layout/PageLayout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useApi } from '../hooks/useApi';
+import { usePipelines } from '../hooks/usePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { LoadingState } from '../components/ui/LoadingState';
 
@@ -119,8 +120,7 @@ const PipelinesPage: React.FC = () => {
     const api = useApi();
     const navigate = useNavigate();
     const { sources, enrichers, destinations, loading: registryLoading } = usePluginRegistry();
-    const [pipelines, setPipelines] = useState<PipelineConfig[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { pipelines, loading, refresh: refreshPipelines, fetchIfNeeded } = usePipelines();
     const [deleting, setDeleting] = useState<string | null>(null);
 
     // Dynamic lookup functions using the plugin registry
@@ -166,22 +166,9 @@ const PipelinesPage: React.FC = () => {
             : `Destination ${dest}`);
     };
 
-    const fetchPipelines = async () => {
-        setLoading(true);
-        try {
-            const response = await api.get('/users/me/pipelines');
-            setPipelines((response as { pipelines: PipelineConfig[] }).pipelines || []);
-        } catch (error) {
-            console.error('Failed to fetch pipelines:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        fetchPipelines();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        fetchIfNeeded();
+    }, [fetchIfNeeded]);
 
     const handleDelete = async (pipelineId: string) => {
         if (!window.confirm('Are you sure you want to delete this pipeline?')) {
@@ -191,7 +178,7 @@ const PipelinesPage: React.FC = () => {
         setDeleting(pipelineId);
         try {
             await api.delete(`/users/me/pipelines/${pipelineId}`);
-            await fetchPipelines();
+            await refreshPipelines();
         } catch (error) {
             console.error('Failed to delete pipeline:', error);
         } finally {
@@ -201,7 +188,7 @@ const PipelinesPage: React.FC = () => {
 
     if (loading || registryLoading) {
         return (
-            <PageLayout title="Pipelines" backTo="/settings" backLabel="Settings">
+            <PageLayout title="Pipelines" backTo="/" backLabel="Dashboard">
                 <LoadingState />
             </PageLayout>
         );
@@ -210,9 +197,9 @@ const PipelinesPage: React.FC = () => {
     return (
         <PageLayout
             title="Pipelines"
-            backTo="/settings"
-            backLabel="Settings"
-            onRefresh={fetchPipelines}
+            backTo="/"
+            backLabel="Dashboard"
+            onRefresh={refreshPipelines}
         >
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
                 <Button variant="primary" onClick={() => navigate('/settings/pipelines/new')}>

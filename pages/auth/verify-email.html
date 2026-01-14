@@ -1,0 +1,89 @@
+{{> auth-head}}
+
+<div class="auth-container">
+  <h1 class="title">
+    <a href="/" class="logo-link">
+      <span class="fit">Fit</span><span class="glue">Glue</span>
+    </a>
+  </h1>
+  <h2>Verify Your Email</h2>
+
+  <div class="auth-box verification-content">
+    <p class="auth-description">
+      We've sent a verification email to <strong id="user-email"></strong>.
+      Please check your inbox and click the verification link.
+    </p>
+
+    <div id="auth-error" class="auth-message error" style="display: none;"></div>
+    <div id="auth-success" class="auth-message success" style="display: none;"></div>
+
+    <button id="btn-resend" class="btn primary">Resend Verification Email</button>
+    <button id="btn-continue" class="btn secondary">Continue to App</button>
+
+    <p class="redirect-message">Already verified? The app will detect it automatically.</p>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getAuth, onAuthStateChanged, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCVxFYGCw9RvZrVCKq6kSsqFRdDQ-SqOng",
+    authDomain: "fitglue-app.firebaseapp.com",
+    projectId: "fitglue-app",
+    storageBucket: "fitglue-app.firebasestorage.app",
+    messagingSenderId: "755405684317",
+    appId: "1:755405684317:web:ffc54f00d3b88ec5e06b56"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const errorEl = document.getElementById('auth-error');
+  const successEl = document.getElementById('auth-success');
+  const emailEl = document.getElementById('user-email');
+
+  function showError(message) {
+    successEl.style.display = 'none';
+    errorEl.textContent = message;
+    errorEl.style.display = 'block';
+  }
+
+  function showSuccess(message) {
+    errorEl.style.display = 'none';
+    successEl.textContent = message;
+    successEl.style.display = 'block';
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = '/auth/login';
+      return;
+    }
+
+    emailEl.textContent = user.email;
+
+    if (user.emailVerified) {
+      window.location.href = '/app';
+    }
+  });
+
+  document.getElementById('btn-resend').addEventListener('click', async () => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        await sendEmailVerification(user);
+        showSuccess('Verification email sent!');
+      } catch (error) {
+        showError(error.message);
+      }
+    }
+  });
+
+  document.getElementById('btn-continue').addEventListener('click', () => {
+    window.location.href = '/app';
+  });
+</script>
+
+{{> auth-footer}}

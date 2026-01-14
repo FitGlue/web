@@ -1,0 +1,110 @@
+{{> header}}
+
+<main>
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="container">
+      <nav class="breadcrumb animate-on-scroll">
+        <a href="/integrations">Integrations</a> / <span>Strava</span>
+      </nav>
+      <h1 class="text-center animate-on-scroll">
+        <span class="integration-hero-emoji">🚴</span>
+        <span class="text-gradient">Strava</span>
+      </h1>
+      <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
+        Upload your enriched workouts to Strava automatically
+      </p>
+      <div class="hero-badges">
+        <span class="integration-status live">Live</span>
+        <span class="integration-type-badge">📤 Destination</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section">
+    <div class="container" style="max-width: 800px;">
+      <div class="integration-content animate-on-scroll">
+        <h2>What is Strava?</h2>
+        <p>
+          Strava is the leading social fitness platform used by millions of athletes worldwide.
+          Share your workouts, compete on segments, and connect with a global community of fitness enthusiasts.
+        </p>
+
+        <h2>What does FitGlue upload?</h2>
+        <ul class="feature-list">
+          <li>✅ Full workout details (title, description, duration)</li>
+          <li>✅ AI-enhanced activity descriptions</li>
+          <li>✅ Heart rate data from Fitbit</li>
+          <li>✅ Muscle group summaries</li>
+          <li>✅ Exercise breakdown and PRs</li>
+        </ul>
+
+        <h2>How to Connect</h2>
+        <div class="setup-steps">
+          <div class="setup-step">
+            <span class="step-number">1</span>
+            <div class="step-content">
+              <h4>Click Connect</h4>
+              <p>In FitGlue, go to Integrations and click "Connect" on Strava</p>
+            </div>
+          </div>
+          <div class="setup-step">
+            <span class="step-number">2</span>
+            <div class="step-content">
+              <h4>Authorize FitGlue</h4>
+              <p>You'll be redirected to Strava to sign in</p>
+            </div>
+          </div>
+          <div class="setup-step">
+            <span class="step-number">3</span>
+            <div class="step-content">
+              <h4>Grant Upload Permission</h4>
+              <p>Allow FitGlue to upload activities to your profile</p>
+            </div>
+          </div>
+          <div class="setup-step">
+            <span class="step-number">4</span>
+            <div class="step-content">
+              <h4>Set Up a Pipeline</h4>
+              <p>Create a pipeline to automatically sync workouts to Strava</p>
+            </div>
+          </div>
+        </div>
+
+        <h2>Example Output</h2>
+        <p>Here's what a FitGlue-enhanced workout looks like on Strava:</p>
+        <div class="example-output">
+          <div class="strava-preview">
+            <div class="strava-preview-header">
+              <span class="strava-icon">🏋️</span>
+              <div>
+                <strong>Upper Body Push Day</strong>
+                <span class="strava-meta">Weight Training • 45m</span>
+              </div>
+            </div>
+            <div class="strava-preview-body">
+              <p>💪 <strong>Crushed it today!</strong> Hit a new PR on bench press.</p>
+              <p>🎯 Muscles worked: Chest, Shoulders, Triceps</p>
+              <p>📊 5 exercises • 20 sets • Progressive overload achieved</p>
+              <p>❤️ Avg HR: 125 bpm • Peak: 158 bpm</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Connect Strava</span>?</h2>
+        <p class="cta-subtitle animate-on-scroll">Show off your enhanced workouts to the world.</p>
+        <a href="/app/register" class="btn btn-primary btn-lg animate-on-scroll">Get Started →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{> footer}}

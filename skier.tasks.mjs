@@ -6,34 +6,52 @@ import {
   setGlobalsTask,
   generatePagesTask,
 } from 'skier';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Generate a hash for cache busting
 const cacheHash = Date.now().toString(36);
 
-// Integration data
+// Load plugin data from fetch-plugins.js output
+function loadPluginData() {
+  try {
+    const dataPath = path.join(__dirname, '_data', 'plugins.json');
+    const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+    return data;
+  } catch (error) {
+    console.warn('⚠️ Could not load plugins.json, using empty defaults');
+    return {
+      integrations: [],
+      sources: [],
+      enrichers: [],
+      destinations: [],
+      comingSoon: [],
+    };
+  }
+}
+
+const pluginData = loadPluginData();
+
+// Transform integrations for the marketing site format
 const integrations = {
-  connections: [
-    { id: 'hevy', name: 'Hevy', emoji: '🏋️', icon: '/images/integrations/hevy.svg', status: 'live', description: 'Strength training workouts' },
-    { id: 'fitbit', name: 'Fitbit', emoji: '⌚', icon: '/images/integrations/fitbit.svg', status: 'live', description: 'Heart rate & sleep data' },
-  ],
-  syncTargets: [
-    { id: 'strava', name: 'Strava', emoji: '🚴', icon: '/images/integrations/strava.svg', status: 'live', description: 'Share your achievements' },
-  ],
-  comingSoon: [
-    { id: 'garmin', name: 'Garmin', emoji: '⌚', icon: '/images/integrations/garmin.svg', status: 'coming', description: 'GPS activities' },
-    { id: 'apple-health', name: 'Apple Health', emoji: '❤️', icon: '/images/integrations/apple-health.svg', status: 'coming', description: 'Unified health data' },
-    { id: 'nike-run-club', name: 'Nike Run Club', emoji: '👟', icon: '/images/integrations/nike-run-club.svg', status: 'coming', description: 'Running activities' },
-  ]
+  // Group by category for legacy template support
+  connections: pluginData.integrations.filter(i => i.category === 'source'),
+  syncTargets: pluginData.integrations.filter(i => i.category === 'destination'),
+  comingSoon: pluginData.comingSoon || [],
+  // All integrations for new pages
+  all: pluginData.integrations,
 };
 
-// Booster (Enricher) data
-const boosters = [
-  { id: 'ai-description', name: 'AI Descriptions', icon: '🤖', description: 'Let AI write engaging summaries of your workouts' },
-  { id: 'muscle-heatmap', name: 'Muscle Heatmaps', icon: '💪', description: 'Visualize which muscles you trained' },
-  { id: 'heart-rate', name: 'Heart Rate Analysis', icon: '❤️', description: 'Pull heart rate data from your wearables' },
-  { id: 'achievements', name: 'Achievement Badges', icon: '🏆', description: 'Celebrate milestones automatically' },
-  { id: 'custom-notes', name: 'Custom Notes', icon: '✏️', description: 'Add your own insights and comments' },
-];
+// Enrichers/Boosters
+const boosters = pluginData.enrichers || [];
+
+// Sources and Destinations
+const sources = pluginData.sources || [];
+const destinations = pluginData.destinations || [];
 
 // Define global values
 const globalValues = {
@@ -44,6 +62,8 @@ const globalValues = {
   cacheHash: cacheHash,
   integrations: integrations,
   boosters: boosters,
+  sources: sources,
+  destinations: destinations,
   appUrl: '/app',
   waitlistUrl: '/waitlist',
 };
@@ -127,6 +147,75 @@ export const tasks = [
               return 'FitGlue - Your fitness data, unified.';
           }
         })(),
+      };
+    },
+  }),
+
+  // Generate integration detail pages (subdirectory)
+  generatePagesTask({
+    pagesDir: './pages/integrations',
+    partialsDir: './partials',
+    outDir: './static-dist/integrations',
+    additionalVarsFn: ({ currentPage }) => {
+      const integrationMeta = {
+        hevy: {
+          pageTitle: 'Hevy Integration',
+          description: 'Connect Hevy to FitGlue to import your strength training workouts. Step-by-step setup guide.',
+        },
+        fitbit: {
+          pageTitle: 'Fitbit Integration',
+          description: 'Connect Fitbit to FitGlue to import your activities, heart rate, and health data.',
+        },
+        strava: {
+          pageTitle: 'Strava Integration',
+          description: 'Upload your enriched FitGlue activities to Strava automatically.',
+        },
+      };
+
+      const meta = integrationMeta[currentPage] || {};
+      return {
+        pageTitle: meta.pageTitle || `${currentPage.charAt(0).toUpperCase() + currentPage.slice(1)} Integration`,
+        description: meta.description || `FitGlue ${currentPage} integration details.`,
+        isIntegrations: true,
+        canonicalPath: `/integrations/${currentPage}`,
+      };
+    },
+  }),
+
+  // Generate auth pages (login, register, etc.)
+  generatePagesTask({
+    pagesDir: './pages/auth',
+    partialsDir: './partials',
+    outDir: './static-dist/auth',
+    additionalVarsFn: ({ currentPage }) => {
+      const authMeta = {
+        login: {
+          pageTitle: 'Login',
+          description: 'Log in to your FitGlue account.',
+        },
+        register: {
+          pageTitle: 'Create Account',
+          description: 'Create a new FitGlue account to unify your fitness data.',
+        },
+        'forgot-password': {
+          pageTitle: 'Reset Password',
+          description: 'Reset your FitGlue account password.',
+        },
+        'verify-email': {
+          pageTitle: 'Verify Email',
+          description: 'Verify your email address for FitGlue.',
+        },
+        logout: {
+          pageTitle: 'Logout',
+          description: 'Log out of your FitGlue account.',
+        },
+      };
+
+      const meta = authMeta[currentPage] || {};
+      return {
+        pageTitle: meta.pageTitle || currentPage.charAt(0).toUpperCase() + currentPage.slice(1),
+        description: meta.description || `FitGlue ${currentPage} page.`,
+        canonicalPath: `/auth/${currentPage}`,
       };
     },
   }),
