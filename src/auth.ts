@@ -50,7 +50,7 @@ async function init() {
     const isAppPage = path.includes('app') || path.includes('dashboard');
 
     // Define clean redirects
-    const LOGIN_URL = '/login';
+    const LOGIN_URL = '/auth/login';
     const APP_URL = '/app';
 
     if (user) {
@@ -74,8 +74,8 @@ async function init() {
       const landingNav = document.getElementById('landing-nav');
       if (landingNav) {
         landingNav.innerHTML = `
-            <a href="/login" class="nav-link">Login</a>
-            <a href="/register" class="btn primary small">Sign Up</a>
+            <a href="/auth/login" class="nav-link">Login</a>
+            <a href="/auth/register" class="btn primary small">Sign Up</a>
         `;
       }
     }
@@ -135,7 +135,7 @@ async function init() {
   bindClick('btn-logout', async () => {
     try {
       await signOut(auth);
-      window.location.href = '/login';
+      window.location.href = '/auth/login';
     } catch (error) {
       console.error('Logout Error', error);
     }

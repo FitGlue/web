@@ -2929,3 +2929,83 @@ h3 {
     display: inline-block;
     padding: 0.75rem 2rem;
 }
+
+/* 404 Not Found Page */
+.not-found-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+}
+
+.not-found-content {
+    max-width: 600px;
+}
+
+.not-found-code {
+    font-size: clamp(6rem, 15vw, 10rem);
+    font-weight: 900;
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: pulse-slow 3s ease-in-out infinite;
+}
+
+.not-found-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-top: 1rem;
+    color: #fff;
+    font-weight: 700;
+}
+
+.not-found-tagline {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 1rem 0;
+}
+
+.not-found-description {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.6;
+}
+
+.not-found-home-link {
+    display: inline-block;
+    margin-top: 2.5rem;
+    text-decoration: none;
+    padding: 1rem 2.5rem;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+    color: white;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.not-found-home-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(131, 56, 236, 0.3);
+}
+
+@keyframes pulse-slow {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}

@@ -19,7 +19,6 @@ export function transformRegistryTask() {
       const integrationsWithDetails = (registry.integrations || []).map((/** @type {any} */ i) => ({
         ...i,
         detailsUrl: `/connections/${i.id}`,
-        status: i.enabled ? 'live' : 'disabled',
       }));
 
       const integrations = {

@@ -58,7 +58,7 @@ export const AppHeader: React.FC = () => {
                             Account
                         </Link>
                         <div className="user-dropdown-divider" />
-                        <a href="/logout" className="user-dropdown-item user-dropdown-item-danger">
+                        <a href="/auth/logout" className="user-dropdown-item user-dropdown-item-danger">
                             <span className="dropdown-icon">🚪</span>
                             Logout
                         </a>

@@ -14,7 +14,7 @@ export const usePluginRegistry = () => {
     const fetchRegistry = async () => {
       try {
         // No auth required for the plugins endpoint
-        const response = await fetch('/api/plugins');
+        const response = await fetch('/api/registry');
         if (!response.ok) {
           throw new Error(`Failed to fetch plugin registry: ${response.statusText}`);
         }

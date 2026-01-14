@@ -36,9 +36,31 @@
   <section class="section">
     <div class="container" style="max-width: 800px;">
       <div class="integration-content animate-on-scroll">
-        {{#if marketingDescription}}
+        {{#if marketingHtml}}
           <div class="markdown-content">
-            {{{marketingDescription}}}
+            {{{marketingHtml}}}
+          </div>
+        {{/if}}
+
+        {{#if hasTransformations}}
+          <h2>What It Does</h2>
+          <div class="transformations-list">
+            {{#each transformations}}
+              <div class="transformation-card">
+                <div class="transformation-label">{{label}}</div>
+                <div class="transformation-content">
+                  <div class="transformation-before">
+                    <div class="transformation-tag">Before</div>
+                    <div class="transformation-text">{{before}}</div>
+                  </div>
+                  <div class="transformation-arrow">→</div>
+                  <div class="transformation-after">
+                    <div class="transformation-tag">After</div>
+                    <div class="transformation-text">{{{afterHtml}}}</div>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
           </div>
         {{/if}}
 
@@ -51,16 +73,64 @@
           </ul>
         {{/if}}
 
-        {{#if requiredIntegrations.length}}
-          <h2>Required Connection</h2>
-          <p class="text-muted">
-            This plugin requires the following connection to be configured:
-          </p>
+        {{#if hasUseCases}}
+          <h2>Perfect For</h2>
           <ul class="feature-list">
-            {{#each requiredIntegrations}}
-              <li><a href="/connections/{{this}}">{{this}}</a></li>
+            {{#each useCases}}
+              <li>🎯 {{this}}</li>
             {{/each}}
           </ul>
+        {{/if}}
+
+        {{#if hasConfig}}
+          <h2>Configuration</h2>
+          <p class="text-muted">Customize this booster with the following options:</p>
+          <div class="config-list">
+            {{#each configItems}}
+              <div class="config-item">
+                <div class="config-header">
+                  <span class="config-label">{{label}}</span>
+                  {{#if required}}<span class="config-required">Required</span>{{/if}}
+                </div>
+                <p class="config-description">{{description}}</p>
+                {{#if isSelect}}
+                  {{#if hasOptions}}
+                    <div class="config-options">
+                      {{#each options}}
+                        <div class="config-option {{#if isDefault}}default{{/if}}">
+                          <span class="config-option-label">{{label}}</span>
+                        </div>
+                      {{/each}}
+                    </div>
+                  {{/if}}
+                {{/if}}
+                {{#if isBoolean}}
+                  <div class="config-toggle">
+                    <span class="toggle-option {{#if defaultIsTrue}}active{{/if}}">On</span>
+                    <span class="toggle-divider">/</span>
+                    <span class="toggle-option {{#unless defaultIsTrue}}active{{/unless}}">Off</span>
+                    <span class="toggle-default">(default: {{#if defaultIsTrue}}On{{else}}Off{{/if}})</span>
+                  </div>
+                {{/if}}
+              </div>
+            {{/each}}
+          </div>
+        {{/if}}
+
+        {{#if hasRequiredConnections}}
+          <h2>Required Connection</h2>
+          <p class="text-muted">This plugin requires the following connection:</p>
+          <div class="required-connections-grid">
+            {{#each requiredConnectionObjects}}
+              <a href="/connections/{{id}}" class="connection-card">
+                <div class="connection-card-icon">{{icon}}</div>
+                <div class="connection-card-content">
+                  <h4>{{name}}</h4>
+                  <p>{{description}}</p>
+                </div>
+              </a>
+            {{/each}}
+          </div>
         {{/if}}
       </div>
     </div>

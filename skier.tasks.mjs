@@ -98,6 +98,7 @@ export const tasks = [
         waitlist: 'Join the FitGlue waitlist.',
         privacy: 'FitGlue Privacy Policy.',
         terms: 'FitGlue Terms of Service.',
+        '404': 'Page not found - FitGlue',
       };
       return {
         pageTitle: pageName.charAt(0).toUpperCase() + pageName.slice(1).replace(/-/g, ' '),

@@ -44,6 +44,7 @@ export const useIntegrations = () => {
   }, [api, loaded, isStale, setIntegrations, setLastUpdated, setLoaded, setLoading]);
 
   const refresh = useCallback(() => fetchIntegrations(true), [fetchIntegrations]);
+  const fetchIfNeeded = useCallback(() => fetchIntegrations(false), [fetchIntegrations]);
 
   return {
     integrations,
@@ -51,6 +52,6 @@ export const useIntegrations = () => {
     loaded,
     lastUpdated,
     refresh,
-    fetchIfNeeded: () => fetchIntegrations(false),
+    fetchIfNeeded,
   };
 };

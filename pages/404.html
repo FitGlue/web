@@ -1,0 +1,55 @@
+{{> header}}
+
+<main class="container">
+  <div class="content" style="text-align: center; padding: 6rem 0;">
+    <h1 class="error-code">404</h1>
+
+    <h2 class="title" style="font-size: clamp(2rem, 5vw, 3rem); margin-top: 1rem;">
+      Page <span class="fit">Not</span> <span class="glue">Found</span>
+    </h2>
+
+    <p class="tagline" style="margin-bottom: 1rem;">
+      Looks like you've ventured into the unknown.
+    </p>
+
+    <div class="description">
+      <p>
+        The page you're looking for doesn't exist or has been moved.
+        Let's get you back on track.
+      </p>
+
+      <a href="/" class="btn btn-primary btn-lg" style="margin-top: 2rem;">
+        Return Home
+      </a>
+    </div>
+  </div>
+</main>
+
+<style>
+  .error-code {
+    font-size: clamp(6rem, 15vw, 10rem);
+    font-weight: 900;
+    margin-bottom: 0;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: pulse-slow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-slow {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.8;
+    }
+  }
+</style>
+
+{{> footer}}

@@ -25,7 +25,7 @@ const AccountSettingsPage: React.FC = () => {
         try {
             await api.delete('/users/me');
             // Redirect to logout/login after successful deletion
-            window.location.href = '/logout';
+            window.location.href = '/auth/logout';
         } catch (err) {
             console.error('Failed to delete account:', err);
             setError('Failed to delete account. Please try again.');

@@ -107,9 +107,9 @@ async function init() {
     const isAppPage = path.includes('app') || path.includes('dashboard');
 
     // Define clean redirects
-    const LOGIN_URL = '/login';
+    const LOGIN_URL = '/auth/login';
     const APP_URL = '/app';
-    const VERIFY_EMAIL_URL = '/verify-email';
+    const VERIFY_EMAIL_URL = '/auth/verify-email';
 
     if (user) {
       console.log('User is logged in:', user.uid);
@@ -169,8 +169,8 @@ async function init() {
       const landingNav = document.getElementById('landing-nav');
       if (landingNav) {
         landingNav.innerHTML = `
-            <a href="/login" class="nav-link">Login</a>
-            <a href="/register" class="btn primary small">Sign Up</a>
+            <a href="/auth/login" class="nav-link">Login</a>
+            <a href="/auth/register" class="btn primary small">Sign Up</a>
         `;
       }
     }
@@ -263,7 +263,7 @@ async function init() {
       await sendEmailVerification(userCredential.user);
 
       // Redirect to verification page
-      window.location.href = '/verify-email';
+      window.location.href = '/auth/verify-email';
     } catch (error: unknown) {
       console.error('Registration Error', error);
       showMessage('auth-error', error instanceof Error ? error.message : 'Registration failed');
@@ -318,7 +318,7 @@ async function init() {
   bindClick('btn-logout-verify', async () => {
     try {
       await signOut(auth);
-      window.location.href = '/login';
+      window.location.href = '/auth/login';
     } catch (error) {
       console.error('Logout Error', error);
     }
@@ -328,7 +328,7 @@ async function init() {
   bindClick('btn-logout', async () => {
     try {
       await signOut(auth);
-      window.location.href = '/logout';
+      window.location.href = '/auth/logout';
     } catch (error) {
       console.error('Logout Error', error);
     }

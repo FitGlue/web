@@ -24,9 +24,9 @@
   <section class="section">
     <div class="container" style="max-width: 800px;">
       <div class="integration-content animate-on-scroll">
-        {{#if marketingDescription}}
+        {{#if marketingHtml}}
           <div class="markdown-content">
-            {{{marketingDescription}}}
+            {{{marketingHtml}}}
           </div>
         {{/if}}
 
@@ -40,15 +40,25 @@
         {{/if}}
 
         <h2>How to Connect</h2>
-        <div class="setup-steps">
-          {{#if setupInstructions}}
-            <div class="setup-instructions markdown-content">
-              {{{setupInstructions}}}
-            </div>
-          {{else}}
-            <p class="text-muted">Setup instructions will appear here when you connect in the app.</p>
-          {{/if}}
-        </div>
+        {{#if hasSetupSteps}}
+          <div class="setup-steps-list">
+            {{#each setupSteps}}
+              <div class="setup-step">
+                <div class="step-number">{{number}}</div>
+                <div class="step-content">
+                  <h4>{{title}}</h4>
+                  <p>{{description}}</p>
+                </div>
+              </div>
+            {{/each}}
+          </div>
+        {{else if setupInstructions}}
+          <div class="setup-instructions">
+            <p>{{setupInstructions}}</p>
+          </div>
+        {{else}}
+          <p class="text-muted">Setup instructions will appear here when you connect in the app.</p>
+        {{/if}}
 
         <h2>Privacy & Security</h2>
         <p>

@@ -45,6 +45,7 @@ export const usePipelines = () => {
   }, [api, loaded, isStale, setPipelines, setLastUpdated, setLoaded, setLoading]);
 
   const refresh = useCallback(() => fetchPipelines(true), [fetchPipelines]);
+  const fetchIfNeeded = useCallback(() => fetchPipelines(false), [fetchPipelines]);
 
   return {
     pipelines,
@@ -52,6 +53,6 @@ export const usePipelines = () => {
     loaded,
     lastUpdated,
     refresh,
-    fetchIfNeeded: () => fetchPipelines(false),
+    fetchIfNeeded,
   };
 };
