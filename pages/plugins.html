@@ -14,21 +14,23 @@
   <!-- How It Works -->
   <section class="section">
     <div class="container text-center">
-      <h2 class="mb-md animate-on-scroll">How Your Pipeline Works</h2>
-      <div class="pipeline-flow animate-on-scroll">
-        <div class="pipeline-step">
-          <span class="pipeline-icon">📥</span>
-          <span class="pipeline-label">Source</span>
-        </div>
-        <span class="pipeline-arrow">→</span>
-        <div class="pipeline-step">
-          <span class="pipeline-icon">✨</span>
-          <span class="pipeline-label">Boosters</span>
-        </div>
-        <span class="pipeline-arrow">→</span>
-        <div class="pipeline-step">
-          <span class="pipeline-icon">📤</span>
-          <span class="pipeline-label">Target</span>
+      <h2 class="mb-md animate-on-scroll">The <span class="text-gradient">Pipeline</span> in Action</h2>
+      <div class="animate-on-scroll">
+        <div class="data-flow" style="justify-content: center; flex-wrap: wrap; gap: 1rem;">
+          <div class="data-flow-node source">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🏋️</div>
+            Source
+          </div>
+          <div class="data-flow-arrow"></div>
+          <div class="data-flow-node">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🚀</div>
+            Boosters
+          </div>
+          <div class="data-flow-arrow"></div>
+          <div class="data-flow-node destination">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🎯</div>
+            Target
+          </div>
         </div>
       </div>
       <p class="text-muted mt-md" style="max-width: 500px; margin-left: auto; margin-right: auto;">
@@ -71,7 +73,7 @@
       <div class="integrations-grid stagger-children">
         {{#each boosters}}
           <a href="{{detailsUrl}}" class="integration-card-link">
-            <div class="integration-card hoverable booster-card">
+            <div class="integration-card booster-card hoverable">
               <div class="integration-logo">
                 <span class="integration-emoji">{{icon}}</span>
               </div>

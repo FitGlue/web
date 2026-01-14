@@ -55,9 +55,9 @@
         }
       },
       {
-        "source": "/api/plugins",
+        "source": "/api/registry",
         "run": {
-          "serviceId": "plugin-registry-handler",
+          "serviceId": "registry-handler",
           "region": "us-central1"
         }
       },

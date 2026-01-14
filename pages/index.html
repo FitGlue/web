@@ -100,47 +100,48 @@
     </div>
   </section>
 
-  <!-- Integrations Preview -->
+  <!-- Connections Preview -->
   <section class="section section-alt">
     <div class="container">
-      <h2 class="text-center mb-md animate-on-scroll">Works With Your <span class="text-gradient">Favorite Apps</span>
-      </h2>
-      <p class="text-center text-muted mb-lg animate-on-scroll">And more coming soon...</p>
+      <h2 class="text-center mb-md animate-on-scroll">🔗 <span class="text-gradient">Connections</span></h2>
+      <p class="text-center text-muted mb-lg animate-on-scroll">Import your workouts automatically from your favorite
+        apps</p>
 
-      <div class="integrations-grid stagger-children">
-        {{#each integrations.connections}}
-          <div class="integration-card">
-            <div class="integration-logo">
-              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
-            </div>
-            <div class="integration-name">{{name}}</div>
-            <span class="integration-status {{status}}">{{status}}</span>
-          </div>
-        {{/each}}
+      <div class="feature-grid stagger-children" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="feature-card">
+          <span class="feature-icon">🔄</span>
+          <h3>Automatic Sync</h3>
+          <p>Once connected, your workouts flow into FitGlue automatically. No manual exports, no file downloads.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🔒</span>
+          <h3>Secure OAuth</h3>
+          <p>We use industry-standard OAuth for secure connections. Your passwords never touch our servers.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <h3>Real-time Updates</h3>
+          <p>Webhooks ensure your data syncs within seconds of completing a workout.</p>
+        </div>
+      </div>
 
-        {{#each integrations.syncTargets}}
-          <div class="integration-card">
-            <div class="integration-logo">
-              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+      <div class="integrations-grid stagger-children mt-lg">
+        {{#each integrations.all}}
+          <a href="{{detailsUrl}}" class="integration-card-link">
+            <div class="integration-card hoverable">
+              <div class="integration-logo">
+                <span class="integration-emoji">{{icon}}</span>
+              </div>
+              <div class="integration-name">{{name}}</div>
+              <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
+              <span class="integration-status {{status}}">{{status}}</span>
             </div>
-            <div class="integration-name">{{name}}</div>
-            <span class="integration-status {{status}}">{{status}}</span>
-          </div>
-        {{/each}}
-
-        {{#each integrations.comingSoon}}
-          <div class="integration-card">
-            <div class="integration-logo">
-              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
-            </div>
-            <div class="integration-name">{{name}}</div>
-            <span class="integration-status {{status}}">{{status}}</span>
-          </div>
+          </a>
         {{/each}}
       </div>
 
       <div class="text-center mt-lg animate-on-scroll">
-        <a href="/integrations" class="btn btn-secondary">View All Integrations →</a>
+        <a href="/connections" class="btn btn-secondary">View All Connections →</a>
       </div>
     </div>
   </section>

@@ -16,14 +16,14 @@ const __dirname = path.dirname(__filename);
 // Generate a hash for cache busting
 const cacheHash = Date.now().toString(36);
 
-// Load plugin data from fetch-plugins.js output
-function loadPluginData() {
+// Load registry data from fetch-registry.js output
+function loadRegistryData() {
   try {
-    const dataPath = path.join(__dirname, '_data', 'plugins.json');
+    const dataPath = path.join(__dirname, '_data', 'registry.json');
     const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
     return data;
   } catch (error) {
-    console.warn('⚠️ Could not load plugins.json, using empty defaults');
+    console.warn('⚠️ Could not load registry.json, using empty defaults');
     return {
       integrations: [],
       sources: [],
@@ -33,40 +33,55 @@ function loadPluginData() {
   }
 }
 
-const pluginData = loadPluginData();
+const registryData = loadRegistryData();
 
 // Transform integrations for the marketing site format
+const integrationsWithDetails = registryData.integrations.map(i => ({
+  ...i,
+  detailsUrl: `/connections/${i.id}`,
+  status: i.enabled ? 'live' : 'disabled',
+}));
+
 const integrations = {
   // Group by category for legacy template support
-  connections: pluginData.integrations.filter(i => i.category === 'source'),
-  syncTargets: pluginData.integrations.filter(i => i.category === 'destination'),
+  connections: integrationsWithDetails.filter(i => i.category === 'source'),
+  syncTargets: integrationsWithDetails.filter(i => i.category === 'destination'),
   // All integrations for new pages
-  all: pluginData.integrations,
+  all: integrationsWithDetails,
 };
 
 // Create lookup maps for dynamic page generation
 const integrationById = {};
-for (const integration of pluginData.integrations) {
+for (const integration of registryData.integrations) {
   integrationById[integration.id] = integration;
 }
 
 const pluginById = {};
-for (const source of pluginData.sources || []) {
+for (const source of registryData.sources || []) {
   pluginById[source.id] = { ...source, pluginType: 'source' };
 }
-for (const enricher of pluginData.enrichers || []) {
+for (const enricher of registryData.enrichers || []) {
   pluginById[enricher.id] = { ...enricher, pluginType: 'enricher' };
 }
-for (const destination of pluginData.destinations || []) {
+for (const destination of registryData.destinations || []) {
   pluginById[destination.id] = { ...destination, pluginType: 'destination' };
 }
 
-// Enrichers/Boosters
-const boosters = pluginData.enrichers || [];
+// Enrichers/Boosters with detailsUrl
+const boosters = (registryData.enrichers || []).map(e => ({
+  ...e,
+  detailsUrl: `/plugins/boosters/${e.id}`,
+}));
 
-// Sources and Destinations
-const sources = pluginData.sources || [];
-const destinations = pluginData.destinations || [];
+// Sources and Destinations with detailsUrl
+const sources = (registryData.sources || []).map(s => ({
+  ...s,
+  detailsUrl: `/plugins/sources/${s.id}`,
+}));
+const destinations = (registryData.destinations || []).map(d => ({
+  ...d,
+  detailsUrl: `/plugins/targets/${d.id}`,
+}));
 
 // Define global values
 const globalValues = {
@@ -128,7 +143,7 @@ export const tasks = [
         isHome: currentPage === 'index',
         isFeatures: currentPage === 'features',
         isHowItWorks: currentPage === 'how-it-works',
-        isIntegrations: currentPage === 'integrations',
+        isConnections: currentPage === 'connections',
         isPlugins: currentPage === 'plugins',
         isPricing: currentPage === 'pricing',
         isAbout: currentPage === 'about',
@@ -145,8 +160,8 @@ export const tasks = [
               return 'Discover FitGlue features: Connect your fitness apps, boost your data with AI, and sync everywhere automatically.';
             case 'how-it-works':
               return 'Learn how FitGlue connects your fitness apps, enhances your workout data, and syncs it to your favorite platforms.';
-            case 'integrations':
-              return 'See all the fitness platforms FitGlue integrates with: Hevy, Fitbit, and Strava.';
+            case 'connections':
+              return 'See all the fitness platforms FitGlue connects with: Hevy, Fitbit, and Strava.';
             case 'plugins':
               return 'Explore FitGlue pipeline features: Sources, Boosters, and Targets for customizing your data flow.';
             case 'pricing':
@@ -169,29 +184,8 @@ export const tasks = [
     },
   }),
 
-  // Generate integration detail pages (subdirectory)
-  generatePagesTask({
-    pagesDir: './pages/integrations',
-    partialsDir: './partials',
-    outDir: './static-dist/integrations',
-    additionalVarsFn: ({ currentPage }) => {
-      // Get full integration data from registry
-      const integration = integrationById[currentPage] || {};
-
-      return {
-        // Page metadata
-        pageTitle: integration.name ? `${integration.name} Integration` : `${currentPage.charAt(0).toUpperCase() + currentPage.slice(1)} Integration`,
-        description: integration.description || `FitGlue ${currentPage} integration details.`,
-        isIntegrations: true,
-        canonicalPath: `/integrations/${currentPage}`,
-
-        // Integration data for template
-        ...integration,
-        isSource: integration.category === 'source',
-        isDestination: integration.category === 'destination',
-      };
-    },
-  }),
+  // Dynamic connection and plugin pages are generated by generate-pages.js
+  // after skier build - see package.json _generate-pages script
 
   // Generate auth pages (login, register, etc.)
   generatePagesTask({

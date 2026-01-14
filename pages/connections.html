@@ -4,39 +4,30 @@
   <!-- Hero -->
   <section class="about-hero">
     <div class="container">
-      <h1 class="text-center animate-on-scroll">Supported <span class="text-gradient">Integrations</span></h1>
+      <h1 class="text-center animate-on-scroll">Supported <span class="text-gradient">Connections</span></h1>
       <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
         Connect FitGlue to your favorite fitness platforms
       </p>
     </div>
   </section>
 
-  <!-- All Integrations -->
+  <!-- All Connections -->
   <section class="section">
     <div class="container">
-      <h2 class="mb-md animate-on-scroll">🔗 Vendor Connections</h2>
-      <p class="text-muted mb-lg animate-on-scroll">FitGlue connects to these third-party services. Set up a connection
-        to enable data flow.</p>
+      <h2 class="mb-md animate-on-scroll">🔗 Your Connections</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Connect once, and your data flows automatically. Click any card to
+        learn more.</p>
 
       <div class="integrations-grid stagger-children">
         {{#each integrations.all}}
           <a href="{{detailsUrl}}" class="integration-card-link">
             <div class="integration-card hoverable">
               <div class="integration-logo">
-                {{#if image}}
-                  <img src="{{image}}" alt="{{name}}" class="integration-logo-img"
-                    onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                  <span class="integration-emoji" style="display: none;">{{icon}}</span>
-                {{else}}
-                  <span class="integration-emoji">{{icon}}</span>
-                {{/if}}
+                <span class="integration-emoji">{{icon}}</span>
               </div>
               <div class="integration-name">{{name}}</div>
               <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
-              <div class="integration-badges">
-                <span class="integration-status {{status}}">{{status}}</span>
-                <span class="integration-auth-badge">{{authType}}</span>
-              </div>
+              <span class="integration-status {{status}}">{{status}}</span>
               <span class="integration-arrow">→</span>
             </div>
           </a>
@@ -48,9 +39,9 @@
   <!-- What's Next -->
   <section class="section section-alt">
     <div class="container text-center">
-      <h2 class="mb-md animate-on-scroll">What Can You Do With <span class="text-gradient">Integrations</span>?</h2>
+      <h2 class="mb-md animate-on-scroll">What Can You Do With <span class="text-gradient">Connections</span>?</h2>
       <p class="text-muted mb-lg animate-on-scroll" style="max-width: 600px; margin-left: auto; margin-right: auto;">
-        Once connected, you can use these integrations as Sources and Targets in your FitGlue pipeline.
+        Once connected, you can use these as Sources and Targets in your FitGlue pipeline.
       </p>
       <a href="/plugins" class="btn btn-secondary animate-on-scroll">See Pipeline Features →</a>
     </div>

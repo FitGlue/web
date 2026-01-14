@@ -1,14 +1,14 @@
 /**
- * Fetch plugins from the API and write to _data/plugins.json
- * Run before static site build: node scripts/fetch-plugins.js
+ * Fetch registry from the API and write to _data/registry.json
+ * Run before static site build: node scripts/fetch-registry.js
  */
 
 const fs = require('fs');
 const path = require('path');
 
-const API_URL = process.env.PLUGIN_API_URL || 'https://fitglue.com/api/plugins';
+const API_URL = process.env.REGISTRY_API_URL || 'https://fitglue.com/api/registry';
 const OUTPUT_DIR = path.join(__dirname, '..', '_data');
-const OUTPUT_FILE = path.join(OUTPUT_DIR, 'plugins.json');
+const OUTPUT_FILE = path.join(OUTPUT_DIR, 'registry.json');
 
 // Fallback data if API is unavailable or in development
 const FALLBACK_DATA = {
