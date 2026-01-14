@@ -143,7 +143,16 @@ jobs:
             sudo npm install -g firebase-tools
       - run:
           name: Build for Environment
-          command: npm run build:<< parameters.target >>
+          command: |
+            # Set registry API URL based on target environment
+            if [ "<< parameters.target >>" = "prod" ]; then
+              export REGISTRY_API_URL="https://fitglue.tech/api/registry"
+            elif [ "<< parameters.target >>" = "test" ]; then
+              export REGISTRY_API_URL="https://test.fitglue.tech/api/registry"
+            else
+              export REGISTRY_API_URL="https://dev.fitglue.tech/api/registry"
+            fi
+            npm run build:<< parameters.target >>
       - run:
           name: Deploy to Firebase Hosting
           command: |

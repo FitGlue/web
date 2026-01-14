@@ -34,7 +34,7 @@ export const tasks = [
 
   // Fetch registry data from API (CI) or use existing file (local)
   fetchRegistryTask({
-    apiUrl: 'https://fitglue.com/api/registry',
+    apiUrl: process.env.REGISTRY_API_URL || 'https://dev.fitglue.tech/api/registry',
     registryFile: path.join(__dirname, '.cache', 'registry.json'),
   }),
 
