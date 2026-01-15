@@ -1,19 +1,10 @@
 import { atom } from 'jotai';
+import { components } from '../../shared/api/schema';
 
-export interface UserProfile {
-  userId: string;
-  createdAt: string;
-  tier: 'free' | 'pro';
-  trialEndsAt?: string;
-  isAdmin: boolean;
-  syncCountThisMonth: number;
-  integrations: {
-    hevy: { connected: boolean; externalUserId?: string; lastUsedAt?: string };
-    strava: { connected: boolean; externalUserId?: string; lastUsedAt?: string };
-    fitbit: { connected: boolean; externalUserId?: string; lastUsedAt?: string };
-  };
-  pipelines: any[];
-}
+// Re-export types from generated schema for convenience
+export type EnricherConfig = components['schemas']['EnricherConfig'];
+export type PipelineConfig = components['schemas']['PipelineConfig'];
+export type UserProfile = components['schemas']['UserProfile'];
 
 export const userProfileAtom = atom<UserProfile | null>(null);
 export const profileLoadingAtom = atom<boolean>(false);

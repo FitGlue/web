@@ -1,11 +1,8 @@
 import { atom } from 'jotai';
+import { components } from '../../shared/api/schema';
 
-export interface PipelineConfig {
-  id: string;
-  source: string;
-  enrichers: { providerType: number; typedConfig?: Record<string, unknown> }[];
-  destinations: (string | number)[];
-}
+// Re-export type from generated schema for convenience
+export type PipelineConfig = components['schemas']['PipelineConfig'];
 
 export const pipelinesAtom = atom<PipelineConfig[]>([]);
 export const pipelinesLastUpdatedAtom = atom<Date | null>(null);

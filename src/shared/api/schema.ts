@@ -4,6 +4,45 @@
  */
 
 export interface paths {
+    "/registry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get plugin registry
+         * @description Returns all registered sources, enrichers, destinations, and integrations
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Plugin registry */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PluginRegistryResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/inputs": {
         parameters: {
             query?: never;
@@ -983,6 +1022,20 @@ export interface components {
             userId: string;
             /** Format: date-time */
             createdAt?: string;
+            /**
+             * @description User subscription tier
+             * @enum {string}
+             */
+            tier?: "free" | "pro";
+            /** @description Whether user has admin privileges */
+            isAdmin?: boolean;
+            /**
+             * Format: date-time
+             * @description Trial expiration date, if applicable
+             */
+            trialEndsAt?: string;
+            /** @description Number of syncs used this month */
+            syncCountThisMonth?: number;
             integrations?: components["schemas"]["IntegrationsSummary"];
             pipelines?: components["schemas"]["PipelineConfig"][];
         };
@@ -1023,6 +1076,71 @@ export interface components {
         OAuthConnectResponse: {
             /** @description OAuth authorization URL to redirect user to */
             authUrl: string;
+        };
+        ConfigFieldOption: {
+            value: string;
+            label: string;
+        };
+        ConfigFieldValidation: {
+            minLength?: number;
+            maxLength?: number;
+            pattern?: string;
+            minValue?: number;
+            maxValue?: number;
+        };
+        ConfigFieldSchema: {
+            key: string;
+            label: string;
+            description?: string;
+            /** @description ConfigFieldType enum */
+            fieldType: number;
+            required?: boolean;
+            defaultValue?: string;
+            options?: components["schemas"]["ConfigFieldOption"][];
+            validation?: components["schemas"]["ConfigFieldValidation"];
+        };
+        Transformation: {
+            field?: string;
+            label?: string;
+            before?: string;
+            after?: string;
+        };
+        PluginManifest: {
+            id: string;
+            /** @description PluginType enum */
+            type: number;
+            name: string;
+            description?: string;
+            icon?: string;
+            enabled: boolean;
+            requiredIntegrations?: string[];
+            configSchema?: components["schemas"]["ConfigFieldSchema"][];
+            enricherProviderType?: number;
+            destinationType?: number;
+            marketingDescription?: string;
+            features?: string[];
+            transformations?: components["schemas"]["Transformation"][];
+            useCases?: string[];
+        };
+        IntegrationManifest: {
+            id: string;
+            name: string;
+            description?: string;
+            icon?: string;
+            /** @description IntegrationAuthType enum */
+            authType: number;
+            enabled: boolean;
+            docsUrl?: string;
+            setupTitle?: string;
+            setupInstructions?: string;
+            apiKeyLabel?: string;
+            apiKeyHelpUrl?: string;
+        };
+        PluginRegistryResponse: {
+            sources: components["schemas"]["PluginManifest"][];
+            enrichers: components["schemas"]["PluginManifest"][];
+            destinations: components["schemas"]["PluginManifest"][];
+            integrations: components["schemas"]["IntegrationManifest"][];
         };
     };
     responses: never;

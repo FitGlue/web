@@ -1,17 +1,9 @@
 import { atom } from 'jotai';
+import { components } from '../../shared/api/schema';
 
-export interface IntegrationStatus {
-  connected: boolean;
-  externalUserId?: string;
-  lastUsedAt?: string;
-}
-
-export interface IntegrationsSummary {
-  hevy?: IntegrationStatus;
-  strava?: IntegrationStatus;
-  fitbit?: IntegrationStatus;
-  [key: string]: IntegrationStatus | undefined;
-}
+// Re-export types from generated schema for convenience
+export type IntegrationStatus = components['schemas']['IntegrationStatus'];
+export type IntegrationsSummary = components['schemas']['IntegrationsSummary'];
 
 export const integrationsAtom = atom<IntegrationsSummary | null>(null);
 export const integrationsLastUpdatedAtom = atom<Date | null>(null);

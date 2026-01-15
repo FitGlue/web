@@ -199,6 +199,27 @@
             "type": "string",
             "format": "date-time"
           },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "free",
+              "pro"
+            ],
+            "description": "User subscription tier"
+          },
+          "isAdmin": {
+            "type": "boolean",
+            "description": "Whether user has admin privileges"
+          },
+          "trialEndsAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trial expiration date, if applicable"
+          },
+          "syncCountThisMonth": {
+            "type": "integer",
+            "description": "Number of syncs used this month"
+          },
           "integrations": {
             "$ref": "#/components/schemas/IntegrationsSummary"
           },
@@ -344,10 +365,267 @@
         "required": [
           "authUrl"
         ]
+      },
+      "ConfigFieldOption": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value",
+          "label"
+        ]
+      },
+      "ConfigFieldValidation": {
+        "type": "object",
+        "properties": {
+          "minLength": {
+            "type": "integer"
+          },
+          "maxLength": {
+            "type": "integer"
+          },
+          "pattern": {
+            "type": "string"
+          },
+          "minValue": {
+            "type": "number"
+          },
+          "maxValue": {
+            "type": "number"
+          }
+        }
+      },
+      "ConfigFieldSchema": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "fieldType": {
+            "type": "integer",
+            "description": "ConfigFieldType enum"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "defaultValue": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConfigFieldOption"
+            }
+          },
+          "validation": {
+            "$ref": "#/components/schemas/ConfigFieldValidation"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "fieldType"
+        ]
+      },
+      "Transformation": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "before": {
+            "type": "string"
+          },
+          "after": {
+            "type": "string"
+          }
+        }
+      },
+      "PluginManifest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "integer",
+            "description": "PluginType enum"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "requiredIntegrations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "configSchema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConfigFieldSchema"
+            }
+          },
+          "enricherProviderType": {
+            "type": "integer"
+          },
+          "destinationType": {
+            "type": "integer"
+          },
+          "marketingDescription": {
+            "type": "string"
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "transformations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Transformation"
+            }
+          },
+          "useCases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "name",
+          "enabled"
+        ]
+      },
+      "IntegrationManifest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "authType": {
+            "type": "integer",
+            "description": "IntegrationAuthType enum"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "docsUrl": {
+            "type": "string"
+          },
+          "setupTitle": {
+            "type": "string"
+          },
+          "setupInstructions": {
+            "type": "string"
+          },
+          "apiKeyLabel": {
+            "type": "string"
+          },
+          "apiKeyHelpUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "authType",
+          "enabled"
+        ]
+      },
+      "PluginRegistryResponse": {
+        "type": "object",
+        "properties": {
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PluginManifest"
+            }
+          },
+          "enrichers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PluginManifest"
+            }
+          },
+          "destinations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PluginManifest"
+            }
+          },
+          "integrations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IntegrationManifest"
+            }
+          }
+        },
+        "required": [
+          "sources",
+          "enrichers",
+          "destinations",
+          "integrations"
+        ]
       }
     }
   },
   "paths": {
+    "/registry": {
+      "get": {
+        "summary": "Get plugin registry",
+        "description": "Returns all registered sources, enrichers, destinations, and integrations",
+        "responses": {
+          "200": {
+            "description": "Plugin registry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginRegistryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/inputs": {
       "get": {
         "summary": "List pending inputs",
