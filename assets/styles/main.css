@@ -328,6 +328,22 @@ h4 {
   .nav-links.active {
     display: flex;
   }
+
+  .nav-actions {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-bg-elevated);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: var(--space-sm);
+  }
+
+  .nav-links.active + .nav-actions {
+    display: flex;
+  }
 }
 
 /* ========================================
@@ -1534,6 +1550,27 @@ h4 {
     flex-direction: column;
     gap: var(--space-sm);
     text-align: center;
+  }
+}
+
+/* Extra small screens - single column footer */
+@media (max-width: 480px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-brand {
+    grid-column: 1;
+    margin-bottom: var(--space-md);
+  }
+
+  .footer-column {
+    text-align: center;
+  }
+
+  .footer-social a {
+    width: 44px;
+    height: 44px;
   }
 }
 

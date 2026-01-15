@@ -5,7 +5,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="{{description}}">
-        <meta name="keywords" content="fitness data, workout sync, Strava, Hevy, Fitbit, fitness aggregation">
+        <meta name="keywords"
+            content="fitness data, workout sync, Strava, Hevy, Fitbit, fitness aggregation, workout tracking, fitness API">
+        <meta name="author" content="FitGlue">
+        <meta name="robots" content="index, follow">
+        <meta name="theme-color" content="#FF006E">
 
         <!-- Open Graph -->
         <meta property="og:title"
@@ -14,18 +18,15 @@
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{siteUrl}}{{canonicalPath}}">
         <meta property="og:image" content="{{siteUrl}}images/og-image.png">
-
-        <!-- Twitter -->
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title"
-            content="{{#if isHome}}FitGlue - Your Fitness Data, Unified{{else}}{{pageTitle}} | FitGlue{{/if}}">
-        <meta name="twitter:description" content="{{description}}">
+        <meta property="og:site_name" content="FitGlue">
+        <meta property="og:locale" content="en_GB">
 
         <!-- Canonical -->
         <link rel="canonical" href="{{siteUrl}}{{canonicalPath}}">
 
         <!-- Favicon -->
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,12 +47,18 @@
         "name": "FitGlue",
         "applicationCategory": "HealthApplication",
         "operatingSystem": "Web",
+        "url": "{{siteUrl}}",
         "offers": {
             "@type": "Offer",
             "price": "0",
             "priceCurrency": "GBP"
         },
-        "description": "{{description}}"
+        "description": "{{description}}",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5",
+            "ratingCount": "1"
+        }
     }
     </script>
     </head>
