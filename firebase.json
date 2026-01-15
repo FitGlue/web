@@ -125,6 +125,13 @@
         }
       },
       {
+        "source": "/api/billing/**",
+        "run": {
+          "serviceId": "billing-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/activities/stats",
         "run": {
           "serviceId": "activities-handler",
@@ -156,6 +163,13 @@
         "source": "/auth/fitbit/callback",
         "run": {
           "serviceId": "fitbit-oauth-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/mobile/sync",
+        "run": {
+          "serviceId": "mobile-sync-handler",
           "region": "us-central1"
         }
       },

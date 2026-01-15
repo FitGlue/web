@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAtom } from 'jotai';
-import { userAtom } from '../../state/authState';
+import { useUser } from '../../hooks/useUser';
 
 export const AppHeader: React.FC = () => {
-    const [user] = useAtom(userAtom);
+    const { user } = useUser();
     const [showMenu, setShowMenu] = useState(false);
+
     const menuRef = useRef<HTMLDivElement>(null);
 
     // Close menu when clicking outside
@@ -46,7 +46,24 @@ export const AppHeader: React.FC = () => {
                     aria-expanded={showMenu}
                 >
                     {getInitial()}
+                    {user?.tier === 'pro' && (
+                        <div className="pro-badge-mini" style={{
+                            position: 'absolute',
+                            bottom: '-4px',
+                            right: '-4px',
+                            background: 'var(--color-primary)',
+                            color: 'white',
+                            fontSize: '0.6rem',
+                            padding: '1px 4px',
+                            borderRadius: '4px',
+                            fontWeight: 'bold',
+                            border: '2px solid var(--color-bg)'
+                        }}>
+                            PRO
+                        </div>
+                    )}
                 </button>
+
                 {showMenu && (
                     <div className="user-dropdown-menu">
                         <div className="user-dropdown-header">
@@ -57,7 +74,14 @@ export const AppHeader: React.FC = () => {
                             <span className="dropdown-icon">👤</span>
                             Account
                         </Link>
+                        {user?.isAdmin && (
+                            <Link to="/admin" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
+                                <span className="dropdown-icon">🛠️</span>
+                                Admin Console
+                            </Link>
+                        )}
                         <div className="user-dropdown-divider" />
+
                         <a href="/auth/logout" className="user-dropdown-item user-dropdown-item-danger">
                             <span className="dropdown-icon">🚪</span>
                             Logout

@@ -7,7 +7,9 @@
       <h1 class="hero-title">
         <span class="fit">Fit</span><span class="glue">Glue</span>
       </h1>
-      <p class="hero-tagline">{{tagline}}</p>
+      <p class="hero-tagline">Share your complete fitness story</p>
+      <p class="hero-subtitle">Your gym session deserves more than "Weight Training – 45 min". FitGlue turns every
+        workout into a story worth sharing—with AI descriptions, heart rate data, and muscle heatmaps.</p>
 
       <!-- Animated Data Flow -->
       <div class="data-flow">
@@ -25,55 +27,249 @@
     </div>
   </section>
 
-  <!-- Problem Section -->
+  <!-- Trust Strip -->
+  <section class="trust-strip">
+    <div class="container">
+      <div class="trust-strip-inner">
+        <div class="trust-badge">
+          <span class="trust-badge-icon">🔒</span>
+          <span class="trust-badge-text">Secure OAuth</span>
+        </div>
+        <div class="trust-badge">
+          <span class="trust-badge-icon">🔐</span>
+          <span class="trust-badge-text">Encrypted Data</span>
+        </div>
+        <div class="trust-badge">
+          <span class="trust-badge-icon">🇪🇺</span>
+          <span class="trust-badge-text">GDPR Compliant</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-stat">
+          <span class="trust-stat-value">500+</span>
+          <span class="trust-stat-label">Athletes</span>
+        </div>
+        <div class="trust-stat">
+          <span class="trust-stat-value">10,000+</span>
+          <span class="trust-stat-label">Activities Enriched</span>
+        </div>
+      </div>
+      <div class="trust-privacy">
+        <p>Your data is stored securely and encrypted. We use OAuth for all connections—we never see your passwords. <a
+            href="/privacy">Read our Privacy Policy</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Before/After Showcase -->
   <section class="section">
     <div class="container">
-      <h2 class="text-center mb-lg animate-on-scroll">The <span class="text-gradient">Problem</span> We Solve</h2>
+      <h2 class="text-center mb-md animate-on-scroll">See the <span class="text-gradient">Transformation</span></h2>
+      <p class="text-center text-muted mb-lg animate-on-scroll">Your workouts, enriched with data that matters</p>
 
-      <div class="problem-grid stagger-children">
-        <div class="problem-card">
-          <div class="problem-icon">📱</div>
-          <h3>Scattered Data</h3>
-          <p>Your workouts live in 5+ different apps. Hevy for lifting, Fitbit for cardio, Strava for sharing...</p>
+      <div class="showcase-grid stagger-children">
+        <!-- Workout Summary Transformation -->
+        <div class="showcase-card">
+          <div class="showcase-header">
+            <span class="showcase-icon">📋</span>
+            <h3>Workout Summary</h3>
+          </div>
+          <div class="showcase-content">
+            <div class="showcase-before">
+              <div class="showcase-label">Before</div>
+              <div class="showcase-text showcase-empty">(empty description)</div>
+            </div>
+            <div class="showcase-arrow">→</div>
+            <div class="showcase-after">
+              <div class="showcase-label">After</div>
+              <div class="showcase-text">
+                <strong>💪 Push Day – Chest & Shoulders</strong><br>
+                📊 20 sets • 8,240kg volume • 57 reps<br><br>
+                • Bench Press: 4 × 8 × 80kg<br>
+                • Overhead Press: 4 × 10 × 40kg<br>
+                • Incline DB Press: 4 × 12 × 24kg
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="problem-card">
-          <div class="problem-icon">📤</div>
-          <h3>Manual Exports</h3>
-          <p>Tired of downloading TCX files and uploading them manually? So were we.</p>
+        <!-- Muscle Heatmap Transformation -->
+        <div class="showcase-card">
+          <div class="showcase-header">
+            <span class="showcase-icon">🔥</span>
+            <h3>Muscle Heatmap</h3>
+          </div>
+          <div class="showcase-content">
+            <div class="showcase-before">
+              <div class="showcase-label">Before</div>
+              <div class="showcase-text showcase-empty">Weight Training<br>45 min</div>
+            </div>
+            <div class="showcase-arrow">→</div>
+            <div class="showcase-after">
+              <div class="showcase-label">After</div>
+              <div class="showcase-text">
+                <strong>🔥 Muscle Heatmap</strong><br><br>
+                Chest: 🟪🟪🟪🟪🟪<br>
+                Shoulders: 🟪🟪🟪🟪⬜<br>
+                Triceps: 🟪🟪🟪⬜⬜<br>
+                Core: 🟪🟪⬜⬜⬜
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="problem-card">
-          <div class="problem-icon">📊</div>
-          <h3>Missing Insights</h3>
-          <p>No single place to see all your fitness data enriched with meaningful analytics.</p>
+        <!-- Heart Rate Transformation -->
+        <div class="showcase-card">
+          <div class="showcase-header">
+            <span class="showcase-icon">❤️</span>
+            <h3>Heart Rate Data</h3>
+          </div>
+          <div class="showcase-content">
+            <div class="showcase-before">
+              <div class="showcase-label">Before</div>
+              <div class="showcase-text showcase-empty">Avg HR: –<br>Max HR: –<br>Calories: Est. 320</div>
+            </div>
+            <div class="showcase-arrow">→</div>
+            <div class="showcase-after">
+              <div class="showcase-label">After</div>
+              <div class="showcase-text">
+                <strong>❤️ From Your Fitbit</strong><br><br>
+                Avg HR: 142 bpm<br>
+                Max HR: 178 bpm<br>
+                🔥 Calories: 487 (accurate)
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Solution Section -->
+  <!-- User Stories Section -->
   <section class="section section-alt">
+    <div class="container">
+      <h2 class="text-center mb-md animate-on-scroll">Built for <span class="text-gradient">Athletes Like You</span>
+      </h2>
+      <p class="text-center text-muted mb-lg animate-on-scroll">Real problems, real solutions</p>
+
+      <div class="story-grid stagger-children">
+        <!-- Strength Trainer Story -->
+        <div class="story-card">
+          <div class="story-persona">
+            <span class="story-emoji">🏋️</span>
+            <h3>The Strength Trainer</h3>
+          </div>
+          <div class="story-problem">
+            <strong>The problem:</strong> "I track every lift in Hevy, but when it syncs to Strava it just says 'Weight
+            Training – 45 min'. My friends have no idea what I actually did."
+          </div>
+          <div class="story-solution">
+            <strong>With FitGlue:</strong> Your workout appears on Strava with a complete summary—exercises, sets, reps,
+            weights, and a visual muscle heatmap showing exactly what you trained.
+          </div>
+        </div>
+
+        <!-- Multi-Device User Story -->
+        <div class="story-card">
+          <div class="story-persona">
+            <span class="story-emoji">⌚</span>
+            <h3>The Multi-Device User</h3>
+          </div>
+          <div class="story-problem">
+            <strong>The problem:</strong> "My Fitbit records perfect heart rate data all day, but my gym workouts show
+            up on Strava with no HR. It drives me crazy."
+          </div>
+          <div class="story-solution">
+            <strong>With FitGlue:</strong> We automatically merge your Fitbit heart rate into your activities—complete
+            with accurate calorie calculations and training zone insights.
+          </div>
+        </div>
+
+        <!-- Parkrunner Story -->
+        <div class="story-card">
+          <div class="story-persona">
+            <span class="story-emoji">🏃</span>
+            <h3>The Parkrunner</h3>
+          </div>
+          <div class="story-problem">
+            <strong>The problem:</strong> "My Strava shows 24:35 but my official parkrun time was 24:12. And where's my
+            finishing position? My age grade?"
+          </div>
+          <div class="story-solution">
+            <strong>With FitGlue:</strong> Your parkrun activity gets enriched with official results—accurate time,
+            position, age grade, and PB celebrations. Automatically.
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-lg animate-on-scroll">
+        <a href="/guides" class="btn btn-secondary">Read Our Guides →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Preview -->
+  <section class="section">
     <div class="container">
       <h2 class="text-center mb-lg animate-on-scroll">How <span class="text-gradient">FitGlue</span> Works</h2>
 
       <div class="feature-grid stagger-children">
         <div class="feature-card">
           <span class="feature-icon">🔗</span>
-          <h3>Connections</h3>
-          <p>Link your fitness apps in seconds. We pull your workouts automatically—no manual exports needed.</p>
+          <h3>1. Connect</h3>
+          <p>Link your fitness apps in seconds. Hevy, Fitbit, Strava—connect once and forget about it.</p>
         </div>
 
         <div class="feature-card">
           <span class="feature-icon">🚀</span>
-          <h3>Boosters</h3>
-          <p>Supercharge your data with AI descriptions, heart rate overlays, muscle heatmaps, and more.</p>
+          <h3>2. Enhance</h3>
+          <p>Choose your boosters: AI descriptions, heart rate overlays, muscle heatmaps. Mix and match to your liking.
+          </p>
         </div>
 
         <div class="feature-card">
           <span class="feature-icon">🎯</span>
-          <h3>Sync Targets</h3>
-          <p>Send your enriched activities to Strava and other platforms—automatically, every time.</p>
+          <h3>3. Share</h3>
+          <p>Your enriched workout arrives on Strava automatically. Complete, beautiful, and ready to share.</p>
+        </div>
+      </div>
+
+      <div class="text-center mt-lg animate-on-scroll">
+        <a href="/how-it-works" class="btn btn-secondary">See Full Details →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Configurability Showcase -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="text-center mb-md animate-on-scroll">Fully <span class="text-gradient">Configurable</span></h2>
+      <p class="text-center text-muted mb-lg animate-on-scroll">Your pipeline, your rules</p>
+
+      <div class="config-showcase stagger-children">
+        <div class="config-example">
+          <h4>📋 Summary Format</h4>
+          <div class="config-options-preview">
+            <span class="config-pill">Compact (4×10×100kg)</span>
+            <span class="config-pill active">Detailed (4 × 10 × 100.0kg)</span>
+            <span class="config-pill">Verbose (4 sets of 10 reps at 100.0kg)</span>
+          </div>
+        </div>
+
+        <div class="config-example">
+          <h4>🔥 Heatmap Style</h4>
+          <div class="config-options-preview">
+            <span class="config-pill active">Emoji Bars (🟪🟪🟪⬜⬜)</span>
+            <span class="config-pill">Percentage (Chest: 80%)</span>
+            <span class="config-pill">Text Only (High: Chest)</span>
+          </div>
+        </div>
+
+        <div class="config-example">
+          <h4>🗺️ Virtual GPS Routes</h4>
+          <div class="config-options-preview">
+            <span class="config-pill active">Hyde Park, London (~4km)</span>
+            <span class="config-pill">Central Park, NYC (~10km)</span>
+          </div>
         </div>
       </div>
 
@@ -83,61 +279,111 @@
     </div>
   </section>
 
-  <!-- Boosters Showcase -->
-  <section class="section">
-    <div class="container">
-      <h2 class="text-center mb-lg animate-on-scroll">Supercharge with <span class="text-gradient">Boosters</span></h2>
-
-      <div class="feature-grid stagger-children">
-        {{#each boosters}}
-          <div class="feature-card">
-            <span class="feature-icon">{{icon}}</span>
-            <h3>{{name}}</h3>
-            <p>{{description}}</p>
-          </div>
-        {{/each}}
-      </div>
-    </div>
-  </section>
-
-  <!-- Connections Preview -->
+  <!-- Connect Everything Section -->
   <section class="section section-alt">
     <div class="container">
-      <h2 class="text-center mb-md animate-on-scroll">🔗 <span class="text-gradient">Connections</span></h2>
-      <p class="text-center text-muted mb-lg animate-on-scroll">Import your workouts automatically from your favorite
-        apps</p>
+      <h2 class="text-center mb-md animate-on-scroll">🌐 <span class="text-gradient">Connect Everything</span></h2>
+      <p class="text-center text-muted mb-lg animate-on-scroll">FitGlue works with the platforms you already use—and
+        we're adding more every month</p>
 
-      <div class="feature-grid stagger-children" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="feature-card">
-          <span class="feature-icon">🔄</span>
-          <h3>Automatic Sync</h3>
-          <p>Once connected, your workouts flow into FitGlue automatically. No manual exports, no file downloads.</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon">🔒</span>
-          <h3>Secure OAuth</h3>
-          <p>We use industry-standard OAuth for secure connections. Your passwords never touch our servers.</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon">⚡</span>
-          <h3>Real-time Updates</h3>
-          <p>Webhooks ensure your data syncs within seconds of completing a workout.</p>
+      <!-- Live Platforms -->
+      <div class="platforms-section">
+        <h3 class="platforms-label live">Available Now</h3>
+        <div class="platforms-grid stagger-children">
+          <div class="platform-card live">
+            <span class="platform-icon">🏋️</span>
+            <span class="platform-name">Hevy</span>
+          </div>
+          <div class="platform-card live">
+            <span class="platform-icon">⌚</span>
+            <span class="platform-name">Fitbit</span>
+          </div>
+          <div class="platform-card live">
+            <span class="platform-icon">🚴</span>
+            <span class="platform-name">Strava</span>
+          </div>
         </div>
       </div>
 
-      <div class="integrations-grid stagger-children mt-lg">
-        {{#each integrations.all}}
-          <a href="{{detailsUrl}}" class="integration-card-link">
-            <div class="integration-card hoverable">
-              <div class="integration-logo">
-                <span class="integration-emoji">{{icon}}</span>
-              </div>
-              <div class="integration-name">{{name}}</div>
-              <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
-              <span class="integration-status {{status}}">{{status}}</span>
-            </div>
-          </a>
-        {{/each}}
+      <!-- Coming Soon Platforms -->
+      <div class="platforms-section mt-lg">
+        <h3 class="platforms-label coming-soon">Coming Soon</h3>
+        <div class="platforms-grid coming-soon stagger-children">
+          <div class="platform-card coming-soon">
+            <span class="platform-icon">⌚</span>
+            <span class="platform-name">Garmin</span>
+            <span class="coming-badge">Soon</span>
+          </div>
+          <div class="platform-card coming-soon">
+            <span class="platform-icon">🍎</span>
+            <span class="platform-name">Apple Health</span>
+            <span class="coming-badge">Soon</span>
+          </div>
+          <div class="platform-card coming-soon">
+            <span class="platform-icon">📱</span>
+            <span class="platform-name">Health Connect</span>
+            <span class="coming-badge">Soon</span>
+          </div>
+          <div class="platform-card coming-soon">
+            <span class="platform-icon">💪</span>
+            <span class="platform-name">Strong</span>
+            <span class="coming-badge">Soon</span>
+          </div>
+          <div class="platform-card coming-soon">
+            <span class="platform-icon">🥗</span>
+            <span class="platform-name">MacroFactor</span>
+            <span class="coming-badge">Soon</span>
+          </div>
+          <div class="platform-card coming-soon">
+            <span class="platform-icon">🍽️</span>
+            <span class="platform-name">MyFitnessPal</span>
+            <span class="coming-badge">Soon</span>
+          </div>
+          <div class="platform-card coming-soon">
+            <span class="platform-icon">🏃</span>
+            <span class="platform-name">Runkeeper</span>
+            <span class="coming-badge">Soon</span>
+          </div>
+          <div class="platform-card coming-soon">
+            <span class="platform-icon">🚲</span>
+            <span class="platform-name">Wahoo</span>
+            <span class="coming-badge">Soon</span>
+          </div>
+          <div class="platform-card coming-soon">
+            <span class="platform-icon">⌚</span>
+            <span class="platform-name">Whoop</span>
+            <span class="coming-badge">Soon</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Universal Vision -->
+      <div class="vision-box mt-lg animate-on-scroll">
+        <h4>🌍 The Universal Fitness Hub</h4>
+        <p>Whether you lift weights in Hevy, track runs with Garmin, or log meals in MyFitnessPal—FitGlue brings it all
+          together. One dashboard. Complete insights. Your fitness story, unified.</p>
+      </div>
+
+      <!-- Platform Marquee -->
+      <div class="platform-marquee mt-lg">
+        <div class="marquee-track">
+          <span>Hevy</span><span>•</span>
+          <span>Fitbit</span><span>•</span>
+          <span>Strava</span><span>•</span>
+          <span>Garmin</span><span>•</span>
+          <span>Apple Health</span><span>•</span>
+          <span>Health Connect</span><span>•</span>
+          <span>Strong</span><span>•</span>
+          <span>MacroFactor</span><span>•</span>
+          <span>MyFitnessPal</span><span>•</span>
+          <span>Runkeeper</span><span>•</span>
+          <span>Wahoo</span><span>•</span>
+          <span>Whoop</span><span>•</span>
+          <span>Hevy</span><span>•</span>
+          <span>Fitbit</span><span>•</span>
+          <span>Strava</span><span>•</span>
+          <span>Garmin</span><span>•</span>
+        </div>
       </div>
 
       <div class="text-center mt-lg animate-on-scroll">

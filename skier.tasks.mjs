@@ -138,6 +138,40 @@ export const tasks = [
     },
   }),
 
+  // Generate guide pages
+  generatePagesTask({
+    pagesDir: './pages/guides',
+    partialsDir: './partials',
+    outDir: './static-dist/guides',
+    additionalVarsFn: ({ currentPage }) => {
+      /** @type {Record<string, {pageTitle: string, description: string}>} */
+      const guideMeta = {
+        index: {
+          pageTitle: 'Guides & Tutorials',
+          description: 'Learn how to sync your fitness data with FitGlue. Step-by-step guides for Hevy, Fitbit, Strava, and more.',
+        },
+        'hevy-to-strava': {
+          pageTitle: 'How to Get Hevy Workouts into Strava with Muscle Heatmaps',
+          description: 'Sync your Hevy strength training to Strava automatically with AI descriptions and visual muscle heatmaps.',
+        },
+        'fitbit-heart-rate': {
+          pageTitle: 'Add Missing Heart Rate from Fitbit to Strava',
+          description: 'Overlay accurate Fitbit heart rate data onto your Strava activities for complete workout insights.',
+        },
+        'parkrun-automation': {
+          pageTitle: 'Automate Your Parkrun Results to Strava',
+          description: 'Automatically enrich your Strava parkrun activities with official times, positions, and personal bests.',
+        },
+      };
+      const meta = guideMeta[currentPage] || { pageTitle: currentPage, description: 'FitGlue Guide' };
+      return {
+        ...meta,
+        canonicalPath: currentPage === 'index' ? '/guides' : `/guides/${currentPage}`,
+        isGuides: true,
+      };
+    },
+  }),
+
   // Generate dynamic connection & plugin pages
   generateDynamicPagesTask({
     registryFile: path.join(__dirname, '.cache', 'registry.json'),

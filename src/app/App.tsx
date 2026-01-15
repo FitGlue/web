@@ -17,7 +17,11 @@ import PipelinesPage from './pages/PipelinesPage';
 import PipelineWizardPage from './pages/PipelineWizardPage';
 import PipelineEditPage from './pages/PipelineEditPage';
 import AccountSettingsPage from './pages/AccountSettingsPage';
+import UpgradePage from './pages/UpgradePage';
+import AdminPage from './pages/AdminPage';
 import NotFoundPage from './pages/NotFoundPage';
+
+
 import { useFCM } from './hooks/useFCM';
 import { NerdModeProvider } from './state/NerdModeContext';
 
@@ -38,6 +42,30 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   return <>{children}</>;
 };
+
+// Admin route wrapper - ensures user has admin role
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, loading } = useUser();
+
+  if (loading) {
+    return <div className="container">Loading admin console...</div>;
+  }
+
+  if (!user?.isAdmin) {
+    return (
+      <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>
+        <h2 style={{ color: 'var(--color-primary)' }}>Access Denied</h2>
+        <p>You do not have permission to view this page.</p>
+        <a href="/app" style={{ color: 'var(--color-accent)', textDecoration: 'none', fontWeight: 'bold' }}>
+          ← Back to Dashboard
+        </a>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+};
+
 
 const App: React.FC = () => {
   const [, setUser] = useAtom(userAtom);
@@ -78,6 +106,11 @@ const App: React.FC = () => {
           <Route path="/settings/pipelines/new" element={<ProtectedRoute><PipelineWizardPage /></ProtectedRoute>} />
           <Route path="/settings/pipelines/:pipelineId/edit" element={<ProtectedRoute><PipelineEditPage /></ProtectedRoute>} />
           <Route path="/settings/account" element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
+          <Route path="/settings/upgrade" element={<ProtectedRoute><UpgradePage /></ProtectedRoute>} />
+          <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
+
+
+
 
           {/* Catch-all for unknown routes */}
           <Route path="*" element={<NotFoundPage />} />

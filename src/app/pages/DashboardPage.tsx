@@ -5,12 +5,16 @@ import { useActivities } from '../hooks/useActivities';
 import { usePipelines } from '../hooks/usePipelines';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { useUser } from '../hooks/useUser';
 import { PageLayout } from '../components/layout/PageLayout';
+
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { LoadingState } from '../components/ui/LoadingState';
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
+import { GalleryOfBoosts } from '../components/dashboard/GalleryOfBoosts';
 import { IntegrationsSummary } from '../state/integrationsState';
+
 
 interface ActivitySummary {
     activityId: string;
@@ -27,6 +31,8 @@ const DashboardPage: React.FC = () => {
     const { activities, stats, loading: statsLoading, refresh: statsRefresh } = useActivities('list');
     const { integrations, loading: integrationsLoading, refresh: integrationsRefresh, fetchIfNeeded: fetchIntegrations } = useIntegrations();
     const { pipelines, loading: pipelinesLoading, refresh: pipelinesRefresh, fetchIfNeeded: fetchPipelines } = usePipelines();
+    const { user } = useUser();
+
 
     // Fetch data on mount (only if stale or not loaded)
     useEffect(() => {
@@ -203,16 +209,45 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <div className="stats-summary">
                         <div className="stat-item">
-                            <span className="stat-number">{stats.synchronizedCount}</span>
+                            <span className="stat-number">{stats.synchronizedCount || 0}</span>
                             <span className="stat-label">Synced This Week</span>
                         </div>
                         <div className="stat-item">
-                            <span className="stat-number">{activities.length}</span>
+                            <span className="stat-number">{activities.length || 0}</span>
                             <span className="stat-label">Total Activities</span>
                         </div>
                     </div>
                 </Card>
+
+                {/* Sync Usage (Tier Limits) */}
+                <Card className={`dashboard-card usage-card ${user?.tier === 'free' && (user.syncCountThisMonth || 0) > 20 ? 'limit-near' : ''}`}>
+                    <div className="card-header-row">
+                        <h3>📈 Monthly Usage</h3>
+                        <Link to="/settings/upgrade" className="card-link">Upgrade →</Link>
+                    </div>
+                    <div className="usage-stats">
+                        <div className="usage-progress-bar" style={{
+                            height: '8px',
+                            background: 'rgba(255,255,255,0.1)',
+                            borderRadius: '4px',
+                            overflow: 'hidden',
+                            margin: '1rem 0'
+                        }}>
+                            <div className="progress-fill" style={{
+                                height: '100%',
+                                width: `${user?.tier === 'pro' ? 0 : Math.min(100, ((user?.syncCountThisMonth || 0) / 25) * 100)}%`,
+                                background: (user?.syncCountThisMonth || 0) > 20 ? 'var(--color-primary)' : 'var(--color-success)',
+                                transition: 'width 0.5s ease-out'
+                            }} />
+                        </div>
+                        <div className="usage-details" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+                            <span>{user?.tier === 'pro' ? 'Unlimited Syncs' : `${user?.syncCountThisMonth || 0} / 25 syncs`}</span>
+                            <span style={{ color: 'var(--color-text-muted)' }}>{user?.tier === 'pro' ? 'Pro Plan' : 'Free Tier'}</span>
+                        </div>
+                    </div>
+                </Card>
             </div>
+
 
             {/* Recent Activities */}
             {recentActivities.length > 0 && (
@@ -247,6 +282,12 @@ const DashboardPage: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            {/* Gallery of Boosts - Visual Proof of Enrichments */}
+            <GalleryOfBoosts
+                activities={activities}
+                onActivityClick={(activityId) => navigate(`/activities/${activityId}`)}
+            />
         </PageLayout>
     );
 };

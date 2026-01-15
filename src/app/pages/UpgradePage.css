@@ -1,0 +1,153 @@
+.pricing-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+}
+
+.pricing-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.pricing-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    align-items: stretch;
+}
+
+.pricing-card {
+    display: flex;
+    flex-direction: column;
+    padding: 2.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.pricing-card.pro {
+    border: 2px solid var(--color-primary);
+    box-shadow: 0 0 30px rgba(255, 27, 141, 0.15);
+}
+
+.pricing-card.pro::before {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: 12px;
+    right: -35px;
+    background: var(--color-primary);
+    color: white;
+    padding: 4px 40px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    transform: rotate(45deg);
+}
+
+.tier-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.pro .tier-name {
+    color: var(--color-primary);
+}
+
+.tier-price {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: baseline;
+}
+
+.tier-price span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-text-muted);
+    margin-left: 0.5rem;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    flex-grow: 1;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.feature-icon {
+    color: var(--color-success);
+    flex-shrink: 0;
+}
+
+.feature-item.disabled {
+    color: var(--color-text-muted);
+    opacity: 0.6;
+}
+
+.feature-item.disabled .feature-icon {
+    color: var(--color-text-muted);
+}
+
+.current-tier-tab {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.1);
+    text-align: center;
+    padding: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.checkout-btn {
+    margin-top: auto;
+}
+
+/* Response messaging */
+.billing-status {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.billing-status.success {
+    background: rgba(6, 255, 165, 0.1);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
+}
+
+.billing-status.error {
+    background: rgba(255, 69, 58, 0.1);
+    color: #FF453A;
+    border: 1px solid #FF453A;
+}
+
+@media (max-width: 600px) {
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+}

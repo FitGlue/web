@@ -15,6 +15,11 @@
   <section class="section">
     <div class="container" style="max-width: 600px;">
       <div class="feature-card animate-on-scroll">
+        <div id="early-access-notice" class="waitlist-success" style="display: none; margin-bottom: var(--space-md);">
+          <p style="margin: 0;">🎉 Thanks for your interest! FitGlue is currently invite-only. Join the waitlist to be
+            notified when registration opens.</p>
+        </div>
+
         <div id="form-container">
           <h3 class="mb-md text-center">Enter your email to join</h3>
 
@@ -80,6 +85,12 @@
 </main>
 
 <script>
+  // Show early access notice if redirected from register page
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('reason') === 'early_access') {
+    document.getElementById('early-access-notice').style.display = 'block';
+  }
+
   document.getElementById('waitlist-form').addEventListener('submit', async function (e) {
     e.preventDefault();
 

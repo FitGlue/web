@@ -53,6 +53,25 @@ const AccountSettingsPage: React.FC = () => {
                             <span className="field-label">User ID</span>
                             <code className="field-value">{user?.uid || 'N/A'}</code>
                         </div>
+                        <div className="account-field" style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                            <span className="field-label">Subscription</span>
+                            <div className="field-value" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <span className={`tier-badge ${user?.tier || 'free'}`} style={{
+                                    padding: '2px 8px',
+                                    borderRadius: '4px',
+                                    fontSize: '0.8rem',
+                                    fontWeight: 'bold',
+                                    textTransform: 'uppercase',
+                                    background: user?.tier === 'pro' ? 'var(--color-primary)' : 'rgba(255,255,255,0.1)'
+                                }}>
+                                    {user?.tier || 'Free'}
+                                </span>
+                                <Button variant="text" size="small" onClick={() => window.location.href = '/app/settings/upgrade'}>
+                                    {user?.tier === 'pro' ? 'Manage' : 'Upgrade →'}
+                                </Button>
+                            </div>
+                        </div>
+
                     </div>
                 </Card>
 
