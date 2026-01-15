@@ -50,10 +50,10 @@ const NotFoundPage: React.FC = () => {
         Page <span style={{ color: '#e91e63' }}>Not</span>{' '}
         <span style={{ color: '#00bcd4' }}>Found</span>
       </h2>
-      <p style={textStyle}>Looks like you've ventured into the unknown.</p>
+      <p style={textStyle}>Looks like you&apos;ve ventured into the unknown.</p>
       <p style={textStyle}>
-        The page you're looking for doesn't exist or has been moved.
-        Let's get you back on track.
+        The page you&apos;re looking for doesn&apos;t exist or has been moved.
+        Let&apos;s get you back on track.
       </p>
       <a href="/" style={buttonStyle}>
         Return to Dashboard
