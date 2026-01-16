@@ -12,6 +12,9 @@
     <div id="auth-error" class="auth-message error" style="display: none;"></div>
 
     <div class="input-group">
+      <input type="text" id="reg-name" placeholder="Your Name" autocomplete="name" />
+    </div>
+    <div class="input-group">
       <input type="email" id="reg-email" placeholder="Email" />
     </div>
     <div class="input-group">
@@ -56,7 +59,7 @@
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+  import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, sendEmailVerification, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
   const errorEl = document.getElementById('auth-error');
 
@@ -103,11 +106,19 @@
 
     document.getElementById('btn-register').addEventListener('click', async () => {
       hideError();
+      const name = document.getElementById('reg-name').value.trim();
       const email = document.getElementById('reg-email').value;
       const password = document.getElementById('reg-password').value;
 
+      if (!name) {
+        showError('Please enter your name');
+        return;
+      }
+
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // Set display name in Firebase Auth
+        await updateProfile(userCredential.user, { displayName: name });
         await sendEmailVerification(userCredential.user);
         window.location.href = '/auth/verify-email';
       } catch (error) {

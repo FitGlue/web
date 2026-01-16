@@ -68,7 +68,7 @@ principalSet://iam.googleapis.com/projects/911679924866/locations/global/workloa
 
 **Incorrect** (doesn't work):
 ```
-principalSet://iam.googleapis.com/projects/911679924866/locations/global/workloadIdentityPools/circleci-pool/attribute.project_id/b2fc92f7-4f8d-4676-95b1-94d7f15c0a8e
+principalSet://iam.googleapis.com/projects/911679924866/locations/global/workloadIdentityPools/circleci-pool/attribute.project_id/ecdc6640-c8ad-40c7-8710-b28261eb9107
 ```
 
 ### Shared Workload Identity Pool

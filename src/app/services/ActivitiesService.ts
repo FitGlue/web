@@ -8,7 +8,7 @@ export type ExecutionRecord = components['schemas']['ExecutionRecord'];
 
 export interface IActivitiesService {
   getStats(): Promise<{ synchronizedCount: number }>;
-  list(limit?: number): Promise<SynchronizedActivity[]>;
+  list(limit?: number, includeExecution?: boolean): Promise<SynchronizedActivity[]>;
   get(id: string): Promise<SynchronizedActivity | null>;
   listUnsynchronized(limit?: number): Promise<UnsynchronizedEntry[]>;
   getUnsynchronizedTrace(pipelineExecutionId: string): Promise<{ pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null>;
@@ -35,13 +35,14 @@ export const ActivitiesService: IActivitiesService = {
     return { synchronizedCount: data?.synchronizedCount || 0 };
   },
 
-  async list(limit = 20) {
+  async list(limit = 20, includeExecution = false) {
     const headers = await getAuthHeader();
     const { data, error } = await client.GET('/activities', {
       headers,
       params: {
         query: {
-          limit
+          limit,
+          includeExecution
         }
       }
     });

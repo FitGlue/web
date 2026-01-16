@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAtom } from 'jotai';
 import { useUser } from '../../hooks/useUser';
+import { userAtom } from '../../state/authState';
 
 export const AppHeader: React.FC = () => {
-    const { user } = useUser();
+    const { user: profile, loading } = useUser();
+    const [firebaseUser] = useAtom(userAtom);
     const [showMenu, setShowMenu] = useState(false);
 
     const menuRef = useRef<HTMLDivElement>(null);
@@ -25,10 +28,20 @@ export const AppHeader: React.FC = () => {
         };
     }, [showMenu]);
 
-    // Get user initials or first letter of email
+    // Get user initials - prefer displayName, fallback to email
     const getInitial = () => {
-        if (!user?.email) return '?';
-        return user.email[0].toUpperCase();
+        // Show loading indicator while user is being fetched
+        if (loading && !firebaseUser) return '·';
+
+        // Try displayName first (from Firebase Auth)
+        if (firebaseUser?.displayName) {
+            return firebaseUser.displayName[0].toUpperCase();
+        }
+        // Fallback to email
+        if (firebaseUser?.email) {
+            return firebaseUser.email[0].toUpperCase();
+        }
+        return '?';
     };
 
     return (
@@ -46,7 +59,7 @@ export const AppHeader: React.FC = () => {
                     aria-expanded={showMenu}
                 >
                     {getInitial()}
-                    {user?.tier === 'pro' && (
+                    {profile?.tier === 'pro' && (
                         <div className="pro-badge-mini" style={{
                             position: 'absolute',
                             bottom: '-4px',
@@ -67,14 +80,14 @@ export const AppHeader: React.FC = () => {
                 {showMenu && (
                     <div className="user-dropdown-menu">
                         <div className="user-dropdown-header">
-                            <span className="user-email">{user?.email || 'User'}</span>
+                            <span className="user-email">{firebaseUser?.displayName || firebaseUser?.email || 'User'}</span>
                         </div>
                         <div className="user-dropdown-divider" />
                         <Link to="/settings/account" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
                             <span className="dropdown-icon">👤</span>
                             Account
                         </Link>
-                        {user?.isAdmin && (
+                        {profile?.isAdmin && (
                             <Link to="/admin" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
                                 <span className="dropdown-icon">🛠️</span>
                                 Admin Console

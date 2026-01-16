@@ -16,22 +16,13 @@ import { GalleryOfBoosts } from '../components/dashboard/GalleryOfBoosts';
 import { IntegrationsSummary } from '../state/integrationsState';
 import { RedirectNotification } from './NotFoundPage';
 
-
-interface ActivitySummary {
-    activityId: string;
-    title?: string;
-    type?: string;
-    source?: string;
-    syncedAt?: string;
-}
-
 const DashboardPage: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const [showRedirectNotification, setShowRedirectNotification] = useState(false);
     const { sources, destinations, integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { inputs, loading: inputsLoading, refresh: inputsRefresh } = useInputs();
-    const { activities, stats, loading: statsLoading, refresh: statsRefresh } = useActivities('list');
+    const { activities, loading: statsLoading, refresh: statsRefresh } = useActivities('dashboard');
     const { integrations, loading: integrationsLoading, refresh: integrationsRefresh, fetchIfNeeded: fetchIntegrations } = useIntegrations();
     const { pipelines, loading: pipelinesLoading, refresh: pipelinesRefresh, fetchIfNeeded: fetchPipelines } = usePipelines();
     const { user } = useUser();
@@ -90,7 +81,7 @@ const DashboardPage: React.FC = () => {
         ri => integrations?.[ri.id as keyof IntegrationsSummary]?.connected
     ).length;
 
-    const recentActivities = activities.slice(0, 5);
+
 
     if (isLoading && !integrations && pipelines.length === 0) {
         return (
@@ -114,15 +105,42 @@ const DashboardPage: React.FC = () => {
                 <WelcomeBanner />
             )}
 
-            {/* Quick Actions */}
-            <div className="dashboard-quick-actions">
-                <Button variant="primary" onClick={() => navigate('/settings/pipelines/new')}>
-                    + New Pipeline
-                </Button>
-                <Button variant="secondary" onClick={() => navigate('/settings/integrations')}>
-                    Manage Integrations
-                </Button>
-            </div>
+
+            {/* Plan & Usage Banner */}
+            {user && (
+                <div className={`plan-banner ${user.tier === 'pro' ? 'pro' : 'free'}`}>
+                    <div className="plan-info">
+                        <span className={`plan-badge ${user.tier === 'pro' ? 'pro' : 'free'}`}>
+                            {user.tier === 'pro' ? '✨ PRO' : 'FREE'}
+                        </span>
+                        {user.tier === 'pro' && user.trialEndsAt && (() => {
+                            const daysLeft = Math.ceil((new Date(user.trialEndsAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+                            return daysLeft > 0 ? (
+                                <span className="trial-countdown">{daysLeft} day{daysLeft !== 1 ? 's' : ''} left in trial</span>
+                            ) : null;
+                        })()}
+                    </div>
+                    <div className="usage-mini">
+                        {user.tier === 'pro' ? (
+                            <>
+                                <span className="unlimited">Unlimited syncs</span>
+                                <Link to="/settings/upgrade" className="manage-link">Manage →</Link>
+                            </>
+                        ) : (
+                            <>
+                                <div className="usage-bar-mini">
+                                    <div
+                                        className="usage-fill-mini"
+                                        style={{ width: `${Math.min(100, ((user.syncCountThisMonth || 0) / 25) * 100)}%` }}
+                                    />
+                                </div>
+                                <span className="usage-text">{user.syncCountThisMonth || 0}/25 syncs</span>
+                                <Link to="/settings/upgrade" className="upgrade-link">Upgrade →</Link>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {/* Overview Cards */}
             <div className="dashboard-grid">
@@ -220,88 +238,8 @@ const DashboardPage: React.FC = () => {
                         <strong>{inputs.length}</strong> pending
                     </div>
                 </Card>
-
-                {/* Stats Summary */}
-                <Card className="dashboard-card stats-card">
-                    <div className="card-header-row">
-                        <h3>📊 Activity Stats</h3>
-                        <Link to="/activities" className="card-link">View All →</Link>
-                    </div>
-                    <div className="stats-summary">
-                        <div className="stat-item">
-                            <span className="stat-number">{stats.synchronizedCount || 0}</span>
-                            <span className="stat-label">Synced This Week</span>
-                        </div>
-                        <div className="stat-item">
-                            <span className="stat-number">{activities.length || 0}</span>
-                            <span className="stat-label">Total Activities</span>
-                        </div>
-                    </div>
-                </Card>
-
-                {/* Sync Usage (Tier Limits) */}
-                <Card className={`dashboard-card usage-card ${user?.tier === 'free' && (user.syncCountThisMonth || 0) > 20 ? 'limit-near' : ''}`}>
-                    <div className="card-header-row">
-                        <h3>📈 Monthly Usage</h3>
-                        <Link to="/settings/upgrade" className="card-link">Upgrade →</Link>
-                    </div>
-                    <div className="usage-stats">
-                        <div className="usage-progress-bar" style={{
-                            height: '8px',
-                            background: 'rgba(255,255,255,0.1)',
-                            borderRadius: '4px',
-                            overflow: 'hidden',
-                            margin: '1rem 0'
-                        }}>
-                            <div className="progress-fill" style={{
-                                height: '100%',
-                                width: `${user?.tier === 'pro' ? 0 : Math.min(100, ((user?.syncCountThisMonth || 0) / 25) * 100)}%`,
-                                background: (user?.syncCountThisMonth || 0) > 20 ? 'var(--color-primary)' : 'var(--color-success)',
-                                transition: 'width 0.5s ease-out'
-                            }} />
-                        </div>
-                        <div className="usage-details" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
-                            <span>{user?.tier === 'pro' ? 'Unlimited Syncs' : `${user?.syncCountThisMonth || 0} / 25 syncs`}</span>
-                            <span style={{ color: 'var(--color-text-muted)' }}>{user?.tier === 'pro' ? 'Pro Plan' : 'Free Tier'}</span>
-                        </div>
-                    </div>
-                </Card>
             </div>
 
-
-            {/* Recent Activities */}
-            {recentActivities.length > 0 && (
-                <div className="dashboard-section">
-                    <div className="section-header">
-                        <h3>🏃 Recent Activities</h3>
-                        <Link to="/activities" className="section-link">View All →</Link>
-                    </div>
-                    <div className="recent-activities-list">
-                        {recentActivities.map((activity: ActivitySummary) => (
-                            <Card
-                                key={activity.activityId}
-                                className="activity-mini-card clickable"
-                                onClick={() => navigate(`/activities/${activity.activityId}`)}
-                            >
-                                <div className="activity-mini-content">
-                                    <div className="activity-mini-left">
-                                        <span className="activity-type-badge">{activity.type || 'Activity'}</span>
-                                        <span className="activity-title">{activity.title || 'Untitled'}</span>
-                                    </div>
-                                    <div className="activity-mini-right">
-                                        <span className="activity-source">{activity.source}</span>
-                                        {activity.syncedAt && (
-                                            <span className="activity-date">
-                                                {new Date(activity.syncedAt).toLocaleDateString()}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            </Card>
-                        ))}
-                    </div>
-                </div>
-            )}
 
             {/* Gallery of Boosts - Visual Proof of Enrichments */}
             <GalleryOfBoosts

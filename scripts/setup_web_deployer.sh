@@ -17,7 +17,7 @@ if [[ ! "$ENV" =~ ^(dev|test|prod)$ ]]; then
 fi
 
 PROJECT_ID="fitglue-server-${ENV}"
-CIRCLECI_ORG_ID="b2fc92f7-4f8d-4676-95b1-94d7f15c0a8e"
+CIRCLECI_ORG_ID="ecdc6640-c8ad-40c7-8710-b28261eb9107"
 POOL_NAME="circleci-pool"
 SA_NAME="circleci-web-deployer"
 

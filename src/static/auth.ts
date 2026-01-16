@@ -10,6 +10,7 @@ import {
   signOut,
   sendEmailVerification,
   sendPasswordResetEmail,
+  updateProfile,
   User
 } from 'firebase/auth';
 
@@ -249,8 +250,15 @@ async function init() {
   // Register
   bindClick('btn-register', async () => {
     hideMessage('auth-error');
+    const nameEl = document.getElementById('reg-name') as HTMLInputElement;
     const emailEl = document.getElementById('reg-email') as HTMLInputElement;
     const passEl = document.getElementById('reg-password') as HTMLInputElement;
+
+    const name = nameEl?.value?.trim();
+    if (!name) {
+      showMessage('auth-error', 'Please enter your name');
+      return;
+    }
     if (!emailEl?.value || !passEl?.value) {
       showMessage('auth-error', 'Please fill in all fields');
       return;
@@ -258,6 +266,9 @@ async function init() {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, emailEl.value, passEl.value);
+
+      // Set display name in Firebase Auth
+      await updateProfile(userCredential.user, { displayName: name });
 
       // Send verification email
       await sendEmailVerification(userCredential.user);

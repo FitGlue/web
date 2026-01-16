@@ -904,6 +904,15 @@
               "type": "integer",
               "default": 20
             }
+          },
+          {
+            "name": "includeExecution",
+            "in": "query",
+            "description": "When true, include pipelineExecution details for each activity (limited to 10 activities for performance)",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {

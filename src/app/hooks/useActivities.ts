@@ -13,7 +13,7 @@ import {
 } from '../state/activitiesState';
 import { ActivitiesService, ExecutionRecord } from '../services/ActivitiesService';
 
-type FetchMode = 'stats' | 'list' | 'single' | 'unsynchronized' | 'unsynchronized-trace';
+type FetchMode = 'stats' | 'list' | 'single' | 'unsynchronized' | 'unsynchronized-trace' | 'dashboard';
 
 export const useActivities = (mode: FetchMode = 'list', id?: string) => {
   const [activities, setActivities] = useAtom(activitiesAtom);
@@ -48,6 +48,24 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
     setLoading(true);
     try {
       const data = await ActivitiesService.list();
+      setActivities(data);
+      setLoaded(true);
+      setActivitiesLastUpdated(new Date());
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [loaded, setActivities, setLoaded, setLoading, setActivitiesLastUpdated]);
+
+  // Dashboard mode: fetch with includeExecution=true for rich enrichment data
+  const fetchDashboard = useCallback(async (force = false) => {
+    if (!force && loaded) return;
+
+    setLoading(true);
+    try {
+      // Limit to 10 with includeExecution for performance
+      const data = await ActivitiesService.list(10, true);
       setActivities(data);
       setLoaded(true);
       setActivitiesLastUpdated(new Date());
@@ -104,12 +122,14 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
       fetchSingle();
     } else if (mode === 'unsynchronized') {
       fetchUnsynchronized();
+    } else if (mode === 'dashboard') {
+      fetchDashboard();
     }
-  }, [mode, id, fetchStats, fetchList, fetchSingle, fetchUnsynchronized]);
+  }, [mode, id, fetchStats, fetchList, fetchSingle, fetchUnsynchronized, fetchDashboard]);
 
   // Determine which lastUpdated to return
   let lastUpdated: Date | null = null;
-  if (mode === 'list') lastUpdated = activitiesLastUpdated;
+  if (mode === 'list' || mode === 'dashboard') lastUpdated = activitiesLastUpdated;
   if (mode === 'unsynchronized') lastUpdated = unsynchronizedLastUpdated;
 
   return {
@@ -123,6 +143,7 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
       if (mode === 'list') fetchList(true);
       if (mode === 'single') fetchSingle();
       if (mode === 'unsynchronized') fetchUnsynchronized(true);
+      if (mode === 'dashboard') fetchDashboard(true);
     }
   };
 };

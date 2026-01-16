@@ -71,10 +71,10 @@ export const GalleryOfBoosts: React.FC<GalleryOfBoostsProps> = ({
                 <div className="gallery-of-boosts__header-left">
                     <h3 className="gallery-of-boosts__title">
                         <span className="gallery-of-boosts__title-icon">✨</span>
-                        Gallery of Boosts
+                        Your Enhanced Activities
                     </h3>
                     <p className="gallery-of-boosts__subtitle">
-                        See how FitGlue has enhanced your activities
+                        Where the magic has happened
                     </p>
                 </div>
             </div>
