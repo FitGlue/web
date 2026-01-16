@@ -167,7 +167,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:uSKrOFZimSpSrZRSB/bidYM7/mKT0Fwyux+f4TFTp/s"
+            - "SHA256:Dvf1ePF0rWqlWOAQo6xodUXJY4msYK0H+ecMsu94YHk"
       - run:
           name: Setup Git User
           command: |
