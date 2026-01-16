@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { SynchronizedActivity } from '../../services/ActivitiesService';
 import { EnrichedActivityCard } from './EnrichedActivityCard';
 import './GalleryOfBoosts.css';
@@ -77,6 +78,7 @@ export const GalleryOfBoosts: React.FC<GalleryOfBoostsProps> = ({
                         Where the magic has happened
                     </p>
                 </div>
+                <Link to="/activities" className="card-link">View All →</Link>
             </div>
 
             {/* Aggregate Stats */}

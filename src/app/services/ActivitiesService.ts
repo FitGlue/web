@@ -8,9 +8,9 @@ export type ExecutionRecord = components['schemas']['ExecutionRecord'];
 
 export interface IActivitiesService {
   getStats(): Promise<{ synchronizedCount: number }>;
-  list(limit?: number, includeExecution?: boolean): Promise<SynchronizedActivity[]>;
+  list(limit?: number, includeExecution?: boolean, offset?: number): Promise<SynchronizedActivity[]>;
   get(id: string): Promise<SynchronizedActivity | null>;
-  listUnsynchronized(limit?: number): Promise<UnsynchronizedEntry[]>;
+  listUnsynchronized(limit?: number, offset?: number): Promise<UnsynchronizedEntry[]>;
   getUnsynchronizedTrace(pipelineExecutionId: string): Promise<{ pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null>;
 }
 
@@ -35,14 +35,15 @@ export const ActivitiesService: IActivitiesService = {
     return { synchronizedCount: data?.synchronizedCount || 0 };
   },
 
-  async list(limit = 20, includeExecution = false) {
+  async list(limit = 20, includeExecution = false, offset = 0) {
     const headers = await getAuthHeader();
     const { data, error } = await client.GET('/activities', {
       headers,
       params: {
         query: {
           limit,
-          includeExecution
+          includeExecution,
+          offset
         }
       }
     });
@@ -72,13 +73,14 @@ export const ActivitiesService: IActivitiesService = {
     return data?.activity || null;
   },
 
-  async listUnsynchronized(limit = 20) {
+  async listUnsynchronized(limit = 20, offset = 0) {
     const headers = await getAuthHeader();
     const { data, error } = await client.GET('/activities/unsynchronized', {
       headers,
       params: {
         query: {
-          limit
+          limit,
+          offset
         }
       }
     });
