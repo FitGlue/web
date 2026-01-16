@@ -3652,3 +3652,272 @@ h3 {
         opacity: 0.8;
     }
 }
+
+/* ========================================
+   Enhanced Pending Inputs / Action Required
+   ======================================== */
+
+.pending-inputs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.pending-input-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 4px solid;
+    border-left-color: var(--color-secondary);
+    border-radius: 16px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.pending-input-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pending-input-card:hover {
+    border-color: rgba(131, 56, 236, 0.3);
+    box-shadow: 0 8px 32px rgba(131, 56, 236, 0.15);
+}
+
+.pending-input-card:hover::before {
+    opacity: 1;
+}
+
+/* Header */
+.pending-input-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pending-input-card__source {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.pending-input-card__source-icon {
+    font-size: 2rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pending-input-card__source-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.pending-input-card__source-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.pending-input-card__timestamp {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.pending-input-card__status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(255, 214, 10, 0.15);
+    color: #FFD60A;
+    border: 1px solid rgba(255, 214, 10, 0.3);
+}
+
+.pending-input-card__status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #FFD60A;
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(0.85);
+    }
+}
+
+/* Form Section */
+.pending-input-card__form {
+    margin-bottom: 1.5rem;
+}
+
+.pending-input-card__form-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin: 0 0 1rem 0;
+}
+
+.pending-input-card__field {
+    margin-bottom: 1rem;
+}
+
+.pending-input-card__field:last-child {
+    margin-bottom: 0;
+}
+
+.pending-input-card__label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+
+.pending-input-card__field .input-text,
+.pending-input-card__field .input-textarea,
+.pending-input-card__field .input-select {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.pending-input-card__field .input-text:focus,
+.pending-input-card__field .input-textarea:focus,
+.pending-input-card__field .input-select:focus {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 3px rgba(131, 56, 236, 0.15);
+}
+
+/* Actions */
+.pending-input-card__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.pending-input-card__actions .btn {
+    margin: 0;
+}
+
+.pending-input-card__dismiss {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.pending-input-card__dismiss:hover:not(:disabled) {
+    color: var(--color-primary);
+}
+
+.pending-input-card__dismiss:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Footer */
+.pending-input-card__footer {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+/* Dashboard Pending Items Enhancement */
+.pending-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: linear-gradient(145deg, rgba(255, 214, 10, 0.08) 0%, rgba(255, 159, 10, 0.05) 100%);
+    border: 1px solid rgba(255, 214, 10, 0.15);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pending-item:hover {
+    background: linear-gradient(145deg, rgba(255, 214, 10, 0.12) 0%, rgba(255, 159, 10, 0.08) 100%);
+    border-color: rgba(255, 214, 10, 0.25);
+    transform: translateX(2px);
+}
+
+.pending-icon {
+    font-size: 1.5rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.pending-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    flex: 1;
+}
+
+.pending-activity {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.pending-fields {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.pending-arrow {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    opacity: 0.5;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.pending-item:hover .pending-arrow {
+    opacity: 1;
+    transform: translateX(3px);
+}

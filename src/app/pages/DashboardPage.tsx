@@ -81,6 +81,34 @@ const DashboardPage: React.FC = () => {
         ri => integrations?.[ri.id as keyof IntegrationsSummary]?.connected
     ).length;
 
+    // Parse activity ID (e.g., "FITBIT:217758352929208470") into friendly display
+    const parseActivityId = (activityId: string): { source: string; icon: string; timestamp: string } => {
+        const [sourcePart, idPart] = activityId.split(':');
+        const source = sourcePart?.toLowerCase() || 'unknown';
+
+        // Get source icon from registry
+        const sourceInfo = registryIntegrations.find(ri => ri.id === source);
+        const icon = sourceInfo?.icon || '📥';
+        const sourceName = sourceInfo?.name || source.charAt(0).toUpperCase() + source.slice(1);
+
+        // Try to parse the ID as a timestamp (if numeric)
+        let timestamp = 'Activity';
+        if (idPart && /^\d+$/.test(idPart)) {
+            // Fitbit IDs include timestamp - convert from Fitbit's format
+            const date = new Date(parseInt(idPart));
+            if (!isNaN(date.getTime()) && date.getFullYear() > 2020) {
+                timestamp = date.toLocaleString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                });
+            }
+        }
+
+        return { source: sourceName, icon, timestamp };
+    };
+
 
 
     if (isLoading && !integrations && pipelines.length === 0) {
@@ -192,7 +220,7 @@ const DashboardPage: React.FC = () => {
                                         ))}
                                     </span>
                                     <span className="enricher-count">
-                                        {pipeline.enrichers.length} enricher{pipeline.enrichers.length !== 1 ? 's' : ''}
+                                        {pipeline.enrichers?.length ?? 0} enricher{(pipeline.enrichers?.length ?? 0) !== 1 ? 's' : ''}
                                     </span>
                                 </div>
                             ))}
@@ -219,17 +247,23 @@ const DashboardPage: React.FC = () => {
                         </div>
                     ) : (
                         <div className="pending-list">
-                            {inputs.slice(0, 3).map(input => (
-                                <div key={input.id} className="pending-item" onClick={() => navigate('/inputs')}>
-                                    <span className="pending-icon">📝</span>
-                                    <div className="pending-info">
-                                        <span className="pending-activity">{input.activityId}</span>
-                                        <span className="pending-fields">
-                                            Needs: {input.requiredFields?.join(', ') || 'input'}
-                                        </span>
+                            {inputs.slice(0, 3).map(input => {
+                                const parsed = parseActivityId(input.activityId);
+                                return (
+                                    <div key={input.id} className="pending-item" onClick={() => navigate('/inputs')}>
+                                        <span className="pending-icon">{parsed.icon}</span>
+                                        <div className="pending-info">
+                                            <span className="pending-activity">
+                                                {parsed.source} • {parsed.timestamp}
+                                            </span>
+                                            <span className="pending-fields">
+                                                Needs: {input.requiredFields?.join(', ') || 'input'}
+                                            </span>
+                                        </div>
+                                        <span className="pending-arrow">→</span>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                     <div className="card-footer-stat">
