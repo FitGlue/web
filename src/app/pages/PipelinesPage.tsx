@@ -46,73 +46,89 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
     getDestinationName,
 }) => {
     return (
-        <Card className="pipeline-card">
-            <div className="pipeline-header">
-                <div className="pipeline-flow">
-                    <span className="pipeline-source">
-                        <span className="pipeline-icon">{getSourceIcon(pipeline.source)}</span>
-                        {getSourceName(pipeline.source)}
-                    </span>
-                    <span className="pipeline-arrow">→</span>
-                    {pipeline.enrichers.length > 0 && (
-                        <>
-                            <span className="pipeline-enrichers">
-                                {pipeline.enrichers.map((e, i) => (
-                                    <span key={i} className="enricher-badge" title={getEnricherName(e.providerType)}>
-                                        {getEnricherIcon(e.providerType)}
-                                    </span>
-                                ))}
-                            </span>
-                            <span className="pipeline-arrow">→</span>
-                        </>
-                    )}
-                    <span className="pipeline-destinations">
-                        {pipeline.destinations.map((dest, i) => (
-                            <span key={i} className="pipeline-destination">
-                                <span className="pipeline-icon">{getDestinationIcon(dest)}</span>
-                                {getDestinationName(dest)}
-                            </span>
-                        ))}
-                    </span>
+        <div className="pipeline-card-premium">
+            {/* Visual Flow Header */}
+            <div className="pipeline-visual-flow">
+                {/* Source Node */}
+                <div className="flow-node flow-source">
+                    <div className="flow-node-icon">{getSourceIcon(pipeline.source)}</div>
+                    <span className="flow-node-label">{getSourceName(pipeline.source)}</span>
                 </div>
-            </div>
-            <div className="pipeline-details">
-                <div className="pipeline-id">
-                    <span className="label">Pipeline ID:</span>
-                    <code>{pipeline.id}</code>
+
+                {/* Flow Arrow */}
+                <div className="flow-connector">
+                    <div className="flow-line"></div>
+                    <span className="flow-arrow-icon">→</span>
+                    <div className="flow-line"></div>
                 </div>
+
+                {/* Boosters Section */}
                 {pipeline.enrichers.length > 0 && (
-                    <div className="pipeline-enricher-list">
-                        <span className="label">Enrichers:</span>
-                        <ul>
-                            {pipeline.enrichers.map((e, i) => (
-                                <li key={i}>
-                                    {getEnricherIcon(e.providerType)} {getEnricherName(e.providerType)}
-                                    {e.typedConfig && Object.keys(e.typedConfig).length > 0 && (
-                                        <span className="enricher-inputs"> (configured)</span>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    <>
+                        <div className="flow-boosters">
+                            <div className="boosters-container">
+                                {pipeline.enrichers.map((e, i) => (
+                                    <div
+                                        key={i}
+                                        className="booster-pill"
+                                        title={getEnricherName(e.providerType)}
+                                    >
+                                        <span className="booster-order">{i + 1}</span>
+                                        <span className="booster-icon">{getEnricherIcon(e.providerType)}</span>
+                                        <span className="booster-name">{getEnricherName(e.providerType)}</span>
+                                        {e.typedConfig && Object.keys(e.typedConfig).length > 0 && (
+                                            <span className="booster-configured">✓</span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Flow Arrow */}
+                        <div className="flow-connector">
+                            <div className="flow-line"></div>
+                            <span className="flow-arrow-icon">→</span>
+                            <div className="flow-line"></div>
+                        </div>
+                    </>
                 )}
+
+                {/* Destination Node */}
+                <div className="flow-node flow-destination">
+                    {pipeline.destinations.map((dest, i) => (
+                        <React.Fragment key={i}>
+                            <div className="flow-node-icon">{getDestinationIcon(dest)}</div>
+                            <span className="flow-node-label">{getDestinationName(dest)}</span>
+                        </React.Fragment>
+                    ))}
+                </div>
             </div>
-            <div className="pipeline-actions">
-                <Button
-                    variant="secondary"
-                    onClick={onEdit}
-                >
-                    Edit
-                </Button>
-                <Button
-                    variant="danger"
-                    onClick={onDelete}
-                    disabled={deleting}
-                >
-                    {deleting ? 'Deleting...' : 'Delete'}
-                </Button>
+
+            {/* Card Footer */}
+            <div className="pipeline-card-footer">
+                <div className="pipeline-meta">
+                    <code className="pipeline-id-badge">{pipeline.id.replace('pipe_', '').slice(0, 8)}...</code>
+                    <span className="pipeline-booster-count">
+                        {pipeline.enrichers.length} Booster{pipeline.enrichers.length !== 1 ? 's' : ''}
+                    </span>
+                </div>
+                <div className="pipeline-card-actions">
+                    <Button
+                        variant="secondary"
+                        onClick={onEdit}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={onDelete}
+                        disabled={deleting}
+                    >
+                        {deleting ? 'Deleting...' : 'Delete'}
+                    </Button>
+                </div>
             </div>
-        </Card>
+        </div>
     );
 };
 

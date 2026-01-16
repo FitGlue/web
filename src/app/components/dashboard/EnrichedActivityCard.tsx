@@ -54,11 +54,49 @@ const getEnrichedTitle = (pipelineExecution?: ExecutionRecord[]): string | null 
 };
 
 /**
+ * Get the destination activity type from pipeline outputs
+ * This is the type the activity will appear as in the destination (e.g., "Run", "Ride")
+ */
+const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): string | null => {
+    if (!pipelineExecution) return null;
+
+    // Try strava-uploader first, then router, then any webhook/handler
+    const services = ['strava-uploader', 'router'];
+
+    for (const service of services) {
+        const record = pipelineExecution.find(r => r.service === service);
+        if (record?.outputsJson) {
+            try {
+                const outputs = JSON.parse(record.outputsJson);
+                if (outputs.activity_type) return String(outputs.activity_type);
+            } catch {
+                continue;
+            }
+        }
+    }
+
+    // Fallback: check any webhook/handler
+    const webhookRecord = pipelineExecution.find(r =>
+        r.service?.includes('webhook') || r.service?.includes('-handler')
+    );
+    if (webhookRecord?.outputsJson) {
+        try {
+            const outputs = JSON.parse(webhookRecord.outputsJson);
+            if (outputs.activity_type) return String(outputs.activity_type);
+        } catch {
+            // ignore
+        }
+    }
+
+    return null;
+};
+
+/**
  * Format activity type from enum number to readable string
  */
 const formatActivityType = (type?: number): string => {
     const types: Record<number, string> = {
-        0: 'Unknown',
+        0: 'Workout',
         1: 'Run',
         2: 'Ride',
         3: 'Swim',
@@ -66,13 +104,33 @@ const formatActivityType = (type?: number): string => {
         5: 'Hike',
         6: 'Strength',
         7: 'Workout',
+        8: 'Yoga',
+        9: 'CrossFit',
+        10: 'HIIT',
+        11: 'Rowing',
+        12: 'Elliptical',
+        13: 'Climbing',
     };
-    return types[type ?? 0] || 'Activity';
+    return types[type ?? 0] || 'Workout';
 };
 
 /**
- * EnrichedActivityCard shows a before/after comparison for a synced activity.
- * Works with both list-level data (minimal) and single activity data (with pipelineExecution).
+ * Format source name for display
+ */
+const formatSourceName = (source: string): string => {
+    const names: Record<string, string> = {
+        hevy: 'Hevy',
+        strava: 'Strava',
+        fitbit: 'Fitbit',
+        garmin: 'Garmin',
+        apple: 'Apple Health',
+    };
+    return names[source.toLowerCase()] || source.charAt(0).toUpperCase() + source.slice(1).toLowerCase();
+};
+
+/**
+ * EnrichedActivityCard shows the magic flow: Source → Boosters → Destination
+ * A clean, full-width card that highlights the transformation journey.
  */
 export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     activity,
@@ -80,14 +138,14 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
 }) => {
     const providerExecutions = extractEnricherExecutions(activity.pipelineExecution);
     const enrichedTitle = getEnrichedTitle(activity.pipelineExecution);
-    const successfulEnrichers = providerExecutions.filter(p => p.Status?.toUpperCase() === 'SUCCESS');
+    const destinationActivityType = getDestinationActivityType(activity.pipelineExecution);
     const hasDetailedData = activity.pipelineExecution && activity.pipelineExecution.length > 0;
 
-    const activityTitle = activity.title || 'Untitled Activity';
-    const finalTitle = enrichedTitle || activityTitle;
-    const titleChanged = enrichedTitle && enrichedTitle !== activityTitle;
+    const activityTitle = enrichedTitle || activity.title || 'Untitled Activity';
+    const titleWasEnhanced = enrichedTitle && enrichedTitle !== activity.title;
 
-    const activityType = formatActivityType(activity.type);
+    // Use destination type if available, otherwise fall back to source type
+    const activityType = destinationActivityType || formatActivityType(activity.type);
     const syncDate = activity.syncedAt
         ? new Date(activity.syncedAt).toLocaleDateString(undefined, {
               month: 'short',
@@ -95,97 +153,69 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
           })
         : null;
 
-    // Check for destinations (synced to external services)
+    // Source and destination info
+    const sourceName = formatSourceName(activity.source);
     const destinations = activity.destinations ? Object.keys(activity.destinations) : [];
-    const hasDestinations = destinations.length > 0;
-
-    // Check for heatmap metadata (only available with detailed data)
-    const heatmapExec = successfulEnrichers.find(p => p.ProviderName === 'muscle-heatmap');
-    const hasHeatmap = !!heatmapExec;
+    const destinationNames = destinations.map(d => formatSourceName(d));
 
     return (
         <Card
             className={`enriched-activity-card ${hasDetailedData ? 'has-enrichments' : 'synced-only'}`}
             onClick={onClick}
         >
-            <div className="enriched-activity-card__content">
-                {/* Before State */}
-                <div className="enriched-activity-card__before">
-                    <span className="enriched-activity-card__label">Before</span>
-                    <div className="enriched-activity-card__state">
-                        <span className="enriched-activity-card__type-badge">{activityType}</span>
-                        <span className="enriched-activity-card__title enriched-activity-card__title--muted">
-                            {activityTitle}
-                        </span>
-                        <div className="enriched-activity-card__placeholder">
-                            <span className="enriched-activity-card__placeholder-icon">📋</span>
-                            <span className="enriched-activity-card__placeholder-text">Raw activity data</span>
-                        </div>
-                    </div>
+            {/* Main Activity Header */}
+            <div className="enriched-activity-card__header">
+                <div className="enriched-activity-card__title-section">
+                    <span className="enriched-activity-card__type-badge">{activityType}</span>
+                    <h4 className="enriched-activity-card__title">
+                        {activityTitle}
+                        {titleWasEnhanced && <span className="enriched-activity-card__enhanced-indicator">✨</span>}
+                    </h4>
+                </div>
+                {syncDate && <span className="enriched-activity-card__date">{syncDate}</span>}
+            </div>
+
+            {/* Flow Visualization: Source → Boosters → Destination */}
+            <div className="enriched-activity-card__flow">
+                {/* Source */}
+                <div className="enriched-activity-card__flow-node enriched-activity-card__flow-node--source">
+                    <span className="enriched-activity-card__flow-icon">📥</span>
+                    <span className="enriched-activity-card__flow-label">{sourceName}</span>
                 </div>
 
-                {/* Arrow */}
-                <div className="enriched-activity-card__arrow">
-                    <span className="enriched-activity-card__arrow-icon">→</span>
-                </div>
+                <span className="enriched-activity-card__flow-arrow">→</span>
 
-                {/* After State */}
-                <div className="enriched-activity-card__after">
-                    <span className="enriched-activity-card__label">After</span>
-                    <div className="enriched-activity-card__state">
-                        <span className="enriched-activity-card__type-badge enriched-activity-card__type-badge--enhanced">
-                            {activityType}
-                        </span>
-                        <span className={`enriched-activity-card__title ${titleChanged ? 'enriched-activity-card__title--enhanced' : ''}`}>
-                            {finalTitle}
-                            {titleChanged && <span className="enriched-activity-card__enhanced-indicator">✨</span>}
-                        </span>
-                        {hasHeatmap ? (
-                            <div className="enriched-activity-card__heatmap-preview">
-                                <span className="enriched-activity-card__heatmap-icon">💪</span>
-                                <span className="enriched-activity-card__heatmap-text">
-                                    Muscle Heatmap Generated
-                                </span>
-                            </div>
-                        ) : hasDestinations ? (
-                            <div className="enriched-activity-card__destinations">
-                                <span className="enriched-activity-card__destination-icon">🚀</span>
-                                <span className="enriched-activity-card__destination-text">
-                                    Synced to {destinations.join(', ')}
-                                </span>
-                            </div>
+                {/* Boosters Applied */}
+                <div className="enriched-activity-card__flow-center">
+                    <div className="enriched-activity-card__boosters">
+                        {providerExecutions.length > 0 ? (
+                            providerExecutions.map((exec, idx) => (
+                                <EnricherBadge
+                                    key={idx}
+                                    providerName={exec.ProviderName}
+                                    status={exec.Status}
+                                    metadata={exec.Metadata}
+                                />
+                            ))
                         ) : (
-                            <div className="enriched-activity-card__metrics">
-                                <span className="enriched-activity-card__metric">
-                                    ✅ Processed by FitGlue
-                                </span>
-                            </div>
+                            <span className="enriched-activity-card__no-boosters">No boosters applied</span>
                         )}
                     </div>
                 </div>
-            </div>
 
-            {/* Enrichment Timeline (only shown with detailed data) */}
-            {providerExecutions.length > 0 && (
-                <div className="enriched-activity-card__timeline">
-                    <span className="enriched-activity-card__timeline-label">Applied Boosters:</span>
-                    <div className="enriched-activity-card__badges">
-                        {providerExecutions.map((exec, idx) => (
-                            <EnricherBadge
-                                key={idx}
-                                providerName={exec.ProviderName}
-                                status={exec.Status}
-                                metadata={exec.Metadata}
-                            />
-                        ))}
-                    </div>
+                <span className="enriched-activity-card__flow-arrow">→</span>
+
+                {/* Destination */}
+                <div className="enriched-activity-card__flow-node enriched-activity-card__flow-node--destination">
+                    <span className="enriched-activity-card__flow-icon">🚀</span>
+                    {destinationNames.length > 0 ? (
+                        <span className="enriched-activity-card__flow-label">{destinationNames.join(', ')}</span>
+                    ) : (
+                        <span className="enriched-activity-card__flow-label enriched-activity-card__flow-label--pending">
+                            Pending upload
+                        </span>
+                    )}
                 </div>
-            )}
-
-            {/* Footer */}
-            <div className="enriched-activity-card__footer">
-                <span className="enriched-activity-card__source">{activity.source}</span>
-                {syncDate && <span className="enriched-activity-card__date">{syncDate}</span>}
             </div>
         </Card>
     );

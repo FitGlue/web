@@ -72,7 +72,7 @@ export const AppHeader: React.FC = () => {
                             fontWeight: 'bold',
                             border: '2px solid var(--color-bg)'
                         }}>
-                            PRO
+                            ATHLETE
                         </div>
                     )}
                 </button>

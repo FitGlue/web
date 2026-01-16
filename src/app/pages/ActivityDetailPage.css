@@ -1,0 +1,387 @@
+/* ========================================
+   Activity Detail Page Styles
+   ======================================== */
+
+/* Hero Header */
+.activity-detail__hero {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 4px solid var(--color-primary);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.activity-detail__hero-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.activity-detail__type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 27, 141, 0.3);
+}
+
+.activity-detail__date {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.activity-detail__description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  margin: 0 0 1.25rem 0;
+  white-space: pre-wrap;
+}
+
+/* Flow Visualization */
+.activity-detail__flow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+
+.activity-detail__flow-node {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.activity-detail__flow-node--source {
+  background: linear-gradient(135deg, rgba(76, 201, 240, 0.15) 0%, rgba(67, 97, 238, 0.15) 100%);
+  border: 1px solid rgba(76, 201, 240, 0.3);
+}
+
+.activity-detail__flow-node--destination {
+  background: linear-gradient(135deg, rgba(6, 255, 165, 0.15) 0%, rgba(76, 201, 240, 0.15) 100%);
+  border: 1px solid rgba(6, 255, 165, 0.3);
+}
+
+.activity-detail__flow-node--pending {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.activity-detail__flow-icon {
+  font-size: 1.1rem;
+}
+
+.activity-detail__flow-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.activity-detail__flow-label--magic {
+  background: linear-gradient(135deg, #FF1B8D 0%, #9D4EDD 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+.activity-detail__flow-arrow {
+  color: var(--color-primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+/* Flow Center - FitGlue Magic with Boosters */
+.activity-detail__flow-center {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: linear-gradient(145deg, rgba(255, 27, 141, 0.05) 0%, rgba(157, 78, 221, 0.05) 100%);
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 27, 141, 0.2);
+}
+
+.activity-detail__flow-magic-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #FF1B8D 0%, #9D4EDD 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+.activity-detail__flow-boosters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.activity-detail__flow-no-boosters {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.activity-detail__flow-booster-note {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+}
+
+.activity-detail__flow-destinations {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Section Cards */
+.activity-detail__boosters-card,
+.activity-detail__destinations-card {
+  margin-bottom: 1.5rem;
+}
+
+.activity-detail__section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  color: var(--color-text);
+}
+
+.activity-detail__section-icon {
+  font-size: 1.1rem;
+}
+
+.activity-detail__section-count {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+/* Boosters */
+.activity-detail__boosters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.activity-detail__boosters-note {
+  margin: 0.75rem 0 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* Destinations Grid */
+.activity-detail__destinations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.activity-detail__destination {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.activity-detail__destination:hover {
+  border-color: rgba(6, 255, 165, 0.3);
+  transform: translateY(-2px);
+}
+
+.activity-detail__destination-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.activity-detail__destination-icon {
+  font-size: 1.25rem;
+}
+
+.activity-detail__destination-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.activity-detail__destination-id {
+  font-size: 0.85rem;
+}
+
+.activity-detail__destination-id code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  color: var(--color-text-muted);
+}
+
+.activity-detail__destination-link {
+  color: var(--color-success);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.activity-detail__destination-link:hover {
+  color: #4CC9F0;
+  text-decoration: underline;
+}
+
+/* Pipeline Trace Toggle */
+.activity-detail__trace-section {
+  margin-top: 1.5rem;
+}
+
+.activity-detail__trace-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.activity-detail__trace-toggle:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.activity-detail__trace-toggle-icon {
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  transition: transform 0.2s ease;
+}
+
+.activity-detail__trace-toggle-text {
+  font-weight: 600;
+  flex: 1;
+}
+
+.activity-detail__trace-toggle-count {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.25rem 0.6rem;
+  border-radius: 100px;
+}
+
+.activity-detail__trace-content {
+  margin-top: 1rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Metadata Footer */
+.activity-detail__metadata {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.activity-detail__metadata-item {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* Empty State */
+.activity-detail__empty {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.activity-detail__empty-icon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.activity-detail__empty h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--color-text);
+}
+
+.activity-detail__empty p {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .activity-detail__flow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .activity-detail__flow-node {
+    justify-content: center;
+  }
+
+  .activity-detail__flow-arrow {
+    text-align: center;
+    transform: rotate(90deg);
+  }
+
+  .activity-detail__flow-center {
+    min-width: 100%;
+  }
+
+  .activity-detail__flow-destinations {
+    justify-content: center;
+  }
+
+  .activity-detail__destinations-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -688,27 +688,41 @@ h3 {
 }
 
 .pipeline-trace-card {
-    padding: 1rem;
+    padding: 1.25rem;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
 }
 
 .trace-item {
     display: flex;
     gap: 1rem;
     align-items: flex-start;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+}
+
+.trace-item:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .trace-step-number {
-    min-width: 28px;
-    height: 28px;
-    background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+    min-width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(255, 27, 141, 0.3);
 }
 
 .trace-content {
@@ -1700,92 +1714,293 @@ h3 {
 .pipelines-grid {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
-.pipeline-card {
+/* Premium Pipeline Card */
+.pipeline-card-premium {
+    position: relative;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.pipeline-card-premium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1px;
+    background: linear-gradient(135deg,
+            rgba(255, 0, 110, 0.3),
+            rgba(131, 56, 236, 0.3),
+            rgba(76, 201, 240, 0.3));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.pipeline-card-premium:hover::before {
+    opacity: 1;
+}
+
+.pipeline-card-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Visual Flow Header */
+.pipeline-visual-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.75rem 1.5rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+    flex-wrap: wrap;
+}
+
+/* Flow Nodes (Source & Destination) */
+.flow-node {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 80px;
+}
+
+.flow-node-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+.flow-source .flow-node-icon {
+    background: linear-gradient(145deg, rgba(76, 201, 240, 0.15), rgba(76, 201, 240, 0.05));
+    border-color: rgba(76, 201, 240, 0.3);
+}
+
+.flow-destination .flow-node-icon {
+    background: linear-gradient(145deg, rgba(6, 255, 165, 0.15), rgba(6, 255, 165, 0.05));
+    border-color: rgba(6, 255, 165, 0.3);
+}
+
+.flow-node-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Flow Connector */
+.flow-connector {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-shrink: 0;
+}
+
+.flow-line {
+    width: 20px;
+    height: 2px;
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.05),
+            rgba(255, 255, 255, 0.15),
+            rgba(255, 255, 255, 0.05));
+}
+
+.flow-arrow-icon {
+    font-size: 1.25rem;
+    color: var(--color-secondary);
+    opacity: 0.6;
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Boosters Section */
+.flow-boosters {
+    flex-shrink: 0;
+}
+
+.boosters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: linear-gradient(145deg, rgba(131, 56, 236, 0.1), rgba(131, 56, 236, 0.02));
+    border: 1px solid rgba(131, 56, 236, 0.2);
+    border-radius: 14px;
+    min-width: 140px;
+}
+
+/* Individual Booster Pill */
+.booster-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.booster-pill:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(131, 56, 236, 0.3);
+    transform: translateX(2px);
+}
+
+.booster-order {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+    color: white;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.booster-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.booster-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-text);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.booster-configured {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    font-size: 0.6rem;
+    background: rgba(6, 255, 165, 0.2);
+    color: var(--color-success);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Pipeline Card Footer */
+.pipeline-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.pipeline-meta {
+    display: flex;
+    align-items: center;
     gap: 1rem;
 }
 
-.pipeline-flow {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.pipeline-source,
-.pipeline-destination {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 500;
-    text-transform: capitalize;
-}
-
-.pipeline-icon {
-    font-size: 1.25rem;
-}
-
-.pipeline-arrow {
-    color: var(--color-text-muted);
-    font-size: 1.25rem;
-}
-
-.pipeline-enrichers {
-    display: flex;
-    gap: 0.25rem;
-}
-
-.enricher-badge {
-    font-size: 1rem;
-}
-
-.pipeline-destinations {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.pipeline-details {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-}
-
-.pipeline-details .label {
-    font-weight: 500;
-}
-
-.pipeline-details code {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2px 6px;
-    border-radius: 4px;
+.pipeline-id-badge {
     font-family: 'SFMono-Regular', Consolas, monospace;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: var(--color-text-muted);
 }
 
-.pipeline-enricher-list {
-    margin-top: 0.5rem;
+.pipeline-booster-count {
+    font-size: 0.75rem;
+    color: var(--color-secondary);
+    font-weight: 500;
 }
 
-.pipeline-enricher-list ul {
-    margin: 0.25rem 0 0 1.25rem;
-    padding: 0;
-}
-
-.enricher-inputs {
-    color: var(--color-accent);
-}
-
-.pipeline-actions {
+.pipeline-card-actions {
     display: flex;
-    justify-content: flex-end;
+    gap: 0.5rem;
 }
 
-.pipeline-actions .btn {
+.pipeline-card-actions .btn {
     width: auto;
     margin: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+/* Mobile responsive for pipeline card */
+@media (max-width: 600px) {
+    .pipeline-visual-flow {
+        flex-direction: column;
+        padding: 1.25rem 1rem;
+    }
+
+    .flow-connector {
+        transform: rotate(90deg);
+        margin: 0.25rem 0;
+    }
+
+    .flow-node {
+        flex-direction: row;
+        min-width: auto;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .boosters-container {
+        min-width: 100%;
+        max-width: 280px;
+    }
+
+    .pipeline-card-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pipeline-meta {
+        justify-content: center;
+    }
+
+    .pipeline-card-actions {
+        justify-content: center;
+    }
 }
 
 /* Empty State */
@@ -1841,6 +2056,18 @@ h3 {
     align-items: center;
 }
 
+.account-field>.field-label {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.account-field>*:not(.field-label) {
+    flex: 1;
+}
+
 .field-label {
     font-size: 0.85rem;
     color: var(--color-text-muted);
@@ -1858,6 +2085,55 @@ h3 {
     background: rgba(255, 255, 255, 0.1);
     padding: 2px 6px;
     border-radius: 4px;
+}
+
+/* Account Settings Inputs */
+.account-settings input[type="text"],
+.account-settings .name-input {
+    flex: 1 1 auto;
+    min-width: 150px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    color: inherit;
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.account-settings input[type="text"]:focus,
+.account-settings .name-input:focus {
+    border-color: var(--color-primary);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.name-edit-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex: 1;
+}
+
+.name-edit-row button {
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: auto !important;
+}
+
+/* Account Settings Action Buttons - fix vertical alignment */
+.account-settings .account-field .btn,
+.account-settings .field-value .btn,
+.account-settings .profile-details .btn {
+    padding: 0.25rem 0.5rem;
+    margin: 0;
+    margin-bottom: 0;
+    line-height: 1.2;
+    font-size: 0.9rem;
+    vertical-align: middle;
+    display: inline-flex;
+    align-items: center;
 }
 
 /* Danger Zone */
@@ -1932,9 +2208,9 @@ h3 {
 
 /* --- Pipeline Wizard --- */
 
-.pipeline-wizard {
-    max-width: 600px;
-    margin: 0 auto;
+.pipeline-wizard,
+.pipeline-edit {
+    width: 100%;
 }
 
 .wizard-steps {
@@ -2078,6 +2354,69 @@ h3 {
     margin: 0;
 }
 
+/* Excluded Plugins Section */
+.excluded-plugins-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.excluded-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+}
+
+.excluded-plugins-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.excluded-plugin-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem 1.25rem;
+    min-width: 140px;
+    max-width: 160px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    opacity: 0.75;
+    cursor: not-allowed;
+    transition: opacity 0.2s;
+}
+
+.excluded-plugin-card:hover {
+    opacity: 0.85;
+}
+
+.excluded-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    filter: grayscale(40%);
+}
+
+.excluded-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+
+.excluded-hint {
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
 /* Review Step */
 .review-card {
     padding: 2rem;
@@ -2086,9 +2425,8 @@ h3 {
 
 .review-flow {
     display: flex;
-    align-items: stretch;
+    flex-direction: column;
     gap: 1.5rem;
-    flex-wrap: wrap;
 }
 
 .review-section {
@@ -2127,6 +2465,7 @@ h3 {
     flex-shrink: 0;
     align-self: center;
     opacity: 0.6;
+    transform: rotate(90deg);
 }
 
 /* Enricher blocks in review */
@@ -2198,20 +2537,44 @@ h3 {
     word-break: break-word;
 }
 
+/* Key-Value Map display in review */
+.review-key-value-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.25rem;
+}
+
+.review-kv-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+}
+
+.review-kv-key {
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+.review-kv-arrow {
+    color: var(--color-secondary);
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+.review-kv-value {
+    color: var(--color-accent);
+    font-weight: 500;
+}
+
 /* Mobile responsive */
 @media (max-width: 600px) {
     .review-flow {
-        flex-direction: column;
         gap: 1rem;
-    }
-
-    .review-arrow {
-        transform: rotate(90deg);
-        align-self: center;
-    }
-
-    .review-section {
-        min-width: 100%;
     }
 }
 
@@ -2287,6 +2650,7 @@ h3 {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .plan-badge {
@@ -2326,10 +2690,34 @@ h3 {
     }
 }
 
-.trial-countdown {
-    font-size: 0.85rem;
-    color: var(--color-secondary);
+.trial-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
     font-weight: 600;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.manage-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.manage-pill:hover {
+    background: rgba(255, 255, 255, 0.35);
 }
 
 .usage-mini {
@@ -2356,6 +2744,12 @@ h3 {
 .usage-text {
     font-size: 0.85rem;
     color: var(--color-text-muted);
+}
+
+.plan-banner.pro .unlimited {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
 }
 
 .unlimited {

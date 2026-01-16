@@ -25,12 +25,12 @@ export function useUser() {
     }
   }, [user, api, setUser, setLoading, setError]);
 
-  // Fetch on mount if not already loaded
+  // Fetch on mount if not already loaded (don't retry on error)
   useEffect(() => {
-    if (!user && !loading) {
+    if (!user && !loading && !error) {
       fetchProfile();
     }
-  }, [user, loading, fetchProfile]);
+  }, [user, loading, error, fetchProfile]);
 
   return {
     user,

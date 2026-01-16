@@ -109,22 +109,20 @@ const DashboardPage: React.FC = () => {
             {/* Plan & Usage Banner */}
             {user && (
                 <div className={`plan-banner ${user.tier === 'pro' ? 'pro' : 'free'}`}>
-                    <div className="plan-info">
-                        <span className={`plan-badge ${user.tier === 'pro' ? 'pro' : 'free'}`}>
-                            {user.tier === 'pro' ? '✨ PRO' : 'FREE'}
-                        </span>
-                        {user.tier === 'pro' && user.trialEndsAt && (() => {
-                            const daysLeft = Math.ceil((new Date(user.trialEndsAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
-                            return daysLeft > 0 ? (
-                                <span className="trial-countdown">{daysLeft} day{daysLeft !== 1 ? 's' : ''} left in trial</span>
-                            ) : null;
-                        })()}
-                    </div>
+                    <span className={`plan-badge ${user.tier === 'pro' ? 'pro' : 'free'}`}>
+                        {user.tier === 'pro' ? '✨ ATHLETE' : 'HOBBYIST'}
+                    </span>
                     <div className="usage-mini">
                         {user.tier === 'pro' ? (
                             <>
+                                {user.trialEndsAt && (() => {
+                                    const daysLeft = Math.ceil((new Date(user.trialEndsAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+                                    return daysLeft > 0 ? (
+                                        <span className="trial-pill">{daysLeft} day{daysLeft !== 1 ? 's' : ''} left</span>
+                                    ) : null;
+                                })()}
                                 <span className="unlimited">Unlimited syncs</span>
-                                <Link to="/settings/upgrade" className="manage-link">Manage →</Link>
+                                <Link to="/settings/subscription" className="manage-pill">Manage →</Link>
                             </>
                         ) : (
                             <>
@@ -135,7 +133,7 @@ const DashboardPage: React.FC = () => {
                                     />
                                 </div>
                                 <span className="usage-text">{user.syncCountThisMonth || 0}/25 syncs</span>
-                                <Link to="/settings/upgrade" className="upgrade-link">Upgrade →</Link>
+                                <Link to="/settings/subscription" className="upgrade-link">Upgrade →</Link>
                             </>
                         )}
                     </div>

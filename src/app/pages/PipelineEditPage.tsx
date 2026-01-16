@@ -4,8 +4,11 @@ import { PageLayout } from '../components/layout/PageLayout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { EnricherConfigForm } from '../components/EnricherConfigForm';
+import { EnricherTimeline } from '../components/EnricherTimeline';
+import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { useApi } from '../hooks/useApi';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { useIntegrations } from '../hooks/useIntegrations';
 import { LoadingState } from '../components/ui/LoadingState';
 import { PluginManifest } from '../types/plugin';
 
@@ -30,7 +33,34 @@ const PipelineEditPage: React.FC = () => {
     const { pipelineId } = useParams<{ pipelineId: string }>();
     const navigate = useNavigate();
     const api = useApi();
-    const { sources, enrichers, destinations, loading: registryLoading } = usePluginRegistry();
+    const { sources, enrichers, destinations, integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
+    const { integrations: userIntegrations, fetchIfNeeded: fetchIntegrations } = useIntegrations();
+
+    // Fetch user integrations on mount
+    useEffect(() => {
+        fetchIntegrations();
+    }, [fetchIntegrations]);
+
+    // Helper: Check if a plugin's required integrations are all connected
+    const isPluginAvailable = (plugin: PluginManifest): boolean => {
+        if (!plugin.requiredIntegrations?.length) return true;
+        return plugin.requiredIntegrations.every(integrationId => {
+            const key = integrationId as keyof typeof userIntegrations;
+            return userIntegrations?.[key]?.connected ?? false;
+        });
+    };
+
+    // Helper: Get missing integration names for a plugin
+    const getMissingIntegrations = (plugin: PluginManifest): string[] => {
+        if (!plugin.requiredIntegrations?.length) return [];
+        return plugin.requiredIntegrations.filter(integrationId => {
+            const key = integrationId as keyof typeof userIntegrations;
+            return !(userIntegrations?.[key]?.connected ?? false);
+        }).map(id => {
+            const manifest = registryIntegrations.find(i => i.id === id);
+            return manifest?.name ?? id;
+        });
+    };
 
     const [pipeline, setPipeline] = useState<PipelineConfig | null>(null);
     const [loading, setLoading] = useState(true);
@@ -43,6 +73,7 @@ const PipelineEditPage: React.FC = () => {
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
     const [currentEnricherIndex, setCurrentEnricherIndex] = useState<number>(0);
     const [editingEnrichers, setEditingEnrichers] = useState(false);
+    const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
 
     const fetchPipeline = useCallback(async () => {
         if (!pipelineId) return;
@@ -153,6 +184,7 @@ const PipelineEditPage: React.FC = () => {
     }
 
     return (
+    <>
         <PageLayout title="Edit Pipeline" backTo="/settings/pipelines" backLabel="Pipelines">
             {error && (
                 <div className="auth-message error" onClick={() => setError(null)}>
@@ -160,13 +192,13 @@ const PipelineEditPage: React.FC = () => {
                 </div>
             )}
 
-            <div className="edit-pipeline-form">
+            <div className="pipeline-edit">
                 {/* Source Section */}
                 <Card className="edit-section">
                     <h3>📥 Source</h3>
                     <p className="section-description">Where activities come from</p>
                     <div className="option-grid">
-                        {sources.filter(s => s.enabled).map(source => (
+                        {sources.filter(s => s.enabled && isPluginAvailable(s)).map(source => (
                             <Card
                                 key={source.id}
                                 className={`option-card ${selectedSource.toLowerCase().includes(source.id) ? 'selected' : ''}`}
@@ -181,6 +213,22 @@ const PipelineEditPage: React.FC = () => {
                             </Card>
                         ))}
                     </div>
+                    {sources.filter(s => s.enabled && !isPluginAvailable(s)).length > 0 && (
+                        <div className="excluded-plugins-section">
+                            <span className="excluded-label">Needs Connection</span>
+                            <div className="excluded-plugins-grid">
+                                {sources.filter(s => s.enabled && !isPluginAvailable(s)).map(source => (
+                                    <div key={source.id} className="excluded-plugin-card">
+                                        <span className="excluded-icon">{source.icon}</span>
+                                        <span className="excluded-name">{source.name}</span>
+                                        <span className="excluded-hint">
+                                            Connect {getMissingIntegrations(source).join(', ')} to enable
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </Card>
 
                 {/* Enrichers Section */}
@@ -200,41 +248,57 @@ const PipelineEditPage: React.FC = () => {
                     </div>
 
                     {editingEnrichers ? (
+                        <>
                         <div className="option-grid">
-                            {enrichers.filter(e => e.enabled).map(enricher => {
+                            {enrichers.filter(e => e.enabled && isPluginAvailable(e)).map(enricher => {
                                 const isSelected = selectedEnrichers.some(e => e.manifest.id === enricher.id);
                                 return (
                                     <Card
                                         key={enricher.id}
-                                        className={`option-card ${isSelected ? 'selected' : ''}`}
+                                        className={`option-card clickable ${isSelected ? 'selected' : ''}`}
                                         onClick={() => toggleEnricher(enricher)}
                                     >
                                         <span className="option-icon">{enricher.icon}</span>
                                         <h4>{enricher.name}</h4>
                                         <p>{enricher.description}</p>
                                         {isSelected && <span className="selected-check">✓</span>}
+                                        {enricher.configSchema && enricher.configSchema.length > 0 && (
+                                            <span className="has-config" title="Has configuration options">⚙️</span>
+                                        )}
                                     </Card>
                                 );
                             })}
                         </div>
-                    ) : (
-                        <div className="selected-enrichers-list">
-                            {selectedEnrichers.length === 0 ? (
-                                <p className="no-items">No enrichers selected</p>
-                            ) : (
-                                selectedEnrichers.map((e) => (
-                                    <div key={e.manifest.id} className="enricher-row">
-                                        <span className="enricher-icon">{e.manifest.icon}</span>
-                                        <span className="enricher-name">{e.manifest.name}</span>
-                                        {e.manifest.configSchema?.length > 0 && (
-                                            <span className="config-badge">
-                                                {Object.keys(e.config).length > 0 ? 'Configured' : 'Needs Config'}
+                        {enrichers.filter(e => e.enabled && !isPluginAvailable(e)).length > 0 && (
+                            <div className="excluded-plugins-section">
+                                <span className="excluded-label">Needs Connection</span>
+                                <div className="excluded-plugins-grid">
+                                    {enrichers.filter(e => e.enabled && !isPluginAvailable(e)).map(enricher => (
+                                        <div key={enricher.id} className="excluded-plugin-card">
+                                            <span className="excluded-icon">{enricher.icon}</span>
+                                            <span className="excluded-name">{enricher.name}</span>
+                                            <span className="excluded-hint">
+                                                Connect {getMissingIntegrations(enricher).join(', ')} to enable
                                             </span>
-                                        )}
-                                    </div>
-                                ))
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </>
+                    ) : (
+                        <>
+                            {selectedEnrichers.length === 0 ? (
+                                <p className="no-items">No enrichers selected. Click &ldquo;Edit Enrichers&rdquo; to add boosters.</p>
+                            ) : (
+                                <EnricherTimeline
+                                    enrichers={selectedEnrichers}
+                                    onReorder={setSelectedEnrichers}
+                                    onRemove={(index) => setSelectedEnrichers(prev => prev.filter((_, i) => i !== index))}
+                                    onInfoClick={(manifest) => setInfoEnricher(manifest)}
+                                />
                             )}
-                        </div>
+                        </>
                     )}
                 </Card>
 
@@ -256,6 +320,7 @@ const PipelineEditPage: React.FC = () => {
                         </div>
                         {currentEnricher && currentEnricher.manifest.configSchema?.length > 0 && (
                             <EnricherConfigForm
+                                key={currentEnricher.manifest.id}
                                 schema={currentEnricher.manifest.configSchema}
                                 initialValues={currentEnricher.config}
                                 onChange={config => updateEnricherConfig(currentEnricherIndex, config)}
@@ -269,7 +334,7 @@ const PipelineEditPage: React.FC = () => {
                     <h3>📤 Destinations</h3>
                     <p className="section-description">Where to send processed activities</p>
                     <div className="option-grid">
-                        {destinations.filter(d => d.enabled).map(dest => {
+                        {destinations.filter(d => d.enabled && isPluginAvailable(d)).map(dest => {
                             const isSelected = selectedDestinations.some(
                                 sd => sd === dest.id || Number(sd) === dest.destinationType
                             );
@@ -294,10 +359,26 @@ const PipelineEditPage: React.FC = () => {
                             );
                         })}
                     </div>
+                    {destinations.filter(d => d.enabled && !isPluginAvailable(d)).length > 0 && (
+                        <div className="excluded-plugins-section">
+                            <span className="excluded-label">Needs Connection</span>
+                            <div className="excluded-plugins-grid">
+                                {destinations.filter(d => d.enabled && !isPluginAvailable(d)).map(dest => (
+                                    <div key={dest.id} className="excluded-plugin-card">
+                                        <span className="excluded-icon">{dest.icon}</span>
+                                        <span className="excluded-name">{dest.name}</span>
+                                        <span className="excluded-hint">
+                                            Connect {getMissingIntegrations(dest).join(', ')} to enable
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </Card>
 
                 {/* Actions */}
-                <div className="edit-actions">
+                <div className="wizard-actions">
                     <Button variant="secondary" onClick={() => navigate('/settings/pipelines')}>
                         Cancel
                     </Button>
@@ -311,6 +392,14 @@ const PipelineEditPage: React.FC = () => {
                 </div>
             </div>
         </PageLayout>
+
+        {infoEnricher && (
+            <EnricherInfoModal
+                enricher={infoEnricher}
+                onClose={() => setInfoEnricher(null)}
+            />
+        )}
+    </>
     );
 };
 

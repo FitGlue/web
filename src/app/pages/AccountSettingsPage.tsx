@@ -163,23 +163,27 @@ const AccountSettingsPage: React.FC = () => {
                             name={firebaseUser?.displayName || undefined}
                             email={firebaseUser?.email || undefined}
                         />
-                        <div className="profile-details" style={{ flex: 1 }}>
+                        <div className="profile-details" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                             {/* Display Name */}
                             <div className="account-field">
                                 <span className="field-label">Name</span>
                                 {isEditingName ? (
-                                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flex: 1 }}>
+                                    <div className="name-edit-row" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flex: 1 }}>
                                         <input
                                             type="text"
                                             value={editedName}
                                             onChange={(e) => setEditedName(e.target.value)}
+                                            className="name-input"
                                             style={{
                                                 flex: 1,
-                                                padding: '0.5rem',
-                                                borderRadius: '4px',
+                                                minWidth: '150px',
+                                                padding: '0.5rem 0.75rem',
+                                                borderRadius: '6px',
                                                 border: '1px solid rgba(255,255,255,0.2)',
-                                                background: 'rgba(255,255,255,0.05)',
-                                                color: 'inherit'
+                                                background: 'rgba(255,255,255,0.08)',
+                                                color: 'inherit',
+                                                fontSize: '0.95rem',
+                                                outline: 'none'
                                             }}
                                             autoFocus
                                         />
@@ -215,7 +219,7 @@ const AccountSettingsPage: React.FC = () => {
                             </div>
 
                             {/* Email */}
-                            <div className="account-field" style={{ marginTop: '0.75rem' }}>
+                            <div className="account-field">
                                 <span className="field-label">Email</span>
                                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                                     <span className="field-value">{firebaseUser?.email || 'N/A'}</span>
@@ -243,7 +247,7 @@ const AccountSettingsPage: React.FC = () => {
                                     textTransform: 'uppercase',
                                     background: profile?.tier === 'pro' ? 'var(--color-primary)' : 'rgba(255,255,255,0.1)'
                                 }}>
-                                    {profile?.tier || 'Free'}
+                                    {profile?.tier === 'pro' ? 'Athlete' : 'Hobbyist'}
                                 </span>
                                 <Button variant="text" size="small" onClick={() => window.location.href = '/app/settings/upgrade'}>
                                     {profile?.tier === 'pro' ? 'Manage →' : 'Upgrade →'}

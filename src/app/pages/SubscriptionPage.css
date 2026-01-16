@@ -151,3 +151,127 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Subscription Management Styles */
+.subscription-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.subscription-card {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.subscription-card h3 {
+    margin: 0 0 1rem;
+    font-size: 1.2rem;
+}
+
+/* Current Plan Card */
+.current-plan .plan-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.current-plan .plan-badge.athlete {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.current-plan .plan-price {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.current-plan .plan-price span {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+}
+
+.current-plan .plan-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.current-plan .plan-benefits li {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+/* Trial Section */
+.trial-section {
+    background: linear-gradient(145deg, rgba(255, 0, 110, 0.1), rgba(131, 56, 236, 0.05));
+    border: 1px solid rgba(255, 0, 110, 0.3);
+}
+
+.trial-countdown {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.trial-countdown .days-number {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.trial-countdown .days-label {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+}
+
+.trial-info {
+    margin-bottom: 1.5rem;
+}
+
+.trial-info p {
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+}
+
+.trial-info ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: var(--color-text-muted);
+}
+
+.trial-info li {
+    margin-bottom: 0.25rem;
+}
+
+/* Trial Expired Warning */
+.trial-expired {
+    background: rgba(255, 69, 58, 0.1);
+    border: 1px solid rgba(255, 69, 58, 0.3);
+}
+
+.trial-expired h3 {
+    color: #FF453A;
+}
+
+/* Billing Section */
+.billing-section .billing-description {
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.billing-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
