@@ -431,12 +431,49 @@
           },
           "validation": {
             "$ref": "#/components/schemas/ConfigFieldValidation"
+          },
+          "dependsOn": {
+            "$ref": "#/components/schemas/ConfigFieldDependency"
+          },
+          "keyOptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConfigFieldOption"
+            },
+            "description": "Options for the key side of KEY_VALUE_MAP"
+          },
+          "valueOptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConfigFieldOption"
+            },
+            "description": "Options for the value side of KEY_VALUE_MAP"
           }
         },
         "required": [
           "key",
           "label",
           "fieldType"
+        ]
+      },
+      "ConfigFieldDependency": {
+        "type": "object",
+        "properties": {
+          "fieldKey": {
+            "type": "string",
+            "description": "Key of the field this depends on"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Show when dependent field has one of these values"
+          }
+        },
+        "required": [
+          "fieldKey",
+          "values"
         ]
       },
       "Transformation": {
@@ -453,6 +490,14 @@
           },
           "after": {
             "type": "string"
+          },
+          "visualType": {
+            "type": "string",
+            "description": "Visual rendering type (hr-graph, gps-map) - renders SVG instead of text when set"
+          },
+          "afterHtml": {
+            "type": "string",
+            "description": "Pre-formatted HTML for after state - used instead of after when set"
           }
         }
       },

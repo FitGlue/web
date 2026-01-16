@@ -171,7 +171,7 @@ jobs:
       - run:
           name: Setup Git User
           command: |
-             git config --global user.email "ci@fitglue.com"
+             git config --global user.email "ci@fitglue.tech"
              git config --global user.name "CircleCI Bot"
       - restore_cache:
           keys:

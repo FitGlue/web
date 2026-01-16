@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useInputs } from '../hooks/useInputs';
 import { useActivities } from '../hooks/useActivities';
 import { usePipelines } from '../hooks/usePipelines';
@@ -14,6 +14,7 @@ import { LoadingState } from '../components/ui/LoadingState';
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
 import { GalleryOfBoosts } from '../components/dashboard/GalleryOfBoosts';
 import { IntegrationsSummary } from '../state/integrationsState';
+import { RedirectNotification } from './NotFoundPage';
 
 
 interface ActivitySummary {
@@ -26,12 +27,24 @@ interface ActivitySummary {
 
 const DashboardPage: React.FC = () => {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [showRedirectNotification, setShowRedirectNotification] = useState(false);
     const { sources, destinations, integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { inputs, loading: inputsLoading, refresh: inputsRefresh } = useInputs();
     const { activities, stats, loading: statsLoading, refresh: statsRefresh } = useActivities('list');
     const { integrations, loading: integrationsLoading, refresh: integrationsRefresh, fetchIfNeeded: fetchIntegrations } = useIntegrations();
     const { pipelines, loading: pipelinesLoading, refresh: pipelinesRefresh, fetchIfNeeded: fetchPipelines } = usePipelines();
     const { user } = useUser();
+
+    // Check for redirect notification flag
+    useEffect(() => {
+        if (searchParams.get('redirected') === 'true') {
+            setShowRedirectNotification(true);
+            // Clean up the URL
+            searchParams.delete('redirected');
+            setSearchParams(searchParams, { replace: true });
+        }
+    }, [searchParams, setSearchParams]);
 
 
     // Fetch data on mount (only if stale or not loaded)
@@ -89,6 +102,13 @@ const DashboardPage: React.FC = () => {
 
     return (
         <PageLayout title="Dashboard" onRefresh={refresh} loading={isLoading}>
+            {/* Redirect Notification (shown when redirected from 404) */}
+            {showRedirectNotification && (
+                <RedirectNotification
+                    onDismiss={() => setShowRedirectNotification(false)}
+                />
+            )}
+
             {/* Welcome Banner for new users */}
             {connectedCount === 0 && !isLoading && (
                 <WelcomeBanner />

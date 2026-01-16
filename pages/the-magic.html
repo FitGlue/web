@@ -1,0 +1,157 @@
+{{> header}}
+
+<main>
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="container">
+      <h1 class="text-center animate-on-scroll">The <span class="text-gradient">Magic</span> ✨</h1>
+      <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
+        Connect everywhere, enhance everything. See how FitGlue transforms your fitness data.
+      </p>
+    </div>
+  </section>
+
+  <!-- Pipeline Overview -->
+  <section class="section">
+    <div class="container text-center">
+      <h2 class="mb-md animate-on-scroll">How the <span class="text-gradient">Magic</span> Works</h2>
+      <div class="animate-on-scroll">
+        <div class="data-flow" style="justify-content: center; flex-wrap: wrap; gap: 1rem;">
+          <div class="data-flow-node source">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📥</div>
+            Your Workout
+          </div>
+          <div class="data-flow-arrow"></div>
+          <div class="data-flow-node">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">✨</div>
+            The Magic
+          </div>
+          <div class="data-flow-arrow"></div>
+          <div class="data-flow-node destination">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📤</div>
+            Your Story
+          </div>
+        </div>
+      </div>
+      <p class="text-muted mt-md" style="max-width: 500px; margin-left: auto; margin-right: auto;">
+        Data flows from a Source, gets enhanced by our Boosters, then synced to your Target. Mix and match to create
+        your perfect pipeline.
+      </p>
+    </div>
+  </section>
+
+  <!-- Connections -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="mb-md animate-on-scroll">🔗 Your Connections</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Connect once, and your data flows automatically. Click any card to
+        learn more.</p>
+
+      <div class="integrations-grid stagger-children">
+        {{#each integrations.all}}
+          <a href="{{detailsUrl}}" class="integration-card-link">
+            <div class="integration-card hoverable">
+              <div class="integration-logo">
+                <span class="integration-emoji">{{icon}}</span>
+              </div>
+              <div class="integration-name">{{name}}</div>
+              <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
+            </div>
+          </a>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+  <!-- Sources -->
+  <section class="section">
+    <div class="container">
+      <h2 class="mb-md animate-on-scroll">📥 Pull Your Workouts</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Connect your fitness apps and import data automatically.</p>
+
+      <div class="integrations-grid stagger-children">
+        {{#each sources}}
+          <a href="{{detailsUrl}}" class="integration-card-link">
+            <div class="integration-card hoverable">
+              <div class="integration-logo">
+                <span class="integration-emoji">{{icon}}</span>
+              </div>
+              <div class="integration-name">{{name}}</div>
+              <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
+            </div>
+          </a>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+  <!-- Boosters -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="mb-md animate-on-scroll">✨ The Magic Layer</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Enhance your activities with AI summaries, heart rate data, muscle
+        heatmaps, and more.</p>
+
+      <div class="integrations-grid stagger-children">
+        {{#each boosters}}
+          <a href="{{detailsUrl}}" class="integration-card-link">
+            <div class="integration-card booster-card hoverable">
+              <div class="integration-logo">
+                <span class="integration-emoji">{{icon}}</span>
+              </div>
+              <div class="integration-name">{{name}}</div>
+              <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
+            </div>
+          </a>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+  <!-- Targets -->
+  <section class="section">
+    <div class="container">
+      <h2 class="mb-md animate-on-scroll">📤 Share Your Story</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Your enriched activities arrive on your favorite platforms, complete
+        and ready to share.</p>
+
+      <div class="integrations-grid stagger-children">
+        {{#each destinations}}
+          <a href="{{detailsUrl}}" class="integration-card-link">
+            <div class="integration-card hoverable">
+              <div class="integration-logo">
+                <span class="integration-emoji">{{icon}}</span>
+              </div>
+              <div class="integration-name">{{name}}</div>
+              <p class="text-muted" style="font-size: 0.8rem; margin: 0.5rem 0;">{{description}}</p>
+            </div>
+          </a>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+  <!-- Request Integration -->
+  <section class="section">
+    <div class="container text-center">
+      <h2 class="mb-md animate-on-scroll">Don't See Your <span class="text-gradient">App</span>?</h2>
+      <p class="text-muted mb-lg animate-on-scroll" style="max-width: 500px; margin-left: auto; margin-right: auto;">
+        We're always adding new connections. Let us know what you'd like to see.
+      </p>
+      <a href="/contact" class="btn btn-secondary animate-on-scroll">Request a Connection →</a>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title animate-on-scroll">Ready to Experience the <span class="text-gradient">Magic</span>?</h2>
+        <p class="cta-subtitle animate-on-scroll">Connect everywhere, enhance everything.</p>
+        <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg animate-on-scroll">Join the Waitlist →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{> footer}}

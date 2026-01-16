@@ -5,7 +5,7 @@
         <a href="/" class="logo">
           <span class="logo-fit">Fit</span><span class="logo-glue">Glue</span>
         </a>
-        <p>Your fitness data, unified. Connecting your workouts from multiple sources into one seamless experience.</p>
+        <p class="footer-tagline">Connect everywhere, enhance everything.</p>
       </div>
 
       <div class="footer-column">
@@ -13,8 +13,7 @@
         <ul class="footer-links">
           <li><a href="/features">Features</a></li>
           <li><a href="/how-it-works">How It Works</a></li>
-          <li><a href="/connections">Connections</a></li>
-          <li><a href="/plugins">Plugins</a></li>
+          <li><a href="/the-magic">The Magic</a></li>
           <li><a href="/pricing">Pricing</a></li>
         </ul>
       </div>
@@ -24,6 +23,13 @@
         <ul class="footer-links">
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4 class="footer-heading">Documentation</h4>
+        <ul class="footer-links">
+          <li><a href="/guides">Guides</a></li>
         </ul>
       </div>
 
@@ -51,9 +57,96 @@
   </div>
 </footer>
 
-<!-- Scroll Animation Script -->
+<!-- Enhanced Magic Animations Script -->
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    // Platform rotation data
+    const sources = [
+      { icon: '🏋️', label: 'Hevy' },
+      { icon: '⌚', label: 'Fitbit' },
+      { icon: '⌚', label: 'Garmin' },
+      { icon: '🍎', label: 'Apple Health' }
+    ];
+
+    const destinations = [
+      { icon: '🚴', label: 'Strava' },
+      { icon: '📊', label: 'TrainingPeaks' },
+      { icon: '📈', label: 'Intervals.icu' }
+    ];
+
+    let sourceIndex = 0;
+    let destIndex = 0;
+
+    // Rotate platform labels
+    function rotatePlatforms() {
+      const sourceEl = document.getElementById('flow-source');
+      const destEl = document.getElementById('flow-destination');
+      if (!sourceEl || !destEl) return;
+
+      const sourceIcon = sourceEl.querySelector('.flow-icon');
+      const sourceLabel = sourceEl.querySelector('.flow-label');
+      const destIcon = destEl.querySelector('.flow-icon');
+      const destLabel = destEl.querySelector('.flow-label');
+      if (!sourceIcon || !sourceLabel || !destIcon || !destLabel) return;
+
+      // Fade out
+      [sourceIcon, sourceLabel, destIcon, destLabel].forEach(el => el.style.opacity = '0');
+
+      setTimeout(() => {
+        sourceIndex = (sourceIndex + 1) % sources.length;
+        destIndex = (destIndex + 1) % destinations.length;
+
+        sourceIcon.textContent = sources[sourceIndex].icon;
+        sourceLabel.textContent = sources[sourceIndex].label;
+        destIcon.textContent = destinations[destIndex].icon;
+        destLabel.textContent = destinations[destIndex].label;
+
+        // Fade in
+        [sourceIcon, sourceLabel, destIcon, destLabel].forEach(el => el.style.opacity = '1');
+      }, 300);
+    }
+
+    // Start platform rotation every 4 seconds
+    if (document.getElementById('flow-source')) {
+      setInterval(rotatePlatforms, 4000);
+    }
+
+    // Animate counters
+    function animateCounter(element, target) {
+      const duration = 2000;
+      const start = performance.now();
+      const suffix = element.textContent.replace(/[\d,]/g, '');
+
+      function update(currentTime) {
+        const elapsed = currentTime - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(target * easeProgress);
+        element.textContent = current.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    // Counter animation observer
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const text = el.textContent || '';
+          const numMatch = text.match(/[\d,]+/);
+          if (numMatch) {
+            const target = parseInt(numMatch[0].replace(/,/g, ''), 10);
+            el.textContent = '0' + text.replace(/[\d,]+/, '');
+            animateCounter(el, target);
+            counterObserver.unobserve(el);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.trust-stat-value').forEach(el => counterObserver.observe(el));
+
     // Header scroll effect
     const header = document.querySelector('.header');
     window.addEventListener('scroll', function () {
@@ -62,26 +155,81 @@
       } else {
         header.classList.remove('scrolled');
       }
-    });
+    }, { passive: true });
 
     // Intersection Observer for scroll animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
         }
       });
-    }, observerOptions);
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
     // Observe all animated elements
     document.querySelectorAll('.animate-on-scroll, .stagger-children, .slide-in-left, .slide-in-right, .scale-in').forEach(el => {
       observer.observe(el);
     });
+
+    // Add transition styles for flow labels
+    const flowLabels = document.querySelectorAll('.flow-icon, .flow-label');
+    flowLabels.forEach(el => {
+      el.style.transition = 'opacity 0.3s ease';
+    });
+
+    // Carousel functionality
+    function initCarousels() {
+      document.querySelectorAll('.carousel').forEach(carousel => {
+        const track = carousel.querySelector('.carousel-track');
+        const items = carousel.querySelectorAll('.carousel-item');
+        const nav = carousel.querySelector('.carousel-nav');
+        if (!track || items.length === 0) return;
+
+        let currentIndex = 0;
+        const itemsPerView = window.innerWidth <= 480 ? 1 : window.innerWidth <= 768 ? 2 : 3;
+        const maxIndex = Math.max(0, Math.ceil(items.length / itemsPerView) - 1);
+
+        // Create nav dots
+        if (nav) {
+          nav.innerHTML = '';
+          for (let i = 0; i <= maxIndex; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+            dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+            dot.addEventListener('click', () => goToSlide(i));
+            nav.appendChild(dot);
+          }
+        }
+
+        function goToSlide(index) {
+          currentIndex = index;
+          const itemWidth = items[0].offsetWidth + 16; // gap
+          track.style.transform = `translateX(-${currentIndex * itemWidth * itemsPerView}px)`;
+          if (nav) {
+            nav.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+              dot.classList.toggle('active', i === currentIndex);
+            });
+          }
+        }
+
+        // Auto-advance every 5 seconds
+        let autoAdvance = setInterval(() => {
+          currentIndex = (currentIndex + 1) % (maxIndex + 1);
+          goToSlide(currentIndex);
+        }, 5000);
+
+        // Pause on hover
+        carousel.addEventListener('mouseenter', () => clearInterval(autoAdvance));
+        carousel.addEventListener('mouseleave', () => {
+          autoAdvance = setInterval(() => {
+            currentIndex = (currentIndex + 1) % (maxIndex + 1);
+            goToSlide(currentIndex);
+          }, 5000);
+        });
+      });
+    }
+
+    initCarousels();
   });
 </script>
 
@@ -100,17 +248,47 @@
       const app = initializeApp(config);
       const auth = getAuth(app);
 
-      onAuthStateChanged(auth, (user) => {
-        const loginBtn = document.getElementById('login-btn');
-        const getStartedBtn = document.getElementById('get-started-btn');
+      // Check localStorage cache first for faster initial render
+      const cachedAuthState = localStorage.getItem('fitglue_auth_state');
+      if (cachedAuthState === 'logged_in') {
+        applyLoggedInState();
+      }
 
-        if (user && loginBtn && getStartedBtn) {
-          // User is logged in - swap buttons
-          loginBtn.style.display = 'none';
-          getStartedBtn.href = '/app';
-          getStartedBtn.textContent = 'Go to Dashboard';
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          localStorage.setItem('fitglue_auth_state', 'logged_in');
+          applyLoggedInState();
+        } else {
+          localStorage.removeItem('fitglue_auth_state');
+          applyLoggedOutState();
         }
       });
+
+      function applyLoggedInState() {
+        const loginItem = document.getElementById('nav-auth-login');
+        const ctaItem = document.getElementById('nav-auth-cta');
+        if (loginItem) loginItem.style.display = 'none';
+        if (ctaItem) {
+          const ctaLink = ctaItem.querySelector('a');
+          if (ctaLink) {
+            ctaLink.href = '/app';
+            ctaLink.textContent = 'Go to Dashboard';
+          }
+        }
+      }
+
+      function applyLoggedOutState() {
+        const loginItem = document.getElementById('nav-auth-login');
+        const ctaItem = document.getElementById('nav-auth-cta');
+        if (loginItem) loginItem.style.display = '';
+        if (ctaItem) {
+          const ctaLink = ctaItem.querySelector('a');
+          if (ctaLink) {
+            ctaLink.href = '/auth/register';
+            ctaLink.textContent = 'Get Started';
+          }
+        }
+      }
     } catch (e) {
       console.warn('Auth check failed:', e);
     }

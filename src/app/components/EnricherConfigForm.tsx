@@ -29,6 +29,13 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
     setValues(prev => ({ ...prev, [key]: value }));
   };
 
+  // Check if a field should be visible based on its dependsOn property
+  const isFieldVisible = (field: ConfigFieldSchema): boolean => {
+    if (!field.dependsOn) return true;
+    const dependentValue = values[field.dependsOn.fieldKey] || '';
+    return field.dependsOn.values.includes(dependentValue);
+  };
+
   const renderField = (field: ConfigFieldSchema) => {
     const value = values[field.key] || '';
 
@@ -114,7 +121,16 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
         );
 
       case ConfigFieldType.CONFIG_FIELD_TYPE_KEY_VALUE_MAP:
-        return <KeyValueMapEditor value={value} onChange={v => handleChange(field.key, v)} />;
+        return (
+          <KeyValueMapEditor
+            value={value}
+            onChange={v => handleChange(field.key, v)}
+            keyPlaceholder="Key"
+            valuePlaceholder="Value"
+            keyOptions={field.keyOptions?.length > 0 ? field.keyOptions : undefined}
+            valueOptions={field.valueOptions?.length > 0 ? field.valueOptions : undefined}
+          />
+        );
 
       default:
         return (
@@ -135,7 +151,7 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
 
   return (
     <div className="enricher-config-form">
-      {schema.map(field => (
+      {schema.filter(isFieldVisible).map(field => (
         <div key={field.key} className="config-field">
           <label htmlFor={field.key} className="config-label">
             {field.label}
@@ -151,10 +167,24 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
 
 /**
  * Sub-component for editing key-value maps (Record<string, string>)
+ * Supports optional dropdown for values via valueOptions prop
  */
-const KeyValueMapEditor: React.FC<{ value: string; onChange: (value: string) => void }> = ({
+interface KeyValueMapEditorProps {
+  value: string;
+  onChange: (value: string) => void;
+  keyPlaceholder?: string;
+  valuePlaceholder?: string;
+  keyOptions?: { value: string; label: string }[];
+  valueOptions?: { value: string; label: string }[];
+}
+
+const KeyValueMapEditor: React.FC<KeyValueMapEditorProps> = ({
   value,
   onChange,
+  keyPlaceholder = 'Key',
+  valuePlaceholder = 'Value',
+  keyOptions,
+  valueOptions,
 }) => {
   const [entries, setEntries] = useState<{ key: string; value: string }[]>(() => {
     try {
@@ -196,28 +226,58 @@ const KeyValueMapEditor: React.FC<{ value: string; onChange: (value: string) => 
     <div className="key-value-editor">
       {entries.map((entry, i) => (
         <div key={i} className="key-value-row">
-          <input
-            type="text"
-            value={entry.key}
-            onChange={e => handleEntryChange(i, 'key', e.target.value)}
-            placeholder="Original Type"
-            className="kv-key"
-          />
+          {keyOptions ? (
+            <select
+              value={entry.key}
+              onChange={e => handleEntryChange(i, 'key', e.target.value)}
+              className="kv-key kv-select"
+            >
+              <option value="">Select...</option>
+              {keyOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="text"
+              value={entry.key}
+              onChange={e => handleEntryChange(i, 'key', e.target.value)}
+              placeholder={keyPlaceholder}
+              className="kv-key"
+            />
+          )}
           <span className="kv-arrow">→</span>
-          <input
-            type="text"
-            value={entry.value}
-            onChange={e => handleEntryChange(i, 'value', e.target.value)}
-            placeholder="Mapped Type"
-            className="kv-value"
-          />
+          {valueOptions ? (
+            <select
+              value={entry.value}
+              onChange={e => handleEntryChange(i, 'value', e.target.value)}
+              className="kv-value kv-select"
+            >
+              <option value="">Select...</option>
+              {valueOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="text"
+              value={entry.value}
+              onChange={e => handleEntryChange(i, 'value', e.target.value)}
+              placeholder={valuePlaceholder}
+              className="kv-value"
+            />
+          )}
           <button type="button" onClick={() => removeEntry(i)} className="kv-remove" title="Remove">
             ×
           </button>
         </div>
       ))}
       <button type="button" onClick={addEntry} className="kv-add">
-        + Add Mapping
+        + Add Rule
       </button>
     </div>
   );

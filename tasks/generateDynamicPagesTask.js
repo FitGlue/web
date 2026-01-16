@@ -199,7 +199,11 @@ export function generateDynamicPagesTask(config) {
               field: t.field,
               label: t.label,
               before: t.before,
-              afterHtml: parseMarkdown(t.after || ''),
+              // Use pre-formatted afterHtml if available, otherwise convert plain text
+              afterHtml: t.afterHtml || (t.after || '').replace(/\n/g, '<br>'),
+              // Visual type support for SVG visuals (hr-graph, gps-map, heatmap)
+              visualType: t.visualType || null,
+              hasVisual: !!t.visualType,
             })),
             hasTransformations: (e.transformations || []).length > 0,
             // Use cases

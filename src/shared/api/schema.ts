@@ -1098,12 +1098,27 @@ export interface components {
             defaultValue?: string;
             options?: components["schemas"]["ConfigFieldOption"][];
             validation?: components["schemas"]["ConfigFieldValidation"];
+            dependsOn?: components["schemas"]["ConfigFieldDependency"];
+            /** @description Options for the key side of KEY_VALUE_MAP */
+            keyOptions?: components["schemas"]["ConfigFieldOption"][];
+            /** @description Options for the value side of KEY_VALUE_MAP */
+            valueOptions?: components["schemas"]["ConfigFieldOption"][];
+        };
+        ConfigFieldDependency: {
+            /** @description Key of the field this depends on */
+            fieldKey: string;
+            /** @description Show when dependent field has one of these values */
+            values: string[];
         };
         Transformation: {
             field?: string;
             label?: string;
             before?: string;
             after?: string;
+            /** @description Visual rendering type (hr-graph, gps-map) - renders SVG instead of text when set */
+            visualType?: string;
+            /** @description Pre-formatted HTML for after state - used instead of after when set */
+            afterHtml?: string;
         };
         PluginManifest: {
             id: string;

@@ -5,7 +5,7 @@
   <section class="about-hero">
     <div class="container">
       <nav class="breadcrumb animate-on-scroll">
-        <a href="/connections">Connections</a> / <span>{{name}}</span>
+        <a href="/the-magic">The Magic</a> / Connections / <span>{{name}}</span>
       </nav>
       <h1 class="text-center animate-on-scroll">
         <span class="integration-hero-emoji">{{icon}}</span>
@@ -23,55 +23,54 @@
   <!-- About -->
   <section class="section">
     <div class="container" style="max-width: 800px;">
-      <div class="integration-content animate-on-scroll">
-        {{#if marketingHtml}}
-          <div class="markdown-content">
-            {{{marketingHtml}}}
-          </div>
-        {{/if}}
+      {{#if marketingHtml}}
+        <div class="markdown-content animate-on-scroll">
+          {{{marketingHtml}}}
+        </div>
+      {{/if}}
 
-        {{#if features.length}}
-          <h2>Features</h2>
-          <ul class="feature-list">
-            {{#each features}}
-              <li>{{this}}</li>
-            {{/each}}
-          </ul>
-        {{/if}}
+      {{#if features.length}}
+        <h2 class="text-center mb-md mt-xl animate-on-scroll">Features</h2>
+        <ul class="feature-list animate-on-scroll">
+          {{#each features}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      {{/if}}
 
-        <h2>How to Connect</h2>
-        {{#if hasSetupSteps}}
-          <div class="setup-steps-list">
-            {{#each setupSteps}}
-              <div class="setup-step">
-                <div class="step-number">{{number}}</div>
-                <div class="step-content">
-                  <h4>{{title}}</h4>
-                  <p>{{description}}</p>
-                </div>
+      <h2 class="text-center mb-md mt-xl animate-on-scroll">How to Connect</h2>
+      {{#if hasSetupSteps}}
+        <div class="setup-steps-list animate-on-scroll">
+          {{#each setupSteps}}
+            <div class="setup-step">
+              <div class="step-number">{{number}}</div>
+              <div class="step-content">
+                <h4>{{title}}</h4>
+                <p>{{description}}</p>
               </div>
-            {{/each}}
-          </div>
-        {{else if setupInstructions}}
-          <div class="setup-instructions">
-            <p>{{setupInstructions}}</p>
-          </div>
-        {{else}}
-          <p class="text-muted">Setup instructions will appear here when you connect in the app.</p>
-        {{/if}}
+            </div>
+          {{/each}}
+        </div>
+      {{else if setupInstructions}}
+        <div class="setup-instructions animate-on-scroll">
+          <p>{{setupInstructions}}</p>
+        </div>
+      {{else}}
+        <p class="text-muted text-center animate-on-scroll">Setup instructions will appear here when you connect in the
+          app.</p>
+      {{/if}}
 
-        <h2>Privacy & Security</h2>
-        <p>
-          Your connection is secured with industry-standard encryption.
-          {{#if isOAuth}}
-            FitGlue uses secure OAuth 2.0 authentication. We never see your password, and you can
-            revoke access at any time from your {{name}} account settings.
-          {{else}}
-            Your API key is encrypted and stored securely. You can regenerate or revoke your key
-            at any time from the {{name}} settings.
-          {{/if}}
-        </p>
-      </div>
+      <h2 class="text-center mb-md mt-xl animate-on-scroll">Privacy & Security</h2>
+      <p class="text-center animate-on-scroll">
+        Your connection is secured with industry-standard encryption.
+        {{#if isOAuth}}
+          FitGlue uses secure OAuth 2.0 authentication. We never see your password, and you can
+          revoke access at any time from your {{name}} account settings.
+        {{else}}
+          Your API key is encrypted and stored securely. You can regenerate or revoke your key
+          at any time from the {{name}} settings.
+        {{/if}}
+      </p>
     </div>
   </section>
 

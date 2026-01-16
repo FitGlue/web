@@ -1,67 +1,91 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const NotFoundPage: React.FC = () => {
-  const errorCodeStyle: React.CSSProperties = {
-    fontSize: 'clamp(6rem, 15vw, 10rem)',
-    fontWeight: 900,
-    marginBottom: 0,
-    lineHeight: 1,
-    letterSpacing: '-0.05em',
-    background: 'linear-gradient(135deg, #e91e63, #9c27b0)',
-    WebkitBackgroundClip: 'text',
-    backgroundClip: 'text',
-    color: 'transparent',
+  const navigate = useNavigate();
+
+  // Redirect to dashboard immediately with a flag to show the notification
+  useEffect(() => {
+    navigate('/?redirected=true', { replace: true });
+  }, [navigate]);
+
+  // If we're on this page, show a loading state while redirecting
+  // The banner will be shown on the dashboard after redirect
+  return null;
+};
+
+// Separate component for the redirect notification that can be used in DashboardPage
+export const RedirectNotification: React.FC<{
+  message?: string;
+  onDismiss: () => void;
+}> = ({
+  message = "Oops! The page you visited doesn't exist — we've brought you back home.",
+  onDismiss
+}) => {
+  const bannerStyle: React.CSSProperties = {
+    background: 'linear-gradient(135deg, rgba(131, 56, 236, 0.15), rgba(255, 0, 110, 0.15))',
+    border: '1px solid rgba(131, 56, 236, 0.3)',
+    borderRadius: '12px',
+    padding: '1rem 1.5rem',
+    marginBottom: '1.5rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '1rem',
+    animation: 'slideInFromTop 0.3s ease-out',
   };
 
-  const titleStyle: React.CSSProperties = {
-    fontSize: 'clamp(2rem, 5vw, 3rem)',
-    marginTop: '1rem',
-    fontWeight: 700,
-    color: '#fff',
+  const iconStyle: React.CSSProperties = {
+    fontSize: '1.5rem',
+    flexShrink: 0,
   };
 
   const textStyle: React.CSSProperties = {
-    color: 'rgba(255, 255, 255, 0.7)',
-    marginBottom: '1rem',
-    fontSize: '1.1rem',
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: '0.95rem',
+    flex: 1,
   };
 
-  const buttonStyle: React.CSSProperties = {
-    display: 'inline-block',
-    marginTop: '2rem',
-    textDecoration: 'none',
-    padding: '1rem 2.5rem',
-    background: 'linear-gradient(135deg, #00bcd4, #9c27b0)',
-    color: 'white',
-    borderRadius: '50px',
-    fontWeight: 600,
-    fontSize: '1rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.1em',
-    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+  const dismissStyle: React.CSSProperties = {
+    background: 'transparent',
     border: 'none',
+    color: 'rgba(255, 255, 255, 0.6)',
     cursor: 'pointer',
+    padding: '0.25rem',
+    fontSize: '1.25rem',
+    lineHeight: 1,
+    transition: 'color 0.2s ease',
   };
 
   return (
-    <div className="auth-container">
-      <h1 style={errorCodeStyle}>404</h1>
-      <h2 style={titleStyle}>
-        Page <span style={{ color: '#e91e63' }}>Not</span>{' '}
-        <span style={{ color: '#00bcd4' }}>Found</span>
-      </h2>
-      <p style={textStyle}>Looks like you&apos;ve ventured into the unknown.</p>
-      <p style={textStyle}>
-        The page you&apos;re looking for doesn&apos;t exist or has been moved.
-        Let&apos;s get you back on track.
-      </p>
-      <a href="/" style={buttonStyle}>
-        Return to Dashboard
-      </a>
-    </div>
+    <>
+      <style>{`
+        @keyframes slideInFromTop {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+      <div style={bannerStyle} role="alert">
+        <span style={iconStyle}>🫠</span>
+        <span style={textStyle}>{message}</span>
+        <button
+          style={dismissStyle}
+          onClick={onDismiss}
+          aria-label="Dismiss notification"
+          onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)')}
+          onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)')}
+        >
+          ×
+        </button>
+      </div>
+    </>
   );
 };
 
 export default NotFoundPage;
-
-

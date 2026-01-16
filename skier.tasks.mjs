@@ -87,26 +87,24 @@ export const tasks = [
       const canonicalPath = currentPage === 'index' ? '/' : `/${currentPage}`;
       /** @type {Record<string, string>} */
       const descriptions = {
-        index: 'FitGlue unifies your fitness data. Sync workouts to Strava with AI-powered descriptions.',
-        features: 'Discover FitGlue features: Connect apps, boost data with AI, sync everywhere.',
-        'how-it-works': 'How FitGlue connects your apps and enhances your workout data.',
-        connections: 'Fitness platforms FitGlue connects with: Hevy, Fitbit, Strava.',
-        plugins: 'FitGlue pipeline features: Sources, Boosters, and Targets.',
-        pricing: 'FitGlue pricing: Free tier and Pro plans.',
-        about: 'About FitGlue: Unifying fragmented fitness data.',
-        contact: 'Contact the FitGlue team.',
-        waitlist: 'Join the FitGlue waitlist.',
-        privacy: 'FitGlue Privacy Policy.',
-        terms: 'FitGlue Terms of Service.',
-        '404': 'Page not found - FitGlue',
+        index: 'Watch your workout become extraordinary. FitGlue transforms every session into a story worth sharing—with AI descriptions, heart rate data, and muscle heatmaps.',
+        features: 'Connect everywhere, enhance everything. Discover how FitGlue magically transforms your workouts with AI summaries, heart rate overlays, and muscle heatmaps.',
+        'how-it-works': 'Three simple steps to extraordinary workouts. Connect your apps, choose your boosters, and watch the magic happen automatically.',
+        'the-magic': 'Explore the magic layer. See how FitGlue takes your raw workout data and transforms it into something extraordinary.',
+        pricing: 'Simple, honest pricing. Start free, upgrade when you need more. Or self-host—it\'s open source.',
+        about: 'We believe your fitness data should work for you, not against you. FitGlue transforms disconnected data into unified fitness stories.',
+        contact: 'Have a question or suggestion? We\'d love to hear from you.',
+        waitlist: 'Be among the first to experience the magic. Join the waitlist for early access and founding member perks.',
+        privacy: 'Your data is yours. Read our commitment to privacy and security.',
+        terms: 'FitGlue Terms of Service and usage guidelines.',
+        '404': 'Oops! This page went for a run and didn\'t come back.',
       };
       return {
         pageTitle: pageName.charAt(0).toUpperCase() + pageName.slice(1).replace(/-/g, ' '),
         isHome: currentPage === 'index',
         isFeatures: currentPage === 'features',
         isHowItWorks: currentPage === 'how-it-works',
-        isConnections: currentPage === 'connections',
-        isPlugins: currentPage === 'plugins',
+        isTheMagic: currentPage === 'the-magic',
         isPricing: currentPage === 'pricing',
         isAbout: currentPage === 'about',
         isContact: currentPage === 'contact',
@@ -114,7 +112,7 @@ export const tasks = [
         isPrivacy: currentPage === 'privacy',
         isTerms: currentPage === 'terms',
         canonicalPath,
-        description: descriptions[currentPage] || 'FitGlue - Your fitness data, unified.',
+        description: descriptions[currentPage] || 'Watch your workout become extraordinary. Connect everywhere, enhance everything.',
       };
     },
   }),
@@ -127,11 +125,11 @@ export const tasks = [
     additionalVarsFn: ({ currentPage }) => {
       /** @type {Record<string, {pageTitle: string, description: string}>} */
       const authMeta = {
-        login: { pageTitle: 'Login', description: 'Log in to FitGlue.' },
-        register: { pageTitle: 'Create Account', description: 'Create a FitGlue account.' },
-        'forgot-password': { pageTitle: 'Reset Password', description: 'Reset your password.' },
-        'verify-email': { pageTitle: 'Verify Email', description: 'Verify your email.' },
-        logout: { pageTitle: 'Logout', description: 'Log out of FitGlue.' },
+        login: { pageTitle: 'Login', description: 'Welcome back! Log in to continue your fitness transformation.' },
+        register: { pageTitle: 'Create Account', description: 'Join FitGlue and start transforming your workouts into stories worth sharing.' },
+        'forgot-password': { pageTitle: 'Reset Password', description: 'Reset your password to get back to your extraordinary workouts.' },
+        'verify-email': { pageTitle: 'Verify Email', description: 'Verify your email to complete your FitGlue account setup.' },
+        logout: { pageTitle: 'Logged Out', description: 'You\'ve been logged out of FitGlue. See you next workout!' },
       };
       const meta = authMeta[currentPage] || { pageTitle: currentPage, description: '' };
       return { ...meta, canonicalPath: `/auth/${currentPage}` };
@@ -148,19 +146,19 @@ export const tasks = [
       const guideMeta = {
         index: {
           pageTitle: 'Guides & Tutorials',
-          description: 'Learn how to sync your fitness data with FitGlue. Step-by-step guides for Hevy, Fitbit, Strava, and more.',
+          description: 'Step-by-step guides to transform your workouts. Learn how FitGlue brings the magic to Hevy, Fitbit, Strava, and more.',
         },
         'hevy-to-strava': {
-          pageTitle: 'How to Get Hevy Workouts into Strava with Muscle Heatmaps',
-          description: 'Sync your Hevy strength training to Strava automatically with AI descriptions and visual muscle heatmaps.',
+          pageTitle: 'Transform Your Hevy Workouts with Muscle Heatmaps',
+          description: 'Turn boring "Weight Training – 45 min" into rich Strava stories with AI descriptions, set details, and visual muscle heatmaps.',
         },
         'fitbit-heart-rate': {
-          pageTitle: 'Add Missing Heart Rate from Fitbit to Strava',
-          description: 'Overlay accurate Fitbit heart rate data onto your Strava activities for complete workout insights.',
+          pageTitle: 'Magically Merge Your Fitbit Heart Rate into Strava',
+          description: 'Your Fitbit captures perfect heart rate all day—now it can automatically enhance your Strava activities with accurate calorie burns and training zones.',
         },
         'parkrun-automation': {
-          pageTitle: 'Automate Your Parkrun Results to Strava',
-          description: 'Automatically enrich your Strava parkrun activities with official times, positions, and personal bests.',
+          pageTitle: 'Enrich Your Parkrun with Official Results',
+          description: 'Your Strava parkrun automatically gets your official time, finishing position, age grade, and PB celebrations. Like magic.',
         },
       };
       const meta = guideMeta[currentPage] || { pageTitle: currentPage, description: 'FitGlue Guide' };

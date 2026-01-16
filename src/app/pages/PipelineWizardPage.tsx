@@ -4,8 +4,11 @@ import { PageLayout } from '../components/layout/PageLayout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useApi } from '../hooks/useApi';
+import { usePipelines } from '../hooks/usePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { EnricherConfigForm } from '../components/EnricherConfigForm';
+import { EnricherTimeline } from '../components/EnricherTimeline';
+import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginManifest } from '../types/plugin';
 
 interface SelectedEnricher {
@@ -18,6 +21,7 @@ type WizardStep = 'source' | 'enrichers' | 'enricher-config' | 'destinations' | 
 const PipelineWizardPage: React.FC = () => {
     const navigate = useNavigate();
     const api = useApi();
+    const { refresh: refreshPipelines } = usePipelines();
     const { sources, enrichers, destinations, loading, error: registryError } = usePluginRegistry();
 
     const [step, setStep] = useState<WizardStep>('source');
@@ -27,6 +31,7 @@ const PipelineWizardPage: React.FC = () => {
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
     const [creating, setCreating] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
 
     const steps: WizardStep[] = ['source', 'enrichers', 'enricher-config', 'destinations', 'review'];
     const currentStepIndex = steps.indexOf(step);
@@ -54,10 +59,17 @@ const PipelineWizardPage: React.FC = () => {
     const handleNext = () => {
         if (step === 'enrichers') {
             // Skip enricher config if no enrichers selected or none need config
-            if (selectedEnrichers.length === 0 || !enrichersNeedConfig) {
+            const enrichersWithConfig = selectedEnrichers.filter(
+                e => e.manifest.configSchema.length > 0
+            );
+            if (selectedEnrichers.length === 0 || enrichersWithConfig.length === 0) {
                 setStep('destinations');
             } else {
-                setCurrentEnricherIndex(0);
+                // Find the FIRST enricher that needs config (not just index 0)
+                const firstConfigIndex = selectedEnrichers.findIndex(
+                    e => e.manifest.configSchema.length > 0
+                );
+                setCurrentEnricherIndex(firstConfigIndex);
                 setStep('enricher-config');
             }
         } else if (step === 'enricher-config') {
@@ -127,6 +139,8 @@ const PipelineWizardPage: React.FC = () => {
                 destinations: selectedDestinations
             });
 
+            // Force refresh pipelines cache before navigation
+            await refreshPipelines();
             navigate('/settings/pipelines');
         } catch (err) {
             console.error('Failed to create pipeline:', err);
@@ -207,8 +221,18 @@ const PipelineWizardPage: React.FC = () => {
 
     const renderEnrichersStep = () => (
         <div className="wizard-content">
-            <h3>Add Enrichers (Optional)</h3>
-            <p className="wizard-description">Enrichers process and enhance your activities before sending them to destinations.</p>
+            <h3>Add Boosters (Optional)</h3>
+            <p className="wizard-description">
+                Click to add boosters. They will process your activities in order.
+            </p>
+
+            <EnricherTimeline
+                enrichers={selectedEnrichers}
+                onReorder={setSelectedEnrichers}
+                onRemove={(index) => setSelectedEnrichers(prev => prev.filter((_, i) => i !== index))}
+                onInfoClick={(manifest) => setInfoEnricher(manifest)}
+            />
+
             {loading ? (
                 <p className="loading-text">Loading enrichers...</p>
             ) : (
@@ -292,6 +316,18 @@ const PipelineWizardPage: React.FC = () => {
         const source = sources.find(s => s.id === selectedSource);
         const dests = destinations.filter(d => selectedDestinations.includes(d.id));
 
+        // Helper to get human-readable label for config values
+        const getFieldLabel = (enricher: SelectedEnricher, key: string): string => {
+            const field = enricher.manifest.configSchema.find(f => f.key === key);
+            return field?.label || key;
+        };
+
+        const getOptionLabel = (enricher: SelectedEnricher, key: string, value: string): string => {
+            const field = enricher.manifest.configSchema.find(f => f.key === key);
+            const option = field?.options?.find(o => o.value === value);
+            return option?.label || value;
+        };
+
         return (
             <div className="wizard-content">
                 <h3>Review Your Pipeline</h3>
@@ -307,12 +343,27 @@ const PipelineWizardPage: React.FC = () => {
                         {selectedEnrichers.length > 0 && (
                             <>
                                 <div className="review-section">
-                                    <span className="review-label">Enrichers</span>
-                                    {selectedEnrichers.map(e => (
-                                        <div key={e.manifest.id} className="review-item">
-                                            <span>{e.manifest.icon}</span> {e.manifest.name}
+                                    <span className="review-label">Boosters (in order)</span>
+                                    {selectedEnrichers.map((e, index) => (
+                                        <div key={e.manifest.id} className="review-enricher-block">
+                                            <div className="review-enricher-header">
+                                                <span className="review-order">{index + 1}</span>
+                                                <span className="review-enricher-icon">{e.manifest.icon}</span>
+                                                <span className="review-enricher-name">{e.manifest.name}</span>
+                                            </div>
                                             {Object.keys(e.config).length > 0 && (
-                                                <span className="review-configured" title="Configured">⚙️</span>
+                                                <div className="review-enricher-config">
+                                                    {Object.entries(e.config).map(([key, value]) => (
+                                                        <div key={key} className="review-config-item">
+                                                            <span className="review-config-label">
+                                                                {getFieldLabel(e, key)}:
+                                                            </span>
+                                                            <span className="review-config-value">
+                                                                {getOptionLabel(e, key, value)}
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             )}
                                         </div>
                                     ))}
@@ -364,40 +415,49 @@ const PipelineWizardPage: React.FC = () => {
     }
 
     return (
-        <PageLayout
-            title="Create Pipeline"
-            backTo="/settings/pipelines"
-            backLabel="Pipelines"
-        >
-            <div className="pipeline-wizard">
-                {renderStepIndicator()}
-                {renderCurrentStep()}
-                <div className="wizard-actions">
-                    {currentStepIndex > 0 && (
-                        <Button variant="secondary" onClick={handleBack}>
-                            Back
-                        </Button>
-                    )}
-                    {step !== 'review' ? (
-                        <Button
-                            variant="primary"
-                            onClick={handleNext}
-                            disabled={!canProceed() || loading}
-                        >
-                            Next
-                        </Button>
-                    ) : (
-                        <Button
-                            variant="primary"
-                            onClick={handleCreate}
-                            disabled={creating}
-                        >
-                            {creating ? 'Creating...' : 'Create Pipeline'}
-                        </Button>
-                    )}
+        <>
+            <PageLayout
+                title="Create Pipeline"
+                backTo="/settings/pipelines"
+                backLabel="Pipelines"
+            >
+                <div className="pipeline-wizard">
+                    {renderStepIndicator()}
+                    {renderCurrentStep()}
+                    <div className="wizard-actions">
+                        {currentStepIndex > 0 && (
+                            <Button variant="secondary" onClick={handleBack}>
+                                Back
+                            </Button>
+                        )}
+                        {step !== 'review' ? (
+                            <Button
+                                variant="primary"
+                                onClick={handleNext}
+                                disabled={!canProceed() || loading}
+                            >
+                                Next
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="primary"
+                                onClick={handleCreate}
+                                disabled={creating}
+                            >
+                                {creating ? 'Creating...' : 'Create Pipeline'}
+                            </Button>
+                        )}
+                    </div>
                 </div>
-            </div>
-        </PageLayout>
+            </PageLayout>
+
+            {infoEnricher && (
+                <EnricherInfoModal
+                    enricher={infoEnricher}
+                    onClose={() => setInfoEnricher(null)}
+                />
+            )}
+        </>
     );
 };
 

@@ -5,7 +5,7 @@
   <section class="about-hero">
     <div class="container">
       <nav class="breadcrumb animate-on-scroll">
-        <a href="/plugins">Plugins</a> /
+        <a href="/the-magic">The Magic</a> /
         {{#if isSource}}Sources{{/if}}
           {{#if isEnricher}}Boosters{{/if}}
             {{#if isDestination}}Targets{{/if}}
@@ -35,104 +35,162 @@
   <!-- About -->
   <section class="section">
     <div class="container" style="max-width: 800px;">
-      <div class="integration-content animate-on-scroll">
-        {{#if marketingHtml}}
-          <div class="markdown-content">
-            {{{marketingHtml}}}
-          </div>
-        {{/if}}
+      {{#if marketingHtml}}
+        <div class="markdown-content animate-on-scroll">
+          {{{marketingHtml}}}
+        </div>
+      {{/if}}
 
-        {{#if hasTransformations}}
-          <h2>What It Does</h2>
-          <div class="transformations-list">
-            {{#each transformations}}
-              <div class="transformation-card">
-                <div class="transformation-label">{{label}}</div>
-                <div class="transformation-content">
-                  <div class="transformation-before">
-                    <div class="transformation-tag">Before</div>
-                    <div class="transformation-text">{{before}}</div>
-                  </div>
-                  <div class="transformation-arrow">→</div>
-                  <div class="transformation-after">
-                    <div class="transformation-tag">After</div>
-                    <div class="transformation-text">{{{afterHtml}}}</div>
-                  </div>
-                </div>
+      {{#if hasTransformations}}
+        <h2 class="text-center mb-md animate-on-scroll">What It Does</h2>
+        <div class="showcase-grid stagger-children">
+          {{#each transformations}}
+            <div class="showcase-card">
+              <div class="showcase-header">
+                <span class="showcase-icon">{{../icon}}</span>
+                <h3>{{label}}</h3>
               </div>
-            {{/each}}
-          </div>
-        {{/if}}
-
-        {{#if features.length}}
-          <h2>Features</h2>
-          <ul class="feature-list">
-            {{#each features}}
-              <li>{{this}}</li>
-            {{/each}}
-          </ul>
-        {{/if}}
-
-        {{#if hasUseCases}}
-          <h2>Perfect For</h2>
-          <ul class="feature-list">
-            {{#each useCases}}
-              <li>🎯 {{this}}</li>
-            {{/each}}
-          </ul>
-        {{/if}}
-
-        {{#if hasConfig}}
-          <h2>Configuration</h2>
-          <p class="text-muted">Customize this booster with the following options:</p>
-          <div class="config-list">
-            {{#each configItems}}
-              <div class="config-item">
-                <div class="config-header">
-                  <span class="config-label">{{label}}</span>
-                  {{#if required}}<span class="config-required">Required</span>{{/if}}
-                </div>
-                <p class="config-description">{{description}}</p>
-                {{#if isSelect}}
-                  {{#if hasOptions}}
-                    <div class="config-options">
-                      {{#each options}}
-                        <div class="config-option {{#if isDefault}}default{{/if}}">
-                          <span class="config-option-label">{{label}}</span>
-                        </div>
-                      {{/each}}
-                    </div>
+              <div class="showcase-content">
+                <div class="showcase-before">
+                  <div class="showcase-label">Before</div>
+                  {{#if hasVisual}}
+                    {{#if (eq visualType "hr-graph")}}
+                      <div class="showcase-visual showcase-visual-empty">
+                        <svg viewBox="0 0 120 60" class="hr-graph hr-graph-empty">
+                          <line x1="10" y1="50" x2="110" y2="50" stroke="#333" stroke-width="2" />
+                          <line x1="10" y1="10" x2="10" y2="50" stroke="#333" stroke-width="2" />
+                          <text x="60" y="35" fill="#666" font-size="8" text-anchor="middle">No HR data</text>
+                        </svg>
+                        <span class="showcase-visual-label">Calories: Est. ~320</span>
+                      </div>
+                    {{else}}
+                      <div class="showcase-text showcase-empty">{{before}}</div>
+                    {{/if}}
+                  {{else}}
+                    <div class="showcase-text showcase-empty">{{before}}</div>
                   {{/if}}
-                {{/if}}
-                {{#if isBoolean}}
-                  <div class="config-toggle">
-                    <span class="toggle-option {{#if defaultIsTrue}}active{{/if}}">On</span>
-                    <span class="toggle-divider">/</span>
-                    <span class="toggle-option {{#unless defaultIsTrue}}active{{/unless}}">Off</span>
-                    <span class="toggle-default">(default: {{#if defaultIsTrue}}On{{else}}Off{{/if}})</span>
+                </div>
+                <div class="showcase-arrow">→</div>
+                <div class="showcase-after">
+                  <div class="showcase-label">After</div>
+                  {{#if hasVisual}}
+                    {{#if (eq visualType "hr-graph")}}
+                      <div class="showcase-visual">
+                        <svg viewBox="0 0 120 60" class="hr-graph hr-graph-active">
+                          <line x1="10" y1="50" x2="110" y2="50" stroke="#444" stroke-width="1" />
+                          <line x1="10" y1="30" x2="110" y2="30" stroke="#333" stroke-width="1" stroke-dasharray="2" />
+                          <line x1="10" y1="10" x2="110" y2="10" stroke="#333" stroke-width="1" stroke-dasharray="2" />
+                          <polyline points="10,45 20,40 30,35 40,30 50,25 55,15 60,28 70,32 80,28 90,35 100,38 110,42"
+                            fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round"
+                            class="hr-line" />
+                          <circle cx="55" cy="15" r="3" fill="var(--color-primary)" class="hr-peak" />
+                          <text x="55" y="8" fill="var(--color-primary)" font-size="6" text-anchor="middle">178</text>
+                        </svg>
+                        <div class="showcase-stats">
+                          <span class="stat-item">❤️ Avg: 142</span>
+                          <span class="stat-item">🔥 487 kcal</span>
+                        </div>
+                      </div>
+                    {{else if (eq visualType "gps-map")}}
+                      <div class="showcase-visual">
+                        <svg viewBox="0 0 120 80" class="gps-map">
+                          <rect x="0" y="0" width="120" height="80" fill="#1a1a2e" rx="4" />
+                          <line x1="0" y1="20" x2="120" y2="20" stroke="#333" stroke-width="0.5" />
+                          <line x1="0" y1="40" x2="120" y2="40" stroke="#333" stroke-width="0.5" />
+                          <line x1="0" y1="60" x2="120" y2="60" stroke="#333" stroke-width="0.5" />
+                          <line x1="30" y1="0" x2="30" y2="80" stroke="#333" stroke-width="0.5" />
+                          <line x1="60" y1="0" x2="60" y2="80" stroke="#333" stroke-width="0.5" />
+                          <line x1="90" y1="0" x2="90" y2="80" stroke="#333" stroke-width="0.5" />
+                          <path d="M15,60 Q25,50 35,55 T55,45 T75,35 T95,25 T105,30" fill="none"
+                            stroke="var(--color-primary)" stroke-width="3" stroke-linecap="round" class="gps-route" />
+                          <circle cx="15" cy="60" r="4" fill="#22c55e" />
+                          <circle cx="105" cy="30" r="4" fill="var(--color-primary)" />
+                        </svg>
+                        <div class="showcase-stats">
+                          <span class="stat-item">📍 Virtual route added</span>
+                        </div>
+                      </div>
+                    {{else}}
+                      <div class="showcase-text">{{{afterHtml}}}</div>
+                    {{/if}}
+                  {{else}}
+                    <div class="showcase-text showcase-heatmap">{{{afterHtml}}}</div>
+                  {{/if}}
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+
+      {{#if features.length}}
+        <h2 class="text-center mb-md mt-xl animate-on-scroll">Features</h2>
+        <ul class="feature-list animate-on-scroll">
+          {{#each features}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      {{/if}}
+
+      {{#if hasUseCases}}
+        <h2 class="text-center mb-md mt-xl animate-on-scroll">Perfect For</h2>
+        <ul class="feature-list animate-on-scroll">
+          {{#each useCases}}
+            <li>🎯 {{this}}</li>
+          {{/each}}
+        </ul>
+      {{/if}}
+
+      {{#if hasConfig}}
+        <h2 class="text-center mb-md mt-xl animate-on-scroll">Configuration</h2>
+        <p class="text-center text-muted animate-on-scroll">Customize this booster with the following options:</p>
+        <div class="config-list animate-on-scroll">
+          {{#each configItems}}
+            <div class="config-item">
+              <div class="config-header">
+                <span class="config-label">{{label}}</span>
+                {{#if required}}<span class="config-required">Required</span>{{/if}}
+              </div>
+              <p class="config-description">{{description}}</p>
+              {{#if isSelect}}
+                {{#if hasOptions}}
+                  <div class="config-options">
+                    {{#each options}}
+                      <div class="config-option {{#if isDefault}}default{{/if}}">
+                        <span class="config-option-label">{{label}}</span>
+                      </div>
+                    {{/each}}
                   </div>
                 {{/if}}
-              </div>
-            {{/each}}
-          </div>
-        {{/if}}
-
-        {{#if hasRequiredConnections}}
-          <h2>Required Connection</h2>
-          <p class="text-muted">This plugin requires the following connection:</p>
-          <div class="required-connections-grid">
-            {{#each requiredConnectionObjects}}
-              <a href="/connections/{{id}}" class="connection-card">
-                <div class="connection-card-icon">{{icon}}</div>
-                <div class="connection-card-content">
-                  <h4>{{name}}</h4>
-                  <p>{{description}}</p>
+              {{/if}}
+              {{#if isBoolean}}
+                <div class="config-toggle">
+                  <span class="toggle-option {{#if defaultIsTrue}}active{{/if}}">On</span>
+                  <span class="toggle-divider">/</span>
+                  <span class="toggle-option {{#unless defaultIsTrue}}active{{/unless}}">Off</span>
+                  <span class="toggle-default">(default: {{#if defaultIsTrue}}On{{else}}Off{{/if}})</span>
                 </div>
-              </a>
-            {{/each}}
-          </div>
-        {{/if}}
-      </div>
+              {{/if}}
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+
+      {{#if hasRequiredConnections}}
+        <h2 class="text-center mb-md mt-xl animate-on-scroll">Required Connection</h2>
+        <p class="text-center text-muted animate-on-scroll">This plugin requires the following connection:</p>
+        <div class="required-connections-grid animate-on-scroll">
+          {{#each requiredConnectionObjects}}
+            <a href="/connections/{{id}}" class="connection-card">
+              <div class="connection-card-icon">{{icon}}</div>
+              <div class="connection-card-content">
+                <h4>{{name}}</h4>
+                <p>{{description}}</p>
+              </div>
+            </a>
+          {{/each}}
+        </div>
+      {{/if}}
     </div>
   </section>
 

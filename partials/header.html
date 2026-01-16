@@ -6,14 +6,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="{{description}}">
         <meta name="keywords"
-            content="fitness data, workout sync, Strava, Hevy, Fitbit, fitness aggregation, workout tracking, fitness API">
+            content="workout transformation, Strava enhancement, Hevy to Strava, Fitbit heart rate, muscle heatmap, workout enrichment, fitness automation, AI workout descriptions, gym to Strava, parkrun results">
         <meta name="author" content="FitGlue">
         <meta name="robots" content="index, follow">
         <meta name="theme-color" content="#FF006E">
 
         <!-- Open Graph -->
         <meta property="og:title"
-            content="{{#if isHome}}FitGlue - Your Fitness Data, Unified{{else}}{{pageTitle}} | FitGlue{{/if}}">
+            content="{{#if isHome}}FitGlue – Watch Your Workout Become Extraordinary{{else}}{{pageTitle}} | FitGlue{{/if}}">
         <meta property="og:description" content="{{description}}">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{siteUrl}}{{canonicalPath}}">
@@ -37,7 +37,8 @@
         <!-- Styles -->
         <link rel="stylesheet" href="/styles.min.{{cacheHash}}.css">
 
-        <title>{{#if isHome}}FitGlue - Your Fitness Data, Unified{{else}}{{pageTitle}} | FitGlue{{/if}}</title>
+        <title>{{#if isHome}}FitGlue – Watch Your Workout Become Extraordinary{{else}}{{pageTitle}} | FitGlue{{/if}}
+        </title>
 
         <!-- Schema.org -->
         <script type="application/ld+json">
@@ -82,16 +83,13 @@
                             <li><a href="/features" class="nav-link {{#if isFeatures}}active{{/if}}">Features</a></li>
                             <li><a href="/how-it-works" class="nav-link {{#if isHowItWorks}}active{{/if}}">How It
                                     Works</a></li>
-                            <li><a href="/connections"
-                                    class="nav-link {{#if isConnections}}active{{/if}}">Connections</a></li>
-                            <li><a href="/plugins" class="nav-link {{#if isPlugins}}active{{/if}}">Plugins</a></li>
+                            <li><a href="/the-magic" class="nav-link {{#if isTheMagic}}active{{/if}}">The Magic</a></li>
                             <li><a href="/pricing" class="nav-link {{#if isPricing}}active{{/if}}">Pricing</a></li>
+                            <li class="nav-auth" id="nav-auth-login"><a href="/auth/login"
+                                    class="nav-link nav-link-ghost">Login</a></li>
+                            <li class="nav-auth" id="nav-auth-cta"><a href="/auth/register"
+                                    class="nav-link nav-link-cta">Get Started</a></li>
                         </ul>
-
-                        <div class="nav-actions" id="nav-actions">
-                            <a href="/auth/login" class="btn btn-ghost btn-sm" id="login-btn">Login</a>
-                            <a href="/auth/register" class="btn btn-primary btn-sm" id="get-started-btn">Get Started</a>
-                        </div>
                     </nav>
                 </div>
             </div>
@@ -101,4 +99,20 @@
             function toggleNav() {
                 document.getElementById('nav-links').classList.toggle('active');
             }
+
+            // Apply cached auth state immediately to prevent flash
+            (function () {
+                if (localStorage.getItem('fitglue_auth_state') === 'logged_in') {
+                    var loginItem = document.getElementById('nav-auth-login');
+                    var ctaItem = document.getElementById('nav-auth-cta');
+                    if (loginItem) loginItem.style.display = 'none';
+                    if (ctaItem) {
+                        var ctaLink = ctaItem.querySelector('a');
+                        if (ctaLink) {
+                            ctaLink.href = '/app';
+                            ctaLink.textContent = 'Go to Dashboard';
+                        }
+                    }
+                }
+            })();
         </script>

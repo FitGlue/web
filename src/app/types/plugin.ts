@@ -8,6 +8,7 @@ import { components } from '../../shared/api/schema';
 // Re-export types from generated schema
 export type ConfigFieldOption = components['schemas']['ConfigFieldOption'];
 export type ConfigFieldValidation = components['schemas']['ConfigFieldValidation'];
+export type ConfigFieldDependency = components['schemas']['ConfigFieldDependency'];
 export type ConfigFieldSchema = components['schemas']['ConfigFieldSchema'];
 export type Transformation = components['schemas']['Transformation'];
 export type PluginManifest = components['schemas']['PluginManifest'];

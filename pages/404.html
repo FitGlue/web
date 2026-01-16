@@ -1,53 +1,165 @@
 {{> header}}
 
-<main class="container">
-  <div class="content" style="text-align: center; padding: 6rem 0;">
-    <h1 class="error-code">404</h1>
+<main>
+  <section class="error-hero">
+    <div class="container">
+      <div class="error-content">
+        <!-- Fun gym rep counter display -->
+        <div class="rep-counter animate-on-scroll">
+          <span class="rep-number">40</span>
+          <span class="rep-separator">×</span>
+          <span class="rep-number">4</span>
+        </div>
 
-    <h2 class="title" style="font-size: clamp(2rem, 5vw, 3rem); margin-top: 1rem;">
-      Page <span class="fit">Not</span> <span class="glue">Found</span>
-    </h2>
+        <p class="error-quip animate-on-scroll">reps? Even we couldn't do that.</p>
 
-    <p class="tagline" style="margin-bottom: 1rem;">
-      Looks like you've ventured into the unknown.
-    </p>
+        <h1 class="error-title animate-on-scroll">
+          Page <span class="fit">Not</span> <span class="glue">Found</span>
+        </h1>
 
-    <div class="description">
-      <p>
-        The page you're looking for doesn't exist or has been moved.
-        Let's get you back on track.
-      </p>
+        <p class="error-description animate-on-scroll">
+          Looks like this page took an unscheduled rest day.<br>
+          Let's get you back to your workout.
+        </p>
 
-      <a href="/" class="btn btn-primary btn-lg" style="margin-top: 2rem;">
-        Return Home
-      </a>
+        <div class="error-actions animate-on-scroll">
+          <a href="/" class="btn btn-primary btn-lg">Return Home</a>
+          <a href="/features" class="btn btn-secondary">Explore Features</a>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 </main>
 
 <style>
-  .error-code {
-    font-size: clamp(6rem, 15vw, 10rem);
+  .error-hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--gradient-hero);
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-xl) 0;
+  }
+
+  .error-hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150%;
+    height: 150%;
+    transform: translate(-50%, -50%);
+    background: var(--gradient-glow);
+    pointer-events: none;
+  }
+
+  .error-content {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .rep-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+  }
+
+  .rep-number {
+    font-size: clamp(5rem, 15vw, 10rem);
     font-weight: 900;
-    margin-bottom: 0;
     line-height: 1;
     letter-spacing: -0.05em;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: pulse-slow 3s ease-in-out infinite;
+    animation: pulse-glow 3s ease-in-out infinite;
   }
 
-  @keyframes pulse-slow {
+  .rep-separator {
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 900;
+    color: var(--color-text-muted);
+    animation: pulse-glow 3s ease-in-out infinite 0.5s;
+  }
+
+  @keyframes pulse-glow {
 
     0%,
     100% {
       opacity: 1;
+      filter: drop-shadow(0 0 20px rgba(255, 0, 110, 0.5));
     }
 
     50% {
-      opacity: 0.8;
+      opacity: 0.85;
+      filter: drop-shadow(0 0 40px rgba(131, 56, 236, 0.6));
+    }
+  }
+
+  .error-quip {
+    font-size: var(--font-size-xl);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-lg);
+    font-style: italic;
+  }
+
+  .error-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: var(--space-md);
+  }
+
+  .error-title .fit {
+    color: var(--color-primary);
+  }
+
+  .error-title .glue {
+    color: var(--color-secondary);
+  }
+
+  .error-description {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-lg);
+    line-height: 1.8;
+  }
+
+  .error-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 640px) {
+    .rep-counter {
+      gap: var(--space-sm);
+    }
+
+    .error-quip {
+      font-size: var(--font-size-lg);
+    }
+
+    .error-description br {
+      display: none;
+    }
+
+    .error-actions {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .error-actions .btn {
+      width: 100%;
+      max-width: 280px;
     }
   }
 </style>

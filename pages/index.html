@@ -7,18 +7,38 @@
       <h1 class="hero-title">
         <span class="fit">Fit</span><span class="glue">Glue</span>
       </h1>
-      <p class="hero-tagline">Share your complete fitness story</p>
-      <p class="hero-subtitle">Your gym session deserves more than "Weight Training – 45 min". FitGlue turns every
-        workout into a story worth sharing—with AI descriptions, heart rate data, and muscle heatmaps.</p>
+      <p class="hero-tagline">Watch your workout become extraordinary ✨</p>
+      <p class="hero-subtitle">Your gym session deserves more than "Weight Training – 45 min". FitGlue
+        transforms every workout into a story worth sharing—with AI descriptions, heart rate data, and muscle heatmaps.
+      </p>
 
       <!-- Animated Data Flow -->
-      <div class="data-flow">
-        <div class="data-flow-node source">🏋️ Hevy</div>
-        <div class="data-flow-arrow"></div>
-        <div class="data-flow-node center">FitGlue</div>
-        <div class="data-flow-arrow"></div>
-        <div class="data-flow-node destination">🚴 Strava</div>
+      <div class="data-flow data-flow-animated">
+        <div class="data-flow-node source" id="flow-source">
+          <span class="flow-icon">🏋️</span>
+          <span class="flow-label">Hevy</span>
+        </div>
+        <div class="data-flow-arrow">
+          <div class="arrow-particles"></div>
+        </div>
+        <div class="data-flow-node center" id="flow-center">
+          <div class="center-label">FitGlue</div>
+          <div class="center-boosters" id="booster-display">
+            <span class="booster-icon" title="AI Summary">🤖</span>
+            <span class="booster-icon" title="Muscle Map">💪</span>
+            <span class="booster-icon" title="Heart Rate">❤️</span>
+            <span class="booster-icon" title="GPS Routes">🗺️</span>
+          </div>
+        </div>
+        <div class="data-flow-arrow">
+          <div class="arrow-particles"></div>
+        </div>
+        <div class="data-flow-node destination" id="flow-destination">
+          <span class="flow-icon">🚴</span>
+          <span class="flow-label">Strava</span>
+        </div>
       </div>
+      <p class="flow-caption flow-caption-magic">✨ Connect everywhere, enhance everything ✨</p>
 
       <div class="hero-cta">
         <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg">Join the Waitlist</a>
@@ -32,16 +52,16 @@
     <div class="container">
       <div class="trust-strip-inner">
         <div class="trust-badge">
-          <span class="trust-badge-icon">🔒</span>
-          <span class="trust-badge-text">Secure OAuth</span>
+          <span class="trust-badge-icon">🔐</span>
+          <span class="trust-badge-text">One-Tap Secure Login</span>
         </div>
         <div class="trust-badge">
-          <span class="trust-badge-icon">🔐</span>
-          <span class="trust-badge-text">Encrypted Data</span>
+          <span class="trust-badge-icon">🛡️</span>
+          <span class="trust-badge-text">Your Data, Protected</span>
         </div>
         <div class="trust-badge">
           <span class="trust-badge-icon">🇪🇺</span>
-          <span class="trust-badge-text">GDPR Compliant</span>
+          <span class="trust-badge-text">Privacy First</span>
         </div>
         <div class="trust-divider"></div>
         <div class="trust-stat">
@@ -54,7 +74,7 @@
         </div>
       </div>
       <div class="trust-privacy">
-        <p>Your data is stored securely and encrypted. We use OAuth for all connections—we never see your passwords. <a
+        <p>Connect in seconds. We never store your passwords—your data stays encrypted and under your control. <a
             href="/privacy">Read our Privacy Policy</a></p>
       </div>
     </div>
@@ -63,8 +83,8 @@
   <!-- Before/After Showcase -->
   <section class="section">
     <div class="container">
-      <h2 class="text-center mb-md animate-on-scroll">See the <span class="text-gradient">Transformation</span></h2>
-      <p class="text-center text-muted mb-lg animate-on-scroll">Your workouts, enriched with data that matters</p>
+      <h2 class="text-center mb-md animate-on-scroll">See the <span class="text-gradient">Magic</span></h2>
+      <p class="text-center text-muted mb-lg animate-on-scroll">Your workouts, transformed with data that matters</p>
 
       <div class="showcase-grid stagger-children">
         <!-- Workout Summary Transformation -->
@@ -82,8 +102,8 @@
             <div class="showcase-after">
               <div class="showcase-label">After</div>
               <div class="showcase-text">
-                <strong>💪 Push Day – Chest & Shoulders</strong><br>
-                📊 20 sets • 8,240kg volume • 57 reps<br><br>
+                <strong>💪 Workout Summary</strong><br>
+                📊 12 sets • 824kg volume • 120 reps<br><br>
                 • Bench Press: 4 × 8 × 80kg<br>
                 • Overhead Press: 4 × 10 × 40kg<br>
                 • Incline DB Press: 4 × 12 × 24kg
@@ -106,12 +126,12 @@
             <div class="showcase-arrow">→</div>
             <div class="showcase-after">
               <div class="showcase-label">After</div>
-              <div class="showcase-text">
-                <strong>🔥 Muscle Heatmap</strong><br><br>
-                Chest: 🟪🟪🟪🟪🟪<br>
-                Shoulders: 🟪🟪🟪🟪⬜<br>
-                Triceps: 🟪🟪🟪⬜⬜<br>
-                Core: 🟪🟪⬜⬜⬜
+              <div class="showcase-text showcase-heatmap">
+                <strong>🔥 Muscle Activation</strong><br><br>
+                <span class="heatmap-row">Chest: <span class="heatmap-bar high">🟪🟪🟪🟪🟪</span></span><br>
+                <span class="heatmap-row">Shoulders: <span class="heatmap-bar high">🟪🟪🟪🟪⬛</span></span><br>
+                <span class="heatmap-row">Triceps: <span class="heatmap-bar med">🟪🟪⬛⬛⬛</span></span><br>
+                <span class="heatmap-row">Core: <span class="heatmap-bar low">🟪⬛⬛⬛⬛</span></span>
               </div>
             </div>
           </div>
@@ -126,16 +146,76 @@
           <div class="showcase-content">
             <div class="showcase-before">
               <div class="showcase-label">Before</div>
-              <div class="showcase-text showcase-empty">Avg HR: –<br>Max HR: –<br>Calories: Est. 320</div>
+              <div class="showcase-visual showcase-visual-empty">
+                <svg viewBox="0 0 120 60" class="hr-graph hr-graph-empty">
+                  <line x1="10" y1="50" x2="110" y2="50" stroke="#333" stroke-width="2" />
+                  <line x1="10" y1="10" x2="10" y2="50" stroke="#333" stroke-width="2" />
+                  <text x="60" y="35" fill="#666" font-size="8" text-anchor="middle">No HR data</text>
+                </svg>
+                <span class="showcase-visual-label">Calories: Est. ~320</span>
+              </div>
             </div>
             <div class="showcase-arrow">→</div>
             <div class="showcase-after">
               <div class="showcase-label">After</div>
-              <div class="showcase-text">
-                <strong>❤️ From Your Fitbit</strong><br><br>
-                Avg HR: 142 bpm<br>
-                Max HR: 178 bpm<br>
-                🔥 Calories: 487 (accurate)
+              <div class="showcase-visual">
+                <svg viewBox="0 0 120 60" class="hr-graph hr-graph-active">
+                  <!-- Grid lines -->
+                  <line x1="10" y1="50" x2="110" y2="50" stroke="#444" stroke-width="1" />
+                  <line x1="10" y1="30" x2="110" y2="30" stroke="#333" stroke-width="1" stroke-dasharray="2" />
+                  <line x1="10" y1="10" x2="110" y2="10" stroke="#333" stroke-width="1" stroke-dasharray="2" />
+                  <!-- HR Line - animated -->
+                  <polyline points="10,45 20,40 30,35 40,30 50,25 55,15 60,28 70,32 80,28 90,35 100,38 110,42"
+                    fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" class="hr-line" />
+                  <!-- Peak marker -->
+                  <circle cx="55" cy="15" r="3" fill="var(--color-primary)" class="hr-peak" />
+                  <text x="55" y="8" fill="var(--color-primary)" font-size="6" text-anchor="middle">178</text>
+                </svg>
+                <div class="showcase-stats">
+                  <span class="stat-item">❤️ Avg: 142</span>
+                  <span class="stat-item">🔥 487 kcal</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GPS Data Transformation -->
+        <div class="showcase-card">
+          <div class="showcase-header">
+            <span class="showcase-icon">🗺️</span>
+            <h3>GPS Routes</h3>
+          </div>
+          <div class="showcase-content">
+            <div class="showcase-before">
+              <div class="showcase-label">Before</div>
+              <div class="showcase-text showcase-empty">Indoor workout<br>No location</div>
+            </div>
+            <div class="showcase-arrow">→</div>
+            <div class="showcase-after">
+              <div class="showcase-label">After</div>
+              <div class="showcase-visual">
+                <svg viewBox="0 0 120 80" class="gps-map">
+                  <!-- Map background -->
+                  <rect x="0" y="0" width="120" height="80" fill="#1a1a2e" rx="4" />
+                  <!-- Grid lines -->
+                  <line x1="0" y1="20" x2="120" y2="20" stroke="#333" stroke-width="0.5" />
+                  <line x1="0" y1="40" x2="120" y2="40" stroke="#333" stroke-width="0.5" />
+                  <line x1="0" y1="60" x2="120" y2="60" stroke="#333" stroke-width="0.5" />
+                  <line x1="30" y1="0" x2="30" y2="80" stroke="#333" stroke-width="0.5" />
+                  <line x1="60" y1="0" x2="60" y2="80" stroke="#333" stroke-width="0.5" />
+                  <line x1="90" y1="0" x2="90" y2="80" stroke="#333" stroke-width="0.5" />
+                  <!-- Route path -->
+                  <path d="M15,60 Q25,50 35,55 T55,45 T75,35 T95,25 T105,30" fill="none" stroke="var(--color-primary)"
+                    stroke-width="3" stroke-linecap="round" class="gps-route" />
+                  <!-- Start marker -->
+                  <circle cx="15" cy="60" r="4" fill="#22c55e" />
+                  <!-- End marker -->
+                  <circle cx="105" cy="30" r="4" fill="var(--color-primary)" />
+                </svg>
+                <div class="showcase-stats">
+                  <span class="stat-item">📍 Virtual route added</span>
+                </div>
               </div>
             </div>
           </div>
@@ -282,7 +362,7 @@
   <!-- Connect Everything Section -->
   <section class="section section-alt">
     <div class="container">
-      <h2 class="text-center mb-md animate-on-scroll">🌐 <span class="text-gradient">Connect Everything</span></h2>
+      <h2 class="text-center mb-md animate-on-scroll">🌐 <span class="text-gradient">Connect Everywhere</span></h2>
       <p class="text-center text-muted mb-lg animate-on-scroll">FitGlue works with the platforms you already use—and
         we're adding more every month</p>
 
