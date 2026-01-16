@@ -1,136 +1,138 @@
 # FitGlue Web
 
-**FitGlue Web** is the frontend hosting layer for the FitGlue fitness data aggregation platform. It provides the landing page, future dashboard, and implements the Unified URL Strategy via Firebase Hosting rewrites.
+The frontend hosting layer for the FitGlue fitness data platform. Contains a **marketing site** (static HTML) and a **React SPA** (dashboard), unified by Firebase Hosting.
 
 ## Architecture
 
-This repository manages:
-- **Static Frontend**: Landing page and future web application
-- **Firebase Hosting**: Routing layer that proxies requests to Cloud Functions
-- **Infrastructure**: Terraform configuration for Firebase Hosting and IAM
-
-The web repo deploys to the **same GCP projects** as the [server repo](https://github.com/ripixel/fitglue-server), enabling Firebase Hosting rewrites to work seamlessly with Cloud Functions. See [Decision 008](https://github.com/ripixel/fitglue-server/blob/main/docs/DECISIONS.md#008---project--repository-architecture-2025-12-24) for details.
-
-## Unified URL Strategy
-
-All public endpoints are accessible via a single domain per environment:
-
-- **Prod**: `https://fitglue.tech`
-- **Dev**: `https://dev.fitglue.tech`
-
-Firebase Hosting rewrites route requests to the appropriate backend:
-
-- `/` → Static landing page
-- `/hooks/{provider}` → Webhook handlers (e.g., `hevy-webhook-handler`)
-- `/api/{version}/**` → API service (future)
-- `/auth/{provider}/callback` → OAuth callbacks (future)
-
-## Tech Stack
-
-- **Frontend**: HTML, CSS (vibrant, minimalist design)
-- **Hosting**: Firebase Hosting
-- **Infrastructure**: Terraform
-- **CI/CD**: CircleCI with OIDC authentication
-
-## Documentation
-
-- **[Local Development](docs/LOCAL_DEVELOPMENT.md)** - Running the site locally, linting, and making changes
-- **[Bootstrap Guide](docs/BOOTSTRAP.md)** - Setting up IAM configuration for CircleCI deployments
-- **[Deployment](docs/DEPLOYMENT.md)** - Automated and manual deployment processes
-- **[Architecture Decisions](docs/DECISIONS.md)** - Key design choices and rationale
+```
+┌────────────────────────────────────────────────────────────┐
+│                    Firebase Hosting                         │
+│                 fitglue.tech / dev.fitglue.tech            │
+├────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌─────────────────────┐     ┌─────────────────────┐       │
+│  │   Marketing Site    │     │     React App       │       │
+│  │   (Skier SSG)       │     │     (Vite)          │       │
+│  │                     │     │                     │       │
+│  │  /, /features,      │     │  /app/**            │       │
+│  │  /pricing, etc.     │     │                     │       │
+│  └─────────────────────┘     └─────────────────────┘       │
+│                                                             │
+└────────────────────────────────────────────────────────────┘
+                         │
+                         ▼ Firebase Rewrites
+              ┌────────────────────────┐
+              │   Cloud Run Functions  │
+              │   /api/**, /hooks/**   │
+              └────────────────────────┘
+```
 
 ## Quick Start
-
-### Prerequisites
-
-- Node.js 20+
-- Firebase CLI
-- Terraform 1.5+
-- Google Cloud SDK (for deployment)
-
-### Local Development
 
 ```bash
 # Install dependencies
 npm install
 
-# React app dev server (hot reload)
-npm run dev
-
-# Marketing pages dev server (hot reload)
+# Marketing site dev server (Skier watch)
 npm run dev:static
+# → http://localhost:5000
 
-# Build and serve full site locally
+# React app dev server (Vite)
+npm run dev
+# → http://localhost:5173/app
+
+# Full local testing (build + Firebase serve)
 npm run serve
-
-# Lint code
-npm run lint
 ```
 
-### Available Scripts
+## Tech Stack
 
-| Command | Purpose |
-|---------|---------|
-| `dev` | Vite dev server for React app |
-| `dev:static` | Skier watch for marketing pages |
-| `build` | Production build (for CI) |
-| `build:dev` | Dev mode build |
-| `build:test` | Test mode build |
-| `serve` | Build + Firebase serve (local testing) |
-| `preview` | Vite preview of built app |
-| `deploy` | Deploy to Firebase Hosting |
-| `lint` | ESLint check |
-
-### Deployment
-
-Deployment is automated via CircleCI on push to `main`:
-
-1. **Dev**: Automatic deployment
-2. **Test**: Automatic after dev succeeds
-3. **Prod**: Manual approval required
-
-Manual deployment (requires authentication):
-
-```bash
-# Deploy infrastructure
-cd terraform
-terraform init -backend-config=envs/dev.backend.tfvars
-terraform apply -var-file=envs/dev.tfvars
-
-# Deploy hosting
-firebase deploy --only hosting --project fitglue-server-dev
-```
+| Layer | Technology |
+|-------|------------|
+| Marketing Site | [Skier](https://github.com/ripixel/skier) (SSG) + Handlebars |
+| React App | Vite + React 19 + TypeScript |
+| State | Jotai (atomic state) |
+| Auth | Firebase Authentication |
+| Hosting | Firebase Hosting + Cloud Run |
+| Infrastructure | Terraform |
+| CI/CD | CircleCI with OIDC |
 
 ## Project Structure
 
 ```
-fitglue-web/
-├── public/              # Static files
-│   ├── index.html       # Landing page
-│   └── styles.css       # Styles
-├── terraform/           # Infrastructure as Code
-│   ├── envs/            # Environment configs
-│   ├── firebase.tf      # Firebase resources
-│   ├── iam.tf           # IAM configuration
-│   └── *.tf             # Other Terraform files
-├── .circleci/           # CI/CD pipeline
-├── firebase.json        # Firebase Hosting config
-└── package.json         # Node.js dependencies
+web/
+├── pages/              # Marketing page templates (Handlebars)
+├── partials/           # Shared template partials
+├── templates/          # Dynamic page templates
+├── assets/
+│   ├── styles/         # CSS (main.css)
+│   └── images/         # Static images
+├── src/
+│   └── app/            # React SPA
+│       ├── components/ # React components
+│       ├── hooks/      # Custom hooks
+│       ├── pages/      # Page components
+│       ├── state/      # Jotai atoms
+│       └── services/   # API services
+├── tasks/              # Custom Skier tasks
+├── static-dist/        # Skier build output
+├── dist/               # Final merged output
+├── skier.tasks.mjs     # Skier configuration
+├── vite.config.ts      # Vite configuration
+└── firebase.json       # Hosting config
 ```
 
-## Environment Configuration
+## Available Scripts
 
-The web repo uses the same GCP projects as the server:
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Full site with Firebase serve |
+| `npm run dev:static` | Marketing site watch mode |
+| `npm run build` | Production build (Skier + Vite) |
+| `npm run serve` | Build + Firebase local serve |
+| `npm run deploy` | Deploy to Firebase Hosting |
+| `npm run lint` | ESLint check |
+| `npm run gen-api` | Regenerate API types |
 
-- `fitglue-server-dev`
-- `fitglue-server-test`
-- `fitglue-server-prod`
+## Documentation
 
-Each environment has separate Terraform state stored in GCS with the prefix `web/terraform/state`.
+### Development
+- [Local Development](docs/development/local-development.md) - Running dev servers
+- [Styling Guide](docs/development/styling.md) - CSS architecture
 
-## Contributing
+### Architecture
+- [Overview](docs/architecture/overview.md) - Dual architecture design
+- [Authentication](docs/architecture/authentication.md) - Auth flow
 
-This is a personal project, but suggestions and feedback are welcome via issues.
+### Marketing Site
+- [Skier Pipeline](docs/marketing-site/skier-pipeline.md) - Build system
+- [Templates](docs/marketing-site/templates.md) - Handlebars templates
+- [Content](docs/marketing-site/content.md) - Content management
+
+### React App
+- [State Management](docs/react-app/state-management.md) - Jotai atoms
+- [Routing](docs/react-app/routing.md) - React Router config
+- [API Integration](docs/react-app/api-integration.md) - Backend communication
+
+### Deployment
+- [Deployment Guide](docs/deployment/deployment.md) - CI/CD process
+- [Bootstrap Guide](docs/deployment/bootstrap.md) - Initial setup
+
+### Decisions
+- [ADRs](docs/decisions/ADR.md) - Architectural decisions
+
+## Environments
+
+| Environment | Project | Domain |
+|-------------|---------|--------|
+| Dev | `fitglue-server-dev` | `dev.fitglue.tech` |
+| Test | `fitglue-server-test` | `test.fitglue.tech` |
+| Prod | `fitglue-server-prod` | `fitglue.tech` |
+
+Deployment is automated via CircleCI:
+- **Dev**: Auto-deploy on push to `main`
+- **Test**: Auto-deploy after dev succeeds
+- **Prod**: Manual approval required
 
 ## License
 
