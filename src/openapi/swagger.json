@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "https://api.fitglue.app"
+      "url": "https://fitglue.tech/api"
     }
   ],
   "components": {
