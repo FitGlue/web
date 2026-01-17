@@ -4,6 +4,8 @@ import { useActivities } from '../hooks/useActivities';
 import { PageLayout } from '../components/layout/PageLayout';
 import { EnrichedActivityCard } from '../components/dashboard/EnrichedActivityCard';
 import { UnsyncedActivityCard } from '../components/dashboard/UnsyncedActivityCard';
+import { CardSkeleton } from '../components/ui/CardSkeleton';
+import '../components/ui/CardSkeleton.css';
 import { ActivitiesService, SynchronizedActivity, UnsynchronizedEntry } from '../services/ActivitiesService';
 import './ActivitiesListPage.css';
 
@@ -190,10 +192,10 @@ const ActivitiesListPage: React.FC = () => {
                 {tabMode === 'enhanced' && (
                     <>
                         {loading && activities.length === 0 ? (
-                            <div className="activities-page__empty">
-                                <div className="activities-page__empty-icon">⏳</div>
-                                <h3 className="activities-page__empty-title">Loading...</h3>
-                                <p className="activities-page__empty-message">Fetching your enhanced activities</p>
+                            <div className="activities-page__grid">
+                                <CardSkeleton variant="activity" />
+                                <CardSkeleton variant="activity" />
+                                <CardSkeleton variant="activity" />
                             </div>
                         ) : activities.length === 0 ? (
                             <div className="activities-page__empty">
@@ -235,10 +237,9 @@ const ActivitiesListPage: React.FC = () => {
                 {tabMode === 'failed' && (
                     <>
                         {loading && unsynchronized.length === 0 ? (
-                            <div className="activities-page__empty">
-                                <div className="activities-page__empty-icon">⏳</div>
-                                <h3 className="activities-page__empty-title">Loading...</h3>
-                                <p className="activities-page__empty-message">Checking for failed or stalled executions</p>
+                            <div className="activities-page__grid">
+                                <CardSkeleton variant="activity" />
+                                <CardSkeleton variant="activity" />
                             </div>
                         ) : unsynchronized.length === 0 ? (
                             <div className="activities-page__empty">

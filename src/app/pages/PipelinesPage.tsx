@@ -6,7 +6,8 @@ import { Button } from '../components/ui/Button';
 import { useApi } from '../hooks/useApi';
 import { usePipelines } from '../hooks/usePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { LoadingState } from '../components/ui/LoadingState';
+import { CardSkeleton } from '../components/ui/CardSkeleton';
+import '../components/ui/CardSkeleton.css';
 
 interface EnricherConfig {
     providerType: number;
@@ -205,7 +206,13 @@ const PipelinesPage: React.FC = () => {
     if (loading || registryLoading) {
         return (
             <PageLayout title="Pipelines" backTo="/" backLabel="Dashboard">
-                <LoadingState />
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
+                    <div className="skeleton-line skeleton-line--button-wide" style={{ width: '140px' }} />
+                </div>
+                <div className="pipelines-grid">
+                    <CardSkeleton variant="pipeline-full" />
+                    <CardSkeleton variant="pipeline-full" />
+                </div>
             </PageLayout>
         );
     }

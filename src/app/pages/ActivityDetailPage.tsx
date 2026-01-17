@@ -5,7 +5,8 @@ import { SynchronizedActivity, ExecutionRecord } from '../services/ActivitiesSer
 import { PipelineTrace } from '../components/PipelineTrace';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Card } from '../components/ui/Card';
-import { LoadingState } from '../components/ui/LoadingState';
+import { CardSkeleton } from '../components/ui/CardSkeleton';
+import '../components/ui/CardSkeleton.css';
 import { EnricherBadge } from '../components/dashboard/EnricherBadge';
 import { useNerdMode } from '../state/NerdModeContext';
 import './ActivityDetailPage.css';
@@ -125,7 +126,7 @@ const ActivityDetailPage: React.FC = () => {
     if (loading && !activity) {
         return (
             <PageLayout title="Loading..." backTo="/activities" backLabel="Activities">
-                <LoadingState message="Loading activity details..." />
+                <CardSkeleton variant="activity-detail" />
             </PageLayout>
         );
     }

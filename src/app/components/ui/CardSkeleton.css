@@ -229,9 +229,158 @@
   gap: 1rem;
 }
 
+/* Pipeline Full Card Skeleton */
+.card-skeleton--pipeline-full {
+  padding: 1.5rem;
+}
+
+.card-skeleton__pipeline-flow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.card-skeleton__pipeline-boosters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.card-skeleton__pipeline-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card-skeleton__pipeline-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.skeleton-line--button {
+  height: 32px;
+  width: 70px;
+  border-radius: 8px;
+}
+
+.skeleton-line--button-wide {
+  height: 40px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* Integration Card Skeleton */
+.card-skeleton--integration {
+  padding: 1.5rem;
+}
+
+.card-skeleton__integration-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.skeleton-circle--large {
+  width: 48px;
+  height: 48px;
+}
+
+.card-skeleton__integration-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-skeleton__integration-status {
+  margin-bottom: 1rem;
+}
+
+.card-skeleton__integration-actions {
+  margin-top: 0.5rem;
+}
+
+/* Activity Detail Skeleton */
+.card-skeleton--activity-detail {
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.card-skeleton__detail-hero {
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+}
+
+.card-skeleton__detail-hero-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.card-skeleton__detail-flow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+.card-skeleton__detail-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-skeleton__detail-boosters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card-skeleton--destinations {
+  margin-top: 1rem;
+}
+
+.card-skeleton__destinations-grid {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.card-skeleton__destination-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
-  .card-skeleton__activity-flow {
+
+  .card-skeleton__activity-flow,
+  .card-skeleton__pipeline-flow,
+  .card-skeleton__detail-flow {
     flex-direction: column;
     align-items: stretch;
   }
@@ -242,5 +391,15 @@
 
   .gallery-skeleton__stats {
     flex-direction: column;
+  }
+
+  .card-skeleton__pipeline-footer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .card-skeleton__pipeline-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }

@@ -5,7 +5,8 @@ import { Button } from '../components/ui/Button';
 import { useApi } from '../hooks/useApi';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { LoadingState } from '../components/ui/LoadingState';
+import { CardSkeleton } from '../components/ui/CardSkeleton';
+import '../components/ui/CardSkeleton.css';
 import { IntegrationManifest } from '../types/plugin';
 
 interface IntegrationStatus {
@@ -123,7 +124,14 @@ const ConnectionsPage: React.FC = () => {
     if (loading || registryLoading) {
         return (
             <PageLayout title="Connections" backTo="/" backLabel="Dashboard">
-                <LoadingState />
+                <p className="connections-intro">
+                    Connect your fitness apps and devices to sync your data with FitGlue.
+                </p>
+                <div className="connections-grid">
+                    <CardSkeleton variant="integration" />
+                    <CardSkeleton variant="integration" />
+                    <CardSkeleton variant="integration" />
+                </div>
             </PageLayout>
         );
     }

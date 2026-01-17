@@ -5,7 +5,8 @@ import { Button } from '../components/ui/Button';
 import { useApi } from '../hooks/useApi';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { LoadingState } from '../components/ui/LoadingState';
+import { CardSkeleton } from '../components/ui/CardSkeleton';
+import '../components/ui/CardSkeleton.css';
 import { ApiKeySetupModal } from '../components/integrations/ApiKeySetupModal';
 import { IntegrationAuthType, IntegrationManifest } from '../types/plugin';
 
@@ -144,7 +145,11 @@ const IntegrationsPage: React.FC = () => {
     if (loading || registryLoading) {
         return (
             <PageLayout title="Integrations" backTo="/" backLabel="Dashboard">
-                <LoadingState />
+                <div className="integrations-grid">
+                    <CardSkeleton variant="integration" />
+                    <CardSkeleton variant="integration" />
+                    <CardSkeleton variant="integration" />
+                </div>
             </PageLayout>
         );
     }
