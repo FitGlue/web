@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/fitglue/web/compare/v0.3.0...v0.2.1) (2026-01-17)
+
+
+### Features
+
+* beautify activities page ([ead8b21](https://github.com/fitglue/web/commit/ead8b210aa9c7d91ad611aa6496e0af9472bd724))
+* many, many things ([c3f4c68](https://github.com/fitglue/web/commit/c3f4c68f601c26f6c7e2cfd9fe1f7f436170e046))
+* pending inputs prettified ([eca338b](https://github.com/fitglue/web/commit/eca338b303396c76aa6bfa39069a6ed6b0fb6c30))
+* Redesign welcome banner UI, enhance user display in header, and add activity execution details to service. ([0db4c0d](https://github.com/fitglue/web/commit/0db4c0d2cee3b33fbf2bd61fb335197d6dde1a42))
+
 ## 0.3.0 (2026-01-16)
 
 
