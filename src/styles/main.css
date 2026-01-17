@@ -4008,3 +4008,558 @@ h3 {
     color: var(--color-text-muted);
     margin: 0 0 1rem 0;
 }
+
+/* ========================================
+   Connections Page
+   ======================================== */
+
+.connections-intro {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.connections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .connections-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Connection Card - Glassmorphism */
+.connection-card {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.connection-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    border-radius: 16px 16px 0 0;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.connection-card:hover {
+    border-color: rgba(255, 27, 141, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.connection-card:hover::before {
+    opacity: 1;
+}
+
+.connection-card--connected {
+    border-color: rgba(6, 255, 165, 0.3);
+    background: linear-gradient(135deg, rgba(6, 255, 165, 0.06) 0%, rgba(255, 255, 255, 0.04) 100%);
+}
+
+.connection-card--connected::before {
+    background: linear-gradient(90deg, var(--color-success), #4CC9F0);
+    opacity: 1;
+}
+
+.connection-card--connected:hover {
+    border-color: rgba(6, 255, 165, 0.5);
+}
+
+.connection-card__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.connection-card__icon {
+    font-size: 2rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.connection-card__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.connection-card__name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--color-text);
+}
+
+.connection-card__description {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.connection-card__status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.connection-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.connection-badge.connected {
+    background: rgba(6, 255, 165, 0.15);
+    color: var(--color-success);
+}
+
+.connection-badge.disconnected {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-text-muted);
+}
+
+.connection-card__external-id,
+.connection-card__last-used {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.connection-card__actions {
+    margin-top: auto;
+}
+
+.connection-card__actions .btn {
+    width: auto;
+}
+
+/* ========================================
+   Connection Setup Page
+   ======================================== */
+
+.connection-setup {
+    max-width: 540px;
+    margin: 0 auto;
+}
+
+.connection-setup__header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.connection-setup__icon {
+    font-size: 3rem;
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    margin: 0 auto 1rem;
+}
+
+.connection-setup__header h1 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.connection-setup__section {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.connection-setup__section h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    color: var(--color-text);
+}
+
+.connection-setup__intro {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.connection-setup__instructions {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.connection-setup__instructions ol {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.connection-setup__instructions li {
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.connection-setup__instructions li strong {
+    color: var(--color-text);
+}
+
+.connection-setup__checklist {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.connection-setup__checklist li {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.connection-setup__input {
+    margin-bottom: 1rem;
+}
+
+.connection-setup__input label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-muted);
+}
+
+.connection-setup__input input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--color-text);
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.connection-setup__input input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.connection-setup__input input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.connection-setup__info-box {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.connection-setup__info-box p {
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.connection-setup__info-box--security {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: rgba(6, 255, 165, 0.05);
+    border-color: rgba(6, 255, 165, 0.15);
+}
+
+.connection-setup__info-box--app {
+    background: rgba(157, 78, 221, 0.05);
+    border-color: rgba(157, 78, 221, 0.15);
+}
+
+.connection-setup__info-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.connection-setup__info-box strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--color-text);
+}
+
+.connection-setup__app-steps {
+    margin: 0.5rem 0 1rem;
+    padding-left: 1.25rem;
+}
+
+.connection-setup__app-steps li {
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.connection-setup__ingress-key {
+    margin-top: 0.5rem;
+}
+
+.connection-setup__ingress-key label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.connection-setup__key-display {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.connection-setup__key-display code {
+    flex: 1;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--color-accent);
+    word-break: break-all;
+}
+
+.connection-setup__note {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 1rem;
+}
+
+.connection-setup__error-message {
+    background: rgba(255, 69, 58, 0.1);
+    border: 1px solid rgba(255, 69, 58, 0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #FF453A;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.connection-setup__actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+@media (max-width: 480px) {
+    .connection-setup__actions {
+        flex-direction: column-reverse;
+    }
+
+    .connection-setup__actions button,
+    .connection-setup__actions .btn {
+        width: 100%;
+    }
+}
+
+.connection-setup__error {
+    text-align: center;
+    padding: 2rem;
+}
+
+.connection-setup__error p {
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+}
+
+/* ========================================
+   Connection Result (Success/Error) Page
+   ======================================== */
+
+.connection-result {
+    text-align: center;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.connection-result__icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.connection-result__icon--success {
+    animation: bounce-in 0.5s ease;
+}
+
+.connection-result__icon--error {
+    animation: shake 0.4s ease;
+}
+
+.connection-result__title {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.connection-result__message {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.connection-result__message strong {
+    color: var(--color-text);
+}
+
+.connection-result__submessage {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+}
+
+.connection-result__actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Ingress Key Display for API Key Integrations */
+.connection-result__ingress-section {
+    margin: 1.5rem 0 2rem;
+    text-align: left;
+}
+
+.connection-result__ingress-card {
+    background: rgba(255, 214, 10, 0.08);
+    border: 1px solid rgba(255, 214, 10, 0.25);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.connection-result__ingress-card h2 {
+    font-size: 1.1rem;
+    margin: 0 0 0.75rem 0;
+    color: var(--color-text);
+}
+
+.connection-result__ingress-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.connection-result__ingress-card p strong {
+    color: var(--color-text);
+}
+
+.connection-result__key-container {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.connection-result__key {
+    flex: 1;
+    min-width: 0;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--color-accent);
+    word-break: break-all;
+}
+
+.connection-result__key-warning {
+    margin-top: 1rem;
+    margin-bottom: 0;
+    color: #FFD60A !important;
+    font-size: 0.85rem !important;
+}
+
+.connection-result__key-label {
+    margin: 0.5rem 0 0;
+    font-size: 0.8rem !important;
+    color: var(--color-text-muted) !important;
+}
+
+@keyframes bounce-in {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translateX(-2px);
+    }
+
+    20%,
+    80% {
+        transform: translateX(2px);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translateX(-4px);
+    }
+
+    40%,
+    60% {
+        transform: translateX(4px);
+    }
+}

@@ -12,7 +12,7 @@ const ConnectionSetupPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const api = useApi();
-    const { user, loading: userLoading } = useUser();
+    const { loading: userLoading } = useUser();
     const { integrations, loading: registryLoading } = usePluginRegistry();
 
     const [apiKey, setApiKey] = useState('');
@@ -59,8 +59,19 @@ const ConnectionSetupPage: React.FC = () => {
         setSubmitting(true);
 
         try {
-            await api.put(`/users/me/integrations/${integration.id}`, { apiKey: apiKey.trim() });
-            navigate('/connections');
+            const response = await api.put(`/users/me/integrations/${integration.id}`, { apiKey: apiKey.trim() }) as {
+                message: string;
+                ingressApiKey?: string;
+                ingressKeyLabel?: string;
+            };
+            // Navigate to success page with the ingress key data
+            navigate(`/connections/${integration.id}/success`, {
+                state: {
+                    ingressApiKey: response.ingressApiKey,
+                    ingressKeyLabel: response.ingressKeyLabel,
+                    integrationName: integration.name,
+                }
+            });
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Failed to connect. Please check your API key.';
             setError(message);
@@ -127,7 +138,7 @@ const ConnectionSetupPage: React.FC = () => {
                             <label htmlFor="apiKey">{integration.apiKeyLabel || 'API Key'}</label>
                             <input
                                 id="apiKey"
-                                type="password"
+                                type="text"
                                 value={apiKey}
                                 onChange={e => setApiKey(e.target.value)}
                                 placeholder={`Enter your ${integration.apiKeyLabel || 'API key'}`}
@@ -135,31 +146,6 @@ const ConnectionSetupPage: React.FC = () => {
                             />
                         </div>
                     </div>
-
-                    {/* Hevy-specific: Show user's Ingress API Key */}
-                    {integration.id === 'hevy' && user?.ingressApiKey && (
-                        <div className="connection-setup__section">
-                            <h2>Step 2: Configure Hevy Webhook (Optional)</h2>
-                            <div className="connection-setup__info-box">
-                                <p>For real-time sync, add this Authorization Header to Hevy&apos;s webhook settings:</p>
-                                <div className="connection-setup__ingress-key">
-                                    <label>Your FitGlue Ingress Key</label>
-                                    <div className="connection-setup__key-display">
-                                        <code>{user.ingressApiKey}</code>
-                                        <Button
-                                            type="button"
-                                            variant="secondary"
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(user.ingressApiKey || '');
-                                            }}
-                                        >
-                                            📋 Copy
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
 
                     {error && (
                         <div className="connection-setup__error-message">{error}</div>

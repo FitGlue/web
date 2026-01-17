@@ -65,6 +65,24 @@ export const useApi = () => {
     return response.json();
   }, [getAuthHeader]);
 
+  const put = useCallback(async (path: string, body?: unknown) => {
+    const headers = await getAuthHeader();
+    const response = await fetch(`/api${path}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    if (!response.ok) {
+      throw new Error(`PUT ${path} failed: ${response.statusText}`);
+    }
+
+    return response.json();
+  }, [getAuthHeader]);
+
   const del = useCallback(async (path: string) => {
     const headers = await getAuthHeader();
     const response = await fetch(`/api${path}`, {
@@ -86,7 +104,8 @@ export const useApi = () => {
     get,
     post,
     patch,
+    put,
     delete: del,
-  }), [get, post, patch, del]);
+  }), [get, post, patch, put, del]);
 };
 
