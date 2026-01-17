@@ -222,24 +222,16 @@ jobs:
              fi
 
              # Check if main has moved on since this pipeline started
-             # If so, fail - those newer commits will get their own release
+             # If so, skip gracefully - those newer commits will get their own release
              git fetch origin main
              LOCAL_HEAD=$(git rev-parse HEAD)
              REMOTE_HEAD=$(git rev-parse origin/main)
              if [ "$LOCAL_HEAD" != "$REMOTE_HEAD" ]; then
-               echo "ERROR: main branch has newer commits since this pipeline started."
-               echo "This release is now stale. The newer commits will go through their own pipeline."
+               echo "NOTICE: main branch has newer commits since this pipeline started."
+               echo "Skipping release - the newer commits will go through their own pipeline."
                echo "Local HEAD:  $LOCAL_HEAD"
                echo "Remote HEAD: $REMOTE_HEAD"
-               exit 1
-             fi
-
-             # Check if release would create a tag that already exists
-             CURRENT_VERSION=$(node -p "require('./package.json').version")
-
-             # Check if this tag already exists on remote
-             if git ls-remote --tags origin | grep -q "refs/tags/v${CURRENT_VERSION}$"; then
-               echo "Tag v${CURRENT_VERSION} already exists on remote. Skipping release."
+               echo "Pipeline will continue without creating a release."
                exit 0
              fi
 
