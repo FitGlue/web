@@ -1,6 +1,6 @@
 {
   "name": "fitglue-web",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "FitGlue web frontend and Firebase Hosting configuration",
   "type": "module",
   "scripts": {
@@ -34,6 +34,7 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "conventional-changelog-cli": "^5.0.0",
     "esbuild": "^0.27.2",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.33.2",
