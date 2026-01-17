@@ -85,9 +85,15 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
       const activity = await ActivitiesService.get(id);
       if (activity) {
         // Update list with this single activity (replace if exists, add if not)
+        // Re-sort by syncedAt (most recent first) to preserve chronological order
         setActivities(prev => {
           const filtered = prev.filter(p => p.activityId !== activity.activityId);
-          return [...filtered, activity];
+          const updated = [...filtered, activity];
+          return updated.sort((a, b) => {
+            const dateA = a.syncedAt ? new Date(a.syncedAt).getTime() : 0;
+            const dateB = b.syncedAt ? new Date(b.syncedAt).getTime() : 0;
+            return dateB - dateA;
+          });
         });
       }
     } catch (e) {

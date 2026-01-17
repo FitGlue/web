@@ -1,0 +1,246 @@
+/* ========================================
+   Card Skeleton Loading Styles
+   ======================================== */
+
+.card-skeleton {
+  padding: 1.25rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+/* Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-line,
+.skeleton-circle {
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.06) 25%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.06) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
+  border-radius: 4px;
+}
+
+.skeleton-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skeleton-circle--small {
+  width: 16px;
+  height: 16px;
+}
+
+/* Line Variants */
+.skeleton-line--title {
+  height: 20px;
+  width: 120px;
+}
+
+.skeleton-line--link {
+  height: 14px;
+  width: 80px;
+}
+
+.skeleton-line--text {
+  height: 16px;
+  width: 100%;
+  max-width: 160px;
+}
+
+.skeleton-line--subtext {
+  height: 12px;
+  width: 80%;
+  max-width: 120px;
+  margin-top: 4px;
+}
+
+.skeleton-line--stat {
+  height: 14px;
+  width: 100px;
+}
+
+.skeleton-line--short {
+  width: 60%;
+}
+
+.skeleton-line--flow {
+  height: 16px;
+  width: 100%;
+}
+
+.skeleton-line--badge {
+  height: 24px;
+  width: 60px;
+  border-radius: 6px;
+}
+
+.skeleton-line--title-wide {
+  height: 18px;
+  width: 180px;
+  flex: 1;
+}
+
+.skeleton-line--date {
+  height: 14px;
+  width: 70px;
+}
+
+.skeleton-line--node {
+  height: 36px;
+  width: 100px;
+  border-radius: 8px;
+}
+
+.skeleton-line--arrow {
+  height: 16px;
+  width: 20px;
+}
+
+.skeleton-line--booster {
+  height: 26px;
+  width: 80px;
+  border-radius: 100px;
+}
+
+/* Card Skeleton Layout */
+.card-skeleton__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card-skeleton__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.card-skeleton__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.card-skeleton__item--flow {
+  padding: 0.5rem 0;
+}
+
+.card-skeleton__item--action {
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+
+.card-skeleton__action-text {
+  flex: 1;
+}
+
+.card-skeleton__footer {
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Activity Card Skeleton */
+.card-skeleton--activity {
+  padding: 1.25rem;
+}
+
+.card-skeleton__activity-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.card-skeleton__activity-flow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}
+
+.card-skeleton__activity-boosters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: center;
+}
+
+/* Gallery Skeleton Container */
+.gallery-skeleton {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gallery-skeleton__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.gallery-skeleton__header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gallery-skeleton__stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.gallery-skeleton__stat {
+  flex: 1;
+  min-width: 120px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.gallery-skeleton__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card-skeleton__activity-flow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .skeleton-line--node {
+    width: 100%;
+  }
+
+  .gallery-skeleton__stats {
+    flex-direction: column;
+  }
+}

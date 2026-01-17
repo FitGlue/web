@@ -9,6 +9,8 @@ import { useUser } from '../hooks/useUser';
 import { PageLayout } from '../components/layout/PageLayout';
 
 import { Card } from '../components/ui/Card';
+import { CardSkeleton } from '../components/ui/CardSkeleton';
+import '../components/ui/CardSkeleton.css';
 import { Button } from '../components/ui/Button';
 import { LoadingState } from '../components/ui/LoadingState';
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
@@ -176,23 +178,29 @@ const DashboardPage: React.FC = () => {
                         <h3>🔗 Connections</h3>
                         <Link to="/settings/integrations" className="card-link">Manage →</Link>
                     </div>
-                    <div className="connections-list">
-                        {registryIntegrations.map(integration => {
-                            const status = integrations?.[integration.id as keyof IntegrationsSummary];
-                            return (
-                                <div key={integration.id} className={`connection-item ${status?.connected ? 'connected' : ''}`}>
-                                    <span className="connection-icon">{integration.icon}</span>
-                                    <span className="connection-name">{integration.name}</span>
-                                    <span className={`connection-status ${status?.connected ? 'active' : 'inactive'}`}>
-                                        {status?.connected ? '✓' : '○'}
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                    <div className="card-footer-stat">
-                        <strong>{connectedCount}</strong> of {registryIntegrations.length} connected
-                    </div>
+                    {integrationsLoading && !integrations ? (
+                        <CardSkeleton variant="connections" itemCount={4} />
+                    ) : (
+                        <>
+                            <div className="connections-list">
+                                {registryIntegrations.map(integration => {
+                                    const status = integrations?.[integration.id as keyof IntegrationsSummary];
+                                    return (
+                                        <div key={integration.id} className={`connection-item ${status?.connected ? 'connected' : ''}`}>
+                                            <span className="connection-icon">{integration.icon}</span>
+                                            <span className="connection-name">{integration.name}</span>
+                                            <span className={`connection-status ${status?.connected ? 'active' : 'inactive'}`}>
+                                                {status?.connected ? '✓' : '○'}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <div className="card-footer-stat">
+                                <strong>{connectedCount}</strong> of {registryIntegrations.length} connected
+                            </div>
+                        </>
+                    )}
                 </Card>
 
                 {/* Pipeline Status */}
@@ -201,7 +209,9 @@ const DashboardPage: React.FC = () => {
                         <h3>🔀 Pipelines</h3>
                         <Link to="/settings/pipelines" className="card-link">View All →</Link>
                     </div>
-                    {pipelines.length === 0 ? (
+                    {pipelinesLoading && pipelines.length === 0 ? (
+                        <CardSkeleton variant="pipelines" itemCount={3} />
+                    ) : pipelines.length === 0 ? (
                         <div className="empty-state-mini">
                             <p>No pipelines configured</p>
                             <Button variant="primary" size="small" onClick={() => navigate('/settings/pipelines/new')}>
@@ -209,29 +219,31 @@ const DashboardPage: React.FC = () => {
                             </Button>
                         </div>
                     ) : (
-                        <div className="pipelines-summary">
-                            {pipelines.slice(0, 3).map(pipeline => (
-                                <div key={pipeline.id} className="pipeline-summary-item">
-                                    <span className="pipeline-flow-mini">
-                                        {getSourceIcon(pipeline.source)} {getSourceName(pipeline.source)}
-                                        <span className="arrow">→</span>
-                                        {pipeline.destinations.map((d, i) => (
-                                            <span key={i}>{getDestinationName(d)}</span>
-                                        ))}
-                                    </span>
-                                    <span className="enricher-count">
-                                        {pipeline.enrichers?.length ?? 0} enricher{(pipeline.enrichers?.length ?? 0) !== 1 ? 's' : ''}
-                                    </span>
-                                </div>
-                            ))}
-                            {pipelines.length > 3 && (
-                                <p className="more-info">+{pipelines.length - 3} more...</p>
-                            )}
-                        </div>
+                        <>
+                            <div className="pipelines-summary">
+                                {pipelines.slice(0, 3).map(pipeline => (
+                                    <div key={pipeline.id} className="pipeline-summary-item">
+                                        <span className="pipeline-flow-mini">
+                                            {getSourceIcon(pipeline.source)} {getSourceName(pipeline.source)}
+                                            <span className="arrow">→</span>
+                                            {pipeline.destinations.map((d, i) => (
+                                                <span key={i}>{getDestinationName(d)}</span>
+                                            ))}
+                                        </span>
+                                        <span className="enricher-count">
+                                            {pipeline.enrichers?.length ?? 0} enricher{(pipeline.enrichers?.length ?? 0) !== 1 ? 's' : ''}
+                                        </span>
+                                    </div>
+                                ))}
+                                {pipelines.length > 3 && (
+                                    <p className="more-info">+{pipelines.length - 3} more...</p>
+                                )}
+                            </div>
+                            <div className="card-footer-stat">
+                                <strong>{pipelines.length}</strong> active pipeline{pipelines.length !== 1 ? 's' : ''}
+                            </div>
+                        </>
                     )}
-                    <div className="card-footer-stat">
-                        <strong>{pipelines.length}</strong> active pipeline{pipelines.length !== 1 ? 's' : ''}
-                    </div>
                 </Card>
 
                 {/* Pending Actions */}
@@ -240,35 +252,44 @@ const DashboardPage: React.FC = () => {
                         <h3>⚡ Action Required</h3>
                         {inputs.length > 0 && <Link to="/inputs" className="card-link">View All →</Link>}
                     </div>
-                    {inputs.length === 0 ? (
-                        <div className="all-clear">
-                            <span className="check-icon">✓</span>
-                            <p>All caught up! No pending actions.</p>
-                        </div>
+                    {inputsLoading && inputs.length === 0 ? (
+                        <CardSkeleton variant="actions" itemCount={2} />
+                    ) : inputs.length === 0 ? (
+                        <>
+                            <div className="all-clear">
+                                <span className="check-icon">✓</span>
+                                <p>All caught up! No pending actions.</p>
+                            </div>
+                            <div className="card-footer-stat">
+                                <strong>{inputs.length}</strong> pending
+                            </div>
+                        </>
                     ) : (
-                        <div className="pending-list">
-                            {inputs.slice(0, 3).map(input => {
-                                const parsed = parseActivityId(input.activityId);
-                                return (
-                                    <div key={input.id} className="pending-item" onClick={() => navigate('/inputs')}>
-                                        <span className="pending-icon">{parsed.icon}</span>
-                                        <div className="pending-info">
-                                            <span className="pending-activity">
-                                                {parsed.source} • {parsed.timestamp}
-                                            </span>
-                                            <span className="pending-fields">
-                                                Needs: {input.requiredFields?.join(', ') || 'input'}
-                                            </span>
+                        <>
+                            <div className="pending-list">
+                                {inputs.slice(0, 3).map(input => {
+                                    const parsed = parseActivityId(input.activityId);
+                                    return (
+                                        <div key={input.id} className="pending-item" onClick={() => navigate('/inputs')}>
+                                            <span className="pending-icon">{parsed.icon}</span>
+                                            <div className="pending-info">
+                                                <span className="pending-activity">
+                                                    {parsed.source} • {parsed.timestamp}
+                                                </span>
+                                                <span className="pending-fields">
+                                                    Needs: {input.requiredFields?.join(', ') || 'input'}
+                                                </span>
+                                            </div>
+                                            <span className="pending-arrow">→</span>
                                         </div>
-                                        <span className="pending-arrow">→</span>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                                    );
+                                })}
+                            </div>
+                            <div className="card-footer-stat">
+                                <strong>{inputs.length}</strong> pending
+                            </div>
+                        </>
                     )}
-                    <div className="card-footer-stat">
-                        <strong>{inputs.length}</strong> pending
-                    </div>
                 </Card>
             </div>
 
@@ -277,6 +298,7 @@ const DashboardPage: React.FC = () => {
             <GalleryOfBoosts
                 activities={activities}
                 onActivityClick={(activityId) => navigate(`/activities/${activityId}`)}
+                loading={statsLoading}
             />
         </PageLayout>
     );
