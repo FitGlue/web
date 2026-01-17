@@ -1,5 +1,11 @@
 version: 2.1
 
+# Pipeline parameters for cross-repo triggering
+parameters:
+  triggered_by_server:
+    type: boolean
+    default: false
+
 orbs:
   terraform: circleci/terraform@3.2.0
 
@@ -128,6 +134,26 @@ jobs:
             # Set credentials for Firebase
             echo "export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_cred_config.json" >> $BASH_ENV
       - run:
+          name: Set Combined Version
+          command: |
+            # Get web version from package.json
+            WEB_VERSION=$(node -p "require('./package.json').version")
+
+            # Get server version from GCS (for prod builds only)
+            if [ "<< parameters.target >>" = "prod" ]; then
+              # Fetch server version from GCS
+              source $BASH_ENV  # Ensure gcloud is in PATH
+              SERVER_VERSION=$(gcloud storage cat gs://fitglue-server-prod-version-config/version.json 2>/dev/null | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version" || echo "1.0.0")
+            else
+              # For dev/test, use placeholder or fetch from respective env
+              SERVER_VERSION="dev"
+            fi
+
+            # Combined version: Server.Web (e.g., 1.2.0.2.3.1)
+            COMBINED_VERSION="${SERVER_VERSION}.${WEB_VERSION}"
+            echo "Combined version: S${SERVER_VERSION}-W${WEB_VERSION} -> ${COMBINED_VERSION}"
+            echo "VITE_APP_VERSION=${COMBINED_VERSION}" >> .env
+      - run:
           name: Configure Robots.txt
           command: |
              if [ "<< parameters.target >>" = "prod" ]; then
@@ -168,6 +194,13 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "SHA256:Dvf1ePF0rWqlWOAQo6xodUXJY4msYK0H+ecMsu94YHk"
+      - run:
+          name: Check if Server Triggered
+          command: |
+            if [ "<< pipeline.parameters.triggered_by_server >>" = "true" ]; then
+              echo "Skipping release - triggered by server (version already bumped)"
+              circleci-agent step halt
+            fi
       - run:
           name: Setup Git User
           command: |
@@ -218,9 +251,14 @@ jobs:
           paths:
              - .
 
+# Define two workflows: one for direct pushes, one for server-triggered
 workflows:
   version: 2
-  pipeline:
+
+  # Regular workflow for direct pushes to web repo
+  direct-push:
+    when:
+      not: << pipeline.parameters.triggered_by_server >>
     jobs:
       - build-and-test
       - terraform-apply:
@@ -275,3 +313,15 @@ workflows:
           project_number: "605889586984"
           requires:
             - terraform-apply-prod
+
+  # Fast-track workflow for server-triggered rebuilds (no approval needed)
+  server-triggered:
+    when: << pipeline.parameters.triggered_by_server >>
+    jobs:
+      - build-and-test
+      - firebase-deploy:
+          name: firebase-deploy-prod
+          target: prod
+          project_number: "605889586984"
+          requires:
+            - build-and-test
