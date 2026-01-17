@@ -4524,6 +4524,34 @@ h3 {
     color: var(--color-text-muted) !important;
 }
 
+/* Configuration Steps for Webhook Setup */
+.connection-result__config-step {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.connection-result__config-step:last-of-type {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.connection-result__config-label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.35rem;
+}
+
+.connection-result__config-hint {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0 0 0.75rem 0;
+    line-height: 1.4;
+}
+
 @keyframes bounce-in {
     0% {
         transform: scale(0);
