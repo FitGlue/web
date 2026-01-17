@@ -3921,3 +3921,90 @@ h3 {
     opacity: 1;
     transform: translateX(3px);
 }
+
+/* ========================================
+    Auto-Populated Pending Inputs
+    ======================================== */
+
+.pending-input-card--auto {
+    border-left-color: var(--color-info, #3B82F6);
+    background: linear-gradient(145deg, rgba(59, 130, 246, 0.06) 0%, rgba(59, 130, 246, 0.02) 100%);
+}
+
+.pending-input-card--auto::before {
+    background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+}
+
+.pending-input-card--auto:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+}
+
+.pending-input-card__status-badge--auto {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60A5FA;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.pending-input-card__status-dot--auto {
+    background: #60A5FA;
+}
+
+/* Auto-populated banner */
+.pending-input-card__auto-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(145deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 12px;
+}
+
+.pending-input-card__auto-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.pending-input-card__auto-info {
+    flex: 1;
+}
+
+.pending-input-card__auto-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 0.35rem 0;
+}
+
+.pending-input-card__auto-description {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.pending-input-card__auto-countdown {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #60A5FA;
+    margin: 0.5rem 0 0 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Fallback form styling */
+.pending-input-card__form--fallback {
+    background: rgba(255, 214, 10, 0.08);
+    border: 1px solid rgba(255, 214, 10, 0.15);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.pending-input-card__form-description {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0 0 1rem 0;
+}

@@ -316,6 +316,8 @@ export interface paths {
             parameters: {
                 query?: {
                     limit?: number;
+                    /** @description When true, include pipelineExecution details for each activity (limited to 10 activities for performance) */
+                    includeExecution?: boolean;
                 };
                 header?: never;
                 path?: never;
@@ -966,6 +968,17 @@ export interface components {
             };
             /** Format: date-time */
             createdAt?: string;
+            /** @description True if this pending input was auto-created by the system (e.g., for Parkrun results) */
+            autoPopulated?: boolean;
+            /** @description ID of the enricher that created this pending input (e.g., 'parkrun') */
+            enricherProviderId?: string;
+            /**
+             * Format: date-time
+             * @description Deadline for auto-resolution (after which user may need to provide manual input)
+             */
+            autoDeadline?: string;
+            /** @description ID of the activity that was already created (for resume mode) */
+            linkedActivityId?: string;
         };
         InputResolutionRequest: {
             activityId: string;

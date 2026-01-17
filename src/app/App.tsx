@@ -12,7 +12,10 @@ import ActivitiesListPage from './pages/ActivitiesListPage';
 import ActivityDetailPage from './pages/ActivityDetailPage';
 import UnsynchronizedDetailPage from './pages/UnsynchronizedDetailPage';
 import SettingsPage from './pages/SettingsPage';
-import IntegrationsPage from './pages/IntegrationsPage';
+import ConnectionsPage from './pages/ConnectionsPage';
+import ConnectionSetupPage from './pages/ConnectionSetupPage';
+import ConnectionSuccessPage from './pages/ConnectionSuccessPage';
+import ConnectionErrorPage from './pages/ConnectionErrorPage';
 import PipelinesPage from './pages/PipelinesPage';
 import PipelineWizardPage from './pages/PipelineWizardPage';
 import PipelineEditPage from './pages/PipelineEditPage';
@@ -101,7 +104,11 @@ const App: React.FC = () => {
           <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<ProtectedRoute><UnsynchronizedDetailPage /></ProtectedRoute>} />
           <Route path="/activities/:id" element={<ProtectedRoute><ActivityDetailPage /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-          <Route path="/settings/integrations" element={<ProtectedRoute><IntegrationsPage /></ProtectedRoute>} />
+          <Route path="/settings/integrations" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
+          <Route path="/connections" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
+          <Route path="/connections/:id/setup" element={<ProtectedRoute><ConnectionSetupPage /></ProtectedRoute>} />
+          <Route path="/connections/:id/success" element={<ProtectedRoute><ConnectionSuccessPage /></ProtectedRoute>} />
+          <Route path="/connections/:id/error" element={<ProtectedRoute><ConnectionErrorPage /></ProtectedRoute>} />
           <Route path="/settings/pipelines" element={<ProtectedRoute><PipelinesPage /></ProtectedRoute>} />
           <Route path="/settings/pipelines/new" element={<ProtectedRoute><PipelineWizardPage /></ProtectedRoute>} />
           <Route path="/settings/pipelines/:pipelineId/edit" element={<ProtectedRoute><PipelineEditPage /></ProtectedRoute>} />

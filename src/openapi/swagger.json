@@ -49,6 +49,23 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "autoPopulated": {
+            "type": "boolean",
+            "description": "True if this pending input was auto-created by the system (e.g., for Parkrun results)"
+          },
+          "enricherProviderId": {
+            "type": "string",
+            "description": "ID of the enricher that created this pending input (e.g., 'parkrun')"
+          },
+          "autoDeadline": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Deadline for auto-resolution (after which user may need to provide manual input)"
+          },
+          "linkedActivityId": {
+            "type": "string",
+            "description": "ID of the activity that was already created (for resume mode)"
           }
         },
         "required": [

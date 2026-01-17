@@ -205,8 +205,25 @@ const PendingInputsPage: React.FC = () => {
                 keyExtractor={(input) => input.id}
                 renderItem={(input) => {
                     const parsed = parseActivityId(input.activityId, registryIntegrations);
+                    const isAutoPopulated = input.autoPopulated === true;
+                    const autoDeadline = input.autoDeadline ? new Date(input.autoDeadline) : null;
+                    const enricherName = input.enricherProviderId || 'Unknown Enricher';
+
+                    // Calculate time remaining (if auto-populated)
+                    const getTimeRemaining = () => {
+                        if (!autoDeadline) return null;
+                        const now = new Date();
+                        const diff = autoDeadline.getTime() - now.getTime();
+                        if (diff <= 0) return 'Overdue';
+                        const hours = Math.floor(diff / (1000 * 60 * 60));
+                        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        if (hours > 24) return `${Math.floor(hours / 24)}d ${hours % 24}h remaining`;
+                        if (hours > 0) return `${hours}h ${minutes}m remaining`;
+                        return `${minutes}m remaining`;
+                    };
+
                     return (
-                        <Card className="pending-input-card">
+                        <Card className={`pending-input-card ${isAutoPopulated ? 'pending-input-card--auto' : ''}`}>
                             {/* Enhanced Header */}
                             <div className="pending-input-card__header">
                                 <div className="pending-input-card__source">
@@ -216,42 +233,99 @@ const PendingInputsPage: React.FC = () => {
                                         <span className="pending-input-card__timestamp">{parsed.timestamp}</span>
                                     </div>
                                 </div>
-                                <span className="pending-input-card__status-badge">
-                                    <span className="pending-input-card__status-dot"></span>
-                                    Needs Info
-                                </span>
+                                {isAutoPopulated ? (
+                                    <span className="pending-input-card__status-badge pending-input-card__status-badge--auto">
+                                        <span className="pending-input-card__status-dot pending-input-card__status-dot--auto"></span>
+                                        Awaiting {enricherName.charAt(0).toUpperCase() + enricherName.slice(1)} Results
+                                    </span>
+                                ) : (
+                                    <span className="pending-input-card__status-badge">
+                                        <span className="pending-input-card__status-dot"></span>
+                                        Needs Info
+                                    </span>
+                                )}
                             </div>
 
-                            {/* Form Section */}
-                            <div className="pending-input-card__form">
-                                <h4 className="pending-input-card__form-title">
-                                    ✨ Complete the magic
-                                </h4>
-                                {input.requiredFields?.map((field) => (
-                                    <div key={field} className="pending-input-card__field">
-                                        <label className="pending-input-card__label">{formatLabel(field)}</label>
-                                        {renderField(input.activityId, field)}
+                            {/* Auto-populated info banner */}
+                            {isAutoPopulated && (
+                                <div className="pending-input-card__auto-banner">
+                                    <span className="pending-input-card__auto-icon">⏳</span>
+                                    <div className="pending-input-card__auto-info">
+                                        <p className="pending-input-card__auto-title">Waiting for official results</p>
+                                        <p className="pending-input-card__auto-description">
+                                            Your activity was synced successfully. We&apos;re waiting for official {enricherName} results to be published.
+                                        </p>
+                                        {autoDeadline && (
+                                            <p className="pending-input-card__auto-countdown">
+                                                {getTimeRemaining()}
+                                            </p>
+                                        )}
                                     </div>
-                                ))}
-                            </div>
+                                </div>
+                            )}
 
-                            {/* Actions */}
+                            {/* Form Section - Only show for non-auto-populated OR if deadline has passed */}
+                            {!isAutoPopulated && (
+                                <div className="pending-input-card__form">
+                                    <h4 className="pending-input-card__form-title">
+                                        ✨ Complete the magic
+                                    </h4>
+                                    {input.requiredFields?.map((field) => (
+                                        <div key={field} className="pending-input-card__field">
+                                            <label className="pending-input-card__label">{formatLabel(field)}</label>
+                                            {renderField(input.activityId, field)}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Manual Entry Fallback for Auto-populated */}
+                            {isAutoPopulated && autoDeadline && new Date() > autoDeadline && (
+                                <div className="pending-input-card__form pending-input-card__form--fallback">
+                                    <h4 className="pending-input-card__form-title">
+                                        📝 Enter results manually
+                                    </h4>
+                                    <p className="pending-input-card__form-description">
+                                        Automatic results weren&apos;t found. You can enter your results manually below.
+                                    </p>
+                                    {input.requiredFields?.map((field) => (
+                                        <div key={field} className="pending-input-card__field">
+                                            <label className="pending-input-card__label">{formatLabel(field)}</label>
+                                            {renderField(input.activityId, field)}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Actions - Adjust based on auto-populated status */}
                             <div className="pending-input-card__actions">
-                                <Button
-                                    variant="primary"
-                                    fullWidth
-                                    onClick={() => handleSubmit(input)}
-                                    disabled={submittingIds.has(input.activityId)}
-                                >
-                                    {submittingIds.has(input.activityId) ? '✨ Syncing...' : '✨ Complete & Sync'}
-                                </Button>
-                                <button
-                                    className="pending-input-card__dismiss"
-                                    onClick={() => handleDismiss(input.activityId)}
-                                    disabled={submittingIds.has(input.activityId)}
-                                >
-                                    Dismiss
-                                </button>
+                                {!isAutoPopulated || (autoDeadline && new Date() > autoDeadline) ? (
+                                    <>
+                                        <Button
+                                            variant="primary"
+                                            fullWidth
+                                            onClick={() => handleSubmit(input)}
+                                            disabled={submittingIds.has(input.activityId)}
+                                        >
+                                            {submittingIds.has(input.activityId) ? '✨ Syncing...' : '✨ Complete & Sync'}
+                                        </Button>
+                                        <button
+                                            className="pending-input-card__dismiss"
+                                            onClick={() => handleDismiss(input.activityId)}
+                                            disabled={submittingIds.has(input.activityId)}
+                                        >
+                                            Dismiss
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button
+                                        className="pending-input-card__dismiss"
+                                        onClick={() => handleDismiss(input.activityId)}
+                                        disabled={submittingIds.has(input.activityId)}
+                                    >
+                                        Don&apos;t wait - dismiss this
+                                    </button>
+                                )}
                             </div>
 
                             {/* Footer */}
@@ -263,6 +337,7 @@ const PendingInputsPage: React.FC = () => {
                         </Card>
                     );
                 }}
+
                 emptyState={
                     <EmptyState
                         icon="🎉"

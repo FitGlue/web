@@ -38,4 +38,5 @@ export enum IntegrationAuthType {
   UNSPECIFIED = 0,
   OAUTH = 1,
   API_KEY = 2,
+  APP_SYNC = 3,
 }
