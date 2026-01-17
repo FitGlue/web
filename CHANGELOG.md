@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/fitglue/web/compare/v1.0.0...v1.1.0) (2026-01-17)
+
+
+### Features
+
+* add better loading states across the App ([a04af6c](https://github.com/fitglue/web/commit/a04af6c099938e5101534f22ccf813ad3920f372))
+* add combined version control between web and server ([46fb40b](https://github.com/fitglue/web/commit/46fb40b759d69f0a9d01964b453956dabd5e2514))
+* Add loading skeletons to dashboard cards and activity gallery, and ensure activities are sorted chronologically. ([b10c2e6](https://github.com/fitglue/web/commit/b10c2e6d5c87be26d1556473ddd99dab723c21f2))
+
+
+### Bug Fixes
+
+* allow hevy API key setup via UI ([fc9df9f](https://github.com/fitglue/web/commit/fc9df9f583bd8e5bd57b23f5a9ea2d047e2c69cd))
+* versioning bumping ([e41f0a3](https://github.com/fitglue/web/commit/e41f0a38bf5b278a44ed6a8f0bbf02fc6ff32d46))
+
 ## [1.0.0](https://github.com/fitglue/web/releases/tag/v1.0.0) (2026-01-17)
 
 This is the first proper release of FitGlue Web, consolidating all development work since project inception.
