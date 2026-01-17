@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/fitglue/web/compare/v1.1.0...v1.2.0) (2026-01-17)
+
+
+### Features
+
+* Implement webhook configuration instructions and UI for integrations requiring webhook setup on the connection success page. ([e8fdf08](https://github.com/fitglue/web/commit/e8fdf085071a1d8dac23d29a663074e49b041125))
+
 ## [1.1.0](https://github.com/fitglue/web/compare/v1.0.0...v1.1.0) (2026-01-17)
 
 
