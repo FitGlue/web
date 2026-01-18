@@ -1,108 +1,147 @@
 {{>header}}
+<style>
+  .header {
+    display: none !important;
+  }
+</style>
 
-<main>
-  <section class="showcase-page">
-    <div class="container">
-      <!-- Loading State -->
-      <div id="showcase-loading" class="showcase-loading">
-        <div class="loading-spinner"></div>
-        <p>Loading activity...</p>
-      </div>
+<section class="showcase-page">
+  <!-- Loading State -->
+  <div id="showcase-loading" class="showcase-loading">
+    <div class="loading-spinner"></div>
+    <p>Loading activity...</p>
+  </div>
 
-      <!-- Error State -->
-      <div id="showcase-error" class="showcase-error glass-card" style="display: none;">
-        <div class="error-icon">🏃🏃‍♂️🏃‍♀️</div>
-        <h1>This Activity Got Away!</h1>
-        <p id="error-message">Looks like this showcase sprinted off before we could catch it.</p>
-        <p class="error-subtitle">It may have expired, or perhaps the link has a typo.</p>
-        <a href="/" class="btn btn-primary">Explore FitGlue</a>
-      </div>
+  <!-- Error State -->
+  <div id="showcase-error" class="showcase-error" style="display: none;">
+    <div class="error-icon">🏃🏃‍♂️🏃‍♀️</div>
+    <h1>This Activity Got Away!</h1>
+    <p id="error-message">Looks like this showcase sprinted off before we could catch it.</p>
+    <p class="error-subtitle">It may have expired, or perhaps the link has a typo.</p>
+    <a href="/" class="btn btn-primary">Explore FitGlue</a>
+  </div>
 
-      <!-- Success State -->
-      <div id="showcase-content" class="showcase-content" style="display: none;">
+  <!-- Success State -->
+  <div id="showcase-content" class="showcase-content" style="display: none;">
 
-        <!-- Hero Header -->
-        <div class="showcase-hero">
-          <h1 id="activity-title" class="showcase-title"></h1>
-          <div class="showcase-meta">
-            <span id="activity-type" class="activity-type-badge"></span>
-            <span id="activity-source" class="activity-source"></span>
-            <span id="activity-date" class="activity-date"></span>
-          </div>
-        </div>
-
-        <!-- Stats Grid -->
-        <div id="stats-section" class="stats-grid" style="display: none;"></div>
-
-        <!-- Enrichments Applied (Premium Feature) -->
-        <div id="enrichments-section" class="showcase-section" style="display: none;">
-          <div class="section-header">
-            <h2>🚀 Boosters Applied</h2>
-            <span class="section-subtitle">FitGlue magic that enhanced this activity</span>
-          </div>
-          <div id="enrichment-badges" class="enrichment-list"></div>
-        </div>
-
-        <!-- Description -->
-        <div id="description-section" class="showcase-section" style="display: none;">
-          <div class="section-header">
-            <h2>📝 Workout Summary</h2>
-          </div>
-          <pre id="activity-description" class="activity-description"></pre>
-        </div>
-
-        <!-- Strength Sets / Exercises -->
-        <div id="exercises-section" class="showcase-section" style="display: none;">
-          <div class="section-header">
-            <h2>� Exercises</h2>
-            <span id="exercise-count" class="section-subtitle"></span>
-          </div>
-          <div id="exercise-list" class="exercise-list"></div>
-        </div>
-
-        <!-- Heart Rate Data -->
-        <div id="hr-section" class="showcase-section" style="display: none;">
-          <div class="section-header">
-            <h2>❤️ Heart Rate</h2>
-          </div>
-          <div id="hr-stats" class="hr-stats"></div>
-        </div>
-
-        <!-- Tags -->
-        <div id="tags-section" class="showcase-section" style="display: none;">
-          <div class="section-header">
-            <h2>🏷️ Tags</h2>
-          </div>
-          <div id="activity-tags" class="activity-tags"></div>
-        </div>
-
-        <!-- CTA -->
-        <div class="showcase-cta glass-card">
-          <div class="cta-content">
-            <h3>Want to enhance your own activities?</h3>
-            <p>FitGlue automatically enriches your workouts with muscle heatmaps, heart rate data, and beautiful
-              summaries.</p>
-          </div>
-          <a href="/" class="btn btn-primary btn-lg">Try FitGlue Free</a>
-        </div>
-
-        <!-- Footer Attribution -->
-        <div class="showcase-attribution">
-          <span>Powered by</span>
-          <a href="/" class="fitglue-logo">
-            <span class="fit">Fit</span><span class="glue">Glue</span>
-          </a>
-        </div>
+    <!-- Hero Header -->
+    <div class="showcase-hero">
+      <h1 id="activity-title" class="showcase-title"></h1>
+      <div class="showcase-meta">
+        <span id="activity-type" class="activity-type-badge"></span>
+        <span id="activity-source" class="activity-source"></span>
+        <span id="activity-date" class="activity-date"></span>
       </div>
     </div>
-  </section>
+
+    <!-- Stats Grid - Hero Cards -->
+    <div id="stats-section" class="stats-grid" style="display: none;"></div>
+
+    <!-- Map Section -->
+    <div id="map-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>🗺️ Route</h2>
+      </div>
+      <div id="activity-map" class="activity-map"></div>
+    </div>
+
+    <!-- Heart Rate Graph -->
+    <div id="hr-graph-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>❤️ Heart Rate</h2>
+      </div>
+      <div class="hr-summary" id="hr-summary"></div>
+      <div class="chart-container">
+        <canvas id="hr-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Elevation Graph -->
+    <div id="elevation-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>⛰️ Elevation</h2>
+      </div>
+      <div class="chart-container">
+        <canvas id="elevation-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Pace Graph -->
+    <div id="pace-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>⚡ Pace</h2>
+      </div>
+      <div class="chart-container">
+        <canvas id="pace-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div id="description-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>📝 Workout Summary</h2>
+      </div>
+      <pre id="activity-description" class="activity-description"></pre>
+    </div>
+
+    <!-- Strength Sets / Exercises -->
+    <div id="exercises-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>💪 Exercises</h2>
+        <span id="exercise-count" class="section-subtitle"></span>
+      </div>
+      <div id="exercise-list" class="exercise-list"></div>
+    </div>
+
+    <!-- Tags -->
+    <div id="tags-section" class="showcase-section" style="display: none;">
+      <div id="activity-tags" class="activity-tags"></div>
+    </div>
+
+    <!-- Enrichments Applied (Premium Feature) - MOVED TO BOTTOM -->
+    <div id="enrichments-section" class="showcase-section" style="display: none;">
+      <div class="section-header">
+        <h2>🚀 Boosters Applied</h2>
+        <span class="section-subtitle">FitGlue magic that enhanced this activity</span>
+      </div>
+      <div id="enrichment-badges" class="enrichment-list"></div>
+    </div>
+
+    <!-- CTA - MOVED TO BOTTOM -->
+    <div class="showcase-cta glass-card">
+      <div class="cta-content">
+        <h3>Want to enhance your own activities?</h3>
+        <p>FitGlue automatically enriches your workouts with muscle heatmaps, heart rate data, and beautiful
+          summaries.</p>
+      </div>
+      <a href="/" class="btn btn-primary btn-lg btn-glow">Try FitGlue Free</a>
+    </div>
+
+    <!-- Footer Attribution -->
+    <div class="showcase-attribution">
+      <span>Powered by</span>
+      <a href="/" class="fitglue-logo">
+        <span class="fit">Fit</span><span class="glue">Glue</span>
+      </a>
+    </div>
+  </div>
+</section>
 </main>
 
+<!-- External Dependencies -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
+  /* ========================================
+     SHOWCASE PAGE - WORLD CLASS DESIGN
+     ======================================== */
+
   .showcase-page {
     min-height: 100vh;
-    background: var(--gradient-hero);
-    padding: var(--space-lg) 0;
+    background: linear-gradient(180deg, #0a0a0a 0%, #1a0a20 50%, #0a0a0a 100%);
+    padding: 0;
   }
 
   .showcase-loading {
@@ -110,16 +149,16 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
-    color: var(--color-text-muted);
-    gap: var(--space-md);
+    min-height: 100vh;
+    color: #aaa;
+    gap: 1rem;
   }
 
   .loading-spinner {
     width: 48px;
     height: 48px;
-    border: 4px solid var(--color-bg-tertiary);
-    border-top-color: var(--color-primary);
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #FF1B8D;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -130,80 +169,16 @@
     }
   }
 
-  .showcase-error {
-    text-align: center;
-    max-width: 500px;
-    margin: 15vh auto 0;
-  }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
 
-  .error-icon {
-    font-size: 4rem;
-    margin-bottom: var(--space-md);
-  }
-
-  .showcase-error h1 {
-    font-size: clamp(1.5rem, 4vw, 2.2rem);
-    margin-bottom: var(--space-md);
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .showcase-error p {
-    font-size: var(--font-size-base);
-    color: var(--color-text-muted);
-    margin-bottom: var(--space-xs);
-  }
-
-  .error-subtitle {
-    font-size: var(--font-size-sm) !important;
-    opacity: 0.7;
-    margin-bottom: var(--space-lg) !important;
-  }
-
-  .showcase-content {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  /* Hero */
-  .showcase-hero {
-    text-align: center;
-    padding: var(--space-lg) var(--space-md) var(--space-md);
-    margin-bottom: var(--space-md);
-  }
-
-  .showcase-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    background: rgba(131, 56, 236, 0.15);
-    border: 1px solid rgba(131, 56, 236, 0.4);
-    border-radius: var(--radius-pill);
-    padding: var(--space-xs) var(--space-md);
-    font-size: var(--font-size-sm);
-    color: var(--color-primary);
-    margin-bottom: var(--space-md);
-    backdrop-filter: blur(10px);
-  }
-
-  .showcase-title {
-    font-size: clamp(2rem, 6vw, 3.5rem);
-    font-weight: 800;
-    margin-bottom: var(--space-md);
-    background: linear-gradient(90deg,
-        var(--color-primary) 0%,
-        var(--color-secondary) 25%,
-        #fff 50%,
-        var(--color-secondary) 75%,
-        var(--color-primary) 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    line-height: 1.1;
-    animation: shimmer 3s linear infinite;
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @keyframes shimmer {
@@ -212,123 +187,413 @@
     }
   }
 
-  .showcase-meta {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-md);
-    flex-wrap: wrap;
+  @keyframes pulse {
+
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.05);
+    }
   }
 
-  .activity-type-badge {
-    background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-sm);
-    font-weight: 700;
-    font-size: var(--font-size-sm);
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  @keyframes glow {
+
+    0%,
+    100% {
+      box-shadow: 0 0 20px rgba(255, 27, 141, 0.4);
+    }
+
+    50% {
+      box-shadow: 0 0 40px rgba(255, 27, 141, 0.8);
+    }
   }
 
-  .activity-source {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
-  }
-
-  .activity-date {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
-  }
-
-  /* Glass Cards */
-  .glass-card {
-    background: rgba(30, 30, 40, 0.6);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-lg);
-    padding: var(--space-md);
-    margin-bottom: var(--space-sm);
-  }
-
-  .showcase-section {
-    margin-bottom: var(--space-sm);
-  }
-
-  .section-header {
-    margin-bottom: var(--space-sm);
-  }
-
-  .section-header h2 {
-    font-size: var(--font-size-lg);
-    font-weight: 700;
-    margin-bottom: var(--space-xs);
-    color: var(--color-text);
-  }
-
-  .section-subtitle {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-  }
-
-  /* Stats Grid */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: var(--space-sm);
-    margin-bottom: var(--space-lg);
-  }
-
-  .stat-card {
-    background: rgba(30, 30, 40, 0.6);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-md);
-    padding: var(--space-md);
+  /* Error State */
+  .showcase-error {
     text-align: center;
+    max-width: 500px;
+    margin: 15vh auto 0;
+    padding: 2rem;
+    background: rgba(30, 30, 40, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
   }
 
-  .stat-icon {
-    font-size: 1.5rem;
-    margin-bottom: var(--space-xs);
+  .error-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
   }
 
-  .stat-value {
-    font-size: var(--font-size-xl);
-    font-weight: 800;
-    background: var(--gradient-primary);
+  .showcase-error h1 {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #FF1B8D, #9D4EDD);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
-  .stat-label {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: var(--space-xs);
+  .showcase-error p {
+    font-size: 1rem;
+    color: #aaa;
+    margin-bottom: 0.5rem;
   }
 
-  /* Enrichments */
-  .enrichment-list {
+  .error-subtitle {
+    font-size: 0.875rem !important;
+    opacity: 0.7;
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Content Container - No bounding box on mobile */
+  .showcase-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  @media (min-width: 768px) {
+    .showcase-content {
+      padding: 0 2rem;
+    }
+  }
+
+  /* ========================================
+     HERO SECTION
+     ======================================== */
+  .showcase-hero {
+    text-align: center;
+    padding: 3rem 1rem 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .showcase-title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 900;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg,
+        #FF1B8D 0%,
+        #9D4EDD 25%,
+        #fff 50%,
+        #9D4EDD 75%,
+        #FF1B8D 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1.1;
+    animation: shimmer 3s linear infinite;
+    text-shadow: 0 0 60px rgba(255, 27, 141, 0.3);
+  }
+
+  .showcase-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .activity-type-badge {
+    background: linear-gradient(135deg, #4CC9F0, #9D4EDD);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
+  }
+
+  .activity-source,
+  .activity-date {
+    color: #aaa;
+    font-size: 0.875rem;
+  }
+
+  /* ========================================
+     HERO STATS GRID
+     ======================================== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 0;
+  }
+
+  .stat-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease-out backwards;
+  }
+
+  .stat-card:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+
+  .stat-card:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .stat-card:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .stat-card:nth-child(4) {
+    animation-delay: 0.25s;
+  }
+
+  .stat-card:nth-child(5) {
+    animation-delay: 0.3s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 27, 141, 0.4);
+    box-shadow: 0 10px 40px rgba(255, 27, 141, 0.2);
+  }
+
+  .stat-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+  }
+
+  .stat-value {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #FF1B8D, #9D4EDD);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.25rem;
+  }
+
+  /* ========================================
+     GLASS CARDS
+     ======================================== */
+  .glass-card {
+    background: rgba(30, 30, 40, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.6s ease-out backwards;
+  }
+
+  .showcase-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header {
+    margin-bottom: 1rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: #fff;
+  }
+
+  .section-subtitle {
+    font-size: 0.875rem;
+    color: #aaa;
+  }
+
+  /* ========================================
+     MAP
+     ======================================== */
+  .activity-map {
+    height: 300px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Custom Leaflet Theming */
+  .leaflet-container {
+    background: #1a1a2e;
+  }
+
+  .leaflet-tile {
+    filter: saturate(0.3) brightness(0.6) hue-rotate(200deg);
+  }
+
+  /* ========================================
+     CHARTS
+     ======================================== */
+  .chart-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+  }
+
+  .hr-summary {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .hr-stat-mini {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
+  }
+
+  .hr-value-mini {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ff6b6b;
+  }
+
+  .hr-label-mini {
+    font-size: 0.75rem;
+    color: #aaa;
+    text-transform: uppercase;
+  }
+
+  /* ========================================
+     DESCRIPTION
+     ======================================== */
+  .activity-description {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.25rem;
+    border-radius: 16px;
+    white-space: pre-wrap;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #fff;
+    line-height: 1.7;
+    overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin: 0;
+  }
+
+  /* ========================================
+     EXERCISES
+     ======================================== */
+  .exercise-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .exercise-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    border-left: 4px solid #4CC9F0;
+    transition: all 0.2s ease;
+  }
+
+  .exercise-item:hover {
+    background: rgba(0, 0, 0, 0.3);
+    border-left-color: #FF1B8D;
+  }
+
+  .exercise-name {
+    font-weight: 700;
+    color: #fff;
+    font-size: 1rem;
+  }
+
+  .exercise-detail {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #aaa;
+    flex-wrap: wrap;
+  }
+
+  .exercise-detail span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .exercise-badge {
+    background: linear-gradient(135deg, rgba(76, 201, 240, 0.2), rgba(157, 78, 221, 0.2));
+    border: 1px solid rgba(76, 201, 240, 0.3);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* ========================================
+     TAGS
+     ======================================== */
+  .activity-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .activity-tag {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* ========================================
+     ENRICHMENTS (BOOSTERS)
+     ======================================== */
+  .enrichment-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
   }
 
   .enrichment-item {
     display: flex;
     align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-sm);
-    background: rgba(131, 56, 236, 0.1);
-    border: 1px solid rgba(131, 56, 236, 0.2);
-    border-radius: var(--radius-md);
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(157, 78, 221, 0.15), rgba(255, 27, 141, 0.1));
+    border: 1px solid rgba(157, 78, 221, 0.3);
+    border-radius: 16px;
+    transition: all 0.2s ease;
+  }
+
+  .enrichment-item:hover {
+    border-color: rgba(255, 27, 141, 0.5);
+    transform: translateY(-2px);
   }
 
   .enrichment-icon {
-    font-size: 1.5rem;
+    font-size: 2rem;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
   }
 
   .enrichment-info {
@@ -336,119 +601,71 @@
   }
 
   .enrichment-name {
-    font-weight: 600;
-    color: var(--color-text);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.125rem;
   }
 
   .enrichment-desc {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    color: #aaa;
   }
 
-  /* Description */
-  .activity-description {
-    background: rgba(0, 0, 0, 0.3);
-    padding: var(--space-md);
-    border-radius: var(--radius-md);
-    white-space: pre-wrap;
-    font-family: inherit;
-    font-size: var(--font-size-base);
-    color: var(--color-text);
-    line-height: 1.7;
-    overflow-x: auto;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  /* Exercises */
-  .exercise-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-  }
-
-  .exercise-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--space-sm) var(--space-md);
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: var(--radius-md);
-    border-left: 3px solid var(--color-accent);
-  }
-
-  .exercise-name {
-    font-weight: 600;
-    color: var(--color-text);
-  }
-
-  .exercise-detail {
-    display: flex;
-    gap: var(--space-md);
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-  }
-
-  .exercise-detail span {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-  }
-
-  /* Heart Rate */
-  .hr-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-md);
-    text-align: center;
-  }
-
-  .hr-stat {}
-
-  .hr-value {
-    font-size: var(--font-size-xl);
-    font-weight: 800;
-    color: #ff6b6b;
-  }
-
-  .hr-label {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-  }
-
-  /* Tags */
-  .activity-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
-  }
-
-  .activity-tag {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--color-text);
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-pill);
-    font-size: var(--font-size-sm);
-  }
-
-  /* CTA */
+  /* ========================================
+     CTA SECTION
+     ======================================== */
   .showcase-cta {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-lg);
-    margin-top: var(--space-xl);
-    background: linear-gradient(135deg, rgba(131, 56, 236, 0.2), rgba(255, 0, 110, 0.2));
-    border: 1px solid rgba(131, 56, 236, 0.3);
+    gap: 1.5rem;
+    margin-top: 3rem;
+    background: linear-gradient(135deg, rgba(157, 78, 221, 0.25), rgba(255, 27, 141, 0.25));
+    border: 1px solid rgba(157, 78, 221, 0.4);
+    padding: 2rem;
   }
 
   .cta-content h3 {
-    margin-bottom: var(--space-xs);
-    font-size: var(--font-size-lg);
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    color: #fff;
   }
 
   .cta-content p {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
+    color: #aaa;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #FF1B8D, #9D4EDD);
+    color: white;
+  }
+
+  .btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  .btn-glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 30px rgba(255, 27, 141, 0.5);
   }
 
   @media (max-width: 640px) {
@@ -458,27 +675,29 @@
     }
   }
 
-  /* Attribution */
+  /* ========================================
+     ATTRIBUTION
+     ======================================== */
   .showcase-attribution {
     text-align: center;
-    padding: var(--space-xl) 0;
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
+    padding: 3rem 0 2rem;
+    color: #aaa;
+    font-size: 0.9rem;
   }
 
   .fitglue-logo {
     text-decoration: none;
-    font-weight: 700;
-    font-size: var(--font-size-lg);
-    margin-left: var(--space-xs);
+    font-weight: 900;
+    font-size: 1.25rem;
+    margin-left: 0.25rem;
   }
 
   .fit {
-    color: var(--color-primary);
+    color: #FF1B8D;
   }
 
   .glue {
-    color: var(--color-secondary);
+    color: #9D4EDD;
   }
 </style>
 
@@ -544,13 +763,23 @@
 
         if (session.totalElapsedTime) stats.push({ icon: '⏱️', value: formatDuration(session.totalElapsedTime), label: 'Duration' });
         if (session.totalDistance) stats.push({ icon: '📏', value: formatDistance(session.totalDistance), label: 'Distance' });
+
+        // Cardio stats
+        const allRecords = session.laps ? session.laps.flatMap(l => l.records || []) : [];
+        const hrValues = allRecords.filter(r => r.heartRate > 0).map(r => r.heartRate);
+        if (hrValues.length > 0) {
+          const avgHr = Math.round(hrValues.reduce((a, b) => a + b, 0) / hrValues.length);
+          stats.push({ icon: '❤️', value: avgHr, label: 'Avg BPM' });
+        }
+
+        // Strength stats
         if (session.strengthSets && session.strengthSets.length > 0) {
           const totalSets = session.strengthSets.length;
           const totalReps = session.strengthSets.reduce((sum, s) => sum + (s.reps || 0), 0);
           const totalWeight = session.strengthSets.reduce((sum, s) => sum + ((s.reps || 0) * (s.weightKg || 0)), 0);
           stats.push({ icon: '🔢', value: totalSets, label: 'Sets' });
           stats.push({ icon: '💪', value: totalReps, label: 'Reps' });
-          if (totalWeight > 0) stats.push({ icon: '⚖️', value: formatWeight(totalWeight), label: 'Total Volume' });
+          if (totalWeight > 0) stats.push({ icon: '⚖️', value: formatWeight(totalWeight), label: 'Volume' });
         }
 
         if (stats.length > 0) {
@@ -564,7 +793,38 @@
           statsGrid.style.display = 'grid';
         }
 
-        // Exercises
+        // --- MAP ---
+        const gpsRecords = allRecords.filter(r => r.positionLat && r.positionLong);
+        if (gpsRecords.length > 10) {
+          document.getElementById('map-section').style.display = 'block';
+          setTimeout(() => initMap(gpsRecords), 100);
+        }
+
+        // --- HEART RATE GRAPH ---
+        if (hrValues.length > 10) {
+          const hrSection = document.getElementById('hr-graph-section');
+          const avg = Math.round(hrValues.reduce((a, b) => a + b, 0) / hrValues.length);
+          const max = Math.max(...hrValues);
+          const min = Math.min(...hrValues);
+
+          document.getElementById('hr-summary').innerHTML = `
+            <div class="hr-stat-mini"><span class="hr-value-mini">${avg}</span><span class="hr-label-mini">Avg</span></div>
+            <div class="hr-stat-mini"><span class="hr-value-mini">${max}</span><span class="hr-label-mini">Max</span></div>
+            <div class="hr-stat-mini"><span class="hr-value-mini">${min}</span><span class="hr-label-mini">Min</span></div>
+          `;
+
+          hrSection.style.display = 'block';
+          setTimeout(() => initHrChart(allRecords.filter(r => r.heartRate > 0)), 100);
+        }
+
+        // --- ELEVATION GRAPH ---
+        const elevRecords = allRecords.filter(r => r.altitude !== undefined);
+        if (elevRecords.length > 10) {
+          document.getElementById('elevation-section').style.display = 'block';
+          setTimeout(() => initElevationChart(elevRecords), 100);
+        }
+
+        // --- EXERCISES ---
         if (session.strengthSets && session.strengthSets.length > 0) {
           const exercisesSection = document.getElementById('exercises-section');
           const exerciseList = document.getElementById('exercise-list');
@@ -573,34 +833,18 @@
           document.getElementById('exercise-count').textContent = `${Object.keys(exercises).length} exercises`;
 
           exerciseList.innerHTML = Object.entries(exercises).map(([name, sets]) => {
-            const setInfo = sets.map(s => s.weightKg > 0 ? `${s.reps}×${s.weightKg}kg` : `${s.reps} reps`).join(', ');
+            const setDetails = formatExerciseSets(sets);
             return `
             <div class="exercise-item">
               <span class="exercise-name">${name}</span>
               <div class="exercise-detail">
                 <span>📊 ${sets.length} sets</span>
-                <span>💪 ${setInfo}</span>
+                ${setDetails}
               </div>
             </div>
           `;
           }).join('');
           exercisesSection.style.display = 'block';
-        }
-
-        // Heart Rate
-        const allRecords = session.laps ? session.laps.flatMap(l => l.records || []) : [];
-        const hrValues = allRecords.filter(r => r.heartRate > 0).map(r => r.heartRate);
-        if (hrValues.length > 0) {
-          const hrSection = document.getElementById('hr-section');
-          const avg = Math.round(hrValues.reduce((a, b) => a + b, 0) / hrValues.length);
-          const max = Math.max(...hrValues);
-          const min = Math.min(...hrValues);
-          document.getElementById('hr-stats').innerHTML = `
-          <div class="hr-stat"><div class="hr-value">${avg}</div><div class="hr-label">Avg BPM</div></div>
-          <div class="hr-stat"><div class="hr-value">${max}</div><div class="hr-label">Max BPM</div></div>
-          <div class="hr-stat"><div class="hr-value">${min}</div><div class="hr-label">Min BPM</div></div>
-        `;
-          hrSection.style.display = 'block';
         }
       }
 
@@ -638,6 +882,125 @@
       }
     }
 
+    // --- MAP INITIALIZATION ---
+    function initMap(records) {
+      const map = L.map('activity-map', {
+        zoomControl: true,
+        scrollWheelZoom: false
+      });
+
+      // Dark theme tiles
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap, &copy; CARTO',
+        maxZoom: 19
+      }).addTo(map);
+
+      // Create route polyline with gradient effect
+      const latlngs = records.map(r => [r.positionLat, r.positionLong]);
+
+      const routeLine = L.polyline(latlngs, {
+        color: '#FF1B8D',
+        weight: 4,
+        opacity: 0.9,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }).addTo(map);
+
+      // Add start/end markers
+      if (latlngs.length > 0) {
+        L.circleMarker(latlngs[0], {
+          radius: 8,
+          fillColor: '#06FFA5',
+          color: '#fff',
+          weight: 2,
+          fillOpacity: 1
+        }).addTo(map).bindPopup('Start');
+
+        L.circleMarker(latlngs[latlngs.length - 1], {
+          radius: 8,
+          fillColor: '#FF1B8D',
+          color: '#fff',
+          weight: 2,
+          fillOpacity: 1
+        }).addTo(map).bindPopup('Finish');
+      }
+
+      map.fitBounds(routeLine.getBounds(), { padding: [30, 30] });
+    }
+
+    // --- HEART RATE CHART ---
+    function initHrChart(records) {
+      const ctx = document.getElementById('hr-chart').getContext('2d');
+      const hrData = records.map(r => r.heartRate);
+      const labels = records.map((_, i) => i);
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Heart Rate',
+            data: hrData,
+            borderColor: '#ff6b6b',
+            backgroundColor: 'rgba(255, 107, 107, 0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#aaa' }
+            }
+          }
+        }
+      });
+    }
+
+    // --- ELEVATION CHART ---
+    function initElevationChart(records) {
+      const ctx = document.getElementById('elevation-chart').getContext('2d');
+      const elevData = records.map(r => r.altitude);
+      const labels = records.map((_, i) => i);
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Elevation',
+            data: elevData,
+            borderColor: '#9D4EDD',
+            backgroundColor: 'rgba(157, 78, 221, 0.2)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#aaa', callback: v => v + 'm' }
+            }
+          }
+        }
+      });
+    }
+
+    // --- HELPERS ---
     function formatActivityType(type) {
       const types = {
         0: 'Workout', 5: 'CrossFit', 12: 'HIIT', 13: 'Hike', 23: 'Ride', 27: 'Run', 37: 'Swim',
@@ -647,7 +1010,6 @@
     }
 
     function formatSource(source) {
-      // ActivitySource enum: HEVY=1, FITBIT=3, PARKRUN_RESULTS=4, FILE_UPLOAD=5
       const sources = { 0: 'Unknown', 1: 'Hevy', 3: 'Fitbit', 4: 'Parkrun', 5: 'FIT Upload', 99: 'Test' };
       return sources[source] || 'Unknown';
     }
@@ -666,6 +1028,12 @@
       return kg >= 1000 ? `${(kg / 1000).toFixed(1)}t` : `${Math.round(kg)}kg`;
     }
 
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = Math.round(seconds % 60);
+      return m > 0 ? `${m}:${s.toString().padStart(2, '0')}` : `${s}s`;
+    }
+
     function groupExercises(sets) {
       return sets.reduce((acc, set) => {
         const name = set.exerciseName || 'Unknown';
@@ -675,17 +1043,57 @@
       }, {});
     }
 
+    function formatExerciseSets(sets) {
+      // Handle different combinations: weight+reps, time, distance
+      const hasWeight = sets.some(s => s.weightKg > 0);
+      const hasTime = sets.some(s => s.time > 0);
+      const hasDistance = sets.some(s => s.distance > 0);
+      const hasReps = sets.some(s => s.reps > 0);
+
+      const parts = [];
+
+      if (hasWeight && hasReps) {
+        const info = sets.map(s => `${s.reps || 0}×${s.weightKg || 0}kg`).join(', ');
+        parts.push(`<span>💪 ${info}</span>`);
+      } else if (hasReps && !hasWeight) {
+        const totalReps = sets.reduce((sum, s) => sum + (s.reps || 0), 0);
+        parts.push(`<span>💪 ${totalReps} reps</span>`);
+      }
+
+      if (hasTime) {
+        const totalTime = sets.reduce((sum, s) => sum + (s.time || 0), 0);
+        parts.push(`<span>⏱️ ${formatTime(totalTime)}</span>`);
+      }
+
+      if (hasDistance) {
+        const totalDist = sets.reduce((sum, s) => sum + (s.distance || 0), 0);
+        parts.push(`<span>📏 ${formatDistance(totalDist)}</span>`);
+      }
+
+      return parts.join('');
+    }
+
     function getEnricherInfo(id) {
       const enrichers = {
-        'workout-summary': { icon: '📝', name: 'Workout Summary', desc: 'Generated detailed exercise breakdown' },
-        'muscle-heatmap': { icon: '🔥', name: 'Muscle Heatmap', desc: 'Visualized muscle group activation' },
-        'fitbit-heart-rate': { icon: '❤️', name: 'Heart Rate Enricher', desc: 'Added heart rate telemetry from Fitbit' },
-        'virtual-gps': { icon: '🗺️', name: 'Virtual GPS', desc: 'Added GPS coordinates for mapping' },
-        'parkrun': { icon: '🏃', name: 'Parkrun Results', desc: 'Added official Parkrun times and position' },
-        'user-input': { icon: '✏️', name: 'User Input', desc: 'Custom data added by user' },
-        'source-link': { icon: '🔗', name: 'Source Link', desc: 'Added link back to original activity' },
+        'ENRICHER_PROVIDER_WORKOUT_SUMMARY': { icon: '📝', name: 'Workout Summary', desc: 'Generated detailed exercise breakdown' },
+        'ENRICHER_PROVIDER_MUSCLE_HEATMAP': { icon: '🔥', name: 'Muscle Heatmap', desc: 'Visualized muscle group activation' },
+        'ENRICHER_PROVIDER_FITBIT_HEART_RATE': { icon: '❤️', name: 'Heart Rate Enricher', desc: 'Added heart rate telemetry from Fitbit' },
+        'ENRICHER_PROVIDER_TYPE_MAPPER': { icon: '🏷️', name: 'Activity Type Mapper', desc: 'Mapped activity to correct type' },
+        'ENRICHER_PROVIDER_PARKRUN': { icon: '🏃', name: 'Parkrun Results', desc: 'Added official Parkrun times and position' },
+        'ENRICHER_PROVIDER_USER_INPUT': { icon: '✏️', name: 'User Input', desc: 'Custom data added by user' },
+        'ENRICHER_PROVIDER_AUTO_INCREMENT': { icon: '🔢', name: 'Auto Increment', desc: 'Added sequential counter' },
+        'ENRICHER_PROVIDER_ACTIVITY_FILTER': { icon: '🔍', name: 'Activity Filter', desc: 'Filtered activity based on rules' },
+        'Branding': { icon: '✨', name: 'Branding', desc: 'Added FitGlue branding' },
       };
-      return enrichers[id] || { icon: '⚡', name: id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), desc: 'Enhanced activity data' };
+
+      // Try exact match first
+      if (enrichers[id]) return enrichers[id];
+
+      // Try partial match (strip ENRICHER_PROVIDER_ prefix if exists)
+      const cleanId = id.replace('ENRICHER_PROVIDER_', '');
+      const formatted = cleanId.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+      return { icon: '⚡', name: formatted, desc: 'Enhanced activity data' };
     }
   })();
 </script>
