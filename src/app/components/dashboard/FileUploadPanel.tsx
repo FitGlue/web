@@ -9,7 +9,6 @@ import './FileUploadPanel.css';
  * FileUploadPanel - Dashboard component for uploading FIT files
  *
  * Only visible when user has at least one pipeline with SOURCE_FILE_UPLOAD.
- * Accepts a FIT file and sends it to the file-upload-handler API.
  */
 export const FileUploadPanel: React.FC = () => {
   const api = useApi();
@@ -27,7 +26,6 @@ export const FileUploadPanel: React.FC = () => {
     p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload'
   );
 
-  // Don't render if no file upload pipelines
   if (!hasFileUploadPipeline) {
     return null;
   }
@@ -52,14 +50,12 @@ export const FileUploadPanel: React.FC = () => {
     setMessage(null);
 
     try {
-      // Send minimal activity structure
-      // In the future, this could use a WASM-based FIT parser client-side
       const activityPayload = {
         activity: {
           startTime: new Date().toISOString(),
           name: title || file.name.replace('.fit', ''),
           description: description || '',
-          type: 0, // ACTIVITY_TYPE_UNSPECIFIED - will be enriched
+          type: 0,
           sessions: [],
           tags: [],
           notes: '',
@@ -72,10 +68,9 @@ export const FileUploadPanel: React.FC = () => {
 
       setMessage({
         type: 'success',
-        text: data.message || 'Activity uploaded! Processing through your pipelines...'
+        text: data.message || 'Activity queued for processing!'
       });
 
-      // Reset form
       setFile(null);
       setTitle('');
       setDescription('');
@@ -84,7 +79,7 @@ export const FileUploadPanel: React.FC = () => {
       console.error('Upload error:', error);
       setMessage({
         type: 'error',
-        text: error instanceof Error ? error.message : 'Upload failed. Please try again.'
+        text: error instanceof Error ? error.message : 'Upload failed'
       });
     } finally {
       setUploading(false);
@@ -92,99 +87,73 @@ export const FileUploadPanel: React.FC = () => {
   };
 
   return (
-    <div className="file-upload-panel">
-      <Card className="dashboard-card">
-        <div className="file-upload-panel__header">
-          <div className="file-upload-panel__header-left">
-            <h3 className="file-upload-panel__title">
-              <span className="file-upload-panel__title-icon">📤</span>
-              Upload FIT File
-            </h3>
-            <p className="file-upload-panel__subtitle">
-              Import activities from your devices
-            </p>
-          </div>
-        </div>
+    <Card className="dashboard-card upload-card">
+      <div className="card-header-row">
+        <h3>📤 Upload FIT File</h3>
+      </div>
 
-        <div className="file-upload-panel__content">
-          {/* Drop zone / file input */}
-          <div
-            className={`file-upload-panel__dropzone ${file ? 'file-upload-panel__dropzone--has-file' : ''}`}
-            onClick={() => !uploading && fileInputRef.current?.click()}
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".fit"
-              onChange={handleFileSelect}
-              disabled={uploading}
-              className="file-upload-panel__input"
-            />
-            {file ? (
-              <div className="file-upload-panel__file-info">
-                <span className="file-upload-panel__file-icon">📁</span>
-                <span className="file-upload-panel__file-name">{file.name}</span>
-                <span className="file-upload-panel__file-size">
-                  {(file.size / 1024).toFixed(1)} KB
-                </span>
-              </div>
-            ) : (
-              <div className="file-upload-panel__dropzone-prompt">
-                <span className="file-upload-panel__dropzone-icon">📂</span>
-                <span>Click to select a .fit file</span>
-              </div>
-            )}
-          </div>
-
-          {/* Title & Description */}
-          <div className="file-upload-panel__fields">
-            <input
-              type="text"
-              placeholder="Activity title (optional)"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              disabled={uploading}
-              className="file-upload-panel__text-input"
-            />
-
-            <textarea
-              placeholder="Description (optional)"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              disabled={uploading}
-              className="file-upload-panel__text-input file-upload-panel__textarea"
-              rows={2}
-            />
-          </div>
-
-          {/* Upload button */}
+      <div className="upload-content">
+        {/* File selection row */}
+        <div className="upload-file-row">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".fit"
+            onChange={handleFileSelect}
+            disabled={uploading}
+            id="fit-file-input"
+            style={{ display: 'none' }}
+          />
           <Button
-            variant="primary"
-            onClick={handleUpload}
-            disabled={!file || uploading}
-            className="file-upload-panel__button"
+            variant="secondary"
+            size="small"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
           >
-            {uploading ? (
-              <>
-                <span className="file-upload-panel__spinner">⏳</span>
-                Uploading...
-              </>
-            ) : (
-              <>
-                <span>🚀</span>
-                Upload & Process
-              </>
-            )}
+            Choose File
           </Button>
-
-          {/* Status message */}
-          {message && (
-            <div className={`file-upload-panel__message file-upload-panel__message--${message.type}`}>
-              {message.type === 'success' ? '✓' : '✕'} {message.text}
-            </div>
-          )}
+          <span className="file-name-display">
+            {file ? file.name : 'No file selected'}
+          </span>
         </div>
-      </Card>
-    </div>
+
+        {/* Optional fields */}
+        <input
+          type="text"
+          placeholder="Title (optional)"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          disabled={uploading}
+          className="upload-text-input"
+        />
+
+        <textarea
+          placeholder="Description (optional)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          disabled={uploading}
+          className="upload-text-input upload-textarea"
+          rows={2}
+        />
+
+        {/* Status message */}
+        {message && (
+          <div className={`upload-message ${message.type}`}>
+            {message.type === 'success' ? '✓' : '✕'} {message.text}
+          </div>
+        )}
+      </div>
+
+      {/* Footer with upload button */}
+      <div className="upload-footer">
+        <Button
+          variant="primary"
+          onClick={handleUpload}
+          disabled={!file || uploading}
+        >
+          {uploading ? 'Uploading...' : 'Upload & Process'}
+        </Button>
+      </div>
+    </Card>
   );
 };
