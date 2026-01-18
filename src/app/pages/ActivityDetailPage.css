@@ -41,6 +41,16 @@
   color: var(--color-text-muted);
 }
 
+.activity-detail__pipeline-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-secondary);
+  background: rgba(131, 56, 236, 0.1);
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid rgba(131, 56, 236, 0.2);
+}
+
 .activity-detail__description {
   font-size: 0.95rem;
   line-height: 1.6;

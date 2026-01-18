@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useActivities } from '../hooks/useActivities';
+import { usePipelines } from '../hooks/usePipelines';
 import { SynchronizedActivity, ExecutionRecord } from '../services/ActivitiesService';
 import { PipelineTrace } from '../components/PipelineTrace';
 import { PageLayout } from '../components/layout/PageLayout';
@@ -100,9 +101,15 @@ const formatDateTime = (dateStr?: string): string => {
 const ActivityDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { activities, loading, refresh } = useActivities('single', id);
+    const { pipelines, fetchIfNeeded: fetchPipelines } = usePipelines();
     const [activity, setActivity] = useState<SynchronizedActivity | null>(null);
     const [traceExpanded, setTraceExpanded] = useState(false);
     const { isNerdMode } = useNerdMode();
+
+    // Fetch pipelines to look up name
+    useEffect(() => {
+        fetchPipelines();
+    }, [fetchPipelines]);
 
     useEffect(() => {
         if (id && activities.length > 0) {
@@ -148,6 +155,11 @@ const ActivityDetailPage: React.FC = () => {
 
     const failedBoosters = providerExecutions.filter(p => p.Status?.toUpperCase() === 'FAILED');
 
+    // Look up pipeline name by ID
+    const pipelineName = activity.pipelineId
+        ? pipelines.find(p => p.id === activity.pipelineId)?.name
+        : undefined;
+
     return (
         <PageLayout
             title={activity.title || 'Activity Details'}
@@ -159,6 +171,9 @@ const ActivityDetailPage: React.FC = () => {
             {/* Hero Header */}
             <div className="activity-detail__hero">
                 <div className="activity-detail__hero-header">
+                    {pipelineName && (
+                        <span className="activity-detail__pipeline-name">via {pipelineName}</span>
+                    )}
                     <span className="activity-detail__type-badge">{activityType}</span>
                     <span className="activity-detail__date">{formatDateTime(activity.startTime)}</span>
                 </div>

@@ -185,9 +185,9 @@
         }
       },
       {
-        "source": "/api/upload",
+        "source": "/api/parse-fit",
         "run": {
-          "serviceId": "file-upload-handler",
+          "serviceId": "fit-parser-handler",
           "region": "us-central1"
         }
       },

@@ -31,9 +31,8 @@ const ActivitiesListPage: React.FC = () => {
     };
 
     // Fetch initial data with execution details for enriched view
-    const { activities: initialActivities, unsynchronized: initialUnsync, loading, refresh, lastUpdated } = useActivities(
-        tabMode === 'enhanced' ? 'dashboard' : 'unsynchronized'
-    );
+    // Always use 'dashboard' mode as it fetches both activities and unsynchronized data
+    const { activities: initialActivities, unsynchronized: initialUnsync, loading, refreshAll, lastUpdated } = useActivities('dashboard');
 
     // Combine initial + paginated data
     const activities = useMemo(() => {
@@ -108,7 +107,7 @@ const ActivitiesListPage: React.FC = () => {
         setExtraUnsync([]);
         setHasMoreActivities(true);
         setHasMoreUnsync(true);
-        refresh();
+        refreshAll();
     };
 
     // Calculate stats
@@ -165,8 +164,8 @@ const ActivitiesListPage: React.FC = () => {
                     </div>
                     <div className="activities-page__stat">
                         <span className="activities-page__stat-value">{stats.failed}</span>
-                        <span className="activities-page__stat-label">Need Review</span>
-                        <span className="activities-page__stat-period">Failed / Stalled</span>
+                        <span className="activities-page__stat-label">Failed / Stalled</span>
+                        <span className="activities-page__stat-period">Incomplete</span>
                     </div>
                 </div>
 

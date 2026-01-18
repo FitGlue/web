@@ -59,22 +59,34 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
   }, [loaded, setActivities, setLoaded, setLoading, setActivitiesLastUpdated]);
 
   // Dashboard mode: fetch with includeExecution=true for rich enrichment data
+  // Also fetches unsynchronized in parallel to populate the stats accurately
   const fetchDashboard = useCallback(async (force = false) => {
-    if (!force && loaded) return;
+    if (!force && loaded && unsyncLoaded) return;
 
     setLoading(true);
     try {
-      // Limit to 10 with includeExecution for performance
-      const data = await ActivitiesService.list(10, true);
-      setActivities(data);
-      setLoaded(true);
-      setActivitiesLastUpdated(new Date());
+      // Fetch both activities and unsynchronized in parallel
+      const [activitiesData, unsyncData] = await Promise.all([
+        (!force && loaded) ? Promise.resolve(null) : ActivitiesService.list(10, true),
+        (!force && unsyncLoaded) ? Promise.resolve(null) : ActivitiesService.listUnsynchronized()
+      ]);
+
+      if (activitiesData) {
+        setActivities(activitiesData);
+        setLoaded(true);
+        setActivitiesLastUpdated(new Date());
+      }
+      if (unsyncData) {
+        setUnsynchronized(unsyncData);
+        setUnsyncLoaded(true);
+        setUnsynchronizedLastUpdated(new Date());
+      }
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
-  }, [loaded, setActivities, setLoaded, setLoading, setActivitiesLastUpdated]);
+  }, [loaded, unsyncLoaded, setActivities, setLoaded, setLoading, setActivitiesLastUpdated, setUnsynchronized, setUnsyncLoaded, setUnsynchronizedLastUpdated]);
 
   const fetchSingle = useCallback(async () => {
     if (!id) return;
@@ -138,6 +150,29 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
   if (mode === 'list' || mode === 'dashboard') lastUpdated = activitiesLastUpdated;
   if (mode === 'unsynchronized') lastUpdated = unsynchronizedLastUpdated;
 
+  // Refresh all data - useful when user wants to refresh everything
+  const refreshAll = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [activitiesData, unsyncData] = await Promise.all([
+        ActivitiesService.list(10, true),
+        ActivitiesService.listUnsynchronized()
+      ]);
+
+      setActivities(activitiesData);
+      setLoaded(true);
+      setActivitiesLastUpdated(new Date());
+
+      setUnsynchronized(unsyncData);
+      setUnsyncLoaded(true);
+      setUnsynchronizedLastUpdated(new Date());
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [setActivities, setLoaded, setLoading, setActivitiesLastUpdated, setUnsynchronized, setUnsyncLoaded, setUnsynchronizedLastUpdated]);
+
   return {
     activities,
     stats,
@@ -150,7 +185,8 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
       if (mode === 'single') fetchSingle();
       if (mode === 'unsynchronized') fetchUnsynchronized(true);
       if (mode === 'dashboard') fetchDashboard(true);
-    }
+    },
+    refreshAll
   };
 };
 

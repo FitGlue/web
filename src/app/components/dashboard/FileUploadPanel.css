@@ -1,67 +1,143 @@
-/* FileUploadPanel - Matches dashboard card styling */
+/* FileUploadPanel - Two-column sub-card layout */
 
 .upload-card {
   margin-top: var(--space-lg);
 }
 
-.upload-content {
+/* Two-column grid: horizontal on desktop, vertical on mobile */
+.upload-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: var(--space-sm);
+}
+
+@media (max-width: 768px) {
+  .upload-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sub-cards */
+.upload-subcard {
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  flex: 1;
-  padding-top: var(--space-sm);
+  gap: 16px;
 }
 
-/* File selection row */
-.upload-file-row {
+.subcard-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+/* Hidden file input */
+.upload-file-input {
+  display: none;
+}
+
+/* Dropzone */
+.upload-dropzone {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--space-sm);
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-lg);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-height: 120px;
 }
 
-.file-name-display {
+.upload-dropzone:hover {
+  border-color: var(--color-primary);
+  background: rgba(131, 56, 236, 0.1);
+}
+
+.upload-dropzone.has-file {
+  border-color: var(--color-accent);
+  border-style: solid;
+  background: rgba(0, 255, 136, 0.05);
+}
+
+.dropzone-icon {
+  font-size: 2rem;
+}
+
+.dropzone-text {
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-/* Text inputs */
-.upload-text-input {
+.dropzone-filename {
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+  word-break: break-all;
+}
+
+.dropzone-size {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* Form fields */
+.upload-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.field-group label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.field-group input,
+.field-group textarea {
   width: 100%;
-  padding: var(--space-xs) var(--space-sm);
+  padding: 12px 16px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  background: var(--color-bg-tertiary);
+  background: rgba(0, 0, 0, 0.3);
   color: var(--color-text);
-  font-size: var(--font-size-sm);
+  font-size: 14px;
   font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.upload-text-input:focus {
+.field-group input:focus,
+.field-group textarea:focus {
   outline: none;
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(131, 56, 236, 0.2);
 }
 
-.upload-text-input::placeholder {
+.field-group input::placeholder,
+.field-group textarea::placeholder {
   color: var(--color-text-muted);
 }
 
-.upload-textarea {
+.field-group textarea {
   resize: vertical;
-  min-height: 48px;
-}
-
-/* Footer with button */
-.upload-footer {
-  margin-top: auto;
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--color-border);
-}
-
-.upload-footer .btn {
-  width: 100%;
+  min-height: 60px;
 }
 
 /* Status messages */
@@ -69,17 +145,36 @@
   display: flex;
   align-items: center;
   gap: var(--space-xs);
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--space-sm);
   border-radius: var(--radius-sm);
   font-size: var(--font-size-sm);
+  margin-top: var(--space-sm);
 }
 
 .upload-message.success {
   background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
   color: var(--color-accent);
 }
 
 .upload-message.error {
   background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   color: #ef4444;
+}
+
+/* Full-width action button */
+.upload-action {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.upload-action .btn,
+.upload-action button {
+  width: 100%;
+  padding: 16px 32px !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  min-height: 56px;
 }

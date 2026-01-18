@@ -290,6 +290,10 @@
           "id": {
             "type": "string"
           },
+          "name": {
+            "type": "string",
+            "description": "Optional user-friendly name for the pipeline"
+          },
           "source": {
             "type": "string"
           },
@@ -333,6 +337,10 @@
       "CreatePipelineRequest": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "description": "Optional user-friendly name for the pipeline"
+          },
           "source": {
             "type": "string"
           },
@@ -357,6 +365,13 @@
       "UpdatePipelineRequest": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "description": "Optional user-friendly name for the pipeline"
+          },
+          "source": {
+            "type": "string"
+          },
           "enrichers": {
             "type": "array",
             "items": {

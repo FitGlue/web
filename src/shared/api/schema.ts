@@ -1066,6 +1066,8 @@ export interface components {
         };
         PipelineConfig: {
             id: string;
+            /** @description Optional user-friendly name for the pipeline */
+            name?: string;
             source: string;
             enrichers?: components["schemas"]["EnricherConfig"][];
             destinations: string[];
@@ -1078,11 +1080,16 @@ export interface components {
             };
         };
         CreatePipelineRequest: {
+            /** @description Optional user-friendly name for the pipeline */
+            name?: string;
             source: string;
             enrichers?: components["schemas"]["EnricherConfig"][];
             destinations: string[];
         };
         UpdatePipelineRequest: {
+            /** @description Optional user-friendly name for the pipeline */
+            name?: string;
+            source?: string;
             enrichers?: components["schemas"]["EnricherConfig"][];
             destinations?: string[];
         };

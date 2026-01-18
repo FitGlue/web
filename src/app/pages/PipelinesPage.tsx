@@ -16,6 +16,7 @@ interface EnricherConfig {
 
 interface PipelineConfig {
     id: string;
+    name?: string;
     source: string;
     enrichers: EnricherConfig[];
     destinations: (string | number)[];
@@ -48,6 +49,12 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
 }) => {
     return (
         <div className="pipeline-card-premium">
+            {/* Pipeline Name Header */}
+            {pipeline.name && (
+                <div className="pipeline-card-name">
+                    <h4>{pipeline.name}</h4>
+                </div>
+            )}
             {/* Visual Flow Header */}
             <div className="pipeline-visual-flow">
                 {/* Source Node */}

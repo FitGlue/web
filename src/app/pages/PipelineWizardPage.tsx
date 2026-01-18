@@ -58,6 +58,7 @@ const PipelineWizardPage: React.FC = () => {
     const [selectedEnrichers, setSelectedEnrichers] = useState<SelectedEnricher[]>([]);
     const [currentEnricherIndex, setCurrentEnricherIndex] = useState<number>(0);
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
+    const [pipelineName, setPipelineName] = useState('');
     const [creating, setCreating] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
@@ -163,6 +164,7 @@ const PipelineWizardPage: React.FC = () => {
             }));
 
             await api.post('/users/me/pipelines', {
+                name: pipelineName || undefined, // Only send if not empty
                 source: selectedSource,
                 enrichers: enricherConfigs,
                 destinations: selectedDestinations
@@ -467,6 +469,18 @@ const PipelineWizardPage: React.FC = () => {
             <div className="wizard-content">
                 <h3>Review Your Pipeline</h3>
                 <Card className="review-card">
+                    <div className="pipeline-name-field">
+                        <label htmlFor="pipelineName">Pipeline Name (Optional)</label>
+                        <input
+                            id="pipelineName"
+                            type="text"
+                            placeholder="e.g., Morning Gym Sessions"
+                            value={pipelineName}
+                            onChange={(e) => setPipelineName(e.target.value)}
+                            maxLength={64}
+                            className="pipeline-name-input"
+                        />
+                    </div>
                     <div className="review-flow">
                         <div className="review-section">
                             <span className="review-label">Source</span>

@@ -9,6 +9,7 @@ import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { useApi } from '../hooks/useApi';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useIntegrations } from '../hooks/useIntegrations';
+import { usePipelines } from '../hooks/usePipelines';
 import { LoadingState } from '../components/ui/LoadingState';
 import { PluginManifest } from '../types/plugin';
 
@@ -19,6 +20,7 @@ interface EnricherConfig {
 
 interface PipelineConfig {
     id: string;
+    name?: string;
     source: string;
     enrichers: EnricherConfig[];
     destinations: (string | number)[];
@@ -35,6 +37,7 @@ const PipelineEditPage: React.FC = () => {
     const api = useApi();
     const { sources, enrichers, destinations, integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { integrations: userIntegrations, fetchIfNeeded: fetchIntegrations } = useIntegrations();
+    const { invalidate: invalidatePipelines } = usePipelines();
 
     // Fetch user integrations on mount
     useEffect(() => {
@@ -68,6 +71,7 @@ const PipelineEditPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     // Editable state
+    const [pipelineName, setPipelineName] = useState('');
     const [selectedSource, setSelectedSource] = useState<string>('');
     const [selectedEnrichers, setSelectedEnrichers] = useState<SelectedEnricher[]>([]);
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
@@ -85,6 +89,7 @@ const PipelineEditPage: React.FC = () => {
             setPipeline(pipelineData);
 
             // Populate editable state
+            setPipelineName(pipelineData.name || '');
             setSelectedSource(pipelineData.source);
             setSelectedDestinations(pipelineData.destinations.map(d => String(d)));
 
@@ -128,11 +133,13 @@ const PipelineEditPage: React.FC = () => {
             }));
 
             await api.patch(`/users/me/pipelines/${pipelineId}`, {
+                name: pipelineName || undefined, // Only send if not empty
                 source: selectedSource,
                 enrichers: enricherConfigs,
                 destinations: selectedDestinations.map(d => isNaN(Number(d)) ? d : Number(d))
             });
 
+            invalidatePipelines(); // Mark pipelines cache as stale
             navigate('/settings/pipelines');
         } catch (err) {
             setError('Failed to save pipeline');
@@ -193,6 +200,22 @@ const PipelineEditPage: React.FC = () => {
             )}
 
             <div className="pipeline-edit">
+                {/* Pipeline Name Section */}
+                <Card className="edit-section">
+                    <h3>🏷️ Pipeline Name</h3>
+                    <p className="section-description">Give your pipeline a friendly name (optional)</p>
+                    <div className="pipeline-name-field">
+                        <input
+                            type="text"
+                            placeholder="e.g., Morning Gym Sessions"
+                            value={pipelineName}
+                            onChange={(e) => setPipelineName(e.target.value)}
+                            maxLength={64}
+                            className="pipeline-name-input"
+                        />
+                    </div>
+                </Card>
+
                 {/* Source Section */}
                 <Card className="edit-section">
                     <h3>📥 Source</h3>

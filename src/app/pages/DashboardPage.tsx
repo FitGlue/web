@@ -19,10 +19,16 @@ import { FileUploadPanel } from '../components/dashboard/FileUploadPanel';
 import { IntegrationsSummary } from '../state/integrationsState';
 import { RedirectNotification } from './NotFoundPage';
 
+const ONBOARDING_COMPLETE_KEY = 'fitglue_onboarding_complete';
+
 const DashboardPage: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const [showRedirectNotification, setShowRedirectNotification] = useState(false);
+    const [onboardingComplete, setOnboardingComplete] = useState(() => {
+        // Check localStorage on initial render to avoid pop
+        return localStorage.getItem(ONBOARDING_COMPLETE_KEY) === 'true';
+    });
     const { sources, destinations, integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { inputs, loading: inputsLoading, refresh: inputsRefresh } = useInputs();
     const { activities, loading: statsLoading, refresh: statsRefresh } = useActivities('dashboard');
@@ -84,6 +90,19 @@ const DashboardPage: React.FC = () => {
         ri => integrations?.[ri.id as keyof IntegrationsSummary]?.connected
     ).length;
 
+    // Track onboarding completion state - once complete, cache it
+    const hasConnections = connectedCount > 0;
+    const hasPipelines = pipelines.length > 0;
+    const hasActivities = activities.length > 0;
+    const allOnboardingComplete = hasConnections && hasPipelines && hasActivities;
+
+    useEffect(() => {
+        if (!isLoading && allOnboardingComplete && !onboardingComplete) {
+            localStorage.setItem(ONBOARDING_COMPLETE_KEY, 'true');
+            setOnboardingComplete(true);
+        }
+    }, [isLoading, allOnboardingComplete, onboardingComplete]);
+
     // Parse activity ID (e.g., "FITBIT:217758352929208470") into friendly display
     const parseActivityId = (activityId: string): { source: string; icon: string; timestamp: string } => {
         const [sourcePart, idPart] = activityId.split(':');
@@ -132,11 +151,11 @@ const DashboardPage: React.FC = () => {
             )}
 
             {/* Welcome Banner for new users - show until all onboarding steps complete */}
-            {!isLoading && (connectedCount === 0 || pipelines.length === 0 || (user?.syncCountThisMonth ?? 0) === 0) && (
+            {!onboardingComplete && !isLoading && !allOnboardingComplete && (
                 <WelcomeBanner
-                    hasConnections={connectedCount > 0}
-                    hasPipelines={pipelines.length > 0}
-                    hasSyncs={(user?.syncCountThisMonth ?? 0) > 0}
+                    hasConnections={hasConnections}
+                    hasPipelines={hasPipelines}
+                    hasSyncs={hasActivities}
                 />
             )}
 
@@ -228,6 +247,9 @@ const DashboardPage: React.FC = () => {
                             <div className="pipelines-summary">
                                 {pipelines.slice(0, 3).map(pipeline => (
                                     <div key={pipeline.id} className="pipeline-summary-item">
+                                        {pipeline.name && (
+                                            <span className="pipeline-name-mini">{pipeline.name}</span>
+                                        )}
                                         <span className="pipeline-flow-mini">
                                             {getSourceIcon(pipeline.source)} {getSourceName(pipeline.source)}
                                             <span className="arrow">→</span>
