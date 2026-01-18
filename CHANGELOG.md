@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/fitglue/web/compare/v1.5.0...v1.6.0) (2026-01-18)
+
+
+### Features
+
+* massively enhanced showcase page ([000540e](https://github.com/fitglue/web/commit/000540e7b3943872242711e2d6baab8b9d0be10c))
+
 ## [1.5.0](https://github.com/fitglue/web/compare/v1.4.1...v1.5.0) (2026-01-18)
 
 
