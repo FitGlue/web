@@ -9,6 +9,7 @@ import { CardSkeleton } from '../components/ui/CardSkeleton';
 import '../components/ui/CardSkeleton.css';
 import { EnricherBadge } from '../components/dashboard/EnricherBadge';
 import { useNerdMode } from '../state/NerdModeContext';
+import { formatActivityType } from '../../shared/activityTypes';
 import './ActivityDetailPage.css';
 
 interface ProviderExecution {
@@ -65,15 +66,7 @@ const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): stri
     return null;
 };
 
-// Format activity type from enum
-const formatActivityType = (type?: number): string => {
-    const types: Record<number, string> = {
-        0: 'Workout', 1: 'Run', 2: 'Ride', 3: 'Swim', 4: 'Walk',
-        5: 'Hike', 6: 'Strength', 7: 'Workout', 8: 'Yoga',
-        9: 'CrossFit', 10: 'HIIT', 11: 'Rowing', 12: 'Elliptical', 13: 'Climbing',
-    };
-    return types[type ?? 0] || 'Workout';
-};
+
 
 // Format source/destination name
 const formatPlatformName = (platform: string): { name: string; icon: string } => {
@@ -83,6 +76,7 @@ const formatPlatformName = (platform: string): { name: string; icon: string } =>
         fitbit: { name: 'Fitbit', icon: '⌚' },
         garmin: { name: 'Garmin', icon: '📍' },
         apple: { name: 'Apple Health', icon: '🍎' },
+        showcase: { name: 'Showcase', icon: '🔗' },
     };
     return platforms[platform.toLowerCase()] || {
         name: platform.charAt(0).toUpperCase() + platform.slice(1).toLowerCase(),
@@ -148,7 +142,9 @@ const ActivityDetailPage: React.FC = () => {
     const destinations = activity.destinations ? Object.entries(activity.destinations) : [];
     const providerExecutions = extractEnricherExecutions(activity.pipelineExecution);
     const destinationActivityType = getDestinationActivityType(activity.pipelineExecution);
-    const activityType = destinationActivityType || formatActivityType(activity.type);
+    const activityType = destinationActivityType
+        ? formatActivityType(destinationActivityType)
+        : formatActivityType(activity.type);
 
     const failedBoosters = providerExecutions.filter(p => p.Status?.toUpperCase() === 'FAILED');
 
@@ -244,6 +240,9 @@ const ActivityDetailPage: React.FC = () => {
                             let externalUrl = '';
                             if (platform.toLowerCase() === 'strava') {
                                 externalUrl = `https://www.strava.com/activities/${activityIdStr}`;
+                            } else if (platform.toLowerCase() === 'showcase') {
+                                const showcaseDomain = import.meta.env.DEV ? 'dev.fitglue.tech' : 'fitglue.tech';
+                                externalUrl = `https://${showcaseDomain}/showcase/${activityIdStr}`;
                             }
 
                             return (

@@ -1,40 +1,14 @@
 import React from 'react';
 import { UnsynchronizedEntry } from '../../services/ActivitiesService';
 import { Card } from '../ui/Card';
+import { formatActivityType } from '../../../shared/activityTypes';
 
 interface UnsyncedActivityCardProps {
     entry: UnsynchronizedEntry;
     onClick?: () => void;
 }
 
-/**
- * Format activity type from string or enum number to readable string
- */
-const formatActivityType = (type?: string | number): string => {
-    if (!type) return 'Workout';
 
-    if (typeof type === 'string') {
-        return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
-    }
-
-    const types: Record<number, string> = {
-        0: 'Workout',
-        1: 'Run',
-        2: 'Ride',
-        3: 'Swim',
-        4: 'Walk',
-        5: 'Hike',
-        6: 'Strength',
-        7: 'Workout',
-        8: 'Yoga',
-        9: 'CrossFit',
-        10: 'HIIT',
-        11: 'Rowing',
-        12: 'Elliptical',
-        13: 'Climbing',
-    };
-    return types[type] || 'Workout';
-};
 
 /**
  * Format source name for display

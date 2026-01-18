@@ -41,6 +41,13 @@
         }
       },
       {
+        "source": "/api/showcase/**",
+        "run": {
+          "serviceId": "showcase-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/waitlist",
         "run": {
           "serviceId": "waitlist-handler",

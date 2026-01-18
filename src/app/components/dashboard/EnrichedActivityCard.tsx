@@ -2,6 +2,7 @@ import React from 'react';
 import { SynchronizedActivity, ExecutionRecord } from '../../services/ActivitiesService';
 import { EnricherBadge } from './EnricherBadge';
 import { Card } from '../ui/Card';
+import { formatActivityType } from '../../../shared/activityTypes';
 
 interface EnrichedActivityCardProps {
     activity: SynchronizedActivity;
@@ -92,29 +93,6 @@ const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): stri
 };
 
 /**
- * Format activity type from enum number to readable string
- */
-const formatActivityType = (type?: number): string => {
-    const types: Record<number, string> = {
-        0: 'Workout',
-        1: 'Run',
-        2: 'Ride',
-        3: 'Swim',
-        4: 'Walk',
-        5: 'Hike',
-        6: 'Strength',
-        7: 'Workout',
-        8: 'Yoga',
-        9: 'CrossFit',
-        10: 'HIIT',
-        11: 'Rowing',
-        12: 'Elliptical',
-        13: 'Climbing',
-    };
-    return types[type ?? 0] || 'Workout';
-};
-
-/**
  * Format source name for display
  */
 const formatSourceName = (source: string): string => {
@@ -124,6 +102,7 @@ const formatSourceName = (source: string): string => {
         fitbit: 'Fitbit',
         garmin: 'Garmin',
         apple: 'Apple Health',
+        showcase: 'Showcase',
     };
     return names[source.toLowerCase()] || source.charAt(0).toUpperCase() + source.slice(1).toLowerCase();
 };
@@ -145,7 +124,9 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     const titleWasEnhanced = enrichedTitle && enrichedTitle !== activity.title;
 
     // Use destination type if available, otherwise fall back to source type
-    const activityType = destinationActivityType || formatActivityType(activity.type);
+    const activityType = destinationActivityType
+        ? formatActivityType(destinationActivityType)
+        : formatActivityType(activity.type);
     const syncDate = activity.syncedAt
         ? new Date(activity.syncedAt).toLocaleDateString(undefined, {
               month: 'short',
