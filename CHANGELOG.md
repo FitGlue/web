@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/fitglue/web/compare/v1.4.1...v1.5.0) (2026-01-18)
+
+
+### Features
+
+* Add FIT file upload panel to the dashboard, introduce a showcase page, and enhance showcase domain resolution logic. ([3949052](https://github.com/fitglue/web/commit/394905223727f02f50b5a84ff9a7a74f5dca9068))
+* Add optional pipeline naming, refactor file upload panel styling, and update activity list logic. ([b88cf07](https://github.com/fitglue/web/commit/b88cf07b0333a991a79d9e9922de5ccfd8ec76bc))
+* Implement Logic Gate configuration form and integrate conditional logic into pipeline management. ([326c7e3](https://github.com/fitglue/web/commit/326c7e3d4c1d55232bc13f25c14fbd087fc20387))
+* introduce standardized activity type formatting and add Showcase integration. ([d1e2d6f](https://github.com/fitglue/web/commit/d1e2d6f926b8478b2f87a5ca106c9ab33f8e1def))
+
+
+### Bug Fixes
+
+* even prettier upload ([41a9810](https://github.com/fitglue/web/commit/41a98100a313599eed41edcd76b355287d3cc3a8))
+* file upload prettifying, and bug fix ([dd44cb7](https://github.com/fitglue/web/commit/dd44cb7fdd3dd7c2f71363e4887016377888f537))
+* parse showcase ID from URL not query ([8613171](https://github.com/fitglue/web/commit/8613171cdd42afe423108038b39d9ec763aff1ed))
+
 ### [1.4.1](https://github.com/fitglue/web/compare/v1.4.0...v1.4.1) (2026-01-18)
 
 ## [1.4.0](https://github.com/fitglue/web/compare/v1.3.0...v1.4.0) (2026-01-18)
