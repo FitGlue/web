@@ -8,7 +8,7 @@ export const Footer: React.FC = () => {
         <footer className="app-footer">
             <div className="footer-content">
                 <div className="footer-left">
-                    <span className="version">FitGlue Web v{import.meta.env.VITE_APP_VERSION || '0.0.0'}</span>
+                    <span className="version">FitGlue {import.meta.env.VITE_APP_VERSION || 'vS0.0.0-W0.0.0'}</span>
                 </div>
                 <div className="footer-right">
                     <label className="switch-label">

@@ -149,9 +149,9 @@ jobs:
               SERVER_VERSION="dev"
             fi
 
-            # Combined version: Server.Web (e.g., 1.2.0.2.3.1)
-            COMBINED_VERSION="${SERVER_VERSION}.${WEB_VERSION}"
-            echo "Combined version: S${SERVER_VERSION}-W${WEB_VERSION} -> ${COMBINED_VERSION}"
+            # Combined version: vS[server]-W[web] (e.g., vS1.2.0-W2.3.1)
+            COMBINED_VERSION="vS${SERVER_VERSION}-W${WEB_VERSION}"
+            echo "Combined version: ${COMBINED_VERSION}"
             echo "VITE_APP_VERSION=${COMBINED_VERSION}" >> .env
       - run:
           name: Configure Robots.txt
