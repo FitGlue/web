@@ -130,9 +130,13 @@ const DashboardPage: React.FC = () => {
                 />
             )}
 
-            {/* Welcome Banner for new users */}
-            {connectedCount === 0 && !isLoading && (
-                <WelcomeBanner />
+            {/* Welcome Banner for new users - show until all onboarding steps complete */}
+            {!isLoading && (connectedCount === 0 || pipelines.length === 0 || (user?.syncCountThisMonth ?? 0) === 0) && (
+                <WelcomeBanner
+                    hasConnections={connectedCount > 0}
+                    hasPipelines={pipelines.length > 0}
+                    hasSyncs={(user?.syncCountThisMonth ?? 0) > 0}
+                />
             )}
 
 

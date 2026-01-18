@@ -287,24 +287,24 @@ workflows:
           type: approval
           requires:
             - firebase-deploy-test
-      - create-release:
-           requires:
-              - approve-prod
-           filters:
-              branches:
-                 only: main
       - terraform-apply:
           name: terraform-apply-prod
           target: prod
           project_number: "605889586984"
           requires:
-            - create-release
+            - approve-prod
+          filters:
+            branches:
+              only: main
       - firebase-deploy:
           name: firebase-deploy-prod
           target: prod
           project_number: "605889586984"
           requires:
             - terraform-apply-prod
+      - create-release:
+          requires:
+            - firebase-deploy-prod
 
   # Fast-track workflow for server-triggered rebuilds (no approval needed)
   server-triggered:
