@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/fitglue/web/compare/v1.6.0...v1.7.0) (2026-01-18)
+
+
+### Features
+
+* show owner name ([b9f2b09](https://github.com/fitglue/web/commit/b9f2b09a834964af355aded2378685ff21e67318))
+
 ## [1.6.0](https://github.com/fitglue/web/compare/v1.5.0...v1.6.0) (2026-01-18)
 
 
