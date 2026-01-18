@@ -32,6 +32,7 @@ export enum ConfigFieldType {
   CONFIG_FIELD_TYPE_SELECT = 4,
   CONFIG_FIELD_TYPE_MULTI_SELECT = 5,
   CONFIG_FIELD_TYPE_KEY_VALUE_MAP = 6,
+  CONFIG_FIELD_TYPE_DYNAMIC_SELECT = 7,
 }
 
 export enum IntegrationAuthType {

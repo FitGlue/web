@@ -65,9 +65,7 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
 
                 {/* Flow Arrow */}
                 <div className="flow-connector">
-                    <div className="flow-line"></div>
                     <span className="flow-arrow-icon">→</span>
-                    <div className="flow-line"></div>
                 </div>
 
                 {/* Boosters Section */}
@@ -94,21 +92,21 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
 
                         {/* Flow Arrow */}
                         <div className="flow-connector">
-                            <div className="flow-line"></div>
                             <span className="flow-arrow-icon">→</span>
-                            <div className="flow-line"></div>
                         </div>
                     </>
                 )}
 
                 {/* Destination Node */}
                 <div className="flow-node flow-destination">
-                    {pipeline.destinations.map((dest, i) => (
-                        <React.Fragment key={i}>
-                            <div className="flow-node-icon">{getDestinationIcon(dest)}</div>
-                            <span className="flow-node-label">{getDestinationName(dest)}</span>
-                        </React.Fragment>
-                    ))}
+                    <div className="flow-destinations-container">
+                        {pipeline.destinations.map((dest, i) => (
+                            <div key={i} className="flow-destination-item">
+                                <div className="flow-node-icon">{getDestinationIcon(dest)}</div>
+                                <span className="flow-node-label">{getDestinationName(dest)}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
 

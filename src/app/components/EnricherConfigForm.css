@@ -71,6 +71,11 @@
   padding-right: 2.5rem;
 }
 
+.config-select option {
+  background: #1a1a2e;
+  color: #ffffff;
+}
+
 .config-description {
   font-size: 0.8rem;
   color: var(--color-primary);
@@ -182,6 +187,11 @@
   padding-right: 2.5rem;
 }
 
+.kv-select option {
+  background: #1a1a2e;
+  color: #ffffff;
+}
+
 .kv-arrow {
   color: var(--color-secondary);
   font-weight: 700;
@@ -230,4 +240,42 @@
   background: rgba(131, 56, 236, 0.2);
   border-color: var(--color-secondary);
   border-style: solid;
+}
+
+/* Dynamic Select Field (Combo-box) */
+.dynamic-select-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dynamic-select-header {
+  display: flex;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.dynamic-select-tab {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.dynamic-select-tab:hover {
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dynamic-select-tab.active {
+  color: var(--color-text);
+  background: rgba(131, 56, 236, 0.2);
 }

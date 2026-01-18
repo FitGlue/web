@@ -4,6 +4,7 @@ import { PageLayout } from '../components/layout/PageLayout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { EnricherConfigForm } from '../components/EnricherConfigForm';
+import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { useApi } from '../hooks/useApi';
@@ -342,12 +343,20 @@ const PipelineEditPage: React.FC = () => {
                             ))}
                         </div>
                         {currentEnricher && currentEnricher.manifest.configSchema?.length > 0 && (
-                            <EnricherConfigForm
-                                key={currentEnricher.manifest.id}
-                                schema={currentEnricher.manifest.configSchema}
-                                initialValues={currentEnricher.config}
-                                onChange={config => updateEnricherConfig(currentEnricherIndex, config)}
-                            />
+                            currentEnricher.manifest.id === 'logic-gate' ? (
+                                <LogicGateConfigForm
+                                    key={currentEnricher.manifest.id}
+                                    initialValues={currentEnricher.config}
+                                    onChange={config => updateEnricherConfig(currentEnricherIndex, config)}
+                                />
+                            ) : (
+                                <EnricherConfigForm
+                                    key={currentEnricher.manifest.id}
+                                    schema={currentEnricher.manifest.configSchema}
+                                    initialValues={currentEnricher.config}
+                                    onChange={config => updateEnricherConfig(currentEnricherIndex, config)}
+                                />
+                            )
                         )}
                     </Card>
                 )}

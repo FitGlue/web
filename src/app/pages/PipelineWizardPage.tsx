@@ -8,6 +8,7 @@ import { usePipelines } from '../hooks/usePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { EnricherConfigForm } from '../components/EnricherConfigForm';
+import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginManifest, ConfigFieldType } from '../types/plugin';
@@ -347,11 +348,18 @@ const PipelineWizardPage: React.FC = () => {
                 <h3>Configure: {current.manifest.icon} {current.manifest.name}</h3>
                 <p className="wizard-description">{current.manifest.description}</p>
                 <Card className="config-card">
-                    <EnricherConfigForm
-                        schema={current.manifest.configSchema}
-                        initialValues={current.config}
-                        onChange={config => updateEnricherConfig(currentEnricherIndex, config)}
-                    />
+                    {current.manifest.id === 'logic-gate' ? (
+                        <LogicGateConfigForm
+                            initialValues={current.config}
+                            onChange={config => updateEnricherConfig(currentEnricherIndex, config)}
+                        />
+                    ) : (
+                        <EnricherConfigForm
+                            schema={current.manifest.configSchema}
+                            initialValues={current.config}
+                            onChange={config => updateEnricherConfig(currentEnricherIndex, config)}
+                        />
+                    )}
                 </Card>
                 {selectedEnrichers.filter(e => e.manifest.configSchema.length > 0).length > 1 && (
                     <p className="config-progress">

@@ -1,0 +1,356 @@
+.logic-gate-config {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.logic-gate-section {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.logic-gate-section .section-title {
+  margin: 0 0 1rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Match Mode */
+.match-mode-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.match-mode-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.match-mode-option:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.match-mode-option.selected {
+  background: rgba(var(--color-primary-rgb), 0.1);
+  border-color: var(--color-primary);
+}
+
+.match-mode-option input[type="radio"] {
+  display: none;
+}
+
+.match-mode-option .mode-icon {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+.match-mode-option .mode-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.match-mode-option .mode-description {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+/* Rules List */
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.rule-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.rule-card.negated {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.rule-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.rule-number {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.negate-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.negate-toggle input:checked+span {
+  color: #ef4444;
+}
+
+.remove-rule-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.remove-rule-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.remove-rule-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.rule-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rule-field-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.rule-value-row {
+  margin-top: 0.25rem;
+}
+
+.logic-gate-field-select,
+.logic-gate-op-select,
+.logic-gate-value-select,
+.logic-gate-text-input,
+.logic-gate-time-input,
+.logic-gate-coord-input,
+.logic-gate-radius-input {
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+}
+
+.logic-gate-field-select:focus,
+.logic-gate-op-select:focus,
+.logic-gate-value-select:focus,
+.logic-gate-text-input:focus,
+.logic-gate-time-input:focus,
+.logic-gate-coord-input:focus,
+.logic-gate-radius-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.logic-gate-field-select {
+  flex: 1;
+  min-width: 150px;
+}
+
+.logic-gate-op-select {
+  min-width: 100px;
+}
+
+.logic-gate-value-select,
+.logic-gate-text-input {
+  width: 100%;
+}
+
+.logic-gate-time-input {
+  width: 120px;
+}
+
+/* Days Picker */
+.logic-gate-days-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.day-chip {
+  padding: 0.4rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: var(--color-text-secondary);
+}
+
+.day-chip:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.day-chip.selected {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+/* Location Inputs */
+.logic-gate-location-inputs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.logic-gate-coord-input {
+  flex: 1;
+  min-width: 100px;
+}
+
+.logic-gate-radius-input {
+  width: 100px;
+}
+
+/* Rule Preview */
+.rule-preview {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* Add Rule Button */
+.add-rule-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-rule-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Actions Section */
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.action-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.action-field label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.action-select {
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.action-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.action-summary {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(var(--color-primary-rgb), 0.05);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.action-summary strong {
+  color: var(--color-text);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .match-mode-options {
+    grid-template-columns: 1fr;
+  }
+
+  .rule-field-row {
+    flex-direction: column;
+  }
+
+  .logic-gate-field-select,
+  .logic-gate-op-select {
+    width: 100%;
+  }
+
+  .logic-gate-location-inputs {
+    flex-direction: column;
+  }
+
+  .logic-gate-coord-input,
+  .logic-gate-radius-input {
+    width: 100%;
+  }
+}

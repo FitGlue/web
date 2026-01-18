@@ -251,11 +251,18 @@ const DashboardPage: React.FC = () => {
                                             <span className="pipeline-name-mini">{pipeline.name}</span>
                                         )}
                                         <span className="pipeline-flow-mini">
-                                            {getSourceIcon(pipeline.source)} {getSourceName(pipeline.source)}
+                                            <span className="pipeline-source-mini">
+                                                {getSourceIcon(pipeline.source)} {getSourceName(pipeline.source)}
+                                            </span>
                                             <span className="arrow">→</span>
-                                            {pipeline.destinations.map((d, i) => (
-                                                <span key={i}>{getDestinationName(d)}</span>
-                                            ))}
+                                            <span className="pipeline-destinations-mini">
+                                                {pipeline.destinations.map((d, i) => (
+                                                    <span key={i} className="destination-item">
+                                                        {i > 0 && <span className="destination-separator">/</span>}
+                                                        {getDestinationName(d)}
+                                                    </span>
+                                                ))}
+                                            </span>
                                         </span>
                                         <span className="enricher-count">
                                             {pipeline.enrichers?.length ?? 0} enricher{(pipeline.enrichers?.length ?? 0) !== 1 ? 's' : ''}

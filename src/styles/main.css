@@ -1868,6 +1868,29 @@ h3 {
     letter-spacing: 0.05em;
 }
 
+/* Multi-destination container */
+.flow-destinations-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+
+.flow-destination-item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flow-destination-separator {
+    color: var(--color-text-muted);
+    opacity: 0.5;
+    font-size: 1.25rem;
+    margin: 0 0.25rem;
+}
+
 /* Flow Connector */
 .flow-connector {
     display: flex;
@@ -2043,6 +2066,15 @@ h3 {
         min-width: auto;
         width: 100%;
         justify-content: center;
+    }
+
+    .flow-destination-item {
+        flex-direction: row;
+    }
+
+    .flow-destinations-container {
+        flex-direction: row;
+        gap: 0.25rem;
     }
 
     .boosters-container {
@@ -2948,20 +2980,63 @@ h3 {
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     font-size: 0.9rem;
+    gap: 0.75rem;
 }
 
 .pipeline-summary-item:last-child {
     border-bottom: none;
 }
 
+/* Pipeline name styling */
+.pipeline-name-mini {
+    width: 100%;
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
 .pipeline-flow-mini {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .pipeline-flow-mini .arrow {
     color: var(--color-text-muted);
+    flex-shrink: 0;
+}
+
+.pipeline-source-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.pipeline-destinations-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pipeline-destinations-mini .destination-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+}
+
+.pipeline-destinations-mini .destination-separator {
+    color: var(--color-text-muted);
+    opacity: 0.6;
 }
 
 .enricher-count {
@@ -2970,6 +3045,8 @@ h3 {
     background: rgba(255, 255, 255, 0.05);
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .more-info {

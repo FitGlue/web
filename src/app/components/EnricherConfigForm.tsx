@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ConfigFieldSchema, ConfigFieldType } from '../types/plugin';
+import { useApi } from '../hooks/useApi';
 import './EnricherConfigForm.css';
 
 interface Props {
@@ -129,6 +130,15 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
             valuePlaceholder="Value"
             keyOptions={field.keyOptions?.length > 0 ? field.keyOptions : undefined}
             valueOptions={field.valueOptions?.length > 0 ? field.valueOptions : undefined}
+          />
+        );
+
+      case ConfigFieldType.CONFIG_FIELD_TYPE_DYNAMIC_SELECT:
+        return (
+          <DynamicSelectField
+            field={field}
+            value={value}
+            onChange={v => handleChange(field.key, v)}
           />
         );
 
@@ -279,6 +289,111 @@ const KeyValueMapEditor: React.FC<KeyValueMapEditorProps> = ({
       <button type="button" onClick={addEntry} className="kv-add">
         + Add Rule
       </button>
+    </div>
+  );
+};
+
+/**
+ * DynamicSelectField - A combo-box that fetches options from a dynamic API endpoint
+ * and allows the user to either select an existing option or type a new value
+ */
+interface DynamicSelectFieldProps {
+  field: ConfigFieldSchema;
+  value: string;
+  onChange: (value: string) => void;
+}
+
+const DynamicSelectField: React.FC<DynamicSelectFieldProps> = ({ field, value, onChange }) => {
+  const api = useApi();
+  const [options, setOptions] = useState<{ value: string; label: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [mode, setMode] = useState<'select' | 'custom'>('select');
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      if (!field.dynamicSource) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        // Fetch options from /users/me/{dynamicSource}
+        const response = await api.get<{ id: string; count?: number }[]>(`/users/me/${field.dynamicSource}`);
+        const fetchedOptions = response.map(item => ({
+          value: item.id,
+          label: item.count !== undefined ? `${item.id} (current: ${item.count})` : item.id,
+        }));
+        setOptions(fetchedOptions);
+
+        // If current value is not in options and not empty, switch to custom mode
+        if (value && !fetchedOptions.some(opt => opt.value === value)) {
+          setMode('custom');
+        }
+      } catch {
+        // If fetching fails, just allow custom input
+        console.warn('Failed to fetch dynamic options for', field.dynamicSource);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOptions();
+  }, [api, field.dynamicSource, value]);
+
+  // Check if current value is in options
+  useEffect(() => {
+    if (!loading && value && !options.some(opt => opt.value === value)) {
+      setMode('custom');
+    }
+  }, [loading, value, options]);
+
+  if (loading) {
+    return <div className="config-input">Loading options...</div>;
+  }
+
+  return (
+    <div className="dynamic-select-field">
+      <div className="dynamic-select-header">
+        <button
+          type="button"
+          className={`dynamic-select-tab ${mode === 'select' ? 'active' : ''}`}
+          onClick={() => { setMode('select'); onChange(''); }}
+        >
+          Select Existing
+        </button>
+        <button
+          type="button"
+          className={`dynamic-select-tab ${mode === 'custom' ? 'active' : ''}`}
+          onClick={() => setMode('custom')}
+        >
+          Create New
+        </button>
+      </div>
+
+      {mode === 'select' ? (
+        <select
+          id={field.key}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          className="config-select"
+        >
+          <option value="">Select...</option>
+          {options.map(opt => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type="text"
+          id={field.key}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          placeholder="Enter new counter key"
+          className="config-input"
+        />
+      )}
     </div>
   );
 };
