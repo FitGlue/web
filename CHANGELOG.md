@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/fitglue/web/compare/v1.3.0...v1.4.0) (2026-01-18)
+
+
+### Features
+
+* add public ID authentication type and its corresponding setup UI. ([1210dda](https://github.com/fitglue/web/commit/1210ddab75d1840f6354834cf79372d5b08e1339))
+
 ## [1.3.0](https://github.com/fitglue/web/compare/v1.2.0...v1.3.0) (2026-01-18)
 
 
