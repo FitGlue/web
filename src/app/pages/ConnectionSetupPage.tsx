@@ -277,6 +277,66 @@ const ConnectionSetupPage: React.FC = () => {
         );
     };
 
+    const renderPublicIdSetup = () => {
+        const steps = parseInstructions(integration.setupInstructions || '');
+
+        return (
+            <div className="connection-setup">
+                <div className="connection-setup__header">
+                    <span className="connection-setup__icon">{integration.icon}</span>
+                    <h1>Connect {integration.name}</h1>
+                </div>
+
+                <form onSubmit={handleApiKeySubmit}>
+                    <div className="connection-setup__section">
+                        <h2>Enter your {integration.name} Details</h2>
+                        <div className="connection-setup__instructions">
+                            <ol>
+                                {steps.map((step, i) => (
+                                    <li key={i}>{renderText(step)}</li>
+                                ))}
+                            </ol>
+                        </div>
+
+                        <div className="connection-setup__input">
+                            <label htmlFor="apiKey">{integration.apiKeyLabel || 'ID'}</label>
+                            <input
+                                id="apiKey"
+                                type="text"
+                                value={apiKey}
+                                onChange={e => setApiKey(e.target.value)}
+                                placeholder={`Enter your ${integration.apiKeyLabel || 'ID'}`}
+                                disabled={submitting}
+                            />
+                        </div>
+                    </div>
+
+                    {error && (
+                        <div className="connection-setup__error-message">{error}</div>
+                    )}
+
+                    <div className="connection-setup__actions">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={() => navigate('/connections')}
+                            disabled={submitting}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            disabled={submitting || !apiKey.trim()}
+                        >
+                            {submitting ? 'Connecting...' : `Connect ${integration.name}`}
+                        </Button>
+                    </div>
+                </form>
+            </div>
+        );
+    };
+
     // Render based on auth type
     const authType = integration.authType as number;
 
@@ -289,6 +349,7 @@ const ConnectionSetupPage: React.FC = () => {
             {authType === IntegrationAuthType.API_KEY && renderApiKeySetup()}
             {authType === IntegrationAuthType.OAUTH && renderOAuthSetup()}
             {authType === IntegrationAuthType.APP_SYNC && renderAppSyncSetup()}
+            {authType === IntegrationAuthType.PUBLIC_ID && renderPublicIdSetup()}
             {authType === IntegrationAuthType.UNSPECIFIED && (
                 <div className="connection-setup__error">
                     <p>This connection type is not configured correctly.</p>
