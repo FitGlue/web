@@ -139,15 +139,9 @@ jobs:
             # Get web version from package.json
             WEB_VERSION=$(node -p "require('./package.json').version")
 
-            # Get server version from GCS (for prod builds only)
-            if [ "<< parameters.target >>" = "prod" ]; then
-              # Fetch server version from GCS
-              source $BASH_ENV  # Ensure gcloud is in PATH
-              SERVER_VERSION=$(gcloud storage cat gs://fitglue-server-prod-version-config/version.json 2>/dev/null | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version" || echo "1.0.0")
-            else
-              # For dev/test, use placeholder or fetch from respective env
-              SERVER_VERSION="dev"
-            fi
+            # Get server version from GCS (prod bucket holds canonical version)
+            source $BASH_ENV  # Ensure gcloud is in PATH
+            SERVER_VERSION=$(gcloud storage cat gs://fitglue-server-prod-version-config/version.json 2>/dev/null | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version" || echo "0.0.0")
 
             # Combined version: vS[server]-W[web] (e.g., vS1.2.0-W2.3.1)
             COMBINED_VERSION="vS${SERVER_VERSION}-W${WEB_VERSION}"
