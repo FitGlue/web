@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/fitglue/web/compare/v1.2.0...v1.3.0) (2026-01-18)
+
+
+### Features
+
+* Implement a multi-step onboarding welcome banner with completion tracking and adjust CI/CD release creation. ([1dd93ad](https://github.com/fitglue/web/commit/1dd93adad5565146f7985544287bfd7e8151f829))
+
 ## [1.2.0](https://github.com/fitglue/web/compare/v1.1.0...v1.2.0) (2026-01-17)
 
 
