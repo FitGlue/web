@@ -241,7 +241,15 @@ const ActivityDetailPage: React.FC = () => {
                             if (platform.toLowerCase() === 'strava') {
                                 externalUrl = `https://www.strava.com/activities/${activityIdStr}`;
                             } else if (platform.toLowerCase() === 'showcase') {
-                                const showcaseDomain = import.meta.env.DEV ? 'dev.fitglue.tech' : 'fitglue.tech';
+                                const hostname = window.location.hostname;
+                                let showcaseDomain: string;
+                                if (hostname.includes('dev.fitglue') || hostname === 'localhost') {
+                                    showcaseDomain = 'dev.fitglue.tech';
+                                } else if (hostname.includes('test.fitglue')) {
+                                    showcaseDomain = 'test.fitglue.tech';
+                                } else {
+                                    showcaseDomain = 'fitglue.tech';
+                                }
                                 externalUrl = `https://${showcaseDomain}/showcase/${activityIdStr}`;
                             }
 

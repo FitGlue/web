@@ -15,6 +15,7 @@ import { Button } from '../components/ui/Button';
 import { LoadingState } from '../components/ui/LoadingState';
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
 import { GalleryOfBoosts } from '../components/dashboard/GalleryOfBoosts';
+import { FileUploadPanel } from '../components/dashboard/FileUploadPanel';
 import { IntegrationsSummary } from '../state/integrationsState';
 import { RedirectNotification } from './NotFoundPage';
 
@@ -297,6 +298,9 @@ const DashboardPage: React.FC = () => {
                 </Card>
             </div>
 
+
+            {/* File Upload Panel - Only shows if user has file_upload pipelines */}
+            <FileUploadPanel />
 
             {/* Gallery of Boosts - Visual Proof of Enrichments */}
             <GalleryOfBoosts

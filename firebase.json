@@ -41,6 +41,10 @@
         }
       },
       {
+        "source": "/showcase/**",
+        "destination": "/showcase.html"
+      },
+      {
         "source": "/api/showcase/**",
         "run": {
           "serviceId": "showcase-handler",
@@ -177,6 +181,13 @@
         "source": "/api/mobile/sync",
         "run": {
           "serviceId": "mobile-sync-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/upload",
+        "run": {
+          "serviceId": "file-upload-handler",
           "region": "us-central1"
         }
       },

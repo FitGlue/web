@@ -1,0 +1,98 @@
+.file-upload-panel {
+  margin-top: var(--spacing-lg);
+}
+
+.file-upload-panel h3 {
+  margin-bottom: var(--spacing-md);
+  font-size: 1.125rem;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.file-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.file-input-wrapper input[type="file"] {
+  padding: var(--spacing-sm);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.file-input-wrapper input[type="file"]:hover {
+  border-color: var(--color-primary);
+}
+
+.file-name {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.text-input {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-family: inherit;
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.text-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+textarea.text-input {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.upload-message {
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.upload-message.success {
+  background: var(--color-success-bg, rgba(34, 197, 94, 0.1));
+  color: var(--color-success, #22c55e);
+}
+
+.upload-message.error {
+  background: var(--color-error-bg, rgba(239, 68, 68, 0.1));
+  color: var(--color-error, #ef4444);
+}
+
+.no-pipeline-warning {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  background: var(--color-warning-bg, rgba(234, 179, 8, 0.1));
+  color: var(--color-warning, #eab308);
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.no-pipeline-warning a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}

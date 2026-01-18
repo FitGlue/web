@@ -1,0 +1,341 @@
+{{>header}}
+
+<main>
+  <section class="showcase-hero">
+    <div class="container">
+      <!-- Loading State -->
+      <div id="showcase-loading" class="showcase-loading">
+        <div class="loading-spinner"></div>
+        <p>Loading activity...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="showcase-error" class="showcase-error" style="display: none;">
+        <div class="error-icon">❌</div>
+        <h1>Activity Not Found</h1>
+        <p id="error-message">This showcase may have expired or doesn't exist.</p>
+        <a href="/" class="btn btn-primary">Go to FitGlue</a>
+      </div>
+
+      <!-- Success State -->
+      <div id="showcase-content" class="showcase-content" style="display: none;">
+        <!-- Header -->
+        <div class="showcase-header animate-on-scroll">
+          <div class="showcase-badge">
+            <span class="badge-icon">✨</span>
+            <span class="badge-text">Enhanced by FitGlue</span>
+          </div>
+          <h1 id="activity-title" class="showcase-title"></h1>
+          <div class="showcase-meta">
+            <span id="activity-type" class="activity-type-badge"></span>
+            <span id="activity-date" class="activity-date"></span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div id="description-section" class="showcase-card animate-on-scroll" style="display: none;">
+          <h2>📝 Description</h2>
+          <pre id="activity-description" class="activity-description"></pre>
+        </div>
+
+        <!-- Enrichments Applied -->
+        <div id="enrichments-section" class="showcase-card animate-on-scroll" style="display: none;">
+          <h2>🚀 Enhancements Applied</h2>
+          <div id="enrichment-badges" class="enrichment-badges"></div>
+        </div>
+
+        <!-- Tags -->
+        <div id="tags-section" class="showcase-card animate-on-scroll" style="display: none;">
+          <h2>🏷️ Tags</h2>
+          <div id="activity-tags" class="activity-tags"></div>
+        </div>
+
+        <!-- CTA -->
+        <div class="showcase-cta animate-on-scroll">
+          <p>Want to enhance your own activities?</p>
+          <a href="/" class="btn btn-primary btn-lg">Try FitGlue Free</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<style>
+  .showcase-hero {
+    min-height: 100vh;
+    background: var(--gradient-hero);
+    padding: var(--space-xl) 0;
+  }
+
+  .showcase-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    color: var(--color-text-muted);
+    gap: var(--space-md);
+  }
+
+  .loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--color-bg-tertiary);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .showcase-error {
+    text-align: center;
+    padding: var(--space-xl);
+  }
+
+  .error-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .showcase-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .showcase-header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+  }
+
+  .showcase-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    background: rgba(131, 56, 236, 0.2);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-pill);
+    padding: var(--space-xs) var(--space-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+  }
+
+  .showcase-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: var(--space-md);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .showcase-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .activity-type-badge {
+    background: var(--color-bg-tertiary);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .activity-date {
+    color: var(--color-text-muted);
+  }
+
+  .showcase-card {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    border: 1px solid var(--color-border);
+  }
+
+  .showcase-card h2 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-md);
+    color: var(--color-text);
+  }
+
+  .activity-description {
+    background: var(--color-bg-tertiary);
+    padding: var(--space-md);
+    border-radius: var(--radius-sm);
+    white-space: pre-wrap;
+    font-family: inherit;
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+
+  .enrichment-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .enrichment-badge {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: white;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+  }
+
+  .activity-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .activity-tag {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-muted);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  .showcase-cta {
+    text-align: center;
+    margin-top: var(--space-xl);
+    padding: var(--space-xl);
+    background: var(--gradient-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+  }
+
+  .showcase-cta p {
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-lg);
+  }
+
+  @media (max-width: 640px) {
+    .showcase-card {
+      padding: var(--space-md);
+    }
+  }
+</style>
+
+<script>
+  (async function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const showcaseId = urlParams.get('id');
+
+    const loadingEl = document.getElementById('showcase-loading');
+    const errorEl = document.getElementById('showcase-error');
+    const contentEl = document.getElementById('showcase-content');
+    const errorMsgEl = document.getElementById('error-message');
+
+    if (!showcaseId) {
+      loadingEl.style.display = 'none';
+      errorEl.style.display = 'block';
+      errorMsgEl.textContent = 'No showcase ID provided.';
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/showcase/${showcaseId}`);
+
+      if (!response.ok) {
+        loadingEl.style.display = 'none';
+        errorEl.style.display = 'block';
+
+        if (response.status === 404) {
+          errorMsgEl.textContent = 'This showcase doesn\'t exist.';
+        } else if (response.status === 410) {
+          errorMsgEl.textContent = 'This showcase has expired.';
+        } else {
+          errorMsgEl.textContent = 'Failed to load showcase.';
+        }
+        return;
+      }
+
+      const data = await response.json();
+
+      // Populate content
+      document.getElementById('activity-title').textContent = data.title || 'Activity';
+      document.getElementById('activity-type').textContent = formatActivityType(data.activityType);
+
+      if (data.startTime) {
+        const date = new Date(data.startTime);
+        document.getElementById('activity-date').textContent = date.toLocaleDateString(undefined, {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      }
+
+      // Description
+      if (data.description) {
+        document.getElementById('description-section').style.display = 'block';
+        document.getElementById('activity-description').textContent = data.description;
+      }
+
+      // Enrichments
+      if (data.appliedEnrichments && data.appliedEnrichments.length > 0) {
+        document.getElementById('enrichments-section').style.display = 'block';
+        const badgesEl = document.getElementById('enrichment-badges');
+        data.appliedEnrichments.forEach(enrichment => {
+          const badge = document.createElement('span');
+          badge.className = 'enrichment-badge';
+          badge.textContent = formatEnrichmentName(enrichment);
+          badgesEl.appendChild(badge);
+        });
+      }
+
+      // Tags
+      if (data.tags && data.tags.length > 0) {
+        document.getElementById('tags-section').style.display = 'block';
+        const tagsEl = document.getElementById('activity-tags');
+        data.tags.forEach(tag => {
+          const tagEl = document.createElement('span');
+          tagEl.className = 'activity-tag';
+          tagEl.textContent = tag;
+          tagsEl.appendChild(tagEl);
+        });
+      }
+
+      // Show content
+      loadingEl.style.display = 'none';
+      contentEl.style.display = 'block';
+
+    } catch (error) {
+      console.error('Error loading showcase:', error);
+      loadingEl.style.display = 'none';
+      errorEl.style.display = 'block';
+      errorMsgEl.textContent = 'An error occurred while loading.';
+    }
+
+    function formatActivityType(type) {
+      const types = {
+        0: 'Workout', 1: 'Alpine Ski', 2: 'Backcountry Ski', 3: 'Badminton',
+        4: 'Canoeing', 5: 'CrossFit', 6: 'E-Bike Ride', 7: 'Elliptical',
+        13: 'Hike', 23: 'Ride', 27: 'Run', 37: 'Swim', 40: 'Trail Run',
+        45: 'Walk', 46: 'Weight Training', 49: 'Workout', 50: 'Yoga'
+      };
+      return types[type] || 'Workout';
+    }
+
+    function formatEnrichmentName(name) {
+      return name
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, c => c.toUpperCase());
+    }
+  })();
+</script>
+
+{{>footer}}
