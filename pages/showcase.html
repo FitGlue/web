@@ -1,7 +1,7 @@
 {{>header}}
 
 <main>
-  <section class="showcase-hero">
+  <section class="showcase-page">
     <div class="container">
       <!-- Loading State -->
       <div id="showcase-loading" class="showcase-loading">
@@ -10,50 +10,88 @@
       </div>
 
       <!-- Error State -->
-      <div id="showcase-error" class="showcase-error" style="display: none;">
-        <div class="error-icon">❌</div>
-        <h1>Activity Not Found</h1>
-        <p id="error-message">This showcase may have expired or doesn't exist.</p>
-        <a href="/" class="btn btn-primary">Go to FitGlue</a>
+      <div id="showcase-error" class="showcase-error glass-card" style="display: none;">
+        <div class="error-icon">🏃🏃‍♂️🏃‍♀️</div>
+        <h1>This Activity Got Away!</h1>
+        <p id="error-message">Looks like this showcase sprinted off before we could catch it.</p>
+        <p class="error-subtitle">It may have expired, or perhaps the link has a typo.</p>
+        <a href="/" class="btn btn-primary">Explore FitGlue</a>
       </div>
 
       <!-- Success State -->
       <div id="showcase-content" class="showcase-content" style="display: none;">
-        <!-- Header -->
-        <div class="showcase-header animate-on-scroll">
-          <div class="showcase-badge">
-            <span class="badge-icon">✨</span>
-            <span class="badge-text">Enhanced by FitGlue</span>
-          </div>
+
+        <!-- Hero Header -->
+        <div class="showcase-hero">
           <h1 id="activity-title" class="showcase-title"></h1>
           <div class="showcase-meta">
             <span id="activity-type" class="activity-type-badge"></span>
+            <span id="activity-source" class="activity-source"></span>
             <span id="activity-date" class="activity-date"></span>
           </div>
         </div>
 
+        <!-- Stats Grid -->
+        <div id="stats-section" class="stats-grid" style="display: none;"></div>
+
+        <!-- Enrichments Applied (Premium Feature) -->
+        <div id="enrichments-section" class="showcase-section" style="display: none;">
+          <div class="section-header">
+            <h2>🚀 Boosters Applied</h2>
+            <span class="section-subtitle">FitGlue magic that enhanced this activity</span>
+          </div>
+          <div id="enrichment-badges" class="enrichment-list"></div>
+        </div>
+
         <!-- Description -->
-        <div id="description-section" class="showcase-card animate-on-scroll" style="display: none;">
-          <h2>📝 Description</h2>
+        <div id="description-section" class="showcase-section" style="display: none;">
+          <div class="section-header">
+            <h2>📝 Workout Summary</h2>
+          </div>
           <pre id="activity-description" class="activity-description"></pre>
         </div>
 
-        <!-- Enrichments Applied -->
-        <div id="enrichments-section" class="showcase-card animate-on-scroll" style="display: none;">
-          <h2>🚀 Enhancements Applied</h2>
-          <div id="enrichment-badges" class="enrichment-badges"></div>
+        <!-- Strength Sets / Exercises -->
+        <div id="exercises-section" class="showcase-section" style="display: none;">
+          <div class="section-header">
+            <h2>� Exercises</h2>
+            <span id="exercise-count" class="section-subtitle"></span>
+          </div>
+          <div id="exercise-list" class="exercise-list"></div>
+        </div>
+
+        <!-- Heart Rate Data -->
+        <div id="hr-section" class="showcase-section" style="display: none;">
+          <div class="section-header">
+            <h2>❤️ Heart Rate</h2>
+          </div>
+          <div id="hr-stats" class="hr-stats"></div>
         </div>
 
         <!-- Tags -->
-        <div id="tags-section" class="showcase-card animate-on-scroll" style="display: none;">
-          <h2>🏷️ Tags</h2>
+        <div id="tags-section" class="showcase-section" style="display: none;">
+          <div class="section-header">
+            <h2>🏷️ Tags</h2>
+          </div>
           <div id="activity-tags" class="activity-tags"></div>
         </div>
 
         <!-- CTA -->
-        <div class="showcase-cta animate-on-scroll">
-          <p>Want to enhance your own activities?</p>
+        <div class="showcase-cta glass-card">
+          <div class="cta-content">
+            <h3>Want to enhance your own activities?</h3>
+            <p>FitGlue automatically enriches your workouts with muscle heatmaps, heart rate data, and beautiful
+              summaries.</p>
+          </div>
           <a href="/" class="btn btn-primary btn-lg">Try FitGlue Free</a>
+        </div>
+
+        <!-- Footer Attribution -->
+        <div class="showcase-attribution">
+          <span>Powered by</span>
+          <a href="/" class="fitglue-logo">
+            <span class="fit">Fit</span><span class="glue">Glue</span>
+          </a>
         </div>
       </div>
     </div>
@@ -61,10 +99,10 @@
 </main>
 
 <style>
-  .showcase-hero {
+  .showcase-page {
     min-height: 100vh;
     background: var(--gradient-hero);
-    padding: var(--space-xl) 0;
+    padding: var(--space-lg) 0;
   }
 
   .showcase-loading {
@@ -72,7 +110,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 60vh;
+    min-height: 80vh;
     color: var(--color-text-muted);
     gap: var(--space-md);
   }
@@ -87,12 +125,15 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .showcase-error {
     text-align: center;
-    padding: var(--space-xl);
+    max-width: 500px;
+    margin: 15vh auto 0;
   }
 
   .error-icon {
@@ -100,36 +141,75 @@
     margin-bottom: var(--space-md);
   }
 
+  .showcase-error h1 {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    margin-bottom: var(--space-md);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .showcase-error p {
+    font-size: var(--font-size-base);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-xs);
+  }
+
+  .error-subtitle {
+    font-size: var(--font-size-sm) !important;
+    opacity: 0.7;
+    margin-bottom: var(--space-lg) !important;
+  }
+
   .showcase-content {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
   }
 
-  .showcase-header {
+  /* Hero */
+  .showcase-hero {
     text-align: center;
-    margin-bottom: var(--space-xl);
+    padding: var(--space-lg) var(--space-md) var(--space-md);
+    margin-bottom: var(--space-md);
   }
 
   .showcase-badge {
     display: inline-flex;
     align-items: center;
     gap: var(--space-xs);
-    background: rgba(131, 56, 236, 0.2);
-    border: 1px solid var(--color-primary);
+    background: rgba(131, 56, 236, 0.15);
+    border: 1px solid rgba(131, 56, 236, 0.4);
     border-radius: var(--radius-pill);
     padding: var(--space-xs) var(--space-md);
     font-size: var(--font-size-sm);
     color: var(--color-primary);
     margin-bottom: var(--space-md);
+    backdrop-filter: blur(10px);
   }
 
   .showcase-title {
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 800;
     margin-bottom: var(--space-md);
-    background: var(--gradient-primary);
+    background: linear-gradient(90deg,
+        var(--color-primary) 0%,
+        var(--color-secondary) 25%,
+        #fff 50%,
+        var(--color-secondary) 75%,
+        var(--color-primary) 100%);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    line-height: 1.1;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    to {
+      background-position: 200% center;
+    }
   }
 
   .showcase-meta {
@@ -141,58 +221,201 @@
   }
 
   .activity-type-badge {
-    background: var(--color-bg-tertiary);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
     padding: var(--space-xs) var(--space-sm);
     border-radius: var(--radius-sm);
-    font-weight: 600;
-    color: var(--color-accent);
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .activity-source {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
   }
 
   .activity-date {
     color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
   }
 
-  .showcase-card {
-    background: var(--color-bg-secondary);
+  /* Glass Cards */
+  .glass-card {
+    background: rgba(30, 30, 40, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-lg);
-    padding: var(--space-lg);
-    margin-bottom: var(--space-md);
-    border: 1px solid var(--color-border);
+    padding: var(--space-md);
+    margin-bottom: var(--space-sm);
   }
 
-  .showcase-card h2 {
+  .showcase-section {
+    margin-bottom: var(--space-sm);
+  }
+
+  .section-header {
+    margin-bottom: var(--space-sm);
+  }
+
+  .section-header h2 {
     font-size: var(--font-size-lg);
-    margin-bottom: var(--space-md);
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
     color: var(--color-text);
   }
 
-  .activity-description {
-    background: var(--color-bg-tertiary);
+  .section-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+  }
+
+  .stat-card {
+    background: rgba(30, 30, 40, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
     padding: var(--space-md);
-    border-radius: var(--radius-sm);
+    text-align: center;
+  }
+
+  .stat-icon {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-xs);
+  }
+
+  .stat-value {
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: var(--space-xs);
+  }
+
+  /* Enrichments */
+  .enrichment-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .enrichment-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    background: rgba(131, 56, 236, 0.1);
+    border: 1px solid rgba(131, 56, 236, 0.2);
+    border-radius: var(--radius-md);
+  }
+
+  .enrichment-icon {
+    font-size: 1.5rem;
+  }
+
+  .enrichment-info {
+    flex: 1;
+  }
+
+  .enrichment-name {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .enrichment-desc {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  /* Description */
+  .activity-description {
+    background: rgba(0, 0, 0, 0.3);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
     white-space: pre-wrap;
     font-family: inherit;
     font-size: var(--font-size-base);
     color: var(--color-text);
-    line-height: 1.6;
+    line-height: 1.7;
     overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .enrichment-badges {
+  /* Exercises */
+  .exercise-list {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: var(--space-sm);
   }
 
-  .enrichment-badge {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    color: white;
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-pill);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
+  .exercise-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-accent);
   }
 
+  .exercise-name {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .exercise-detail {
+    display: flex;
+    gap: var(--space-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .exercise-detail span {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  /* Heart Rate */
+  .hr-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    text-align: center;
+  }
+
+  .hr-stat {}
+
+  .hr-value {
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    color: #ff6b6b;
+  }
+
+  .hr-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  /* Tags */
   .activity-tags {
     display: flex;
     flex-wrap: wrap;
@@ -200,39 +423,70 @@
   }
 
   .activity-tag {
-    background: var(--color-bg-tertiary);
-    color: var(--color-text-muted);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text);
     padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-pill);
     font-size: var(--font-size-sm);
   }
 
+  /* CTA */
   .showcase-cta {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
     margin-top: var(--space-xl);
-    padding: var(--space-xl);
-    background: var(--gradient-card);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
+    background: linear-gradient(135deg, rgba(131, 56, 236, 0.2), rgba(255, 0, 110, 0.2));
+    border: 1px solid rgba(131, 56, 236, 0.3);
   }
 
-  .showcase-cta p {
-    color: var(--color-text-muted);
-    margin-bottom: var(--space-md);
+  .cta-content h3 {
+    margin-bottom: var(--space-xs);
     font-size: var(--font-size-lg);
   }
 
+  .cta-content p {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+
   @media (max-width: 640px) {
-    .showcase-card {
-      padding: var(--space-md);
+    .showcase-cta {
+      flex-direction: column;
+      text-align: center;
     }
+  }
+
+  /* Attribution */
+  .showcase-attribution {
+    text-align: center;
+    padding: var(--space-xl) 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .fitglue-logo {
+    text-decoration: none;
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+    margin-left: var(--space-xs);
+  }
+
+  .fit {
+    color: var(--color-primary);
+  }
+
+  .glue {
+    color: var(--color-secondary);
   }
 </style>
 
 <script>
-  (async function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const showcaseId = urlParams.get('id');
+  (async function () {
+    // Extract ID from URL path: /showcase/{id}
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    let showcaseId = pathParts[0] === 'showcase' && pathParts[1] ? pathParts[1] : new URLSearchParams(window.location.search).get('id');
 
     const loadingEl = document.getElementById('showcase-loading');
     const errorEl = document.getElementById('showcase-error');
@@ -252,64 +506,13 @@
       if (!response.ok) {
         loadingEl.style.display = 'none';
         errorEl.style.display = 'block';
-
-        if (response.status === 404) {
-          errorMsgEl.textContent = 'This showcase doesn\'t exist.';
-        } else if (response.status === 410) {
-          errorMsgEl.textContent = 'This showcase has expired.';
-        } else {
-          errorMsgEl.textContent = 'Failed to load showcase.';
-        }
+        errorMsgEl.textContent = response.status === 404 ? "This showcase doesn't exist." :
+          response.status === 410 ? 'This showcase has expired.' : 'Failed to load showcase.';
         return;
       }
 
       const data = await response.json();
-
-      // Populate content
-      document.getElementById('activity-title').textContent = data.title || 'Activity';
-      document.getElementById('activity-type').textContent = formatActivityType(data.activityType);
-
-      if (data.startTime) {
-        const date = new Date(data.startTime);
-        document.getElementById('activity-date').textContent = date.toLocaleDateString(undefined, {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        });
-      }
-
-      // Description
-      if (data.description) {
-        document.getElementById('description-section').style.display = 'block';
-        document.getElementById('activity-description').textContent = data.description;
-      }
-
-      // Enrichments
-      if (data.appliedEnrichments && data.appliedEnrichments.length > 0) {
-        document.getElementById('enrichments-section').style.display = 'block';
-        const badgesEl = document.getElementById('enrichment-badges');
-        data.appliedEnrichments.forEach(enrichment => {
-          const badge = document.createElement('span');
-          badge.className = 'enrichment-badge';
-          badge.textContent = formatEnrichmentName(enrichment);
-          badgesEl.appendChild(badge);
-        });
-      }
-
-      // Tags
-      if (data.tags && data.tags.length > 0) {
-        document.getElementById('tags-section').style.display = 'block';
-        const tagsEl = document.getElementById('activity-tags');
-        data.tags.forEach(tag => {
-          const tagEl = document.createElement('span');
-          tagEl.className = 'activity-tag';
-          tagEl.textContent = tag;
-          tagsEl.appendChild(tagEl);
-        });
-      }
-
-      // Show content
+      renderShowcase(data);
       loadingEl.style.display = 'none';
       contentEl.style.display = 'block';
 
@@ -320,20 +523,169 @@
       errorMsgEl.textContent = 'An error occurred while loading.';
     }
 
-    function formatActivityType(type) {
-      const types = {
-        0: 'Workout', 1: 'Alpine Ski', 2: 'Backcountry Ski', 3: 'Badminton',
-        4: 'Canoeing', 5: 'CrossFit', 6: 'E-Bike Ride', 7: 'Elliptical',
-        13: 'Hike', 23: 'Ride', 27: 'Run', 37: 'Swim', 40: 'Trail Run',
-        45: 'Walk', 46: 'Weight Training', 49: 'Workout', 50: 'Yoga'
-      };
-      return types[type] || 'Workout';
+    function renderShowcase(data) {
+      // Title & Meta
+      document.getElementById('activity-title').textContent = data.title || 'Activity';
+      document.getElementById('activity-type').textContent = formatActivityType(data.activityType);
+      document.getElementById('activity-source').textContent = 'from ' + formatSource(data.source);
+
+      if (data.startTime) {
+        document.getElementById('activity-date').textContent = new Date(data.startTime).toLocaleDateString(undefined, {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+      }
+
+      // Stats
+      const activity = data.activityData;
+      if (activity && activity.sessions && activity.sessions.length > 0) {
+        const session = activity.sessions[0];
+        const statsGrid = document.getElementById('stats-section');
+        const stats = [];
+
+        if (session.totalElapsedTime) stats.push({ icon: '⏱️', value: formatDuration(session.totalElapsedTime), label: 'Duration' });
+        if (session.totalDistance) stats.push({ icon: '📏', value: formatDistance(session.totalDistance), label: 'Distance' });
+        if (session.strengthSets && session.strengthSets.length > 0) {
+          const totalSets = session.strengthSets.length;
+          const totalReps = session.strengthSets.reduce((sum, s) => sum + (s.reps || 0), 0);
+          const totalWeight = session.strengthSets.reduce((sum, s) => sum + ((s.reps || 0) * (s.weightKg || 0)), 0);
+          stats.push({ icon: '🔢', value: totalSets, label: 'Sets' });
+          stats.push({ icon: '💪', value: totalReps, label: 'Reps' });
+          if (totalWeight > 0) stats.push({ icon: '⚖️', value: formatWeight(totalWeight), label: 'Total Volume' });
+        }
+
+        if (stats.length > 0) {
+          statsGrid.innerHTML = stats.map(s => `
+          <div class="stat-card">
+            <div class="stat-icon">${s.icon}</div>
+            <div class="stat-value">${s.value}</div>
+            <div class="stat-label">${s.label}</div>
+          </div>
+        `).join('');
+          statsGrid.style.display = 'grid';
+        }
+
+        // Exercises
+        if (session.strengthSets && session.strengthSets.length > 0) {
+          const exercisesSection = document.getElementById('exercises-section');
+          const exerciseList = document.getElementById('exercise-list');
+          const exercises = groupExercises(session.strengthSets);
+
+          document.getElementById('exercise-count').textContent = `${Object.keys(exercises).length} exercises`;
+
+          exerciseList.innerHTML = Object.entries(exercises).map(([name, sets]) => {
+            const setInfo = sets.map(s => s.weightKg > 0 ? `${s.reps}×${s.weightKg}kg` : `${s.reps} reps`).join(', ');
+            return `
+            <div class="exercise-item">
+              <span class="exercise-name">${name}</span>
+              <div class="exercise-detail">
+                <span>📊 ${sets.length} sets</span>
+                <span>💪 ${setInfo}</span>
+              </div>
+            </div>
+          `;
+          }).join('');
+          exercisesSection.style.display = 'block';
+        }
+
+        // Heart Rate
+        const allRecords = session.laps ? session.laps.flatMap(l => l.records || []) : [];
+        const hrValues = allRecords.filter(r => r.heartRate > 0).map(r => r.heartRate);
+        if (hrValues.length > 0) {
+          const hrSection = document.getElementById('hr-section');
+          const avg = Math.round(hrValues.reduce((a, b) => a + b, 0) / hrValues.length);
+          const max = Math.max(...hrValues);
+          const min = Math.min(...hrValues);
+          document.getElementById('hr-stats').innerHTML = `
+          <div class="hr-stat"><div class="hr-value">${avg}</div><div class="hr-label">Avg BPM</div></div>
+          <div class="hr-stat"><div class="hr-value">${max}</div><div class="hr-label">Max BPM</div></div>
+          <div class="hr-stat"><div class="hr-value">${min}</div><div class="hr-label">Min BPM</div></div>
+        `;
+          hrSection.style.display = 'block';
+        }
+      }
+
+      // Enrichments
+      if (data.appliedEnrichments && data.appliedEnrichments.length > 0) {
+        const enrichSection = document.getElementById('enrichments-section');
+        const badgesEl = document.getElementById('enrichment-badges');
+        badgesEl.innerHTML = data.appliedEnrichments.map(e => {
+          const info = getEnricherInfo(e);
+          return `
+          <div class="enrichment-item">
+            <span class="enrichment-icon">${info.icon}</span>
+            <div class="enrichment-info">
+              <div class="enrichment-name">${info.name}</div>
+              <div class="enrichment-desc">${info.desc}</div>
+            </div>
+          </div>
+        `;
+        }).join('');
+        enrichSection.style.display = 'block';
+      }
+
+      // Description
+      if (data.description) {
+        document.getElementById('description-section').style.display = 'block';
+        document.getElementById('activity-description').textContent = data.description;
+      }
+
+      // Tags
+      if (data.tags && data.tags.length > 0) {
+        document.getElementById('tags-section').style.display = 'block';
+        document.getElementById('activity-tags').innerHTML = data.tags.map(t =>
+          `<span class="activity-tag">${t}</span>`
+        ).join('');
+      }
     }
 
-    function formatEnrichmentName(name) {
-      return name
-        .replace(/-/g, ' ')
-        .replace(/\b\w/g, c => c.toUpperCase());
+    function formatActivityType(type) {
+      const types = {
+        0: 'Workout', 5: 'CrossFit', 12: 'HIIT', 13: 'Hike', 23: 'Ride', 27: 'Run', 37: 'Swim',
+        40: 'Trail Run', 45: 'Walk', 46: 'Weight Training', 49: 'Workout', 50: 'Yoga'
+      };
+      return types[type] || 'Activity';
+    }
+
+    function formatSource(source) {
+      // ActivitySource enum: HEVY=1, FITBIT=3, PARKRUN_RESULTS=4, FILE_UPLOAD=5
+      const sources = { 0: 'Unknown', 1: 'Hevy', 3: 'Fitbit', 4: 'Parkrun', 5: 'FIT Upload', 99: 'Test' };
+      return sources[source] || 'Unknown';
+    }
+
+    function formatDuration(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      return h > 0 ? `${h}h ${m}m` : `${m}m`;
+    }
+
+    function formatDistance(meters) {
+      return meters >= 1000 ? `${(meters / 1000).toFixed(1)}km` : `${Math.round(meters)}m`;
+    }
+
+    function formatWeight(kg) {
+      return kg >= 1000 ? `${(kg / 1000).toFixed(1)}t` : `${Math.round(kg)}kg`;
+    }
+
+    function groupExercises(sets) {
+      return sets.reduce((acc, set) => {
+        const name = set.exerciseName || 'Unknown';
+        if (!acc[name]) acc[name] = [];
+        acc[name].push(set);
+        return acc;
+      }, {});
+    }
+
+    function getEnricherInfo(id) {
+      const enrichers = {
+        'workout-summary': { icon: '📝', name: 'Workout Summary', desc: 'Generated detailed exercise breakdown' },
+        'muscle-heatmap': { icon: '🔥', name: 'Muscle Heatmap', desc: 'Visualized muscle group activation' },
+        'fitbit-heart-rate': { icon: '❤️', name: 'Heart Rate Enricher', desc: 'Added heart rate telemetry from Fitbit' },
+        'virtual-gps': { icon: '🗺️', name: 'Virtual GPS', desc: 'Added GPS coordinates for mapping' },
+        'parkrun': { icon: '🏃', name: 'Parkrun Results', desc: 'Added official Parkrun times and position' },
+        'user-input': { icon: '✏️', name: 'User Input', desc: 'Custom data added by user' },
+        'source-link': { icon: '🔗', name: 'Source Link', desc: 'Added link back to original activity' },
+      };
+      return enrichers[id] || { icon: '⚡', name: id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), desc: 'Enhanced activity data' };
     }
   })();
 </script>
