@@ -1,7 +1,14 @@
 {{>header}}
 <style>
-  .header {
+  header.header {
     display: none !important;
+  }
+
+  footer.footer {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
   }
 </style>
 
@@ -27,6 +34,7 @@
     <!-- Hero Header -->
     <div class="showcase-hero">
       <h1 id="activity-title" class="showcase-title"></h1>
+      <div id="owner-attribution" class="owner-attribution" style="display: none;"></div>
       <div class="showcase-meta">
         <span id="activity-type" class="activity-type-badge"></span>
         <span id="activity-source" class="activity-source"></span>
@@ -297,6 +305,25 @@
     justify-content: center;
     gap: 1rem;
     flex-wrap: wrap;
+  }
+
+  .owner-attribution {
+    font-size: 1.1rem;
+    color: #aaa;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .owner-name {
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #FF1B8D, #9D4EDD);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .activity-type-badge {
@@ -747,6 +774,13 @@
       document.getElementById('activity-title').textContent = data.title || 'Activity';
       document.getElementById('activity-type').textContent = formatActivityType(data.activityType);
       document.getElementById('activity-source').textContent = 'from ' + formatSource(data.source);
+
+      // Owner attribution
+      if (data.ownerDisplayName) {
+        const attrEl = document.getElementById('owner-attribution');
+        attrEl.innerHTML = `by <span class="owner-name">${data.ownerDisplayName}</span>`;
+        attrEl.style.display = 'flex';
+      }
 
       if (data.startTime) {
         document.getElementById('activity-date').textContent = new Date(data.startTime).toLocaleDateString(undefined, {
