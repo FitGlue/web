@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.9.0](https://github.com/fitglue/web/compare/v1.8.0...v1.9.0) (2026-01-19)
+
+
+### Features
+
+* Migrate web client to Protobuf-generated data models, replacing custom activity types and updating UI components. ([e3e3eb4](https://github.com/fitglue/web/commit/e3e3eb41e470c861a8466f114fb7f7c757124fae))
+
+
+### Bug Fixes
+
+* linting ([4230e07](https://github.com/fitglue/web/commit/4230e073d5b2b249acf88188333e5f26b54cced8))
+
 ## [1.8.0](https://github.com/fitglue/web/compare/v1.7.0...v1.8.0) (2026-01-19)
 
 
