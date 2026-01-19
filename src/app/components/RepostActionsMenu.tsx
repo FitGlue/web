@@ -1,12 +1,42 @@
 import React, { useState } from 'react';
 import { SynchronizedActivity, ActivitiesService, RepostResponse } from '../services/ActivitiesService';
+import { Destination } from '../../types/pb/events';
+import { formatDestination } from '../../types/pb/enum-formatters';
 import './RepostActionsMenu.css';
 
-// Available destinations that can be added
-const AVAILABLE_DESTINATIONS = [
-    { key: 'strava', name: 'Strava', icon: '🏃' },
-    { key: 'showcase', name: 'Showcase', icon: '🔗' },
-];
+// Icons for destinations (can be extended as needed)
+const DESTINATION_ICONS: Record<string, string> = {
+    strava: '🏃',
+    showcase: '🔗',
+    hevy: '💪',
+};
+
+// Generate available destinations dynamically from proto enum
+// Excludes UNSPECIFIED, MOCK, and UNRECOGNIZED
+const getAvailableDestinations = () => {
+    const destinations: { key: string; name: string; icon: string; enumValue: Destination }[] = [];
+
+    // Iterate through the Destination enum values
+    for (const key in Destination) {
+        const value = Destination[key as keyof typeof Destination];
+        if (typeof value === 'number' &&
+            value !== Destination.DESTINATION_UNSPECIFIED &&
+            value !== Destination.DESTINATION_MOCK &&
+            value !== Destination.UNRECOGNIZED) {
+            const keyLower = key.replace('DESTINATION_', '').toLowerCase();
+            destinations.push({
+                key: keyLower,
+                name: formatDestination(value),
+                icon: DESTINATION_ICONS[keyLower] || '📤',
+                enumValue: value,
+            });
+        }
+    }
+
+    return destinations;
+};
+
+const AVAILABLE_DESTINATIONS = getAvailableDestinations();
 
 interface RepostActionsMenuProps {
     activity: SynchronizedActivity;
