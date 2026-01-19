@@ -11,7 +11,7 @@ import '../components/ui/CardSkeleton.css';
 import { EnricherBadge } from '../components/dashboard/EnricherBadge';
 import { RepostActionsMenu } from '../components/RepostActionsMenu';
 import { useNerdMode } from '../state/NerdModeContext';
-import { formatActivityType } from '../../shared/activityTypes';
+import { formatActivityType } from '../../types/pb/enum-formatters';
 import './ActivityDetailPage.css';
 
 interface ProviderExecution {

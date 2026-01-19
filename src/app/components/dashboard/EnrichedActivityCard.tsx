@@ -2,7 +2,7 @@ import React from 'react';
 import { SynchronizedActivity, ExecutionRecord } from '../../services/ActivitiesService';
 import { EnricherBadge } from './EnricherBadge';
 import { Card } from '../ui/Card';
-import { formatActivityType } from '../../../shared/activityTypes';
+import { formatActivityType } from '../../../types/pb/enum-formatters';
 
 interface EnrichedActivityCardProps {
     activity: SynchronizedActivity;

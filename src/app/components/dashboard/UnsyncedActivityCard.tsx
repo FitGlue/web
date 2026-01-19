@@ -1,7 +1,7 @@
 import React from 'react';
 import { UnsynchronizedEntry } from '../../services/ActivitiesService';
 import { Card } from '../ui/Card';
-import { formatActivityType } from '../../../shared/activityTypes';
+import { formatActivityType } from '../../../types/pb/enum-formatters';
 
 interface UnsyncedActivityCardProps {
     entry: UnsynchronizedEntry;
