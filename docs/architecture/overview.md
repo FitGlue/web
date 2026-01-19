@@ -40,7 +40,7 @@ FitGlue Web is a **hybrid architecture** combining a static marketing site with 
 │  /api/users/**      → user-profile-handler                            │
 │  /api/activities/** → activities-handler                              │
 │  /api/billing/**    → billing-handler                                 │
-│  /hooks/hevy        → hevy-webhook-handler                            │
+│  /hooks/hevy        → hevy-handler                            │
 │  /hooks/fitbit      → fitbit-handler                                  │
 │  /auth/*/callback   → oauth-handlers                                  │
 │                                                                        │
@@ -71,7 +71,7 @@ Firebase Hosting routes requests to the appropriate handler:
 |-----|---------|
 | `/api/users/me/**` | `user-profile-handler` |
 | `/api/activities/**` | `activities-handler` |
-| `/hooks/hevy` | `hevy-webhook-handler` |
+| `/hooks/hevy` | `hevy-handler` |
 | `/auth/strava/callback` | `strava-oauth-handler` |
 
 See [firebase.json](file:///home/ripixel/dev/fitglue/web/firebase.json) for complete rewrite rules.

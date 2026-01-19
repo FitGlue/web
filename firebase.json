@@ -22,7 +22,7 @@
       {
         "source": "/hooks/hevy",
         "run": {
-          "serviceId": "hevy-webhook-handler",
+          "serviceId": "hevy-handler",
           "region": "us-central1"
         }
       },
