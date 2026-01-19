@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.9.1](https://github.com/fitglue/web/compare/v1.9.0...v1.9.1) (2026-01-19)
+
+
+### Bug Fixes
+
+* repost actions menu uses destinations enum ([118d739](https://github.com/fitglue/web/commit/118d739821edd24164392128d19ca5491b3fc493))
+
 ## [1.9.0](https://github.com/fitglue/web/compare/v1.8.0...v1.9.0) (2026-01-19)
 
 
