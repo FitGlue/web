@@ -9,6 +9,7 @@ import { Card } from '../components/ui/Card';
 import { CardSkeleton } from '../components/ui/CardSkeleton';
 import '../components/ui/CardSkeleton.css';
 import { EnricherBadge } from '../components/dashboard/EnricherBadge';
+import { RepostActionsMenu } from '../components/RepostActionsMenu';
 import { useNerdMode } from '../state/NerdModeContext';
 import { formatActivityType } from '../../shared/activityTypes';
 import './ActivityDetailPage.css';
@@ -171,11 +172,18 @@ const ActivityDetailPage: React.FC = () => {
             {/* Hero Header */}
             <div className="activity-detail__hero">
                 <div className="activity-detail__hero-header">
-                    {pipelineName && (
-                        <span className="activity-detail__pipeline-name">via {pipelineName}</span>
-                    )}
-                    <span className="activity-detail__type-badge">{activityType}</span>
-                    <span className="activity-detail__date">{formatDateTime(activity.startTime)}</span>
+                    <div className="activity-detail__hero-meta">
+                        {pipelineName && (
+                            <span className="activity-detail__pipeline-name">via {pipelineName}</span>
+                        )}
+                        <span className="activity-detail__type-badge">{activityType}</span>
+                        <span className="activity-detail__date">{formatDateTime(activity.startTime)}</span>
+                    </div>
+                    <RepostActionsMenu
+                        activity={activity}
+                        onSuccess={refresh}
+                        isPro={true}
+                    />
                 </div>
 
                 {activity.description && (

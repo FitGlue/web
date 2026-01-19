@@ -1,0 +1,277 @@
+/* RepostActionsMenu - Magic Actions dropdown and modals */
+
+.repost-actions {
+    position: relative;
+    display: inline-block;
+}
+
+/* Toggle Button */
+.repost-actions__toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border: none;
+    border-radius: var(--radius-md);
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.repost-actions__toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.4);
+}
+
+.repost-actions__toggle-icon {
+    font-size: 1rem;
+}
+
+.repost-actions__toggle-chevron {
+    font-size: 0.625rem;
+    margin-left: 0.25rem;
+}
+
+/* Dropdown Menu */
+.repost-actions__menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 260px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    overflow: hidden;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.repost-actions__section {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.repost-actions__section:last-child {
+    border-bottom: none;
+}
+
+.repost-actions__section--danger {
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.repost-actions__section-header {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.repost-actions__item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    font-size: 0.875rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.repost-actions__item:hover {
+    background: var(--glass-hover);
+}
+
+.repost-actions__item--danger {
+    color: var(--color-error);
+}
+
+.repost-actions__item--danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.repost-actions__item-icon {
+    font-size: 1.125rem;
+}
+
+/* Modal Overlay */
+.repost-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Modal */
+.repost-modal {
+    position: relative;
+    width: 90%;
+    max-width: 420px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+    animation: scaleIn 0.2s ease;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.repost-modal__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    background: var(--glass-hover);
+    border: none;
+    border-radius: 50%;
+    color: var(--color-text-secondary);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.repost-modal__close:hover {
+    background: var(--glass-border);
+    color: var(--color-text);
+}
+
+.repost-modal__title {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.repost-modal__description {
+    margin: 0 0 1rem 0;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+.repost-modal__warning {
+    margin: 0.75rem 0;
+    padding: 0.875rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-md);
+    color: var(--color-error);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.repost-modal__result {
+    margin: 1rem 0;
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.repost-modal__result--success {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: var(--color-success);
+}
+
+.repost-modal__result--error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: var(--color-error);
+}
+
+/* Modal Actions */
+.repost-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.repost-modal__btn {
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.repost-modal__btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.repost-modal__btn--secondary {
+    background: var(--glass-hover);
+    color: var(--color-text);
+}
+
+.repost-modal__btn--secondary:hover:not(:disabled) {
+    background: var(--glass-border);
+}
+
+.repost-modal__btn--primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.repost-modal__btn--primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.4);
+}
+
+.repost-modal__btn--danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.repost-modal__btn--danger:hover:not(:disabled) {
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}

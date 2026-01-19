@@ -164,6 +164,13 @@
         }
       },
       {
+        "source": "/api/repost/**",
+        "run": {
+          "serviceId": "repost-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/auth/strava/callback",
         "run": {
           "serviceId": "strava-oauth-handler",

@@ -6,12 +6,24 @@ export type SynchronizedActivity = components['schemas']['SynchronizedActivity']
 export type UnsynchronizedEntry = components['schemas']['UnsynchronizedEntry'];
 export type ExecutionRecord = components['schemas']['ExecutionRecord'];
 
+export interface RepostResponse {
+  success: boolean;
+  message: string;
+  newPipelineExecutionId?: string;
+  destination?: string;
+  promptUpdatePipeline?: boolean;
+}
+
 export interface IActivitiesService {
   getStats(): Promise<{ synchronizedCount: number }>;
   list(limit?: number, includeExecution?: boolean, offset?: number): Promise<SynchronizedActivity[]>;
   get(id: string): Promise<SynchronizedActivity | null>;
   listUnsynchronized(limit?: number, offset?: number): Promise<UnsynchronizedEntry[]>;
   getUnsynchronizedTrace(pipelineExecutionId: string): Promise<{ pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null>;
+  // Re-post methods
+  repostToMissedDestination(activityId: string, destination: string): Promise<RepostResponse>;
+  retryDestination(activityId: string, destination: string): Promise<RepostResponse>;
+  fullPipelineRerun(activityId: string): Promise<RepostResponse>;
 }
 
 const getAuthHeader = async () => {
@@ -107,5 +119,66 @@ export const ActivitiesService: IActivitiesService = {
     }
 
     return data ? { pipelineExecutionId: data.pipelineExecutionId || pipelineExecutionId, pipelineExecution: data.pipelineExecution || [] } : null;
-  }
+  },
+
+  // Re-post: Send activity to a new destination
+  async repostToMissedDestination(activityId: string, destination: string): Promise<RepostResponse> {
+    const headers = await getAuthHeader();
+    const response = await fetch('/api/repost/missed-destination', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      body: JSON.stringify({ activityId, destination }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Request failed' }));
+      return { success: false, message: errorData.error || 'Failed to re-post to destination' };
+    }
+
+    return response.json();
+  },
+
+  // Re-post: Retry an existing destination
+  async retryDestination(activityId: string, destination: string): Promise<RepostResponse> {
+    const headers = await getAuthHeader();
+    const response = await fetch('/api/repost/retry-destination', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      body: JSON.stringify({ activityId, destination }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Request failed' }));
+      return { success: false, message: errorData.error || 'Failed to retry destination' };
+    }
+
+    return response.json();
+  },
+
+  // Re-post: Full pipeline re-execution
+  async fullPipelineRerun(activityId: string): Promise<RepostResponse> {
+    const headers = await getAuthHeader();
+    const response = await fetch('/api/repost/full-pipeline', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      body: JSON.stringify({ activityId }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Request failed' }));
+      return { success: false, message: errorData.error || 'Failed to re-run pipeline' };
+    }
+
+    return response.json();
+  },
 };
+
