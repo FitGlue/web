@@ -49,8 +49,8 @@ const PipelineEditPage: React.FC = () => {
     const isPluginAvailable = (plugin: PluginManifest): boolean => {
         if (!plugin.requiredIntegrations?.length) return true;
         return plugin.requiredIntegrations.every(integrationId => {
-            const key = integrationId as keyof typeof userIntegrations;
-            return userIntegrations?.[key]?.connected ?? false;
+            const integration = (userIntegrations as Record<string, { connected?: boolean } | undefined> | null)?.[integrationId];
+            return integration?.connected ?? false;
         });
     };
 
@@ -58,8 +58,8 @@ const PipelineEditPage: React.FC = () => {
     const getMissingIntegrations = (plugin: PluginManifest): string[] => {
         if (!plugin.requiredIntegrations?.length) return [];
         return plugin.requiredIntegrations.filter(integrationId => {
-            const key = integrationId as keyof typeof userIntegrations;
-            return !(userIntegrations?.[key]?.connected ?? false);
+            const integration = (userIntegrations as Record<string, { connected?: boolean } | undefined> | null)?.[integrationId];
+            return !(integration?.connected ?? false);
         }).map(id => {
             const manifest = registryIntegrations.find(i => i.id === id);
             return manifest?.name ?? id;
@@ -170,7 +170,7 @@ const PipelineEditPage: React.FC = () => {
         });
     }, []);
 
-    const enrichersNeedConfig = selectedEnrichers.some(e => e.manifest.configSchema?.length > 0);
+    const enrichersNeedConfig = selectedEnrichers.some(e => (e.manifest.configSchema?.length ?? 0) > 0);
     const currentEnricher = selectedEnrichers[currentEnricherIndex];
 
     if (loading || registryLoading) {
@@ -331,7 +331,7 @@ const PipelineEditPage: React.FC = () => {
                     <Card className="edit-section">
                         <h3>⚙️ Configure Enrichers</h3>
                         <div className="enricher-config-tabs">
-                            {selectedEnrichers.filter(e => e.manifest.configSchema?.length > 0).map((e) => (
+                            {selectedEnrichers.filter(e => (e.manifest.configSchema?.length ?? 0) > 0).map((e) => (
                                 <Button
                                     key={e.manifest.id}
                                     variant={currentEnricherIndex === selectedEnrichers.indexOf(e) ? 'primary' : 'secondary'}
@@ -342,7 +342,7 @@ const PipelineEditPage: React.FC = () => {
                                 </Button>
                             ))}
                         </div>
-                        {currentEnricher && currentEnricher.manifest.configSchema?.length > 0 && (
+                        {currentEnricher && (currentEnricher.manifest.configSchema?.length ?? 0) > 0 && (
                             currentEnricher.manifest.id === 'logic-gate' ? (
                                 <LogicGateConfigForm
                                     key={currentEnricher.manifest.id}
@@ -352,7 +352,7 @@ const PipelineEditPage: React.FC = () => {
                             ) : (
                                 <EnricherConfigForm
                                     key={currentEnricher.manifest.id}
-                                    schema={currentEnricher.manifest.configSchema}
+                                    schema={currentEnricher.manifest.configSchema ?? []}
                                     initialValues={currentEnricher.config}
                                     onChange={config => updateEnricherConfig(currentEnricherIndex, config)}
                                 />

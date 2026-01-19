@@ -36,8 +36,8 @@ const PipelineWizardPage: React.FC = () => {
     const isPluginAvailable = (plugin: PluginManifest): boolean => {
         if (!plugin.requiredIntegrations?.length) return true;
         return plugin.requiredIntegrations.every(integrationId => {
-            const key = integrationId as keyof typeof userIntegrations;
-            return userIntegrations?.[key]?.connected ?? false;
+            const integration = (userIntegrations as Record<string, { connected?: boolean } | undefined> | null)?.[integrationId];
+            return integration?.connected ?? false;
         });
     };
 
@@ -45,8 +45,8 @@ const PipelineWizardPage: React.FC = () => {
     const getMissingIntegrations = (plugin: PluginManifest): string[] => {
         if (!plugin.requiredIntegrations?.length) return [];
         return plugin.requiredIntegrations.filter(integrationId => {
-            const key = integrationId as keyof typeof userIntegrations;
-            return !(userIntegrations?.[key]?.connected ?? false);
+            const integration = (userIntegrations as Record<string, { connected?: boolean } | undefined> | null)?.[integrationId];
+            return !(integration?.connected ?? false);
         }).map(id => {
             // Look up nice name from registry
             const manifest = registryIntegrations.find(i => i.id === id);
@@ -68,7 +68,7 @@ const PipelineWizardPage: React.FC = () => {
     const currentStepIndex = steps.indexOf(step);
 
     // Check if any selected enricher has config fields
-    const enrichersNeedConfig = selectedEnrichers.some(e => e.manifest.configSchema.length > 0);
+    const enrichersNeedConfig = selectedEnrichers.some(e => (e.manifest.configSchema?.length ?? 0) > 0);
 
     const canProceed = () => {
         switch (step) {
@@ -91,14 +91,14 @@ const PipelineWizardPage: React.FC = () => {
         if (step === 'enrichers') {
             // Skip enricher config if no enrichers selected or none need config
             const enrichersWithConfig = selectedEnrichers.filter(
-                e => e.manifest.configSchema.length > 0
+                e => (e.manifest.configSchema?.length ?? 0) > 0
             );
             if (selectedEnrichers.length === 0 || enrichersWithConfig.length === 0) {
                 setStep('destinations');
             } else {
                 // Find the FIRST enricher that needs config (not just index 0)
                 const firstConfigIndex = selectedEnrichers.findIndex(
-                    e => e.manifest.configSchema.length > 0
+                    e => (e.manifest.configSchema?.length ?? 0) > 0
                 );
                 setCurrentEnricherIndex(firstConfigIndex);
                 setStep('enricher-config');
@@ -106,7 +106,7 @@ const PipelineWizardPage: React.FC = () => {
         } else if (step === 'enricher-config') {
             // Move to next enricher that needs config, or destinations
             const nextIndex = selectedEnrichers.findIndex(
-                (e, i) => i > currentEnricherIndex && e.manifest.configSchema.length > 0
+                (e, i) => i > currentEnricherIndex && (e.manifest.configSchema?.length ?? 0) > 0
             );
             if (nextIndex !== -1) {
                 setCurrentEnricherIndex(nextIndex);
@@ -127,7 +127,7 @@ const PipelineWizardPage: React.FC = () => {
             const prevIndex = [...selectedEnrichers]
                 .slice(0, currentEnricherIndex)
                 .reverse()
-                .findIndex(e => e.manifest.configSchema.length > 0);
+                .findIndex(e => (e.manifest.configSchema?.length ?? 0) > 0);
             if (prevIndex !== -1) {
                 setCurrentEnricherIndex(currentEnricherIndex - 1 - prevIndex);
             } else {
@@ -137,7 +137,7 @@ const PipelineWizardPage: React.FC = () => {
             // Go back to last enricher config
             const lastConfigIndex = [...selectedEnrichers]
                 .reverse()
-                .findIndex(e => e.manifest.configSchema.length > 0);
+                .findIndex(e => (e.manifest.configSchema?.length ?? 0) > 0);
             if (lastConfigIndex !== -1) {
                 setCurrentEnricherIndex(selectedEnrichers.length - 1 - lastConfigIndex);
                 setStep('enricher-config');
@@ -309,7 +309,7 @@ const PipelineWizardPage: React.FC = () => {
                                         <h4>{enricher.name}</h4>
                                         <p>{enricher.description}</p>
                                         {isSelected && <span className="selected-check">✓</span>}
-                                        {enricher.configSchema.length > 0 && (
+                                        {(enricher.configSchema?.length ?? 0) > 0 && (
                                             <span className="has-config" title="Has configuration options">⚙️</span>
                                         )}
                                     </Card>
@@ -341,7 +341,7 @@ const PipelineWizardPage: React.FC = () => {
     const renderEnricherConfigStep = () => {
         if (selectedEnrichers.length === 0) return null;
         const current = selectedEnrichers[currentEnricherIndex];
-        if (!current || current.manifest.configSchema.length === 0) return null;
+        if (!current || (current.manifest.configSchema?.length ?? 0) === 0) return null;
 
         return (
             <div className="wizard-content">
@@ -355,15 +355,15 @@ const PipelineWizardPage: React.FC = () => {
                         />
                     ) : (
                         <EnricherConfigForm
-                            schema={current.manifest.configSchema}
+                            schema={current.manifest.configSchema ?? []}
                             initialValues={current.config}
                             onChange={config => updateEnricherConfig(currentEnricherIndex, config)}
                         />
                     )}
                 </Card>
-                {selectedEnrichers.filter(e => e.manifest.configSchema.length > 0).length > 1 && (
+                {selectedEnrichers.filter(e => (e.manifest.configSchema?.length ?? 0) > 0).length > 1 && (
                     <p className="config-progress">
-                        Configuring {currentEnricherIndex + 1} of {selectedEnrichers.filter(e => e.manifest.configSchema.length > 0).length}
+                        Configuring {currentEnricherIndex + 1} of {selectedEnrichers.filter(e => (e.manifest.configSchema?.length ?? 0) > 0).length}
                     </p>
                 )}
             </div>
@@ -426,19 +426,19 @@ const PipelineWizardPage: React.FC = () => {
 
         // Helper to get human-readable label for config values
         const getFieldLabel = (enricher: SelectedEnricher, key: string): string => {
-            const field = enricher.manifest.configSchema.find(f => f.key === key);
+            const field = (enricher.manifest.configSchema ?? []).find(f => f.key === key);
             return field?.label || key;
         };
 
         const getOptionLabel = (enricher: SelectedEnricher, key: string, value: string): string => {
-            const field = enricher.manifest.configSchema.find(f => f.key === key);
+            const field = (enricher.manifest.configSchema ?? []).find(f => f.key === key);
             const option = field?.options?.find(o => o.value === value);
             return option?.label || value;
         };
 
         // Helper to render KEY_VALUE_MAP config values nicely
         const renderKeyValueMap = (enricher: SelectedEnricher, key: string, value: string): React.ReactNode => {
-            const field = enricher.manifest.configSchema.find(f => f.key === key);
+            const field = (enricher.manifest.configSchema ?? []).find(f => f.key === key);
             if (!field) return value;
 
             try {
@@ -469,7 +469,7 @@ const PipelineWizardPage: React.FC = () => {
 
         // Check if a field is a KEY_VALUE_MAP type
         const isKeyValueMap = (enricher: SelectedEnricher, key: string): boolean => {
-            const field = enricher.manifest.configSchema.find(f => f.key === key);
+            const field = (enricher.manifest.configSchema ?? []).find(f => f.key === key);
             return field?.fieldType === ConfigFieldType.CONFIG_FIELD_TYPE_KEY_VALUE_MAP;
         };
 

@@ -1,6 +1,6 @@
 {
   "name": "fitglue-web",
-  "version": "1.9.1",
+  "version": "1.9.0",
   "description": "FitGlue web frontend and Firebase Hosting configuration",
   "type": "module",
   "scripts": {
@@ -13,7 +13,7 @@
     "serve": "npm run build && npx firebase serve --only hosting",
     "preview": "vite preview",
     "_build:static": "npx skier build",
-    "_build:app": "vite build",
+    "_build:app": "tsc --noEmit && vite build",
     "_merge": "cp -r static-dist/* dist/ && sh -c 'if [ -d dist/public ]; then cp -r dist/public/* dist/ && rm -rf dist/public; fi' && sh -c 'if [ -d dist/app ]; then mkdir -p dist/app-temp && mv dist/app/* dist/app-temp/ 2>/dev/null || true; mkdir -p dist/app && mv dist/app-temp/index.html dist/app/ && rm -rf dist/app-temp; fi'",
     "deploy": "firebase deploy --only hosting",
     "deploy:prod": "firebase deploy --only hosting -P prod",

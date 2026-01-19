@@ -74,16 +74,16 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
 
             if (modalType === 'missed' && selectedDestination) {
                 response = await ActivitiesService.repostToMissedDestination(
-                    activity.activityId,
+                    activity.activityId!,
                     selectedDestination
                 );
             } else if (modalType === 'retry' && selectedDestination) {
                 response = await ActivitiesService.retryDestination(
-                    activity.activityId,
+                    activity.activityId!,
                     selectedDestination
                 );
             } else if (modalType === 'full') {
-                response = await ActivitiesService.fullPipelineRerun(activity.activityId);
+                response = await ActivitiesService.fullPipelineRerun(activity.activityId!);
             } else {
                 return;
             }

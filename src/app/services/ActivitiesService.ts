@@ -26,7 +26,7 @@ export interface IActivitiesService {
   fullPipelineRerun(activityId: string): Promise<RepostResponse>;
 }
 
-const getAuthHeader = async () => {
+const getAuthHeader = async (): Promise<Record<string, string>> => {
   const auth = getFirebaseAuth();
   const token = await auth?.currentUser?.getIdToken();
   return token ? { Authorization: `Bearer ${token}` } : {};

@@ -26,6 +26,7 @@ import NotFoundPage from './pages/NotFoundPage';
 
 
 import { useFCM } from './hooks/useFCM';
+import { useUser } from './hooks/useUser';
 import { NerdModeProvider } from './state/NerdModeContext';
 
 // Protected route wrapper - redirects to static /auth/login page

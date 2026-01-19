@@ -143,6 +143,13 @@
         }
       },
       {
+        "source": "/api/admin/**",
+        "run": {
+          "serviceId": "admin-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/activities/stats",
         "run": {
           "serviceId": "activities-handler",

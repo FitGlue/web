@@ -15,14 +15,6 @@ interface IntegrationStatus {
     lastUsedAt?: string;
 }
 
-interface IntegrationsSummary {
-    hevy?: IntegrationStatus;
-    strava?: IntegrationStatus;
-    fitbit?: IntegrationStatus;
-    'apple-health'?: IntegrationStatus;
-    'health-connect'?: IntegrationStatus;
-}
-
 interface ConnectionCardProps {
     integration: IntegrationManifest;
     status: IntegrationStatus | undefined;
@@ -149,7 +141,7 @@ const ConnectionsPage: React.FC = () => {
 
             <div className="connections-grid">
                 {registryIntegrations.map(integration => {
-                    const status = integrations?.[integration.id as keyof IntegrationsSummary];
+                    const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
                     return (
                         <ConnectionCard
                             key={integration.id}

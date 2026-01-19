@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   activitiesAtom,
   activityStatsAtom,
@@ -193,9 +193,7 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
 // Separate hook for fetching unsynchronized trace (not cached in global state)
 export const useUnsynchronizedTrace = (pipelineExecutionId?: string) => {
   const [loading, setLoading] = useAtom(isLoadingActivitiesAtom);
-  const [trace, setTrace] = useAtom<{ pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null>(
-    () => null as { pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null
-  );
+  const [trace, setTrace] = useState<{ pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null>(null);
 
   const fetchTrace = useCallback(async () => {
     if (!pipelineExecutionId) return;

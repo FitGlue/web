@@ -88,7 +88,7 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
             className="config-select"
           >
             <option value="">Select...</option>
-            {field.options.map(opt => (
+            {(field.options || []).map(opt => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>
@@ -99,7 +99,7 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
       case ConfigFieldType.CONFIG_FIELD_TYPE_MULTI_SELECT:
         return (
           <div className="config-multi-select">
-            {field.options.map(opt => {
+            {(field.options || []).map(opt => {
               const selected = value.split(',').includes(opt.value);
               return (
                 <label key={opt.value} className="multi-select-option">
@@ -128,8 +128,8 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
             onChange={v => handleChange(field.key, v)}
             keyPlaceholder="Key"
             valuePlaceholder="Value"
-            keyOptions={field.keyOptions?.length > 0 ? field.keyOptions : undefined}
-            valueOptions={field.valueOptions?.length > 0 ? field.valueOptions : undefined}
+            keyOptions={(field.keyOptions?.length ?? 0) > 0 ? field.keyOptions : undefined}
+            valueOptions={(field.valueOptions?.length ?? 0) > 0 ? field.valueOptions : undefined}
           />
         );
 
@@ -318,15 +318,15 @@ const DynamicSelectField: React.FC<DynamicSelectFieldProps> = ({ field, value, o
 
       try {
         // Fetch options from /users/me/{dynamicSource}
-        const response = await api.get<{ id: string; count?: number }[]>(`/users/me/${field.dynamicSource}`);
-        const fetchedOptions = response.map(item => ({
+        const response = await api.get(`/users/me/${field.dynamicSource}`) as { id: string; count?: number }[];
+        const fetchedOptions = response.map((item: { id: string; count?: number }) => ({
           value: item.id,
           label: item.count !== undefined ? `${item.id} (current: ${item.count})` : item.id,
         }));
         setOptions(fetchedOptions);
 
         // If current value is not in options and not empty, switch to custom mode
-        if (value && !fetchedOptions.some(opt => opt.value === value)) {
+        if (value && !fetchedOptions.some((opt: { value: string }) => opt.value === value)) {
           setMode('custom');
         }
       } catch {

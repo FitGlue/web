@@ -170,8 +170,8 @@ const IntegrationsPage: React.FC = () => {
                             key={integration.id}
                             name={integration.id}
                             displayName={integration.name}
-                            description={integration.description}
-                            icon={integration.icon}
+                            description={integration.description || ''}
+                            icon={integration.icon || '🔌'}
                             status={status}
                             onConnect={() => supportsOAuth
                                 ? handleConnect(integration.id as 'strava' | 'fitbit')

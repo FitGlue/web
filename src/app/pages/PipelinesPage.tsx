@@ -18,7 +18,7 @@ interface PipelineConfig {
     id: string;
     name?: string;
     source: string;
-    enrichers: EnricherConfig[];
+    enrichers?: EnricherConfig[];
     destinations: (string | number)[];
 }
 
@@ -102,11 +102,11 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
                 </div>
 
                 {/* Boosters Section */}
-                {pipeline.enrichers.length > 0 && (
+                {(pipeline.enrichers?.length ?? 0) > 0 && (
                     <>
                         <div className="flow-boosters">
                             <div className="boosters-container">
-                                {pipeline.enrichers.map((e, i) => (
+                            {(pipeline.enrichers ?? []).map((e, i) => (
                                     <div
                                         key={i}
                                         className="booster-pill"
@@ -148,7 +148,7 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
                 <div className="pipeline-meta">
                     <code className="pipeline-id-badge">{pipeline.id.replace('pipe_', '').slice(0, 8)}...</code>
                     <span className="pipeline-booster-count">
-                        {pipeline.enrichers.length} Booster{pipeline.enrichers.length !== 1 ? 's' : ''}
+                        {(pipeline.enrichers?.length ?? 0)} Booster{(pipeline.enrichers?.length ?? 0) !== 1 ? 's' : ''}
                     </span>
                 </div>
                 <div className="pipeline-card-actions">

@@ -135,7 +135,7 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
         : null;
 
     // Source and destination info
-    const sourceName = formatSourceName(activity.source);
+    const sourceName = formatSourceName(activity.source || 'unknown');
     const destinations = activity.destinations ? Object.keys(activity.destinations) : [];
     const destinationNames = destinations.map(d => formatSourceName(d));
 

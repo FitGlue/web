@@ -6,7 +6,7 @@ import { getFirebaseAuth } from '../../shared/firebase';
  * Memoized to prevent infinite re-renders in consuming components
  */
 export const useApi = () => {
-  const getAuthHeader = useCallback(async () => {
+  const getAuthHeader = useCallback(async (): Promise<Record<string, string>> => {
     const auth = getFirebaseAuth();
     const token = await auth?.currentUser?.getIdToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
