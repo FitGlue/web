@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://github.com/fitglue/web/compare/v1.7.0...v1.8.0) (2026-01-19)
+
+
+### Features
+
+* Add Repost Actions menu to the Activity Detail Page, including new re-posting service methods and UI components. ([6fa3e6d](https://github.com/fitglue/web/commit/6fa3e6debf3b99408a53667be62f04a535bd6c0d))
+
 ## [1.7.0](https://github.com/fitglue/web/compare/v1.6.0...v1.7.0) (2026-01-18)
 
 
