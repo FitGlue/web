@@ -27,12 +27,6 @@ interface PipelineCardProps {
     onEdit: () => void;
     onDelete: () => void;
     deleting: boolean;
-    getEnricherName: (providerType: number) => string;
-    getEnricherIcon: (providerType: number) => string;
-    getSourceIcon: (source: string) => string;
-    getSourceName: (source: string) => string;
-    getDestinationIcon: (dest: string | number) => string;
-    getDestinationName: (dest: string | number) => string;
 }
 
 const PipelineCard: React.FC<PipelineCardProps> = ({
@@ -40,13 +34,52 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
     onEdit,
     onDelete,
     deleting,
-    getEnricherName,
-    getEnricherIcon,
-    getSourceIcon,
-    getSourceName,
-    getDestinationIcon,
-    getDestinationName,
 }) => {
+    // Use plugin registry directly instead of prop drilling
+    const { sources, enrichers, destinations } = usePluginRegistry();
+
+    const getSourceIcon = (source: string): string => {
+        const normalized = String(source).toLowerCase().replace('source_', '');
+        const found = sources.find(s => s.id === normalized);
+        return found?.icon || '📥';
+    };
+
+    const getSourceName = (source: string): string => {
+        const normalized = String(source).toLowerCase().replace('source_', '');
+        const found = sources.find(s => s.id === normalized);
+        return found?.name || normalized.charAt(0).toUpperCase() + normalized.slice(1);
+    };
+
+    const getEnricherIcon = (providerType: number): string => {
+        const found = enrichers.find(e => Number(e.enricherProviderType) === Number(providerType));
+        return found?.icon || '✨';
+    };
+
+    const getEnricherName = (providerType: number): string => {
+        const found = enrichers.find(e => Number(e.enricherProviderType) === Number(providerType));
+        return found?.name || `Enricher ${providerType}`;
+    };
+
+    const getDestinationIcon = (dest: string | number): string => {
+        const normalized = String(dest).toLowerCase();
+        const found = destinations.find(d =>
+            d.id === normalized ||
+            d.destinationType === Number(dest)
+        );
+        return found?.icon || '📤';
+    };
+
+    const getDestinationName = (dest: string | number): string => {
+        const normalized = String(dest).toLowerCase();
+        const found = destinations.find(d =>
+            d.id === normalized ||
+            d.destinationType === Number(dest)
+        );
+        return found?.name || (typeof dest === 'string'
+            ? dest.charAt(0).toUpperCase() + dest.slice(1).toLowerCase()
+            : `Destination ${dest}`);
+    };
+
     return (
         <div className="pipeline-card-premium">
             {/* Pipeline Name Header */}
@@ -141,52 +174,9 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
 const PipelinesPage: React.FC = () => {
     const api = useApi();
     const navigate = useNavigate();
-    const { sources, enrichers, destinations, loading: registryLoading } = usePluginRegistry();
+    const { loading: registryLoading } = usePluginRegistry();
     const { pipelines, loading, refresh: refreshPipelines, fetchIfNeeded } = usePipelines();
     const [deleting, setDeleting] = useState<string | null>(null);
-
-    // Dynamic lookup functions using the plugin registry
-    const getSourceIcon = (source: string): string => {
-        const normalized = String(source).toLowerCase().replace('source_', '');
-        const found = sources.find(s => s.id === normalized);
-        return found?.icon || '📥';
-    };
-
-    const getSourceName = (source: string): string => {
-        const normalized = String(source).toLowerCase().replace('source_', '');
-        const found = sources.find(s => s.id === normalized);
-        return found?.name || normalized.charAt(0).toUpperCase() + normalized.slice(1);
-    };
-
-    const getEnricherIcon = (providerType: number): string => {
-        const found = enrichers.find(e => Number(e.enricherProviderType) === Number(providerType));
-        return found?.icon || '✨';
-    };
-
-    const getEnricherName = (providerType: number): string => {
-        const found = enrichers.find(e => Number(e.enricherProviderType) === Number(providerType));
-        return found?.name || `Enricher ${providerType}`;
-    };
-
-    const getDestinationIcon = (dest: string | number): string => {
-        const normalized = String(dest).toLowerCase();
-        const found = destinations.find(d =>
-            d.id === normalized ||
-            d.destinationType === Number(dest)
-        );
-        return found?.icon || '📤';
-    };
-
-    const getDestinationName = (dest: string | number): string => {
-        const normalized = String(dest).toLowerCase();
-        const found = destinations.find(d =>
-            d.id === normalized ||
-            d.destinationType === Number(dest)
-        );
-        return found?.name || (typeof dest === 'string'
-            ? dest.charAt(0).toUpperCase() + dest.slice(1).toLowerCase()
-            : `Destination ${dest}`);
-    };
 
     useEffect(() => {
         fetchIfNeeded();
@@ -255,12 +245,6 @@ const PipelinesPage: React.FC = () => {
                             onEdit={() => navigate(`/settings/pipelines/${pipeline.id}/edit`)}
                             onDelete={() => handleDelete(pipeline.id)}
                             deleting={deleting === pipeline.id}
-                            getEnricherName={getEnricherName}
-                            getEnricherIcon={getEnricherIcon}
-                            getSourceIcon={getSourceIcon}
-                            getSourceName={getSourceName}
-                            getDestinationIcon={getDestinationIcon}
-                            getDestinationName={getDestinationName}
                         />
                     ))}
                 </div>
