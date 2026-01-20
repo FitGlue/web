@@ -7,12 +7,14 @@ import { EnricherConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
+import { SharePipelineModal } from '../components/SharePipelineModal';
 import { useApi } from '../hooks/useApi';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePipelines } from '../hooks/usePipelines';
 import { LoadingState } from '../components/ui/LoadingState';
 import { PluginManifest } from '../types/plugin';
+import { encodePipeline } from '../../shared/pipeline-sharing';
 
 interface EnricherConfig {
     providerType: number;
@@ -79,6 +81,7 @@ const PipelineEditPage: React.FC = () => {
     const [currentEnricherIndex, setCurrentEnricherIndex] = useState<number>(0);
     const [editingEnrichers, setEditingEnrichers] = useState(false);
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
+    const [showShareModal, setShowShareModal] = useState(false);
 
     const fetchPipeline = useCallback(async () => {
         if (!pipelineId) return;
@@ -411,6 +414,10 @@ const PipelineEditPage: React.FC = () => {
 
                 {/* Actions */}
                 <div className="wizard-actions">
+                    <Button variant="secondary" onClick={() => setShowShareModal(true)}>
+                        📤 Share
+                    </Button>
+                    <div style={{ flex: 1 }} />
                     <Button variant="secondary" onClick={() => navigate('/settings/pipelines')}>
                         Cancel
                     </Button>
@@ -429,6 +436,23 @@ const PipelineEditPage: React.FC = () => {
             <EnricherInfoModal
                 enricher={infoEnricher}
                 onClose={() => setInfoEnricher(null)}
+            />
+        )}
+
+        {showShareModal && pipeline && (
+            <SharePipelineModal
+                encodedPipeline={encodePipeline({
+                    id: pipeline.id,
+                    name: pipelineName,
+                    source: selectedSource,
+                    enrichers: selectedEnrichers.map(e => ({
+                        providerType: e.manifest.enricherProviderType || 0,
+                        inputs: e.config
+                    })),
+                    destinations: selectedDestinations
+                })}
+                pipelineName={pipelineName || 'Unnamed Pipeline'}
+                onClose={() => setShowShareModal(false)}
             />
         )}
     </>

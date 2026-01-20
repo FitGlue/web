@@ -80,17 +80,7 @@ const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): stri
     return null;
 };
 
-// Icons for platforms (TODO: move to registry in future)
-const PLATFORM_ICONS: Record<string, string> = {
-    hevy: '📋',
-    strava: '🏃',
-    fitbit: '⌚',
-    garmin: '📍',
-    apple: '🍎',
-    showcase: '🔗',
-};
-
-// Format platform name using registry data, with emoji fallback
+// Format platform name and icon using registry data (centralized in registry.ts)
 const formatPlatformName = (
     platform: string,
     sources: PluginManifest[],
@@ -103,7 +93,8 @@ const formatPlatformName = (
     const plugin = allPlugins.find(p => p.id === key);
 
     const name = plugin?.name || platform.charAt(0).toUpperCase() + platform.slice(1).toLowerCase();
-    const icon = PLATFORM_ICONS[key] || '📱';
+    // Use icon from registry if available, fallback to generic icon
+    const icon = plugin?.icon || '📱';
 
     return { name, icon };
 };

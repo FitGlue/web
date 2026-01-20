@@ -1,4 +1,5 @@
 import React from 'react';
+import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 
 interface EnricherBadgeProps {
     /** Enricher provider name (e.g., 'muscle-heatmap', 'fitbit-heart-rate') */
@@ -8,15 +9,6 @@ interface EnricherBadgeProps {
     /** Optional metadata to display */
     metadata?: Record<string, unknown>;
 }
-
-const ENRICHER_ICONS: Record<string, string> = {
-    'muscle-heatmap': '💪',
-    'fitbit-heart-rate': '❤️',
-    'parkrun': '🏃',
-    'strava-segments': '📊',
-    'weather': '🌤️',
-    default: '✨',
-};
 
 const humanizeProviderName = (name: string): string => {
     return name
@@ -34,7 +26,10 @@ export const EnricherBadge: React.FC<EnricherBadgeProps> = ({
     status,
     metadata,
 }) => {
-    const icon = ENRICHER_ICONS[providerName] || ENRICHER_ICONS.default;
+    // Get icon from registry (centralized in registry.ts)
+    const { enrichers } = usePluginRegistry();
+    const enricherPlugin = enrichers.find(e => e.id === providerName);
+    const icon = enricherPlugin?.icon || '✨';
     const displayName = humanizeProviderName(providerName);
     const statusClass = status.toLowerCase();
 

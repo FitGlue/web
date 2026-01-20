@@ -6,7 +6,9 @@ import { Button } from '../components/ui/Button';
 import { useApi } from '../hooks/useApi';
 import { usePipelines } from '../hooks/usePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { useIntegrations } from '../hooks/useIntegrations';
 import { CardSkeleton } from '../components/ui/CardSkeleton';
+import { ImportPipelineModal } from '../components/ImportPipelineModal';
 import '../components/ui/CardSkeleton.css';
 
 interface EnricherConfig {
@@ -176,11 +178,14 @@ const PipelinesPage: React.FC = () => {
     const navigate = useNavigate();
     const { loading: registryLoading } = usePluginRegistry();
     const { pipelines, loading, refresh: refreshPipelines, fetchIfNeeded } = usePipelines();
+    const { fetchIfNeeded: fetchIntegrations } = useIntegrations();
     const [deleting, setDeleting] = useState<string | null>(null);
+    const [showImportModal, setShowImportModal] = useState(false);
 
     useEffect(() => {
         fetchIfNeeded();
-    }, [fetchIfNeeded]);
+        fetchIntegrations();
+    }, [fetchIfNeeded, fetchIntegrations]);
 
     const handleDelete = async (pipelineId: string) => {
         if (!window.confirm('Are you sure you want to delete this pipeline?')) {
@@ -219,7 +224,10 @@ const PipelinesPage: React.FC = () => {
             backLabel="Dashboard"
             onRefresh={refreshPipelines}
         >
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                <Button variant="secondary" onClick={() => setShowImportModal(true)}>
+                    📥 Import
+                </Button>
                 <Button variant="primary" onClick={() => navigate('/settings/pipelines/new')}>
                     + New Pipeline
                 </Button>
@@ -248,6 +256,13 @@ const PipelinesPage: React.FC = () => {
                         />
                     ))}
                 </div>
+            )}
+
+            {showImportModal && (
+                <ImportPipelineModal
+                    onClose={() => setShowImportModal(false)}
+                    onSuccess={() => refreshPipelines()}
+                />
             )}
         </PageLayout>
     );

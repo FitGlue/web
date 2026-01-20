@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { SynchronizedActivity, ActivitiesService, RepostResponse } from '../services/ActivitiesService';
 import { Destination } from '../../types/pb/events';
 import { formatDestination } from '../../types/pb/enum-formatters';
+import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { PluginManifest } from '../types/plugin';
 import './RepostActionsMenu.css';
 
-// Icons for destinations (can be extended as needed)
-const DESTINATION_ICONS: Record<string, string> = {
-    strava: '🏃',
-    showcase: '🔗',
-    hevy: '💪',
-};
-
 // Generate available destinations dynamically from proto enum
-// Excludes UNSPECIFIED, MOCK, and UNRECOGNIZED
-const getAvailableDestinations = () => {
+// Uses registry data for icons (centralized in registry.ts)
+const getAvailableDestinations = (registryDestinations: PluginManifest[]) => {
     const destinations: { key: string; name: string; icon: string; enumValue: Destination }[] = [];
 
     // Iterate through the Destination enum values
@@ -24,10 +19,12 @@ const getAvailableDestinations = () => {
             value !== Destination.DESTINATION_MOCK &&
             value !== Destination.UNRECOGNIZED) {
             const keyLower = key.replace('DESTINATION_', '').toLowerCase();
+            // Get icon from registry if available
+            const destPlugin = registryDestinations.find(d => d.id === keyLower);
             destinations.push({
                 key: keyLower,
                 name: formatDestination(value),
-                icon: DESTINATION_ICONS[keyLower] || '📤',
+                icon: destPlugin?.icon || '📤',
                 enumValue: value,
             });
         }
@@ -35,8 +32,6 @@ const getAvailableDestinations = () => {
 
     return destinations;
 };
-
-const AVAILABLE_DESTINATIONS = getAvailableDestinations();
 
 interface RepostActionsMenuProps {
     activity: SynchronizedActivity;
@@ -57,11 +52,20 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<RepostResponse | null>(null);
 
+    // Get registry destinations for icon lookup
+    const { destinations: registryDestinations } = usePluginRegistry();
+
+    // Compute available destinations from registry (memoized)
+    const availableDestinations = useMemo(
+        () => getAvailableDestinations(registryDestinations),
+        [registryDestinations]
+    );
+
     // Get destinations that are already synced
     const syncedDestinations = activity.destinations ? Object.keys(activity.destinations) : [];
 
     // Get available destinations (not yet synced)
-    const missedDestinations = AVAILABLE_DESTINATIONS.filter(
+    const missedDestinations = availableDestinations.filter(
         d => !syncedDestinations.includes(d.key)
     );
 
@@ -161,7 +165,7 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
                                 🔄 Retry destination
                             </div>
                             {syncedDestinations.map(destKey => {
-                                const dest = AVAILABLE_DESTINATIONS.find(d => d.key === destKey);
+                                const dest = availableDestinations.find(d => d.key === destKey);
                                 return (
                                     <button
                                         key={destKey}
