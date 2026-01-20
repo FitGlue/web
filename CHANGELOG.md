@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.11.0](https://github.com/fitglue/web/compare/v1.10.0...v1.11.0) (2026-01-20)
+
+
+### Features
+
+* Add user filtering capabilities and an execution detail modal to the Admin page. ([956f2e8](https://github.com/fitglue/web/commit/956f2e899c080f7781de39a3c2b714073c40f6e0))
+
 ## [1.10.0](https://github.com/fitglue/web/compare/v1.9.1...v1.10.0) (2026-01-20)
 
 
