@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.10.0](https://github.com/fitglue/web/compare/v1.9.1...v1.10.0) (2026-01-20)
+
+
+### Features
+
+* admin page capability updates ([d2193c6](https://github.com/fitglue/web/commit/d2193c6960ef8711323c790a509742120fb226af))
+* Introduce new admin API route and refactor Admin page state management with `useReducer`, update app version, and refine various type definitions. ([8fb8ecc](https://github.com/fitglue/web/commit/8fb8ecc5b92e299dc4dc2a0d00ec72e07cacb02a))
+
 ### [1.9.1](https://github.com/fitglue/web/compare/v1.9.0...v1.9.1) (2026-01-19)
 
 
