@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/fitglue/web/compare/v1.14.0...v2.0.0) (2026-01-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* many updates to marketing terminology, add AI and fix pipeline sharing for app, unlock registration for waitlist
+
+### Features
+
+* many updates to marketing terminology, add AI and fix pipeline sharing for app, unlock registration for waitlist ([62e4317](https://github.com/fitglue/web/commit/62e43171656b6b4075cdf57e1985b2000ff54fbc))
+
 ## [1.14.0](https://github.com/fitglue/web/compare/v1.13.0...v1.14.0) (2026-01-20)
 
 
