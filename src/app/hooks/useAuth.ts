@@ -1,8 +1,5 @@
 import { useState, useCallback } from 'react';
 import {
-  signInWithPopup,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -64,37 +61,6 @@ export function useAuth() {
     }
   }, [clearMessages]);
 
-  const loginWithGoogle = useCallback(async () => {
-    clearMessages();
-    setLoading(true);
-    try {
-      const auth = await getAuth();
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      return true;
-    } catch (e) {
-      setError({ message: e instanceof Error ? e.message : 'Google sign-in failed' });
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, [clearMessages]);
-
-  const loginWithFacebook = useCallback(async () => {
-    clearMessages();
-    setLoading(true);
-    try {
-      const auth = await getAuth();
-      const provider = new FacebookAuthProvider();
-      await signInWithPopup(auth, provider);
-      return true;
-    } catch (e) {
-      setError({ message: e instanceof Error ? e.message : 'Facebook sign-in failed' });
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, [clearMessages]);
 
   const sendPasswordReset = useCallback(async (email: string) => {
     clearMessages();
@@ -149,8 +115,6 @@ export function useAuth() {
     clearMessages,
     loginWithEmail,
     registerWithEmail,
-    loginWithGoogle,
-    loginWithFacebook,
     sendPasswordReset,
     resendVerificationEmail,
     logout,
