@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useActivities } from '../hooks/useActivities';
+import { useRealtimeActivities } from '../hooks/useRealtimeActivities';
 import { PageLayout } from '../components/layout/PageLayout';
 import { EnrichedActivityCard } from '../components/dashboard/EnrichedActivityCard';
 import { UnsyncedActivityCard } from '../components/dashboard/UnsyncedActivityCard';
@@ -33,6 +34,22 @@ const ActivitiesListPage: React.FC = () => {
     // Fetch initial data with execution details for enriched view
     // Always use 'dashboard' mode as it fetches both activities and unsynchronized data
     const { activities: initialActivities, unsynchronized: initialUnsync, loading, refreshAll, lastUpdated } = useActivities('dashboard');
+
+    // Real-time sync
+    const { isEnabled: liveEnabled, isListening, toggleRealtime } = useRealtimeActivities(true, 20);
+
+    // Live toggle button for header
+    const liveToggle = (
+        <button
+            className={`live-toggle-btn ${isListening ? 'active' : ''}`}
+            onClick={toggleRealtime}
+            title={liveEnabled ? 'Live updates enabled (click to disable)' : 'Live updates disabled (click to enable)'}
+            aria-label={liveEnabled ? 'Disable live updates' : 'Enable live updates'}
+        >
+            <span className={`live-dot ${isListening ? 'pulsing' : ''}`} />
+            <span className="live-label">{isListening ? 'LIVE' : 'OFF'}</span>
+        </button>
+    );
 
     // Combine initial + paginated data
     const activities = useMemo(() => {
@@ -135,6 +152,7 @@ const ActivitiesListPage: React.FC = () => {
             onRefresh={handleRefresh}
             loading={loading}
             lastUpdated={lastUpdated}
+            headerActions={liveToggle}
         >
             <div className="activities-page">
                 {/* Header */}

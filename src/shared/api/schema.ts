@@ -1156,6 +1156,8 @@ export interface components {
             features?: string[];
             transformations?: components["schemas"]["Transformation"][];
             useCases?: string[];
+            /** @description URL template for external activity links. Use {id} placeholder. */
+            externalUrlTemplate?: string;
         };
         IntegrationManifest: {
             id: string;

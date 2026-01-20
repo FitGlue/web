@@ -3,6 +3,8 @@ import { ExecutionRecord } from '../services/ActivitiesService';
 import { StatusBadge } from './StatusBadge';
 import { useNerdMode } from '../state/NerdModeContext';
 import { Text } from './ui/Text';
+import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { buildDestinationUrl } from '../utils/destinationUrls';
 
 interface TraceItemProps {
     execution: ExecutionRecord;
@@ -220,26 +222,51 @@ const RouterRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution })
     );
 };
 
-const StravaUploaderRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution }) => {
+/**
+ * Generic destination uploader renderer that works for all destination types.
+ * Uses registry-provided URL templates for linking to external activities.
+ */
+interface DestinationUploaderRendererProps {
+    execution: ExecutionRecord;
+    destinationId: string;
+    externalIdKey: string;
+    externalIdKeyAlt?: string;
+    externalIdLabel: string;
+}
+
+const DestinationUploaderRenderer: React.FC<DestinationUploaderRendererProps> = ({
+    execution,
+    destinationId,
+    externalIdKey,
+    externalIdKeyAlt,
+    externalIdLabel,
+}) => {
+    const { destinations } = usePluginRegistry();
     let details: Record<string, unknown> = {};
     try {
         if (execution.outputsJson) {
             details = JSON.parse(execution.outputsJson);
         }
     } catch (e) {
-        console.warn('Failed to parse strava uploader output', e);
+        console.warn(`Failed to parse ${destinationId} uploader output`, e);
     }
 
-    const activityId = details.strava_activity_id || details.activity_id;
+    // Try primary key first, then alternative key (e.g., strava_id vs strava_activity_id)
+    const externalId = details[externalIdKey] || (externalIdKeyAlt ? details[externalIdKeyAlt] : undefined);
     const activityName = details.activity_name || details.name;
     const activityType = details.activity_type;
-    const uploadStatus = details.upload_status;
+    const uploadStatus = details.upload_status || details.status;
 
     // Convert to strings for type safety
     const activityNameStr = activityName ? String(activityName) : null;
     const activityTypeStr = activityType ? String(activityType) : null;
-    const activityIdStr = activityId ? String(activityId) : null;
+    const externalIdStr = externalId ? String(externalId) : null;
     const uploadStatusStr = uploadStatus ? String(uploadStatus) : null;
+
+    // Build URL from registry
+    const externalUrl = externalIdStr
+        ? buildDestinationUrl(destinations, destinationId, externalIdStr)
+        : null;
 
     return (
         <div className="trace-custom-content">
@@ -256,17 +283,21 @@ const StravaUploaderRenderer: React.FC<{ execution: ExecutionRecord }> = ({ exec
                         <span className="info-value">{activityTypeStr}</span>
                     </div>
                 )}
-                {activityIdStr && (
+                {externalIdStr && (
                     <div className="info-row">
-                        <span className="info-label">Strava ID:</span>
+                        <span className="info-label">{externalIdLabel}:</span>
                         <span className="info-value">
-                            <a href={`https://www.strava.com/activities/${activityIdStr}`} target="_blank" rel="noopener noreferrer" className="external-link">
-                                {activityIdStr} ↗
-                            </a>
+                            {externalUrl ? (
+                                <a href={externalUrl} target="_blank" rel="noopener noreferrer" className="external-link">
+                                    {externalIdStr} ↗
+                                </a>
+                            ) : (
+                                externalIdStr
+                            )}
                         </span>
                     </div>
                 )}
-                {uploadStatusStr && (
+                {uploadStatusStr && uploadStatusStr !== 'SUCCESS' && (
                     <div className="info-row">
                         <span className="info-label">Status:</span>
                         <span className="info-value">{uploadStatusStr}</span>
@@ -275,7 +306,7 @@ const StravaUploaderRenderer: React.FC<{ execution: ExecutionRecord }> = ({ exec
             </div>
         </div>
     );
-}
+};
 
 const WebhookRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution }) => {
     let inputDetails: Record<string, unknown> = {};
@@ -344,8 +375,23 @@ export const TraceItem: React.FC<TraceItemProps> = ({ execution, index }) => {
         if (execution.service === 'router') {
              return <RouterRenderer execution={execution} />;
         }
-        if (execution.service === 'strava-uploader') {
-            return <StravaUploaderRenderer execution={execution} />;
+        // Generic uploader detection: any service ending in '-uploader' is a destination
+        // Derives destination ID from service name (e.g., 'strava-uploader' -> 'strava')
+        if (execution.service?.endsWith('-uploader')) {
+            const destinationId = execution.service.replace('-uploader', '');
+            // External ID key follows pattern: {destination}_id or {destination}_activity_id
+            const externalIdKey = `${destinationId}_id`;
+            const externalIdKeyAlt = `${destinationId}_activity_id`;
+            const label = `${destinationId.charAt(0).toUpperCase() + destinationId.slice(1)} ID`;
+            return (
+                <DestinationUploaderRenderer
+                    execution={execution}
+                    destinationId={destinationId}
+                    externalIdKey={externalIdKey}
+                    externalIdKeyAlt={externalIdKeyAlt}
+                    externalIdLabel={label}
+                />
+            );
         }
         if (execution.service?.includes('webhook') || execution.service?.includes('-handler')) {
             return <WebhookRenderer execution={execution} />;

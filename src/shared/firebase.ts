@@ -1,10 +1,12 @@
 import { initializeApp, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getMessaging, Messaging } from 'firebase/messaging';
+import { getFirestore, Firestore } from 'firebase/firestore';
 
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
 let messaging: Messaging | undefined;
+let firestore: Firestore | undefined;
 
 async function getFirebaseConfig() {
   try {
@@ -21,14 +23,15 @@ async function getFirebaseConfig() {
   return null;
 }
 
-export async function initFirebase(): Promise<{ app: FirebaseApp; auth: Auth } | null> {
-  if (app && auth) return { app, auth };
+export async function initFirebase(): Promise<{ app: FirebaseApp; auth: Auth; firestore: Firestore } | null> {
+  if (app && auth && firestore) return { app, auth, firestore };
 
   const config = await getFirebaseConfig();
   if (!config) return null;
 
   app = initializeApp(config);
   auth = getAuth(app);
+  firestore = getFirestore(app);
 
   // Messaging only works in browser with SW support
   try {
@@ -37,9 +40,10 @@ export async function initFirebase(): Promise<{ app: FirebaseApp; auth: Auth } |
     console.warn('Messaging not supported in this environment', e);
   }
 
-  return { app, auth };
+  return { app, auth, firestore };
 }
 
 export const getFirebaseApp = () => app;
 export const getFirebaseAuth = () => auth;
 export const getFirebaseMessaging = () => messaging;
+export const getFirebaseFirestore = () => firestore;

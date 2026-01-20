@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useActivities } from '../hooks/useActivities';
 import { usePipelines } from '../hooks/usePipelines';
+import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { SynchronizedActivity, ExecutionRecord } from '../services/ActivitiesService';
 import { PipelineTrace } from '../components/PipelineTrace';
 import { PageLayout } from '../components/layout/PageLayout';
@@ -12,6 +13,8 @@ import { EnricherBadge } from '../components/dashboard/EnricherBadge';
 import { RepostActionsMenu } from '../components/RepostActionsMenu';
 import { useNerdMode } from '../state/NerdModeContext';
 import { formatActivityType } from '../../types/pb/enum-formatters';
+import { buildDestinationUrl } from '../utils/destinationUrls';
+import { PluginManifest } from '../types/plugin';
 import './ActivityDetailPage.css';
 
 interface ProviderExecution {
@@ -21,15 +24,17 @@ interface ProviderExecution {
 }
 
 // Helper to derive original trigger source from pipeline execution trace
+// Uses generic pattern detection instead of hardcoded platform names
 const deriveOriginalSource = (activity: SynchronizedActivity): string => {
     if (activity.pipelineExecution && activity.pipelineExecution.length > 0) {
         const firstService = activity.pipelineExecution[0].service;
         if (firstService) {
-            if (firstService.includes('fitbit')) return 'Fitbit';
-            if (firstService.includes('hevy')) return 'Hevy';
-            if (firstService.includes('mock')) return 'Mock Source';
-            if (firstService.includes('test')) return 'Test';
-            return firstService.replace(/-handler$/, '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+            // Remove common suffixes and format the name nicely
+            return firstService
+                .replace(/-handler$/, '')
+                .replace(/-webhook$/, '')
+                .replace(/-/g, ' ')
+                .replace(/\b\w/g, c => c.toUpperCase());
         }
     }
     return activity.source || 'Unknown';
@@ -51,10 +56,17 @@ const extractEnricherExecutions = (pipelineExecution?: ExecutionRecord[]): Provi
 };
 
 // Get destination activity type from pipeline outputs
+// Uses generic -uploader suffix detection instead of hardcoded service names
 const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): string | null => {
     if (!pipelineExecution) return null;
 
-    for (const service of ['strava-uploader', 'router']) {
+    // Check router first, then any uploader output
+    const checkOrder = ['router', ...pipelineExecution
+        .filter(r => r.service?.endsWith('-uploader'))
+        .map(r => r.service as string)
+    ];
+
+    for (const service of checkOrder) {
         const record = pipelineExecution.find(r => r.service === service);
         if (record?.outputsJson) {
             try {
@@ -68,22 +80,32 @@ const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): stri
     return null;
 };
 
+// Icons for platforms (TODO: move to registry in future)
+const PLATFORM_ICONS: Record<string, string> = {
+    hevy: '📋',
+    strava: '🏃',
+    fitbit: '⌚',
+    garmin: '📍',
+    apple: '🍎',
+    showcase: '🔗',
+};
 
+// Format platform name using registry data, with emoji fallback
+const formatPlatformName = (
+    platform: string,
+    sources: PluginManifest[],
+    destinations: PluginManifest[]
+): { name: string; icon: string } => {
+    const key = platform.toLowerCase();
 
-// Format source/destination name
-const formatPlatformName = (platform: string): { name: string; icon: string } => {
-    const platforms: Record<string, { name: string; icon: string }> = {
-        hevy: { name: 'Hevy', icon: '📋' },
-        strava: { name: 'Strava', icon: '🏃' },
-        fitbit: { name: 'Fitbit', icon: '⌚' },
-        garmin: { name: 'Garmin', icon: '📍' },
-        apple: { name: 'Apple Health', icon: '🍎' },
-        showcase: { name: 'Showcase', icon: '🔗' },
-    };
-    return platforms[platform.toLowerCase()] || {
-        name: platform.charAt(0).toUpperCase() + platform.slice(1).toLowerCase(),
-        icon: '📱'
-    };
+    // Try to find in registry (sources + destinations)
+    const allPlugins = [...sources, ...destinations];
+    const plugin = allPlugins.find(p => p.id === key);
+
+    const name = plugin?.name || platform.charAt(0).toUpperCase() + platform.slice(1).toLowerCase();
+    const icon = PLATFORM_ICONS[key] || '📱';
+
+    return { name, icon };
 };
 
 // Format datetime nicely
@@ -103,6 +125,7 @@ const ActivityDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { activities, loading, refresh } = useActivities('single', id);
     const { pipelines, fetchIfNeeded: fetchPipelines } = usePipelines();
+    const { sources, destinations: registryDestinations } = usePluginRegistry();
     const [activity, setActivity] = useState<SynchronizedActivity | null>(null);
     const [traceExpanded, setTraceExpanded] = useState(false);
     const { isNerdMode } = useNerdMode();
@@ -146,7 +169,7 @@ const ActivityDetailPage: React.FC = () => {
     }
 
     const originalSource = deriveOriginalSource(activity);
-    const sourceInfo = formatPlatformName(originalSource);
+    const sourceInfo = formatPlatformName(originalSource, sources, registryDestinations);
     const destinations = activity.destinations ? Object.entries(activity.destinations) : [];
     const providerExecutions = extractEnricherExecutions(activity.pipelineExecution);
     const destinationActivityType = getDestinationActivityType(activity.pipelineExecution);
@@ -231,7 +254,7 @@ const ActivityDetailPage: React.FC = () => {
                     {destinations.length > 0 ? (
                         <div className="activity-detail__flow-destinations">
                             {destinations.map(([platform]) => {
-                                const destInfo = formatPlatformName(platform);
+                                const destInfo = formatPlatformName(platform, sources, registryDestinations);
                                 return (
                                     <div key={platform} className="activity-detail__flow-node activity-detail__flow-node--destination">
                                         <span className="activity-detail__flow-icon">{destInfo.icon}</span>
@@ -258,23 +281,10 @@ const ActivityDetailPage: React.FC = () => {
                     </h3>
                     <div className="activity-detail__destinations-grid">
                         {destinations.map(([platform, activityId]) => {
-                            const destInfo = formatPlatformName(platform);
+                            const destInfo = formatPlatformName(platform, sources, registryDestinations);
                             const activityIdStr = String(activityId);
-                            let externalUrl = '';
-                            if (platform.toLowerCase() === 'strava') {
-                                externalUrl = `https://www.strava.com/activities/${activityIdStr}`;
-                            } else if (platform.toLowerCase() === 'showcase') {
-                                const hostname = window.location.hostname;
-                                let showcaseDomain: string;
-                                if (hostname.includes('dev.fitglue') || hostname === 'localhost') {
-                                    showcaseDomain = 'dev.fitglue.tech';
-                                } else if (hostname.includes('test.fitglue')) {
-                                    showcaseDomain = 'test.fitglue.tech';
-                                } else {
-                                    showcaseDomain = 'fitglue.tech';
-                                }
-                                externalUrl = `https://${showcaseDomain}/showcase/${activityIdStr}`;
-                            }
+                            // Use registry-provided URL templates instead of hardcoded URLs
+                            const externalUrl = buildDestinationUrl(registryDestinations, platform, activityIdStr);
 
                             return (
                                 <div key={platform} className="activity-detail__destination">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useInputs } from '../hooks/useInputs';
 import { useActivities } from '../hooks/useActivities';
+import { useRealtimeActivities } from '../hooks/useRealtimeActivities';
 import { usePipelines } from '../hooks/usePipelines';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
@@ -35,6 +36,23 @@ const DashboardPage: React.FC = () => {
     const { integrations, loading: integrationsLoading, refresh: integrationsRefresh, fetchIfNeeded: fetchIntegrations } = useIntegrations();
     const { pipelines, loading: pipelinesLoading, refresh: pipelinesRefresh, fetchIfNeeded: fetchPipelines } = usePipelines();
     const { user } = useUser();
+
+    // PHASE 3: Enable real-time activity updates via Firestore listeners
+    // This automatically updates the dashboard when new activities are synchronized
+    const { isEnabled: liveEnabled, isListening, toggleRealtime } = useRealtimeActivities(true, 10);
+
+    // Live status toggle button for header
+    const liveToggle = (
+        <button
+            className={`live-toggle-btn ${isListening ? 'active' : ''}`}
+            onClick={toggleRealtime}
+            title={liveEnabled ? 'Live updates enabled (click to disable)' : 'Live updates disabled (click to enable)'}
+            aria-label={liveEnabled ? 'Disable live updates' : 'Enable live updates'}
+        >
+            <span className={`live-dot ${isListening ? 'pulsing' : ''}`} />
+            <span className="live-label">{isListening ? 'LIVE' : 'OFF'}</span>
+        </button>
+    );
 
     // Check for redirect notification flag
     useEffect(() => {
@@ -135,14 +153,14 @@ const DashboardPage: React.FC = () => {
 
     if (isLoading && !integrations && pipelines.length === 0) {
         return (
-            <PageLayout title="Dashboard" onRefresh={refresh}>
+            <PageLayout title="Dashboard" onRefresh={refresh} headerActions={liveToggle}>
                 <LoadingState />
             </PageLayout>
         );
     }
 
     return (
-        <PageLayout title="Dashboard" onRefresh={refresh} loading={isLoading}>
+        <PageLayout title="Dashboard" onRefresh={refresh} loading={isLoading} headerActions={liveToggle}>
             {/* Redirect Notification (shown when redirected from 404) */}
             {showRedirectNotification && (
                 <RedirectNotification

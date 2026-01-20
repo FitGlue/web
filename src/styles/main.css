@@ -1404,6 +1404,70 @@ h3 {
     font-weight: 500;
 }
 
+/* Live Toggle Button */
+.live-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+}
+
+.live-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.live-toggle-btn.active {
+    background: rgba(6, 255, 165, 0.1);
+    border-color: rgba(6, 255, 165, 0.3);
+    color: var(--color-success);
+}
+
+.live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-text-muted);
+    transition: background 0.2s;
+}
+
+.live-toggle-btn.active .live-dot {
+    background: var(--color-success);
+}
+
+.live-dot.pulsing {
+    animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(6, 255, 165, 0.4);
+    }
+
+    50% {
+        opacity: 0.7;
+        box-shadow: 0 0 0 4px rgba(6, 255, 165, 0);
+    }
+}
+
+.live-label {
+    text-transform: uppercase;
+}
+
+
 /* Trace Item Custom Renderers */
 .trace-custom-content {
     margin-top: 0.75rem;
