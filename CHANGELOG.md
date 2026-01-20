@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.12.0](https://github.com/fitglue/web/compare/v1.11.0...v1.12.0) (2026-01-20)
+
+
+### Features
+
+* Implement real-time activity updates and enhance activity detail page with dynamic source/destination information. ([8d3bd81](https://github.com/fitglue/web/commit/8d3bd8192d71c254aec676da5a9e7484496bf38f))
+
 ## [1.11.0](https://github.com/fitglue/web/compare/v1.10.0...v1.11.0) (2026-01-20)
 
 
