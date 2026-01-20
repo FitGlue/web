@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.14.0](https://github.com/fitglue/web/compare/v1.13.0...v1.14.0) (2026-01-20)
+
+
+### Features
+
+* remove social logins ([e7379bf](https://github.com/fitglue/web/commit/e7379bfb912dffb0f7c6f2d9563e076845cf2da9))
+
 ## [1.13.0](https://github.com/fitglue/web/compare/v1.12.0...v1.13.0) (2026-01-20)
 
 
