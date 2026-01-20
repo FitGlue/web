@@ -85,8 +85,11 @@ interface AdminState {
   userModalOpen: boolean;
   updating: string | null;
   executions: Execution[];
+  selectedExecution: Execution | null;
+  execModalOpen: boolean;
   availableServices: string[];
   execFilters: { service: string; status: string; userId: string; limit: string };
+  userFilters: { tier: string; userId: string };
 }
 
 type AdminAction =
@@ -99,7 +102,9 @@ type AdminAction =
   | { type: 'SET_USER_MODAL_OPEN'; open: boolean }
   | { type: 'SET_UPDATING'; userId: string | null }
   | { type: 'SET_EXECUTIONS'; executions: Execution[]; services?: string[] }
-  | { type: 'SET_EXEC_FILTERS'; filters: Partial<AdminState['execFilters']> };
+  | { type: 'SET_SELECTED_EXECUTION'; execution: Execution | null; modalOpen?: boolean }
+  | { type: 'SET_EXEC_FILTERS'; filters: Partial<AdminState['execFilters']> }
+  | { type: 'SET_USER_FILTERS'; filters: Partial<AdminState['userFilters']> };
 
 const initialState: AdminState = {
   activeTab: 'overview',
@@ -112,8 +117,11 @@ const initialState: AdminState = {
   userModalOpen: false,
   updating: null,
   executions: [],
+  selectedExecution: null,
+  execModalOpen: false,
   availableServices: [],
   execFilters: { service: '', status: '', userId: '', limit: '50' },
+  userFilters: { tier: '', userId: '' },
 };
 
 function adminReducer(state: AdminState, action: AdminAction): AdminState {
@@ -136,8 +144,12 @@ function adminReducer(state: AdminState, action: AdminAction): AdminState {
       return { ...state, updating: action.userId };
     case 'SET_EXECUTIONS':
       return { ...state, executions: action.executions, availableServices: action.services ?? state.availableServices };
+    case 'SET_SELECTED_EXECUTION':
+      return { ...state, selectedExecution: action.execution, execModalOpen: action.modalOpen ?? state.execModalOpen };
     case 'SET_EXEC_FILTERS':
       return { ...state, execFilters: { ...state.execFilters, ...action.filters } };
+    case 'SET_USER_FILTERS':
+      return { ...state, userFilters: { ...state.userFilters, ...action.filters } };
     default:
       return state;
   }
@@ -147,7 +159,7 @@ const AdminPage: React.FC = () => {
   const api = useApi();
   const { user: currentUser } = useUser();
   const [state, dispatch] = useReducer(adminReducer, initialState);
-  const { activeTab, loading, error, stats, users, usersPagination, selectedUser, userModalOpen, updating, executions, availableServices, execFilters } = state;
+  const { activeTab, loading, error, stats, users, usersPagination, selectedUser, userModalOpen, updating, executions, selectedExecution, execModalOpen, availableServices, execFilters, userFilters } = state;
 
   // Fetch stats
   const fetchStats = useCallback(async () => {
@@ -341,6 +353,26 @@ const AdminPage: React.FC = () => {
         {/* Users Tab */}
         {activeTab === 'users' && (
           <div className="admin-tab-content">
+            <Card className="admin-section">
+              <h3>Filters</h3>
+              <div className="exec-filters">
+                <select
+                  value={userFilters.tier}
+                  onChange={e => dispatch({ type: 'SET_USER_FILTERS', filters: { tier: e.target.value } })}
+                >
+                  <option value="">All Tiers</option>
+                  <option value="free">Free</option>
+                  <option value="pro">Pro</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="Filter by User ID..."
+                  value={userFilters.userId}
+                  onChange={e => dispatch({ type: 'SET_USER_FILTERS', filters: { userId: e.target.value } })}
+                />
+                <Button size="small" onClick={() => fetchUsers(1)}>Apply</Button>
+              </div>
+            </Card>
             <Card className="admin-table-card">
               <div className="admin-table-container">
                 <table className="admin-table">
@@ -473,7 +505,7 @@ const AdminPage: React.FC = () => {
                   </thead>
                   <tbody>
                     {executions.map(exec => (
-                      <tr key={exec.id}>
+                      <tr key={exec.id} onClick={() => dispatch({ type: 'SET_SELECTED_EXECUTION', execution: exec, modalOpen: true })} style={{ cursor: 'pointer' }}>
                         <td style={{ fontSize: '0.8rem' }}>{exec.timestamp ? new Date(exec.timestamp).toLocaleString() : '-'}</td>
                         <td>{exec.service}</td>
                         <td><span className={`badge ${exec.status.toLowerCase()}`}>{exec.status}</span></td>
@@ -625,6 +657,39 @@ const AdminPage: React.FC = () => {
                     </p>
                   </section>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Execution Detail Modal */}
+        {execModalOpen && selectedExecution && (
+          <div className="admin-modal-overlay" onClick={() => dispatch({ type: 'SET_SELECTED_EXECUTION', execution: null, modalOpen: false })}>
+            <div className="admin-modal" onClick={e => e.stopPropagation()}>
+              <div className="admin-modal-header">
+                <h2>Execution Details</h2>
+                <Button variant="text" onClick={() => dispatch({ type: 'SET_SELECTED_EXECUTION', execution: null, modalOpen: false })}>✕</Button>
+              </div>
+              <div className="admin-modal-content">
+                <section className="modal-section">
+                  <div className="detail-grid">
+                    <div><strong>Execution ID:</strong> {selectedExecution.id}</div>
+                    <div><strong>Service:</strong> {selectedExecution.service}</div>
+                    <div><strong>Status:</strong> <span className={`badge ${selectedExecution.status.toLowerCase()}`}>{selectedExecution.status}</span></div>
+                    <div><strong>Timestamp:</strong> {selectedExecution.timestamp ? new Date(selectedExecution.timestamp).toLocaleString() : '-'}</div>
+                    {selectedExecution.userId && <div><strong>User ID:</strong> {selectedExecution.userId}</div>}
+                    {selectedExecution.pipelineExecutionId && <div><strong>Pipeline Execution:</strong> {selectedExecution.pipelineExecutionId}</div>}
+                    {selectedExecution.triggerType && <div><strong>Trigger:</strong> {selectedExecution.triggerType}</div>}
+                  </div>
+                  {selectedExecution.errorMessage && (
+                    <div style={{ marginTop: '1rem' }}>
+                      <strong>Error:</strong>
+                      <pre style={{ marginTop: '0.5rem', padding: '0.75rem', background: 'rgba(255,0,0,0.1)', borderRadius: '4px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '0.85rem' }}>
+                        {selectedExecution.errorMessage}
+                      </pre>
+                    </div>
+                  )}
+                </section>
               </div>
             </div>
           </div>
