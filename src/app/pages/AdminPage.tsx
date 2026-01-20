@@ -20,8 +20,17 @@ interface AdminUser {
   pipelineCount: number;
 }
 
+interface PendingInputDetail {
+  activityId: string;
+  status: 'waiting' | 'unspecified';
+  enricherProviderId?: string;
+  createdAt?: string;
+}
+
 interface AdminUserDetail {
   userId: string;
+  email?: string;
+  displayName?: string;
   createdAt: string;
   tier: 'free' | 'pro';
   trialEndsAt?: string;
@@ -30,9 +39,10 @@ interface AdminUserDetail {
   stripeCustomerId?: string;
   syncCountResetAt?: string;
   integrations: Record<string, { enabled?: boolean; lastUsedAt?: string }>;
-  pipelines: { id: string; source: string; destinations: number[] }[];
+  pipelines: { id: string; name: string; source: string; destinations: string[] }[];
   activityCount: number;
   pendingInputCount: number;
+  pendingInputs?: PendingInputDetail[];
 }
 
 interface AdminStats {
@@ -57,12 +67,20 @@ interface Execution {
 type TabId = 'overview' | 'users' | 'executions' | 'billing';
 
 // State shape for useReducer
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  hasMore: boolean;
+}
+
 interface AdminState {
   activeTab: TabId;
   loading: boolean;
   error: string | null;
   stats: AdminStats | null;
   users: AdminUser[];
+  usersPagination: Pagination | null;
   selectedUser: AdminUserDetail | null;
   userModalOpen: boolean;
   updating: string | null;
@@ -76,7 +94,7 @@ type AdminAction =
   | { type: 'SET_LOADING'; loading: boolean }
   | { type: 'SET_ERROR'; error: string | null }
   | { type: 'SET_STATS'; stats: AdminStats }
-  | { type: 'SET_USERS'; users: AdminUser[] }
+  | { type: 'SET_USERS'; users: AdminUser[]; pagination?: Pagination }
   | { type: 'SET_SELECTED_USER'; user: AdminUserDetail | null; modalOpen?: boolean }
   | { type: 'SET_USER_MODAL_OPEN'; open: boolean }
   | { type: 'SET_UPDATING'; userId: string | null }
@@ -89,6 +107,7 @@ const initialState: AdminState = {
   error: null,
   stats: null,
   users: [],
+  usersPagination: null,
   selectedUser: null,
   userModalOpen: false,
   updating: null,
@@ -108,7 +127,7 @@ function adminReducer(state: AdminState, action: AdminAction): AdminState {
     case 'SET_STATS':
       return { ...state, stats: action.stats };
     case 'SET_USERS':
-      return { ...state, users: action.users };
+      return { ...state, users: action.users, usersPagination: action.pagination ?? state.usersPagination };
     case 'SET_SELECTED_USER':
       return { ...state, selectedUser: action.user, userModalOpen: action.modalOpen ?? state.userModalOpen };
     case 'SET_USER_MODAL_OPEN':
@@ -128,7 +147,7 @@ const AdminPage: React.FC = () => {
   const api = useApi();
   const { user: currentUser } = useUser();
   const [state, dispatch] = useReducer(adminReducer, initialState);
-  const { activeTab, loading, error, stats, users, selectedUser, userModalOpen, updating, executions, availableServices, execFilters } = state;
+  const { activeTab, loading, error, stats, users, usersPagination, selectedUser, userModalOpen, updating, executions, availableServices, execFilters } = state;
 
   // Fetch stats
   const fetchStats = useCallback(async () => {
@@ -140,13 +159,13 @@ const AdminPage: React.FC = () => {
     }
   }, [api]);
 
-  // Fetch users
-  const fetchUsers = useCallback(async () => {
+  // Fetch users with pagination
+  const fetchUsers = useCallback(async (page = 1) => {
     dispatch({ type: 'SET_LOADING', loading: true });
     dispatch({ type: 'SET_ERROR', error: null });
     try {
-      const data = await api.get('/admin/users') as AdminUser[];
-      dispatch({ type: 'SET_USERS', users: data });
+      const data = await api.get(`/admin/users?page=${page}&limit=25`) as { data: AdminUser[]; pagination: Pagination };
+      dispatch({ type: 'SET_USERS', users: data.data, pagination: data.pagination });
     } catch (err) {
       console.error('Failed to fetch users:', err);
       dispatch({ type: 'SET_ERROR', error: 'Failed to load users. Admin access required.' });
@@ -189,7 +208,7 @@ const AdminPage: React.FC = () => {
     dispatch({ type: 'SET_UPDATING', userId });
     try {
       await api.patch(`/admin/users/${userId}`, updates);
-      await fetchUsers();
+      await fetchUsers(usersPagination?.page || 1);
       if (selectedUser?.userId === userId) {
         await fetchUserDetail(userId);
       }
@@ -227,7 +246,7 @@ const AdminPage: React.FC = () => {
   useEffect(() => {
     if (currentUser?.isAdmin) {
       if (activeTab === 'overview') fetchStats();
-      if (activeTab === 'users') fetchUsers();
+      if (activeTab === 'users') fetchUsers(1);
       if (activeTab === 'executions') fetchExecutions();
     }
   }, [activeTab, currentUser, fetchStats, fetchUsers, fetchExecutions]);
@@ -372,6 +391,30 @@ const AdminPage: React.FC = () => {
                 </table>
               </div>
             </Card>
+            {/* Pagination Controls */}
+            {usersPagination && (
+              <div className="pagination-controls">
+                <Button
+                  variant="secondary"
+                  size="small"
+                  disabled={usersPagination.page <= 1 || loading}
+                  onClick={() => fetchUsers(usersPagination.page - 1)}
+                >
+                  ← Previous
+                </Button>
+                <span className="pagination-info">
+                  Page {usersPagination.page} of {Math.ceil(usersPagination.total / usersPagination.limit)} ({usersPagination.total} total)
+                </span>
+                <Button
+                  variant="secondary"
+                  size="small"
+                  disabled={!usersPagination.hasMore || loading}
+                  onClick={() => fetchUsers(usersPagination.page + 1)}
+                >
+                  Next →
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
@@ -503,6 +546,8 @@ const AdminPage: React.FC = () => {
                   <h4>Overview</h4>
                   <div className="detail-grid">
                     <div><strong>User ID:</strong> {selectedUser.userId}</div>
+                    {selectedUser.email && <div><strong>Email:</strong> {selectedUser.email}</div>}
+                    {selectedUser.displayName && <div><strong>Name:</strong> {selectedUser.displayName}</div>}
                     <div><strong>Created:</strong> {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleString() : '-'}</div>
                     <div><strong>Tier:</strong> <span className={`badge ${selectedUser.tier}`}>{selectedUser.tier}</span></div>
                     <div><strong>Admin:</strong> {selectedUser.isAdmin ? 'Yes' : 'No'}</div>
@@ -541,7 +586,7 @@ const AdminPage: React.FC = () => {
                     <ul className="detail-list">
                       {selectedUser.pipelines.map(p => (
                         <li key={p.id}>
-                          <span>{p.source} → {p.destinations.length} dest</span>
+                          <span><strong>{p.name}</strong>: {p.source} → [{p.destinations.join(', ')}]</span>
                           <Button size="small" variant="text" onClick={() => handleDeleteUserData(selectedUser.userId, 'pipelines', p.id)}>Remove</Button>
                         </li>
                       ))}
