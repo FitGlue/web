@@ -38,6 +38,28 @@ export interface ImportValidationResult {
 }
 
 /**
+ * Encode a string to base64, handling Unicode characters.
+ * Uses UTF-8 encoding via encodeURIComponent to support emojis and special chars.
+ */
+function utf8ToBase64(str: string): string {
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+    String.fromCharCode(parseInt(p1, 16))
+  ));
+}
+
+/**
+ * Decode a base64 string to UTF-8, handling Unicode characters.
+ */
+function base64ToUtf8(str: string): string {
+  return decodeURIComponent(
+    atob(str)
+      .split('')
+      .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+      .join('')
+  );
+}
+
+/**
  * Encode a pipeline to a shareable base64 string.
  * Strips internal IDs and uses shortened keys for compact output.
  */
@@ -52,7 +74,7 @@ export function encodePipeline(pipeline: PipelineConfig): string {
     })),
     d: pipeline.destinations,
   };
-  return btoa(JSON.stringify(portable));
+  return utf8ToBase64(JSON.stringify(portable));
 }
 
 /**
@@ -61,7 +83,7 @@ export function encodePipeline(pipeline: PipelineConfig): string {
  */
 export function decodePipeline(encoded: string): PortablePipeline {
   try {
-    const json = atob(encoded.trim());
+    const json = base64ToUtf8(encoded.trim());
     const parsed = JSON.parse(json);
 
     if (parsed.v !== 1) {

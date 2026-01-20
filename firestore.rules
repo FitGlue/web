@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // FitGlue Strategy: Writes are mediated by Cloud Functions.
+    // Authenticated users may READ their own data for real-time UI updates.
+
+    // User document: allow authenticated user to read their own profile
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false;
+
+      // Activities subcollection: allow authenticated user to read their own activities
+      match /activities/{activityId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false;
+      }
+    }
+
+    // All other collections remain locked
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

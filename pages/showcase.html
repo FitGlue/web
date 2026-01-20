@@ -110,7 +110,7 @@
     <div id="enrichments-section" class="showcase-section" style="display: none;">
       <div class="section-header">
         <h2>🚀 Boosters Applied</h2>
-        <span class="section-subtitle">FitGlue magic that enhanced this activity</span>
+        <span class="section-subtitle">FitGlue Boosters applied to this activity</span>
       </div>
       <div id="enrichment-badges" class="enrichment-list"></div>
     </div>
@@ -1111,7 +1111,7 @@
       const enrichers = {
         'ENRICHER_PROVIDER_WORKOUT_SUMMARY': { icon: '📝', name: 'Workout Summary', desc: 'Generated detailed exercise breakdown' },
         'ENRICHER_PROVIDER_MUSCLE_HEATMAP': { icon: '🔥', name: 'Muscle Heatmap', desc: 'Visualized muscle group activation' },
-        'ENRICHER_PROVIDER_FITBIT_HEART_RATE': { icon: '❤️', name: 'Heart Rate Enricher', desc: 'Added heart rate telemetry from Fitbit' },
+        'ENRICHER_PROVIDER_FITBIT_HEART_RATE': { icon: '❤️', name: 'Heart Rate Booster', desc: 'Added heart rate telemetry from Fitbit' },
         'ENRICHER_PROVIDER_TYPE_MAPPER': { icon: '🏷️', name: 'Activity Type Mapper', desc: 'Mapped activity to correct type' },
         'ENRICHER_PROVIDER_PARKRUN': { icon: '🏃', name: 'Parkrun Results', desc: 'Added official Parkrun times and position' },
         'ENRICHER_PROVIDER_USER_INPUT': { icon: '✏️', name: 'User Input', desc: 'Custom data added by user' },
@@ -1127,7 +1127,7 @@
       const cleanId = id.replace('ENRICHER_PROVIDER_', '');
       const formatted = cleanId.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
-      return { icon: '⚡', name: formatted, desc: 'Enhanced activity data' };
+      return { icon: '⚡', name: formatted, desc: 'Boosted activity data' };
     }
   })();
 </script>

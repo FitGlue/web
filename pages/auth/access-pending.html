@@ -1,0 +1,88 @@
+{{> auth-head}}
+
+<div class="auth-container">
+  <h1 class="title">
+    <a href="/" class="logo-link">
+      <span class="fit">Fit</span><span class="glue">Glue</span>
+    </a>
+  </h1>
+
+  <div class="auth-box" style="text-align: center;">
+    <div class="pending-icon" style="font-size: 4rem; margin-bottom: 1.5rem;">⏳</div>
+
+    <h2 style="color: #f5f5f5; margin-bottom: 1rem;">You're on the Waitlist!</h2>
+
+    <p class="auth-description" style="text-align: center; margin-bottom: 1.5rem;">
+      Thanks for signing up for <strong style="color: #FF006E;">Fit</strong><strong style="color: #8338EC;">Glue</strong>!
+      We're currently in early access mode.
+    </p>
+
+    <p class="auth-description" style="text-align: center; margin-bottom: 2rem;">
+      We'll send you an email at <strong id="user-email" style="color: #f5f5f5;"></strong> when your account is activated.
+    </p>
+
+    <div style="background: rgba(131, 56, 236, 0.1); border: 1px solid rgba(131, 56, 236, 0.3); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1.5rem;">
+      <p style="color: #a5a5a5; font-size: 0.9rem; margin: 0;">
+        <strong style="color: #8338EC;">What happens next?</strong><br>
+        We're rolling out access in waves. When it's your turn, you'll get an email and can start syncing your workouts immediately!
+      </p>
+    </div>
+
+    <button id="btn-logout" class="btn secondary" style="margin-top: 1rem;">Sign out</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+  async function getFirebaseConfig() {
+    try {
+      const response = await fetch('/__/firebase/init.json');
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (e) {
+      console.warn('Could not load Firebase config:', e);
+    }
+    return null;
+  }
+
+  async function init() {
+    const firebaseConfig = await getFirebaseConfig();
+    if (!firebaseConfig) {
+      console.error('Could not initialize authentication.');
+      return;
+    }
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        // Not logged in, redirect to login
+        window.location.href = '/auth/login';
+        return;
+      }
+
+      // Show user email
+      const emailEl = document.getElementById('user-email');
+      if (emailEl) {
+        emailEl.textContent = user.email || 'your registered email';
+      }
+    });
+
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        window.location.href = '/auth/login';
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    });
+  }
+
+  init();
+</script>
+
+{{> auth-footer}}

@@ -14,6 +14,7 @@ interface AdminUser {
   tier: 'free' | 'pro';
   trialEndsAt?: string;
   isAdmin: boolean;
+  accessEnabled: boolean;
   syncCountThisMonth: number;
   stripeCustomerId?: string;
   integrations: string[];
@@ -35,6 +36,7 @@ interface AdminUserDetail {
   tier: 'free' | 'pro';
   trialEndsAt?: string;
   isAdmin: boolean;
+  accessEnabled: boolean;
   syncCountThisMonth: number;
   stripeCustomerId?: string;
   syncCountResetAt?: string;
@@ -379,10 +381,10 @@ const AdminPage: React.FC = () => {
                   <thead>
                     <tr>
                       <th>User</th>
+                      <th>Access</th>
                       <th>Tier</th>
                       <th>Syncs</th>
                       <th>Integrations</th>
-                      <th>Pipelines</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -394,19 +396,23 @@ const AdminPage: React.FC = () => {
                           {user.isAdmin && <span className="badge admin">Admin</span>}
                         </td>
                         <td>
+                          <span className={`badge ${user.accessEnabled ? 'success' : 'waitlist'}`}>
+                            {user.accessEnabled ? '✓ Active' : '⏳ Waitlist'}
+                          </span>
+                        </td>
+                        <td>
                           <span className={`badge ${user.tier}`}>{user.tier}</span>
                         </td>
                         <td>{user.syncCountThisMonth}</td>
                         <td>{user.integrations.length > 0 ? user.integrations.join(', ') : '-'}</td>
-                        <td>{user.pipelineCount}</td>
                         <td className="admin-actions" onClick={e => e.stopPropagation()}>
                           <Button
-                            variant="secondary"
+                            variant={user.accessEnabled ? 'secondary' : 'primary'}
                             size="small"
                             disabled={updating === user.userId}
-                            onClick={() => handleUpdateUser(user.userId, { tier: user.tier === 'pro' ? 'free' : 'pro' })}
+                            onClick={() => handleUpdateUser(user.userId, { accessEnabled: !user.accessEnabled })}
                           >
-                            {user.tier === 'pro' ? '↓ Free' : '↑ Pro'}
+                            {user.accessEnabled ? '🚫 Revoke' : '✓ Enable'}
                           </Button>
                           <Button
                             variant="text"
@@ -582,6 +588,7 @@ const AdminPage: React.FC = () => {
                     {selectedUser.displayName && <div><strong>Name:</strong> {selectedUser.displayName}</div>}
                     <div><strong>Created:</strong> {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleString() : '-'}</div>
                     <div><strong>Tier:</strong> <span className={`badge ${selectedUser.tier}`}>{selectedUser.tier}</span></div>
+                    <div><strong>Access:</strong> <span className={`badge ${selectedUser.accessEnabled ? 'success' : 'waitlist'}`}>{selectedUser.accessEnabled ? 'Enabled' : 'Waitlisted'}</span></div>
                     <div><strong>Admin:</strong> {selectedUser.isAdmin ? 'Yes' : 'No'}</div>
                     <div><strong>Trial Ends:</strong> {selectedUser.trialEndsAt ? new Date(selectedUser.trialEndsAt).toLocaleDateString() : '-'}</div>
                     <div><strong>Syncs:</strong> {selectedUser.syncCountThisMonth} <Button size="small" variant="text" onClick={() => handleUpdateUser(selectedUser.userId, { syncCountThisMonth: 0 })}>Reset</Button></div>

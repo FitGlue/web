@@ -55,19 +55,24 @@ function hideMessage(elementId: string) {
   }
 }
 
-// --- Helper: Check if email verification is required (30-day grace period) ---
-async function shouldEnforceEmailVerification(user: User): Promise<boolean> {
+// --- Helper: Check user access status ---
+interface AccessCheckResult {
+  mustVerifyEmail: boolean;
+  hasAccessEnabled: boolean;
+}
+
+async function checkUserAccess(user: User): Promise<AccessCheckResult> {
+  const result: AccessCheckResult = {
+    mustVerifyEmail: false,
+    hasAccessEnabled: true // Default to true for backwards compat
+  };
+
   // Google OAuth users are automatically verified
-  if (user.providerData.some(p => p.providerId === 'google.com')) {
-    return false;
-  }
+  const isOAuthUser = user.providerData.some(p => p.providerId === 'google.com');
 
-  // If already verified, no enforcement needed
-  if (user.emailVerified) {
-    return false;
-  }
+  // If already email verified, no enforcement needed
+  const emailVerified = user.emailVerified || isOAuthUser;
 
-  // Check account age from Firestore
   try {
     const response = await fetch(`/api/users/me`, {
       headers: {
@@ -77,19 +82,24 @@ async function shouldEnforceEmailVerification(user: User): Promise<boolean> {
 
     if (response.ok) {
       const data = await response.json();
-      const createdAt = data.createdAt ? new Date(data.createdAt) : null;
 
-      if (createdAt) {
-        const daysSinceCreation = (Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
-        return daysSinceCreation > 30;
+      // Check access enabled (waitlist)
+      result.hasAccessEnabled = data.accessEnabled === true || data.isAdmin === true;
+
+      // Check email verification grace period
+      if (!emailVerified) {
+        const createdAt = data.createdAt ? new Date(data.createdAt) : null;
+        if (createdAt) {
+          const daysSinceCreation = (Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
+          result.mustVerifyEmail = daysSinceCreation > 30;
+        }
       }
     }
   } catch (e) {
-    console.error('Failed to check account age:', e);
+    console.error('Failed to check user access:', e);
   }
 
-  // Default to grace period if we can't determine age
-  return false;
+  return result;
 }
 
 async function init() {
@@ -111,21 +121,29 @@ async function init() {
     const LOGIN_URL = '/auth/login';
     const APP_URL = '/app';
     const VERIFY_EMAIL_URL = '/auth/verify-email';
+    const ACCESS_PENDING_URL = '/auth/access-pending';
 
     if (user) {
       console.log('User is logged in:', user.uid);
 
-      // Check email verification enforcement
-      const mustVerify = await shouldEnforceEmailVerification(user);
+      // Check user access status (email verification + waitlist)
+      const accessCheck = await checkUserAccess(user);
+      const isAccessPendingPage = path.includes('access-pending');
 
-      if (mustVerify && !isVerifyPage && !isLogoutPage) {
-        // User must verify email before accessing app
+      // Check if user is on waitlist (no access enabled)
+      if (!accessCheck.hasAccessEnabled && !isAccessPendingPage && !isLogoutPage) {
+        window.location.href = ACCESS_PENDING_URL;
+        return;
+      }
+
+      // Check email verification enforcement
+      if (accessCheck.mustVerifyEmail && !isVerifyPage && !isLogoutPage && !isAccessPendingPage) {
         window.location.href = VERIFY_EMAIL_URL;
         return;
       }
 
-      // Redirect authenticated users away from auth pages
-      if (isAuthPage && !isVerifyPage) {
+      // Redirect authenticated users away from auth pages (except access-pending for waitlisted users)
+      if (isAuthPage && !isVerifyPage && !isAccessPendingPage) {
         window.location.href = APP_URL;
       }
 
@@ -143,7 +161,7 @@ async function init() {
         }
 
         // Show appropriate verification state
-        if (mustVerify) {
+        if (accessCheck.mustVerifyEmail) {
           document.getElementById('verification-pending')!.style.display = 'none';
           document.getElementById('verification-required')!.style.display = 'block';
         } else {

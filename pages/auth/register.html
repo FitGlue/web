@@ -1,15 +1,20 @@
 {{> auth-head}}
 
+<!-- reCAPTCHA v3 - will load key from environment on init -->
+<script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
+
 <div class="auth-container">
   <h1 class="title">
     <a href="/" class="logo-link">
       <span class="fit">Fit</span><span class="glue">Glue</span>
     </a>
   </h1>
-  <h2>Create Account</h2>
+  <h2>Create Your Account</h2>
+  <p class="auth-subtitle">This will add you to the waitlist for early access 🚀</p>
 
   <div class="auth-box">
     <div id="auth-error" class="auth-message error" style="display: none;"></div>
+    <div id="auth-success" class="auth-message success" style="display: none;"></div>
 
     <div class="input-group">
       <input type="text" id="reg-name" placeholder="Your Name" autocomplete="name" />
@@ -20,36 +25,17 @@
     <div class="input-group">
       <input type="password" id="reg-password" placeholder="Password (min 6 chars)" />
     </div>
-    <button id="btn-register" class="btn primary">Register</button>
-
-    <div class="divider">OR</div>
-
-    <button id="btn-register-google" class="btn secondary google-btn">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"
-          fill="#4285F4" />
-        <path
-          d="M9.003 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.96v2.332C2.438 15.983 5.482 18 9.003 18z"
-          fill="#34A853" />
-        <path
-          d="M3.964 10.712c-.18-.54-.282-1.117-.282-1.71 0-.593.102-1.17.282-1.71V4.96H.957C.347 6.175 0 7.55 0 9.002c0 1.452.348 2.827.957 4.042l3.007-2.332z"
-          fill="#FBBC05" />
-        <path
-          d="M9.003 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.464.891 11.426 0 9.003 0 5.482 0 2.438 2.017.96 4.958L3.967 7.29c.708-2.127 2.692-3.71 5.036-3.71z"
-          fill="#EA4335" />
-      </svg>
-      Sign up with Google
+    <button id="btn-register" class="btn primary">
+      <span class="btn-text">Create Account & Join Waitlist</span>
+      <span class="btn-loading" style="display: none;">
+        <span class="spinner"></span>
+      </span>
     </button>
 
-    <button id="btn-register-facebook" class="btn secondary facebook-btn">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M18 9c0-4.97-4.03-9-9-9S0 4.03 0 9c0 4.49 3.29 8.21 7.59 8.88v-6.28H5.31V9h2.28V7.02c0-2.25 1.34-3.49 3.39-3.49.98 0 2.01.18 2.01.18v2.21h-1.13c-1.11 0-1.46.69-1.46 1.4V9h2.49l-.4 2.6h-2.09v6.28C14.71 17.21 18 13.49 18 9z"
-          fill="currentColor" />
-      </svg>
-      Sign up with Facebook
-    </button>
+    <p class="terms-note">
+      By signing up, you agree to our
+      <a href="/terms" target="_blank">Terms of Service</a>
+    </p>
 
     <p class="switch-auth">
       Already have an account? <a href="/auth/login">Login</a>
@@ -57,19 +43,90 @@
   </div>
 </div>
 
+<style>
+  .auth-subtitle {
+    color: var(--color-text-muted, #AAA);
+    font-size: 1rem;
+    margin: -0.5rem 0 1.5rem;
+    text-align: center;
+  }
+
+  .terms-note {
+    font-size: 0.8rem;
+    color: var(--color-text-muted, #AAA);
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  .terms-note a {
+    color: var(--color-primary);
+  }
+
+  .btn-loading {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .btn.loading .btn-text {
+    display: none;
+  }
+
+  .btn.loading .btn-loading {
+    display: inline-flex;
+  }
+</style>
+
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, sendEmailVerification, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
   const errorEl = document.getElementById('auth-error');
+  const successEl = document.getElementById('auth-success');
+  const registerBtn = document.getElementById('btn-register');
+
+  let recaptchaSiteKey = null;
+  let recaptchaReady = false;
 
   function showError(message) {
     errorEl.textContent = message;
     errorEl.style.display = 'block';
+    successEl.style.display = 'none';
   }
 
   function hideError() {
     errorEl.style.display = 'none';
+  }
+
+  function showSuccess(message) {
+    successEl.textContent = message;
+    successEl.style.display = 'block';
+    errorEl.style.display = 'none';
+  }
+
+  function setLoading(loading) {
+    if (loading) {
+      registerBtn.classList.add('loading');
+      registerBtn.disabled = true;
+    } else {
+      registerBtn.classList.remove('loading');
+      registerBtn.disabled = false;
+    }
   }
 
   async function getFirebaseConfig() {
@@ -84,72 +141,108 @@
     return null;
   }
 
-  async function init() {
-    // Only allow registration on localhost during waitlist mode
-    const hostname = window.location.hostname;
-    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
-
-    if (!isLocalhost) {
-      // Redirect to waitlist - registration is not available in production yet
-      window.location.href = '/waitlist?reason=early_access';
-      return;
+  async function getRecaptchaSiteKey() {
+    try {
+      // Fetch reCAPTCHA site key from our config endpoint
+      const response = await fetch('/api/config/recaptcha');
+      if (response.ok) {
+        const data = await response.json();
+        return data.siteKey;
+      }
+    } catch (e) {
+      console.warn('Could not load reCAPTCHA config:', e);
     }
+    return null;
+  }
 
+  async function executeRecaptcha(action) {
+    if (!recaptchaReady || !recaptchaSiteKey) {
+      console.warn('reCAPTCHA not ready, proceeding without token');
+      return null;
+    }
+    try {
+      return await grecaptcha.execute(recaptchaSiteKey, { action });
+    } catch (e) {
+      console.error('reCAPTCHA execution failed:', e);
+      return null;
+    }
+  }
+
+  async function init() {
     const firebaseConfig = await getFirebaseConfig();
     if (!firebaseConfig) {
       showError('Could not initialize authentication. Please try again later.');
       return;
     }
 
+    // Initialize reCAPTCHA
+    recaptchaSiteKey = await getRecaptchaSiteKey();
+    if (recaptchaSiteKey && typeof grecaptcha !== 'undefined') {
+      grecaptcha.ready(() => {
+        recaptchaReady = true;
+        console.log('reCAPTCHA v3 ready');
+      });
+    }
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    document.getElementById('btn-register').addEventListener('click', async () => {
+    registerBtn.addEventListener('click', async () => {
       hideError();
       const name = document.getElementById('reg-name').value.trim();
-      const email = document.getElementById('reg-email').value;
+      const email = document.getElementById('reg-email').value.trim();
       const password = document.getElementById('reg-password').value;
 
+      // Validation
       if (!name) {
         showError('Please enter your name');
         return;
       }
+      if (!email) {
+        showError('Please enter your email');
+        return;
+      }
+      if (password.length < 6) {
+        showError('Password must be at least 6 characters');
+        return;
+      }
+
+      setLoading(true);
 
       try {
+        // Execute reCAPTCHA (if available)
+        const recaptchaToken = await executeRecaptcha('register');
+
+        // Create Firebase user
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        // Set display name in Firebase Auth
+
+        // Set display name
         await updateProfile(userCredential.user, { displayName: name });
+
+        // Send verification email
         await sendEmailVerification(userCredential.user);
-        window.location.href = '/auth/verify-email';
-      } catch (error) {
-        showError(error.message);
-      }
-    });
 
-    document.getElementById('btn-register-google').addEventListener('click', async () => {
-      hideError();
-      try {
-        await signInWithPopup(auth, new GoogleAuthProvider());
-        window.location.href = '/app';
+        // Redirect to waitlist confirmation page
+        window.location.href = '/auth/waitlist-confirmed';
       } catch (error) {
-        showError(error.message);
-      }
-    });
-
-    document.getElementById('btn-register-facebook').addEventListener('click', async () => {
-      hideError();
-      try {
-        await signInWithPopup(auth, new FacebookAuthProvider());
-        window.location.href = '/app';
-      } catch (error) {
-        showError(error.message);
+        setLoading(false);
+        // Friendly error messages
+        if (error.code === 'auth/email-already-in-use') {
+          showError('This email is already registered. Try logging in instead.');
+        } else if (error.code === 'auth/weak-password') {
+          showError('Password is too weak. Please use at least 6 characters.');
+        } else if (error.code === 'auth/invalid-email') {
+          showError('Please enter a valid email address.');
+        } else {
+          showError(error.message);
+        }
       }
     });
 
     // Allow enter key to submit
     document.getElementById('reg-password').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
-        document.getElementById('btn-register').click();
+        registerBtn.click();
       }
     });
   }

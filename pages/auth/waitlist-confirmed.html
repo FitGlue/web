@@ -1,0 +1,206 @@
+{{> auth-head}}
+
+<div class="auth-container waitlist-confirmed">
+  <div class="confirmation-animation">
+    <div class="check-circle">
+      <svg viewBox="0 0 52 52" class="checkmark">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+      </svg>
+    </div>
+  </div>
+
+  <h1 class="title">
+    <a href="/" class="logo-link">
+      <span class="fit">Fit</span><span class="glue">Glue</span>
+    </a>
+  </h1>
+
+  <h2 class="success-title">You're on the list! 🎉</h2>
+
+  <div class="auth-box confirmation-box">
+    <p class="confirmation-message">
+      Thanks for joining the FitGlue waitlist! We're rolling out access in waves and will email you as soon as your spot
+      is ready.
+    </p>
+
+    <div class="next-steps">
+      <h3>What happens next</h3>
+      <ol>
+        <li>
+          <span class="step-icon">📧</span>
+          <span class="step-text">Check your email to verify your address</span>
+        </li>
+        <li>
+          <span class="step-icon">⏳</span>
+          <span class="step-text">We'll review your registration</span>
+        </li>
+        <li>
+          <span class="step-icon">🚀</span>
+          <span class="step-text">You'll get an email when access is enabled</span>
+        </li>
+      </ol>
+    </div>
+
+    <div class="cta-section">
+      <p>Already received access?</p>
+      <a href="/auth/login" class="btn primary">Login Now</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .waitlist-confirmed {
+    text-align: center;
+  }
+
+  .confirmation-animation {
+    margin-bottom: 1.5rem;
+  }
+
+  .check-circle {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+  }
+
+  .checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: var(--color-success, #06FFA5);
+    stroke-miterlimit: 10;
+    animation: scale 0.3s ease-in-out 0.9s both;
+  }
+
+  .checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: var(--color-success, #06FFA5);
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  }
+
+  .checkmark-check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    stroke-width: 3;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+  }
+
+  @keyframes stroke {
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes scale {
+
+    0%,
+    100% {
+      transform: none;
+    }
+
+    50% {
+      transform: scale3d(1.1, 1.1, 1);
+    }
+  }
+
+  .success-title {
+    color: var(--color-success, #06FFA5);
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 0.5s ease-out 0.5s both;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .confirmation-box {
+    animation: fadeIn 0.5s ease-out 0.7s both;
+  }
+
+  .confirmation-message {
+    font-size: 1rem;
+    color: var(--color-text, #fff);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .next-steps {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  .next-steps h3 {
+    font-size: 0.9rem;
+    color: var(--color-text-muted, #AAA);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 1rem 0;
+  }
+
+  .next-steps ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: step;
+  }
+
+  .next-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .next-steps li:last-child {
+    border-bottom: none;
+  }
+
+  .step-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .step-text {
+    color: var(--color-text, #fff);
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .cta-section {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .cta-section p {
+    color: var(--color-text-muted, #AAA);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .cta-section .btn {
+    min-width: 150px;
+  }
+</style>
+
+{{> auth-footer}}

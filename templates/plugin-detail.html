@@ -28,6 +28,9 @@
         {{#if isDestination}}
           <span class="integration-status destination">Target</span>
         {{/if}}
+        {{#if isAthleteTier}}
+          <span class="integration-status athlete">✨ Athlete Only</span>
+        {{/if}}
       </div>
     </div>
   </section>
@@ -178,7 +181,7 @@
 
       {{#if hasRequiredConnections}}
         <h2 class="text-center mb-md mt-xl animate-on-scroll">Required Connection</h2>
-        <p class="text-center text-muted animate-on-scroll">This plugin requires the following connection:</p>
+        <p class="text-center text-muted animate-on-scroll">This Booster requires the following Connection:</p>
         <div class="required-connections-grid animate-on-scroll">
           {{#each requiredConnectionObjects}}
             <a href="/connections/{{id}}" class="connection-card">
@@ -199,7 +202,7 @@
     <div class="container">
       <div class="cta-content">
         <h2 class="cta-title animate-on-scroll">Ready to Use <span class="text-gradient">{{name}}</span>?</h2>
-        <p class="cta-subtitle animate-on-scroll">Set up your pipeline with this plugin.</p>
+        <p class="cta-subtitle animate-on-scroll">Add this Booster to your Pipeline.</p>
         <a href="/app/register" class="btn btn-primary btn-lg animate-on-scroll">Get Started →</a>
       </div>
     </div>

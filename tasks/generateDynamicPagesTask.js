@@ -209,6 +209,8 @@ export function generateDynamicPagesTask(config) {
             // Use cases
             useCases: e.useCases || [],
             hasUseCases: (e.useCases || []).length > 0,
+            // Tier gating
+            isAthleteTier: e.requiredTier === 'pro',
           },
         });
       }

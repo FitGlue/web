@@ -246,6 +246,12 @@
   color: var(--color-success, #06FFA5);
 }
 
+.badge.waitlist {
+  background: rgba(255, 178, 0, 0.15);
+  color: #FFB200;
+  border: 1px solid rgba(255, 178, 0, 0.3);
+}
+
 .badge.failed {
   background: rgba(255, 69, 58, 0.15);
   color: #FF453A;

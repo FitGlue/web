@@ -1,4 +1,7 @@
 {
+  "firestore": {
+    "rules": "firestore.rules"
+  },
   "hosting": {
     "public": "dist",
     "ignore": [
@@ -48,13 +51,6 @@
         "source": "/api/showcase/**",
         "run": {
           "serviceId": "showcase-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/waitlist",
-        "run": {
-          "serviceId": "waitlist-handler",
           "region": "us-central1"
         }
       },

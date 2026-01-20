@@ -7,9 +7,9 @@
       <h1 class="hero-title">
         <span class="fit">Fit</span><span class="glue">Glue</span>
       </h1>
-      <p class="hero-tagline">Watch your workout become extraordinary ✨</p>
+      <p class="hero-tagline">Watch your activity become extraordinary ✨</p>
       <p class="hero-subtitle">Your gym session deserves more than "Weight Training – 45 min". FitGlue
-        transforms every workout into a story worth sharing—with AI descriptions, heart rate data, and muscle heatmaps.
+        transforms every activity into a story worth sharing—with AI descriptions, heart rate data, and muscle heatmaps.
       </p>
 
       <!-- Animated Data Flow -->
@@ -70,7 +70,7 @@
         </div>
         <div class="trust-stat">
           <span class="trust-stat-value">100+</span>
-          <span class="trust-stat-label">Activities Enriched</span>
+          <span class="trust-stat-label">Activities Boosted</span>
         </div>
       </div>
       <div class="trust-privacy">
@@ -84,7 +84,7 @@
   <section class="section">
     <div class="container">
       <h2 class="text-center mb-md animate-on-scroll">See the <span class="text-gradient">Magic</span></h2>
-      <p class="text-center text-muted mb-lg animate-on-scroll">Your workouts, transformed with data that matters</p>
+      <p class="text-center text-muted mb-lg animate-on-scroll">Your activities, transformed with data that matters</p>
 
       <div class="showcase-grid stagger-children">
         <!-- Workout Summary Transformation -->
@@ -275,7 +275,7 @@
             finishing position? My age grade?"
           </div>
           <div class="story-solution">
-            <strong>With FitGlue:</strong> Your parkrun activity gets enriched with official results—accurate time,
+            <strong>With FitGlue:</strong> Your parkrun activity gets boosted with official results—accurate time,
             position, age grade, and PB celebrations. Automatically.
           </div>
         </div>
@@ -309,7 +309,7 @@
         <div class="feature-card">
           <span class="feature-icon">🎯</span>
           <h3>3. Share</h3>
-          <p>Your enriched workout arrives on Strava automatically. Complete, beautiful, and ready to share.</p>
+          <p>Your boosted activity arrives at your Target automatically. Complete, beautiful, and ready to share.</p>
         </div>
       </div>
 
@@ -478,72 +478,16 @@
       <div class="cta-content">
         <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Unify</span> Your Fitness Data?
         </h2>
-        <p class="cta-subtitle animate-on-scroll">Join the waitlist and be the first to experience seamless workout
-          syncing.</p>
+        <p class="cta-subtitle animate-on-scroll">Create an account to join the waitlist and be the first to experience
+          seamless workout syncing.</p>
 
-        <div class="waitlist-form animate-on-scroll">
-          <form id="waitlist-form" class="waitlist-input-group">
-            <input type="email" id="email" class="waitlist-input" placeholder="Enter your email" required>
-            <div class="hp-field">
-              <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
-            </div>
-            <button type="submit" class="btn btn-primary">Join Now</button>
-          </form>
-          <div id="waitlist-success" class="waitlist-success" style="display: none;">
-            <h3 style="color: var(--color-success);">🎉 You're on the list!</h3>
-            <p>We'll notify you as soon as a spot opens up.</p>
-          </div>
-          <div id="waitlist-error" class="waitlist-error" style="display: none;"></div>
+        <div class="cta-buttons animate-on-scroll">
+          <a href="/auth/register" class="btn btn-primary btn-lg">Create Account →</a>
+          <a href="/how-it-works" class="btn btn-secondary btn-lg">Learn More</a>
         </div>
       </div>
     </div>
   </section>
 </main>
-
-<script>
-  document.getElementById('waitlist-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    const email = document.getElementById('email').value;
-    const honeypot = document.getElementById('website_url').value;
-    const form = document.getElementById('waitlist-form');
-    const success = document.getElementById('waitlist-success');
-    const error = document.getElementById('waitlist-error');
-
-    // Honeypot check
-    if (honeypot) {
-      form.style.display = 'none';
-      success.style.display = 'block';
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-
-      if (response.ok) {
-        form.style.display = 'none';
-        success.style.display = 'block';
-      } else {
-        const data = await response.json();
-        if (data.message && data.message.includes('already')) {
-          form.style.display = 'none';
-          success.querySelector('h3').textContent = '👋 Welcome back!';
-          success.querySelector('p').textContent = 'You\'re already on the list. We\'ll be in touch soon!';
-          success.style.display = 'block';
-        } else {
-          error.textContent = data.message || 'Something went wrong. Please try again.';
-          error.style.display = 'block';
-        }
-      }
-    } catch (err) {
-      error.textContent = 'Something went wrong. Please try again.';
-      error.style.display = 'block';
-    }
-  });
-</script>
 
 {{> footer}}

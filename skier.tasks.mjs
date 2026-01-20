@@ -64,7 +64,6 @@ export const tasks = [
     to: './static-dist',
   }),
 
-  // Set global values for templates
   setGlobalsTask({
     values: {
       siteName: 'FitGlue',
@@ -73,7 +72,7 @@ export const tasks = [
       year: new Date().getFullYear(),
       cacheHash,
       appUrl: '/app',
-      waitlistUrl: '/waitlist',
+      waitlistUrl: '/auth/register',
     },
   }),
 
@@ -94,7 +93,6 @@ export const tasks = [
         pricing: 'Simple, honest pricing. Start free, upgrade when you need more. Or self-host—it\'s open source.',
         about: 'We believe your fitness data should work for you, not against you. FitGlue transforms disconnected data into unified fitness stories.',
         contact: 'Have a question or suggestion? We\'d love to hear from you.',
-        waitlist: 'Be among the first to experience the magic. Join the waitlist for early access and founding member perks.',
         privacy: 'Your data is yours. Read our commitment to privacy and security.',
         terms: 'FitGlue Terms of Service and usage guidelines.',
         '404': 'Oops! This page went for a run and didn\'t come back.',
@@ -108,7 +106,6 @@ export const tasks = [
         isPricing: currentPage === 'pricing',
         isAbout: currentPage === 'about',
         isContact: currentPage === 'contact',
-        isWaitlist: currentPage === 'waitlist',
         isPrivacy: currentPage === 'privacy',
         isTerms: currentPage === 'terms',
         canonicalPath,

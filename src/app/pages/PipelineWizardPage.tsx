@@ -7,11 +7,13 @@ import { useApi } from '../hooks/useApi';
 import { usePipelines } from '../hooks/usePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useIntegrations } from '../hooks/useIntegrations';
+import { useUser } from '../hooks/useUser';
 import { EnricherConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginManifest, ConfigFieldType } from '../types/plugin';
+import { getEffectiveTier } from '../utils/tier';
 
 interface SelectedEnricher {
     manifest: PluginManifest;
@@ -26,19 +28,34 @@ const PipelineWizardPage: React.FC = () => {
     const { refresh: refreshPipelines } = usePipelines();
     const { sources, enrichers, destinations, integrations: registryIntegrations, loading, error: registryError } = usePluginRegistry();
     const { integrations: userIntegrations, fetchIfNeeded: fetchIntegrations } = useIntegrations();
+    const { user } = useUser();
+
+    // Get effective user tier using shared utility
+    const userTier = user ? getEffectiveTier(user) : 'free';
 
     // Fetch user integrations on mount
     useEffect(() => {
         fetchIntegrations();
     }, [fetchIntegrations]);
 
+    // Helper: Check if a plugin is tier-gated for the current user
+    const isTierGated = (plugin: PluginManifest): boolean => {
+        if (!plugin.requiredTier) return false;
+        return plugin.requiredTier === 'pro' && userTier !== 'pro';
+    };
+
     // Helper: Check if a plugin's required integrations are all connected
-    const isPluginAvailable = (plugin: PluginManifest): boolean => {
+    const isIntegrationAvailable = (plugin: PluginManifest): boolean => {
         if (!plugin.requiredIntegrations?.length) return true;
         return plugin.requiredIntegrations.every(integrationId => {
             const integration = (userIntegrations as Record<string, { connected?: boolean } | undefined> | null)?.[integrationId];
             return integration?.connected ?? false;
         });
+    };
+
+    // Helper: Check if a plugin is fully available (integrations + tier)
+    const isPluginAvailable = (plugin: PluginManifest): boolean => {
+        return isIntegrationAvailable(plugin) && !isTierGated(plugin);
     };
 
     // Helper: Get missing integration names for a plugin
