@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.13.0](https://github.com/fitglue/web/compare/v1.12.0...v1.13.0) (2026-01-20)
+
+
+### Features
+
+* pipeline import/export and emoji hardcoding removal ([b37b7e5](https://github.com/fitglue/web/commit/b37b7e506b7c235cca3f0fc79849989afc7367fb))
+
 ## [1.12.0](https://github.com/fitglue/web/compare/v1.11.0...v1.12.0) (2026-01-20)
 
 
