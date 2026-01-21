@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/fitglue/web/compare/v2.0.0...v2.1.0) (2026-01-21)
+
+
+### Features
+
+* improvements to live sync and enum usage ([88b8136](https://github.com/fitglue/web/commit/88b813673a592050a50853b925160461c48ded47))
+
 ## [2.0.0](https://github.com/fitglue/web/compare/v1.14.0...v2.0.0) (2026-01-20)
 
 
