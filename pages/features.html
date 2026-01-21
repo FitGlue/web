@@ -48,37 +48,37 @@
         <p class="text-muted animate-on-scroll">Import your workouts automatically from your favorite apps</p>
       </div>
 
-      <div class="feature-grid stagger-children">
-        <div class="feature-card">
+      <div class="info-grid stagger-children">
+        <div class="info-card">
           <span class="feature-icon">🔄</span>
           <h3>Automatic Sync</h3>
           <p>Once connected, your workouts flow into FitGlue automatically. No manual exports, no file downloads.</p>
         </div>
 
-        <div class="feature-card">
+        <div class="info-card">
           <span class="feature-icon">🔐</span>
           <h3>Instant Connect</h3>
           <p>One tap to link your accounts securely. Your passwords never touch our servers—bank-level security built
             in.</p>
         </div>
 
-        <div class="feature-card">
+        <div class="info-card">
           <span class="feature-icon">⚡</span>
           <h3>Lightning-Fast Sync</h3>
           <p>Your data arrives within seconds of completing a workout. No waiting, no delays.</p>
         </div>
       </div>
 
-      <div class="integrations-grid mt-lg stagger-children">
-        {{#each integrations.connections}}
-          <a href="{{detailsUrl}}" class="integration-card-link">
-            <div class="integration-card hoverable">
-              <div class="integration-logo">
-                <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+      <div class="feature-grid mt-lg stagger-children">
+        {{#each sources}}
+          <a href="{{detailsUrl}}" class="feature-card-link">
+            <div class="feature-card{{#if isPremium}} premium{{/if}} hoverable">
+              <div class="feature-card-header">
+                <span class="feature-icon">{{icon}}</span>
+                {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
               </div>
-              <div class="integration-name">{{name}}</div>
-              <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">{{description}}</p>
-              <span class="integration-status {{status}}" style="margin-top: 0.75rem;">{{status}}</span>
+              <h3>{{name}}</h3>
+              <p>{{description}}</p>
             </div>
           </a>
         {{/each}}
@@ -131,37 +131,37 @@
         <p class="text-muted animate-on-scroll">Send your boosted activities to the platforms you love</p>
       </div>
 
-      <div class="feature-grid stagger-children">
-        <div class="feature-card">
+      <div class="info-grid stagger-children">
+        <div class="info-card">
           <span class="feature-icon">🚴</span>
           <h3>No App Required</h3>
           <p>FitGlue works with any app that exports your workouts in a standard format. No need to download or install
             anything - just configure on the website.</p>
         </div>
 
-        <div class="feature-card">
+        <div class="info-card">
           <span class="feature-icon">🔔</span>
           <h3>Instant Notifications</h3>
           <p>Get notified when your activities are synced. Know exactly when your workout goes live.</p>
         </div>
 
-        <div class="feature-card">
+        <div class="info-card">
           <span class="feature-icon">✨</span>
           <h3>Rich Descriptions</h3>
           <p>Activities arrive at their destination complete with AI-generated descriptions, stats, and more.</p>
         </div>
       </div>
 
-      <div class="integrations-grid mt-lg stagger-children">
-        {{#each integrations.syncTargets}}
-          <a href="{{detailsUrl}}" class="integration-card-link">
-            <div class="integration-card hoverable">
-              <div class="integration-logo">
-                <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+      <div class="feature-grid mt-lg stagger-children">
+        {{#each destinations}}
+          <a href="{{detailsUrl}}" class="feature-card-link">
+            <div class="feature-card{{#if isPremium}} premium{{/if}} hoverable">
+              <div class="feature-card-header">
+                <span class="feature-icon">{{icon}}</span>
+                {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
               </div>
-              <div class="integration-name">{{name}}</div>
-              <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">{{description}}</p>
-              <span class="integration-status {{status}}" style="margin-top: 0.75rem;">{{status}}</span>
+              <h3>{{name}}</h3>
+              <p>{{description}}</p>
             </div>
           </a>
         {{/each}}

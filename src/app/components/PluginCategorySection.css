@@ -1,25 +1,29 @@
+/* ========================================
+   Plugin Category Section Styles
+   ======================================== */
+
 .plugin-category-section {
-  margin-bottom: var(--space-md);
+  margin-bottom: 1.5rem;
 }
 
 .category-header {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: 0.75rem;
   width: 100%;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--surface-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text);
   transition: background 0.15s ease;
 }
 
 .category-header:hover {
-  background: var(--surface-hover);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .category-emoji {
@@ -32,15 +36,15 @@
 }
 
 .category-count {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  background: var(--surface-tertiary);
-  padding: 0.125rem 0.5rem;
-  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
 }
 
 .category-chevron {
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   transition: transform 0.15s ease;
 }
 
@@ -50,29 +54,29 @@
 
 .category-plugins {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: var(--space-md);
-  padding: var(--space-md) 0;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+  padding: 1.25rem 0;
 }
 
 .plugin-card-header {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-xs);
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .disabled-reason {
   display: block;
   font-size: 0.75rem;
-  color: var(--text-warning);
-  margin-top: var(--space-xs);
+  color: #FFA500;
+  margin-top: 0.5rem;
 }
 
 .info-btn {
   position: absolute;
-  top: var(--space-xs);
-  right: var(--space-xs);
+  top: 0.5rem;
+  right: 0.5rem;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -87,45 +91,48 @@
 
 /* SVG icon styling for products with real logos */
 .option-icon-svg {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
 }
 
 /* Search bar styling */
 .search-bar {
-  margin-bottom: var(--space-md);
+  margin-bottom: 1.25rem;
 }
 
 .search-input {
   width: 100%;
-  padding: var(--space-sm) var(--space-md);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--surface-primary);
-  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text);
   font-size: 1rem;
 }
 
 .search-input::placeholder {
-  color: var(--text-muted);
+  color: var(--color-text-muted);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Recommended section */
 .recommended-section {
-  margin-bottom: var(--space-lg);
-  padding: var(--space-md);
-  background: var(--surface-secondary);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+  padding: 1.25rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .recommended-section h4 {
-  margin-bottom: var(--space-md);
-  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 600;
 }

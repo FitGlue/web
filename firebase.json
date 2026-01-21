@@ -209,6 +209,55 @@
         }
       },
       {
+        "source": "/auth/oura/callback",
+        "run": {
+          "serviceId": "oura-oauth-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/hooks/oura",
+        "run": {
+          "serviceId": "oura-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/auth/wahoo/callback",
+        "run": {
+          "serviceId": "wahoo-oauth-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/hooks/wahoo",
+        "run": {
+          "serviceId": "wahoo-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/auth/polar/callback",
+        "run": {
+          "serviceId": "polar-oauth-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/hooks/polar",
+        "run": {
+          "serviceId": "polar-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/auth/google/callback",
+        "run": {
+          "serviceId": "google-oauth-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/mobile/sync",
         "run": {
           "serviceId": "mobile-sync-handler",

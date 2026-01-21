@@ -131,6 +131,17 @@
       <div id="exercise-list" class="exercise-list"></div>
     </div>
 
+    <!-- Muscle Activation Heatmap -->
+    <div id="muscle-activation-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>🔥 Muscle Activation</h2>
+        <span class="section-subtitle">Visual breakdown of muscle engagement</span>
+      </div>
+      <div class="muscle-heatmap-container">
+        <img id="muscle-heatmap-image" class="muscle-heatmap-image" alt="Muscle Activation Heatmap" />
+      </div>
+    </div>
+
     <!-- Tags -->
     <div id="tags-section" class="showcase-section" style="display: none;">
       <div id="activity-tags" class="activity-tags"></div>
@@ -308,6 +319,36 @@
     text-align: center;
     padding: 3rem 1rem 2rem;
     margin-bottom: 1.5rem;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  /* Dark overlay for text readability when banner is present */
+  .showcase-hero.has-banner {
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .showcase-hero.has-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 0;
+  }
+
+  .showcase-hero.has-banner>* {
+    position: relative;
+    z-index: 1;
   }
 
   .showcase-title {
@@ -496,6 +537,94 @@
 
   .leaflet-tile {
     filter: saturate(0.3) brightness(0.6) hue-rotate(200deg);
+  }
+
+  /* Route Thumbnail */
+  .route-thumbnail-container {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+
+  .route-thumbnail {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .expand-map-btn {
+    display: block;
+    width: 100%;
+    margin-top: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, rgba(157, 78, 221, 0.2), rgba(255, 27, 141, 0.2));
+    border: 1px solid rgba(157, 78, 221, 0.4);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .expand-map-btn:hover {
+    border-color: rgba(255, 27, 141, 0.6);
+    background: linear-gradient(135deg, rgba(157, 78, 221, 0.3), rgba(255, 27, 141, 0.3));
+    transform: translateY(-2px);
+  }
+
+  /* ========================================
+     ROUTE THUMBNAIL
+     ======================================== */
+  .route-thumbnail-container {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .route-thumbnail-image {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(255, 27, 141, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .route-thumbnail-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px rgba(255, 27, 141, 0.4);
+  }
+
+  .route-thumbnail-hint {
+    font-size: 0.875rem;
+    color: #aaa;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  /* ========================================
+     MUSCLE ACTIVATION HEATMAP
+     ======================================== */
+  .muscle-heatmap-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+  }
+
+  .muscle-heatmap-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 500px;
+    filter: drop-shadow(0 0 20px rgba(255, 27, 141, 0.3));
+  }
+
+  @media (min-width: 768px) {
+    .muscle-heatmap-image {
+      max-height: 600px;
+    }
   }
 
   /* ========================================
@@ -756,6 +885,24 @@
   .glue {
     color: #9D4EDD;
   }
+
+  /* ========================================
+     MUSCLE ACTIVATION IMAGE
+     ======================================== */
+  .muscle-activation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .muscle-activation-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 600px;
+    border-radius: 12px;
+    filter: drop-shadow(0 4px 20px rgba(255, 27, 141, 0.3));
+  }
 </style>
 
 <script>
@@ -824,6 +971,14 @@
         const attribution = document.getElementById('showcase-attribution');
         if (cta) cta.style.display = 'none';
         if (attribution) attribution.style.display = 'none';
+      }
+
+      // AI Banner background image
+      const bannerUrl = data.enrichmentMetadata?.asset_ai_banner;
+      if (bannerUrl) {
+        const heroEl = document.querySelector('.showcase-hero');
+        heroEl.style.backgroundImage = `url(${bannerUrl})`;
+        heroEl.classList.add('has-banner');
       }
 
       // Stats
@@ -896,11 +1051,41 @@
           statsGrid.style.display = 'grid';
         }
 
-        // --- MAP ---
+        // --- MAP / ROUTE THUMBNAIL ---
+        const routeThumbnailUrl = data.enrichmentMetadata?.asset_route_thumbnail;
         const gpsRecords = allRecords.filter(r => r.positionLat && r.positionLong);
-        if (gpsRecords.length > 10) {
-          document.getElementById('map-section').style.display = 'block';
-          setTimeout(() => initMap(gpsRecords), 100);
+
+        if (routeThumbnailUrl || gpsRecords.length > 10) {
+          const mapSection = document.getElementById('map-section');
+          mapSection.style.display = 'block';
+
+          if (routeThumbnailUrl) {
+            // Display route thumbnail SVG
+            const thumbnailContainer = document.createElement('div');
+            thumbnailContainer.className = 'route-thumbnail-container';
+            thumbnailContainer.innerHTML = `
+              <img src="${routeThumbnailUrl}" alt="Route Map" class="route-thumbnail-image" loading="lazy" />
+            `;
+            const mapContainer = document.getElementById('activity-map');
+            mapContainer.parentNode.insertBefore(thumbnailContainer, mapContainer);
+
+            // If GPS data exists, show expandable interactive map option
+            if (gpsRecords.length > 10) {
+              mapContainer.style.display = 'none';
+              thumbnailContainer.innerHTML += `
+                <button class="expand-map-btn" onclick="document.getElementById('activity-map').style.display='block'; this.style.display='none'; initMap(gpsRecords);">
+                  🗺️ Show Interactive Map
+                </button>
+              `;
+              // Make gpsRecords accessible to onclick handler
+              window.gpsRecords = gpsRecords;
+            } else {
+              mapContainer.style.display = 'none';
+            }
+          } else {
+            // No thumbnail, show interactive map
+            setTimeout(() => initMap(gpsRecords), 100);
+          }
         }
 
         // --- HEART RATE GRAPH ---
@@ -1013,6 +1198,15 @@
           }).join('');
           exercisesSection.style.display = 'block';
         }
+
+        // --- MUSCLE ACTIVATION HEATMAP ---
+        const heatmapUrl = data.enrichmentMetadata?.asset_muscle_heatmap;
+        if (heatmapUrl) {
+          const heatmapSection = document.getElementById('muscle-activation-section');
+          const heatmapImg = document.getElementById('muscle-heatmap-image');
+          heatmapImg.src = heatmapUrl;
+          heatmapSection.style.display = 'block';
+        }
       }
 
       // Enrichments
@@ -1038,6 +1232,14 @@
         `;
         }).join('');
         enrichSection.style.display = 'block';
+      }
+
+      // Muscle Activation Image
+      if (data.enrichmentMetadata \u0026\u0026 data.enrichmentMetadata.asset_muscle_heatmap) {
+        const muscleSection = document.getElementById('muscle-activation-section');
+        const muscleImage = document.getElementById('muscle-activation-image');
+        muscleImage.src = data.enrichmentMetadata.asset_muscle_heatmap;
+        muscleSection.style.display = 'block';
       }
 
       // Description

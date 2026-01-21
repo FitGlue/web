@@ -902,6 +902,42 @@ h4 {
   box-shadow: var(--shadow-card-hover);
 }
 
+/* Info cards - explanatory/marketing cards (non-clickable) */
+.info-card {
+  background: transparent;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  text-align: left;
+}
+
+.info-card .feature-icon {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-xs);
+  opacity: 0.8;
+}
+
+.info-card h3 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-muted);
+}
+
+.info-card p {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
 /* ========================================
    Integration Detail Pages
    ======================================== */
