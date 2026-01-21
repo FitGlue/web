@@ -12,8 +12,16 @@ export type ConfigFieldDependency = components['schemas']['ConfigFieldDependency
 // Extended ConfigFieldSchema to include dynamicSource (exists in protobuf but not OpenAPI spec)
 export type ConfigFieldSchema = components['schemas']['ConfigFieldSchema'] & { dynamicSource?: string };
 export type Transformation = components['schemas']['Transformation'];
-// Extended PluginManifest to include requiredTier (exists in protobuf but not OpenAPI spec)
-export type PluginManifest = components['schemas']['PluginManifest'] & { requiredTier?: string };
+// Extended PluginManifest to include UX organization fields (exists in protobuf but not OpenAPI spec)
+export type PluginManifest = components['schemas']['PluginManifest'] & {
+  requiredTier?: string;
+  category?: string;
+  sortOrder?: number;
+  isPremium?: boolean;
+  popularityScore?: number;
+  iconType?: string;
+  iconPath?: string;
+};
 export type IntegrationManifest = components['schemas']['IntegrationManifest'];
 export type PluginRegistryResponse = components['schemas']['PluginRegistryResponse'];
 

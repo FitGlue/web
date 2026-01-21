@@ -11,8 +11,37 @@
     </div>
   </section>
 
-  <!-- Connections -->
+  <!-- Pipeline Overview -->
   <section class="section">
+    <div class="container text-center">
+      <h2 class="mb-md animate-on-scroll">How the <span class="text-gradient">Magic</span> Works</h2>
+      <div class="animate-on-scroll">
+        <div class="data-flow" style="justify-content: center; flex-wrap: wrap; gap: 1rem;">
+          <div class="data-flow-node source">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📥</div>
+            Your Workout
+          </div>
+          <div class="data-flow-arrow"></div>
+          <div class="data-flow-node">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">✨</div>
+            The Magic
+          </div>
+          <div class="data-flow-arrow"></div>
+          <div class="data-flow-node destination">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📤</div>
+            Your Story
+          </div>
+        </div>
+      </div>
+      <p class="text-muted mt-md" style="max-width: 500px; margin-left: auto; margin-right: auto;">
+        Data flows from a Source, gets boosted by our Boosters, then synced to your Target. Mix and match to create
+        your perfect pipeline.
+      </p>
+    </div>
+  </section>
+
+  <!-- Connections -->
+  <section class="section section-alt">
     <div class="container">
       <div class="text-center mb-lg">
         <h2 class="animate-on-scroll">📥 <span class="text-gradient">Pull Your Workouts</span></h2>
@@ -42,47 +71,60 @@
 
       <div class="integrations-grid mt-lg stagger-children">
         {{#each integrations.connections}}
-          <div class="integration-card">
-            <div class="integration-logo">
-              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+          <a href="{{detailsUrl}}" class="integration-card-link">
+            <div class="integration-card hoverable">
+              <div class="integration-logo">
+                <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+              </div>
+              <div class="integration-name">{{name}}</div>
+              <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">{{description}}</p>
+              <span class="integration-status {{status}}" style="margin-top: 0.75rem;">{{status}}</span>
             </div>
-            <div class="integration-name">{{name}}</div>
-            <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">{{description}}</p>
-            <span class="integration-status {{status}}" style="margin-top: 0.75rem;">{{status}}</span>
-          </div>
+          </a>
         {{/each}}
       </div>
     </div>
   </section>
 
   <!-- Boosters -->
-  <section class="section section-alt">
+  <section class="section">
     <div class="container">
       <div class="text-center mb-lg">
         <h2 class="animate-on-scroll">✨ <span class="text-gradient">The Magic Layer</span></h2>
         <p class="text-muted animate-on-scroll">Transform your activity data with powerful Boosters</p>
       </div>
 
-      <div class="feature-grid stagger-children">
-        {{#each boosters}}
-          <div class="feature-card">
-            <span class="feature-icon">{{icon}}</span>
-            <h3>{{name}}</h3>
-            <p>{{description}}</p>
+      {{#each boostersByCategory}}
+        <div class="booster-category animate-on-scroll">
+          <h3 class="category-title">
+            <span class="category-emoji">{{emoji}}</span>
+            {{name}}
+          </h3>
+          <div class="feature-grid stagger-children">
+            {{#each plugins}}
+              <a href="{{detailsUrl}}" class="feature-card-link">
+                <div class="feature-card{{#if isPremium}} premium{{/if}} hoverable">
+                  <div class="feature-card-header">
+                    <span class="feature-icon">{{icon}}</span>
+                    {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
+                  </div>
+                  <h3>{{name}}</h3>
+                  <p>{{description}}</p>
+                </div>
+              </a>
+            {{/each}}
           </div>
-        {{/each}}
-      </div>
+        </div>
+      {{/each}}
 
       <div class="text-center mt-lg animate-on-scroll">
         <p class="text-muted mb-sm">And many more boosters coming soon...</p>
-        <p class="text-muted" style="font-size: 0.875rem;">Weather conditions • Calorie estimates • Social sharing
-          templates • Training load analysis</p>
       </div>
     </div>
   </section>
 
   <!-- Sync Targets -->
-  <section class="section">
+  <section class="section section-alt">
     <div class="container">
       <div class="text-center mb-lg">
         <h2 class="animate-on-scroll">📤 <span class="text-gradient">Share Your Story</span></h2>
@@ -92,9 +134,9 @@
       <div class="feature-grid stagger-children">
         <div class="feature-card">
           <span class="feature-icon">🚴</span>
-          <h3>Strava Integration</h3>
-          <p>Your strength workouts, cardio sessions, and more—all boosted and ready to share with your Strava
-            community.</p>
+          <h3>No App Required</h3>
+          <p>FitGlue works with any app that exports your workouts in a standard format. No need to download or install
+            anything - just configure on the website.</p>
         </div>
 
         <div class="feature-card">
@@ -112,16 +154,29 @@
 
       <div class="integrations-grid mt-lg stagger-children">
         {{#each integrations.syncTargets}}
-          <div class="integration-card">
-            <div class="integration-logo">
-              <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+          <a href="{{detailsUrl}}" class="integration-card-link">
+            <div class="integration-card hoverable">
+              <div class="integration-logo">
+                <img src="{{icon}}" alt="{{name}} logo" width="48" height="48">
+              </div>
+              <div class="integration-name">{{name}}</div>
+              <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">{{description}}</p>
+              <span class="integration-status {{status}}" style="margin-top: 0.75rem;">{{status}}</span>
             </div>
-            <div class="integration-name">{{name}}</div>
-            <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">{{description}}</p>
-            <span class="integration-status {{status}}" style="margin-top: 0.75rem;">{{status}}</span>
-          </div>
+          </a>
         {{/each}}
       </div>
+    </div>
+  </section>
+
+  <!-- Request Integration -->
+  <section class="section">
+    <div class="container text-center">
+      <h2 class="mb-md animate-on-scroll">Don't See Your <span class="text-gradient">App</span>?</h2>
+      <p class="text-muted mb-lg animate-on-scroll" style="max-width: 500px; margin-left: auto; margin-right: auto;">
+        We're always adding new connections. Let us know what you'd like to see.
+      </p>
+      <a href="/contact" class="btn btn-secondary animate-on-scroll">Request a Connection →</a>
     </div>
   </section>
 

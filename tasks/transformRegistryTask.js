@@ -31,19 +31,44 @@ export function transformRegistryTask() {
       const boosters = (registry.enrichers || []).map((/** @type {any} */ e) => ({
         ...e,
         detailsUrl: `/plugins/boosters/${e.id}`,
+        // Ensure premium flag is boolean for templates
+        isPremium: !!e.isPremium,
       }));
       const sources = (registry.sources || []).map((/** @type {any} */ s) => ({
         ...s,
         detailsUrl: `/plugins/sources/${s.id}`,
+        isPremium: !!s.isPremium,
       }));
       const destinations = (registry.destinations || []).map((/** @type {any} */ d) => ({
         ...d,
         detailsUrl: `/plugins/targets/${d.id}`,
+        isPremium: !!d.isPremium,
       }));
+
+      // Category metadata for grouping plugins
+      const ENRICHER_CATEGORIES = [
+        { id: 'ai_content', name: 'AI & Content', emoji: '✨' },
+        { id: 'stats', name: 'Stats', emoji: '📊' },
+        { id: 'detection', name: 'Detection', emoji: '🎯' },
+        { id: 'transformation', name: 'Transformation', emoji: '🔧' },
+        { id: 'location', name: 'Location', emoji: '🗺️' },
+        { id: 'logic', name: 'Logic', emoji: '⚙️' },
+        { id: 'references', name: 'References', emoji: '🔗' },
+      ];
+
+      // Group boosters by category for marketing templates
+      const boostersByCategory = ENRICHER_CATEGORIES
+        .map((cat) => ({
+          ...cat,
+          plugins: boosters
+            .filter((/** @type {any} */ b) => b.category === cat.id)
+            .sort((/** @type {any} */ a, /** @type {any} */ b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99)),
+        }))
+        .filter((cat) => cat.plugins.length > 0);
 
       ctx.logger.info(`Transformed ${integrationsWithDetails.length} integrations, ${boosters.length} boosters`);
 
-      return { integrations, boosters, sources, destinations };
+      return { integrations, boosters, boostersByCategory, sources, destinations };
     },
   };
 }

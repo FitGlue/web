@@ -1,0 +1,28 @@
+.premium-badge {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+  color: #1a1a1a;
+  font-weight: 700;
+  font-size: 0.625rem;
+  letter-spacing: 0.05em;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  text-transform: uppercase;
+  box-shadow: 0 1px 3px rgba(255, 215, 0, 0.3);
+}
+
+.premium-badge--medium {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Premium card styling */
+.option-card.premium {
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+}
+
+.option-card.premium:hover {
+  border-color: rgba(255, 215, 0, 0.5);
+}

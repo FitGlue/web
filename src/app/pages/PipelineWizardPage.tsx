@@ -12,8 +12,11 @@ import { EnricherConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
+import { PluginCategorySection } from '../components/PluginCategorySection';
+import { PremiumBadge } from '../components/ui/PremiumBadge';
 import { PluginManifest, ConfigFieldType } from '../types/plugin';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST } from '../utils/tier';
+import { ENRICHER_CATEGORIES, groupPluginsByCategory, getRecommendedPlugins } from '../utils/pluginCategories';
 
 interface SelectedEnricher {
     manifest: PluginManifest;
@@ -80,6 +83,7 @@ const PipelineWizardPage: React.FC = () => {
     const [creating, setCreating] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
+    const [enricherSearchQuery, setEnricherSearchQuery] = useState('');
 
     const steps: WizardStep[] = ['source', 'enrichers', 'enricher-config', 'destinations', 'review'];
     const currentStepIndex = steps.indexOf(step);
@@ -295,6 +299,31 @@ const PipelineWizardPage: React.FC = () => {
         const availableEnrichers = enrichers.filter(isPluginAvailable);
         const excludedEnrichers = enrichers.filter(e => !isPluginAvailable(e));
 
+        // Filter by search
+        const filteredEnrichers = enricherSearchQuery
+            ? availableEnrichers.filter(e =>
+                e.name.toLowerCase().includes(enricherSearchQuery.toLowerCase()) ||
+                (e.description ?? '').toLowerCase().includes(enricherSearchQuery.toLowerCase())
+              )
+            : availableEnrichers;
+
+        // Group by category
+        const groupedEnrichers = groupPluginsByCategory(filteredEnrichers, ENRICHER_CATEGORIES);
+
+        // Get recommended based on user's integrations
+        const connectedIds = Object.entries(userIntegrations || {})
+            .filter(([, v]) => (v as { connected?: boolean } | undefined)?.connected)
+            .map(([k]) => k);
+        const recommended = getRecommendedPlugins(availableEnrichers, connectedIds, 4);
+
+        // Get disabled reason for a plugin
+        const getDisabledReason = (plugin: PluginManifest): string | undefined => {
+            if (isTierGated(plugin)) return 'Athlete plan required';
+            const missing = getMissingIntegrations(plugin);
+            if (missing.length > 0) return `Connect ${missing.join(', ')}`;
+            return undefined;
+        };
+
         return (
             <div className="wizard-content">
                 <h3>Add Boosters (Optional)</h3>
@@ -313,27 +342,61 @@ const PipelineWizardPage: React.FC = () => {
                     <p className="loading-text">Loading enrichers...</p>
                 ) : (
                     <>
-                        <div className="option-grid">
-                            {availableEnrichers.map(enricher => {
-                                const isSelected = selectedEnrichers.some(e => e.manifest.id === enricher.id);
-                                return (
-                                    <Card
-                                        key={enricher.id}
-                                        className={`option-card clickable ${isSelected ? 'selected' : ''}`}
-                                        onClick={() => toggleEnricher(enricher)}
-                                    >
-                                        <span className="option-icon">{enricher.icon}</span>
-                                        <h4>{enricher.name}</h4>
-                                        <p>{enricher.description}</p>
-                                        {isSelected && <span className="selected-check">✓</span>}
-                                        {(enricher.configSchema?.length ?? 0) > 0 && (
-                                            <span className="has-config" title="Has configuration options">⚙️</span>
-                                        )}
-                                    </Card>
-                                );
-                            })}
+                        {/* Search Bar */}
+                        <div className="search-bar">
+                            <input
+                                type="text"
+                                placeholder="Search boosters..."
+                                value={enricherSearchQuery}
+                                onChange={(e) => setEnricherSearchQuery(e.target.value)}
+                                className="search-input"
+                            />
                         </div>
-                        {excludedEnrichers.length > 0 && (
+
+                        {/* Recommended Section (only if no search) */}
+                        {!enricherSearchQuery && recommended.length > 0 && (
+                            <div className="recommended-section">
+                                <h4>⭐ Recommended for You</h4>
+                                <div className="option-grid">
+                                    {recommended.map(enricher => {
+                                        const isSelected = selectedEnrichers.some(e => e.manifest.id === enricher.id);
+                                        return (
+                                            <Card
+                                                key={enricher.id}
+                                                className={`option-card clickable ${isSelected ? 'selected' : ''} ${enricher.isPremium ? 'premium' : ''}`}
+                                                onClick={() => toggleEnricher(enricher)}
+                                            >
+                                                <div className="plugin-card-header">
+                                                    <span className="option-icon">{enricher.icon}</span>
+                                                    {enricher.isPremium && <PremiumBadge />}
+                                                </div>
+                                                <h4>{enricher.name}</h4>
+                                                <p>{enricher.description}</p>
+                                                {isSelected && <span className="selected-check">✓</span>}
+                                            </Card>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Categorized Display */}
+                        {Array.from(groupedEnrichers.entries()).map(([category, plugins]) => (
+                            <PluginCategorySection
+                                key={category.id}
+                                category={category}
+                                plugins={plugins}
+                                selectedIds={selectedEnrichers.map(e => e.manifest.id)}
+                                onSelect={toggleEnricher}
+                                onInfoClick={setInfoEnricher}
+                                disabledPlugins={new Set(excludedEnrichers.map(e => e.id))}
+                                getDisabledReason={getDisabledReason}
+                                defaultExpanded={!!enricherSearchQuery}
+                            />
+                        ))}
+
+                        {/* Excluded plugins */}
+                        {excludedEnrichers.length > 0 && !enricherSearchQuery && (
                             <div className="excluded-plugins-section">
                                 <span className="excluded-label">Needs Connection</span>
                                 <div className="excluded-plugins-grid">
@@ -342,7 +405,10 @@ const PipelineWizardPage: React.FC = () => {
                                             <span className="excluded-icon">{enricher.icon}</span>
                                             <span className="excluded-name">{enricher.name}</span>
                                             <span className="excluded-hint">
-                                                Connect {getMissingIntegrations(enricher).join(', ')} to enable
+                                                {isTierGated(enricher)
+                                                    ? 'Athlete plan required'
+                                                    : `Connect ${getMissingIntegrations(enricher).join(', ')} to enable`
+                                                }
                                             </span>
                                         </div>
                                     ))}
