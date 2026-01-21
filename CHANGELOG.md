@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/fitglue/web/compare/v3.0.0...v3.1.0) (2026-01-21)
+
+
+### Features
+
+* add plugin categories and merge magic and features pages ([860e39d](https://github.com/fitglue/web/commit/860e39daa44939f5aeb85c382c159e38f9e62d7d))
+* **web:** bump version to 3.0.0 and sync generated protobufs ([44b7a6b](https://github.com/fitglue/web/commit/44b7a6b1c5a3e61be75e4d4ad6a112206fa4212a))
+
 ## [3.0.0](https://github.com/fitglue/web/compare/v2.2.1...v3.0.0) (2026-01-21)
 
 
