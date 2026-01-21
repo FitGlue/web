@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/fitglue/web/compare/v2.1.2...v2.2.0) (2026-01-21)
+
+
+### Features
+
+* Display backend-provided activity statistics and refactor user tiers to an enum, renaming 'Pro' to 'Athlete' and adding prevented sync counts. ([cdd42ac](https://github.com/fitglue/web/commit/cdd42acd71f4c776335b5ae8b57299a750238a3b))
+
+
+### Bug Fixes
+
+* parkrun import and integrations endpoint ([78bf79e](https://github.com/fitglue/web/commit/78bf79e9ccb8d37016b20aed6f0497d13e78cb73))
+
 ### [2.1.2](https://github.com/fitglue/web/compare/v2.1.1...v2.1.2) (2026-01-21)
 
 
