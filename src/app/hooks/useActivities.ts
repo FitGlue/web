@@ -59,16 +59,17 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
   }, [loaded, setActivities, setLoaded, setLoading, setActivitiesLastUpdated]);
 
   // Dashboard mode: fetch with includeExecution=true for rich enrichment data
-  // Also fetches unsynchronized in parallel to populate the stats accurately
+  // Also fetches unsynchronized and stats in parallel to populate everything
   const fetchDashboard = useCallback(async (force = false) => {
-    if (!force && loaded && unsyncLoaded) return;
+    if (!force && loaded && unsyncLoaded && statsLoaded) return;
 
     setLoading(true);
     try {
-      // Fetch both activities and unsynchronized in parallel
-      const [activitiesData, unsyncData] = await Promise.all([
+      // Fetch activities, unsynchronized, and stats in parallel
+      const [activitiesData, unsyncData, statsData] = await Promise.all([
         (!force && loaded) ? Promise.resolve(null) : ActivitiesService.list(20, true),
-        (!force && unsyncLoaded) ? Promise.resolve(null) : ActivitiesService.listUnsynchronized(20)
+        (!force && unsyncLoaded) ? Promise.resolve(null) : ActivitiesService.listUnsynchronized(20),
+        (!force && statsLoaded) ? Promise.resolve(null) : ActivitiesService.getStats()
       ]);
 
       if (activitiesData) {
@@ -81,12 +82,16 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
         setUnsyncLoaded(true);
         setUnsynchronizedLastUpdated(new Date());
       }
+      if (statsData) {
+        setStats(statsData);
+        setStatsLoaded(true);
+      }
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
-  }, [loaded, unsyncLoaded, setActivities, setLoaded, setLoading, setActivitiesLastUpdated, setUnsynchronized, setUnsyncLoaded, setUnsynchronizedLastUpdated]);
+  }, [loaded, unsyncLoaded, statsLoaded, setActivities, setLoaded, setLoading, setActivitiesLastUpdated, setUnsynchronized, setUnsyncLoaded, setUnsynchronizedLastUpdated, setStats, setStatsLoaded]);
 
   const fetchSingle = useCallback(async () => {
     if (!id) return;
@@ -154,9 +159,10 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
   const refreshAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [activitiesData, unsyncData] = await Promise.all([
+      const [activitiesData, unsyncData, statsData] = await Promise.all([
         ActivitiesService.list(20, true),
-        ActivitiesService.listUnsynchronized(20)
+        ActivitiesService.listUnsynchronized(20),
+        ActivitiesService.getStats()
       ]);
 
       setActivities(activitiesData);
@@ -166,12 +172,15 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
       setUnsynchronized(unsyncData);
       setUnsyncLoaded(true);
       setUnsynchronizedLastUpdated(new Date());
+
+      setStats(statsData);
+      setStatsLoaded(true);
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
-  }, [setActivities, setLoaded, setLoading, setActivitiesLastUpdated, setUnsynchronized, setUnsyncLoaded, setUnsynchronizedLastUpdated]);
+  }, [setActivities, setLoaded, setLoading, setActivitiesLastUpdated, setUnsynchronized, setUnsyncLoaded, setUnsynchronizedLastUpdated, setStats, setStatsLoaded]);
 
   return {
     activities,
