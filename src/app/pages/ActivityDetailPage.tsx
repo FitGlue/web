@@ -187,10 +187,10 @@ const ActivityDetailPage: React.FC = () => {
             <div className="activity-detail__hero">
                 <div className="activity-detail__hero-header">
                     <div className="activity-detail__hero-meta">
+                        <span className="activity-detail__type-badge">{activityType}</span>
                         {pipelineName && (
                             <span className="activity-detail__pipeline-name">via {pipelineName}</span>
                         )}
-                        <span className="activity-detail__type-badge">{activityType}</span>
                         <span className="activity-detail__date">{formatDateTime(activity.startTime)}</span>
                     </div>
                     <RepostActionsMenu
