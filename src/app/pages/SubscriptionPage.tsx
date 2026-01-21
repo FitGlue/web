@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { useApi } from '../hooks/useApi';
 import { useUser } from '../hooks/useUser';
 import { LoadingState } from '../components/ui/LoadingState';
+import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
 import './SubscriptionPage.css';
 
 const SubscriptionPage: React.FC = () => {
@@ -59,7 +60,7 @@ const SubscriptionPage: React.FC = () => {
         );
     }
 
-    const isAthlete = user?.tier === 'pro';
+    const isAthlete = user ? getEffectiveTier(user) === TIER_ATHLETE : false;
     const trialDaysRemaining = user?.trialEndsAt
         ? Math.ceil((new Date(user.trialEndsAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
         : 0;

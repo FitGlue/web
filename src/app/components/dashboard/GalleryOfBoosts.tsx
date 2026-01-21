@@ -123,12 +123,12 @@ export const GalleryOfBoosts: React.FC<GalleryOfBoostsProps> = ({
             <div className="gallery-of-boosts__stats">
                 <div className="gallery-of-boosts__stat">
                     <span className="gallery-of-boosts__stat-value">{stats.activitiesProcessed}</span>
-                    <span className="gallery-of-boosts__stat-label">Activities Synced</span>
+                    <span className="gallery-of-boosts__stat-label">Activities Boosted</span>
                     <span className="gallery-of-boosts__stat-period">This Month</span>
                 </div>
                 <div className="gallery-of-boosts__stat">
                     <span className="gallery-of-boosts__stat-value">{enrichedActivities.length}</span>
-                    <span className="gallery-of-boosts__stat-label">Recent Syncs</span>
+                    <span className="gallery-of-boosts__stat-label">Recent Boosts</span>
                     <span className="gallery-of-boosts__stat-period">Shown Below</span>
                 </div>
             </div>

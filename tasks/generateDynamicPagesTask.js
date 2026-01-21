@@ -210,7 +210,7 @@ export function generateDynamicPagesTask(config) {
             useCases: e.useCases || [],
             hasUseCases: (e.useCases || []).length > 0,
             // Tier gating
-            isAthleteTier: e.requiredTier === 'pro',
+            isAthleteTier: e.requiredTier === 'athlete',
           },
         });
       }

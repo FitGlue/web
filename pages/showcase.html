@@ -84,6 +84,36 @@
       </div>
     </div>
 
+    <!-- Power Graph -->
+    <div id="power-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>⚡ Power</h2>
+      </div>
+      <div class="chart-container">
+        <canvas id="power-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Cadence Graph -->
+    <div id="cadence-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>🦶 Cadence</h2>
+      </div>
+      <div class="chart-container">
+        <canvas id="cadence-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Speed Graph -->
+    <div id="speed-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>🚀 Speed</h2>
+      </div>
+      <div class="chart-container">
+        <canvas id="speed-chart"></canvas>
+      </div>
+    </div>
+
     <!-- Description -->
     <div id="description-section" class="showcase-section glass-card" style="display: none;">
       <div class="section-header">
@@ -814,6 +844,28 @@
           stats.push({ icon: '❤️', value: avgHr, label: 'Avg BPM' });
         }
 
+        // Power stats
+        const powerValues = allRecords.filter(r => r.power > 0).map(r => r.power);
+        if (powerValues.length > 0) {
+          const avgPower = Math.round(powerValues.reduce((a, b) => a + b, 0) / powerValues.length);
+          stats.push({ icon: '⚡', value: avgPower + 'W', label: 'Avg Power' });
+        }
+
+        // Cadence stats
+        const cadenceValues = allRecords.filter(r => r.cadence > 0).map(r => r.cadence);
+        if (cadenceValues.length > 0) {
+          const avgCadence = Math.round(cadenceValues.reduce((a, b) => a + b, 0) / cadenceValues.length);
+          stats.push({ icon: '🦶', value: avgCadence, label: 'Avg Cadence' });
+        }
+
+        // Speed/Pace stats
+        const speedValues = allRecords.filter(r => r.speed > 0).map(r => r.speed);
+        if (speedValues.length > 0) {
+          const avgSpeed = speedValues.reduce((a, b) => a + b, 0) / speedValues.length;
+          const avgSpeedKmh = (avgSpeed * 3.6).toFixed(1);
+          stats.push({ icon: '🚀', value: avgSpeedKmh + ' km/h', label: 'Avg Speed' });
+        }
+
         // Strength stats
         if (session.strengthSets && session.strengthSets.length > 0) {
           const totalSets = session.strengthSets.length;
@@ -873,6 +925,34 @@
         if (elevRecords.length > 10) {
           document.getElementById('elevation-section').style.display = 'block';
           setTimeout(() => initElevationChart(elevRecords), 100);
+        }
+
+        // --- PACE GRAPH (from speed data) ---
+        const paceRecords = allRecords.filter(r => r.speed > 0);
+        if (paceRecords.length > 10) {
+          document.getElementById('pace-section').style.display = 'block';
+          setTimeout(() => initPaceChart(paceRecords), 100);
+        }
+
+        // --- POWER GRAPH ---
+        const powerRecords = allRecords.filter(r => r.power > 0);
+        if (powerRecords.length > 10) {
+          document.getElementById('power-section').style.display = 'block';
+          setTimeout(() => initPowerChart(powerRecords), 100);
+        }
+
+        // --- CADENCE GRAPH ---
+        const cadenceRecords = allRecords.filter(r => r.cadence > 0);
+        if (cadenceRecords.length > 10) {
+          document.getElementById('cadence-section').style.display = 'block';
+          setTimeout(() => initCadenceChart(cadenceRecords), 100);
+        }
+
+        // --- SPEED GRAPH ---
+        const speedRecords = allRecords.filter(r => r.speed > 0);
+        if (speedRecords.length > 10) {
+          document.getElementById('speed-section').style.display = 'block';
+          setTimeout(() => initSpeedChart(speedRecords), 100);
         }
 
         // --- EXERCISES ---
@@ -1087,6 +1167,162 @@
             y: {
               grid: { color: 'rgba(255,255,255,0.05)' },
               ticks: { color: '#aaa', callback: v => v + 'm' }
+            }
+          }
+        }
+      });
+    }
+
+    // --- PACE CHART (converts speed m/s to min/km) ---
+    function initPaceChart(records) {
+      const ctx = document.getElementById('pace-chart').getContext('2d');
+      // Convert speed (m/s) to pace (min/km)
+      const paceData = records.map(r => {
+        if (r.speed <= 0) return null;
+        return (1000 / r.speed) / 60; // minutes per km
+      }).filter(p => p !== null && p < 15); // Filter out unreasonable paces (over 15 min/km)
+      const labels = paceData.map((_, i) => i);
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Pace',
+            data: paceData,
+            borderColor: '#FFD93D',
+            backgroundColor: 'rgba(255, 217, 61, 0.2)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: {
+              reverse: true, // Lower pace = faster, so reverse axis
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: {
+                color: '#aaa',
+                callback: v => {
+                  const mins = Math.floor(v);
+                  const secs = Math.round((v - mins) * 60);
+                  return mins + ':' + secs.toString().padStart(2, '0') + '/km';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // --- POWER CHART ---
+    function initPowerChart(records) {
+      const ctx = document.getElementById('power-chart').getContext('2d');
+      const powerData = records.map(r => r.power);
+      const labels = records.map((_, i) => i);
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Power',
+            data: powerData,
+            borderColor: '#06FFA5',
+            backgroundColor: 'rgba(6, 255, 165, 0.2)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#aaa', callback: v => v + 'W' }
+            }
+          }
+        }
+      });
+    }
+
+    // --- CADENCE CHART ---
+    function initCadenceChart(records) {
+      const ctx = document.getElementById('cadence-chart').getContext('2d');
+      const cadenceData = records.map(r => r.cadence);
+      const labels = records.map((_, i) => i);
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Cadence',
+            data: cadenceData,
+            borderColor: '#FF6B9D',
+            backgroundColor: 'rgba(255, 107, 157, 0.2)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#aaa', callback: v => v + ' rpm' }
+            }
+          }
+        }
+      });
+    }
+
+    // --- SPEED CHART (converts m/s to km/h) ---
+    function initSpeedChart(records) {
+      const ctx = document.getElementById('speed-chart').getContext('2d');
+      const speedData = records.map(r => r.speed * 3.6); // m/s to km/h
+      const labels = records.map((_, i) => i);
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Speed',
+            data: speedData,
+            borderColor: '#00D4FF',
+            backgroundColor: 'rgba(0, 212, 255, 0.2)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              ticks: { color: '#aaa', callback: v => v.toFixed(1) + ' km/h' }
             }
           }
         }

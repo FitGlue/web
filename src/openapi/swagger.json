@@ -219,8 +219,8 @@
           "tier": {
             "type": "string",
             "enum": [
-              "free",
-              "pro"
+              "hobbyist",
+              "athlete"
             ],
             "description": "User subscription tier"
           },

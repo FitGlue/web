@@ -132,9 +132,8 @@ const ActivitiesListPage: React.FC = () => {
         return {
             totalSynced: initialStats?.totalSynced || 0,
             thisMonth: initialStats?.monthlySynced || 0,
-            failed: unsynchronized.length, // Unsynchronized is currently failure-based
         };
-    }, [initialStats, unsynchronized.length]);
+    }, [initialStats]);
 
     return (
         <PageLayout
@@ -168,7 +167,7 @@ const ActivitiesListPage: React.FC = () => {
                                 <span className="stat-skeleton">--</span>
                             ) : stats.totalSynced}
                         </span>
-                        <span className="activities-page__stat-label">Total Synced</span>
+                        <span className="activities-page__stat-label">Total Boosted</span>
                         <span className="activities-page__stat-period">All Time</span>
                     </div>
                     <div className="activities-page__stat">
@@ -177,18 +176,10 @@ const ActivitiesListPage: React.FC = () => {
                                 <span className="stat-skeleton">--</span>
                             ) : stats.thisMonth}
                         </span>
-                        <span className="activities-page__stat-label">Synced</span>
+                        <span className="activities-page__stat-label">Boosted</span>
                         <span className="activities-page__stat-period">This Month</span>
                     </div>
-                    <div className="activities-page__stat">
-                        <span className="activities-page__stat-value">
-                            {loading && unsynchronized.length === 0 ? (
-                                <span className="stat-skeleton">--</span>
-                            ) : stats.failed}
-                        </span>
-                        <span className="activities-page__stat-label">Failed / Stalled</span>
-                        <span className="activities-page__stat-period">Incomplete</span>
-                    </div>
+
                 </div>
 
                 {/* Tab Navigation */}

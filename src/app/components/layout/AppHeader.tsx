@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useUser } from '../../hooks/useUser';
 import { userAtom } from '../../state/authState';
+import { getEffectiveTier, TIER_ATHLETE } from '../../utils/tier';
 
 export const AppHeader: React.FC = () => {
     const { user: profile, loading } = useUser();
@@ -59,7 +60,7 @@ export const AppHeader: React.FC = () => {
                     aria-expanded={showMenu}
                 >
                     {getInitial()}
-                    {profile?.tier === 'pro' && (
+                    {profile && getEffectiveTier(profile) === TIER_ATHLETE && (
                         <div className="pro-badge-mini" style={{
                             position: 'absolute',
                             bottom: '-4px',

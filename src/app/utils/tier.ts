@@ -8,9 +8,12 @@
 
 import { UserProfile } from '../state/userState';
 
-export type EffectiveTier = 'free' | 'pro';
+export const TIER_HOBBYIST = 'hobbyist' as const;
+export const TIER_ATHLETE = 'athlete' as const;
 
-export const FREE_TIER_LIMITS = {
+export type EffectiveTier = typeof TIER_HOBBYIST | typeof TIER_ATHLETE;
+
+export const HOBBYIST_TIER_LIMITS = {
   SYNCS_PER_MONTH: 25,
   MAX_CONNECTIONS: 2,
 } as const;
@@ -20,18 +23,23 @@ export const FREE_TIER_LIMITS = {
  * Priority: admin > active trial > stored tier
  */
 export function getEffectiveTier(user: UserProfile): EffectiveTier {
-  // Admin override always grants Pro
+  // Admin override always grants Athlete
   if (user.isAdmin) {
-    return 'pro';
+    return TIER_ATHLETE;
   }
 
-  // Active trial grants Pro
+  // Active trial grants Athlete
   if (user.trialEndsAt && new Date(user.trialEndsAt) > new Date()) {
-    return 'pro';
+    return TIER_ATHLETE;
   }
 
-  // Fall back to stored tier (default: free)
-  return user.tier || 'free';
+  // Fall back to stored tier (default: hobbyist)
+  // The schema now correctly types tier as 'hobbyist' | 'athlete'.
+  if (user.tier === TIER_ATHLETE) {
+    return TIER_ATHLETE;
+  }
+
+  return TIER_HOBBYIST;
 }
 
 /**

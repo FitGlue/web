@@ -9,6 +9,7 @@ import { useUser } from '../hooks/useUser';
 import { userAtom } from '../state/authState';
 import { useNerdMode } from '../state/NerdModeContext';
 import { initFirebase } from '../../shared/firebase';
+import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST, HOBBYIST_TIER_LIMITS } from '../utils/tier';
 
 // Profile Avatar Component
 const ProfileAvatar: React.FC<{ name?: string; email?: string; size?: number }> = ({
@@ -145,8 +146,10 @@ const AccountSettingsPage: React.FC = () => {
         profile?.integrations?.hevy?.connected
     ].filter(Boolean).length;
 
-    const maxConnections = profile?.tier === 'pro' ? '∞' : '2';
-    const maxSyncs = profile?.tier === 'pro' ? '∞' : '25';
+    const effectiveTier = profile ? getEffectiveTier(profile) : TIER_HOBBYIST;
+    const isAthlete = effectiveTier === TIER_ATHLETE;
+    const maxConnections = isAthlete ? '∞' : String(HOBBYIST_TIER_LIMITS.MAX_CONNECTIONS);
+    const maxSyncs = isAthlete ? '∞' : String(HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH);
 
     return (
         <PageLayout
@@ -239,18 +242,18 @@ const AccountSettingsPage: React.FC = () => {
                         <div className="account-field">
                             <span className="field-label">Plan</span>
                             <div className="field-value" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <span className={`tier-badge ${profile?.tier || 'free'}`} style={{
+                                <span className={`tier-badge ${effectiveTier}`} style={{
                                     padding: '2px 8px',
                                     borderRadius: '4px',
                                     fontSize: '0.8rem',
                                     fontWeight: 'bold',
                                     textTransform: 'uppercase',
-                                    background: profile?.tier === 'pro' ? 'var(--color-primary)' : 'rgba(255,255,255,0.1)'
+                                    background: effectiveTier === TIER_ATHLETE ? 'var(--color-primary)' : 'rgba(255,255,255,0.1)'
                                 }}>
-                                    {profile?.tier === 'pro' ? 'Athlete' : 'Hobbyist'}
+                                    {effectiveTier === TIER_ATHLETE ? 'Athlete' : 'Hobbyist'}
                                 </span>
                                 <Button variant="text" size="small" onClick={() => window.location.href = '/app/settings/upgrade'}>
-                                    {profile?.tier === 'pro' ? 'Manage →' : 'Upgrade →'}
+                                    {effectiveTier === TIER_ATHLETE ? 'Manage →' : 'Upgrade →'}
                                 </Button>
                             </div>
                         </div>

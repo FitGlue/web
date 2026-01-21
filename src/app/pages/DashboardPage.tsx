@@ -8,6 +8,7 @@ import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useUser } from '../hooks/useUser';
 import { PageLayout } from '../components/layout/PageLayout';
+import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
 
 import { Card } from '../components/ui/Card';
 import { CardSkeleton } from '../components/ui/CardSkeleton';
@@ -180,12 +181,12 @@ const DashboardPage: React.FC = () => {
 
             {/* Plan & Usage Banner */}
             {user && (
-                <div className={`plan-banner ${user.tier === 'pro' ? 'pro' : 'free'}`}>
-                    <span className={`plan-badge ${user.tier === 'pro' ? 'pro' : 'free'}`}>
-                        {user.tier === 'pro' ? '✨ ATHLETE' : 'HOBBYIST'}
+                <div className={`plan-banner ${getEffectiveTier(user) === TIER_ATHLETE ? 'athlete' : 'hobbyist'}`}>
+                    <span className={`plan-badge ${getEffectiveTier(user) === TIER_ATHLETE ? 'athlete' : 'hobbyist'}`}>
+                        {getEffectiveTier(user) === TIER_ATHLETE ? '✨ ATHLETE' : 'HOBBYIST'}
                     </span>
                     <div className="usage-mini">
-                        {user.tier === 'pro' ? (
+                        {getEffectiveTier(user) === TIER_ATHLETE ? (
                             <>
                                 {user.trialEndsAt && (() => {
                                     const daysLeft = Math.ceil((new Date(user.trialEndsAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));

@@ -13,7 +13,7 @@ import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginManifest, ConfigFieldType } from '../types/plugin';
-import { getEffectiveTier } from '../utils/tier';
+import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST } from '../utils/tier';
 
 interface SelectedEnricher {
     manifest: PluginManifest;
@@ -31,7 +31,7 @@ const PipelineWizardPage: React.FC = () => {
     const { user } = useUser();
 
     // Get effective user tier using shared utility
-    const userTier = user ? getEffectiveTier(user) : 'free';
+    const userTier = user ? getEffectiveTier(user) : TIER_HOBBYIST;
 
     // Fetch user integrations on mount
     useEffect(() => {
@@ -41,7 +41,7 @@ const PipelineWizardPage: React.FC = () => {
     // Helper: Check if a plugin is tier-gated for the current user
     const isTierGated = (plugin: PluginManifest): boolean => {
         if (!plugin.requiredTier) return false;
-        return plugin.requiredTier === 'pro' && userTier !== 'pro';
+        return plugin.requiredTier === 'athlete' && userTier !== TIER_ATHLETE;
     };
 
     // Helper: Check if a plugin's required integrations are all connected

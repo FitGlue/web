@@ -1042,7 +1042,7 @@ export interface components {
              * @description User subscription tier
              * @enum {string}
              */
-            tier?: "free" | "pro";
+            tier?: "hobbyist" | "athlete";
             /** @description Whether user has admin privileges */
             isAdmin?: boolean;
             /**
