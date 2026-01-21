@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.2](https://github.com/fitglue/web/compare/v2.1.1...v2.1.2) (2026-01-21)
+
+
+### Bug Fixes
+
+* **showcase:** use registry data, align exercises, supersets ([2758042](https://github.com/fitglue/web/commit/2758042ef88349b4944bb9ad62f9f9c79b3b4e47))
+
 ### [2.1.1](https://github.com/fitglue/web/compare/v2.1.0...v2.1.1) (2026-01-21)
 
 ## [2.1.0](https://github.com/fitglue/web/compare/v2.0.0...v2.1.0) (2026-01-21)
