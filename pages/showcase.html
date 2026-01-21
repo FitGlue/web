@@ -116,7 +116,7 @@
     </div>
 
     <!-- CTA - MOVED TO BOTTOM -->
-    <div class="showcase-cta glass-card">
+    <div id="showcase-cta" class="showcase-cta glass-card">
       <div class="cta-content">
         <h3>Want to enhance your own activities?</h3>
         <p>FitGlue automatically enriches your workouts with muscle heatmaps, heart rate data, and beautiful
@@ -126,7 +126,7 @@
     </div>
 
     <!-- Footer Attribution -->
-    <div class="showcase-attribution">
+    <div id="showcase-attribution" class="showcase-attribution">
       <span>Powered by</span>
       <a href="/" class="fitglue-logo">
         <span class="fit">Fit</span><span class="glue">Glue</span>
@@ -786,6 +786,14 @@
         document.getElementById('activity-date').textContent = new Date(data.startTime).toLocaleDateString(undefined, {
           weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
+      }
+
+      // Hide FitGlue branding for Athlete users
+      if (data.isAthlete) {
+        const cta = document.getElementById('showcase-cta');
+        const attribution = document.getElementById('showcase-attribution');
+        if (cta) cta.style.display = 'none';
+        if (attribution) attribution.style.display = 'none';
       }
 
       // Stats

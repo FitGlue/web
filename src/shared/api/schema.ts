@@ -291,6 +291,9 @@ export interface paths {
                     content: {
                         "application/json": {
                             synchronizedCount?: number;
+                            totalSynced?: number;
+                            monthlySynced?: number;
+                            weeklySynced?: number;
                         };
                     };
                 };
@@ -1123,6 +1126,8 @@ export interface components {
             keyOptions?: components["schemas"]["ConfigFieldOption"][];
             /** @description Options for the value side of KEY_VALUE_MAP */
             valueOptions?: components["schemas"]["ConfigFieldOption"][];
+            /** @description Key for dynamic data source (e.g., 'hevy_routines') */
+            dynamicSource?: string;
         };
         ConfigFieldDependency: {
             /** @description Key of the field this depends on */
@@ -1156,7 +1161,7 @@ export interface components {
             features?: string[];
             transformations?: components["schemas"]["Transformation"][];
             useCases?: string[];
-            /** @description URL template for external activity links. Use {id} placeholder. */
+            /** @description Template URL for external activity link (e.g., 'https://strava.com/activities/{id}') */
             externalUrlTemplate?: string;
         };
         IntegrationManifest: {

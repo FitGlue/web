@@ -67,8 +67,8 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
     try {
       // Fetch both activities and unsynchronized in parallel
       const [activitiesData, unsyncData] = await Promise.all([
-        (!force && loaded) ? Promise.resolve(null) : ActivitiesService.list(10, true),
-        (!force && unsyncLoaded) ? Promise.resolve(null) : ActivitiesService.listUnsynchronized()
+        (!force && loaded) ? Promise.resolve(null) : ActivitiesService.list(20, true),
+        (!force && unsyncLoaded) ? Promise.resolve(null) : ActivitiesService.listUnsynchronized(20)
       ]);
 
       if (activitiesData) {
@@ -155,8 +155,8 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
     setLoading(true);
     try {
       const [activitiesData, unsyncData] = await Promise.all([
-        ActivitiesService.list(10, true),
-        ActivitiesService.listUnsynchronized()
+        ActivitiesService.list(20, true),
+        ActivitiesService.listUnsynchronized(20)
       ]);
 
       setActivities(activitiesData);

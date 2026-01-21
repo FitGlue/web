@@ -480,6 +480,10 @@
               "$ref": "#/components/schemas/ConfigFieldOption"
             },
             "description": "Options for the value side of KEY_VALUE_MAP"
+          },
+          "dynamicSource": {
+            "type": "string",
+            "description": "Key for dynamic data source (e.g., 'hevy_routines')"
           }
         },
         "required": [
@@ -593,6 +597,10 @@
             "items": {
               "type": "string"
             }
+          },
+          "externalUrlTemplate": {
+            "type": "string",
+            "description": "Template URL for external activity link (e.g., 'https://strava.com/activities/{id}')"
           }
         },
         "required": [
@@ -910,6 +918,15 @@
                   "type": "object",
                   "properties": {
                     "synchronizedCount": {
+                      "type": "integer"
+                    },
+                    "totalSynced": {
+                      "type": "integer"
+                    },
+                    "monthlySynced": {
+                      "type": "integer"
+                    },
+                    "weeklySynced": {
                       "type": "integer"
                     }
                   }

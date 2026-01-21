@@ -62,10 +62,30 @@
 .activities-page__stat-value {
   display: block;
   font-size: 2rem;
-  font-weight: 800;
-  color: var(--color-primary);
-  line-height: 1;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
   margin-bottom: 0.25rem;
+}
+
+.stat-skeleton {
+  color: var(--text-muted);
+  opacity: 0.5;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 0.3;
+  }
 }
 
 .activities-page__stat-label {

@@ -33,7 +33,7 @@ const ActivitiesListPage: React.FC = () => {
 
     // Fetch initial data with execution details for enriched view
     // Always use 'dashboard' mode as it fetches both activities and unsynchronized data
-    const { activities: initialActivities, unsynchronized: initialUnsync, loading, refreshAll, lastUpdated } = useActivities('dashboard');
+    const { activities: initialActivities, unsynchronized: initialUnsync, stats: initialStats, loading, refreshAll, lastUpdated } = useActivities('dashboard');
 
     // Real-time sync
     const { isEnabled: liveEnabled, isListening, toggleRealtime } = useRealtimeActivities(true, 20);
@@ -127,22 +127,14 @@ const ActivitiesListPage: React.FC = () => {
         refreshAll();
     };
 
-    // Calculate stats
+    // Use backend-provided stats instead of local array length
     const stats = useMemo(() => {
-        const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-        const thisMonthActivities = activities.filter(a => {
-            const syncDate = a.syncedAt ? new Date(a.syncedAt) : null;
-            return syncDate && syncDate >= startOfMonth;
-        });
-
         return {
-            totalSynced: activities.length,
-            thisMonth: thisMonthActivities.length,
-            failed: unsynchronized.length,
+            totalSynced: initialStats?.totalSynced || 0,
+            thisMonth: initialStats?.monthlySynced || 0,
+            failed: unsynchronized.length, // Unsynchronized is currently failure-based
         };
-    }, [activities, unsynchronized]);
+    }, [initialStats, unsynchronized.length]);
 
     return (
         <PageLayout
@@ -171,17 +163,29 @@ const ActivitiesListPage: React.FC = () => {
                 {/* Stats Row */}
                 <div className="activities-page__stats">
                     <div className="activities-page__stat">
-                        <span className="activities-page__stat-value">{stats.totalSynced}</span>
+                        <span className="activities-page__stat-value">
+                            {loading && !initialStats?.totalSynced ? (
+                                <span className="stat-skeleton">--</span>
+                            ) : stats.totalSynced}
+                        </span>
                         <span className="activities-page__stat-label">Total Synced</span>
                         <span className="activities-page__stat-period">All Time</span>
                     </div>
                     <div className="activities-page__stat">
-                        <span className="activities-page__stat-value">{stats.thisMonth}</span>
+                        <span className="activities-page__stat-value">
+                            {loading && !initialStats?.monthlySynced ? (
+                                <span className="stat-skeleton">--</span>
+                            ) : stats.thisMonth}
+                        </span>
                         <span className="activities-page__stat-label">Synced</span>
                         <span className="activities-page__stat-period">This Month</span>
                     </div>
                     <div className="activities-page__stat">
-                        <span className="activities-page__stat-value">{stats.failed}</span>
+                        <span className="activities-page__stat-value">
+                            {loading && unsynchronized.length === 0 ? (
+                                <span className="stat-skeleton">--</span>
+                            ) : stats.failed}
+                        </span>
                         <span className="activities-page__stat-label">Failed / Stalled</span>
                         <span className="activities-page__stat-period">Incomplete</span>
                     </div>

@@ -1,4 +1,5 @@
 import React, { useReducer, useEffect, useCallback } from 'react';
+import { UserTier } from '../../types/pb/user';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -11,11 +12,12 @@ import './AdminPage.css';
 interface AdminUser {
   userId: string;
   createdAt: string;
-  tier: 'free' | 'pro';
+  tier: UserTier;
   trialEndsAt?: string;
   isAdmin: boolean;
   accessEnabled: boolean;
   syncCountThisMonth: number;
+  preventedSyncCount: number;
   stripeCustomerId?: string;
   integrations: string[];
   pipelineCount: number;
@@ -33,11 +35,12 @@ interface AdminUserDetail {
   email?: string;
   displayName?: string;
   createdAt: string;
-  tier: 'free' | 'pro';
+  tier: UserTier;
   trialEndsAt?: string;
   isAdmin: boolean;
   accessEnabled: boolean;
   syncCountThisMonth: number;
+  preventedSyncCount: number;
   stripeCustomerId?: string;
   syncCountResetAt?: string;
   integrations: Record<string, { enabled?: boolean; lastUsedAt?: string }>;
@@ -49,7 +52,7 @@ interface AdminUserDetail {
 
 interface AdminStats {
   totalUsers: number;
-  proUsers: number;
+  athleteUsers: number;
   adminUsers: number;
   totalSyncsThisMonth: number;
   recentExecutions: { success: number; failed: number; started: number };
@@ -316,8 +319,8 @@ const AdminPage: React.FC = () => {
                     <div className="stat-value-mini">{stats.totalUsers}</div>
                   </Card>
                   <Card className="stat-card-mini">
-                    <div className="stat-label">Pro Users</div>
-                    <div className="stat-value-mini">{stats.proUsers}</div>
+                    <div className="stat-label">Athlete Users</div>
+                    <div className="stat-value-mini">{stats.athleteUsers}</div>
                   </Card>
                   <Card className="stat-card-mini">
                     <div className="stat-label">Admins</div>
@@ -363,8 +366,8 @@ const AdminPage: React.FC = () => {
                   onChange={e => dispatch({ type: 'SET_USER_FILTERS', filters: { tier: e.target.value } })}
                 >
                   <option value="">All Tiers</option>
-                  <option value="free">Free</option>
-                  <option value="pro">Pro</option>
+                   <option value="hobbyist">Hobbyist</option>
+                  <option value="athlete">Athlete</option>
                 </select>
                 <input
                   type="text"
@@ -400,10 +403,15 @@ const AdminPage: React.FC = () => {
                             {user.accessEnabled ? '✓ Active' : '⏳ Waitlist'}
                           </span>
                         </td>
-                        <td>
-                          <span className={`badge ${user.tier}`}>{user.tier}</span>
+                         <td>
+                          <span className={`badge ${user.tier === UserTier.USER_TIER_ATHLETE ? 'athlete' : 'hobbyist'}`}>
+                            {user.tier === UserTier.USER_TIER_ATHLETE ? 'Athlete' : 'Hobbyist'}
+                          </span>
                         </td>
-                        <td>{user.syncCountThisMonth}</td>
+                        <td>
+                          {user.syncCountThisMonth}
+                          {user.preventedSyncCount > 0 && <span style={{ opacity: 0.6, fontSize: '0.8rem', marginLeft: '4px' }}> (+{user.preventedSyncCount})</span>}
+                        </td>
                         <td>{user.integrations.length > 0 ? user.integrations.join(', ') : '-'}</td>
                         <td className="admin-actions" onClick={e => e.stopPropagation()}>
                           <Button
@@ -532,7 +540,7 @@ const AdminPage: React.FC = () => {
         {activeTab === 'billing' && (
           <div className="admin-tab-content">
             <Card className="admin-section">
-              <h3>Pro Users with Stripe</h3>
+               <h3>Athlete Users with Stripe</h3>
               <div className="admin-table-container">
                 <table className="admin-table">
                   <thead>
@@ -544,7 +552,7 @@ const AdminPage: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.filter(u => u.tier === 'pro' || u.stripeCustomerId).map(user => (
+                     {users.filter(u => u.tier === UserTier.USER_TIER_ATHLETE || u.stripeCustomerId).map(user => (
                       <tr key={user.userId}>
                         <td className="user-id-cell">{user.userId.slice(0, 8)}...</td>
                         <td>
@@ -587,16 +595,17 @@ const AdminPage: React.FC = () => {
                     {selectedUser.email && <div><strong>Email:</strong> {selectedUser.email}</div>}
                     {selectedUser.displayName && <div><strong>Name:</strong> {selectedUser.displayName}</div>}
                     <div><strong>Created:</strong> {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleString() : '-'}</div>
-                    <div><strong>Tier:</strong> <span className={`badge ${selectedUser.tier}`}>{selectedUser.tier}</span></div>
+                     <div><strong>Tier:</strong> <span className={`badge ${selectedUser.tier === UserTier.USER_TIER_ATHLETE ? 'athlete' : 'hobbyist'}`}>{selectedUser.tier === UserTier.USER_TIER_ATHLETE ? 'Athlete' : 'Hobbyist'}</span></div>
                     <div><strong>Access:</strong> <span className={`badge ${selectedUser.accessEnabled ? 'success' : 'waitlist'}`}>{selectedUser.accessEnabled ? 'Enabled' : 'Waitlisted'}</span></div>
                     <div><strong>Admin:</strong> {selectedUser.isAdmin ? 'Yes' : 'No'}</div>
                     <div><strong>Trial Ends:</strong> {selectedUser.trialEndsAt ? new Date(selectedUser.trialEndsAt).toLocaleDateString() : '-'}</div>
                     <div><strong>Syncs:</strong> {selectedUser.syncCountThisMonth} <Button size="small" variant="text" onClick={() => handleUpdateUser(selectedUser.userId, { syncCountThisMonth: 0 })}>Reset</Button></div>
+                    <div><strong>Prevented:</strong> {selectedUser.preventedSyncCount}</div>
                   </div>
                   <div className="modal-actions">
-                    <Button size="small" onClick={() => handleUpdateUser(selectedUser.userId, { tier: selectedUser.tier === 'pro' ? 'free' : 'pro' })}>
-                      Toggle Tier
-                    </Button>
+                     <Button size="small" onClick={() => handleUpdateUser(selectedUser.userId, { tier: selectedUser.tier === UserTier.USER_TIER_ATHLETE ? UserTier.USER_TIER_HOBBYIST : UserTier.USER_TIER_ATHLETE })}>
+                       Toggle Tier
+                     </Button>
                     <Button size="small" variant="secondary" onClick={() => handleUpdateUser(selectedUser.userId, { trialEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() })}>
                       Extend Trial 30d
                     </Button>

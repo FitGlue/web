@@ -15,7 +15,12 @@ export interface RepostResponse {
 }
 
 export interface IActivitiesService {
-  getStats(): Promise<{ synchronizedCount: number }>;
+  getStats(): Promise<{
+    synchronizedCount: number;
+    totalSynced: number;
+    monthlySynced: number;
+    weeklySynced: number;
+  }>;
   list(limit?: number, includeExecution?: boolean, offset?: number): Promise<SynchronizedActivity[]>;
   get(id: string): Promise<SynchronizedActivity | null>;
   listUnsynchronized(limit?: number, offset?: number): Promise<UnsynchronizedEntry[]>;
@@ -41,10 +46,15 @@ export const ActivitiesService: IActivitiesService = {
 
     if (error) {
       console.error('Failed to fetch activity stats', error);
-      return { synchronizedCount: 0 };
+      return { synchronizedCount: 0, totalSynced: 0, monthlySynced: 0, weeklySynced: 0 };
     }
 
-    return { synchronizedCount: data?.synchronizedCount || 0 };
+    return {
+      synchronizedCount: data?.synchronizedCount || 0,
+      totalSynced: data?.totalSynced || 0,
+      monthlySynced: data?.monthlySynced || 0,
+      weeklySynced: data?.weeklySynced || 0,
+    };
   },
 
   async list(limit = 20, includeExecution = false, offset = 0) {
