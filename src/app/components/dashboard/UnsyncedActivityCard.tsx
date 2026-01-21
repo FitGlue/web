@@ -1,7 +1,7 @@
 import React from 'react';
 import { UnsynchronizedEntry } from '../../services/ActivitiesService';
 import { Card } from '../ui/Card';
-import { formatActivityType } from '../../../types/pb/enum-formatters';
+import { formatActivityType, formatActivitySource } from '../../../types/pb/enum-formatters';
 
 interface UnsyncedActivityCardProps {
     entry: UnsynchronizedEntry;
@@ -14,16 +14,7 @@ interface UnsyncedActivityCardProps {
  * Format source name for display
  */
 const formatSourceName = (source?: string): string => {
-    if (!source) return 'Unknown';
-
-    const names: Record<string, string> = {
-        hevy: 'Hevy',
-        strava: 'Strava',
-        fitbit: 'Fitbit',
-        garmin: 'Garmin',
-        apple: 'Apple Health',
-    };
-    return names[source.toLowerCase()] || source.charAt(0).toUpperCase() + source.slice(1).toLowerCase();
+    return formatActivitySource(source);
 };
 
 /**

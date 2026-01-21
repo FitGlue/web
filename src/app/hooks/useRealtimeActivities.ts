@@ -11,7 +11,8 @@ import {
 } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../../shared/firebase';
 import { activitiesAtom, activityStatsAtom, activitiesLastUpdatedAtom } from '../state/activitiesState';
-import { SynchronizedActivity } from '../services/ActivitiesService';
+import { SynchronizedActivity, ActivitiesService } from '../services/ActivitiesService';
+import { useRef } from 'react';
 
 /**
  * useRealtimeActivities - Phase 3 Live-Updating Hook
@@ -39,6 +40,9 @@ export const useRealtimeActivities = (initialEnabled = true, activityLimit = 10)
   // Track if this is the first snapshot (to avoid over-writing initial API data)
   const [hasReceivedFirstSnapshot, setHasReceivedFirstSnapshot] = useState(false);
 
+  // Track activities already being fetched for rich data to avoid redundant calls
+  const pendingFetches = useRef<Set<string>>(new Set());
+
   useEffect(() => {
     if (!isEnabled || !currentUser?.uid) {
       setIsListening(false);
@@ -65,12 +69,38 @@ export const useRealtimeActivities = (initialEnabled = true, activityLimit = 10)
       const activitiesUnsubscribe = onSnapshot(
         activitiesQuery,
         (snapshot) => {
+          // Identify new activities or those needing rich data updates
+          // and fetch them from the API in the background.
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added' || change.type === 'modified') {
+              const activityId = change.doc.id;
+
+              // Skip if already being fetched or if we already have rich data in state
+              // (Wait, we check the state later, but let's avoid redundant hits)
+              if (!pendingFetches.current.has(activityId)) {
+                pendingFetches.current.add(activityId);
+
+                ActivitiesService.get(activityId).then(richActivity => {
+                  if (richActivity && richActivity.pipelineExecution) {
+                    setActivities(prev => prev.map(a =>
+                      a.activityId === activityId
+                        ? { ...a, pipelineExecution: richActivity.pipelineExecution }
+                        : a
+                    ));
+                  }
+                }).catch(err => {
+                  console.error(`Failed to fetch rich data for activity ${activityId}:`, err);
+                }).finally(() => {
+                  pendingFetches.current.delete(activityId);
+                });
+              }
+            }
+          });
+
           // Skip the first snapshot if we already have data from API
           // to avoid flickering/replacing richer API data
           if (!hasReceivedFirstSnapshot) {
             setHasReceivedFirstSnapshot(true);
-            // Only update if we have no existing data
-            // (this handles the case where listener beats API response)
           }
 
           const activities: SynchronizedActivity[] = snapshot.docs.map((doc) => {
@@ -79,6 +109,8 @@ export const useRealtimeActivities = (initialEnabled = true, activityLimit = 10)
               activityId: doc.id,
               title: data.title || '',
               description: data.description || '',
+              // Convert numeric enums to strings for component compatibility
+              // (will be properly formatted by formatters in the UI)
               type: data.type,
               source: data.source,
               startTime: data.start_time?.toDate?.()?.toISOString() || data.start_time,

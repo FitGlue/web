@@ -2,7 +2,7 @@ import React from 'react';
 import { SynchronizedActivity, ExecutionRecord } from '../../services/ActivitiesService';
 import { EnricherBadge } from './EnricherBadge';
 import { Card } from '../ui/Card';
-import { formatActivityType } from '../../../types/pb/enum-formatters';
+import { formatActivityType, formatActivitySource, formatDestination } from '../../../types/pb/enum-formatters';
 
 interface EnrichedActivityCardProps {
     activity: SynchronizedActivity;
@@ -96,15 +96,11 @@ const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): stri
  * Format source name for display
  */
 const formatSourceName = (source: string): string => {
-    const names: Record<string, string> = {
-        hevy: 'Hevy',
-        strava: 'Strava',
-        fitbit: 'Fitbit',
-        garmin: 'Garmin',
-        apple: 'Apple Health',
-        showcase: 'Showcase',
-    };
-    return names[source.toLowerCase()] || source.charAt(0).toUpperCase() + source.slice(1).toLowerCase();
+    return formatActivitySource(source);
+};
+
+const formatDestinationName = (dest: string): string => {
+    return formatDestination(dest);
 };
 
 /**
@@ -137,7 +133,7 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     // Source and destination info
     const sourceName = formatSourceName(activity.source || 'unknown');
     const destinations = activity.destinations ? Object.keys(activity.destinations) : [];
-    const destinationNames = destinations.map(d => formatSourceName(d));
+    const destinationNames = destinations.map(d => formatDestinationName(d));
 
     return (
         <Card
@@ -178,6 +174,11 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
                                     metadata={exec.Metadata}
                                 />
                             ))
+                        ) : !activity.pipelineExecution ? (
+                            <div className="enriched-activity-card__boosters-loading">
+                                <div className="shimmer-box" style={{ width: '60px', height: '20px' }}></div>
+                                <div className="shimmer-box" style={{ width: '40px', height: '20px' }}></div>
+                            </div>
                         ) : (
                             <span className="enriched-activity-card__no-boosters">No boosters applied</span>
                         )}

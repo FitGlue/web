@@ -12,7 +12,7 @@ interface EnricherBadgeProps {
 
 const humanizeProviderName = (name: string): string => {
     return name
-        .replace(/-/g, ' ')
+        .replace(/[_-]/g, ' ')
         .split(' ')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
@@ -28,9 +28,9 @@ export const EnricherBadge: React.FC<EnricherBadgeProps> = ({
 }) => {
     // Get icon from registry (centralized in registry.ts)
     const { enrichers } = usePluginRegistry();
-    const enricherPlugin = enrichers.find(e => e.id === providerName);
+    const enricherPlugin = enrichers.find(e => e.id === providerName || e.id === providerName.replace(/_/g, '-'));
     const icon = enricherPlugin?.icon || '✨';
-    const displayName = humanizeProviderName(providerName);
+    const displayName = enricherPlugin?.name || humanizeProviderName(providerName);
     const statusClass = status.toLowerCase();
 
     // Extract key metric from metadata if available
