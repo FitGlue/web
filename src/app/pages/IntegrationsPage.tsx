@@ -164,7 +164,7 @@ const IntegrationsPage: React.FC = () => {
             <div className="integrations-grid">
                 {registryIntegrations.map(integration => {
                     const status = integrations?.[integration.id as keyof IntegrationsSummary];
-                    const supportsOAuth = integration.authType === IntegrationAuthType.OAUTH;
+                    const supportsOAuth = integration.authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_OAUTH;
                     return (
                         <IntegrationCard
                             key={integration.id}

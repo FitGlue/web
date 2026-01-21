@@ -346,11 +346,11 @@ const ConnectionSetupPage: React.FC = () => {
             backTo="/connections"
             backLabel="Connections"
         >
-            {authType === IntegrationAuthType.API_KEY && renderApiKeySetup()}
-            {authType === IntegrationAuthType.OAUTH && renderOAuthSetup()}
-            {authType === IntegrationAuthType.APP_SYNC && renderAppSyncSetup()}
-            {authType === IntegrationAuthType.PUBLIC_ID && renderPublicIdSetup()}
-            {authType === IntegrationAuthType.UNSPECIFIED && (
+            {authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_API_KEY && renderApiKeySetup()}
+            {authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_OAUTH && renderOAuthSetup()}
+            {authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_APP_SYNC && renderAppSyncSetup()}
+            {authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_PUBLIC_ID && renderPublicIdSetup()}
+            {authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_UNSPECIFIED && (
                 <div className="connection-setup__error">
                     <p>This connection type is not configured correctly.</p>
                     <Button variant="primary" onClick={() => navigate('/connections')}>

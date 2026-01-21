@@ -27,28 +27,11 @@ export type PluginRegistryResponse = components['schemas']['PluginRegistryRespon
 
 // Enums are not generated from OpenAPI, so define them here
 // These match the protobuf definitions in the server
-export enum PluginType {
-  PLUGIN_TYPE_UNSPECIFIED = 0,
-  PLUGIN_TYPE_SOURCE = 1,
-  PLUGIN_TYPE_ENRICHER = 2,
-  PLUGIN_TYPE_DESTINATION = 3,
-}
+import {
+  PluginType,
+  ConfigFieldType,
+  IntegrationAuthType,
+} from '../../types/pb/plugin';
 
-export enum ConfigFieldType {
-  CONFIG_FIELD_TYPE_UNSPECIFIED = 0,
-  CONFIG_FIELD_TYPE_STRING = 1,
-  CONFIG_FIELD_TYPE_NUMBER = 2,
-  CONFIG_FIELD_TYPE_BOOLEAN = 3,
-  CONFIG_FIELD_TYPE_SELECT = 4,
-  CONFIG_FIELD_TYPE_MULTI_SELECT = 5,
-  CONFIG_FIELD_TYPE_KEY_VALUE_MAP = 6,
-  CONFIG_FIELD_TYPE_DYNAMIC_SELECT = 7,
-}
+export { PluginType, ConfigFieldType, IntegrationAuthType };
 
-export enum IntegrationAuthType {
-  UNSPECIFIED = 0,
-  OAUTH = 1,
-  API_KEY = 2,
-  APP_SYNC = 3,
-  PUBLIC_ID = 4,
-}
