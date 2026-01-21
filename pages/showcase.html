@@ -810,10 +810,19 @@
         if (session.strengthSets && session.strengthSets.length > 0) {
           const totalSets = session.strengthSets.length;
           const totalReps = session.strengthSets.reduce((sum, s) => sum + (s.reps || 0), 0);
-          const totalWeight = session.strengthSets.reduce((sum, s) => sum + ((s.reps || 0) * (s.weightKg || 0)), 0);
+          const totalWeightCalculated = session.strengthSets.reduce((sum, s) => {
+            const reps = s.reps || 0;
+            const weight = s.weightKg || 0;
+            const distance = s.distanceMeters || 0;
+            if (weight > 0) {
+              if (reps > 0) return sum + (reps * weight);
+              if (distance > 0) return sum + (distance * weight);
+            }
+            return sum;
+          }, 0);
           stats.push({ icon: '🔢', value: totalSets, label: 'Sets' });
           stats.push({ icon: '💪', value: totalReps, label: 'Reps' });
-          if (totalWeight > 0) stats.push({ icon: '⚖️', value: formatWeight(totalWeight), label: 'Volume' });
+          if (totalWeightCalculated > 0) stats.push({ icon: '⚖️', value: formatWeight(totalWeightCalculated), label: 'Volume' });
         }
 
         if (stats.length > 0) {
@@ -862,18 +871,54 @@
         if (session.strengthSets && session.strengthSets.length > 0) {
           const exercisesSection = document.getElementById('exercises-section');
           const exerciseList = document.getElementById('exercise-list');
-          const exercises = groupExercises(session.strengthSets);
 
-          document.getElementById('exercise-count').textContent = `${Object.keys(exercises).length} exercises`;
+          // Group by exercise name (preserving order)
+          const blocks = [];
+          const blockMap = {};
+          session.strengthSets.forEach(set => {
+            const name = set.exerciseName || 'Unknown';
+            if (!blockMap[name]) {
+              const block = { name, sets: [] };
+              blocks.push(block);
+              blockMap[name] = block;
+            }
+            blockMap[name].sets.push(set);
+          });
 
-          exerciseList.innerHTML = Object.entries(exercises).map(([name, sets]) => {
-            const setDetails = formatExerciseSets(sets);
+          // Superset detection
+          const hasSupersets = blocks.some(b => b.sets[0].supersetId);
+          const supersetEmojiMap = {};
+          const emojiNumbers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
+          let supersetCounter = 0;
+
+          if (hasSupersets) {
+            blocks.forEach(b => {
+              const sid = b.sets[0].supersetId;
+              if (sid && !supersetEmojiMap[sid]) {
+                if (supersetCounter < emojiNumbers.length) {
+                  supersetEmojiMap[sid] = emojiNumbers[supersetCounter++];
+                }
+              }
+            });
+          }
+
+          document.getElementById('exercise-count').textContent = `${blocks.length} exercises`;
+
+          exerciseList.innerHTML = blocks.map(b => {
+            let marker = "";
+            if (hasSupersets) {
+              const sid = b.sets[0].supersetId;
+              marker = sid ? (supersetEmojiMap[sid] + " ") : "⬜ ";
+            }
+
+            const formattedSets = formatCollapsedSets(b.sets);
+
             return `
             <div class="exercise-item">
-              <span class="exercise-name">${name}</span>
+              <span class="exercise-name">${marker}${b.name}</span>
               <div class="exercise-detail">
-                <span>📊 ${sets.length} sets</span>
-                ${setDetails}
+                <span>📊 ${b.sets.length} sets</span>
+                ${formattedSets}
               </div>
             </div>
           `;
@@ -886,14 +931,20 @@
       if (data.appliedEnrichments && data.appliedEnrichments.length > 0) {
         const enrichSection = document.getElementById('enrichments-section');
         const badgesEl = document.getElementById('enrichment-badges');
+        const registry = data.registry || {};
+
         badgesEl.innerHTML = data.appliedEnrichments.map(e => {
-          const info = getEnricherInfo(e);
+          const info = registry[e] || {
+            icon: '⚡',
+            name: e.replace('ENRICHER_PROVIDER_', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+            description: 'Boosted activity data'
+          };
           return `
           <div class="enrichment-item">
             <span class="enrichment-icon">${info.icon}</span>
             <div class="enrichment-info">
               <div class="enrichment-name">${info.name}</div>
-              <div class="enrichment-desc">${info.desc}</div>
+              <div class="enrichment-desc">${info.description || info.desc}</div>
             </div>
           </div>
         `;
@@ -1068,67 +1119,59 @@
       return m > 0 ? `${m}:${s.toString().padStart(2, '0')}` : `${s}s`;
     }
 
-    function groupExercises(sets) {
-      return sets.reduce((acc, set) => {
-        const name = set.exerciseName || 'Unknown';
-        if (!acc[name]) acc[name] = [];
-        acc[name].push(set);
-        return acc;
-      }, {});
+
+    function formatCollapsedSets(sets) {
+      if (!sets || sets.length === 0) return "";
+
+      const formattedSets = sets.map(s => formatSingleSet(s));
+
+      // Check if all sets are identical
+      const allIdentical = formattedSets.every(s => s === formattedSets[0]);
+
+      if (allIdentical && sets.length > 1) {
+        return `<span>💪 ${sets.length} × ${formattedSets[0]}</span>`;
+      }
+
+      return formattedSets.map(s => `<span>💪 ${s}</span>`).join('');
     }
 
-    function formatExerciseSets(sets) {
-      // Handle different combinations: weight+reps, time, distance
-      const hasWeight = sets.some(s => s.weightKg > 0);
-      const hasTime = sets.some(s => s.time > 0);
-      const hasDistance = sets.some(s => s.distance > 0);
-      const hasReps = sets.some(s => s.reps > 0);
+    function formatSingleSet(set) {
+      const hasWeight = set.weightKg > 0;
+      const hasReps = set.reps > 0;
+      const hasDistance = set.distanceMeters > 0;
+      const hasTime = set.durationSeconds > 0;
 
-      const parts = [];
+      if (hasDistance || hasTime) {
+        const parts = [];
+        if (hasDistance) {
+          parts.push(formatDistance(set.distanceMeters));
+        }
+        if (hasTime) {
+          const formattedTime = formatTime(set.durationSeconds);
+          if (hasDistance) {
+            parts.push(`in ${formattedTime}`);
+          } else {
+            parts.push(formattedTime);
+          }
+        }
+        if (hasWeight) {
+          parts.push(`× ${Math.round(set.weightKg)}kg`);
+        }
+        return parts.join(' ');
+      }
 
+      // Standard weight lifting
       if (hasWeight && hasReps) {
-        const info = sets.map(s => `${s.reps || 0}×${s.weightKg || 0}kg`).join(', ');
-        parts.push(`<span>💪 ${info}</span>`);
-      } else if (hasReps && !hasWeight) {
-        const totalReps = sets.reduce((sum, s) => sum + (s.reps || 0), 0);
-        parts.push(`<span>💪 ${totalReps} reps</span>`);
+        return `${set.reps} × ${set.weightKg.toFixed(1)}kg`;
+      } else if (hasWeight) {
+        return `${set.weightKg.toFixed(1)}kg`;
+      } else if (hasReps) {
+        return `${set.reps} reps`;
       }
 
-      if (hasTime) {
-        const totalTime = sets.reduce((sum, s) => sum + (s.time || 0), 0);
-        parts.push(`<span>⏱️ ${formatTime(totalTime)}</span>`);
-      }
-
-      if (hasDistance) {
-        const totalDist = sets.reduce((sum, s) => sum + (s.distance || 0), 0);
-        parts.push(`<span>📏 ${formatDistance(totalDist)}</span>`);
-      }
-
-      return parts.join('');
+      return "Completed";
     }
 
-    function getEnricherInfo(id) {
-      const enrichers = {
-        'ENRICHER_PROVIDER_WORKOUT_SUMMARY': { icon: '📝', name: 'Workout Summary', desc: 'Generated detailed exercise breakdown' },
-        'ENRICHER_PROVIDER_MUSCLE_HEATMAP': { icon: '🔥', name: 'Muscle Heatmap', desc: 'Visualized muscle group activation' },
-        'ENRICHER_PROVIDER_FITBIT_HEART_RATE': { icon: '❤️', name: 'Heart Rate Booster', desc: 'Added heart rate telemetry from Fitbit' },
-        'ENRICHER_PROVIDER_TYPE_MAPPER': { icon: '🏷️', name: 'Activity Type Mapper', desc: 'Mapped activity to correct type' },
-        'ENRICHER_PROVIDER_PARKRUN': { icon: '🏃', name: 'Parkrun Results', desc: 'Added official Parkrun times and position' },
-        'ENRICHER_PROVIDER_USER_INPUT': { icon: '✏️', name: 'User Input', desc: 'Custom data added by user' },
-        'ENRICHER_PROVIDER_AUTO_INCREMENT': { icon: '🔢', name: 'Auto Increment', desc: 'Added sequential counter' },
-        'ENRICHER_PROVIDER_ACTIVITY_FILTER': { icon: '🔍', name: 'Activity Filter', desc: 'Filtered activity based on rules' },
-        'Branding': { icon: '✨', name: 'Branding', desc: 'Added FitGlue branding' },
-      };
-
-      // Try exact match first
-      if (enrichers[id]) return enrichers[id];
-
-      // Try partial match (strip ENRICHER_PROVIDER_ prefix if exists)
-      const cleanId = id.replace('ENRICHER_PROVIDER_', '');
-      const formatted = cleanId.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-
-      return { icon: '⚡', name: formatted, desc: 'Boosted activity data' };
-    }
   })();
 </script>
 
