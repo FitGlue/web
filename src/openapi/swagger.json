@@ -262,6 +262,9 @@
           },
           "fitbit": {
             "$ref": "#/components/schemas/IntegrationStatus"
+          },
+          "parkrun": {
+            "$ref": "#/components/schemas/IntegrationStatus"
           }
         }
       },

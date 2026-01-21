@@ -109,17 +109,9 @@ export function decodePipeline(encoded: string): PortablePipeline {
 function getConnectedIntegrationIds(integrations: IntegrationsSummary | null): string[] {
   if (!integrations) return [];
 
-  const connected: string[] = [];
-
-  // Check each known integration
-  if (integrations.hevy?.connected) connected.push('hevy');
-  if (integrations.strava?.connected) connected.push('strava');
-  if (integrations.fitbit?.connected) connected.push('fitbit');
-
-  // Note: parkrun, apple-health, health-connect may need to be added here
-  // based on actual API response structure
-
-  return connected;
+  return Object.entries(integrations)
+    .filter(([, status]) => status?.connected)
+    .map(([id]) => id);
 }
 
 /**

@@ -1059,6 +1059,7 @@ export interface components {
             hevy?: components["schemas"]["IntegrationStatus"];
             strava?: components["schemas"]["IntegrationStatus"];
             fitbit?: components["schemas"]["IntegrationStatus"];
+            parkrun?: components["schemas"]["IntegrationStatus"];
         };
         IntegrationStatus: {
             connected: boolean;
