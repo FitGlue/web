@@ -37,6 +37,13 @@
         }
       },
       {
+        "source": "/hooks/strava",
+        "run": {
+          "serviceId": "strava-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/hooks/test",
         "run": {
           "serviceId": "mock-source-handler",
