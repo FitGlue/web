@@ -195,6 +195,20 @@
         }
       },
       {
+        "source": "/auth/spotify/callback",
+        "run": {
+          "serviceId": "spotify-oauth-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/auth/trainingpeaks/callback",
+        "run": {
+          "serviceId": "trainingpeaks-oauth-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/mobile/sync",
         "run": {
           "serviceId": "mobile-sync-handler",
