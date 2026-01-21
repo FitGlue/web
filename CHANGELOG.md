@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/fitglue/web/compare/v2.2.1...v3.0.0) (2026-01-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* strava source and changes to user mappings
+
+### Features
+
+* strava source and changes to user mappings ([f2e1862](https://github.com/fitglue/web/commit/f2e186205e876035c30f994b07f2a645b44ea164))
+
+
+### Bug Fixes
+
+* change "via" and "activity type" tag ordering on activity detail page ([4fdfba4](https://github.com/fitglue/web/commit/4fdfba450d5ca64829205f7ed6efbd0041f39607))
+* stats on dashboard and activities list page ([b6d723b](https://github.com/fitglue/web/commit/b6d723b356dbf2032b8c66ef6670da753d7b6b41))
+
 ### [2.2.1](https://github.com/fitglue/web/compare/v2.2.0...v2.2.1) (2026-01-21)
 
 ## [2.2.0](https://github.com/fitglue/web/compare/v2.1.2...v2.2.0) (2026-01-21)
