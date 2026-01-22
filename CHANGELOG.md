@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/fitglue/web/compare/v3.1.0...v4.0.0) (2026-01-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **web:** Synchronized TypeScript types and enum formatters are incompatible with previous versions due to mandatory Protobuf enum updates in the server repository.
+
+### Features
+
+* add pipeline toggling and sentry integration ([23dbe7d](https://github.com/fitglue/web/commit/23dbe7d055463927b2c140e510cc485f1785e5f2))
+* **web:** premium showcase overhaul and breaking type synchronization ([8612a6d](https://github.com/fitglue/web/commit/8612a6d1cd97112c6e7505c149666a5e58fdf322))
+
+
+### Bug Fixes
+
+* generated up-to-date-protos ([151add1](https://github.com/fitglue/web/commit/151add1b3f1fcd7aa6f31cdc1f454aeccbae9fb5))
+* sentry setup and some bug fixing ([d751114](https://github.com/fitglue/web/commit/d75111481d5e5668ef75f2132a8e2f1d16e02126))
+
 ## [3.1.0](https://github.com/fitglue/web/compare/v3.0.0...v3.1.0) (2026-01-21)
 
 
