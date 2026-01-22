@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.2](https://github.com/fitglue/web/compare/v4.0.1...v4.0.2) (2026-01-22)
+
+
+### Bug Fixes
+
+* env vars for sentry and build process ([744e5ea](https://github.com/fitglue/web/commit/744e5eae4f30b481502a4696cd090a687c9fb95e))
+
 ### [4.0.1](https://github.com/fitglue/web/compare/v4.0.0...v4.0.1) (2026-01-22)
 
 
