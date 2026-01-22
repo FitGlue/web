@@ -1,5 +1,24 @@
 import { useMemo, useCallback } from 'react';
 import { getFirebaseAuth } from '../../shared/firebase';
+import { Sentry } from '../infrastructure/sentry';
+
+/**
+ * Capture API error in Sentry with context
+ */
+const captureApiError = (method: string, path: string, status: number, statusText: string) => {
+  const error = new Error(`${method} ${path} failed: ${status} ${statusText}`);
+  Sentry.captureException(error, {
+    tags: {
+      api_method: method,
+      api_path: path,
+      status_code: status,
+    },
+    extra: {
+      statusText,
+    },
+  });
+  return error;
+};
 
 /**
  * Generic API hook for making authenticated requests
@@ -23,7 +42,7 @@ export const useApi = () => {
     });
 
     if (!response.ok) {
-      throw new Error(`GET ${path} failed: ${response.statusText}`);
+      throw captureApiError('GET', path, response.status, response.statusText);
     }
 
     return response.json();
@@ -41,7 +60,7 @@ export const useApi = () => {
     });
 
     if (!response.ok) {
-      throw new Error(`POST ${path} failed: ${response.statusText}`);
+      throw captureApiError('POST', path, response.status, response.statusText);
     }
 
     return response.json();
@@ -59,7 +78,7 @@ export const useApi = () => {
     });
 
     if (!response.ok) {
-      throw new Error(`PATCH ${path} failed: ${response.statusText}`);
+      throw captureApiError('PATCH', path, response.status, response.statusText);
     }
 
     return response.json();
@@ -77,7 +96,7 @@ export const useApi = () => {
     });
 
     if (!response.ok) {
-      throw new Error(`PUT ${path} failed: ${response.statusText}`);
+      throw captureApiError('PUT', path, response.status, response.statusText);
     }
 
     return response.json();
@@ -94,7 +113,7 @@ export const useApi = () => {
     });
 
     if (!response.ok) {
-      throw new Error(`DELETE ${path} failed: ${response.statusText}`);
+      throw captureApiError('DELETE', path, response.status, response.statusText);
     }
 
     return response.json();

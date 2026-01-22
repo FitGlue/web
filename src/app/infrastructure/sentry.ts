@@ -37,9 +37,9 @@ export function initSentry() {
       }),
     ],
     // Performance Monitoring
-    tracesSampleRate: environment === 'prod' ? 0.1 : 1.0,
+    tracesSampleRate: environment.includes('prod') ? 0.1 : 1.0,
     // Session Replay
-    replaysSessionSampleRate: environment === 'prod' ? 0.1 : 1.0,
+    replaysSessionSampleRate: environment.includes('prod') ? 0.1 : 1.0,
     replaysOnErrorSampleRate: 1.0,
 
     beforeSend(event) {
