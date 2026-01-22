@@ -29,6 +29,7 @@ Thumbs.db
 # Environment
 # We are checking in specific env files for CI
 #.env - We want to allow specific env files
+.env
 .env.local
 
 # Generated

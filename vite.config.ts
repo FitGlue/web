@@ -1,25 +1,35 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { resolve } from 'path';
 
 export default defineConfig(({ mode }) => {
-  const isProd = mode === 'production';
+  // Load environment variables based on the mode (development, production, etc.)
+  // Set third argument to '' to load all env vars, regardless of prefix
+  const env = loadEnv(mode, process.cwd(), '');
+  // Determine if Sentry should be enabled (needs Auth Token and Org/Project)
+  const isSentryEnabled = Boolean(
+    (process.env.SENTRY_AUTH_TOKEN || env.SENTRY_AUTH_TOKEN) &&
+    (process.env.SENTRY_ORG || env.SENTRY_ORG) &&
+    (process.env.SENTRY_PROJECT || env.SENTRY_PROJECT)
+  );
+
+  const releaseName = `fitglue-web-app@${new Date().toISOString()}`;
 
   return {
     plugins: [
       react(),
-      // Only upload source maps in production builds
-      isProd && sentryVitePlugin({
-        org: process.env.SENTRY_ORG,
-        project: process.env.SENTRY_PROJECT,
-        authToken: process.env.SENTRY_AUTH_TOKEN,
+      // Upload source maps if Sentry is configured (regardless of mode)
+      isSentryEnabled && sentryVitePlugin({
+        org: process.env.SENTRY_ORG || env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT || env.SENTRY_PROJECT,
+        authToken: process.env.SENTRY_AUTH_TOKEN || env.SENTRY_AUTH_TOKEN,
         sourcemaps: {
           assets: './dist/**',
           ignore: ['node_modules'],
         },
         release: {
-          name: process.env.VITE_SENTRY_RELEASE || `fitglue-web@${new Date().toISOString()}`,
+          name: releaseName,
         },
         // Don't fail the build if source map upload fails
         errorHandler: (err) => {
@@ -40,6 +50,10 @@ export default defineConfig(({ mode }) => {
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
       },
+    },
+    // Define global constants replacement
+    define: {
+      'import.meta.env.VITE_SENTRY_RELEASE': JSON.stringify(releaseName),
     },
     build: {
       outDir: 'dist',
