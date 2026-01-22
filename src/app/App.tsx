@@ -4,6 +4,7 @@ import { useAtom } from 'jotai';
 import { onAuthStateChanged } from 'firebase/auth';
 import { initFirebase } from '../shared/firebase';
 import { userAtom, authLoadingAtom } from './state/authState';
+import { initSentry, setUser as setSentryUser, Sentry } from './infrastructure/sentry';
 
 // App pages (protected)
 import DashboardPage from './pages/DashboardPage';
@@ -28,6 +29,9 @@ import NotFoundPage from './pages/NotFoundPage';
 import { useFCM } from './hooks/useFCM';
 import { useUser } from './hooks/useUser';
 import { NerdModeProvider } from './state/NerdModeContext';
+
+// Initialize Sentry before app renders
+initSentry();
 
 // Protected route wrapper - redirects to static /auth/login page
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -88,6 +92,9 @@ const App: React.FC = () => {
       onAuthStateChanged(fb.auth, (u) => {
         setUser(u);
         setLoading(false);
+
+        // Update Sentry user context
+        setSentryUser(u?.uid || null);
       });
     };
 
@@ -95,37 +102,71 @@ const App: React.FC = () => {
   }, [setUser, setLoading]);
 
   return (
-    <NerdModeProvider>
-      <Router basename="/app">
-        <Routes>
-          {/* Protected app routes */}
-          <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/inputs" element={<ProtectedRoute><PendingInputsPage /></ProtectedRoute>} />
-          <Route path="/activities" element={<ProtectedRoute><ActivitiesListPage /></ProtectedRoute>} />
-          <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<ProtectedRoute><UnsynchronizedDetailPage /></ProtectedRoute>} />
-          <Route path="/activities/:id" element={<ProtectedRoute><ActivityDetailPage /></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-          <Route path="/settings/integrations" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
-          <Route path="/connections" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
-          <Route path="/connections/:id/setup" element={<ProtectedRoute><ConnectionSetupPage /></ProtectedRoute>} />
-          <Route path="/connections/:id/success" element={<ProtectedRoute><ConnectionSuccessPage /></ProtectedRoute>} />
-          <Route path="/connections/:id/error" element={<ProtectedRoute><ConnectionErrorPage /></ProtectedRoute>} />
-          <Route path="/settings/pipelines" element={<ProtectedRoute><PipelinesPage /></ProtectedRoute>} />
-          <Route path="/settings/pipelines/new" element={<ProtectedRoute><PipelineWizardPage /></ProtectedRoute>} />
-          <Route path="/settings/pipelines/:pipelineId/edit" element={<ProtectedRoute><PipelineEditPage /></ProtectedRoute>} />
-          <Route path="/settings/account" element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
-          <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
-          <Route path="/settings/upgrade" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
-          <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
+    <Sentry.ErrorBoundary
+      fallback={({ error, resetError }) => (
+        <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>
+          <h2 style={{ color: 'var(--color-error)' }}>Something went wrong</h2>
+          <p>We&apos;ve been notified and are working on a fix.</p>
+          <pre style={{
+            background: 'var(--color-bg-secondary)',
+            padding: '1rem',
+            borderRadius: '8px',
+            textAlign: 'left',
+            overflow: 'auto',
+            maxWidth: '600px',
+            margin: '2rem auto'
+          }}>
+            {error instanceof Error ? error.message : String(error)}
+          </pre>
+          <button
+            onClick={resetError}
+            style={{
+              background: 'var(--color-primary)',
+              color: 'white',
+              border: 'none',
+              padding: '0.75rem 1.5rem',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            Try Again
+          </button>
+        </div>
+      )}
+    >
+      <NerdModeProvider>
+        <Router basename="/app">
+          <Routes>
+            {/* Protected app routes */}
+            <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path="/inputs" element={<ProtectedRoute><PendingInputsPage /></ProtectedRoute>} />
+            <Route path="/activities" element={<ProtectedRoute><ActivitiesListPage /></ProtectedRoute>} />
+            <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<ProtectedRoute><UnsynchronizedDetailPage /></ProtectedRoute>} />
+            <Route path="/activities/:id" element={<ProtectedRoute><ActivityDetailPage /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+            <Route path="/settings/integrations" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
+            <Route path="/connections" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
+            <Route path="/connections/:id/setup" element={<ProtectedRoute><ConnectionSetupPage /></ProtectedRoute>} />
+            <Route path="/connections/:id/success" element={<ProtectedRoute><ConnectionSuccessPage /></ProtectedRoute>} />
+            <Route path="/connections/:id/error" element={<ProtectedRoute><ConnectionErrorPage /></ProtectedRoute>} />
+            <Route path="/settings/pipelines" element={<ProtectedRoute><PipelinesPage /></ProtectedRoute>} />
+            <Route path="/settings/pipelines/new" element={<ProtectedRoute><PipelineWizardPage /></ProtectedRoute>} />
+            <Route path="/settings/pipelines/:pipelineId/edit" element={<ProtectedRoute><PipelineEditPage /></ProtectedRoute>} />
+            <Route path="/settings/account" element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
+            <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
+            <Route path="/settings/upgrade" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
+            <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
 
 
 
 
-          {/* Catch-all for unknown routes */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Router>
-    </NerdModeProvider>
+            {/* Catch-all for unknown routes */}
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Router>
+      </NerdModeProvider>
+    </Sentry.ErrorBoundary>
   );
 };
 

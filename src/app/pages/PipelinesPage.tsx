@@ -22,20 +22,25 @@ interface PipelineConfig {
     source: string;
     enrichers?: EnricherConfig[];
     destinations: (string | number)[];
+    disabled?: boolean;
 }
 
 interface PipelineCardProps {
     pipeline: PipelineConfig;
     onEdit: () => void;
     onDelete: () => void;
+    onToggleDisabled: (disabled: boolean) => void;
     deleting: boolean;
+    toggling: boolean;
 }
 
 const PipelineCard: React.FC<PipelineCardProps> = ({
     pipeline,
     onEdit,
     onDelete,
+    onToggleDisabled,
     deleting,
+    toggling,
 }) => {
     // Use plugin registry directly instead of prop drilling
     const { sources, enrichers, destinations } = usePluginRegistry();
@@ -83,11 +88,12 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
     };
 
     return (
-        <div className="pipeline-card-premium">
+        <div className={`pipeline-card-premium ${pipeline.disabled ? 'pipeline-disabled' : ''}`}>
             {/* Pipeline Name Header */}
             {pipeline.name && (
                 <div className="pipeline-card-name">
                     <h4>{pipeline.name}</h4>
+                    {pipeline.disabled && <span className="pipeline-disabled-badge">Disabled</span>}
                 </div>
             )}
             {/* Visual Flow Header */}
@@ -154,6 +160,18 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
                     </span>
                 </div>
                 <div className="pipeline-card-actions">
+                    <label className="pipeline-toggle-container">
+                        <input
+                            type="checkbox"
+                            checked={!pipeline.disabled}
+                            onChange={(e) => onToggleDisabled(!e.target.checked)}
+                            disabled={toggling}
+                            className="pipeline-toggle-checkbox"
+                        />
+                        <span className="pipeline-toggle-label">
+                            {toggling ? 'Updating...' : (pipeline.disabled ? 'Disabled' : 'Enabled')}
+                        </span>
+                    </label>
                     <Button
                         variant="secondary"
                         onClick={onEdit}
@@ -180,6 +198,7 @@ const PipelinesPage: React.FC = () => {
     const { pipelines, loading, refresh: refreshPipelines, fetchIfNeeded } = usePipelines();
     const { fetchIfNeeded: fetchIntegrations } = useIntegrations();
     const [deleting, setDeleting] = useState<string | null>(null);
+    const [toggling, setToggling] = useState<string | null>(null);
     const [showImportModal, setShowImportModal] = useState(false);
 
     useEffect(() => {
@@ -200,6 +219,18 @@ const PipelinesPage: React.FC = () => {
             console.error('Failed to delete pipeline:', error);
         } finally {
             setDeleting(null);
+        }
+    };
+
+    const handleToggleDisabled = async (pipelineId: string, disabled: boolean) => {
+        setToggling(pipelineId);
+        try {
+            await api.patch(`/users/me/pipelines/${pipelineId}`, { disabled });
+            await refreshPipelines();
+        } catch (error) {
+            console.error('Failed to toggle pipeline:', error);
+        } finally {
+            setToggling(null);
         }
     };
 
@@ -252,7 +283,9 @@ const PipelinesPage: React.FC = () => {
                             pipeline={pipeline}
                             onEdit={() => navigate(`/settings/pipelines/${pipeline.id}/edit`)}
                             onDelete={() => handleDelete(pipeline.id)}
+                            onToggleDisabled={(disabled) => handleToggleDisabled(pipeline.id, disabled)}
                             deleting={deleting === pipeline.id}
+                            toggling={toggling === pipeline.id}
                         />
                     ))}
                 </div>

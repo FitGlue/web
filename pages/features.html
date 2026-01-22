@@ -72,10 +72,12 @@
       <div class="feature-grid mt-lg stagger-children">
         {{#each sources}}
           <a href="{{detailsUrl}}" class="feature-card-link">
-            <div class="feature-card{{#if isPremium}} premium{{/if}} hoverable">
+            <div
+              class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
               <div class="feature-card-header">
                 <span class="feature-icon">{{icon}}</span>
                 {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
+                {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
               </div>
               <h3>{{name}}</h3>
               <p>{{description}}</p>
@@ -103,10 +105,12 @@
           <div class="feature-grid stagger-children">
             {{#each plugins}}
               <a href="{{detailsUrl}}" class="feature-card-link">
-                <div class="feature-card{{#if isPremium}} premium{{/if}} hoverable">
+                <div
+                  class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
                   <div class="feature-card-header">
                     <span class="feature-icon">{{icon}}</span>
                     {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
+                    {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
                   </div>
                   <h3>{{name}}</h3>
                   <p>{{description}}</p>
@@ -155,10 +159,12 @@
       <div class="feature-grid mt-lg stagger-children">
         {{#each destinations}}
           <a href="{{detailsUrl}}" class="feature-card-link">
-            <div class="feature-card{{#if isPremium}} premium{{/if}} hoverable">
+            <div
+              class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
               <div class="feature-card-header">
                 <span class="feature-icon">{{icon}}</span>
                 {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
+                {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
               </div>
               <h3>{{name}}</h3>
               <p>{{description}}</p>

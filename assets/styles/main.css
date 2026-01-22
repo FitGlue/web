@@ -883,6 +883,7 @@ h4 {
   display: flex;
   align-items: center;
   margin-bottom: var(--space-xs);
+  position: relative;
 }
 
 /* Clickable feature card link wrapper */

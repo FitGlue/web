@@ -33,16 +33,22 @@ export function transformRegistryTask() {
         detailsUrl: `/plugins/boosters/${e.id}`,
         // Ensure premium flag is boolean for templates
         isPremium: !!e.isPremium,
+        // Preserve temporarily unavailable status for "Coming Soon" banners
+        isTemporarilyUnavailable: !!e.isTemporarilyUnavailable,
       }));
       const sources = (registry.sources || []).map((/** @type {any} */ s) => ({
         ...s,
         detailsUrl: `/plugins/sources/${s.id}`,
         isPremium: !!s.isPremium,
+        // Preserve temporarily unavailable status for "Coming Soon" banners
+        isTemporarilyUnavailable: !!s.isTemporarilyUnavailable,
       }));
       const destinations = (registry.destinations || []).map((/** @type {any} */ d) => ({
         ...d,
         detailsUrl: `/plugins/targets/${d.id}`,
         isPremium: !!d.isPremium,
+        // Preserve temporarily unavailable status for "Coming Soon" banners
+        isTemporarilyUnavailable: !!d.isTemporarilyUnavailable,
       }));
 
       // Category metadata for grouping plugins

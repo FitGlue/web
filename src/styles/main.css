@@ -2113,6 +2113,82 @@ h3 {
     font-size: 0.85rem;
 }
 
+/* Pipeline Toggle Switch */
+.pipeline-toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.pipeline-toggle-checkbox {
+    appearance: none;
+    width: 44px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pipeline-toggle-checkbox:checked {
+    background: linear-gradient(135deg, var(--color-success), var(--color-accent));
+    border-color: var(--color-success);
+}
+
+.pipeline-toggle-checkbox::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pipeline-toggle-checkbox:checked::before {
+    transform: translateX(20px);
+}
+
+.pipeline-toggle-checkbox:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pipeline-toggle-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+/* Pipeline Disabled State */
+.pipeline-disabled {
+    opacity: 0.6;
+}
+
+.pipeline-disabled .pipeline-visual-flow {
+    filter: grayscale(0.5);
+}
+
+.pipeline-disabled-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 159, 10, 0.2);
+    color: #FF9F0A;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 0.5rem;
+}
+
 /* Mobile responsive for pipeline card */
 @media (max-width: 600px) {
     .pipeline-visual-flow {
