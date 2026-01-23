@@ -1004,6 +1004,23 @@ h4 {
   gap: var(--space-sm);
   justify-content: center;
   margin-top: var(--space-md);
+  position: relative;
+}
+
+/* Larger badges for hero sections */
+.hero-badges .integration-status {
+  padding: 0.5rem 1.25rem;
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.05em;
+}
+
+/* Inline coming soon badge for hero sections */
+.hero-badges .coming-badge {
+  position: static;
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.05em;
 }
 
 .integration-type-badge {

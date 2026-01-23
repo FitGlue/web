@@ -19,7 +19,11 @@
         {{description}}
       </p>
       <div class="hero-badges">
-        <span class="integration-status live">Live</span>
+        {{#if isTemporarilyUnavailable}}
+          <span class="coming-badge">Coming Soon</span>
+        {{else}}
+          <span class="integration-status live">Live</span>
+        {{/if}}
       </div>
     </div>
   </section>

@@ -107,6 +107,7 @@ export function generateDynamicPagesTask(config) {
         const marketingHtml = parseMarkdown(i.marketingDescription);
         const setupSteps = parseSetupSteps(i.setupInstructions);
         const isOAuth = i.authType === 1 || i.authType === 'oauth';
+        const isTemporarilyUnavailable = !!i.isTemporarilyUnavailable;
 
         pages.push({
           template: 'connection-detail',
@@ -121,6 +122,7 @@ export function generateDynamicPagesTask(config) {
             marketingHtml,
             setupSteps,
             hasSetupSteps: setupSteps.length > 0,
+            isTemporarilyUnavailable,
           },
         });
       }
@@ -131,6 +133,7 @@ export function generateDynamicPagesTask(config) {
         const requiredConnectionObjects = (s.requiredIntegrations || [])
           .map(id => getIntegrationById(registry, id))
           .filter(Boolean);
+        const isTemporarilyUnavailable = !!s.isTemporarilyUnavailable;
 
         pages.push({
           template: 'plugin-detail',
@@ -147,6 +150,7 @@ export function generateDynamicPagesTask(config) {
             marketingHtml,
             requiredConnectionObjects,
             hasRequiredConnections: requiredConnectionObjects.length > 0,
+            isTemporarilyUnavailable,
           },
         });
       }
@@ -157,6 +161,7 @@ export function generateDynamicPagesTask(config) {
         const requiredConnectionObjects = (e.requiredIntegrations || [])
           .map(id => getIntegrationById(registry, id))
           .filter(Boolean);
+        const isTemporarilyUnavailable = !!e.isTemporarilyUnavailable;
 
         pages.push({
           template: 'plugin-detail',
@@ -211,6 +216,7 @@ export function generateDynamicPagesTask(config) {
             hasUseCases: (e.useCases || []).length > 0,
             // Tier gating
             isAthleteTier: e.requiredTier === 'athlete',
+            isTemporarilyUnavailable,
           },
         });
       }
@@ -221,6 +227,7 @@ export function generateDynamicPagesTask(config) {
         const requiredConnectionObjects = (d.requiredIntegrations || [])
           .map(id => getIntegrationById(registry, id))
           .filter(Boolean);
+        const isTemporarilyUnavailable = !!d.isTemporarilyUnavailable;
 
         pages.push({
           template: 'plugin-detail',
@@ -237,6 +244,7 @@ export function generateDynamicPagesTask(config) {
             marketingHtml,
             requiredConnectionObjects,
             hasRequiredConnections: requiredConnectionObjects.length > 0,
+            isTemporarilyUnavailable,
           },
         });
       }
