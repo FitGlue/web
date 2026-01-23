@@ -1235,7 +1235,7 @@
       }
 
       // Muscle Activation Image
-      if (data.enrichmentMetadata \u0026\u0026 data.enrichmentMetadata.asset_muscle_heatmap) {
+      if (data.enrichmentMetadata && data.enrichmentMetadata.asset_muscle_heatmap) {
         const muscleSection = document.getElementById('muscle-activation-section');
         const muscleImage = document.getElementById('muscle-activation-image');
         muscleImage.src = data.enrichmentMetadata.asset_muscle_heatmap;
