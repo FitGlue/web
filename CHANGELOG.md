@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.2](https://github.com/fitglue/web/compare/v5.1.1...v5.1.2) (2026-01-23)
+
+
+### Bug Fixes
+
+* initmap issue ([a389445](https://github.com/fitglue/web/commit/a389445dc2fe5a6ff9c5657ea9811f8c76f0119f))
+* showcase getElementById didn't exist ([ae6e923](https://github.com/fitglue/web/commit/ae6e9232efe464e88edcca12723876acd390b8c6))
+
 ### [5.1.1](https://github.com/fitglue/web/compare/v5.1.0...v5.1.1) (2026-01-23)
 
 
