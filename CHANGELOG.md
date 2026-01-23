@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://github.com/fitglue/web/compare/v4.0.2...v5.0.0) (2026-01-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ui:** implement registry-driven icon fidelity and hybrid rendering
+
+### Features
+
+* **ui:** implement registry-driven icon fidelity and hybrid rendering ([bf896c0](https://github.com/fitglue/web/commit/bf896c0077c1dc77634a2aee55cbc955bf85aad6))
+
 ### [4.0.2](https://github.com/fitglue/web/compare/v4.0.1...v4.0.2) (2026-01-22)
 
 
