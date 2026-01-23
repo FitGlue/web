@@ -697,6 +697,22 @@ h4 {
   display: block;
 }
 
+/* Image-based icons (SVG, PNG, JPG) */
+.feature-icon-svg,
+.feature-icon-png,
+.feature-icon-jpg {
+  height: 3.5rem;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  margin-bottom: var(--space-sm);
+  display: block;
+  background: white;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .feature-card h3 {
   font-size: var(--font-size-lg);
   margin-bottom: var(--space-xs);
@@ -962,9 +978,25 @@ h4 {
 }
 
 .integration-hero-emoji {
-  font-size: 4rem;
+  font-size: 6rem;
   display: block;
-  margin-bottom: var(--space-sm);
+  margin: 0 auto var(--space-md);
+}
+
+/* Image-based hero icons (SVG, PNG, JPG) */
+.integration-hero-icon-svg,
+.integration-hero-icon-png,
+.integration-hero-icon-jpg {
+  height: 6rem;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto var(--space-md);
+  background: white;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .hero-badges {
@@ -1126,6 +1158,21 @@ h4 {
 .connection-card-icon {
   font-size: 2.5rem;
   flex-shrink: 0;
+}
+
+/* Image-based connection card icons */
+.connection-card-icon-svg,
+.connection-card-icon-png,
+.connection-card-icon-jpg {
+  height: 2.5rem;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: white;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .connection-card-content h4 {
@@ -3369,6 +3416,20 @@ h4 {
 
 .showcase-icon {
   font-size: 1.5rem;
+}
+
+/* Image-based showcase icons */
+.showcase-icon-svg,
+.showcase-icon-png,
+.showcase-icon-jpg {
+  height: 1.5rem;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  background: white;
+  padding: 0.25rem;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .showcase-header h3 {

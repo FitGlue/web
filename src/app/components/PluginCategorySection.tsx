@@ -64,11 +64,11 @@ export const PluginCategorySection: React.FC<PluginCategorySectionProps> = ({
               >
                 <div className="plugin-card-header">
                   {/* Render SVG or emoji icon based on iconType */}
-                  {plugin.iconType === 'svg' && plugin.iconPath ? (
+                  {plugin.iconType && plugin.iconPath ? (
                     <img
                       src={plugin.iconPath}
                       alt=""
-                      className="option-icon-svg"
+                      className={`option-icon-${plugin.iconType}`}
                     />
                   ) : (
                     <span className="option-icon">{plugin.icon}</span>

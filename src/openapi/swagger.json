@@ -649,6 +649,14 @@
           },
           "apiKeyHelpUrl": {
             "type": "string"
+          },
+          "iconType": {
+            "type": "string",
+            "description": "Icon type: emoji, svg, png, or jpg"
+          },
+          "iconPath": {
+            "type": "string",
+            "description": "Path to icon asset (e.g., /images/icons/strava.svg)"
           }
         },
         "required": [

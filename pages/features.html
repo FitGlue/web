@@ -75,7 +75,11 @@
             <div
               class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
               <div class="feature-card-header">
-                <span class="feature-icon">{{icon}}</span>
+                {{#if iconPath}}
+                  <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
+                {{else}}
+                  <span class="feature-icon">{{icon}}</span>
+                {{/if}}
                 {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
                 {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
               </div>
@@ -108,7 +112,11 @@
                 <div
                   class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
                   <div class="feature-card-header">
-                    <span class="feature-icon">{{icon}}</span>
+                    {{#if iconPath}}
+                      <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
+                    {{else}}
+                      <span class="feature-icon">{{icon}}</span>
+                    {{/if}}
                     {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
                     {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
                   </div>
@@ -162,7 +170,11 @@
             <div
               class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
               <div class="feature-card-header">
-                <span class="feature-icon">{{icon}}</span>
+                {{#if iconPath}}
+                  <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
+                {{else}}
+                  <span class="feature-icon">{{icon}}</span>
+                {{/if}}
                 {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
                 {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
               </div>

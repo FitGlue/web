@@ -1,6 +1,7 @@
 import React from 'react';
 import { PluginManifest } from '../types/plugin';
 import { Button } from './ui/Button';
+import { PluginIcon } from './ui/PluginIcon';
 import './EnricherInfoModal.css';
 
 interface Props {
@@ -15,7 +16,13 @@ export const EnricherInfoModal: React.FC<Props> = ({ enricher, onClose }) => {
                 <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
 
                 <div className="enricher-info-header">
-                    <span className="enricher-info-icon">{enricher.icon}</span>
+                    <PluginIcon
+                        icon={enricher.icon}
+                        iconType={enricher.iconType}
+                        iconPath={enricher.iconPath}
+                        size="large"
+                        className="enricher-info-icon"
+                    />
                     <h2>{enricher.name}</h2>
                 </div>
 

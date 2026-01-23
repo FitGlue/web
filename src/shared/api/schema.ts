@@ -1178,6 +1178,10 @@ export interface components {
             setupInstructions?: string;
             apiKeyLabel?: string;
             apiKeyHelpUrl?: string;
+            /** @description Icon type: emoji, svg, png, or jpg */
+            iconType?: string;
+            /** @description Path to icon asset (e.g., /images/icons/strava.svg) */
+            iconPath?: string;
         };
         PluginRegistryResponse: {
             sources: components["schemas"]["PluginManifest"][];

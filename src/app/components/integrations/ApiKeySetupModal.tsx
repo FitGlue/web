@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/Button';
+import { PluginIcon } from '../ui/PluginIcon';
 import { IntegrationManifest } from '../../types/plugin';
 import { useApi } from '../../hooks/useApi';
 import './ApiKeySetupModal.css';
@@ -57,7 +58,13 @@ export const ApiKeySetupModal: React.FC<ApiKeySetupModalProps> = ({
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content api-key-setup-modal" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
-                    <span className="integration-icon">{integration.icon}</span>
+                    <PluginIcon
+                        icon={integration.icon}
+                        iconType={integration.iconType}
+                        iconPath={integration.iconPath}
+                        size="large"
+                        className="integration-icon"
+                    />
                     <h2>{integration.setupTitle || `Connect ${integration.name}`}</h2>
                     <button className="modal-close" onClick={onClose}>×</button>
                 </div>

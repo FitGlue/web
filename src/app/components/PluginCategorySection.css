@@ -89,11 +89,18 @@
   opacity: 1;
 }
 
-/* SVG icon styling for products with real logos */
-.option-icon-svg {
-  width: 28px;
-  height: 28px;
+/* SVG/PNG/JPG icon styling for products with real logos */
+.option-icon-svg,
+.option-icon-png,
+.option-icon-jpg {
+  height: 40px;
+  width: auto;
+  max-width: 100%;
   object-fit: contain;
+  background: white;
+  padding: 0.35rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Search bar styling */

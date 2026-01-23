@@ -14,6 +14,7 @@ import { Card } from '../components/ui/Card';
 import { CardSkeleton } from '../components/ui/CardSkeleton';
 import '../components/ui/CardSkeleton.css';
 import { Button } from '../components/ui/Button';
+import { PluginIcon } from '../components/ui/PluginIcon';
 import { LoadingState } from '../components/ui/LoadingState';
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
 import { GalleryOfBoosts } from '../components/dashboard/GalleryOfBoosts';
@@ -230,7 +231,13 @@ const DashboardPage: React.FC = () => {
                                     const status = integrations?.[integration.id as keyof IntegrationsSummary];
                                     return (
                                         <div key={integration.id} className={`connection-item ${status?.connected ? 'connected' : ''}`}>
-                                            <span className="connection-icon">{integration.icon}</span>
+                                            <PluginIcon
+                                                icon={integration.icon}
+                                                iconType={integration.iconType}
+                                                iconPath={integration.iconPath}
+                                                size="small"
+                                                className="connection-icon"
+                                            />
                                             <span className="connection-name">{integration.name}</span>
                                             <span className={`connection-status ${status?.connected ? 'active' : 'inactive'}`}>
                                                 {status?.connected ? '✓' : '○'}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Button } from '../components/ui/Button';
+import { PluginIcon } from '../components/ui/PluginIcon';
 import { LoadingState } from '../components/ui/LoadingState';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useApi } from '../hooks/useApi';
@@ -119,7 +120,13 @@ const ConnectionSetupPage: React.FC = () => {
         return (
             <div className="connection-setup">
                 <div className="connection-setup__header">
-                    <span className="connection-setup__icon">{integration.icon}</span>
+                    <PluginIcon
+                        icon={integration.icon}
+                        iconType={integration.iconType}
+                        iconPath={integration.iconPath}
+                        size="large"
+                        className="connection-setup__icon"
+                    />
                     <h1>Connect {integration.name}</h1>
                 </div>
 
@@ -177,7 +184,13 @@ const ConnectionSetupPage: React.FC = () => {
         return (
             <div className="connection-setup">
                 <div className="connection-setup__header">
-                    <span className="connection-setup__icon">{integration.icon}</span>
+                    <PluginIcon
+                        icon={integration.icon}
+                        iconType={integration.iconType}
+                        iconPath={integration.iconPath}
+                        size="large"
+                        className="connection-setup__icon"
+                    />
                     <h1>Connect to {integration.name}</h1>
                 </div>
 
@@ -234,7 +247,13 @@ const ConnectionSetupPage: React.FC = () => {
         return (
             <div className="connection-setup">
                 <div className="connection-setup__header">
-                    <span className="connection-setup__icon">{integration.icon}</span>
+                    <PluginIcon
+                        icon={integration.icon}
+                        iconType={integration.iconType}
+                        iconPath={integration.iconPath}
+                        size="large"
+                        className="connection-setup__icon"
+                    />
                     <h1>Connect {integration.name}</h1>
                 </div>
 
@@ -283,7 +302,13 @@ const ConnectionSetupPage: React.FC = () => {
         return (
             <div className="connection-setup">
                 <div className="connection-setup__header">
-                    <span className="connection-setup__icon">{integration.icon}</span>
+                    <PluginIcon
+                        icon={integration.icon}
+                        iconType={integration.iconType}
+                        iconPath={integration.iconPath}
+                        size="large"
+                        className="connection-setup__icon"
+                    />
                     <h1>Connect {integration.name}</h1>
                 </div>
 

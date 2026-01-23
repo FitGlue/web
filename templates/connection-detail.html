@@ -8,7 +8,11 @@
         <a href="/features">Features</a> / Connections / <span>{{name}}</span>
       </nav>
       <h1 class="text-center animate-on-scroll">
-        <span class="integration-hero-emoji">{{icon}}</span>
+        {{#if iconPath}}
+          <img src="{{iconPath}}" alt="" class="integration-hero-icon integration-hero-icon-{{iconType}}" />
+        {{else}}
+          <span class="integration-hero-emoji">{{icon}}</span>
+        {{/if}}
         <span class="text-gradient">{{name}}</span>
       </h1>
       <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">

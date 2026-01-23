@@ -1,0 +1,56 @@
+/* ========================================
+   PluginIcon Component Styles
+   ======================================== */
+
+/* Base emoji icon styling */
+.plugin-icon-emoji {
+  display: inline-block;
+}
+
+/* Image-based icons (SVG, PNG, JPG) */
+.plugin-icon-svg,
+.plugin-icon-png,
+.plugin-icon-jpg {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  background: white;
+  padding: 0.35rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Size variants */
+.plugin-icon-small.plugin-icon-emoji {
+  font-size: 1.5rem;
+}
+
+.plugin-icon-small.plugin-icon-svg,
+.plugin-icon-small.plugin-icon-png,
+.plugin-icon-small.plugin-icon-jpg {
+  height: 28px;
+}
+
+.plugin-icon-medium.plugin-icon-emoji {
+  font-size: 2rem;
+}
+
+.plugin-icon-medium.plugin-icon-svg,
+.plugin-icon-medium.plugin-icon-png,
+.plugin-icon-medium.plugin-icon-jpg {
+  height: 40px;
+}
+
+.plugin-icon-large.plugin-icon-emoji {
+  font-size: 2.5rem;
+}
+
+.plugin-icon-large.plugin-icon-svg,
+.plugin-icon-large.plugin-icon-png,
+.plugin-icon-large.plugin-icon-jpg {
+  height: 3.5rem;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

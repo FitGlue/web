@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Button } from '../components/ui/Button';
+import { PluginIcon } from '../components/ui/PluginIcon';
 import { useApi } from '../hooks/useApi';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
@@ -35,7 +36,13 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
     return (
         <div className={`connection-card ${isConnected ? 'connection-card--connected' : ''}`}>
             <div className="connection-card__header">
-                <span className="connection-card__icon">{integration.icon}</span>
+                <PluginIcon
+                    icon={integration.icon}
+                    iconType={integration.iconType}
+                    iconPath={integration.iconPath}
+                    size="medium"
+                    className="connection-card__icon"
+                />
                 <div className="connection-card__info">
                     <h3 className="connection-card__name">{integration.name}</h3>
                     <p className="connection-card__description">{integration.description}</p>
