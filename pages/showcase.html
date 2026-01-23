@@ -1250,7 +1250,8 @@
     }
 
     // --- MAP INITIALIZATION ---
-    function initMap(records) {
+    // Make initMap globally accessible for onclick handlers
+    window.initMap = function initMap(records) {
       const map = L.map('activity-map', {
         zoomControl: true,
         scrollWheelZoom: false
