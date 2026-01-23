@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.2](https://github.com/fitglue/web/compare/v5.0.1...v5.0.2) (2026-01-23)
+
+
+### Bug Fixes
+
+* coming soon badges and pricing updates ([9775a46](https://github.com/fitglue/web/commit/9775a462adab241a5cceb0f016cdea55225cf56a))
+
 ### [5.0.1](https://github.com/fitglue/web/compare/v5.0.0...v5.0.1) (2026-01-23)
 
 
