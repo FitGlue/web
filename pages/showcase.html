@@ -895,14 +895,6 @@
     align-items: center;
     padding: 1rem;
   }
-
-  .muscle-activation-image {
-    max-width: 100%;
-    height: auto;
-    max-height: 600px;
-    border-radius: 12px;
-    filter: drop-shadow(0 4px 20px rgba(255, 27, 141, 0.3));
-  }
 </style>
 
 <script>
@@ -1237,7 +1229,7 @@
       // Muscle Activation Image
       if (data.enrichmentMetadata && data.enrichmentMetadata.asset_muscle_heatmap) {
         const muscleSection = document.getElementById('muscle-activation-section');
-        const muscleImage = document.getElementById('muscle-activation-image');
+        const muscleImage = document.getElementById('muscle-heatmap-image');
         muscleImage.src = data.enrichmentMetadata.asset_muscle_heatmap;
         muscleSection.style.display = 'block';
       }
