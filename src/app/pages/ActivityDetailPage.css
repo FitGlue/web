@@ -178,8 +178,66 @@
 
 /* Section Cards */
 .activity-detail__boosters-card,
-.activity-detail__destinations-card {
+.activity-detail__destinations-card,
+.activity-detail__assets-card {
   margin-bottom: 1.5rem;
+}
+
+/* Generated Assets */
+.activity-detail__assets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.activity-detail__asset-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.activity-detail__asset-item:hover {
+  border-color: rgba(255, 27, 141, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 27, 141, 0.2);
+}
+
+.activity-detail__asset-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.activity-detail__asset-preview {
+  aspect-ratio: 16 / 9;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.activity-detail__asset-image,
+.activity-detail__asset-svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.activity-detail__asset-svg {
+  background: white;
+}
+
+.activity-detail__asset-label {
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .activity-detail__section-title {

@@ -55,6 +55,47 @@ const extractEnricherExecutions = (pipelineExecution?: ExecutionRecord[]): Provi
     }
 };
 
+// Extract generated assets from provider executions
+interface GeneratedAsset {
+    type: string;
+    url: string;
+    providerName: string;
+}
+
+const extractGeneratedAssets = (providerExecutions: ProviderExecution[]): GeneratedAsset[] => {
+    const assets: GeneratedAsset[] = [];
+
+    for (const execution of providerExecutions) {
+        if (execution.Status?.toUpperCase() !== 'SUCCESS' || !execution.Metadata) {
+            continue;
+        }
+
+        // Check for asset_* keys in metadata
+        for (const [key, value] of Object.entries(execution.Metadata)) {
+            if (key.startsWith('asset_') && typeof value === 'string' && value.startsWith('http')) {
+                const assetType = key.replace('asset_', '');
+                assets.push({
+                    type: assetType,
+                    url: value,
+                    providerName: execution.ProviderName || 'Unknown',
+                });
+            }
+        }
+    }
+
+    return assets;
+};
+
+// Format asset type for display
+const formatAssetType = (type: string): string => {
+    const typeMap: Record<string, string> = {
+        'ai_banner': 'AI Banner',
+        'muscle_heatmap': 'Muscle Heatmap',
+        'route_thumbnail': 'Route Map',
+    };
+    return typeMap[type] || type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+};
+
 // Get destination activity type from pipeline outputs
 // Uses generic -uploader suffix detection instead of hardcoded service names
 const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): string | null => {
@@ -169,6 +210,7 @@ const ActivityDetailPage: React.FC = () => {
         : formatActivityType(activity.type);
 
     const failedBoosters = providerExecutions.filter(p => p.Status?.toUpperCase() === 'FAILED');
+    const generatedAssets = extractGeneratedAssets(providerExecutions);
 
     // Look up pipeline name by ID
     const pipelineName = activity.pipelineId
@@ -300,6 +342,50 @@ const ActivityDetailPage: React.FC = () => {
                                 </div>
                             );
                         })}
+                    </div>
+                </Card>
+            )}
+
+            {/* Generated Assets */}
+            {generatedAssets.length > 0 && (
+                <Card className="activity-detail__assets-card">
+                    <h3 className="activity-detail__section-title">
+                        <span className="activity-detail__section-icon">🎨</span>
+                        Generated Assets
+                    </h3>
+                    <div className="activity-detail__assets-grid">
+                        {generatedAssets.map((asset, idx) => (
+                            <div key={idx} className="activity-detail__asset-item">
+                                <a
+                                    href={asset.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="activity-detail__asset-link"
+                                >
+                                    <div className="activity-detail__asset-preview">
+                                        {asset.type === 'muscle_heatmap' ? (
+                                            <object
+                                                data={asset.url}
+                                                type="image/svg+xml"
+                                                className="activity-detail__asset-svg"
+                                                aria-label={formatAssetType(asset.type)}
+                                            >
+                                                <img src={asset.url} alt={formatAssetType(asset.type)} />
+                                            </object>
+                                        ) : (
+                                            <img
+                                                src={asset.url}
+                                                alt={formatAssetType(asset.type)}
+                                                className="activity-detail__asset-image"
+                                            />
+                                        )}
+                                    </div>
+                                    <div className="activity-detail__asset-label">
+                                        {formatAssetType(asset.type)}
+                                    </div>
+                                </a>
+                            </div>
+                        ))}
                     </div>
                 </Card>
             )}
