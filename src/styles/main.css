@@ -2848,15 +2848,17 @@ h3 {
     gap: 1rem;
 }
 
-/* Pro banner: gradient background with shimmer */
-.plan-banner.pro {
+/* Pro/Athlete banner: gradient background with shimmer */
+.plan-banner.pro,
+.plan-banner.athlete {
     background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
     border: none;
     position: relative;
     overflow: hidden;
 }
 
-.plan-banner.pro::before {
+.plan-banner.pro::before,
+.plan-banner.athlete::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -2871,11 +2873,13 @@ h3 {
     pointer-events: none;
 }
 
-.plan-banner.pro .trial-countdown {
+.plan-banner.pro .trial-countdown,
+.plan-banner.athlete .trial-countdown {
     color: rgba(255, 255, 255, 0.9);
 }
 
-.plan-banner.pro .unlimited {
+.plan-banner.pro .unlimited,
+.plan-banner.athlete .unlimited {
     color: white;
 }
 
@@ -2904,10 +2908,11 @@ h3 {
     border: 1px solid rgba(255, 0, 110, 0.3);
 }
 
-.plan-badge.pro {
+.plan-badge.pro,
+.plan-badge.athlete {
     background: rgba(255, 255, 255, 0.2);
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(4px);
 }
 
@@ -3000,7 +3005,8 @@ h3 {
     color: var(--color-text-muted);
 }
 
-.plan-banner.pro .unlimited {
+.plan-banner.pro .unlimited,
+.plan-banner.athlete .unlimited {
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.85);
     font-weight: 500;

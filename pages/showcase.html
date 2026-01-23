@@ -122,15 +122,6 @@
       <pre id="activity-description" class="activity-description"></pre>
     </div>
 
-    <!-- Strength Sets / Exercises -->
-    <div id="exercises-section" class="showcase-section glass-card" style="display: none;">
-      <div class="section-header">
-        <h2>💪 Exercises</h2>
-        <span id="exercise-count" class="section-subtitle"></span>
-      </div>
-      <div id="exercise-list" class="exercise-list"></div>
-    </div>
-
     <!-- Muscle Activation Heatmap -->
     <div id="muscle-activation-section" class="showcase-section glass-card" style="display: none;">
       <div class="section-header">
@@ -138,8 +129,17 @@
         <span class="section-subtitle">Visual breakdown of muscle engagement</span>
       </div>
       <div class="muscle-heatmap-container">
-        <img id="muscle-heatmap-image" class="muscle-heatmap-image" alt="Muscle Activation Heatmap" />
+        <div id="muscle-heatmap-container" class="muscle-heatmap-inner"></div>
       </div>
+    </div>
+
+    <!-- Strength Sets / Exercises -->
+    <div id="exercises-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>💪 Exercises</h2>
+        <span id="exercise-count" class="section-subtitle"></span>
+      </div>
+      <div id="exercise-list" class="exercise-list"></div>
     </div>
 
     <!-- Tags -->
@@ -614,6 +614,14 @@
     border-radius: 16px;
   }
 
+  .muscle-heatmap-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .muscle-heatmap-inner svg,
   .muscle-heatmap-image {
     max-width: 100%;
     height: auto;
@@ -622,9 +630,26 @@
   }
 
   @media (min-width: 768px) {
+
+    .muscle-heatmap-inner svg,
     .muscle-heatmap-image {
       max-height: 600px;
     }
+  }
+
+  /* Route thumbnail SVG styling */
+  .route-thumbnail-container svg.route-thumbnail-image {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(255, 27, 141, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .route-thumbnail-container svg.route-thumbnail-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px rgba(255, 27, 141, 0.4);
   }
 
   /* ========================================
@@ -1052,12 +1077,10 @@
           mapSection.style.display = 'block';
 
           if (routeThumbnailUrl) {
-            // Display route thumbnail SVG
+            // Display route thumbnail (SVG inline or img)
             const thumbnailContainer = document.createElement('div');
             thumbnailContainer.className = 'route-thumbnail-container';
-            thumbnailContainer.innerHTML = `
-              <img src="${routeThumbnailUrl}" alt="Route Map" class="route-thumbnail-image" loading="lazy" />
-            `;
+            renderAsset(routeThumbnailUrl, 'Route Map', 'route-thumbnail-image', thumbnailContainer);
             const mapContainer = document.getElementById('activity-map');
             mapContainer.parentNode.insertBefore(thumbnailContainer, mapContainer);
 
@@ -1195,8 +1218,8 @@
         const heatmapUrl = data.enrichmentMetadata?.asset_muscle_heatmap;
         if (heatmapUrl) {
           const heatmapSection = document.getElementById('muscle-activation-section');
-          const heatmapImg = document.getElementById('muscle-heatmap-image');
-          heatmapImg.src = heatmapUrl;
+          const heatmapContainer = document.getElementById('muscle-heatmap-container');
+          renderAsset(heatmapUrl, 'Muscle Activation Heatmap', 'muscle-heatmap-image', heatmapContainer);
           heatmapSection.style.display = 'block';
         }
       }
@@ -1229,8 +1252,11 @@
       // Muscle Activation Image
       if (data.enrichmentMetadata && data.enrichmentMetadata.asset_muscle_heatmap) {
         const muscleSection = document.getElementById('muscle-activation-section');
-        const muscleImage = document.getElementById('muscle-heatmap-image');
-        muscleImage.src = data.enrichmentMetadata.asset_muscle_heatmap;
+        const muscleContainer = document.getElementById('muscle-heatmap-container');
+        // Only render if not already rendered above
+        if (!muscleContainer.hasChildNodes()) {
+          renderAsset(data.enrichmentMetadata.asset_muscle_heatmap, 'Muscle Activation Heatmap', 'muscle-heatmap-image', muscleContainer);
+        }
         muscleSection.style.display = 'block';
       }
 
@@ -1525,6 +1551,55 @@
     }
 
     // --- HELPERS ---
+
+    // Check if URL points to an SVG asset
+    function isSvgUrl(url) {
+      try {
+        const urlObj = new URL(url);
+        const pathname = urlObj.pathname.toLowerCase();
+        return pathname.endsWith('.svg') || pathname.includes('.svg');
+      } catch {
+        return url.toLowerCase().includes('.svg');
+      }
+    }
+
+    // Render asset as inline SVG or img based on file type
+    function renderAsset(url, alt, className, container) {
+      if (isSvgUrl(url)) {
+        // Fetch and render SVG inline
+        fetch(url)
+          .then(res => {
+            if (!res.ok) throw new Error('Failed to fetch SVG');
+            return res.text();
+          })
+          .then(text => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'image/svg+xml');
+            const svgElement = doc.querySelector('svg');
+            if (svgElement) {
+              svgElement.removeAttribute('width');
+              svgElement.removeAttribute('height');
+              svgElement.setAttribute('aria-label', alt);
+              svgElement.setAttribute('role', 'img');
+              if (className) {
+                svgElement.classList.add(...className.split(' '));
+              }
+              container.innerHTML = svgElement.outerHTML;
+            } else {
+              // Fallback to img on parse failure
+              container.innerHTML = `<img src="${url}" alt="${alt}" class="${className}" loading="lazy" />`;
+            }
+          })
+          .catch(() => {
+            // Fallback to img on fetch failure
+            container.innerHTML = `<img src="${url}" alt="${alt}" class="${className}" loading="lazy" />`;
+          });
+      } else {
+        // Non-SVG: use img tag
+        container.innerHTML = `<img src="${url}" alt="${alt}" class="${className}" loading="lazy" />`;
+      }
+    }
+
     function formatActivityType(type) {
       const types = {
         0: 'Workout', 5: 'CrossFit', 12: 'HIIT', 13: 'Hike', 23: 'Ride', 27: 'Run', 37: 'Swim',
