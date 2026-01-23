@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.2.0](https://github.com/fitglue/web/compare/v5.1.3...v5.2.0) (2026-01-23)
+
+
+### Features
+
+* better showcase styling and athlete banners ([06e1e85](https://github.com/fitglue/web/commit/06e1e85bb2045163f58bdf17d081f4f4746d1d21))
+
 ### [5.1.3](https://github.com/fitglue/web/compare/v5.1.2...v5.1.3) (2026-01-23)
 
 
