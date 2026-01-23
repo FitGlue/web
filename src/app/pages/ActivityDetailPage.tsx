@@ -96,6 +96,72 @@ const formatAssetType = (type: string): string => {
     return typeMap[type] || type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 };
 
+// Check if URL points to an SVG asset
+const isSvgUrl = (url: string): boolean => {
+    try {
+        const urlObj = new URL(url);
+        const pathname = urlObj.pathname.toLowerCase();
+        // Check for .svg extension or SVG content type indicators in GCS URLs
+        return pathname.endsWith('.svg') || pathname.includes('.svg');
+    } catch {
+        return url.toLowerCase().includes('.svg');
+    }
+};
+
+// Component to render SVG inline by fetching and embedding the content
+const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ url, alt, className }) => {
+    const [svgContent, setSvgContent] = useState<string | null>(null);
+    const [error, setError] = useState(false);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        fetch(url)
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch SVG');
+                return res.text();
+            })
+            .then(text => {
+                if (cancelled) return;
+                // Parse and sanitize the SVG content
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'image/svg+xml');
+                const svgElement = doc.querySelector('svg');
+                if (svgElement) {
+                    // Remove any existing width/height to allow CSS control
+                    svgElement.removeAttribute('width');
+                    svgElement.removeAttribute('height');
+                    svgElement.setAttribute('aria-label', alt);
+                    svgElement.setAttribute('role', 'img');
+                    if (className) {
+                        svgElement.classList.add(...className.split(' '));
+                    }
+                    setSvgContent(svgElement.outerHTML);
+                } else {
+                    setError(true);
+                }
+            })
+            .catch(() => {
+                if (!cancelled) setError(true);
+            });
+
+        return () => { cancelled = true; };
+    }, [url, alt, className]);
+
+    if (error) {
+        // Fallback to img tag if SVG fetch/parse fails
+        return <img src={url} alt={alt} className={className} />;
+    }
+
+    if (!svgContent) {
+        // Loading state - show placeholder
+        return <div className={className} style={{ opacity: 0.5 }} aria-label={`Loading ${alt}`} />;
+    }
+
+    // eslint-disable-next-line react/no-danger
+    return <div dangerouslySetInnerHTML={{ __html: svgContent }} />;
+};
+
 // Get destination activity type from pipeline outputs
 // Uses generic -uploader suffix detection instead of hardcoded service names
 const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): string | null => {
@@ -363,15 +429,12 @@ const ActivityDetailPage: React.FC = () => {
                                     className="activity-detail__asset-link"
                                 >
                                     <div className="activity-detail__asset-preview">
-                                        {asset.type === 'muscle_heatmap' ? (
-                                            <object
-                                                data={asset.url}
-                                                type="image/svg+xml"
+                                        {isSvgUrl(asset.url) ? (
+                                            <SvgAsset
+                                                url={asset.url}
+                                                alt={formatAssetType(asset.type)}
                                                 className="activity-detail__asset-svg"
-                                                aria-label={formatAssetType(asset.type)}
-                                            >
-                                                <img src={asset.url} alt={formatAssetType(asset.type)} />
-                                            </object>
+                                            />
                                         ) : (
                                             <img
                                                 src={asset.url}
