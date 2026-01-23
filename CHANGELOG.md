@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.3](https://github.com/fitglue/web/compare/v5.1.2...v5.1.3) (2026-01-23)
+
+
+### Bug Fixes
+
+* activity detail page not rendering SVG assets correctly ([6f02e7d](https://github.com/fitglue/web/commit/6f02e7d767e6d1c7c511dcf77b3c6646b3074493))
+* tier-related ui issues ([243f192](https://github.com/fitglue/web/commit/243f192afab252432f427f7aae13eef96f461ec9))
+
 ### [5.1.2](https://github.com/fitglue/web/compare/v5.1.1...v5.1.2) (2026-01-23)
 
 

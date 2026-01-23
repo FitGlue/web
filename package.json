@@ -1,6 +1,6 @@
 {
   "name": "fitglue-web",
-  "version": "5.1.2",
+  "version": "5.1.3",
   "description": "FitGlue web frontend and Firebase Hosting configuration",
   "type": "module",
   "scripts": {
