@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.1](https://github.com/fitglue/web/compare/v5.1.0...v5.1.1) (2026-01-23)
+
+
+### Bug Fixes
+
+* unicode symbols instead of && ([86f54f9](https://github.com/fitglue/web/commit/86f54f94d6de97667a468391e143c82a805a2915))
+
 ## [5.1.0](https://github.com/fitglue/web/compare/v5.0.3...v5.1.0) (2026-01-23)
 
 
