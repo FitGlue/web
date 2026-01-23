@@ -65,7 +65,7 @@ const SubscriptionPage: React.FC = () => {
         ? Math.ceil((new Date(user.trialEndsAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
         : 0;
     const isOnTrial = isAthlete && trialDaysRemaining > 0;
-    const trialExpired = user?.trialEndsAt && trialDaysRemaining <= 0 && !(user as { stripeCustomerId?: string })?.stripeCustomerId;
+    const trialExpired = user?.trialEndsAt && trialDaysRemaining <= 0 && !(user as { stripeCustomerId?: string })?.stripeCustomerId && !user?.isAdmin;
 
     // Athlete users see a management view
     if (isAthlete) {

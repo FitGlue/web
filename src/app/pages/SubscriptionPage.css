@@ -178,12 +178,22 @@
 }
 
 .current-plan .plan-badge.athlete {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    color: white;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 25%, #fff 50%, var(--color-secondary) 75%, var(--color-primary) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-weight: 700;
     font-size: 0.9rem;
+    animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+    to {
+        background-position: 200% center;
+    }
 }
 
 .current-plan .plan-price {

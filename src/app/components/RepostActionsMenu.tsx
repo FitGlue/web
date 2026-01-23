@@ -1,31 +1,49 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { SynchronizedActivity, ActivitiesService, RepostResponse } from '../services/ActivitiesService';
 import { Destination } from '../../types/pb/events';
 import { formatDestination } from '../../types/pb/enum-formatters';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { useIntegrations } from '../hooks/useIntegrations';
 import { PluginManifest } from '../types/plugin';
 import './RepostActionsMenu.css';
 
-// Generate available destinations dynamically from proto enum
-// Uses registry data for icons (centralized in registry.ts)
-const getAvailableDestinations = (registryDestinations: PluginManifest[]) => {
-    const destinations: { key: string; name: string; icon: string; enumValue: Destination }[] = [];
+interface AvailableDestination {
+    key: string;
+    name: string;
+    icon: string;
+    enumValue: Destination;
+}
 
-    // Iterate through the Destination enum values
-    for (const key in Destination) {
-        const value = Destination[key as keyof typeof Destination];
-        if (typeof value === 'number' &&
-            value !== Destination.DESTINATION_UNSPECIFIED &&
-            value !== Destination.DESTINATION_MOCK &&
-            value !== Destination.UNRECOGNIZED) {
-            const keyLower = key.replace('DESTINATION_', '').toLowerCase();
-            // Get icon from registry if available
-            const destPlugin = registryDestinations.find(d => d.id === keyLower);
+// Generate available destinations from registry plugins
+// Only includes destinations where user has the required integration connected
+const getAvailableDestinations = (
+    registryDestinations: PluginManifest[],
+    userIntegrations: Record<string, { connected?: boolean } | undefined> | null
+): AvailableDestination[] => {
+    const destinations: AvailableDestination[] = [];
+
+    // Use registry destinations instead of enum iteration
+    // Registry already filters out isTemporarilyUnavailable plugins
+    for (const destPlugin of registryDestinations) {
+        // Check if user has the required integrations connected
+        const hasRequiredIntegrations = !destPlugin.requiredIntegrations?.length ||
+            destPlugin.requiredIntegrations.every(integrationId => {
+                const integration = userIntegrations?.[integrationId];
+                return integration?.connected ?? false;
+            });
+
+        if (!hasRequiredIntegrations) continue;
+
+        // Find the matching enum value
+        const enumKey = `DESTINATION_${destPlugin.id.toUpperCase()}`;
+        const enumValue = Destination[enumKey as keyof typeof Destination];
+
+        if (typeof enumValue === 'number' && enumValue !== Destination.DESTINATION_UNSPECIFIED) {
             destinations.push({
-                key: keyLower,
-                name: formatDestination(value),
-                icon: destPlugin?.icon || '📤',
-                enumValue: value,
+                key: destPlugin.id,
+                name: formatDestination(enumValue),
+                icon: destPlugin.icon || '📤',
+                enumValue: enumValue,
             });
         }
     }
@@ -52,13 +70,24 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<RepostResponse | null>(null);
 
-    // Get registry destinations for icon lookup
+    // Get registry destinations for icon lookup and filtering
     const { destinations: registryDestinations } = usePluginRegistry();
+    // Get user's connected integrations to filter available destinations
+    const { integrations: userIntegrations, fetchIfNeeded: fetchIntegrations } = useIntegrations();
+
+    // Fetch user integrations on mount
+    useEffect(() => {
+        fetchIntegrations();
+    }, [fetchIntegrations]);
 
     // Compute available destinations from registry (memoized)
+    // Only includes destinations where user has the required integration connected
     const availableDestinations = useMemo(
-        () => getAvailableDestinations(registryDestinations),
-        [registryDestinations]
+        () => getAvailableDestinations(
+            registryDestinations,
+            userIntegrations as Record<string, { connected?: boolean } | undefined> | null
+        ),
+        [registryDestinations, userIntegrations]
     );
 
     // Get destinations that are already synced
