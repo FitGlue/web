@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.1](https://github.com/fitglue/web/compare/v5.0.0...v5.0.1) (2026-01-23)
+
+
+### Bug Fixes
+
+* pass marketingMode flag to registry call ([5353aa3](https://github.com/fitglue/web/commit/5353aa3964d0497380e655744ede6263f1d12ad6))
+
 ## [5.0.0](https://github.com/fitglue/web/compare/v4.0.2...v5.0.0) (2026-01-23)
 
 
