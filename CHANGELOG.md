@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.3.0](https://github.com/fitglue/web/compare/v5.2.0...v5.3.0) (2026-01-24)
+
+
+### Features
+
+* many things I'm tired ([dc6cb91](https://github.com/fitglue/web/commit/dc6cb91265fb47eeeaf1f5f9a1d1173083386944))
+
 ## [5.2.0](https://github.com/fitglue/web/compare/v5.1.3...v5.2.0) (2026-01-23)
 
 
