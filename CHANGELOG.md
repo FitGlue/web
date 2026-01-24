@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.0.0](https://github.com/fitglue/web/compare/v5.3.0...v6.0.0) (2026-01-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* PendingInput schema now includes pipelineId field; clients should handle this new property.
+
+- Show pipeline names in EnrichedActivityCard and PendingInputsPage
+- Add red styling for failed destination pills
+- Derive source name and icon from pipeline's source via registry lookup
+- Add UploadedActivityRecord type for loop prevention ledger
+- Sync ActivitySource enum with new destination-only sources
+
+### Features
+
+* enhance activity cards and pending inputs with pipeline context and failed status ([38041a2](https://github.com/fitglue/web/commit/38041a262838c029805289b435b0d01748f2e3a3))
+
 ## [5.3.0](https://github.com/fitglue/web/compare/v5.2.0...v5.3.0) (2026-01-24)
 
 
