@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.2](https://github.com/fitglue/web/compare/v6.0.1...v6.0.2) (2026-01-24)
+
+
+### Bug Fixes
+
+* style updates to pending inputs on dashboard and list page ([f1d79e1](https://github.com/fitglue/web/commit/f1d79e107c0dc356230bdf5665b21abc9a5f9fec))
+
 ### [6.0.1](https://github.com/fitglue/web/compare/v6.0.0...v6.0.1) (2026-01-24)
 
 
