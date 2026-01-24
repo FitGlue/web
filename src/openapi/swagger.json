@@ -604,6 +604,38 @@
           "externalUrlTemplate": {
             "type": "string",
             "description": "Template URL for external activity link (e.g., 'https://strava.com/activities/{id}')"
+          },
+          "requiredTier": {
+            "type": "string",
+            "description": "Required subscription tier to use this plugin (e.g., 'athlete')"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category for UX grouping (e.g., 'wearables', 'stats', 'detection')"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "description": "Ordering within category (lower = first)"
+          },
+          "isPremium": {
+            "type": "boolean",
+            "description": "Display premium badge (Athlete-tier)"
+          },
+          "popularityScore": {
+            "type": "integer",
+            "description": "Score for 'recommended' sorting in wizard"
+          },
+          "iconType": {
+            "type": "string",
+            "description": "Icon type: emoji, svg, png, or jpg"
+          },
+          "iconPath": {
+            "type": "string",
+            "description": "Path to icon asset (e.g., /images/icons/strava.svg)"
+          },
+          "allowMultipleInstances": {
+            "type": "boolean",
+            "description": "When true, this enricher can be added multiple times to a pipeline with different configs"
           }
         },
         "required": [
@@ -1207,6 +1239,48 @@
                     "success": {
                       "type": "boolean"
                     }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/me/counters": {
+      "get": {
+        "summary": "List user counters",
+        "description": "Returns all user-defined counters for dynamic select in Auto Increment enricher",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of counters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Counter key/identifier"
+                      },
+                      "count": {
+                        "type": "integer",
+                        "description": "Current counter value"
+                      }
+                    },
+                    "required": [
+                      "id"
+                    ]
                   }
                 }
               }

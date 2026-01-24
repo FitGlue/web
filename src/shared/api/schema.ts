@@ -601,6 +601,57 @@ export interface paths {
         };
         trace?: never;
     };
+    "/users/me/counters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List user counters
+         * @description Returns all user-defined counters for dynamic select in Auto Increment enricher
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description List of counters */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Counter key/identifier */
+                            id: string;
+                            /** @description Current counter value */
+                            count?: number;
+                        }[];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/me/integrations": {
         parameters: {
             query?: never;
@@ -1164,6 +1215,22 @@ export interface components {
             useCases?: string[];
             /** @description Template URL for external activity link (e.g., 'https://strava.com/activities/{id}') */
             externalUrlTemplate?: string;
+            /** @description Required subscription tier to use this plugin (e.g., 'athlete') */
+            requiredTier?: string;
+            /** @description Category for UX grouping (e.g., 'wearables', 'stats', 'detection') */
+            category?: string;
+            /** @description Ordering within category (lower = first) */
+            sortOrder?: number;
+            /** @description Display premium badge (Athlete-tier) */
+            isPremium?: boolean;
+            /** @description Score for 'recommended' sorting in wizard */
+            popularityScore?: number;
+            /** @description Icon type: emoji, svg, png, or jpg */
+            iconType?: string;
+            /** @description Path to icon asset (e.g., /images/icons/strava.svg) */
+            iconPath?: string;
+            /** @description When true, this enricher can be added multiple times to a pipeline with different configs */
+            allowMultipleInstances?: boolean;
         };
         IntegrationManifest: {
             id: string;

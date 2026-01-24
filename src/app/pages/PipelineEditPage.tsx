@@ -155,6 +155,11 @@ const PipelineEditPage: React.FC = () => {
 
     const toggleEnricher = (manifest: PluginManifest) => {
         setSelectedEnrichers(prev => {
+            // Multi-instance boosters always add a new instance
+            if (manifest.allowMultipleInstances) {
+                return [...prev, { manifest, config: {} }];
+            }
+            // Standard toggle behavior for single-instance boosters
             const exists = prev.find(e => e.manifest.id === manifest.id);
             if (exists) {
                 return prev.filter(e => e.manifest.id !== manifest.id);
