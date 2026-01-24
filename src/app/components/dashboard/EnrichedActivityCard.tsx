@@ -2,7 +2,7 @@ import React from 'react';
 import { SynchronizedActivity, ExecutionRecord } from '../../services/ActivitiesService';
 import { EnricherBadge } from './EnricherBadge';
 import { Card } from '../ui/Card';
-import { formatActivityType, formatDestination } from '../../../types/pb/enum-formatters';
+import { formatActivityType, formatDestination, formatActivitySource } from '../../../types/pb/enum-formatters';
 import { usePipelines } from '../../hooks/usePipelines';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 import { PluginManifest } from '../../types/plugin';
@@ -128,7 +128,8 @@ const getPlatformInfo = (
     const allPlugins = [...sources, ...destinations];
     const plugin = allPlugins.find(p => p.id === key);
 
-    const name = plugin?.name || formatDestination(platform);
+    // Use registry name if available, otherwise try source formatter, then destination formatter
+    const name = plugin?.name || formatActivitySource(platform) || formatDestination(platform);
     const icon = plugin?.icon || '📱';
 
     return { name, icon };
