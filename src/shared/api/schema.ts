@@ -1033,6 +1033,8 @@ export interface components {
             autoDeadline?: string;
             /** @description ID of the activity that was already created (for resume mode) */
             linkedActivityId?: string;
+            /** @description ID of the pipeline that contains the enricher which created this pending input */
+            pipelineId?: string;
         };
         InputResolutionRequest: {
             activityId: string;

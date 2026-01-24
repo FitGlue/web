@@ -2,31 +2,45 @@ import { useState } from 'react';
 import { useInputs } from '../hooks/useInputs';
 import { InputsService, PendingInput } from '../services/InputsService';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { usePipelines } from '../hooks/usePipelines';
 import { PageLayout } from '../components/layout/PageLayout';
 import { EmptyState } from '../components/EmptyState';
 import { DataList } from '../components/data/DataList';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Text } from '../components/ui/Text';
+import { PipelineConfig } from '../state/pipelinesState';
 
-// Parse activity ID (e.g., "FITBIT:217758352929208470") into friendly display
-const parseActivityId = (
-    activityId: string,
-    integrations: Array<{ id: string; name: string; icon?: string }>
-): { source: string; icon: string; timestamp: string; originalId: string } => {
-    const [sourcePart, idPart] = activityId.split(':');
-    const source = sourcePart?.toLowerCase() || 'unknown';
+interface ParsedInputInfo {
+  sourceName: string;
+  sourceIcon: string;
+  pipelineName: string;
+  timestamp: string;
+}
 
-    // Get source icon from registry
-    const sourceInfo = integrations.find((ri) => ri.id === source);
-    const icon = sourceInfo?.icon || '📥';
-    const sourceName = sourceInfo?.name || source.charAt(0).toUpperCase() + source.slice(1);
+// Derive source and pipeline info from the pending input and pipeline lookup
+const getInputDisplayInfo = (
+    input: PendingInput,
+    pipelines: PipelineConfig[],
+    sources: Array<{ id: string; name: string; icon?: string }>
+): ParsedInputInfo => {
+    // Find the pipeline for this input
+    const pipeline = input.pipelineId
+        ? pipelines.find(p => p.id === input.pipelineId)
+        : undefined;
 
-    // Try to parse the ID as a timestamp (if numeric)
-    let timestamp = 'Activity';
-    if (idPart && /^\d+$/.test(idPart)) {
-        const date = new Date(parseInt(idPart));
-        if (!isNaN(date.getTime()) && date.getFullYear() > 2020) {
+    // Get source info from pipeline's source field
+    const sourceId = pipeline?.source?.toLowerCase() || 'unknown';
+    const sourceInfo = sources.find(s => s.id === sourceId);
+    const sourceName = sourceInfo?.name || sourceId.charAt(0).toUpperCase() + sourceId.slice(1);
+    const sourceIcon = sourceInfo?.icon || '📥';
+    const pipelineName = pipeline?.name || pipeline?.id || '';
+
+    // Try to parse timestamp from createdAt
+    let timestamp = '';
+    if (input.createdAt) {
+        const date = new Date(input.createdAt);
+        if (!isNaN(date.getTime())) {
             timestamp = date.toLocaleString(undefined, {
                 weekday: 'short',
                 month: 'short',
@@ -37,12 +51,17 @@ const parseActivityId = (
         }
     }
 
-    return { source: sourceName, icon, timestamp, originalId: idPart || activityId };
+    return { sourceName, sourceIcon, pipelineName, timestamp };
 };
+
 
 const PendingInputsPage: React.FC = () => {
     const { inputs, loading, refresh, lastUpdated } = useInputs();
-    const { integrations: registryIntegrations } = usePluginRegistry();
+    const { sources } = usePluginRegistry();
+    const { pipelines, fetchIfNeeded } = usePipelines();
+
+    // Ensure pipelines are loaded for source lookup
+    fetchIfNeeded();
 
     // Local state to track form values for each pending input
     const [formValues, setFormValues] = useState<Record<string, Record<string, string>>>({});
@@ -204,7 +223,7 @@ const PendingInputsPage: React.FC = () => {
                 className="pending-inputs-grid"
                 keyExtractor={(input) => input.id}
                 renderItem={(input) => {
-                    const parsed = parseActivityId(input.activityId, registryIntegrations);
+                    const displayInfo = getInputDisplayInfo(input, pipelines, sources);
                     const isAutoPopulated = input.autoPopulated === true;
                     const autoDeadline = input.autoDeadline ? new Date(input.autoDeadline) : null;
                     const enricherName = input.enricherProviderId || 'Unknown Enricher';
@@ -227,10 +246,12 @@ const PendingInputsPage: React.FC = () => {
                             {/* Enhanced Header */}
                             <div className="pending-input-card__header">
                                 <div className="pending-input-card__source">
-                                    <span className="pending-input-card__source-icon">{parsed.icon}</span>
+                                    <span className="pending-input-card__source-icon">{displayInfo.sourceIcon}</span>
                                     <div className="pending-input-card__source-info">
-                                        <span className="pending-input-card__source-name">{parsed.source}</span>
-                                        <span className="pending-input-card__timestamp">{parsed.timestamp}</span>
+                                        <span className="pending-input-card__source-name">{displayInfo.sourceName}</span>
+                                        {displayInfo.pipelineName && (
+                                            <span className="pending-input-card__pipeline-name">via {displayInfo.pipelineName}</span>
+                                        )}
                                     </div>
                                 </div>
                                 {isAutoPopulated ? (

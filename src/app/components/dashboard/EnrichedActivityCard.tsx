@@ -2,7 +2,10 @@ import React from 'react';
 import { SynchronizedActivity, ExecutionRecord } from '../../services/ActivitiesService';
 import { EnricherBadge } from './EnricherBadge';
 import { Card } from '../ui/Card';
-import { formatActivityType, formatActivitySource, formatDestination } from '../../../types/pb/enum-formatters';
+import { formatActivityType, formatDestination } from '../../../types/pb/enum-formatters';
+import { usePipelines } from '../../hooks/usePipelines';
+import { usePluginRegistry } from '../../hooks/usePluginRegistry';
+import { PluginManifest } from '../../types/plugin';
 
 interface EnrichedActivityCardProps {
     activity: SynchronizedActivity;
@@ -93,14 +96,42 @@ const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): stri
 };
 
 /**
- * Format source name for display
+ * Extract destination upload statuses from pipeline execution trace.
+ * Looks for services ending in '-uploader' (e.g., 'strava-uploader') and extracts their status.
+ * Returns a map of destination name to status ('SUCCESS', 'FAILED', etc.)
  */
-const formatSourceName = (source: string): string => {
-    return formatActivitySource(source);
+const extractDestinationStatuses = (pipelineExecution?: ExecutionRecord[]): Record<string, string> => {
+    if (!pipelineExecution) return {};
+
+    const statuses: Record<string, string> = {};
+
+    for (const record of pipelineExecution) {
+        if (record.service?.endsWith('-uploader')) {
+            const destinationId = record.service.replace('-uploader', '');
+            statuses[destinationId] = record.status?.toUpperCase() || 'UNKNOWN';
+        }
+    }
+
+    return statuses;
 };
 
-const formatDestinationName = (dest: string): string => {
-    return formatDestination(dest);
+/**
+ * Get platform name and icon from registry.
+ * Searches sources and destinations for matching plugin.
+ */
+const getPlatformInfo = (
+    platform: string,
+    sources: PluginManifest[],
+    destinations: PluginManifest[]
+): { name: string; icon: string } => {
+    const key = platform.toLowerCase();
+    const allPlugins = [...sources, ...destinations];
+    const plugin = allPlugins.find(p => p.id === key);
+
+    const name = plugin?.name || formatDestination(platform);
+    const icon = plugin?.icon || '📱';
+
+    return { name, icon };
 };
 
 /**
@@ -111,9 +142,12 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     activity,
     onClick,
 }) => {
+    const { pipelines } = usePipelines();
+    const { sources, destinations: registryDestinations } = usePluginRegistry();
     const providerExecutions = extractEnricherExecutions(activity.pipelineExecution);
     const enrichedTitle = getEnrichedTitle(activity.pipelineExecution);
     const destinationActivityType = getDestinationActivityType(activity.pipelineExecution);
+    const destinationStatuses = extractDestinationStatuses(activity.pipelineExecution);
     const hasDetailedData = activity.pipelineExecution && activity.pipelineExecution.length > 0;
 
     const activityTitle = enrichedTitle || activity.title || 'Untitled Activity';
@@ -124,16 +158,22 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
         ? formatActivityType(destinationActivityType)
         : formatActivityType(activity.type);
     const syncDate = activity.syncedAt
-        ? new Date(activity.syncedAt).toLocaleDateString(undefined, {
+        ? new Date(activity.syncedAt).toLocaleString(undefined, {
               month: 'short',
               day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
           })
         : null;
 
-    // Source and destination info
-    const sourceName = formatSourceName(activity.source || 'unknown');
+    // Source and destination info with registry icons
+    const sourceInfo = getPlatformInfo(activity.source || 'unknown', sources, registryDestinations);
     const destinations = activity.destinations ? Object.keys(activity.destinations) : [];
-    const destinationNames = destinations.map(d => formatDestinationName(d));
+
+    // Look up pipeline name by ID
+    const pipelineName = activity.pipelineId
+        ? pipelines.find(p => p.id === activity.pipelineId)?.name
+        : undefined;
 
     return (
         <Card
@@ -148,6 +188,9 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
                         {activityTitle}
                         {titleWasEnhanced && <span className="enriched-activity-card__enhanced-indicator">✨</span>}
                     </h4>
+                    {pipelineName && (
+                        <span className="enriched-activity-card__pipeline-name">via {pipelineName}</span>
+                    )}
                 </div>
                 {syncDate && <span className="enriched-activity-card__date">{syncDate}</span>}
             </div>
@@ -156,8 +199,8 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
             <div className="enriched-activity-card__flow">
                 {/* Source */}
                 <div className="enriched-activity-card__flow-node enriched-activity-card__flow-node--source">
-                    <span className="enriched-activity-card__flow-icon">📥</span>
-                    <span className="enriched-activity-card__flow-label">{sourceName}</span>
+                    <span className="enriched-activity-card__flow-icon">{sourceInfo.icon}</span>
+                    <span className="enriched-activity-card__flow-label">{sourceInfo.name}</span>
                 </div>
 
                 <span className="enriched-activity-card__flow-arrow">→</span>
@@ -187,15 +230,32 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
 
                 <span className="enriched-activity-card__flow-arrow">→</span>
 
-                {/* Destination */}
+                {/* Destinations with status and icons */}
                 <div className="enriched-activity-card__flow-node enriched-activity-card__flow-node--destination">
-                    <span className="enriched-activity-card__flow-icon">🚀</span>
-                    {destinationNames.length > 0 ? (
-                        <span className="enriched-activity-card__flow-label">{destinationNames.join(', ')}</span>
+                    {destinations.length > 0 ? (
+                        <div className="enriched-activity-card__destinations">
+                            {destinations.map(dest => {
+                                const status = destinationStatuses[dest];
+                                const isFailed = status === 'FAILED';
+                                const destInfo = getPlatformInfo(dest, sources, registryDestinations);
+                                return (
+                                    <span
+                                        key={dest}
+                                        className={`enriched-activity-card__destination ${isFailed ? 'enriched-activity-card__destination--failed' : ''}`}
+                                    >
+                                        <span className="enriched-activity-card__destination-icon">{destInfo.icon}</span>
+                                        {destInfo.name}
+                                    </span>
+                                );
+                            })}
+                        </div>
                     ) : (
-                        <span className="enriched-activity-card__flow-label enriched-activity-card__flow-label--pending">
-                            Pending upload
-                        </span>
+                        <>
+                            <span className="enriched-activity-card__flow-icon">🚀</span>
+                            <span className="enriched-activity-card__flow-label enriched-activity-card__flow-label--pending">
+                                Pending upload
+                            </span>
+                        </>
                     )}
                 </div>
             </div>

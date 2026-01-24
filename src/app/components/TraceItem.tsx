@@ -158,7 +158,28 @@ const EnricherRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution 
                             const metadata = (providerExec.Metadata as Record<string, unknown>) || {};
                             const metadataEntries = Object.entries(metadata);
                             // Status is a STRING: "SUCCESS", "FAILED", "SKIPPED"
-                            const status = (typeof providerExec.Status === 'string' ? providerExec.Status.toUpperCase() : 'UNKNOWN');
+                            // But check metadata for enrichers that report their internal status
+                            // Some use generic "status" key, others use prefixed like "cadence_summary_status"
+                            let status = (typeof providerExec.Status === 'string' ? providerExec.Status.toUpperCase() : 'UNKNOWN');
+
+                            // Find status from metadata - check for any key that is exactly "status" or ends with "_status"
+                            let metadataStatus: string | null = null;
+                            for (const [key, val] of Object.entries(metadata)) {
+                                if ((key === 'status' || key.endsWith('_status')) && typeof val === 'string') {
+                                    metadataStatus = val.toLowerCase();
+                                    break;
+                                }
+                            }
+
+                            if (status === 'SUCCESS' && metadataStatus) {
+                                // Override execution status with metadata status if more specific
+                                if (metadataStatus === 'error') {
+                                    status = 'ERROR';
+                                } else if (metadataStatus === 'skipped') {
+                                    status = 'SKIPPED';
+                                }
+                                // 'success' in metadata means truly successful, no override needed
+                            }
                             const providerName = (typeof providerExec.ProviderName === 'string' ? providerExec.ProviderName : `Provider ${idx}`);
 
                             return (

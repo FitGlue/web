@@ -66,6 +66,10 @@
           "linkedActivityId": {
             "type": "string",
             "description": "ID of the activity that was already created (for resume mode)"
+          },
+          "pipelineId": {
+            "type": "string",
+            "description": "ID of the pipeline that contains the enricher which created this pending input"
           }
         },
         "required": [

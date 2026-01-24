@@ -4994,6 +4994,47 @@ h3 {
     flex-shrink: 0;
 }
 
+.enriched-activity-card__pipeline-name {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Destination Pills with Status */
+.enriched-activity-card__destinations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+}
+
+.enriched-activity-card__destination {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(6, 255, 165, 0.15);
+    border: 1px solid rgba(6, 255, 165, 0.3);
+    color: var(--color-text);
+    text-transform: capitalize;
+}
+
+.enriched-activity-card__destination--failed {
+    background: rgba(255, 69, 58, 0.15);
+    border-color: rgba(255, 69, 58, 0.4);
+    color: #FF453A;
+}
+
+.enriched-activity-card__destination-icon {
+    font-size: 0.85rem;
+    margin-right: 0.25rem;
+}
+
 /* Flow Visualization: Source → Boosters → Destination */
 .enriched-activity-card__flow {
     display: flex;
