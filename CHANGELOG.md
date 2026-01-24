@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.1](https://github.com/fitglue/web/compare/v6.0.0...v6.0.1) (2026-01-24)
+
+
+### Bug Fixes
+
+* source formatting on enriched activity card ([5386904](https://github.com/fitglue/web/commit/5386904ab035f722be2b9b1456341e2afdc5c0aa))
+
 ## [6.0.0](https://github.com/fitglue/web/compare/v5.3.0...v6.0.0) (2026-01-24)
 
 
