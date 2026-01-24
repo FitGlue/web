@@ -57,7 +57,7 @@ const getInputDisplayInfo = (
 
 const PendingInputsPage: React.FC = () => {
     const { inputs, loading, refresh, lastUpdated } = useInputs();
-    const { sources } = usePluginRegistry();
+    const { sources, enrichers } = usePluginRegistry();
     const { pipelines, fetchIfNeeded } = usePipelines();
 
     // Ensure pipelines are loaded for source lookup
@@ -226,7 +226,10 @@ const PendingInputsPage: React.FC = () => {
                     const displayInfo = getInputDisplayInfo(input, pipelines, sources);
                     const isAutoPopulated = input.autoPopulated === true;
                     const autoDeadline = input.autoDeadline ? new Date(input.autoDeadline) : null;
-                    const enricherName = input.enricherProviderId || 'Unknown Enricher';
+                    // Lookup enricher name from registry
+                    const enricherId = input.enricherProviderId || '';
+                    const enricherInfo = enrichers.find(e => e.id === enricherId.toLowerCase());
+                    const enricherName = enricherInfo?.name || (enricherId ? enricherId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'Unknown Enricher');
 
                     // Calculate time remaining (if auto-populated)
                     const getTimeRemaining = () => {

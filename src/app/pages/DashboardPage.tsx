@@ -123,32 +123,36 @@ const DashboardPage: React.FC = () => {
         }
     }, [isLoading, allOnboardingComplete, onboardingComplete]);
 
-    // Parse activity ID (e.g., "FITBIT:217758352929208470") into friendly display
-    const parseActivityId = (activityId: string): { source: string; icon: string; timestamp: string } => {
-        const [sourcePart, idPart] = activityId.split(':');
-        const source = sourcePart?.toLowerCase() || 'unknown';
+    // Helper to format snake_case field names to Title Case
+    const formatFieldLabel = (field: string): string => {
+        return field
+            .split('_')
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(' ');
+    };
 
-        // Get source icon from registry
-        const sourceInfo = registryIntegrations.find(ri => ri.id === source);
-        const icon = sourceInfo?.icon || '📥';
-        const sourceName = sourceInfo?.name || source.charAt(0).toUpperCase() + source.slice(1);
+    // Get source info for a pending input by looking up from pipeline
+    const getInputSourceInfo = (input: typeof inputs[0]): { source: string; icon: string; isAuto: boolean } => {
+        // Find the pipeline for this input
+        const pipeline = input.pipelineId
+            ? pipelines.find(p => p.id === input.pipelineId)
+            : undefined;
 
-        // Try to parse the ID as a timestamp (if numeric)
-        let timestamp = 'Activity';
-        if (idPart && /^\d+$/.test(idPart)) {
-            // Fitbit IDs include timestamp - convert from Fitbit's format
-            const date = new Date(parseInt(idPart));
-            if (!isNaN(date.getTime()) && date.getFullYear() > 2020) {
-                timestamp = date.toLocaleString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: '2-digit',
-                });
-            }
+        // Get source from pipeline or fallback to parsing activity ID
+        let sourceId = pipeline?.source?.toLowerCase() || '';
+        if (!sourceId) {
+            // Fallback: try to extract from activity ID (e.g., "FITBIT:12345")
+            const [sourcePart] = (input.activityId || '').split(':');
+            sourceId = sourcePart?.toLowerCase().replace('source_', '') || 'unknown';
         }
+        // Remove source_ prefix if present
+        sourceId = sourceId.replace('source_', '');
 
-        return { source: sourceName, icon, timestamp };
+        const sourceInfo = sources.find(s => s.id === sourceId);
+        const icon = sourceInfo?.icon || '📥';
+        const sourceName = sourceInfo?.name || formatFieldLabel(sourceId);
+
+        return { source: sourceName, icon, isAuto: input.autoPopulated === true };
     };
 
 
@@ -328,16 +332,17 @@ const DashboardPage: React.FC = () => {
                         <>
                             <div className="pending-list">
                                 {inputs.slice(0, 3).map(input => {
-                                    const parsed = parseActivityId(input.activityId);
+                                    const sourceInfo = getInputSourceInfo(input);
+                                    const formattedFields = input.requiredFields?.map(formatFieldLabel).join(', ') || 'input';
                                     return (
-                                        <div key={input.id} className="pending-item" onClick={() => navigate('/inputs')}>
-                                            <span className="pending-icon">{parsed.icon}</span>
+                                        <div key={input.id} className={`pending-item ${sourceInfo.isAuto ? 'pending-item--auto' : ''}`} onClick={() => navigate('/inputs')}>
+                                            <span className="pending-icon">{sourceInfo.icon}</span>
                                             <div className="pending-info">
                                                 <span className="pending-activity">
-                                                    {parsed.source} • {parsed.timestamp}
+                                                    {sourceInfo.source}{sourceInfo.isAuto && <span className="auto-tag"> • ⏳ Awaiting</span>}
                                                 </span>
                                                 <span className="pending-fields">
-                                                    Needs: {input.requiredFields?.join(', ') || 'input'}
+                                                    {sourceInfo.isAuto ? 'Waiting for results...' : `Needs: ${formattedFields}`}
                                                 </span>
                                             </div>
                                             <span className="pending-arrow">→</span>

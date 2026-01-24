@@ -4006,6 +4006,8 @@ h3 {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
     margin-bottom: 1.25rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -4039,6 +4041,12 @@ h3 {
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--color-text);
+}
+
+.pending-input-card__pipeline-name {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-style: italic;
 }
 
 .pending-input-card__timestamp {
@@ -4225,6 +4233,22 @@ h3 {
 .pending-item:hover .pending-arrow {
     opacity: 1;
     transform: translateX(3px);
+}
+
+/* Auto-populated pending items on dashboard - different styling */
+.pending-item--auto {
+    background: linear-gradient(145deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.pending-item--auto:hover {
+    background: linear-gradient(145deg, rgba(59, 130, 246, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+    border-color: rgba(59, 130, 246, 0.25);
+}
+
+.auto-tag {
+    color: #60A5FA;
+    font-weight: 500;
 }
 
 /* ========================================
