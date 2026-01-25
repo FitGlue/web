@@ -47,24 +47,6 @@ export const GalleryOfBoosts: React.FC<GalleryOfBoostsProps> = ({
             .slice(0, limit);
     }, [activities, limit]);
 
-    // Calculate aggregate stats based on pipeline-processed activities
-    const stats = useMemo(() => {
-        const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-        const thisMonthActivities = activities.filter(a => {
-            const syncDate = a.syncedAt ? new Date(a.syncedAt) : null;
-            return syncDate && syncDate >= startOfMonth;
-        });
-
-        const processedThisMonth = thisMonthActivities.filter(wasPipelineProcessed);
-
-        return {
-            activitiesProcessed: processedThisMonth.length,
-            totalActivities: thisMonthActivities.length,
-        };
-    }, [activities]);
-
     // Show loading skeleton while fetching
     if (loading && enrichedActivities.length === 0) {
         return (
@@ -117,20 +99,6 @@ export const GalleryOfBoosts: React.FC<GalleryOfBoostsProps> = ({
                     </p>
                 </div>
                 <Link to="/activities" className="card-link">View All →</Link>
-            </div>
-
-            {/* Aggregate Stats */}
-            <div className="gallery-of-boosts__stats">
-                <div className="gallery-of-boosts__stat">
-                    <span className="gallery-of-boosts__stat-value">{stats.activitiesProcessed}</span>
-                    <span className="gallery-of-boosts__stat-label">Activities Boosted</span>
-                    <span className="gallery-of-boosts__stat-period">This Month</span>
-                </div>
-                <div className="gallery-of-boosts__stat">
-                    <span className="gallery-of-boosts__stat-value">{enrichedActivities.length}</span>
-                    <span className="gallery-of-boosts__stat-label">Recent Boosts</span>
-                    <span className="gallery-of-boosts__stat-period">Shown Below</span>
-                </div>
             </div>
 
             {/* Activity Cards Grid */}

@@ -1,0 +1,27 @@
+/* FlowArrow component styles */
+.flow-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  color: var(--color-text-secondary, #9ca3af);
+}
+
+.flow-arrow__icon {
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+.flow-arrow--small .flow-arrow__icon {
+  font-size: 0.875rem;
+}
+
+.flow-arrow__label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.flow-arrow--down {
+  flex-direction: column;
+}

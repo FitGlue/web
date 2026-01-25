@@ -2,6 +2,7 @@ import React from 'react';
 import { SynchronizedActivity, ExecutionRecord } from '../../services/ActivitiesService';
 import { EnricherBadge } from './EnricherBadge';
 import { Card } from '../ui/Card';
+import { Pill } from '../ui/Pill';
 import { formatActivityType, formatDestination, formatActivitySource } from '../../../types/pb/enum-formatters';
 import { usePipelines } from '../../hooks/usePipelines';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
@@ -184,7 +185,7 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
             {/* Main Activity Header */}
             <div className="enriched-activity-card__header">
                 <div className="enriched-activity-card__title-section">
-                    <span className="enriched-activity-card__type-badge">{activityType}</span>
+                    <Pill variant="gradient">{activityType}</Pill>
                     <h4 className="enriched-activity-card__title">
                         {activityTitle}
                         {titleWasEnhanced && <span className="enriched-activity-card__enhanced-indicator">✨</span>}

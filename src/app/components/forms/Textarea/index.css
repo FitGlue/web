@@ -1,0 +1,72 @@
+/* Textarea Component Styles */
+
+.form-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px 8px 0 0;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--color-text);
+  font-size: 15px;
+  font-family: inherit;
+  transition: all 0.25s ease;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-textarea:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom-color: rgba(255, 255, 255, 0.25);
+}
+
+.form-textarea:focus {
+  outline: none;
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid;
+  border-image: linear-gradient(90deg, var(--color-primary), var(--color-secondary)) 1;
+}
+
+.form-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.form-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  resize: none;
+}
+
+/* Size Variants */
+.form-textarea--small {
+  padding: 10px 12px;
+  font-size: 13px;
+  min-height: 60px;
+}
+
+.form-textarea--large {
+  padding: 18px 20px;
+  font-size: 17px;
+  min-height: 120px;
+}
+
+/* Error State */
+.form-textarea--error {
+  border-bottom-color: var(--color-danger);
+}
+
+.form-textarea--error:focus {
+  border-image: none;
+  border-bottom-color: var(--color-danger);
+}
+
+/* Full Width */
+.form-textarea--full-width {
+  width: 100%;
+}
+
+/* Auto Resize */
+.form-textarea--auto-resize {
+  resize: none;
+  overflow: hidden;
+}

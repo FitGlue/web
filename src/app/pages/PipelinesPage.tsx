@@ -6,8 +6,12 @@ import { Button } from '../components/ui/Button';
 import { useApi } from '../hooks/useApi';
 import { usePipelines } from '../hooks/usePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { usePluginLookup } from '../hooks/usePluginLookup';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { CardSkeleton } from '../components/ui/CardSkeleton';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
+import { BoosterPill } from '../components/ui/BoosterPill';
+import { IdBadge } from '../components/ui/IdBadge';
 import { ImportPipelineModal } from '../components/ImportPipelineModal';
 import '../components/ui/CardSkeleton.css';
 
@@ -42,50 +46,9 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
     deleting,
     toggling,
 }) => {
-    // Use plugin registry directly instead of prop drilling
-    const { sources, enrichers, destinations } = usePluginRegistry();
+    // Use plugin lookup hook for consistent icon/name resolution
+    const { getSourceIcon, getSourceName, getEnricherIcon, getEnricherName, getDestinationIcon, getDestinationName } = usePluginLookup();
 
-    const getSourceIcon = (source: string): string => {
-        const normalized = String(source).toLowerCase().replace('source_', '');
-        const found = sources.find(s => s.id === normalized);
-        return found?.icon || '📥';
-    };
-
-    const getSourceName = (source: string): string => {
-        const normalized = String(source).toLowerCase().replace('source_', '');
-        const found = sources.find(s => s.id === normalized);
-        return found?.name || normalized.charAt(0).toUpperCase() + normalized.slice(1);
-    };
-
-    const getEnricherIcon = (providerType: number): string => {
-        const found = enrichers.find(e => Number(e.enricherProviderType) === Number(providerType));
-        return found?.icon || '✨';
-    };
-
-    const getEnricherName = (providerType: number): string => {
-        const found = enrichers.find(e => Number(e.enricherProviderType) === Number(providerType));
-        return found?.name || `Enricher ${providerType}`;
-    };
-
-    const getDestinationIcon = (dest: string | number): string => {
-        const normalized = String(dest).toLowerCase();
-        const found = destinations.find(d =>
-            d.id === normalized ||
-            d.destinationType === Number(dest)
-        );
-        return found?.icon || '📤';
-    };
-
-    const getDestinationName = (dest: string | number): string => {
-        const normalized = String(dest).toLowerCase();
-        const found = destinations.find(d =>
-            d.id === normalized ||
-            d.destinationType === Number(dest)
-        );
-        return found?.name || (typeof dest === 'string'
-            ? dest.charAt(0).toUpperCase() + dest.slice(1).toLowerCase()
-            : `Destination ${dest}`);
-    };
 
     return (
         <div className={`pipeline-card-premium ${pipeline.disabled ? 'pipeline-disabled' : ''}`}>
@@ -115,18 +78,13 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
                         <div className="flow-boosters">
                             <div className="boosters-container">
                             {(pipeline.enrichers ?? []).map((e, i) => (
-                                    <div
+                                    <BoosterPill
                                         key={i}
-                                        className="booster-pill"
-                                        title={getEnricherName(e.providerType)}
-                                    >
-                                        <span className="booster-order">{i + 1}</span>
-                                        <span className="booster-icon">{getEnricherIcon(e.providerType)}</span>
-                                        <span className="booster-name">{getEnricherName(e.providerType)}</span>
-                                        {e.typedConfig && Object.keys(e.typedConfig).length > 0 && (
-                                            <span className="booster-configured">✓</span>
-                                        )}
-                                    </div>
+                                        order={i + 1}
+                                        icon={getEnricherIcon(e.providerType)}
+                                        name={getEnricherName(e.providerType)}
+                                        isConfigured={!!(e.typedConfig && Object.keys(e.typedConfig).length > 0)}
+                                    />
                                 ))}
                             </div>
                         </div>
@@ -154,7 +112,7 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
             {/* Card Footer */}
             <div className="pipeline-card-footer">
                 <div className="pipeline-meta">
-                    <code className="pipeline-id-badge">{pipeline.id.replace('pipe_', '').slice(0, 8)}...</code>
+                    <IdBadge id={pipeline.id} stripPrefix="pipe_" showChars={8} copyable />
                     <span className="pipeline-booster-count">
                         {(pipeline.enrichers?.length ?? 0)} Booster{(pipeline.enrichers?.length ?? 0) !== 1 ? 's' : ''}
                     </span>
@@ -200,17 +158,17 @@ const PipelinesPage: React.FC = () => {
     const [deleting, setDeleting] = useState<string | null>(null);
     const [toggling, setToggling] = useState<string | null>(null);
     const [showImportModal, setShowImportModal] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
     useEffect(() => {
         fetchIfNeeded();
         fetchIntegrations();
     }, [fetchIfNeeded, fetchIntegrations]);
 
-    const handleDelete = async (pipelineId: string) => {
-        if (!window.confirm('Are you sure you want to delete this pipeline?')) {
-            return;
-        }
-
+    const handleDeleteConfirm = async () => {
+        if (!deleteConfirm) return;
+        const pipelineId = deleteConfirm;
+        setDeleteConfirm(null);
         setDeleting(pipelineId);
         try {
             await api.delete(`/users/me/pipelines/${pipelineId}`);
@@ -282,7 +240,7 @@ const PipelinesPage: React.FC = () => {
                             key={pipeline.id}
                             pipeline={pipeline}
                             onEdit={() => navigate(`/settings/pipelines/${pipeline.id}/edit`)}
-                            onDelete={() => handleDelete(pipeline.id)}
+                            onDelete={() => setDeleteConfirm(pipeline.id)}
                             onToggleDisabled={(disabled) => handleToggleDisabled(pipeline.id, disabled)}
                             deleting={deleting === pipeline.id}
                             toggling={toggling === pipeline.id}
@@ -297,6 +255,17 @@ const PipelinesPage: React.FC = () => {
                     onSuccess={() => refreshPipelines()}
                 />
             )}
+
+            <ConfirmDialog
+                isOpen={!!deleteConfirm}
+                title="Delete Pipeline"
+                message="Are you sure you want to delete this pipeline? This action cannot be undone."
+                confirmLabel="Delete"
+                isDestructive={true}
+                onConfirm={handleDeleteConfirm}
+                onCancel={() => setDeleteConfirm(null)}
+                isLoading={!!deleting}
+            />
         </PageLayout>
     );
 };

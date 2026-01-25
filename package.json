@@ -1,6 +1,6 @@
 {
   "name": "fitglue-web",
-  "version": "6.0.2",
+  "version": "6.0.0",
   "description": "FitGlue web frontend and Firebase Hosting configuration",
   "type": "module",
   "scripts": {
@@ -20,7 +20,9 @@
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "gen-api": "npx openapi-typescript src/openapi/swagger.json -o src/shared/api/schema.ts",
-    "release": "standard-version --releaseCommitMessageFormat \"chore(release): {{currentTag}} [skip ci]\""
+    "release": "standard-version --releaseCommitMessageFormat \"chore(release): {{currentTag}} [skip ci]\"",
+    "generate-changelog": "npx tsx scripts/generate-public-changelog.ts",
+    "generate-changelog:ai": "npx tsx scripts/generate-public-changelog.ts --ai-polish"
   },
   "repository": {
     "type": "git",

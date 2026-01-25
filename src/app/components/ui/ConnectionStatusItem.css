@@ -1,0 +1,49 @@
+/* ConnectionStatusItem styles */
+.connection-status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: opacity 0.15s ease;
+}
+
+.connection-status-item:last-child {
+  border-bottom: none;
+}
+
+.connection-status-item[role="button"] {
+  cursor: pointer;
+}
+
+.connection-status-item[role="button"]:hover {
+  opacity: 0.7;
+}
+
+.connection-status-item__icon {
+  flex-shrink: 0;
+}
+
+.connection-status-item__name {
+  flex: 1;
+  font-size: 0.9rem;
+  color: var(--color-text, #1a1a2e);
+}
+
+.connection-status-item__status {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.connection-status-item__status.active {
+  color: #10b981;
+}
+
+.connection-status-item__status.inactive {
+  color: var(--color-text-secondary, #9ca3af);
+}
+
+/* Connected state styling */
+.connection-status-item--connected {
+  opacity: 1;
+}

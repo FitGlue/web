@@ -10,32 +10,18 @@ import { userAtom } from '../state/authState';
 import { useNerdMode } from '../state/NerdModeContext';
 import { initFirebase } from '../../shared/firebase';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST, HOBBYIST_TIER_LIMITS } from '../utils/tier';
+import { Input } from '../components/forms';
+import './AccountSettingsPage.css';
 
 // Profile Avatar Component
-const ProfileAvatar: React.FC<{ name?: string; email?: string; size?: number }> = ({
+const ProfileAvatar: React.FC<{ name?: string; email?: string }> = ({
     name,
     email,
-    size = 80
 }) => {
     const initial = name?.[0]?.toUpperCase() || email?.[0]?.toUpperCase() || '?';
 
     return (
-        <div
-            className="profile-avatar"
-            style={{
-                width: size,
-                height: size,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: size * 0.4,
-                fontWeight: 'bold',
-                color: 'white',
-                flexShrink: 0
-            }}
-        >
+        <div className="profile-avatar">
             {initial}
         </div>
     );
@@ -161,33 +147,21 @@ const AccountSettingsPage: React.FC = () => {
                 {/* Profile Section */}
                 <Card className="account-info-card">
                     <h3>Profile</h3>
-                    <div className="profile-section" style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+                    <div className="profile-section">
                         <ProfileAvatar
                             name={firebaseUser?.displayName || undefined}
                             email={firebaseUser?.email || undefined}
                         />
-                        <div className="profile-details" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        <div className="profile-details">
                             {/* Display Name */}
                             <div className="account-field">
                                 <span className="field-label">Name</span>
                                 {isEditingName ? (
-                                    <div className="name-edit-row" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flex: 1 }}>
-                                        <input
+                                    <div className="name-edit-row">
+                                        <Input
                                             type="text"
                                             value={editedName}
                                             onChange={(e) => setEditedName(e.target.value)}
-                                            className="name-input"
-                                            style={{
-                                                flex: 1,
-                                                minWidth: '150px',
-                                                padding: '0.5rem 0.75rem',
-                                                borderRadius: '6px',
-                                                border: '1px solid rgba(255,255,255,0.2)',
-                                                background: 'rgba(255,255,255,0.08)',
-                                                color: 'inherit',
-                                                fontSize: '0.95rem',
-                                                outline: 'none'
-                                            }}
                                             autoFocus
                                         />
                                         <Button
@@ -210,9 +184,9 @@ const AccountSettingsPage: React.FC = () => {
                                         </Button>
                                     </div>
                                 ) : (
-                                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                    <div className="field-value-row">
                                         <span className="field-value">
-                                            {firebaseUser?.displayName || <em style={{ color: 'var(--color-text-muted)' }}>Not set</em>}
+                                            {firebaseUser?.displayName || <em className="text-muted">Not set</em>}
                                         </span>
                                         <Button variant="text" size="small" onClick={() => setIsEditingName(true)}>
                                             ✏️
@@ -224,7 +198,7 @@ const AccountSettingsPage: React.FC = () => {
                             {/* Email */}
                             <div className="account-field">
                                 <span className="field-label">Email</span>
-                                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                <div className="field-value-row">
                                     <span className="field-value">{firebaseUser?.email || 'N/A'}</span>
                                     <Button variant="text" size="small" onClick={() => setShowEmailModal(true)}>
                                         Change
@@ -241,15 +215,8 @@ const AccountSettingsPage: React.FC = () => {
                     <div className="account-details">
                         <div className="account-field">
                             <span className="field-label">Plan</span>
-                            <div className="field-value" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <span className={`tier-badge ${effectiveTier}`} style={{
-                                    padding: '2px 8px',
-                                    borderRadius: '4px',
-                                    fontSize: '0.8rem',
-                                    fontWeight: 'bold',
-                                    textTransform: 'uppercase',
-                                    background: effectiveTier === TIER_ATHLETE ? 'var(--color-primary)' : 'rgba(255,255,255,0.1)'
-                                }}>
+                            <div className="plan-row">
+                                <span className={`tier-badge tier-badge--${effectiveTier}`}>
                                     {effectiveTier === TIER_ATHLETE ? 'Athlete' : 'Hobbyist'}
                                 </span>
                                 <Button variant="text" size="small" onClick={() => window.location.href = '/app/settings/upgrade'}>
@@ -257,7 +224,7 @@ const AccountSettingsPage: React.FC = () => {
                                 </Button>
                             </div>
                         </div>
-                        <div className="account-field" style={{ marginTop: '0.5rem' }}>
+                        <div className="account-field account-field--spaced">
                             <span className="field-label">Syncs</span>
                             <span className="field-value">
                                 {profile?.syncCountThisMonth ?? 0} / {maxSyncs} this month
@@ -275,46 +242,16 @@ const AccountSettingsPage: React.FC = () => {
                 {/* Help & Support Section */}
                 <Card className="account-info-card">
                     <h3>Help & Support</h3>
-                    <div className="help-links" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        <a href="/help" className="help-link" style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.75rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                            padding: '0.5rem',
-                            borderRadius: '8px',
-                            background: 'rgba(255,255,255,0.03)',
-                            transition: 'background 0.2s'
-                        }}>
+                    <div className="help-links">
+                        <a href="/help" className="help-link">
                             <span>📚</span>
                             <span>FAQ & Guides</span>
                         </a>
-                        <a href="mailto:support@fitglue.tech" className="help-link" style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.75rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                            padding: '0.5rem',
-                            borderRadius: '8px',
-                            background: 'rgba(255,255,255,0.03)',
-                            transition: 'background 0.2s'
-                        }}>
+                        <a href="mailto:support@fitglue.tech" className="help-link">
                             <span>📧</span>
                             <span>Contact Support</span>
                         </a>
-                        <a href="/feedback" className="help-link" style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.75rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                            padding: '0.5rem',
-                            borderRadius: '8px',
-                            background: 'rgba(255,255,255,0.03)',
-                            transition: 'background 0.2s'
-                        }}>
+                        <a href="/feedback" className="help-link">
                             <span>💡</span>
                             <span>Request a Feature</span>
                         </a>
@@ -328,14 +265,8 @@ const AccountSettingsPage: React.FC = () => {
                         <div className="account-details">
                             <div className="account-field">
                                 <span className="field-label">User ID</span>
-                                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                                    <code className="field-value" style={{
-                                        fontFamily: "'SFMono-Regular', Consolas, monospace",
-                                        fontSize: '0.75rem',
-                                        background: 'rgba(255,255,255,0.1)',
-                                        padding: '4px 8px',
-                                        borderRadius: '4px'
-                                    }}>
+                                <div className="field-value-row">
+                                    <code className="user-id-code">
                                         {firebaseUser?.uid || 'N/A'}
                                     </code>
                                     <Button variant="text" size="small" onClick={handleCopyUserId}>
@@ -343,14 +274,14 @@ const AccountSettingsPage: React.FC = () => {
                                     </Button>
                                 </div>
                             </div>
-                            <div className="account-field" style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                                <span className="field-label" style={{ color: 'var(--color-text-muted)' }}>Data Rights</span>
-                                <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-                                    <p style={{ margin: '0.5rem 0' }}>
+                            <div className="account-field account-field--separator">
+                                <span className="field-label">Data Rights</span>
+                                <div className="data-rights-text">
+                                    <p>
                                         Under GDPR you have the right to access, rectify, and delete your personal data.
                                     </p>
-                                    <p style={{ margin: '0.5rem 0' }}>
-                                        <a href="mailto:privacy@fitglue.tech" style={{ color: 'var(--color-accent)' }}>
+                                    <p>
+                                        <a href="mailto:privacy@fitglue.tech" className="accent-link">
                                             Request data export (Subject Access Request)
                                         </a>
                                     </p>
@@ -369,7 +300,7 @@ const AccountSettingsPage: React.FC = () => {
                         </div>
                         <div className="danger-content">
                             <h4>Delete Account</h4>
-                            <p className="danger-warning" style={{ fontSize: '0.85rem' }}>
+                            <p className="danger-warning">
                                 <strong>Right to Erasure (GDPR Article 17)</strong><br />
                                 This action is <strong>permanent and irreversible</strong>.
                                 Deleting your account will remove:
@@ -411,18 +342,7 @@ const AccountSettingsPage: React.FC = () => {
 
             {/* Email Change Modal */}
             {showEmailModal && (
-                <div className="modal-overlay" style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(0,0,0,0.8)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 1000
-                }} onClick={() => {
+                <div className="modal-overlay" onClick={() => {
                     if (emailChangeStatus !== 'sending') {
                         setShowEmailModal(false);
                         setEmailChangeStatus('idle');
@@ -430,21 +350,14 @@ const AccountSettingsPage: React.FC = () => {
                         setEmailError('');
                     }
                 }}>
-                    <div className="modal-content" style={{
-                        background: 'var(--color-bg)',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        borderRadius: '12px',
-                        padding: '2rem',
-                        maxWidth: '400px',
-                        width: '90%'
-                    }} onClick={(e) => e.stopPropagation()}>
-                        <h3 style={{ marginTop: 0 }}>Change Email Address</h3>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="modal-title">Change Email Address</h3>
 
                         {emailChangeStatus === 'sent' ? (
-                            <div style={{ textAlign: 'center' }}>
-                                <p style={{ fontSize: '3rem', margin: '1rem 0' }}>✉️</p>
+                            <div className="email-sent-success">
+                                <p className="email-sent-icon">✉️</p>
                                 <p>Verification email sent to <strong>{newEmail}</strong></p>
-                                <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
+                                <p className="text-muted text-sm">
                                     Click the link in the email to confirm your new address.
                                 </p>
                                 <Button variant="primary" onClick={() => {
@@ -457,35 +370,26 @@ const AccountSettingsPage: React.FC = () => {
                             </div>
                         ) : (
                             <>
-                                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
+                                <p className="email-current">
                                     Current: <strong>{firebaseUser?.email}</strong>
                                 </p>
-                                <div style={{ marginBottom: '1rem' }}>
-                                    <label htmlFor="new-email" style={{ display: 'block', marginBottom: '0.5rem' }}>
+                                <div className="email-field">
+                                    <label htmlFor="new-email">
                                         New Email Address
                                     </label>
-                                    <input
+                                    <Input
                                         id="new-email"
                                         type="email"
                                         value={newEmail}
                                         onChange={(e) => setNewEmail(e.target.value)}
                                         placeholder="new@email.com"
-                                        style={{
-                                            width: '100%',
-                                            padding: '0.75rem',
-                                            borderRadius: '8px',
-                                            border: '1px solid rgba(255,255,255,0.2)',
-                                            background: 'rgba(255,255,255,0.05)',
-                                            color: 'inherit',
-                                            boxSizing: 'border-box'
-                                        }}
                                         disabled={emailChangeStatus === 'sending'}
                                     />
                                 </div>
                                 {emailError && (
                                     <p className="error-message">{emailError}</p>
                                 )}
-                                <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                <div className="modal-actions">
                                     <Button
                                         variant="text"
                                         onClick={() => {

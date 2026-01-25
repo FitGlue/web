@@ -3094,7 +3094,7 @@ h3 {
 .connections-list {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .connection-item {
@@ -3104,8 +3104,13 @@ h3 {
     padding: 0.5rem 0.75rem;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     opacity: 0.6;
     transition: opacity 0.2s;
+}
+
+.connection-item:last-child {
+    border-bottom: none;
 }
 
 .connection-item.connected {

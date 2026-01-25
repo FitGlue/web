@@ -8,6 +8,7 @@ import { EmptyState } from '../components/EmptyState';
 import { DataList } from '../components/data/DataList';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { Pill } from '../components/ui/Pill';
 import { Text } from '../components/ui/Text';
 import { PipelineConfig } from '../state/pipelinesState';
 
@@ -258,15 +259,13 @@ const PendingInputsPage: React.FC = () => {
                                     </div>
                                 </div>
                                 {isAutoPopulated ? (
-                                    <span className="pending-input-card__status-badge pending-input-card__status-badge--auto">
-                                        <span className="pending-input-card__status-dot pending-input-card__status-dot--auto"></span>
+                                    <Pill variant="info">
                                         Awaiting {enricherName.charAt(0).toUpperCase() + enricherName.slice(1)} Results
-                                    </span>
+                                    </Pill>
                                 ) : (
-                                    <span className="pending-input-card__status-badge">
-                                        <span className="pending-input-card__status-dot"></span>
+                                    <Pill variant="warning">
                                         Needs Info
-                                    </span>
+                                    </Pill>
                                 )}
                             </div>
 

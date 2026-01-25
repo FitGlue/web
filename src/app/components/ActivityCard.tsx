@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBadge } from './StatusBadge';
+import { StatusPill } from './ui/StatusPill';
 import { MetaBadge } from './MetaBadge';
 
 interface ActivityCardProps {
@@ -37,8 +37,8 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
     <div className={`card clickable activity-card ${isUnsynchronized ? 'unsync-card' : ''}`} onClick={onClick}>
       <div className="card-top">
         <h3 className="card-title">{title}</h3>
-        {status && <StatusBadge status={status} />}
-        {!status && !isUnsynchronized && <StatusBadge status="SYNCED" />}
+        {status && <StatusPill status={status} />}
+        {!status && !isUnsynchronized && <StatusPill status="SYNCED" />}
       </div>
 
       <div className="card-meta-row">

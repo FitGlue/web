@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Card } from '../ui/Card';
+import { CardHeader } from '../ui/CardHeader';
 import { Button } from '../ui/Button';
+import { Input, Textarea, FormField } from '../forms';
 import { useApi } from '../../hooks/useApi';
 import { usePipelines } from '../../hooks/usePipelines';
 import './FileUploadPanel.css';
@@ -85,9 +87,7 @@ export const FileUploadPanel: React.FC = () => {
 
   return (
     <Card className="dashboard-card upload-card">
-      <div className="card-header-row">
-        <h3>📤 Upload FIT File</h3>
-      </div>
+      <CardHeader icon="📤" title="Upload FIT File" />
 
       <div className="upload-grid">
         {/* Left: File Selection */}
@@ -124,9 +124,8 @@ export const FileUploadPanel: React.FC = () => {
         <div className="upload-subcard">
           <div className="subcard-label">Activity Details</div>
           <div className="upload-fields">
-            <div className="field-group">
-              <label htmlFor="upload-title">Title</label>
-              <input
+            <FormField label="Title" htmlFor="upload-title">
+              <Input
                 id="upload-title"
                 type="text"
                 placeholder="e.g., Morning Run"
@@ -134,10 +133,9 @@ export const FileUploadPanel: React.FC = () => {
                 onChange={(e) => setTitle(e.target.value)}
                 disabled={uploading}
               />
-            </div>
-            <div className="field-group">
-              <label htmlFor="upload-desc">Description</label>
-              <textarea
+            </FormField>
+            <FormField label="Description" htmlFor="upload-desc">
+              <Textarea
                 id="upload-desc"
                 placeholder="Add notes about this activity..."
                 value={description}
@@ -145,7 +143,7 @@ export const FileUploadPanel: React.FC = () => {
                 disabled={uploading}
                 rows={2}
               />
-            </div>
+            </FormField>
           </div>
         </div>
       </div>

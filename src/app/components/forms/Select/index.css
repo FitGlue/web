@@ -1,0 +1,79 @@
+/* Select Component Styles */
+
+.form-select {
+  width: 100%;
+  padding: 14px 40px 14px 16px;
+  border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px 8px 0 0;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--color-text);
+  font-size: 15px;
+  font-family: inherit;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+.form-select:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-bottom-color: rgba(255, 255, 255, 0.25);
+}
+
+.form-select:focus {
+  outline: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid;
+  border-image: linear-gradient(90deg, var(--color-primary), var(--color-secondary)) 1;
+}
+
+.form-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Placeholder styling */
+.form-select--placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.form-select option {
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+  padding: 12px;
+}
+
+.form-select option:disabled {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* Size Variants */
+.form-select--small {
+  padding: 10px 36px 10px 12px;
+  font-size: 13px;
+  background-position: right 12px center;
+}
+
+.form-select--large {
+  padding: 18px 44px 18px 20px;
+  font-size: 17px;
+  background-position: right 20px center;
+}
+
+/* Error State */
+.form-select--error {
+  border-bottom-color: var(--color-danger);
+}
+
+.form-select--error:focus {
+  border-image: none;
+  border-bottom-color: var(--color-danger);
+}
+
+/* Full Width */
+.form-select--full-width {
+  width: 100%;
+}

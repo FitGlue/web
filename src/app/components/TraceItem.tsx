@@ -1,6 +1,7 @@
 import React from 'react';
 import { ExecutionRecord } from '../services/ActivitiesService';
-import { StatusBadge } from './StatusBadge';
+import { StatusPill } from './ui/StatusPill';
+import { humanizeServiceName, humanizeKey, humanizeEnumValue, formatDurationFromRange } from '../utils/formatters';
 import { useNerdMode } from '../state/NerdModeContext';
 import { Text } from './ui/Text';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
@@ -10,47 +11,6 @@ interface TraceItemProps {
     execution: ExecutionRecord;
     index: number;
 }
-
-// Helpers
-const formatDuration = (start: string | null | undefined, end?: string | null): string => {
-    if (!start || !end) return '';
-    const ms = new Date(end).getTime() - new Date(start).getTime();
-    if (ms < 1000) return `${ms}ms`;
-    if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
-    return `${(ms / 60000).toFixed(1)}m`;
-};
-
-const humanizeServiceName = (service: string | undefined): string => {
-    if (!service) return 'Unknown Service';
-    if (service === 'enricher') return 'Data Enrichment';
-    if (service === 'router') return 'Destination Router';
-
-    return service
-        .replace(/-handler$/, '')
-        .replace(/-webhook$/, '')
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-};
-
-// Convert snake_case to Readable Text
-const humanizeKey = (key: string): string => {
-    return key
-        .split('_')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-};
-
-// Humanize enum values like "ENRICHER_PROVIDER_FITBIT_HEART_RATE" to "Fitbit Heart Rate"
-const humanizeEnumValue = (value: string): string => {
-    return value
-        .replace(/^ENRICHER_PROVIDER_/, '')
-        .replace(/_/g, ' ')
-        .toLowerCase()
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-};
 
 // JSON Truncation Helper
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,7 +55,7 @@ const NerdRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution }) =
             <div className="trace-meta">
                 <span className="trace-time">{execution.timestamp ? new Date(execution.timestamp).toLocaleTimeString() : ''}</span>
                 {execution.startTime && execution.endTime && (
-                    <span className="trace-duration">Duration: {formatDuration(execution.startTime, execution.endTime)}</span>
+                    <span className="trace-duration">Duration: {formatDurationFromRange(execution.startTime, execution.endTime)}</span>
                 )}
                 {execution.triggerType && (
                     <span className="trace-trigger">Trigger: {execution.triggerType}</span>
@@ -429,7 +389,7 @@ export const TraceItem: React.FC<TraceItemProps> = ({ execution, index }) => {
             <div className="trace-content">
                 <div className="trace-header">
                     <span className="trace-service">{serviceName}</span>
-                    <StatusBadge status={execution.status || 'UNKNOWN'} />
+                    <StatusPill status={execution.status || 'UNKNOWN'} />
                 </div>
 
                 {execution.errorMessage && <div className="trace-error">{execution.errorMessage}</div>}

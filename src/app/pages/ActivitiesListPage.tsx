@@ -6,6 +6,8 @@ import { PageLayout } from '../components/layout/PageLayout';
 import { EnrichedActivityCard } from '../components/dashboard/EnrichedActivityCard';
 import { UnsyncedActivityCard } from '../components/dashboard/UnsyncedActivityCard';
 import { CardSkeleton } from '../components/ui/CardSkeleton';
+import { StatInline } from '../components/ui/StatInline';
+import { TabButton } from '../components/ui/TabButton';
 import '../components/ui/CardSkeleton.css';
 import { ActivitiesService, SynchronizedActivity, UnsynchronizedEntry } from '../services/ActivitiesService';
 import './ActivitiesListPage.css';
@@ -161,43 +163,37 @@ const ActivitiesListPage: React.FC = () => {
 
                 {/* Stats Row */}
                 <div className="activities-page__stats">
-                    <div className="activities-page__stat">
-                        <span className="activities-page__stat-value">
-                            {loading && !initialStats?.totalSynced ? (
-                                <span className="stat-skeleton">--</span>
-                            ) : stats.totalSynced}
-                        </span>
-                        <span className="activities-page__stat-label">Total Boosted</span>
-                        <span className="activities-page__stat-period">All Time</span>
-                    </div>
-                    <div className="activities-page__stat">
-                        <span className="activities-page__stat-value">
-                            {loading && !initialStats?.monthlySynced ? (
-                                <span className="stat-skeleton">--</span>
-                            ) : stats.thisMonth}
-                        </span>
-                        <span className="activities-page__stat-label">Boosted</span>
-                        <span className="activities-page__stat-period">This Month</span>
-                    </div>
-
+                    <StatInline
+                        value={stats.totalSynced}
+                        label="Total Boosted"
+                        subLabel="All Time"
+                        loading={loading && !initialStats?.totalSynced}
+                    />
+                    <StatInline
+                        value={stats.thisMonth}
+                        label="Boosted"
+                        subLabel="This Month"
+                        loading={loading && !initialStats?.monthlySynced}
+                    />
                 </div>
 
                 {/* Tab Navigation */}
                 <div className="activities-page__tabs">
-                    <button
-                        className={`activities-page__tab ${tabMode === 'enhanced' ? 'activities-page__tab--active' : ''}`}
+                    <TabButton
+                        icon="✨"
+                        label="Enhanced"
+                        active={tabMode === 'enhanced'}
+                        count={activities.length}
                         onClick={() => handleTabChange('enhanced')}
-                    >
-                        ✨ Enhanced
-                        <span className="activities-page__tab-count">{activities.length}</span>
-                    </button>
-                    <button
-                        className={`activities-page__tab activities-page__tab--failed ${tabMode === 'failed' ? 'activities-page__tab--active' : ''}`}
+                    />
+                    <TabButton
+                        icon="⚠️"
+                        label="Failed / Stalled"
+                        active={tabMode === 'failed'}
+                        count={unsynchronized.length}
+                        variant="warning"
                         onClick={() => handleTabChange('failed')}
-                    >
-                        ⚠️ Failed / Stalled
-                        <span className="activities-page__tab-count">{unsynchronized.length}</span>
-                    </button>
+                    />
                 </div>
 
                 {/* Enhanced Tab Content */}

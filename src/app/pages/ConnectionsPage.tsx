@@ -7,6 +7,8 @@ import { useApi } from '../hooks/useApi';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { CardSkeleton } from '../components/ui/CardSkeleton';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
+import { Pill } from '../components/ui/Pill';
 import '../components/ui/CardSkeleton.css';
 import { IntegrationManifest } from '../types/plugin';
 
@@ -50,9 +52,9 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
             </div>
 
             <div className="connection-card__status">
-                <span className={`connection-badge ${isConnected ? 'connected' : 'disconnected'}`}>
+                <Pill variant={isConnected ? 'success' : 'default'}>
                     {isConnected ? '✓ Connected' : '○ Not Connected'}
-                </span>
+                </Pill>
                 {isConnected && status?.externalUserId && (
                     <span className="connection-card__external-id">ID: {status.externalUserId}</span>
                 )}
@@ -91,6 +93,7 @@ const ConnectionsPage: React.FC = () => {
     const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { integrations, loading, refresh: refreshIntegrations, fetchIfNeeded } = useIntegrations();
     const [disconnecting, setDisconnecting] = useState<string | null>(null);
+    const [disconnectConfirm, setDisconnectConfirm] = useState<{id: string, name: string} | null>(null);
 
     useEffect(() => {
         fetchIfNeeded();
@@ -101,14 +104,16 @@ const ConnectionsPage: React.FC = () => {
         navigate(`/connections/${integration.id}/setup`);
     };
 
-    const handleDisconnect = async (provider: string) => {
+    const handleRequestDisconnect = (provider: string) => {
         const integration = registryIntegrations.find(i => i.id === provider);
         const displayName = integration?.name || provider;
+        setDisconnectConfirm({id: provider, name: displayName});
+    };
 
-        if (!window.confirm(`Are you sure you want to disconnect ${displayName}?`)) {
-            return;
-        }
-
+    const handleDisconnectConfirm = async () => {
+        if (!disconnectConfirm) return;
+        const provider = disconnectConfirm.id;
+        setDisconnectConfirm(null);
         setDisconnecting(provider);
         try {
             await api.delete(`/users/me/integrations/${provider}`);
@@ -155,12 +160,23 @@ const ConnectionsPage: React.FC = () => {
                             integration={integration}
                             status={status}
                             onConnect={() => handleConnect(integration)}
-                            onDisconnect={() => handleDisconnect(integration.id)}
+                            onDisconnect={() => handleRequestDisconnect(integration.id)}
                             disconnecting={disconnecting === integration.id}
                         />
                     );
                 })}
             </div>
+
+            <ConfirmDialog
+                isOpen={!!disconnectConfirm}
+                title="Disconnect Integration"
+                message={`Are you sure you want to disconnect ${disconnectConfirm?.name}? You'll need to reconnect to sync activities again.`}
+                confirmLabel="Disconnect"
+                isDestructive={true}
+                onConfirm={handleDisconnectConfirm}
+                onCancel={() => setDisconnectConfirm(null)}
+                isLoading={!!disconnecting}
+            />
         </PageLayout>
     );
 };

@@ -1,0 +1,126 @@
+/* Checkbox Component Styles */
+
+.form-checkbox-wrapper {
+  display: flex;
+  align-items: flex-start;
+}
+
+.form-checkbox__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.form-checkbox__label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.form-checkbox__box {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.form-checkbox__check {
+  width: 12px;
+  height: 10px;
+  color: white;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.2s ease;
+}
+
+/* Hover State */
+.form-checkbox__label:hover .form-checkbox__box {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Checked State */
+.form-checkbox__input:checked+.form-checkbox__label .form-checkbox__box {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border-color: transparent;
+}
+
+.form-checkbox__input:checked+.form-checkbox__label .form-checkbox__check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Focus State */
+.form-checkbox__input:focus+.form-checkbox__label .form-checkbox__box {
+  box-shadow: 0 0 0 3px rgba(255, 27, 141, 0.3);
+}
+
+/* Disabled State */
+.form-checkbox__input:disabled+.form-checkbox__label {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Text */
+.form-checkbox__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 1px;
+}
+
+.form-checkbox__label-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+
+.form-checkbox__description {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* Size Variants */
+.form-checkbox-wrapper--small .form-checkbox__box {
+  width: 16px;
+  height: 16px;
+}
+
+.form-checkbox-wrapper--small .form-checkbox__check {
+  width: 10px;
+  height: 8px;
+}
+
+.form-checkbox-wrapper--small .form-checkbox__label-text {
+  font-size: 13px;
+}
+
+.form-checkbox-wrapper--large .form-checkbox__box {
+  width: 24px;
+  height: 24px;
+}
+
+.form-checkbox-wrapper--large .form-checkbox__check {
+  width: 14px;
+  height: 12px;
+}
+
+.form-checkbox-wrapper--large .form-checkbox__label-text {
+  font-size: 17px;
+}
+
+/* Error State */
+.form-checkbox-wrapper--error .form-checkbox__box {
+  border-color: var(--color-danger);
+}

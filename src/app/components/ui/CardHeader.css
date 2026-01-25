@@ -1,0 +1,34 @@
+/* CardHeader component styles */
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card-header-row h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.card-header-row .card-link,
+.card-header-row .card-link-btn {
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.card-header-row .card-link:hover,
+.card-header-row .card-link-btn:hover {
+  opacity: 0.8;
+}
+
+.card-header-row .card-link-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}

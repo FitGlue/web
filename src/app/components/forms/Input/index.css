@@ -1,0 +1,61 @@
+/* Input Component Styles */
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px 8px 0 0;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--color-text);
+  font-size: 15px;
+  font-family: inherit;
+  transition: all 0.25s ease;
+}
+
+.form-input:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom-color: rgba(255, 255, 255, 0.25);
+}
+
+.form-input:focus {
+  outline: none;
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid;
+  border-image: linear-gradient(90deg, var(--color-primary), var(--color-secondary)) 1;
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.form-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Size Variants */
+.form-input--small {
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.form-input--large {
+  padding: 18px 20px;
+  font-size: 17px;
+}
+
+/* Error State */
+.form-input--error {
+  border-bottom-color: var(--color-danger);
+}
+
+.form-input--error:focus {
+  border-image: none;
+  border-bottom-color: var(--color-danger);
+}
+
+/* Full Width */
+.form-input--full-width {
+  width: 100%;
+}

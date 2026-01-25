@@ -6,6 +6,8 @@ import { useApi } from '../hooks/useApi';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { CardSkeleton } from '../components/ui/CardSkeleton';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
+import { Pill } from '../components/ui/Pill';
 import '../components/ui/CardSkeleton.css';
 import { ApiKeySetupModal } from '../components/integrations/ApiKeySetupModal';
 import { IntegrationAuthType, IntegrationManifest } from '../types/plugin';
@@ -56,9 +58,9 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
                 </div>
             </div>
             <div className="integration-status">
-                <span className={`connection-badge ${isConnected ? 'connected' : 'disconnected'}`}>
+                <Pill variant={isConnected ? 'success' : 'default'}>
                     {isConnected ? '✓ Connected' : '○ Not Connected'}
-                </span>
+                </Pill>
                 {isConnected && status?.externalUserId && (
                     <span className="external-id">ID: {status.externalUserId}</span>
                 )}
@@ -98,6 +100,7 @@ const IntegrationsPage: React.FC = () => {
     const [connecting, setConnecting] = useState<string | null>(null);
     const [disconnecting, setDisconnecting] = useState<string | null>(null);
     const [setupModalIntegration, setSetupModalIntegration] = useState<IntegrationManifest | null>(null);
+    const [disconnectConfirm, setDisconnectConfirm] = useState<string | null>(null);
 
     useEffect(() => {
         fetchIfNeeded();
@@ -126,11 +129,10 @@ const IntegrationsPage: React.FC = () => {
         await refreshIntegrations();
     };
 
-    const handleDisconnect = async (provider: 'strava' | 'fitbit' | 'hevy') => {
-        if (!window.confirm(`Are you sure you want to disconnect ${provider}?`)) {
-            return;
-        }
-
+    const handleDisconnectConfirm = async () => {
+        if (!disconnectConfirm) return;
+        const provider = disconnectConfirm;
+        setDisconnectConfirm(null);
         setDisconnecting(provider);
         try {
             await api.delete(`/users/me/integrations/${provider}`);
@@ -177,7 +179,7 @@ const IntegrationsPage: React.FC = () => {
                                 ? handleConnect(integration.id as 'strava' | 'fitbit')
                                 : handleApiKeyConnect(integration)
                             }
-                            onDisconnect={() => handleDisconnect(integration.id as 'strava' | 'fitbit' | 'hevy')}
+                            onDisconnect={() => setDisconnectConfirm(integration.id)}
                             connecting={connecting === integration.id}
                             disconnecting={disconnecting === integration.id}
                         />
@@ -192,6 +194,17 @@ const IntegrationsPage: React.FC = () => {
                     onSuccess={handleSetupSuccess}
                 />
             )}
+
+            <ConfirmDialog
+                isOpen={!!disconnectConfirm}
+                title="Disconnect Integration"
+                message={`Are you sure you want to disconnect ${disconnectConfirm}? You'll need to reconnect to sync activities again.`}
+                confirmLabel="Disconnect"
+                isDestructive={true}
+                onConfirm={handleDisconnectConfirm}
+                onCancel={() => setDisconnectConfirm(null)}
+                isLoading={!!disconnecting}
+            />
         </PageLayout>
     );
 };

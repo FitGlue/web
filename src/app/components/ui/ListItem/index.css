@@ -1,0 +1,60 @@
+/* ListItem Component Styles */
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+/* Padding variants */
+.list-item--padding-none {
+  padding: 0;
+}
+
+.list-item--padding-sm {
+  padding: 0.5rem 0;
+}
+
+.list-item--padding-md {
+  padding: 0.75rem 0;
+}
+
+.list-item--padding-lg {
+  padding: 1rem 0;
+}
+
+/* Divider - bottom border */
+.list-item--divider {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.list-item--divider:last-child {
+  border-bottom: none;
+}
+
+/* Clickable state */
+.list-item--clickable {
+  cursor: pointer;
+}
+
+.list-item--clickable:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.list-item--clickable:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Active state */
+.list-item--active {
+  background: rgba(255, 27, 141, 0.1);
+}
+
+/* Disabled state */
+.list-item--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}

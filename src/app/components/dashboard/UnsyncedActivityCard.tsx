@@ -1,6 +1,7 @@
 import React from 'react';
 import { UnsynchronizedEntry } from '../../services/ActivitiesService';
 import { Card } from '../ui/Card';
+import { Pill } from '../ui/Pill';
 import { formatActivityType, formatActivitySource } from '../../../types/pb/enum-formatters';
 
 interface UnsyncedActivityCardProps {
@@ -66,10 +67,12 @@ export const UnsyncedActivityCard: React.FC<UnsyncedActivityCardProps> = ({
             {/* Header: Title + Status Badge */}
             <div className="unsynced-activity-card__header">
                 <div className="unsynced-activity-card__title-section">
-                    <span className="unsynced-activity-card__type-badge">{activityType}</span>
+                    <Pill variant="gradient">{activityType}</Pill>
                     <h4 className="unsynced-activity-card__title">{activityTitle}</h4>
                 </div>
-                <span className="unsynced-activity-card__status-badge">{statusLabel}</span>
+                <Pill variant={entry.status === 'FAILED' ? 'error' : 'warning'}>
+                    {statusLabel}
+                </Pill>
             </div>
 
             {/* Source Info */}

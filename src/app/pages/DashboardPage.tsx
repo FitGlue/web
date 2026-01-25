@@ -6,15 +6,17 @@ import { useRealtimeActivities } from '../hooks/useRealtimeActivities';
 import { usePipelines } from '../hooks/usePipelines';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { usePluginLookup } from '../hooks/usePluginLookup';
 import { useUser } from '../hooks/useUser';
 import { PageLayout } from '../components/layout/PageLayout';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
+import { formatFieldLabel } from '../utils/formatters';
 
 import { Card } from '../components/ui/Card';
 import { CardSkeleton } from '../components/ui/CardSkeleton';
-import '../components/ui/CardSkeleton.css';
-import { Button } from '../components/ui/Button';
-import { PluginIcon } from '../components/ui/PluginIcon';
+import { CardHeader } from '../components/ui/CardHeader';
+import { EmptyState } from '../components/ui/EmptyState';
+import { ConnectionStatusItem } from '../components/ui/ConnectionStatusItem';
 import { LoadingState } from '../components/ui/LoadingState';
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
 import { GalleryOfBoosts } from '../components/dashboard/GalleryOfBoosts';
@@ -32,7 +34,7 @@ const DashboardPage: React.FC = () => {
         // Check localStorage on initial render to avoid pop
         return localStorage.getItem(ONBOARDING_COMPLETE_KEY) === 'true';
     });
-    const { sources, destinations, integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
+    const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { inputs, loading: inputsLoading, refresh: inputsRefresh } = useInputs();
     const { activities, loading: statsLoading, refresh: statsRefresh } = useActivities('dashboard');
     const { integrations, loading: integrationsLoading, refresh: integrationsRefresh, fetchIfNeeded: fetchIntegrations } = useIntegrations();
@@ -82,29 +84,8 @@ const DashboardPage: React.FC = () => {
 
     const isLoading = statsLoading || inputsLoading || integrationsLoading || pipelinesLoading || registryLoading;
 
-    // Helper functions
-    const getSourceName = (source: string): string => {
-        const normalized = String(source).toLowerCase().replace('source_', '');
-        const found = sources.find(s => s.id === normalized);
-        return found?.name || normalized.charAt(0).toUpperCase() + normalized.slice(1);
-    };
-
-    const getSourceIcon = (source: string): string => {
-        const normalized = String(source).toLowerCase().replace('source_', '');
-        const found = sources.find(s => s.id === normalized);
-        return found?.icon || '📥';
-    };
-
-    const getDestinationName = (dest: string | number): string => {
-        const normalized = String(dest).toLowerCase();
-        const found = destinations.find(d =>
-            d.id === normalized ||
-            d.destinationType === Number(dest)
-        );
-        return found?.name || (typeof dest === 'string'
-            ? dest.charAt(0).toUpperCase() + dest.slice(1).toLowerCase()
-            : `Destination ${dest}`);
-    };
+    // Use consolidated plugin lookup hook
+    const { getSourceInfo, getSourceName, getSourceIcon, getDestinationName } = usePluginLookup();
 
     const connectedCount = registryIntegrations.filter(
         ri => integrations?.[ri.id as keyof IntegrationsSummary]?.connected
@@ -123,13 +104,7 @@ const DashboardPage: React.FC = () => {
         }
     }, [isLoading, allOnboardingComplete, onboardingComplete]);
 
-    // Helper to format snake_case field names to Title Case
-    const formatFieldLabel = (field: string): string => {
-        return field
-            .split('_')
-            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(' ');
-    };
+
 
     // Get source info for a pending input by looking up from pipeline
     const getInputSourceInfo = (input: typeof inputs[0]): { source: string; icon: string; isAuto: boolean } => {
@@ -148,11 +123,9 @@ const DashboardPage: React.FC = () => {
         // Remove source_ prefix if present
         sourceId = sourceId.replace('source_', '');
 
-        const sourceInfo = sources.find(s => s.id === sourceId);
-        const icon = sourceInfo?.icon || '📥';
-        const sourceName = sourceInfo?.name || formatFieldLabel(sourceId);
-
-        return { source: sourceName, icon, isAuto: input.autoPopulated === true };
+        // Use the plugin lookup hook for consistent source info
+        const sourceInfo = getSourceInfo(sourceId);
+        return { source: sourceInfo.name, icon: sourceInfo.icon, isAuto: input.autoPopulated === true };
     };
 
 
@@ -222,10 +195,7 @@ const DashboardPage: React.FC = () => {
             <div className="dashboard-grid">
                 {/* Connection Status */}
                 <Card className="dashboard-card status-card">
-                    <div className="card-header-row">
-                        <h3>🔗 Connections</h3>
-                        <Link to="/settings/integrations" className="card-link">Manage →</Link>
-                    </div>
+                    <CardHeader icon="🔗" title="Connections" linkTo="/settings/integrations" linkLabel="Manage →" />
                     {integrationsLoading && !integrations ? (
                         <CardSkeleton variant="connections" itemCount={4} />
                     ) : (
@@ -234,19 +204,14 @@ const DashboardPage: React.FC = () => {
                                 {registryIntegrations.map(integration => {
                                     const status = integrations?.[integration.id as keyof IntegrationsSummary];
                                     return (
-                                        <div key={integration.id} className={`connection-item ${status?.connected ? 'connected' : ''}`}>
-                                            <PluginIcon
-                                                icon={integration.icon}
-                                                iconType={integration.iconType}
-                                                iconPath={integration.iconPath}
-                                                size="small"
-                                                className="connection-icon"
-                                            />
-                                            <span className="connection-name">{integration.name}</span>
-                                            <span className={`connection-status ${status?.connected ? 'active' : 'inactive'}`}>
-                                                {status?.connected ? '✓' : '○'}
-                                            </span>
-                                        </div>
+                                        <ConnectionStatusItem
+                                            key={integration.id}
+                                            name={integration.name}
+                                            connected={status?.connected ?? false}
+                                            icon={integration.icon}
+                                            iconType={integration.iconType}
+                                            iconPath={integration.iconPath}
+                                        />
                                     );
                                 })}
                             </div>
@@ -259,19 +224,16 @@ const DashboardPage: React.FC = () => {
 
                 {/* Pipeline Status */}
                 <Card className="dashboard-card pipelines-card">
-                    <div className="card-header-row">
-                        <h3>🔀 Pipelines</h3>
-                        <Link to="/settings/pipelines" className="card-link">View All →</Link>
-                    </div>
+                    <CardHeader icon="🔀" title="Pipelines" linkTo="/settings/pipelines" linkLabel="View All →" />
                     {pipelinesLoading && pipelines.length === 0 ? (
                         <CardSkeleton variant="pipelines" itemCount={3} />
                     ) : pipelines.length === 0 ? (
-                        <div className="empty-state-mini">
-                            <p>No pipelines configured</p>
-                            <Button variant="primary" size="small" onClick={() => navigate('/settings/pipelines/new')}>
-                                Create First Pipeline
-                            </Button>
-                        </div>
+                        <EmptyState
+                            variant="mini"
+                            title="No pipelines configured"
+                            actionLabel="Create First Pipeline"
+                            onAction={() => navigate('/settings/pipelines/new')}
+                        />
                     ) : (
                         <>
                             <div className="pipelines-summary">
@@ -312,10 +274,7 @@ const DashboardPage: React.FC = () => {
 
                 {/* Pending Actions */}
                 <Card className="dashboard-card actions-card">
-                    <div className="card-header-row">
-                        <h3>⚡ Action Required</h3>
-                        {inputs.length > 0 && <Link to="/inputs" className="card-link">View All →</Link>}
-                    </div>
+                    <CardHeader icon="⚡" title="Action Required" linkTo="/inputs" linkLabel="View All →" showLink={inputs.length > 0} />
                     {inputsLoading && inputs.length === 0 ? (
                         <CardSkeleton variant="actions" itemCount={2} />
                     ) : inputs.length === 0 ? (

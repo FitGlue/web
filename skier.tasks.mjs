@@ -9,6 +9,7 @@ import {
   bundleCssTask,
   copyStaticTask,
   setGlobalsTask,
+  setGlobalFromMarkdownTask,
   generatePagesTask,
 } from 'skier';
 import path from 'path';
@@ -62,6 +63,12 @@ export const tasks = [
   copyStaticTask({
     from: './assets/root',
     to: './static-dist',
+  }),
+
+  // Read PUBLIC_CHANGELOG.md and expose as template variable
+  setGlobalFromMarkdownTask({
+    mdPath: './PUBLIC_CHANGELOG.md',
+    outputVar: 'changelogContent',
   }),
 
   setGlobalsTask({

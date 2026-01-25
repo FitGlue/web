@@ -1,0 +1,51 @@
+/* LiveToggle component styles */
+.live-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary, #6b7280);
+  background: var(--color-surface-alt, #f3f4f6);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.live-toggle:hover {
+  background: var(--color-surface, #e5e7eb);
+}
+
+.live-toggle--active {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.live-toggle__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.live-toggle--active .live-toggle__dot {
+  opacity: 1;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.3);
+  }
+}

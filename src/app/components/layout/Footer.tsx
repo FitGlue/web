@@ -9,6 +9,7 @@ export const Footer: React.FC = () => {
             <div className="footer-content">
                 <div className="footer-left">
                     <span className="version">FitGlue {import.meta.env.VITE_APP_VERSION || 'vS0.0.0-W0.0.0'}</span>
+                    <a href="/changelog" target="_blank" rel="noopener noreferrer" className="changelog-link">What&apos;s New</a>
                 </div>
                 <div className="footer-right">
                     <label className="switch-label">
@@ -34,6 +35,19 @@ export const Footer: React.FC = () => {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
+                }
+                .footer-left {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+                .changelog-link {
+                    color: var(--text-muted);
+                    text-decoration: none;
+                    transition: color 0.2s ease;
+                }
+                .changelog-link:hover {
+                    color: var(--primary-color);
                 }
                 .switch-label {
                     display: flex;

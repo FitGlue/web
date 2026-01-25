@@ -1,0 +1,51 @@
+/* TabButton component styles */
+.tab-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  color: var(--color-text);
+}
+
+.tab-button--active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.tab-button--warning.tab-button--active {
+  color: #fbbf24;
+  border-bottom-color: #fbbf24;
+}
+
+.tab-button__icon {
+  font-size: 1rem;
+}
+
+.tab-button__count {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.375rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+.tab-button--active .tab-button__count {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+}
+
+.tab-button--warning.tab-button--active .tab-button__count {
+  background: #fbbf24;
+  color: #1a1a2e;
+}

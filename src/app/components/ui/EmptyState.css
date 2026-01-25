@@ -1,0 +1,55 @@
+/* EmptyState component styles */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.empty-state__icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.empty-state__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text, #1a1a2e);
+  margin: 0 0 0.5rem;
+}
+
+.empty-state__description {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0 0 1rem;
+  max-width: 280px;
+}
+
+.empty-state__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Mini variant */
+.empty-state--mini {
+  padding: 1rem;
+}
+
+.empty-state--mini .empty-state__icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state--mini .empty-state__title {
+  font-size: 0.9rem;
+}
+
+.empty-state--mini .empty-state__description {
+  font-size: 0.8rem;
+  margin-bottom: 0.75rem;
+}

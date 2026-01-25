@@ -1,0 +1,364 @@
+/* AccountSettingsPage styles */
+
+/* Account settings container */
+.account-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Info cards */
+.account-info-card {
+  padding: 1.5rem;
+}
+
+.account-info-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Profile section layout */
+.profile-section {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  flex-shrink: 0;
+}
+
+.profile-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Account fields */
+.account-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.account-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.field-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  min-width: 100px;
+}
+
+.field-value {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.field-value code {
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Flex row utility - used for inline field value + button layouts */
+.field-value-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Subscription plan row */
+.plan-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Muted text (for "Not set" placeholder) */
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+/* Name edit row */
+.name-edit-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex: 1;
+}
+
+.name-edit-row .form-input {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* Tier badge */
+.tier-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tier-badge--athlete {
+  background: var(--color-primary);
+}
+
+/* Account field modifiers */
+.account-field--spaced {
+  margin-top: 0.5rem;
+}
+
+.account-field--separator {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tier-badge.athlete {
+  background: var(--color-primary);
+}
+
+/* Help links */
+.help-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.help-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: inherit;
+  text-decoration: none;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: background 0.2s;
+}
+
+.help-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Advanced section */
+.account-field--separator {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-rights-text {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.data-rights-text p {
+  margin: 0.5rem 0;
+}
+
+.data-rights-text a {
+  color: var(--color-accent);
+}
+
+/* User ID code styling */
+.user-id-code {
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Accent link */
+.accent-link {
+  color: var(--color-accent);
+}
+
+/* Danger zone */
+.danger-zone-card {
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.danger-zone {
+  padding: 0;
+}
+
+.danger-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.danger-header h3 {
+  margin: 0;
+  color: #f87171;
+}
+
+.danger-icon {
+  font-size: 1.25rem;
+}
+
+.danger-content h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.danger-warning {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+.danger-list {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0.5rem 0 1rem 1.25rem;
+  padding: 0;
+}
+
+.danger-list li {
+  margin: 0.25rem 0;
+}
+
+/* Delete confirmation */
+.delete-confirmation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.delete-confirmation label {
+  font-size: 0.9rem;
+  display: block;
+}
+
+.delete-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: inherit;
+  font-size: 0.95rem;
+}
+
+.delete-input:focus {
+  outline: none;
+  border-color: #f87171;
+}
+
+.error-message {
+  color: #f87171;
+  font-size: 0.85rem;
+  margin: 0.25rem 0;
+}
+
+/* Email modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--color-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+}
+
+.email-sent-icon {
+  font-size: 3rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.email-field {
+  margin-bottom: 1rem;
+}
+
+.email-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.email-current {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.email-input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* Modal title */
+.modal-title {
+  margin-top: 0;
+}
+
+/* Email sent success */
+.email-sent-success {
+  text-align: center;
+}
+
+.email-sent-icon {
+  font-size: 3rem;
+  margin: 1rem 0;
+}
+
+/* Utility classes */
+.text-sm {
+  font-size: 0.85rem;
+}

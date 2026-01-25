@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Button } from '../components/ui/Button';
 import { PluginIcon } from '../components/ui/PluginIcon';
+import { renderInlineMarkdown } from '../utils/markdown';
 import { LoadingState } from '../components/ui/LoadingState';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useApi } from '../hooks/useApi';
@@ -106,13 +108,7 @@ const ConnectionSetupPage: React.FC = () => {
             .map(line => line.replace(/^\d+\.\s*/, '').trim());
     };
 
-    // Render markdown-like bold text
-    const renderText = (text: string) => {
-        const parts = text.split(/\*\*([^*]+)\*\*/g);
-        return parts.map((part, i) =>
-            i % 2 === 1 ? <strong key={i}>{part}</strong> : part
-        );
-    };
+    // Use shared markdown renderer for bold text
 
     const renderApiKeySetup = () => {
         const steps = parseInstructions(integration.setupInstructions || '');
@@ -136,7 +132,7 @@ const ConnectionSetupPage: React.FC = () => {
                         <div className="connection-setup__instructions">
                             <ol>
                                 {steps.map((step, i) => (
-                                    <li key={i}>{renderText(step)}</li>
+                                    <li key={i}>{renderInlineMarkdown(step)}</li>
                                 ))}
                             </ol>
                         </div>
@@ -318,7 +314,7 @@ const ConnectionSetupPage: React.FC = () => {
                         <div className="connection-setup__instructions">
                             <ol>
                                 {steps.map((step, i) => (
-                                    <li key={i}>{renderText(step)}</li>
+                                    <li key={i}>{renderInlineMarkdown(step)}</li>
                                 ))}
                             </ol>
                         </div>

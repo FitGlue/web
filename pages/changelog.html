@@ -1,0 +1,71 @@
+{{> header}}
+
+<main>
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="container">
+      <h1 class="text-center animate-on-scroll">What's <span class="text-gradient">New</span></h1>
+      <p class="text-center tagline flow-caption-magic" style="font-size: 1.3rem; margin: var(--space-md) auto 0;">
+        ✨ All the latest updates and improvements ✨
+      </p>
+    </div>
+  </section>
+
+  <!-- Changelog Content -->
+  <section class="section">
+    <div class="container changelog-content">
+      {{{changelogContent}}}
+    </div>
+  </section>
+</main>
+
+<style>
+  .changelog-content {
+    max-width: 800px;
+  }
+
+  .changelog-content h1 {
+    display: none;
+    /* Hide the "FitGlue Changelog" header since we have our own hero */
+  }
+
+  .changelog-content h2 {
+    font-size: 1.5rem;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .changelog-content h2:first-of-type {
+    margin-top: 0;
+  }
+
+  .changelog-content h3 {
+    font-size: 1.1rem;
+    margin: var(--space-md) 0 var(--space-sm);
+    color: var(--text-secondary);
+  }
+
+  .changelog-content ul {
+    margin: 0 0 var(--space-md) 0;
+    padding-left: 1.5rem;
+  }
+
+  .changelog-content li {
+    margin-bottom: var(--space-xs);
+    line-height: 1.6;
+  }
+
+  .changelog-content p {
+    margin: var(--space-sm) 0;
+  }
+
+  .changelog-content hr {
+    margin: var(--space-xl) 0;
+    border: none;
+    border-top: 1px solid var(--border-color);
+  }
+</style>
+
+{{> footer}}

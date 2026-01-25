@@ -8,6 +8,7 @@ import { PipelineTrace } from '../components/PipelineTrace';
 import { PageLayout } from '../components/layout/PageLayout';
 import { Card } from '../components/ui/Card';
 import { CardSkeleton } from '../components/ui/CardSkeleton';
+import { Pill } from '../components/ui/Pill';
 import '../components/ui/CardSkeleton.css';
 import { EnricherBadge } from '../components/dashboard/EnricherBadge';
 import { RepostActionsMenu } from '../components/RepostActionsMenu';
@@ -295,7 +296,7 @@ const ActivityDetailPage: React.FC = () => {
             <div className="activity-detail__hero">
                 <div className="activity-detail__hero-header">
                     <div className="activity-detail__hero-meta">
-                        <span className="activity-detail__type-badge">{activityType}</span>
+                        <Pill variant="gradient">{activityType}</Pill>
                         {pipelineName && (
                             <span className="activity-detail__pipeline-name">via {pipelineName}</span>
                         )}

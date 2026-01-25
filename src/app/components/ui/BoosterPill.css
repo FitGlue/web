@@ -1,0 +1,51 @@
+/* BoosterPill component styles */
+.booster-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--color-surface-alt, #f3f4f6);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  transition: transform 0.15s ease;
+}
+
+.booster-pill[role="button"] {
+  cursor: pointer;
+}
+
+.booster-pill[role="button"]:hover {
+  transform: scale(1.02);
+}
+
+.booster-pill__order {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.booster-pill__icon {
+  font-size: 0.9rem;
+}
+
+.booster-pill__name {
+  font-weight: 500;
+  color: var(--color-text, #1a1a2e);
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.booster-pill__configured {
+  color: #10b981;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
