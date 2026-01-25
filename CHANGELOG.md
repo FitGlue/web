@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.0.0](https://github.com/fitglue/web/compare/v6.0.2...v7.0.0) (2026-01-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Major component library refactor across the web-app estate
+
+### Features
+
+* UI Component library refactor ([961080b](https://github.com/fitglue/web/commit/961080bb62fe5cd5fbbd0a8825ff208599c4fd8f))
+
 ### [6.0.2](https://github.com/fitglue/web/compare/v6.0.1...v6.0.2) (2026-01-24)
 
 
