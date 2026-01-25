@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useInputs } from '../hooks/useInputs';
 import { InputsService, PendingInput } from '../services/InputsService';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { usePluginLookup } from '../hooks/usePluginLookup';
 import { usePipelines } from '../hooks/usePipelines';
 import { PageLayout } from '../components/layout/PageLayout';
 import { EmptyState } from '../components/EmptyState';
@@ -23,18 +24,27 @@ interface ParsedInputInfo {
 const getInputDisplayInfo = (
     input: PendingInput,
     pipelines: PipelineConfig[],
-    sources: Array<{ id: string; name: string; icon?: string }>
+    getSourceInfo: (sourceId: string) => { name: string; icon: string }
 ): ParsedInputInfo => {
     // Find the pipeline for this input
     const pipeline = input.pipelineId
         ? pipelines.find(p => p.id === input.pipelineId)
         : undefined;
 
-    // Get source info from pipeline's source field
-    const sourceId = pipeline?.source?.toLowerCase() || 'unknown';
-    const sourceInfo = sources.find(s => s.id === sourceId);
-    const sourceName = sourceInfo?.name || sourceId.charAt(0).toUpperCase() + sourceId.slice(1);
-    const sourceIcon = sourceInfo?.icon || '📥';
+    // Get source from pipeline or fallback to parsing activity ID
+    let sourceId = pipeline?.source?.toLowerCase() || '';
+    if (!sourceId) {
+        // Fallback: try to extract from activity ID (e.g., "FILE_UPLOAD:12345")
+        const [sourcePart] = (input.activityId || '').split(':');
+        sourceId = sourcePart?.toLowerCase().replace('source_', '') || 'unknown';
+    }
+    // Remove source_ prefix if present
+    sourceId = sourceId.replace('source_', '');
+
+    // Use the plugin lookup hook for consistent source info
+    const sourceInfo = getSourceInfo(sourceId);
+    const sourceName = sourceInfo.name;
+    const sourceIcon = sourceInfo.icon;
     const pipelineName = pipeline?.name || pipeline?.id || '';
 
     // Try to parse timestamp from createdAt
@@ -58,8 +68,9 @@ const getInputDisplayInfo = (
 
 const PendingInputsPage: React.FC = () => {
     const { inputs, loading, refresh, lastUpdated } = useInputs();
-    const { sources, enrichers } = usePluginRegistry();
+    const { enrichers } = usePluginRegistry();
     const { pipelines, fetchIfNeeded } = usePipelines();
+    const { getSourceInfo } = usePluginLookup();
 
     // Ensure pipelines are loaded for source lookup
     fetchIfNeeded();
@@ -224,7 +235,7 @@ const PendingInputsPage: React.FC = () => {
                 className="pending-inputs-grid"
                 keyExtractor={(input) => input.id}
                 renderItem={(input) => {
-                    const displayInfo = getInputDisplayInfo(input, pipelines, sources);
+                    const displayInfo = getInputDisplayInfo(input, pipelines, getSourceInfo);
                     const isAutoPopulated = input.autoPopulated === true;
                     const autoDeadline = input.autoDeadline ? new Date(input.autoDeadline) : null;
                     // Lookup enricher name from registry
