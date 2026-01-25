@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.0.1](https://github.com/fitglue/web/compare/v7.0.0...v7.0.1) (2026-01-25)
+
+
+### Bug Fixes
+
+* pending inputs page grabs source name correctly ([f98fe0f](https://github.com/fitglue/web/commit/f98fe0fbf823f365e95621584a485f5bdb0499df))
+
 ## [7.0.0](https://github.com/fitglue/web/compare/v6.0.2...v7.0.0) (2026-01-25)
 
 
