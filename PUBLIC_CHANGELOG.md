@@ -1,6 +1,24 @@
 # FitGlue Changelog
 
-<!-- LAST_PUBLISHED: server=v7.1.0, web=v6.0.2 -->
+<!-- LAST_PUBLISHED: server=v9.4.0, web=v8.0.0 -->
+
+## Server v9.4.0 / Web v8.0.0 - January 26, 2026
+
+### ⚠ Breaking Changes
+
+- We've updated the look and feel of the app with a major UI overhaul, and rebuilt the underlying components to make future improvements easier. You may notice some slight changes in appearance.
+
+### ✨ New Features
+
+- We've significantly improved Parkrun syncing to be more reliable and efficient, including better handling of results and retries.
+- Enjoy a more visually appealing and informative experience with section-based descriptions in the app.
+
+### 🐛 Bug Fixes
+
+- Hevy workout syncing is now working correctly.
+- Parkrun results are now correctly matched and updated in your account.
+- You'll now see the correct source name on the pending inputs page.
+
 
 ## Server v7.1.0 / Web v6.0.2 - January 24, 2026
 
