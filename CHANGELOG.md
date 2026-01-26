@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.1.0](https://github.com/fitglue/web/compare/v8.0.0...v8.1.0) (2026-01-26)
+
+
+### Features
+
+* **ui:** add skeleton loading pattern with extracted dashboard components ([67dbb15](https://github.com/fitglue/web/commit/67dbb1586501ce847cd92af58c97c377fc0f7fd6))
+
 ## [8.0.0](https://github.com/fitglue/web/compare/v7.0.1...v8.0.0) (2026-01-26)
 
 
