@@ -59,6 +59,7 @@ export default defineConfig(({ mode }) => {
       outDir: 'dist',
       emptyOutDir: true,
       sourcemap: true, // Enable source maps
+      minify: mode !== 'development', // Disable minification in dev for React DevTools
       rollupOptions: {
         input: {
           // Static pages are now built by Skier, only React app entry point here

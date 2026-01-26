@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Card } from '../library/ui/Card';
 import { CardHeader } from '../library/ui/CardHeader';
+import { CardSkeleton } from '../library/ui/CardSkeleton';
+import '../library/ui/CardSkeleton.css';
 import { Button } from '../library/ui/Button';
 import { Paragraph } from '../library/ui/Paragraph';
 import { Heading } from '../library/ui/Heading';
@@ -16,7 +18,7 @@ import './FileUploadPanel.css';
  */
 export const FileUploadPanel: React.FC = () => {
   const api = useApi();
-  const { pipelines } = usePipelines();
+  const { pipelines, loading: pipelinesLoading, loaded: pipelinesLoaded } = usePipelines();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
@@ -29,6 +31,12 @@ export const FileUploadPanel: React.FC = () => {
     p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload'
   );
 
+  // Show skeleton while loading pipelines
+  if (pipelinesLoading && !pipelinesLoaded) {
+    return <CardSkeleton variant="file-upload" />;
+  }
+
+  // Hide if no file upload pipeline configured
   if (!hasFileUploadPipeline) {
     return null;
   }

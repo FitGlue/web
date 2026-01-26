@@ -1,7 +1,8 @@
 import React from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { PageLayout, Stack } from '../components/library/layout';
-import { Button, LoadingState, Heading, Paragraph } from '../components/library/ui';
+import { Button, CardSkeleton, Heading, Paragraph } from '../components/library/ui';
+import '../components/library/ui/CardSkeleton.css';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 
 const ConnectionErrorPage: React.FC = () => {
@@ -31,7 +32,9 @@ const ConnectionErrorPage: React.FC = () => {
     if (registryLoading) {
         return (
             <PageLayout title="Connection Failed" backTo="/connections" backLabel="Connections">
-                <LoadingState />
+                <Stack gap="lg" align="center">
+                    <CardSkeleton variant="integration" />
+                </Stack>
             </PageLayout>
         );
     }

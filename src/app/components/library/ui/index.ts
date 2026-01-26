@@ -46,6 +46,7 @@ export { ListItem as ListItemLegacy } from './ListItem';
 
 // Skeletons
 export { CardSkeleton } from './CardSkeleton';
+export { SkeletonLoading } from './SkeletonLoading';
 
 // Icons
 export { PluginIcon } from './PluginIcon';

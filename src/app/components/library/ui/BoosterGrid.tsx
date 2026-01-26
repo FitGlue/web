@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import './BoosterGrid.css';
+import '../ui/CardSkeleton.css';
 
 interface BoosterGridProps {
   /** Booster badges/pills */
@@ -25,7 +26,8 @@ export const BoosterGrid: React.FC<BoosterGridProps> = ({
   if (loading) {
     return (
       <div className="booster-grid booster-grid--loading">
-        <span className="booster-grid__loading">Processing...</span>
+        <div className="skeleton-line skeleton-line--booster" />
+        <div className="skeleton-line skeleton-line--booster" />
       </div>
     );
   }

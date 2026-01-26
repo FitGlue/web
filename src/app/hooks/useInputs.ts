@@ -36,6 +36,7 @@ export const useInputs = () => {
   return {
     inputs,
     loading,
+    loaded,
     lastUpdated,
     refresh: () => fetchInputs(true),
   };

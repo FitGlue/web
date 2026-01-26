@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
-import { LoadingState } from '../library/ui/LoadingState';
+import { CardSkeleton } from '../library/ui/CardSkeleton';
+import '../library/ui/CardSkeleton.css';
 import { Stack } from '../library/layout';
 
 interface DataListProps<T> {
@@ -9,6 +10,8 @@ interface DataListProps<T> {
     loading?: boolean;
     loadingMessage?: string;
     emptyState?: ReactNode;
+    /** Number of skeleton items to show when loading (default: 3) */
+    skeletonCount?: number;
 }
 
 export function DataList<T>({
@@ -16,11 +19,17 @@ export function DataList<T>({
     renderItem,
     keyExtractor,
     loading = false,
-    loadingMessage = 'Loading...',
     emptyState,
+    skeletonCount = 3,
 }: DataListProps<T>) {
     if (loading && items.length === 0) {
-        return <LoadingState message={loadingMessage} />;
+        return (
+            <Stack gap="md">
+                {Array.from({ length: skeletonCount }).map((_, i) => (
+                    <CardSkeleton key={i} variant="activity" />
+                ))}
+            </Stack>
+        );
     }
 
     if (items.length === 0 && emptyState) {

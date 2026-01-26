@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout, Stack } from '../components/library/layout';
-import { Button, Heading, Paragraph, LoadingState, List, ListItem } from '../components/library/ui';
+import { Button, Heading, Paragraph, CardSkeleton, List, ListItem } from '../components/library/ui';
+import '../components/library/ui/CardSkeleton.css';
 import { PluginIcon } from '../components/library/ui/PluginIcon';
 import { Input, FormField } from '../components/library/forms';
 import { renderInlineMarkdown } from '../utils/markdown';
@@ -30,7 +31,9 @@ const ConnectionSetupPage: React.FC = () => {
     if (registryLoading || userLoading) {
         return (
             <PageLayout title="Connect" backTo="/connections" backLabel="Connections">
-                <LoadingState />
+                <Stack gap="lg">
+                    <CardSkeleton variant="integration" />
+                </Stack>
             </PageLayout>
         );
     }

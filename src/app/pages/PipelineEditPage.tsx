@@ -16,7 +16,8 @@ import { useApi } from '../hooks/useApi';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePipelines } from '../hooks/usePipelines';
-import { LoadingState } from '../components/library/ui/LoadingState';
+import { CardSkeleton } from '../components/library/ui/CardSkeleton';
+import '../components/library/ui/CardSkeleton.css';
 import { PluginManifest } from '../types/plugin';
 import { Input } from '../components/library/forms';
 import { encodePipeline } from '../../shared/pipeline-sharing';
@@ -173,7 +174,10 @@ const PipelineEditPage: React.FC = () => {
     if (loading || registryLoading) {
         return (
             <PageLayout title="Edit Pipeline" backTo="/settings/pipelines" backLabel="Pipelines">
-                <LoadingState />
+                <Stack gap="lg">
+                    <CardSkeleton variant="pipeline-full" />
+                    <CardSkeleton variant="pipeline-full" />
+                </Stack>
             </PageLayout>
         );
     }

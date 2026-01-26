@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, Button, Heading, Paragraph, LoadingState, List, ListItem, Badge } from '../components/library/ui';
+import { Card, Button, Heading, Paragraph, CardSkeleton, List, ListItem, Badge } from '../components/library/ui';
 import { useApi } from '../hooks/useApi';
 import { useUser } from '../hooks/useUser';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
+import '../components/library/ui/CardSkeleton.css';
 
 const SubscriptionPage: React.FC = () => {
     const api = useApi();
@@ -52,7 +53,12 @@ const SubscriptionPage: React.FC = () => {
     if (loading && !user) {
         return (
             <PageLayout title="Subscription">
-                <LoadingState />
+                <Stack gap="lg">
+                    <Grid cols={2} gap="lg">
+                        <CardSkeleton variant="integration" />
+                        <CardSkeleton variant="integration" />
+                    </Grid>
+                </Stack>
             </PageLayout>
         );
     }

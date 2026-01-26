@@ -10,7 +10,7 @@
     "build:dev": "npm run _build:static && vite build --mode development && npm run _merge",
     "build:test": "npm run _build:static && vite build --mode test && npm run _merge",
     "build:prod": "npm run build",
-    "serve": "npm run build && npx firebase serve --only hosting",
+    "serve": "npm run build:dev && npx firebase serve --only hosting",
     "preview": "vite preview",
     "_build:static": "npx skier build",
     "_build:app": "tsc --noEmit && vite build",

@@ -1,9 +1,10 @@
 import React, { useReducer, useEffect, useCallback } from 'react';
 import { UserTier } from '../../types/pb/user';
-import { PageLayout } from '../components/library/layout/PageLayout';
+import { PageLayout, Grid } from '../components/library/layout';
 import { Card } from '../components/library/ui/Card';
 import { Button } from '../components/library/ui/Button';
-import { LoadingState } from '../components/library/ui/LoadingState';
+import { CardSkeleton } from '../components/library/ui/CardSkeleton';
+import '../components/library/ui/CardSkeleton.css';
 import { useApi } from '../hooks/useApi';
 import { useUser } from '../hooks/useUser';
 
@@ -349,7 +350,12 @@ const AdminPage: React.FC = () => {
                 </Card>
               </>
             ) : (
-              <LoadingState />
+              <Grid cols={4} gap="md">
+                <CardSkeleton variant="default" />
+                <CardSkeleton variant="default" />
+                <CardSkeleton variant="default" />
+                <CardSkeleton variant="default" />
+              </Grid>
             )}
           </div>
         )}
