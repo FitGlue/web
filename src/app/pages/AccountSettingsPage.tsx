@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { updateProfile, verifyBeforeUpdateEmail } from 'firebase/auth';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Card } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
+import { PageLayout, Stack } from '../components/library/layout';
+import { Card, Button, Heading, Paragraph, Badge, Code, List, ListItem, Modal } from '../components/library/ui';
+import { Link } from '../components/library/navigation';
 import { useApi } from '../hooks/useApi';
 import { useUser } from '../hooks/useUser';
 import { userAtom } from '../state/authState';
 import { useNerdMode } from '../state/NerdModeContext';
 import { initFirebase } from '../../shared/firebase';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST, HOBBYIST_TIER_LIMITS } from '../utils/tier';
-import { Input } from '../components/forms';
-import './AccountSettingsPage.css';
+import { Input, FormField } from '../components/library/forms';
 
-// Profile Avatar Component
 const ProfileAvatar: React.FC<{ name?: string; email?: string }> = ({
     name,
     email,
@@ -21,35 +19,29 @@ const ProfileAvatar: React.FC<{ name?: string; email?: string }> = ({
     const initial = name?.[0]?.toUpperCase() || email?.[0]?.toUpperCase() || '?';
 
     return (
-        <div className="profile-avatar">
-            {initial}
-        </div>
+        <Badge variant="default" size="md">{initial}</Badge>
     );
 };
 
 const AccountSettingsPage: React.FC = () => {
     const [firebaseUser] = useAtom(userAtom);
-    const { user: profile } = useUser(); // Backend user profile with tier, etc.
+    const { user: profile } = useUser();
     const api = useApi();
     const { isNerdMode } = useNerdMode();
 
-    // Profile editing state
     const [isEditingName, setIsEditingName] = useState(false);
     const [editedName, setEditedName] = useState('');
     const [savingName, setSavingName] = useState(false);
 
-    // Email change state
     const [showEmailModal, setShowEmailModal] = useState(false);
     const [newEmail, setNewEmail] = useState('');
     const [emailChangeStatus, setEmailChangeStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
     const [emailError, setEmailError] = useState('');
 
-    // Delete account state
     const [deleteConfirmation, setDeleteConfirmation] = useState('');
     const [deleting, setDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState<string | null>(null);
 
-    // Copy to clipboard state
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
@@ -64,7 +56,6 @@ const AccountSettingsPage: React.FC = () => {
         setSavingName(true);
         try {
             await updateProfile(firebaseUser, { displayName: editedName.trim() });
-            // Force reload of auth state
             await firebaseUser.reload();
             setIsEditingName(false);
         } catch (err) {
@@ -84,7 +75,6 @@ const AccountSettingsPage: React.FC = () => {
             const fb = await initFirebase();
             if (!fb) throw new Error('Firebase not initialized');
 
-            // This sends a verification email to the new address
             await verifyBeforeUpdateEmail(firebaseUser, newEmail.trim());
             setEmailChangeStatus('sent');
         } catch (err: unknown) {
@@ -125,7 +115,6 @@ const AccountSettingsPage: React.FC = () => {
         }
     };
 
-    // Calculate connection count
     const connectionCount = [
         profile?.integrations?.strava?.connected,
         profile?.integrations?.fitbit?.connected,
@@ -143,21 +132,19 @@ const AccountSettingsPage: React.FC = () => {
             backTo="/"
             backLabel="Dashboard"
         >
-            <div className="account-settings">
-                {/* Profile Section */}
-                <Card className="account-info-card">
-                    <h3>Profile</h3>
-                    <div className="profile-section">
+            <Stack gap="lg">
+                <Card>
+                    <Heading level={3}>Profile</Heading>
+                    <Stack direction="horizontal" gap="lg">
                         <ProfileAvatar
                             name={firebaseUser?.displayName || undefined}
                             email={firebaseUser?.email || undefined}
                         />
-                        <div className="profile-details">
-                            {/* Display Name */}
-                            <div className="account-field">
-                                <span className="field-label">Name</span>
+                        <Stack gap="md">
+                            <Stack gap="xs">
+                                <Paragraph size="sm" muted>Name</Paragraph>
                                 {isEditingName ? (
-                                    <div className="name-edit-row">
+                                    <Stack direction="horizontal" gap="sm" align="center">
                                         <Input
                                             type="text"
                                             value={editedName}
@@ -182,150 +169,149 @@ const AccountSettingsPage: React.FC = () => {
                                         >
                                             Cancel
                                         </Button>
-                                    </div>
+                                    </Stack>
                                 ) : (
-                                    <div className="field-value-row">
-                                        <span className="field-value">
-                                            {firebaseUser?.displayName || <em className="text-muted">Not set</em>}
-                                        </span>
+                                    <Stack direction="horizontal" gap="sm" align="center">
+                                        <Paragraph>
+                                            {firebaseUser?.displayName || <em>Not set</em>}
+                                        </Paragraph>
                                         <Button variant="text" size="small" onClick={() => setIsEditingName(true)}>
                                             ✏️
                                         </Button>
-                                    </div>
+                                    </Stack>
                                 )}
-                            </div>
+                            </Stack>
 
-                            {/* Email */}
-                            <div className="account-field">
-                                <span className="field-label">Email</span>
-                                <div className="field-value-row">
-                                    <span className="field-value">{firebaseUser?.email || 'N/A'}</span>
+                            <Stack gap="xs">
+                                <Paragraph size="sm" muted>Email</Paragraph>
+                                <Stack direction="horizontal" gap="sm" align="center">
+                                    <Paragraph>{firebaseUser?.email || 'N/A'}</Paragraph>
                                     <Button variant="text" size="small" onClick={() => setShowEmailModal(true)}>
                                         Change
                                     </Button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                </Stack>
+                            </Stack>
+                        </Stack>
+                    </Stack>
                 </Card>
 
-                {/* Subscription Section */}
-                <Card className="account-info-card">
-                    <h3>Subscription</h3>
-                    <div className="account-details">
-                        <div className="account-field">
-                            <span className="field-label">Plan</span>
-                            <div className="plan-row">
-                                <span className={`tier-badge tier-badge--${effectiveTier}`}>
+                <Card>
+                    <Heading level={3}>Subscription</Heading>
+                    <Stack gap="md">
+                        <Stack gap="xs">
+                            <Paragraph size="sm" muted>Plan</Paragraph>
+                            <Stack direction="horizontal" gap="sm" align="center">
+                                <Badge variant={effectiveTier === TIER_ATHLETE ? 'premium' : 'default'}>
                                     {effectiveTier === TIER_ATHLETE ? 'Athlete' : 'Hobbyist'}
-                                </span>
+                                </Badge>
                                 <Button variant="text" size="small" onClick={() => window.location.href = '/app/settings/upgrade'}>
                                     {effectiveTier === TIER_ATHLETE ? 'Manage →' : 'Upgrade →'}
                                 </Button>
-                            </div>
-                        </div>
-                        <div className="account-field account-field--spaced">
-                            <span className="field-label">Syncs</span>
-                            <span className="field-value">
+                            </Stack>
+                        </Stack>
+                        <Stack gap="xs">
+                            <Paragraph size="sm" muted>Syncs</Paragraph>
+                            <Paragraph>
                                 {profile?.syncCountThisMonth ?? 0} / {maxSyncs} this month
-                            </span>
-                        </div>
-                        <div className="account-field">
-                            <span className="field-label">Connections</span>
-                            <span className="field-value">
+                            </Paragraph>
+                        </Stack>
+                        <Stack gap="xs">
+                            <Paragraph size="sm" muted>Connections</Paragraph>
+                            <Paragraph>
                                 {connectionCount} / {maxConnections}
-                            </span>
-                        </div>
-                    </div>
+                            </Paragraph>
+                        </Stack>
+                    </Stack>
                 </Card>
 
-                {/* Help & Support Section */}
-                <Card className="account-info-card">
-                    <h3>Help & Support</h3>
-                    <div className="help-links">
-                        <a href="/help" className="help-link">
-                            <span>📚</span>
-                            <span>FAQ & Guides</span>
-                        </a>
-                        <a href="mailto:support@fitglue.tech" className="help-link">
-                            <span>📧</span>
-                            <span>Contact Support</span>
-                        </a>
-                        <a href="/feedback" className="help-link">
-                            <span>💡</span>
-                            <span>Request a Feature</span>
-                        </a>
-                    </div>
+                <Card>
+                    <Heading level={3}>Help & Support</Heading>
+                    <Stack direction="horizontal" gap="md" wrap>
+                        <Link to="/help">
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph inline>📚</Paragraph>
+                                <Paragraph inline>FAQ & Guides</Paragraph>
+                            </Stack>
+                        </Link>
+                        <Link to="mailto:support@fitglue.tech" external>
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph inline>📧</Paragraph>
+                                <Paragraph inline>Contact Support</Paragraph>
+                            </Stack>
+                        </Link>
+                        <Link to="/feedback">
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph inline>💡</Paragraph>
+                                <Paragraph inline>Request a Feature</Paragraph>
+                            </Stack>
+                        </Link>
+                    </Stack>
                 </Card>
 
-                {/* Advanced Section - Only visible in Nerd Mode */}
                 {isNerdMode && (
-                    <Card className="account-info-card">
-                        <h3>🤓 Advanced</h3>
-                        <div className="account-details">
-                            <div className="account-field">
-                                <span className="field-label">User ID</span>
-                                <div className="field-value-row">
-                                    <code className="user-id-code">
+                    <Card>
+                        <Heading level={3}>🤓 Advanced</Heading>
+                        <Stack gap="md">
+                            <Stack gap="xs">
+                                <Paragraph size="sm" muted>User ID</Paragraph>
+                                <Stack direction="horizontal" gap="sm" align="center">
+                                    <Code>
                                         {firebaseUser?.uid || 'N/A'}
-                                    </code>
+                                    </Code>
                                     <Button variant="text" size="small" onClick={handleCopyUserId}>
                                         {copied ? '✓ Copied' : '📋 Copy'}
                                     </Button>
-                                </div>
-                            </div>
-                            <div className="account-field account-field--separator">
-                                <span className="field-label">Data Rights</span>
-                                <div className="data-rights-text">
-                                    <p>
+                                </Stack>
+                            </Stack>
+                            <Stack gap="sm">
+                                <Paragraph size="sm" muted>Data Rights</Paragraph>
+                                <Stack gap="xs">
+                                    <Paragraph size="sm">
                                         Under GDPR you have the right to access, rectify, and delete your personal data.
-                                    </p>
-                                    <p>
-                                        <a href="mailto:privacy@fitglue.tech" className="accent-link">
-                                            Request data export (Subject Access Request)
-                                        </a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                                    </Paragraph>
+                                    <Link to="mailto:privacy@fitglue.tech" external variant="primary">
+                                        Request data export (Subject Access Request)
+                                    </Link>
+                                </Stack>
+                            </Stack>
+                        </Stack>
                     </Card>
                 )}
 
-                {/* Danger Zone */}
-                <Card className="danger-zone-card">
-                    <div className="danger-zone">
-                        <div className="danger-header">
-                            <span className="danger-icon">⚠️</span>
-                            <h3>Danger Zone</h3>
-                        </div>
-                        <div className="danger-content">
-                            <h4>Delete Account</h4>
-                            <p className="danger-warning">
-                                <strong>Right to Erasure (GDPR Article 17)</strong><br />
-                                This action is <strong>permanent and irreversible</strong>.
-                                Deleting your account will remove:
-                            </p>
-                            <ul className="danger-list">
-                                <li>All your connected integrations (Strava, Fitbit, Hevy)</li>
-                                <li>All configured pipelines</li>
-                                <li>All synchronized and raw activities</li>
-                                <li>All pending inputs</li>
-                                <li>All API keys</li>
-                            </ul>
-                            <div className="delete-confirmation">
-                                <label htmlFor="delete-confirm">
-                                    Type <strong>DELETE</strong> to confirm:
-                                </label>
-                                <input
-                                    id="delete-confirm"
-                                    type="text"
-                                    value={deleteConfirmation}
-                                    onChange={(e) => setDeleteConfirmation(e.target.value)}
-                                    placeholder="Type DELETE"
-                                    className="delete-input"
-                                    disabled={deleting}
-                                />
-                                {deleteError && <p className="error-message">{deleteError}</p>}
+                <Card>
+                    <Stack gap="md">
+                        <Stack direction="horizontal" gap="sm" align="center">
+                            <Paragraph inline>⚠️</Paragraph>
+                            <Heading level={3}>Danger Zone</Heading>
+                        </Stack>
+                        <Stack gap="md">
+                            <Heading level={4}>Delete Account</Heading>
+                            <Stack gap="xs">
+                                <Paragraph bold>Right to Erasure (GDPR Article 17)</Paragraph>
+                                <Paragraph>
+                                    This action is <strong>permanent and irreversible</strong>.
+                                    Deleting your account will remove:
+                                </Paragraph>
+                            </Stack>
+                            <List>
+                                <ListItem>All your connected integrations (Strava, Fitbit, Hevy)</ListItem>
+                                <ListItem>All configured pipelines</ListItem>
+                                <ListItem>All synchronized and raw activities</ListItem>
+                                <ListItem>All pending inputs</ListItem>
+                                <ListItem>All API keys</ListItem>
+                            </List>
+                            <Stack gap="sm">
+                                <FormField label="Type DELETE to confirm:" htmlFor="delete-confirm">
+                                    <Input
+                                        id="delete-confirm"
+                                        type="text"
+                                        value={deleteConfirmation}
+                                        onChange={(e) => setDeleteConfirmation(e.target.value)}
+                                        placeholder="Type DELETE"
+                                        disabled={deleting}
+                                    />
+                                </FormField>
+                                {deleteError && <Paragraph size="sm">{deleteError}</Paragraph>}
                                 <Button
                                     variant="danger"
                                     onClick={handleDeleteAccount}
@@ -334,87 +320,81 @@ const AccountSettingsPage: React.FC = () => {
                                 >
                                     {deleting ? 'Deleting Account...' : 'Permanently Delete My Account'}
                                 </Button>
-                            </div>
-                        </div>
-                    </div>
+                            </Stack>
+                        </Stack>
+                    </Stack>
                 </Card>
-            </div>
+            </Stack>
 
-            {/* Email Change Modal */}
-            {showEmailModal && (
-                <div className="modal-overlay" onClick={() => {
+            <Modal
+                isOpen={showEmailModal}
+                onClose={() => {
                     if (emailChangeStatus !== 'sending') {
                         setShowEmailModal(false);
                         setEmailChangeStatus('idle');
                         setNewEmail('');
                         setEmailError('');
                     }
-                }}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="modal-title">Change Email Address</h3>
-
-                        {emailChangeStatus === 'sent' ? (
-                            <div className="email-sent-success">
-                                <p className="email-sent-icon">✉️</p>
-                                <p>Verification email sent to <strong>{newEmail}</strong></p>
-                                <p className="text-muted text-sm">
-                                    Click the link in the email to confirm your new address.
-                                </p>
-                                <Button variant="primary" onClick={() => {
+                }}
+                title="Change Email Address"
+            >
+                {emailChangeStatus === 'sent' ? (
+                    <Stack align="center" gap="md">
+                        <Paragraph size="lg">✉️</Paragraph>
+                        <Paragraph>Verification email sent to <strong>{newEmail}</strong></Paragraph>
+                        <Paragraph size="sm" muted>
+                            Click the link in the email to confirm your new address.
+                        </Paragraph>
+                        <Button variant="primary" onClick={() => {
+                            setShowEmailModal(false);
+                            setEmailChangeStatus('idle');
+                            setNewEmail('');
+                        }}>
+                            Done
+                        </Button>
+                    </Stack>
+                ) : (
+                    <Stack gap="md">
+                        <Paragraph>
+                            Current: <strong>{firebaseUser?.email}</strong>
+                        </Paragraph>
+                        <FormField label="New Email Address" htmlFor="new-email">
+                            <Input
+                                id="new-email"
+                                type="email"
+                                value={newEmail}
+                                onChange={(e) => setNewEmail(e.target.value)}
+                                placeholder="new@email.com"
+                                disabled={emailChangeStatus === 'sending'}
+                            />
+                        </FormField>
+                        {emailError && (
+                            <Paragraph size="sm">{emailError}</Paragraph>
+                        )}
+                        <Stack direction="horizontal" justify="end" gap="sm">
+                            <Button
+                                variant="text"
+                                onClick={() => {
                                     setShowEmailModal(false);
                                     setEmailChangeStatus('idle');
                                     setNewEmail('');
-                                }}>
-                                    Done
-                                </Button>
-                            </div>
-                        ) : (
-                            <>
-                                <p className="email-current">
-                                    Current: <strong>{firebaseUser?.email}</strong>
-                                </p>
-                                <div className="email-field">
-                                    <label htmlFor="new-email">
-                                        New Email Address
-                                    </label>
-                                    <Input
-                                        id="new-email"
-                                        type="email"
-                                        value={newEmail}
-                                        onChange={(e) => setNewEmail(e.target.value)}
-                                        placeholder="new@email.com"
-                                        disabled={emailChangeStatus === 'sending'}
-                                    />
-                                </div>
-                                {emailError && (
-                                    <p className="error-message">{emailError}</p>
-                                )}
-                                <div className="modal-actions">
-                                    <Button
-                                        variant="text"
-                                        onClick={() => {
-                                            setShowEmailModal(false);
-                                            setEmailChangeStatus('idle');
-                                            setNewEmail('');
-                                            setEmailError('');
-                                        }}
-                                        disabled={emailChangeStatus === 'sending'}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        variant="primary"
-                                        onClick={handleEmailChange}
-                                        disabled={emailChangeStatus === 'sending' || !newEmail.trim()}
-                                    >
-                                        {emailChangeStatus === 'sending' ? 'Sending...' : 'Send Verification'}
-                                    </Button>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </div>
-            )}
+                                    setEmailError('');
+                                }}
+                                disabled={emailChangeStatus === 'sending'}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="primary"
+                                onClick={handleEmailChange}
+                                disabled={emailChangeStatus === 'sending' || !newEmail.trim()}
+                            >
+                                {emailChangeStatus === 'sending' ? 'Sending...' : 'Send Verification'}
+                            </Button>
+                        </Stack>
+                    </Stack>
+                )}
+            </Modal>
         </PageLayout>
     );
 };

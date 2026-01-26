@@ -1,8 +1,9 @@
 import React from 'react';
 import { PluginManifest } from '../types/plugin';
-import { Button } from './ui/Button';
-import { PluginIcon } from './ui/PluginIcon';
-import './EnricherInfoModal.css';
+import { Button, Heading, Paragraph, Badge, Card, Code } from './library/ui';
+import { Modal } from './library/ui/Modal';
+import { PluginIcon } from './library/ui/PluginIcon';
+import { Stack } from './library/layout';
 
 interface Props {
     enricher: PluginManifest;
@@ -11,79 +12,86 @@ interface Props {
 
 export const EnricherInfoModal: React.FC<Props> = ({ enricher, onClose }) => {
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="enricher-info-modal" onClick={e => e.stopPropagation()}>
-                <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
-
-                <div className="enricher-info-header">
+        <Modal
+            isOpen={true}
+            onClose={onClose}
+            title={
+                <Stack direction="horizontal" gap="md" align="center">
                     <PluginIcon
                         icon={enricher.icon}
                         iconType={enricher.iconType}
                         iconPath={enricher.iconPath}
                         size="large"
-                        className="enricher-info-icon"
                     />
-                    <h2>{enricher.name}</h2>
-                </div>
-
-                <p className="enricher-info-description">{enricher.description}</p>
+                    <Paragraph inline bold>{enricher.name}</Paragraph>
+                </Stack>
+            }
+            size="lg"
+            footer={
+                <Stack direction="horizontal" justify="end">
+                    <Button variant="secondary" onClick={onClose}>Close</Button>
+                </Stack>
+            }
+        >
+            <Stack gap="lg">
+                <Paragraph>{enricher.description}</Paragraph>
 
                 {enricher.marketingDescription && (
-                    <div className="enricher-info-marketing">
-                        {enricher.marketingDescription}
-                    </div>
+                    <Card variant="elevated">
+                        <Paragraph>{enricher.marketingDescription}</Paragraph>
+                    </Card>
                 )}
 
                 {enricher.configSchema && enricher.configSchema.length > 0 && (
-                    <div className="enricher-info-config-preview">
-                        <h4>Configuration Options</h4>
-                        <ul>
+                    <Stack gap="sm">
+                        <Heading level={4}>Configuration Options</Heading>
+                        <Stack gap="xs">
                             {enricher.configSchema.map(field => (
-                                <li key={field.key}>
-                                    <strong>{field.label}</strong>
-                                    {field.required && <span className="required-badge">Required</span>}
-                                    {field.description && (
-                                        <span className="field-description">{field.description}</span>
-                                    )}
-                                </li>
+                                <Card key={field.key}>
+                                    <Stack direction="horizontal" gap="sm" align="center" wrap>
+                                        <Paragraph inline bold>{field.label}</Paragraph>
+                                        {field.required && <Badge variant="warning" size="sm">Required</Badge>}
+                                        {field.description && (
+                                            <Paragraph inline muted size="sm">{field.description}</Paragraph>
+                                        )}
+                                    </Stack>
+                                </Card>
                             ))}
-                        </ul>
-                    </div>
+                        </Stack>
+                    </Stack>
                 )}
 
                 {enricher.transformations && enricher.transformations.length > 0 && (
-                    <div className="enricher-info-examples">
-                        <h4>Example Transformation</h4>
-                        <div className="transformation-preview">
-                            <div className="before">
-                                <span className="label">Before</span>
-                                <code>{enricher.transformations[0].before}</code>
-                            </div>
-                            <span className="arrow">→</span>
-                            <div className="after">
-                                <span className="label">After</span>
-                                <code>{enricher.transformations[0].after}</code>
-                            </div>
-                        </div>
-                    </div>
+                    <Stack gap="sm">
+                        <Heading level={4}>Example Transformation</Heading>
+                        <Card>
+                            <Stack direction="horizontal" gap="md" align="center" wrap>
+                                <Stack gap="xs" align="center">
+                                    <Paragraph inline muted size="sm">Before</Paragraph>
+                                    <Code>{enricher.transformations[0].before}</Code>
+                                </Stack>
+                                <Paragraph inline>→</Paragraph>
+                                <Stack gap="xs" align="center">
+                                    <Paragraph inline muted size="sm">After</Paragraph>
+                                    <Code>{enricher.transformations[0].after}</Code>
+                                </Stack>
+                            </Stack>
+                        </Card>
+                    </Stack>
                 )}
 
                 {enricher.useCases && enricher.useCases.length > 0 && (
-                    <div className="enricher-info-use-cases">
-                        <h4>Perfect For</h4>
-                        <ul>
+                    <Stack gap="sm">
+                        <Heading level={4}>Perfect For</Heading>
+                        <Stack gap="xs">
                             {enricher.useCases.slice(0, 3).map((useCase, i) => (
-                                <li key={i}>🎯 {useCase}</li>
+                                <Paragraph key={i}>🎯 {useCase}</Paragraph>
                             ))}
-                        </ul>
-                    </div>
+                        </Stack>
+                    </Stack>
                 )}
-
-                <div className="enricher-info-actions">
-                    <Button variant="secondary" onClick={onClose}>Close</Button>
-                </div>
-            </div>
-        </div>
+            </Stack>
+        </Modal>
     );
 };
 

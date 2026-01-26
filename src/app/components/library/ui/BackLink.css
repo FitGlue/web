@@ -1,0 +1,22 @@
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs, 0.25rem);
+  color: var(--color-text-secondary, #666);
+  text-decoration: none;
+  font-size: var(--font-size-sm, 0.875rem);
+  transition: color 0.15s ease;
+  cursor: pointer;
+}
+
+.back-link:hover {
+  color: var(--color-primary, #2563eb);
+}
+
+.back-link__arrow {
+  font-size: 1.1em;
+}
+
+.back-link__label {
+  font-weight: 500;
+}

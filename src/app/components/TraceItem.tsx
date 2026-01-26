@@ -1,9 +1,13 @@
 import React from 'react';
 import { ExecutionRecord } from '../services/ActivitiesService';
-import { StatusPill } from './ui/StatusPill';
+import { StatusPill } from './library/ui/StatusPill';
 import { humanizeServiceName, humanizeKey, humanizeEnumValue, formatDurationFromRange } from '../utils/formatters';
 import { useNerdMode } from '../state/NerdModeContext';
-import { Text } from './ui/Text';
+import { Text } from './library/ui/Text';
+import { Stack } from './library/layout/Stack';
+import { Badge } from './library/ui/Badge';
+import { Code } from './library/ui/Code';
+import { Link } from './library/navigation/Link';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { buildDestinationUrl } from '../utils/destinationUrls';
 
@@ -51,20 +55,20 @@ const truncateJson = (obj: any, depth = 0): any => {
 // Renderers
 const NerdRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution }) => {
     return (
-        <div className="trace-details">
-            <div className="trace-meta">
-                <span className="trace-time">{execution.timestamp ? new Date(execution.timestamp).toLocaleTimeString() : ''}</span>
+        <Stack gap="sm">
+            <Stack direction="horizontal" gap="md" wrap>
+                <Text variant="small">{execution.timestamp ? new Date(execution.timestamp).toLocaleTimeString() : ''}</Text>
                 {execution.startTime && execution.endTime && (
-                    <span className="trace-duration">Duration: {formatDurationFromRange(execution.startTime, execution.endTime)}</span>
+                    <Text variant="small">Duration: {formatDurationFromRange(execution.startTime, execution.endTime)}</Text>
                 )}
                 {execution.triggerType && (
-                    <span className="trace-trigger">Trigger: {execution.triggerType}</span>
+                    <Text variant="small">Trigger: {execution.triggerType}</Text>
                 )}
-            </div>
+            </Stack>
             {execution.inputsJson && (
-                <details className="trace-outputs">
+                <details>
                     <summary>Inputs</summary>
-                    <pre className="trace-json">{(() => {
+                    <Code>{(() => {
                         try {
                             const parsed = JSON.parse(execution.inputsJson);
                             const truncated = truncateJson(parsed);
@@ -72,13 +76,13 @@ const NerdRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution }) =
                         } catch {
                             return execution.inputsJson;
                         }
-                    })()}</pre>
+                    })()}</Code>
                 </details>
             )}
             {execution.outputsJson && (
-                <details className="trace-outputs">
+                <details>
                     <summary>Outputs</summary>
-                    <pre className="trace-json">{(() => {
+                    <Code>{(() => {
                         try {
                             const parsed = JSON.parse(execution.outputsJson);
                             const truncated = truncateJson(parsed);
@@ -86,10 +90,10 @@ const NerdRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution }) =
                         } catch {
                             return execution.outputsJson;
                         }
-                    })()}</pre>
+                    })()}</Code>
                 </details>
             )}
-        </div>
+        </Stack>
     );
 };
 
@@ -107,13 +111,13 @@ const EnricherRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution 
     const providerExecutions = details.provider_executions || [];
 
     return (
-        <div className="trace-custom-content">
+        <Stack gap="sm">
             {Array.isArray(providerExecutions) && providerExecutions.length > 0 && (
                 <>
                     <Text variant="muted">
                         Ran {providerExecutions.length} enrichment provider{providerExecutions.length !== 1 ? 's' : ''}
                     </Text>
-                    <div className="enricher-list">
+                    <Stack gap="xs">
                         {providerExecutions.map((providerExec: Record<string, unknown>, idx: number) => {
                             const metadata = (providerExec.Metadata as Record<string, unknown>) || {};
                             const metadataEntries = Object.entries(metadata);
@@ -141,30 +145,28 @@ const EnricherRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution 
                                 // 'success' in metadata means truly successful, no override needed
                             }
                             const providerName = (typeof providerExec.ProviderName === 'string' ? providerExec.ProviderName : `Provider ${idx}`);
+                            const badgeVariant = status === 'SUCCESS' ? 'success' : status === 'ERROR' ? 'error' : status === 'SKIPPED' ? 'warning' : 'default';
 
                             return (
-                                <div key={idx} className={`enricher-item status-${status.toLowerCase()}`}>
-                                    <div className="enricher-item-header">
-                                        <span className="enricher-item-name">{humanizeServiceName(providerName)}</span>
-                                        <span className={`enricher-status enricher-status-${status.toLowerCase()}`}>{status}</span>
-                                    </div>
+                                <Stack key={idx} gap="xs">
+                                    <Stack direction="horizontal" gap="sm" align="center">
+                                        <Text>{humanizeServiceName(providerName)}</Text>
+                                        <Badge variant={badgeVariant} size="sm">{status}</Badge>
+                                    </Stack>
                                     {metadataEntries.length > 0 && (
-                                        <div className="enricher-metadata">
+                                        <Stack gap="xs">
                                             {metadataEntries.map(([key, value]) => (
-                                                <div key={key} className="metadata-row">
-                                                    <span className="metadata-key">{humanizeKey(key)}:</span>
-                                                    <span className="metadata-value">{String(value)}</span>
-                                                </div>
+                                                <Text key={key} variant="small">{humanizeKey(key)}: {String(value)}</Text>
                                             ))}
-                                        </div>
+                                        </Stack>
                                     )}
-                                </div>
+                                </Stack>
                             );
                         })}
-                    </div>
+                    </Stack>
                 </>
             )}
-        </div>
+        </Stack>
     );
 };
 
@@ -182,24 +184,22 @@ const RouterRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution })
     const appliedEnrichments = Array.isArray(details.applied_enrichments) ? details.applied_enrichments : [];
 
     return (
-        <div className="trace-custom-content">
+        <Stack gap="sm">
              <Text>Routed to <strong>{routedDestinations.length}</strong> destination{routedDestinations.length !== 1 ? 's' : ''}</Text>
              {routedDestinations.length > 0 && (
-                 <div className="router-destinations">
+                 <Stack direction="horizontal" gap="sm" wrap>
                      {routedDestinations.map((d: unknown, idx: number) => {
                          const dest = d as Record<string, unknown>;
-                         return <span key={idx} className="destination-chip">{String(dest.destination || d)}</span>;
+                         return <Badge key={idx} variant="info">{String(dest.destination || d)}</Badge>;
                      })}
-                 </div>
+                 </Stack>
              )}
              {appliedEnrichments.length > 0 && (
-                <div className="applied-enrichments">
-                   <Text variant="muted">
-                       Applied: {appliedEnrichments.map((e: unknown) => humanizeEnumValue(String(e))).join(', ')}
-                   </Text>
-                </div>
+                <Text variant="muted">
+                    Applied: {appliedEnrichments.map((e: unknown) => humanizeEnumValue(String(e))).join(', ')}
+                </Text>
              )}
-        </div>
+        </Stack>
     );
 };
 
@@ -250,42 +250,29 @@ const DestinationUploaderRenderer: React.FC<DestinationUploaderRendererProps> = 
         : null;
 
     return (
-        <div className="trace-custom-content">
-            <div className="info-grid">
-                {activityNameStr && (
-                    <div className="info-row">
-                        <span className="info-label">Activity:</span>
-                        <span className="info-value">{activityNameStr}</span>
-                    </div>
-                )}
-                {activityTypeStr && (
-                    <div className="info-row">
-                        <span className="info-label">Type:</span>
-                        <span className="info-value">{activityTypeStr}</span>
-                    </div>
-                )}
-                {externalIdStr && (
-                    <div className="info-row">
-                        <span className="info-label">{externalIdLabel}:</span>
-                        <span className="info-value">
-                            {externalUrl ? (
-                                <a href={externalUrl} target="_blank" rel="noopener noreferrer" className="external-link">
-                                    {externalIdStr} ↗
-                                </a>
-                            ) : (
-                                externalIdStr
-                            )}
-                        </span>
-                    </div>
-                )}
-                {uploadStatusStr && uploadStatusStr !== 'SUCCESS' && (
-                    <div className="info-row">
-                        <span className="info-label">Status:</span>
-                        <span className="info-value">{uploadStatusStr}</span>
-                    </div>
-                )}
-            </div>
-        </div>
+        <Stack gap="xs">
+            {activityNameStr && (
+                <Text variant="small">Activity: {activityNameStr}</Text>
+            )}
+            {activityTypeStr && (
+                <Text variant="small">Type: {activityTypeStr}</Text>
+            )}
+            {externalIdStr && (
+                <Text variant="small">
+                    {externalIdLabel}:{' '}
+                    {externalUrl ? (
+                        <Link to={externalUrl} external>
+                            {externalIdStr} ↗
+                        </Link>
+                    ) : (
+                        externalIdStr
+                    )}
+                </Text>
+            )}
+            {uploadStatusStr && uploadStatusStr !== 'SUCCESS' && (
+                <Text variant="small">Status: {uploadStatusStr}</Text>
+            )}
+        </Stack>
     );
 };
 
@@ -320,30 +307,19 @@ const WebhookRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution }
     const activityTypeStr = activityType ? String(activityType) : null;
 
     return (
-        <div className="trace-custom-content">
-            <div className="info-grid">
-                {workoutIdStr && (
-                    <div className="info-row">
-                        <span className="info-label">Workout ID:</span>
-                        <span className="info-value code">{workoutIdStr}</span>
-                    </div>
-                )}
-                {activityNameStr && (
-                    <div className="info-row">
-                        <span className="info-label">Activity:</span>
-                        <span className="info-value">{activityNameStr}</span>
-                    </div>
-                )}
-                {activityTypeStr && (
-                    <div className="info-row">
-                        <span className="info-label">Type:</span>
-                        <span className="info-value">{activityTypeStr}</span>
-                    </div>
-                )}
-            </div>
-        </div>
+        <Stack gap="xs">
+            {workoutIdStr && (
+                <Text variant="small">Workout ID: {workoutIdStr}</Text>
+            )}
+            {activityNameStr && (
+                <Text variant="small">Activity: {activityNameStr}</Text>
+            )}
+            {activityTypeStr && (
+                <Text variant="small">Type: {activityTypeStr}</Text>
+            )}
+        </Stack>
     );
-}
+};
 
 export const TraceItem: React.FC<TraceItemProps> = ({ execution, index }) => {
     const { isNerdMode } = useNerdMode();
@@ -384,19 +360,19 @@ export const TraceItem: React.FC<TraceItemProps> = ({ execution, index }) => {
     const hasCustomContent = customContent !== null;
 
     return (
-        <div className={`trace-item status-${execution.status?.toLowerCase()}`}>
-            <div className="trace-step-number">{index + 1}</div>
-            <div className="trace-content">
-                <div className="trace-header">
-                    <span className="trace-service">{serviceName}</span>
+        <Stack direction="horizontal" gap="md">
+            <Text>{index + 1}</Text>
+            <Stack gap="sm" fullWidth>
+                <Stack direction="horizontal" gap="sm" align="center">
+                    <Text>{serviceName}</Text>
                     <StatusPill status={execution.status || 'UNKNOWN'} />
-                </div>
+                </Stack>
 
-                {execution.errorMessage && <div className="trace-error">{execution.errorMessage}</div>}
+                {execution.errorMessage && <Text variant="muted">{execution.errorMessage}</Text>}
 
                 {!isNerdMode && hasCustomContent && customContent}
                 {(isNerdMode || !hasCustomContent) && <NerdRenderer execution={execution} />}
-            </div>
-        </div>
+            </Stack>
+        </Stack>
     );
 };

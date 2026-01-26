@@ -1,0 +1,244 @@
+/* ==========================================================================
+   DashboardSummaryCard - Consistent Dashboard Card Layout
+   ========================================================================== */
+@import '../tokens.css';
+
+.dashboard-summary-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.25rem;
+  background: var(--color-surface-elevated, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-lg, 12px);
+}
+
+/* Header Row - Title left, Action right */
+.dashboard-summary-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dashboard-summary-card__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #ffffff);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-summary-card__icon {
+  font-size: 1.1rem;
+}
+
+.dashboard-summary-card__link {
+  font-size: 0.8125rem;
+  color: var(--color-primary, #ff1b8d);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.dashboard-summary-card__link:hover {
+  opacity: 0.8;
+}
+
+/* Content Area - Grows to fill space */
+.dashboard-summary-card__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Footer - Always at bottom */
+.dashboard-summary-card__footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.dashboard-summary-card__footer strong {
+  color: var(--color-text-primary, #ffffff);
+}
+
+/* ========================================================================
+   Summary Item Styles - For consistent list items within cards
+   ======================================================================== */
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-item__icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-item__icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.summary-item__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.summary-item__title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary, #ffffff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-item__subtitle {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.summary-item__status {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+}
+
+.summary-item__status--connected {
+  color: var(--color-success, #22c55e);
+}
+
+.summary-item__status--disconnected {
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.5));
+}
+
+/* ========================================================================
+   Pending Input Item - Compact card style for action items
+   ======================================================================== */
+
+.pending-input-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pending-input-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.pending-input-item--awaiting {
+  border-left: 3px solid var(--color-warning, #f59e0b);
+}
+
+.pending-input-item--needs-input {
+  border-left: 3px solid var(--color-primary, #ff1b8d);
+}
+
+.pending-input-item__icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.pending-input-item__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.pending-input-item__title {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-primary, #ffffff);
+}
+
+.pending-input-item__subtitle {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.pending-input-item__arrow {
+  flex-shrink: 0;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.5));
+  font-size: 0.875rem;
+}
+
+/* ========================================================================
+   Pipeline Summary Item - Compact horizontal layout
+   ======================================================================== */
+
+.pipeline-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0;
+  font-size: 0.8125rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pipeline-item:last-child {
+  border-bottom: none;
+}
+
+.pipeline-item__name {
+  font-weight: 500;
+  color: var(--color-text-primary, #ffffff);
+  white-space: nowrap;
+}
+
+.pipeline-item__flow {
+  flex: 1;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pipeline-item__enrichers {
+  flex-shrink: 0;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.5));
+  font-size: 0.75rem;
+}
+
+/* ========================================================================
+   Empty State - Centered content for no-data states
+   ======================================================================== */
+
+.dashboard-empty-state {
+  padding: 1rem 0;
+  text-align: center;
+}
+
+.dashboard-empty-state__icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}

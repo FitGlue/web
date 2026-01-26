@@ -1,0 +1,52 @@
+/* ==========================================================================
+   RefreshControl Component - Subtle Grey Button with Spinning Arrow
+   ========================================================================== */
+
+.refresh-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refresh-control:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--color-text-primary, #ffffff);
+}
+
+.refresh-control:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.refresh-control__icon {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+/* Spinning animation when loading */
+.refresh-control--loading .refresh-control__icon {
+  animation: refresh-spin 1s linear infinite;
+}
+
+.refresh-control__text {
+  white-space: nowrap;
+}
+
+@keyframes refresh-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

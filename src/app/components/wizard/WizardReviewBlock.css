@@ -1,0 +1,11 @@
+.wizard-review-block {
+  gap: var(--spacing-xs, 0.25rem);
+}
+
+.wizard-review-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary, #a0a0a0);
+}

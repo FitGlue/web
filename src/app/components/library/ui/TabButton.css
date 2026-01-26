@@ -1,0 +1,78 @@
+/* TabButton component styles - Tab-style navigation */
+.tab-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.tab-button:hover {
+  color: var(--color-text, #ffffff);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-button--active {
+  color: #ffffff;
+  background: linear-gradient(180deg, rgba(255, 27, 141, 0.15) 0%, transparent 100%);
+  border-bottom-color: var(--color-primary, #ff1b8d);
+}
+
+.tab-button--active::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary, #ff1b8d), var(--color-secondary, #9d4edd));
+  border-radius: 3px 3px 0 0;
+}
+
+.tab-button--warning.tab-button--active {
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.15) 0%, transparent 100%);
+  border-bottom-color: #f59e0b;
+}
+
+.tab-button--warning.tab-button--active::after {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.tab-button__icon {
+  font-size: 1rem;
+}
+
+.tab-button__count {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+.tab-button--active .tab-button__count {
+  background: linear-gradient(135deg, var(--color-primary, #ff1b8d), var(--color-secondary, #9d4edd));
+  color: white;
+}
+
+.tab-button--warning.tab-button--active .tab-button__count {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  color: #1a1a2e;
+}
+
+/* Tab container styling */
+.tab-container {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+}

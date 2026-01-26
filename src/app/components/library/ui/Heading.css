@@ -1,0 +1,64 @@
+/* ==========================================================================
+   Heading Component - Typography
+   ========================================================================== */
+@import '../tokens.css';
+
+.ui-heading {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+}
+
+/* Size variants */
+.ui-heading--xs {
+  font-size: 0.875rem;
+}
+
+.ui-heading--sm {
+  font-size: 1rem;
+}
+
+.ui-heading--md {
+  font-size: 1.125rem;
+}
+
+.ui-heading--lg {
+  font-size: 1.25rem;
+}
+
+.ui-heading--xl {
+  font-size: 1.5rem;
+}
+
+.ui-heading--2xl {
+  font-size: 2rem;
+}
+
+/* Modifiers */
+.ui-heading--muted {
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.ui-heading--centered {
+  text-align: center;
+}
+
+/* Gradient Text - Pink/Purple Brand */
+.ui-heading--gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ui-heading--2xl {
+    font-size: 1.75rem;
+  }
+
+  .ui-heading--xl {
+    font-size: 1.25rem;
+  }
+}

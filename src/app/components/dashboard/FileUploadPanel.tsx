@@ -1,8 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { Card } from '../ui/Card';
-import { CardHeader } from '../ui/CardHeader';
-import { Button } from '../ui/Button';
-import { Input, Textarea, FormField } from '../forms';
+import { Card } from '../library/ui/Card';
+import { CardHeader } from '../library/ui/CardHeader';
+import { Button } from '../library/ui/Button';
+import { Paragraph } from '../library/ui/Paragraph';
+import { Heading } from '../library/ui/Heading';
+import { Input, Textarea, FormField } from '../library/forms';
+import { Stack } from '../library/layout/Stack';
+import { Grid } from '../library/layout/Grid';
 import { useApi } from '../../hooks/useApi';
 import { usePipelines } from '../../hooks/usePipelines';
 import './FileUploadPanel.css';
@@ -49,14 +53,12 @@ export const FileUploadPanel: React.FC = () => {
     setMessage(null);
 
     try {
-      // Read file as ArrayBuffer and convert to base64
       const arrayBuffer = await file.arrayBuffer();
       const bytes = new Uint8Array(arrayBuffer);
       let binary = '';
       bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
       const base64Data = btoa(binary);
 
-      // Send to fit-parser handler
       const payload = {
         fitFileBase64: base64Data,
         title: title || file.name.replace('.fit', ''),
@@ -86,85 +88,90 @@ export const FileUploadPanel: React.FC = () => {
   };
 
   return (
-    <Card className="dashboard-card upload-card">
-      <CardHeader icon="📤" title="Upload FIT File" />
+    <Card>
+      <Stack gap="md">
+        <CardHeader icon="📤" title="Upload FIT File" />
 
-      <div className="upload-grid">
-        {/* Left: File Selection */}
-        <div className="upload-subcard">
-          <div className="subcard-label">Select File</div>
-          <div
-            className={`upload-dropzone ${file ? 'has-file' : ''}`}
-            onClick={() => !uploading && fileInputRef.current?.click()}
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".fit"
-              onChange={handleFileSelect}
-              disabled={uploading}
-              className="upload-file-input"
-            />
-            {file ? (
-              <>
-                <span className="dropzone-icon">📁</span>
-                <span className="dropzone-filename">{file.name}</span>
-                <span className="dropzone-size">{(file.size / 1024).toFixed(1)} KB</span>
-              </>
-            ) : (
-              <>
-                <span className="dropzone-icon">📂</span>
-                <span className="dropzone-text">Click to select .fit file</span>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Right: Title & Description */}
-        <div className="upload-subcard">
-          <div className="subcard-label">Activity Details</div>
-          <div className="upload-fields">
-            <FormField label="Title" htmlFor="upload-title">
-              <Input
-                id="upload-title"
-                type="text"
-                placeholder="e.g., Morning Run"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+        <Grid cols={2} gap="md">
+          {/* Left: File Selection */}
+          <Stack gap="sm">
+            <Heading level={5}>Select File</Heading>
+            {/* Using div for clickable dropzone - Card onClick doesn't fit this pattern */}
+            <div
+              className={`upload-dropzone ${file ? 'has-file' : ''}`}
+              onClick={() => !uploading && fileInputRef.current?.click()}
+            >
+              {/* Hidden file input - semantic HTML form element */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".fit"
+                onChange={handleFileSelect}
                 disabled={uploading}
+                style={{ display: 'none' }}
               />
-            </FormField>
-            <FormField label="Description" htmlFor="upload-desc">
-              <Textarea
-                id="upload-desc"
-                placeholder="Add notes about this activity..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                disabled={uploading}
-                rows={2}
-              />
-            </FormField>
-          </div>
-        </div>
-      </div>
+              {file ? (
+                <Stack gap="xs" align="center">
+                  <Paragraph inline>📁</Paragraph>
+                  <Paragraph inline bold>{file.name}</Paragraph>
+                  <Paragraph inline muted size="sm">{(file.size / 1024).toFixed(1)} KB</Paragraph>
+                </Stack>
+              ) : (
+                <Stack gap="xs" align="center">
+                  <Paragraph inline>📂</Paragraph>
+                  <Paragraph inline muted>Click to select .fit file</Paragraph>
+                </Stack>
+              )}
+            </div>
+          </Stack>
 
-      {/* Status message */}
-      {message && (
-        <div className={`upload-message ${message.type}`}>
-          {message.type === 'success' ? '✓' : '✕'} {message.text}
-        </div>
-      )}
+          {/* Right: Title & Description */}
+          <Stack gap="sm">
+            <Heading level={5}>Activity Details</Heading>
+            <Stack gap="sm">
+              <FormField label="Title" htmlFor="upload-title">
+                <Input
+                  id="upload-title"
+                  type="text"
+                  placeholder="e.g., Morning Run"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  disabled={uploading}
+                />
+              </FormField>
+              <FormField label="Description" htmlFor="upload-desc">
+                <Textarea
+                  id="upload-desc"
+                  placeholder="Add notes about this activity..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  disabled={uploading}
+                  rows={2}
+                />
+              </FormField>
+            </Stack>
+          </Stack>
+        </Grid>
 
-      {/* Full-width upload button */}
-      <div className="upload-action">
+        {/* Status message */}
+        {message && (
+          <Card variant={message.type === 'success' ? 'elevated' : 'default'}>
+            <Paragraph>
+              {message.type === 'success' ? '✓' : '✕'} {message.text}
+            </Paragraph>
+          </Card>
+        )}
+
+        {/* Upload button */}
         <Button
           variant="primary"
           onClick={handleUpload}
           disabled={!file || uploading}
+          fullWidth
         >
           {uploading ? '⏳ Uploading...' : '🚀 Upload & Process'}
         </Button>
-      </div>
+      </Stack>
     </Card>
   );
 };

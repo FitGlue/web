@@ -1,0 +1,37 @@
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.settings-section--danger {
+  border-color: var(--color-error);
+  background: rgba(248, 113, 113, 0.05);
+}
+
+.settings-section__title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.settings-section--danger .settings-section__title {
+  color: var(--color-error);
+}
+
+.settings-section__description {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.settings-section__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}

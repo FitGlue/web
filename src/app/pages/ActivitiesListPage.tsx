@@ -2,15 +2,12 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useActivities } from '../hooks/useActivities';
 import { useRealtimeActivities } from '../hooks/useRealtimeActivities';
-import { PageLayout } from '../components/layout/PageLayout';
+import { PageLayout, Stack } from '../components/library/layout';
 import { EnrichedActivityCard } from '../components/dashboard/EnrichedActivityCard';
 import { UnsyncedActivityCard } from '../components/dashboard/UnsyncedActivityCard';
-import { CardSkeleton } from '../components/ui/CardSkeleton';
-import { StatInline } from '../components/ui/StatInline';
-import { TabButton } from '../components/ui/TabButton';
-import '../components/ui/CardSkeleton.css';
+import { CardSkeleton, StatInline, LiveToggle, Heading, Paragraph, Button, TabbedCard } from '../components/library/ui';
+import '../components/library/ui/CardSkeleton.css';
 import { ActivitiesService, SynchronizedActivity, UnsynchronizedEntry } from '../services/ActivitiesService';
-import './ActivitiesListPage.css';
 
 type TabMode = 'enhanced' | 'failed';
 const PAGE_SIZE = 20;
@@ -21,7 +18,6 @@ const ActivitiesListPage: React.FC = () => {
     const [tabMode, setTabMode] = useState<TabMode>(initialTab);
     const navigate = useNavigate();
 
-    // Pagination state
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMoreActivities, setHasMoreActivities] = useState(true);
     const [hasMoreUnsync, setHasMoreUnsync] = useState(true);
@@ -33,30 +29,20 @@ const ActivitiesListPage: React.FC = () => {
         setSearchParams({ tab: mode });
     };
 
-    // Fetch initial data with execution details for enriched view
-    // Always use 'dashboard' mode as it fetches both activities and unsynchronized data
     const { activities: initialActivities, unsynchronized: initialUnsync, stats: initialStats, loading, refreshAll, lastUpdated } = useActivities('dashboard');
 
-    // Real-time sync
     const { isEnabled: liveEnabled, isListening, toggleRealtime } = useRealtimeActivities(true, 20);
 
-    // Live toggle button for header
     const liveToggle = (
-        <button
-            className={`live-toggle-btn ${isListening ? 'active' : ''}`}
-            onClick={toggleRealtime}
-            title={liveEnabled ? 'Live updates enabled (click to disable)' : 'Live updates disabled (click to enable)'}
-            aria-label={liveEnabled ? 'Disable live updates' : 'Enable live updates'}
-        >
-            <span className={`live-dot ${isListening ? 'pulsing' : ''}`} />
-            <span className="live-label">{isListening ? 'LIVE' : 'OFF'}</span>
-        </button>
+        <LiveToggle
+            isEnabled={liveEnabled}
+            isListening={isListening}
+            onToggle={toggleRealtime}
+        />
     );
 
-    // Combine initial + paginated data
     const activities = useMemo(() => {
         const combined = [...initialActivities, ...extraActivities];
-        // Dedupe by activityId
         const seen = new Set<string>();
         return combined.filter(a => {
             if (!a.activityId || seen.has(a.activityId)) return false;
@@ -67,7 +53,6 @@ const ActivitiesListPage: React.FC = () => {
 
     const unsynchronized = useMemo(() => {
         const combined = [...initialUnsync, ...extraUnsync];
-        // Dedupe by pipelineExecutionId
         const seen = new Set<string>();
         return combined.filter(e => {
             if (!e.pipelineExecutionId || seen.has(e.pipelineExecutionId)) return false;
@@ -79,7 +64,6 @@ const ActivitiesListPage: React.FC = () => {
     const handleActivityClick = (id: string) => navigate(`/activities/${id}`);
     const handleUnsyncClick = (pipelineExecutionId: string) => navigate(`/activities/unsynchronized/${pipelineExecutionId}`);
 
-    // Load more activities
     const loadMoreActivities = useCallback(async () => {
         if (loadingMore || !hasMoreActivities) return;
 
@@ -120,7 +104,6 @@ const ActivitiesListPage: React.FC = () => {
         }
     }, [unsynchronized.length, loadingMore, hasMoreUnsync]);
 
-    // Reset pagination when refreshing
     const handleRefresh = () => {
         setExtraActivities([]);
         setExtraUnsync([]);
@@ -129,7 +112,6 @@ const ActivitiesListPage: React.FC = () => {
         refreshAll();
     };
 
-    // Use backend-provided stats instead of local array length
     const stats = useMemo(() => {
         return {
             totalSynced: initialStats?.totalSynced || 0,
@@ -139,7 +121,7 @@ const ActivitiesListPage: React.FC = () => {
 
     return (
         <PageLayout
-            title="Activities"
+            title="Boosted Activities"
             backTo="/"
             backLabel="Dashboard"
             onRefresh={handleRefresh}
@@ -147,22 +129,19 @@ const ActivitiesListPage: React.FC = () => {
             lastUpdated={lastUpdated}
             headerActions={liveToggle}
         >
-            <div className="activities-page">
-                {/* Header */}
-                <div className="activities-page__header">
-                    <div className="activities-page__header-left">
-                        <h2 className="activities-page__title">
-                            <span className="activities-page__title-icon">✨</span>
-                            Your Enhanced Activities
-                        </h2>
-                        <p className="activities-page__subtitle">
-                            Full history of your synced activities and pipeline executions
-                        </p>
-                    </div>
-                </div>
+            <Stack gap="lg">
+                <Stack gap="sm">
+                    <Stack direction="horizontal" align="center" gap="sm">
+                        <Heading level={2}>
+                            🚀 Your Boosted Activities
+                        </Heading>
+                    </Stack>
+                    <Paragraph muted>
+                        Every activity you&apos;ve supercharged with FitGlue magic
+                    </Paragraph>
+                </Stack>
 
-                {/* Stats Row */}
-                <div className="activities-page__stats">
+                <Stack direction="horizontal" gap="md">
                     <StatInline
                         value={stats.totalSynced}
                         label="Total Boosted"
@@ -175,47 +154,39 @@ const ActivitiesListPage: React.FC = () => {
                         subLabel="This Month"
                         loading={loading && !initialStats?.monthlySynced}
                     />
-                </div>
+                </Stack>
 
-                {/* Tab Navigation */}
-                <div className="activities-page__tabs">
-                    <TabButton
-                        icon="✨"
-                        label="Enhanced"
-                        active={tabMode === 'enhanced'}
-                        count={activities.length}
-                        onClick={() => handleTabChange('enhanced')}
-                    />
-                    <TabButton
-                        icon="⚠️"
-                        label="Failed / Stalled"
-                        active={tabMode === 'failed'}
-                        count={unsynchronized.length}
-                        variant="warning"
-                        onClick={() => handleTabChange('failed')}
-                    />
-                </div>
-
-                {/* Enhanced Tab Content */}
-                {tabMode === 'enhanced' && (
-                    <>
-                        {loading && activities.length === 0 ? (
-                            <div className="activities-page__grid">
-                                <CardSkeleton variant="activity" />
-                                <CardSkeleton variant="activity" />
-                                <CardSkeleton variant="activity" />
-                            </div>
-                        ) : activities.length === 0 ? (
-                            <div className="activities-page__empty">
-                                <div className="activities-page__empty-icon">🏃</div>
-                                <h3 className="activities-page__empty-title">No Activities Yet</h3>
-                                <p className="activities-page__empty-message">
-                                    Your synchronized activities will appear here once you connect your fitness apps.
-                                </p>
-                            </div>
-                        ) : (
-                            <>
-                                <div className="activities-page__grid">
+                <TabbedCard
+                    tabs={[
+                        { id: 'enhanced', icon: '🚀', label: 'Boosted', count: activities.length },
+                        { id: 'failed', icon: '⚠️', label: 'Issues', count: unsynchronized.length, variant: 'warning' },
+                    ]}
+                    activeTab={tabMode}
+                    onTabChange={(tabId) => handleTabChange(tabId as TabMode)}
+                    footerText={
+                        tabMode === 'enhanced'
+                            ? (activities.length > 0 ? `${activities.length} boosted` : undefined)
+                            : (unsynchronized.length > 0 ? `${unsynchronized.length} issues` : undefined)
+                    }
+                >
+                    {tabMode === 'enhanced' && (
+                        <>
+                            {loading && activities.length === 0 ? (
+                                <Stack gap="md">
+                                    <CardSkeleton variant="activity" />
+                                    <CardSkeleton variant="activity" />
+                                    <CardSkeleton variant="activity" />
+                                </Stack>
+                            ) : activities.length === 0 ? (
+                                <Stack gap="md" align="center">
+                                    <Paragraph size="lg">🏃</Paragraph>
+                                    <Heading level={3}>No Activities Yet</Heading>
+                                    <Paragraph muted centered>
+                                        Your boosted activities will appear here once you connect your fitness apps.
+                                    </Paragraph>
+                                </Stack>
+                            ) : (
+                                <Stack gap="md">
                                     {activities.map(activity => (
                                         <EnrichedActivityCard
                                             key={activity.activityId}
@@ -223,43 +194,40 @@ const ActivitiesListPage: React.FC = () => {
                                             onClick={() => handleActivityClick(activity.activityId!)}
                                         />
                                     ))}
-                                </div>
 
-                                {hasMoreActivities && (
-                                    <div className="activities-page__pagination">
-                                        <button
-                                            className="activities-page__load-more"
-                                            onClick={loadMoreActivities}
-                                            disabled={loadingMore}
-                                        >
-                                            {loadingMore ? 'Loading...' : 'Load More Activities'}
-                                        </button>
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </>
-                )}
+                                    {hasMoreActivities && (
+                                        <Stack align="center">
+                                            <Button
+                                                variant="secondary"
+                                                onClick={loadMoreActivities}
+                                                disabled={loadingMore}
+                                            >
+                                                {loadingMore ? 'Loading...' : 'Load More Activities'}
+                                            </Button>
+                                        </Stack>
+                                    )}
+                                </Stack>
+                            )}
+                        </>
+                    )}
 
-                {/* Failed/Stalled Tab Content */}
-                {tabMode === 'failed' && (
-                    <>
-                        {loading && unsynchronized.length === 0 ? (
-                            <div className="activities-page__grid">
-                                <CardSkeleton variant="activity" />
-                                <CardSkeleton variant="activity" />
-                            </div>
-                        ) : unsynchronized.length === 0 ? (
-                            <div className="activities-page__empty">
-                                <div className="activities-page__empty-icon">✅</div>
-                                <h3 className="activities-page__empty-title">All Synced!</h3>
-                                <p className="activities-page__empty-message">
-                                    No failed or stalled pipeline executions. Everything is running smoothly!
-                                </p>
-                            </div>
-                        ) : (
-                            <>
-                                <div className="activities-page__grid">
+                    {tabMode === 'failed' && (
+                        <>
+                            {loading && unsynchronized.length === 0 ? (
+                                <Stack gap="md">
+                                    <CardSkeleton variant="activity" />
+                                    <CardSkeleton variant="activity" />
+                                </Stack>
+                            ) : unsynchronized.length === 0 ? (
+                                <Stack gap="md" align="center">
+                                    <Paragraph size="lg">✅</Paragraph>
+                                    <Heading level={3}>All Good!</Heading>
+                                    <Paragraph muted centered>
+                                        No issues to report. Everything is running smoothly!
+                                    </Paragraph>
+                                </Stack>
+                            ) : (
+                                <Stack gap="md">
                                     {unsynchronized.map(entry => (
                                         <UnsyncedActivityCard
                                             key={entry.pipelineExecutionId}
@@ -267,24 +235,24 @@ const ActivitiesListPage: React.FC = () => {
                                             onClick={() => handleUnsyncClick(entry.pipelineExecutionId!)}
                                         />
                                     ))}
-                                </div>
 
-                                {hasMoreUnsync && (
-                                    <div className="activities-page__pagination">
-                                        <button
-                                            className="activities-page__load-more"
-                                            onClick={loadMoreUnsync}
-                                            disabled={loadingMore}
-                                        >
-                                            {loadingMore ? 'Loading...' : 'Load More'}
-                                        </button>
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </>
-                )}
-            </div>
+                                    {hasMoreUnsync && (
+                                        <Stack align="center">
+                                            <Button
+                                                variant="secondary"
+                                                onClick={loadMoreUnsync}
+                                                disabled={loadingMore}
+                                            >
+                                                {loadingMore ? 'Loading...' : 'Load More'}
+                                            </Button>
+                                        </Stack>
+                                    )}
+                                </Stack>
+                            )}
+                        </>
+                    )}
+                </TabbedCard>
+            </Stack>
         </PageLayout>
     );
 };

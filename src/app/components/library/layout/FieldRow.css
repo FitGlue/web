@@ -1,0 +1,51 @@
+.field-row {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.field-row--vertical {
+  flex-direction: column;
+}
+
+.field-row--horizontal {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.field-row__label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.field-row__value {
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.field-row--sm .field-row__label {
+  font-size: 0.75rem;
+}
+
+.field-row--sm .field-row__value {
+  font-size: 0.85rem;
+}
+
+.field-row--lg .field-row__label {
+  font-size: 0.95rem;
+}
+
+.field-row--lg .field-row__value {
+  font-size: 1.1rem;
+}
+
+.field-row__action {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.field-row--vertical .field-row__action {
+  margin-left: 0;
+  margin-top: var(--space-xs);
+}

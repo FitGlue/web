@@ -5,7 +5,8 @@ import { formatDestination } from '../../types/pb/enum-formatters';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { PluginManifest } from '../types/plugin';
-import './RepostActionsMenu.css';
+import { Modal, Button, Card, Heading, Paragraph } from './library/ui';
+import { Stack } from './library/layout';
 
 interface AvailableDestination {
     key: string;
@@ -14,18 +15,13 @@ interface AvailableDestination {
     enumValue: Destination;
 }
 
-// Generate available destinations from registry plugins
-// Only includes destinations where user has the required integration connected
 const getAvailableDestinations = (
     registryDestinations: PluginManifest[],
     userIntegrations: Record<string, { connected?: boolean } | undefined> | null
 ): AvailableDestination[] => {
     const destinations: AvailableDestination[] = [];
 
-    // Use registry destinations instead of enum iteration
-    // Registry already filters out isTemporarilyUnavailable plugins
     for (const destPlugin of registryDestinations) {
-        // Check if user has the required integrations connected
         const hasRequiredIntegrations = !destPlugin.requiredIntegrations?.length ||
             destPlugin.requiredIntegrations.every(integrationId => {
                 const integration = userIntegrations?.[integrationId];
@@ -34,7 +30,6 @@ const getAvailableDestinations = (
 
         if (!hasRequiredIntegrations) continue;
 
-        // Find the matching enum value
         const enumKey = `DESTINATION_${destPlugin.id.toUpperCase()}`;
         const enumValue = Destination[enumKey as keyof typeof Destination];
 
@@ -70,18 +65,13 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<RepostResponse | null>(null);
 
-    // Get registry destinations for icon lookup and filtering
     const { destinations: registryDestinations } = usePluginRegistry();
-    // Get user's connected integrations to filter available destinations
     const { integrations: userIntegrations, fetchIfNeeded: fetchIntegrations } = useIntegrations();
 
-    // Fetch user integrations on mount
     useEffect(() => {
         fetchIntegrations();
     }, [fetchIntegrations]);
 
-    // Compute available destinations from registry (memoized)
-    // Only includes destinations where user has the required integration connected
     const availableDestinations = useMemo(
         () => getAvailableDestinations(
             registryDestinations,
@@ -90,10 +80,8 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
         [registryDestinations, userIntegrations]
     );
 
-    // Get destinations that are already synced
     const syncedDestinations = activity.destinations ? Object.keys(activity.destinations) : [];
 
-    // Get available destinations (not yet synced)
     const missedDestinations = availableDestinations.filter(
         d => !syncedDestinations.includes(d.key)
     );
@@ -153,138 +141,147 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
     }
 
     return (
-        <div className="repost-actions">
+        <Stack gap="sm">
             {/* Dropdown Toggle */}
-            <button
-                className="repost-actions__toggle"
+            <Button
+                variant="secondary"
                 onClick={() => setIsOpen(!isOpen)}
                 aria-expanded={isOpen}
             >
-                <span className="repost-actions__toggle-icon">⚡</span>
-                <span className="repost-actions__toggle-label">Magic Actions</span>
-                <span className="repost-actions__toggle-chevron">{isOpen ? '▲' : '▼'}</span>
-            </button>
+                <Stack direction="horizontal" gap="sm" align="center">
+                    <Paragraph inline>⚡</Paragraph>
+                    <Paragraph inline>Magic Actions</Paragraph>
+                    <Paragraph inline>{isOpen ? '▲' : '▼'}</Paragraph>
+                </Stack>
+            </Button>
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="repost-actions__menu">
-                    {/* Missed Destination */}
-                    {missedDestinations.length > 0 && (
-                        <div className="repost-actions__section">
-                            <div className="repost-actions__section-header">
-                                📤 Send to another destination
-                            </div>
-                            {missedDestinations.map(dest => (
-                                <button
-                                    key={dest.key}
-                                    className="repost-actions__item"
-                                    onClick={() => openModal('missed', dest.key)}
-                                >
-                                    <span className="repost-actions__item-icon">{dest.icon}</span>
-                                    <span className="repost-actions__item-label">Send to {dest.name}</span>
-                                </button>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Retry Destination */}
-                    {syncedDestinations.length > 0 && (
-                        <div className="repost-actions__section">
-                            <div className="repost-actions__section-header">
-                                🔄 Retry destination
-                            </div>
-                            {syncedDestinations.map(destKey => {
-                                const dest = availableDestinations.find(d => d.key === destKey);
-                                return (
-                                    <button
-                                        key={destKey}
-                                        className="repost-actions__item"
-                                        onClick={() => openModal('retry', destKey)}
+                <Card>
+                    <Stack gap="md">
+                        {/* Missed Destination */}
+                        {missedDestinations.length > 0 && (
+                            <Stack gap="sm">
+                                <Heading level={5}>📤 Send to another destination</Heading>
+                                {missedDestinations.map(dest => (
+                                    <Button
+                                        key={dest.key}
+                                        variant="text"
+                                        onClick={() => openModal('missed', dest.key)}
                                     >
-                                        <span className="repost-actions__item-icon">{dest?.icon || '📱'}</span>
-                                        <span className="repost-actions__item-label">Retry {dest?.name || destKey}</span>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    )}
+                                        <Stack direction="horizontal" gap="sm" align="center">
+                                            <Paragraph inline>{dest.icon}</Paragraph>
+                                            <Paragraph inline>Send to {dest.name}</Paragraph>
+                                        </Stack>
+                                    </Button>
+                                ))}
+                            </Stack>
+                        )}
 
-                    {/* Full Re-execution */}
-                    <div className="repost-actions__section repost-actions__section--danger">
-                        <button
-                            className="repost-actions__item repost-actions__item--danger"
-                            onClick={() => openModal('full')}
-                        >
-                            <span className="repost-actions__item-icon">✨</span>
-                            <span className="repost-actions__item-label">Re-run entire pipeline</span>
-                        </button>
-                    </div>
-                </div>
+                        {/* Retry Destination */}
+                        {syncedDestinations.length > 0 && (
+                            <Stack gap="sm">
+                                <Heading level={5}>🔄 Retry destination</Heading>
+                                {syncedDestinations.map(destKey => {
+                                    const dest = availableDestinations.find(d => d.key === destKey);
+                                    return (
+                                        <Button
+                                            key={destKey}
+                                            variant="text"
+                                            onClick={() => openModal('retry', destKey)}
+                                        >
+                                            <Stack direction="horizontal" gap="sm" align="center">
+                                                <Paragraph inline>{dest?.icon || '📱'}</Paragraph>
+                                                <Paragraph inline>Retry {dest?.name || destKey}</Paragraph>
+                                            </Stack>
+                                        </Button>
+                                    );
+                                })}
+                            </Stack>
+                        )}
+
+                        {/* Full Re-execution */}
+                        <Stack gap="sm">
+                            <Button
+                                variant="text"
+                                onClick={() => openModal('full')}
+                            >
+                                <Stack direction="horizontal" gap="sm" align="center">
+                                    <Paragraph inline>✨</Paragraph>
+                                    <Paragraph inline>Re-run entire pipeline</Paragraph>
+                                </Stack>
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </Card>
             )}
 
             {/* Confirmation Modal */}
-            {modalType && (
-                <div className="repost-modal-overlay" onClick={closeModal}>
-                    <div className="repost-modal" onClick={e => e.stopPropagation()}>
-                        <button className="repost-modal__close" onClick={closeModal}>×</button>
+            <Modal
+                isOpen={!!modalType}
+                onClose={closeModal}
+                title={
+                    modalType === 'missed' ? `📤 Send to ${selectedDestination}` :
+                    modalType === 'retry' ? `🔄 Retry ${selectedDestination}` :
+                    '✨ Re-run Pipeline'
+                }
+                size="sm"
+                footer={
+                    <Stack direction="horizontal" gap="sm" justify="end">
+                        <Button
+                            variant="secondary"
+                            onClick={closeModal}
+                            disabled={loading}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant={modalType === 'full' ? 'danger' : 'primary'}
+                            onClick={handleAction}
+                            disabled={loading || (result?.success === true)}
+                        >
+                            {loading ? 'Processing...' : modalType === 'full' ? 'Re-run Pipeline' : 'Confirm'}
+                        </Button>
+                    </Stack>
+                }
+            >
+                <Stack gap="md">
+                    {modalType === 'missed' && (
+                        <Paragraph>
+                            This will send the activity to {selectedDestination}. The original enrichments will be preserved.
+                        </Paragraph>
+                    )}
 
-                        {modalType === 'missed' && (
-                            <>
-                                <h3 className="repost-modal__title">📤 Send to {selectedDestination}</h3>
-                                <p className="repost-modal__description">
-                                    This will send the activity to {selectedDestination}. The original enrichments will be preserved.
-                                </p>
-                            </>
-                        )}
+                    {modalType === 'retry' && (
+                        <Paragraph>
+                            This will re-send the activity to {selectedDestination}.
+                            If the activity already exists, it will be updated.
+                        </Paragraph>
+                    )}
 
-                        {modalType === 'retry' && (
-                            <>
-                                <h3 className="repost-modal__title">🔄 Retry {selectedDestination}</h3>
-                                <p className="repost-modal__description">
-                                    This will re-send the activity to {selectedDestination}.
-                                    If the activity already exists, it will be updated.
-                                </p>
-                            </>
-                        )}
+                    {modalType === 'full' && (
+                        <Stack gap="sm">
+                            <Card variant="elevated">
+                                <Paragraph>
+                                    ⚠️ <Paragraph inline bold>Warning:</Paragraph> This will re-process the activity through the entire pipeline.
+                                    This may create <Paragraph inline bold>duplicate activities</Paragraph> in destination platforms like Strava.
+                                </Paragraph>
+                            </Card>
+                            <Paragraph>
+                                Use this only if you need to apply new enrichers or fix processing issues.
+                            </Paragraph>
+                        </Stack>
+                    )}
 
-                        {modalType === 'full' && (
-                            <>
-                                <h3 className="repost-modal__title">✨ Re-run Pipeline</h3>
-                                <div className="repost-modal__warning">
-                                    ⚠️ <strong>Warning:</strong> This will re-process the activity through the entire pipeline.
-                                    This may create <strong>duplicate activities</strong> in destination platforms like Strava.
-                                </div>
-                                <p className="repost-modal__description">
-                                    Use this only if you need to apply new enrichers or fix processing issues.
-                                </p>
-                            </>
-                        )}
-
-                        {result && (
-                            <div className={`repost-modal__result ${result.success ? 'repost-modal__result--success' : 'repost-modal__result--error'}`}>
+                    {result && (
+                        <Card variant={result.success ? 'elevated' : 'default'}>
+                            <Paragraph>
                                 {result.success ? '✓' : '✗'} {result.message}
-                            </div>
-                        )}
-
-                        <div className="repost-modal__actions">
-                            <button
-                                className="repost-modal__btn repost-modal__btn--secondary"
-                                onClick={closeModal}
-                                disabled={loading}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className={`repost-modal__btn repost-modal__btn--primary ${modalType === 'full' ? 'repost-modal__btn--danger' : ''}`}
-                                onClick={handleAction}
-                                disabled={loading || (result?.success === true)}
-                            >
-                                {loading ? 'Processing...' : modalType === 'full' ? 'Re-run Pipeline' : 'Confirm'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
+                            </Paragraph>
+                        </Card>
+                    )}
+                </Stack>
+            </Modal>
+        </Stack>
     );
 };

@@ -1,0 +1,96 @@
+/* ==========================================================================
+   Stack Component - Flexbox Layout Utility
+   ========================================================================== */
+@import '../tokens.css';
+
+.ui-stack {
+  display: flex;
+}
+
+/* Direction */
+.ui-stack--vertical {
+  flex-direction: column;
+}
+
+.ui-stack--horizontal {
+  flex-direction: row;
+}
+
+/* Gap variants using tokens */
+.ui-stack--gap-none {
+  gap: 0;
+}
+
+.ui-stack--gap-xs {
+  gap: var(--spacing-xs);
+}
+
+.ui-stack--gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.ui-stack--gap-md {
+  gap: var(--spacing-md);
+}
+
+.ui-stack--gap-lg {
+  gap: var(--spacing-lg);
+}
+
+.ui-stack--gap-xl {
+  gap: var(--spacing-xl);
+}
+
+/* Align (cross-axis) */
+.ui-stack--align-start {
+  align-items: flex-start;
+}
+
+.ui-stack--align-center {
+  align-items: center;
+}
+
+.ui-stack--align-end {
+  align-items: flex-end;
+}
+
+.ui-stack--align-stretch {
+  align-items: stretch;
+}
+
+/* Justify (main-axis) */
+.ui-stack--justify-start {
+  justify-content: flex-start;
+}
+
+.ui-stack--justify-center {
+  justify-content: center;
+}
+
+.ui-stack--justify-end {
+  justify-content: flex-end;
+}
+
+.ui-stack--justify-between {
+  justify-content: space-between;
+}
+
+.ui-stack--justify-around {
+  justify-content: space-around;
+}
+
+/* Modifiers */
+.ui-stack--wrap {
+  flex-wrap: wrap;
+}
+
+.ui-stack--full-width {
+  width: 100%;
+}
+
+/* Responsive: horizontal stacks become vertical on mobile */
+@media (max-width: 768px) {
+  .ui-stack--horizontal.ui-stack--responsive {
+    flex-direction: column;
+  }
+}

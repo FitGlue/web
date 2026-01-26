@@ -1,0 +1,37 @@
+.wizard-excluded-section {
+  margin-top: var(--spacing-lg, 1.5rem);
+  padding-top: var(--spacing-md, 1rem);
+  border-top: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+}
+
+.wizard-excluded-label {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #a0a0a0);
+  margin-bottom: var(--spacing-sm, 0.5rem);
+}
+
+.wizard-excluded-grid {
+  gap: var(--spacing-sm, 0.5rem);
+}
+
+.wizard-excluded-card {
+  padding: var(--spacing-sm, 0.5rem) var(--spacing-md, 1rem);
+  background: var(--color-surface-subtle, rgba(255, 255, 255, 0.03));
+  border-radius: var(--radius-md, 8px);
+  opacity: 0.6;
+  gap: var(--spacing-xs, 0.25rem);
+}
+
+.wizard-excluded-icon {
+  font-size: 1.25rem;
+}
+
+.wizard-excluded-name {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.wizard-excluded-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary, #666);
+}

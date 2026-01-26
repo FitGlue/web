@@ -1,0 +1,151 @@
+/* ==========================================================================
+   EnrichedActivityCard - Premium Activity Card Styling
+   ========================================================================== */
+@import '../library/tokens.css';
+
+.enriched-activity-card {
+  position: relative;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.enriched-activity-card:hover {
+  background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(255, 255, 255, 0.02) 100%);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+/* Loading state - subtle pulse animation */
+.enriched-activity-card--loading {
+  animation: subtle-pulse 2s ease-in-out infinite;
+}
+
+@keyframes subtle-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* Header Row */
+.enriched-activity-card__header {
+  margin-bottom: 0.875rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.enriched-activity-card__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px;
+}
+
+.enriched-activity-card__sparkle {
+  color: #fbbf24;
+}
+
+.enriched-activity-card__pipeline {
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.enriched-activity-card__date {
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+/* Flow Visualization Row */
+.enriched-activity-card__flow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.enriched-activity-card__arrow {
+  color: var(--color-primary, #ff1b8d);
+  font-weight: 600;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* Source Node */
+.enriched-activity-card__source {
+  flex-shrink: 0;
+  border-left: 3px solid var(--color-primary, #ff1b8d);
+  padding-left: 0.75rem;
+}
+
+/* Boosters Section - the main attraction */
+.enriched-activity-card__boosters {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.enriched-activity-card__loading-badge {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Destinations */
+.enriched-activity-card__destinations {
+  flex-shrink: 0;
+}
+
+.enriched-activity-card__destination {
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .enriched-activity-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .enriched-activity-card__title {
+    max-width: 100%;
+  }
+
+  .enriched-activity-card__flow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .enriched-activity-card__arrow {
+    transform: rotate(90deg);
+    margin: 0.25rem 0;
+  }
+}

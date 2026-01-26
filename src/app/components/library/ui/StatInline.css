@@ -1,0 +1,51 @@
+/* StatInline component styles - Card-style stat boxes */
+.stat-inline {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  text-align: center;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+}
+
+.stat-inline__value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--color-primary, #ff1b8d), var(--color-secondary, #9d4edd));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.stat-inline__skeleton {
+  color: var(--color-text-secondary, #9ca3af);
+  -webkit-text-fill-color: var(--color-text-secondary, #9ca3af);
+}
+
+.stat-inline__labels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.stat-inline__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text, #ffffff);
+  line-height: 1.2;
+}
+
+.stat-inline__sublabel {
+  font-size: 0.75rem;
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}

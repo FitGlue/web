@@ -1,0 +1,42 @@
+/* ==========================================================================
+   BoosterGrid - Centered Booster Display
+   ========================================================================== */
+@import '../tokens.css';
+
+.booster-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2rem;
+}
+
+.booster-grid--loading,
+.booster-grid--empty {
+  justify-content: center;
+}
+
+.booster-grid__loading {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+  font-style: italic;
+  animation: booster-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes booster-pulse {
+
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.booster-grid__empty-text {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.4));
+}

@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Button } from '../components/ui/Button';
-import { PluginIcon } from '../components/ui/PluginIcon';
+import { PageLayout, Stack, Grid } from '../components/library/layout';
+import { Button, PluginIcon, CardSkeleton, ConfirmDialog, Pill, Heading, Paragraph, Card } from '../components/library/ui';
 import { useApi } from '../hooks/useApi';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { CardSkeleton } from '../components/ui/CardSkeleton';
-import { ConfirmDialog } from '../components/ui/ConfirmDialog';
-import { Pill } from '../components/ui/Pill';
-import '../components/ui/CardSkeleton.css';
+import '../components/library/ui/CardSkeleton.css';
 import { IntegrationManifest } from '../types/plugin';
 
 interface IntegrationStatus {
@@ -36,36 +32,37 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
     const isConnected = status?.connected ?? false;
 
     return (
-        <div className={`connection-card ${isConnected ? 'connection-card--connected' : ''}`}>
-            <div className="connection-card__header">
+        <Card variant={isConnected ? 'elevated' : 'default'}>
+            <Stack gap="md">
+                <Stack direction="horizontal" align="center" gap="md">
                 <PluginIcon
                     icon={integration.icon}
                     iconType={integration.iconType}
                     iconPath={integration.iconPath}
                     size="medium"
-                    className="connection-card__icon"
-                />
-                <div className="connection-card__info">
-                    <h3 className="connection-card__name">{integration.name}</h3>
-                    <p className="connection-card__description">{integration.description}</p>
-                </div>
-            </div>
 
-            <div className="connection-card__status">
+                />
+                <Stack gap="xs">
+                    <Heading level={3} size="md">{integration.name}</Heading>
+                    <Paragraph muted size="sm">{integration.description}</Paragraph>
+                </Stack>
+            </Stack>
+
+            <Stack direction="horizontal" align="center" gap="sm" wrap>
                 <Pill variant={isConnected ? 'success' : 'default'}>
                     {isConnected ? '✓ Connected' : '○ Not Connected'}
                 </Pill>
                 {isConnected && status?.externalUserId && (
-                    <span className="connection-card__external-id">ID: {status.externalUserId}</span>
+                    <Paragraph size="sm" muted>ID: {status.externalUserId}</Paragraph>
                 )}
                 {isConnected && status?.lastUsedAt && (
-                    <span className="connection-card__last-used">
+                    <Paragraph size="sm" muted>
                         Last synced: {new Date(status.lastUsedAt).toLocaleDateString()}
-                    </span>
+                    </Paragraph>
                 )}
-            </div>
+            </Stack>
 
-            <div className="connection-card__actions">
+            <Stack>
                 {isConnected ? (
                     <Button
                         variant="danger"
@@ -82,8 +79,9 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
                         Connect
                     </Button>
                 )}
-            </div>
-        </div>
+            </Stack>
+            </Stack>
+        </Card>
     );
 };
 
@@ -100,7 +98,6 @@ const ConnectionsPage: React.FC = () => {
     }, [fetchIfNeeded]);
 
     const handleConnect = (integration: IntegrationManifest) => {
-        // Navigate to the setup page for this connection
         navigate(`/connections/${integration.id}/setup`);
     };
 
@@ -128,14 +125,14 @@ const ConnectionsPage: React.FC = () => {
     if (loading || registryLoading) {
         return (
             <PageLayout title="Connections" backTo="/" backLabel="Dashboard">
-                <p className="connections-intro">
+                <Paragraph>
                     Connect your fitness apps and devices to sync your data with FitGlue.
-                </p>
-                <div className="connections-grid">
+                </Paragraph>
+                <Grid>
                     <CardSkeleton variant="integration" />
                     <CardSkeleton variant="integration" />
                     <CardSkeleton variant="integration" />
-                </div>
+                </Grid>
             </PageLayout>
         );
     }
@@ -147,11 +144,11 @@ const ConnectionsPage: React.FC = () => {
             backLabel="Dashboard"
             onRefresh={refreshIntegrations}
         >
-            <p className="connections-intro">
+            <Paragraph>
                 Connect your fitness apps and devices to sync your data with FitGlue.
-            </p>
+            </Paragraph>
 
-            <div className="connections-grid">
+            <Grid>
                 {registryIntegrations.map(integration => {
                     const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
                     return (
@@ -165,7 +162,7 @@ const ConnectionsPage: React.FC = () => {
                         />
                     );
                 })}
-            </div>
+            </Grid>
 
             <ConfirmDialog
                 isOpen={!!disconnectConfirm}

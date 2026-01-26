@@ -1,0 +1,40 @@
+/* ==========================================================================
+   Paragraph Component - Typography
+   ========================================================================== */
+@import '../tokens.css';
+
+.ui-paragraph {
+  margin: 0;
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+}
+
+/* Size variants */
+.ui-paragraph--sm {
+  font-size: 0.875rem;
+}
+
+.ui-paragraph--md {
+  font-size: 1rem;
+}
+
+.ui-paragraph--lg {
+  font-size: 1.125rem;
+}
+
+/* Modifiers */
+.ui-paragraph--muted {
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.ui-paragraph--centered {
+  text-align: center;
+}
+
+.ui-paragraph--bold {
+  font-weight: 600;
+}
+
+.ui-paragraph--nowrap {
+  white-space: nowrap;
+}

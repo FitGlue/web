@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ActivitiesService, ExecutionRecord } from '../services/ActivitiesService';
 import { PipelineTrace } from '../components/PipelineTrace';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Card } from '../components/ui/Card';
-import { KeyValue } from '../components/ui/KeyValue';
-import { Text } from '../components/ui/Text';
+import { PageLayout } from '../components/library/layout/PageLayout';
+import { Card } from '../components/library/ui/Card';
+import { KeyValue } from '../components/library/ui/KeyValue';
+import { Text } from '../components/library/ui/Text';
 
 const UnsynchronizedDetailPage: React.FC = () => {
   const { pipelineExecutionId } = useParams<{ pipelineExecutionId: string }>();

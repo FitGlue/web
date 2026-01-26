@@ -1,6 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { PluginManifest } from '../types/plugin';
-import './EnricherTimeline.css';
+import { Stack } from './library/layout/Stack';
+import { Card } from './library/ui/Card';
+import { Button } from './library/ui/Button';
+import { Paragraph } from './library/ui/Paragraph';
+import { Badge } from './library/ui/Badge';
 
 interface SelectedEnricher {
     manifest: PluginManifest;
@@ -86,60 +90,65 @@ export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemo
     if (enrichers.length === 0) return null;
 
     return (
-        <div className="enricher-timeline">
-            <div className="timeline-label">
-                <span className="timeline-label-icon">⚡</span>
-                <span>Pipeline Order</span>
-                <span className="timeline-hint">(drag to reorder)</span>
-            </div>
-            <div className="timeline-track" onTouchMove={handleTouchMove}>
-                {enrichers.map((e, i) => (
-                    <React.Fragment key={e.manifest.id}>
-                        <div
-                            className={`timeline-node ${dragIndex === i ? 'dragging' : ''} ${dragOverIndex === i && dragIndex !== i ? 'drag-over' : ''}`}
-                            data-index={i}
-                            draggable
-                            onDragStart={handleDragStart(i)}
-                            onDragOver={handleDragOver(i)}
-                            onDrop={handleDrop(i)}
-                            onDragEnd={handleDragEnd}
-                            onTouchStart={handleTouchStart(i)}
-                            onTouchEnd={handleTouchEnd}
-                        >
-                            <span className="timeline-order">{i + 1}</span>
-                            <span className="timeline-icon-emoji">{e.manifest.icon}</span>
-                            <span className="timeline-name">{e.manifest.name}</span>
-                            <div className="timeline-actions">
-                                <button
-                                    className="timeline-btn timeline-btn-info"
-                                    onClick={(ev) => { ev.stopPropagation(); onInfoClick(e.manifest); }}
-                                    title="Learn more about this booster"
-                                    aria-label="Info"
-                                >
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <line x1="12" y1="16" x2="12" y2="12"/>
-                                        <circle cx="12" cy="8" r="0.5" fill="currentColor"/>
-                                    </svg>
-                                </button>
-                                <button
-                                    className="timeline-btn timeline-btn-remove"
-                                    onClick={(ev) => { ev.stopPropagation(); onRemove(i); }}
-                                    title="Remove"
-                                    aria-label="Remove"
-                                >
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <line x1="18" y1="6" x2="6" y2="18"/>
-                                        <line x1="6" y1="6" x2="18" y2="18"/>
-                                    </svg>
-                                </button>
+        <Card>
+            <Stack gap="md">
+                <Stack direction="horizontal" gap="sm" align="center">
+                    <Paragraph inline>⚡</Paragraph>
+                    <Paragraph inline bold>Pipeline Order</Paragraph>
+                    <Paragraph inline muted size="sm">(drag to reorder)</Paragraph>
+                </Stack>
+                {/* Using div wrapper for touch events - Stack doesn't support event handlers */}
+                <div onTouchMove={handleTouchMove}>
+                    <Stack gap="sm">
+                        {enrichers.map((e, i) => (
+                            /* Using div for draggable - Card doesn't support drag handlers */
+                            <div
+                                key={e.manifest.id}
+                                className={`timeline-node ${dragIndex === i ? 'dragging' : ''} ${dragOverIndex === i && dragIndex !== i ? 'drag-over' : ''}`}
+                                data-index={i}
+                                draggable
+                                onDragStart={handleDragStart(i)}
+                                onDragOver={handleDragOver(i)}
+                                onDrop={handleDrop(i)}
+                                onDragEnd={handleDragEnd}
+                                onTouchStart={handleTouchStart(i)}
+                                onTouchEnd={handleTouchEnd}
+                            >
+                                <Card variant={dragIndex === i ? 'elevated' : 'default'}>
+                                    <Stack direction="horizontal" align="center" justify="between">
+                                        <Stack direction="horizontal" gap="sm" align="center">
+                                            <Badge variant="default" size="sm">{i + 1}</Badge>
+                                            <Paragraph inline>{e.manifest.icon}</Paragraph>
+                                            <Paragraph inline>{e.manifest.name}</Paragraph>
+                                        </Stack>
+                                        <Stack direction="horizontal" gap="xs">
+                                            <Button
+                                                variant="text"
+                                                size="small"
+                                                onClick={(ev) => { ev.stopPropagation(); onInfoClick(e.manifest); }}
+                                                title="Learn more about this booster"
+                                                aria-label="Info"
+                                            >
+                                                ⓘ
+                                            </Button>
+                                            <Button
+                                                variant="text"
+                                                size="small"
+                                                onClick={(ev) => { ev.stopPropagation(); onRemove(i); }}
+                                                title="Remove"
+                                                aria-label="Remove"
+                                            >
+                                                ✕
+                                            </Button>
+                                        </Stack>
+                                    </Stack>
+                                </Card>
                             </div>
-                        </div>
-                        {i < enrichers.length - 1 && <></>}
-                    </React.Fragment>
-                ))}
-            </div>
-        </div>
+                        ))}
+                    </Stack>
+                </div>
+            </Stack>
+        </Card>
     );
 };
 

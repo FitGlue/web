@@ -1,5 +1,8 @@
 import React from 'react';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
+import { Badge } from '../library/ui/Badge';
+import { Stack } from '../library/layout/Stack';
+import { Paragraph } from '../library/ui/Paragraph';
 
 interface EnricherBadgeProps {
     /** Enricher provider name (e.g., 'muscle-heatmap', 'fitbit-heart-rate') */
@@ -31,7 +34,7 @@ export const EnricherBadge: React.FC<EnricherBadgeProps> = ({
     const enricherPlugin = enrichers.find(e => e.id === providerName || e.id === providerName.replace(/_/g, '-'));
     const icon = enricherPlugin?.icon || '✨';
     const displayName = enricherPlugin?.name || humanizeProviderName(providerName);
-    const statusClass = status.toLowerCase();
+    const statusVariant = status.toUpperCase() === 'SUCCESS' ? 'booster' : status.toUpperCase() === 'FAILED' ? 'error' : 'default';
 
     // Extract key metric from metadata if available
     const metricDisplay = React.useMemo(() => {
@@ -43,12 +46,14 @@ export const EnricherBadge: React.FC<EnricherBadgeProps> = ({
     }, [metadata]);
 
     return (
-        <span className={`enricher-badge enricher-badge--${statusClass}`} title={displayName}>
-            <span className="enricher-badge__icon">{icon}</span>
-            <span className="enricher-badge__name">{displayName}</span>
-            {metricDisplay && status === 'SUCCESS' && (
-                <span className="enricher-badge__metric">{metricDisplay}</span>
-            )}
-        </span>
+        <Badge variant={statusVariant}>
+            <Stack direction="horizontal" gap="xs" align="center">
+                <Paragraph inline>{icon}</Paragraph>
+                <Paragraph inline size="sm">{displayName}</Paragraph>
+                {metricDisplay && status === 'SUCCESS' && (
+                    <Paragraph inline size="sm" muted>{metricDisplay}</Paragraph>
+                )}
+            </Stack>
+        </Badge>
     );
 };

@@ -1,12 +1,11 @@
 import React, { useReducer, useEffect, useCallback } from 'react';
 import { UserTier } from '../../types/pb/user';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Card } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
-import { LoadingState } from '../components/ui/LoadingState';
+import { PageLayout } from '../components/library/layout/PageLayout';
+import { Card } from '../components/library/ui/Card';
+import { Button } from '../components/library/ui/Button';
+import { LoadingState } from '../components/library/ui/LoadingState';
 import { useApi } from '../hooks/useApi';
 import { useUser } from '../hooks/useUser';
-import './AdminPage.css';
 
 // Types
 interface AdminUser {
@@ -292,11 +291,11 @@ const AdminPage: React.FC = () => {
       if (activeTab === 'users') fetchUsers();
       if (activeTab === 'executions') fetchExecutions();
     }} loading={loading}>
-      <div className="admin-container">
-        {error && <div className="admin-error">{error}</div>}
+      <div>
+        {error && <div>{error}</div>}
 
         {/* Tab Navigation */}
-        <div className="admin-tabs">
+        <div>
           {tabs.map(tab => (
             <button
               key={tab.id}
@@ -310,41 +309,41 @@ const AdminPage: React.FC = () => {
 
         {/* Overview Tab */}
         {activeTab === 'overview' && (
-          <div className="admin-tab-content">
+          <div>
             {stats ? (
               <>
-                <div className="admin-stats">
-                  <Card className="stat-card-mini">
-                    <div className="stat-label">Total Users</div>
-                    <div className="stat-value-mini">{stats.totalUsers}</div>
+                <div>
+                  <Card>
+                    <div>Total Users</div>
+                    <div>{stats.totalUsers}</div>
                   </Card>
-                  <Card className="stat-card-mini">
-                    <div className="stat-label">Athlete Users</div>
-                    <div className="stat-value-mini">{stats.athleteUsers}</div>
+                  <Card>
+                    <div>Athlete Users</div>
+                    <div>{stats.athleteUsers}</div>
                   </Card>
-                  <Card className="stat-card-mini">
-                    <div className="stat-label">Admins</div>
-                    <div className="stat-value-mini">{stats.adminUsers}</div>
+                  <Card>
+                    <div>Admins</div>
+                    <div>{stats.adminUsers}</div>
                   </Card>
-                  <Card className="stat-card-mini">
-                    <div className="stat-label">Syncs (Month)</div>
-                    <div className="stat-value-mini">{stats.totalSyncsThisMonth}</div>
+                  <Card>
+                    <div>Syncs (Month)</div>
+                    <div>{stats.totalSyncsThisMonth}</div>
                   </Card>
                 </div>
-                <Card className="admin-section">
+                <Card>
                   <h3>Recent Executions</h3>
-                  <div className="exec-status-grid">
-                    <div className="exec-status success">
-                      <span className="exec-count">{stats.recentExecutions.success}</span>
-                      <span className="exec-label">Success</span>
+                  <div>
+                    <div>
+                      <span>{stats.recentExecutions.success}</span>
+                      <span>Success</span>
                     </div>
-                    <div className="exec-status failed">
-                      <span className="exec-count">{stats.recentExecutions.failed}</span>
-                      <span className="exec-label">Failed</span>
+                    <div>
+                      <span>{stats.recentExecutions.failed}</span>
+                      <span>Failed</span>
                     </div>
-                    <div className="exec-status started">
-                      <span className="exec-count">{stats.recentExecutions.started}</span>
-                      <span className="exec-label">Started</span>
+                    <div>
+                      <span>{stats.recentExecutions.started}</span>
+                      <span>Started</span>
                     </div>
                   </div>
                 </Card>
@@ -357,10 +356,10 @@ const AdminPage: React.FC = () => {
 
         {/* Users Tab */}
         {activeTab === 'users' && (
-          <div className="admin-tab-content">
-            <Card className="admin-section">
+          <div>
+            <Card>
               <h3>Filters</h3>
-              <div className="exec-filters">
+              <div>
                 <select
                   value={userFilters.tier}
                   onChange={e => dispatch({ type: 'SET_USER_FILTERS', filters: { tier: e.target.value } })}
@@ -378,9 +377,9 @@ const AdminPage: React.FC = () => {
                 <Button size="small" onClick={() => fetchUsers(1)}>Apply</Button>
               </div>
             </Card>
-            <Card className="admin-table-card">
-              <div className="admin-table-container">
-                <table className="admin-table">
+            <Card>
+              <div>
+                <table>
                   <thead>
                     <tr>
                       <th>User</th>
@@ -394,9 +393,9 @@ const AdminPage: React.FC = () => {
                   <tbody>
                     {users.map(user => (
                       <tr key={user.userId} onClick={() => fetchUserDetail(user.userId)} style={{ cursor: 'pointer' }}>
-                        <td className="user-id-cell">
+                        <td>
                           <div>{user.userId.slice(0, 8)}...</div>
-                          {user.isAdmin && <span className="badge admin">Admin</span>}
+                          {user.isAdmin && <span>Admin</span>}
                         </td>
                         <td>
                           <span className={`badge ${user.accessEnabled ? 'success' : 'waitlist'}`}>
@@ -413,7 +412,7 @@ const AdminPage: React.FC = () => {
                           {user.preventedSyncCount > 0 && <span style={{ opacity: 0.6, fontSize: '0.8rem', marginLeft: '4px' }}> (+{user.preventedSyncCount})</span>}
                         </td>
                         <td>{user.integrations.length > 0 ? user.integrations.join(', ') : '-'}</td>
-                        <td className="admin-actions" onClick={e => e.stopPropagation()}>
+                        <td onClick={e => e.stopPropagation()}>
                           <Button
                             variant={user.accessEnabled ? 'secondary' : 'primary'}
                             size="small"
@@ -439,7 +438,7 @@ const AdminPage: React.FC = () => {
             </Card>
             {/* Pagination Controls */}
             {usersPagination && (
-              <div className="pagination-controls">
+              <div>
                 <Button
                   variant="secondary"
                   size="small"
@@ -448,7 +447,7 @@ const AdminPage: React.FC = () => {
                 >
                   ← Previous
                 </Button>
-                <span className="pagination-info">
+                <span>
                   Page {usersPagination.page} of {Math.ceil(usersPagination.total / usersPagination.limit)} ({usersPagination.total} total)
                 </span>
                 <Button
@@ -466,10 +465,10 @@ const AdminPage: React.FC = () => {
 
         {/* Executions Tab */}
         {activeTab === 'executions' && (
-          <div className="admin-tab-content">
-            <Card className="admin-section">
+          <div>
+            <Card>
               <h3>Filters</h3>
-              <div className="exec-filters">
+              <div>
                 <select
                   value={execFilters.service}
                   onChange={e => dispatch({ type: 'SET_EXEC_FILTERS', filters: { service: e.target.value } })}
@@ -505,9 +504,9 @@ const AdminPage: React.FC = () => {
                 <Button variant="secondary" size="small" onClick={fetchExecutions}>Apply</Button>
               </div>
             </Card>
-            <Card className="admin-table-card">
-              <div className="admin-table-container">
-                <table className="admin-table">
+            <Card>
+              <div>
+                <table>
                   <thead>
                     <tr>
                       <th>Timestamp</th>
@@ -523,7 +522,7 @@ const AdminPage: React.FC = () => {
                         <td style={{ fontSize: '0.8rem' }}>{exec.timestamp ? new Date(exec.timestamp).toLocaleString() : '-'}</td>
                         <td>{exec.service}</td>
                         <td><span className={`badge ${exec.status.toLowerCase()}`}>{exec.status}</span></td>
-                        <td className="user-id-cell">{exec.userId?.slice(0, 8) || '-'}</td>
+                        <td>{exec.userId?.slice(0, 8) || '-'}</td>
                         <td style={{ fontSize: '0.8rem', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {exec.errorMessage || '-'}
                         </td>
@@ -538,11 +537,11 @@ const AdminPage: React.FC = () => {
 
         {/* Billing Tab */}
         {activeTab === 'billing' && (
-          <div className="admin-tab-content">
-            <Card className="admin-section">
+          <div>
+            <Card>
                <h3>Athlete Users with Stripe</h3>
-              <div className="admin-table-container">
-                <table className="admin-table">
+              <div>
+                <table>
                   <thead>
                     <tr>
                       <th>User</th>
@@ -554,14 +553,14 @@ const AdminPage: React.FC = () => {
                   <tbody>
                      {users.filter(u => u.tier === UserTier.USER_TIER_ATHLETE || u.stripeCustomerId).map(user => (
                       <tr key={user.userId}>
-                        <td className="user-id-cell">{user.userId.slice(0, 8)}...</td>
+                        <td>{user.userId.slice(0, 8)}...</td>
                         <td>
                           {user.stripeCustomerId ? (
                             <a
                               href={`https://dashboard.stripe.com/customers/${user.stripeCustomerId}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="stripe-link"
+
                             >
                               {user.stripeCustomerId.slice(0, 12)}...
                             </a>
@@ -580,17 +579,17 @@ const AdminPage: React.FC = () => {
 
         {/* User Detail Modal */}
         {userModalOpen && selectedUser && (
-          <div className="admin-modal-overlay" onClick={() => dispatch({ type: 'SET_USER_MODAL_OPEN', open: false })}>
-            <div className="admin-modal" onClick={e => e.stopPropagation()}>
-              <div className="admin-modal-header">
+          <div onClick={() => dispatch({ type: 'SET_USER_MODAL_OPEN', open: false })}>
+            <div onClick={e => e.stopPropagation()}>
+              <div>
                 <h2>User Details</h2>
-                <button className="modal-close" onClick={() => dispatch({ type: 'SET_USER_MODAL_OPEN', open: false })}>×</button>
+                <button onClick={() => dispatch({ type: 'SET_USER_MODAL_OPEN', open: false })}>×</button>
               </div>
-              <div className="admin-modal-content">
+              <div>
                 {/* Overview */}
-                <section className="modal-section">
+                <section>
                   <h4>Overview</h4>
-                  <div className="detail-grid">
+                  <div>
                     <div><strong>User ID:</strong> {selectedUser.userId}</div>
                     {selectedUser.email && <div><strong>Email:</strong> {selectedUser.email}</div>}
                     {selectedUser.displayName && <div><strong>Name:</strong> {selectedUser.displayName}</div>}
@@ -602,7 +601,7 @@ const AdminPage: React.FC = () => {
                     <div><strong>Syncs:</strong> {selectedUser.syncCountThisMonth} <Button size="small" variant="text" onClick={() => handleUpdateUser(selectedUser.userId, { syncCountThisMonth: 0 })}>Reset</Button></div>
                     <div><strong>Prevented:</strong> {selectedUser.preventedSyncCount}</div>
                   </div>
-                  <div className="modal-actions">
+                  <div>
                      <Button size="small" onClick={() => handleUpdateUser(selectedUser.userId, { tier: selectedUser.tier === UserTier.USER_TIER_ATHLETE ? UserTier.USER_TIER_HOBBYIST : UserTier.USER_TIER_ATHLETE })}>
                        Toggle Tier
                      </Button>
@@ -613,10 +612,10 @@ const AdminPage: React.FC = () => {
                 </section>
 
                 {/* Integrations */}
-                <section className="modal-section">
+                <section>
                   <h4>Integrations ({Object.keys(selectedUser.integrations).length})</h4>
                   {Object.entries(selectedUser.integrations).length > 0 ? (
-                    <ul className="detail-list">
+                    <ul>
                       {Object.entries(selectedUser.integrations).map(([provider]) => (
                         <li key={provider}>
                           <span>{provider}</span>
@@ -628,10 +627,10 @@ const AdminPage: React.FC = () => {
                 </section>
 
                 {/* Pipelines */}
-                <section className="modal-section">
+                <section>
                   <h4>Pipelines ({selectedUser.pipelines?.length || 0})</h4>
                   {selectedUser.pipelines?.length > 0 ? (
-                    <ul className="detail-list">
+                    <ul>
                       {selectedUser.pipelines.map(p => (
                         <li key={p.id}>
                           <span><strong>{p.name}</strong>: {p.source} → [{p.destinations.join(', ')}]</span>
@@ -643,16 +642,16 @@ const AdminPage: React.FC = () => {
                 </section>
 
                 {/* Data Management */}
-                <section className="modal-section">
+                <section>
                   <h4>Data Management</h4>
-                  <div className="data-actions">
-                    <div className="data-action">
+                  <div>
+                    <div>
                       <span>Synchronized Activities: {selectedUser.activityCount}</span>
                       <Button size="small" variant="text" disabled={selectedUser.activityCount === 0} onClick={() => handleDeleteUserData(selectedUser.userId, 'activities')}>
                         Delete All
                       </Button>
                     </div>
-                    <div className="data-action">
+                    <div>
                       <span>Pending Inputs: {selectedUser.pendingInputCount}</span>
                       <Button size="small" variant="text" disabled={selectedUser.pendingInputCount === 0} onClick={() => handleDeleteUserData(selectedUser.userId, 'pending-inputs')}>
                         Delete All
@@ -663,11 +662,11 @@ const AdminPage: React.FC = () => {
 
                 {/* Billing */}
                 {selectedUser.stripeCustomerId && (
-                  <section className="modal-section">
+                  <section>
                     <h4>Billing</h4>
                     <p>
                       <strong>Stripe Customer:</strong>{' '}
-                      <a href={`https://dashboard.stripe.com/customers/${selectedUser.stripeCustomerId}`} target="_blank" rel="noopener noreferrer" className="stripe-link">
+                      <a href={`https://dashboard.stripe.com/customers/${selectedUser.stripeCustomerId}`} target="_blank" rel="noopener noreferrer">
                         {selectedUser.stripeCustomerId}
                       </a>
                     </p>
@@ -680,15 +679,15 @@ const AdminPage: React.FC = () => {
 
         {/* Execution Detail Modal */}
         {execModalOpen && selectedExecution && (
-          <div className="admin-modal-overlay" onClick={() => dispatch({ type: 'SET_SELECTED_EXECUTION', execution: null, modalOpen: false })}>
-            <div className="admin-modal" onClick={e => e.stopPropagation()}>
-              <div className="admin-modal-header">
+          <div onClick={() => dispatch({ type: 'SET_SELECTED_EXECUTION', execution: null, modalOpen: false })}>
+            <div onClick={e => e.stopPropagation()}>
+              <div>
                 <h2>Execution Details</h2>
                 <Button variant="text" onClick={() => dispatch({ type: 'SET_SELECTED_EXECUTION', execution: null, modalOpen: false })}>✕</Button>
               </div>
-              <div className="admin-modal-content">
-                <section className="modal-section">
-                  <div className="detail-grid">
+              <div>
+                <section>
+                  <div>
                     <div><strong>Execution ID:</strong> {selectedExecution.id}</div>
                     <div><strong>Service:</strong> {selectedExecution.service}</div>
                     <div><strong>Status:</strong> <span className={`badge ${selectedExecution.status.toLowerCase()}`}>{selectedExecution.status}</span></div>

@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from './ui/Button';
+import { Modal } from './library/ui/Modal';
+import { Button } from './library/ui/Button';
+import { Stack } from './library/layout/Stack';
+import { Heading } from './library/ui/Heading';
+import { Paragraph } from './library/ui/Paragraph';
+import { List, ListItem } from './library/ui/List';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { useApi } from '../hooks/useApi';
@@ -11,7 +16,6 @@ import {
     PortablePipeline,
     ImportValidationResult
 } from '../../shared/pipeline-sharing';
-import './ImportPipelineModal.css';
 
 interface Props {
     onClose: () => void;
@@ -56,7 +60,7 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess }) => 
             await api.post('/users/me/pipelines', validation.request);
             onSuccess();
             onClose();
-        } catch (err) {
+        } catch {
             setError('Failed to import pipeline. Please try again.');
         } finally {
             setImporting(false);
@@ -79,91 +83,86 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess }) => 
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="import-pipeline-modal" onClick={e => e.stopPropagation()}>
-                <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
+        <Modal isOpen={true} onClose={onClose} title="Import Pipeline">
+            <Stack gap="md">
+                <Stack direction="horizontal" gap="sm" align="center">
+                    <Paragraph inline>📥</Paragraph>
+                    <Heading level={2}>Import Pipeline</Heading>
+                </Stack>
 
-                <div className="import-pipeline-header">
-                    <span className="import-pipeline-icon">📥</span>
-                    <h2>Import Pipeline</h2>
-                </div>
-
-                <p className="import-pipeline-description">
+                <Paragraph>
                     Paste a pipeline code to import someone else&apos;s configuration.
-                </p>
+                </Paragraph>
 
-                <div className="import-pipeline-input-group">
-                    <textarea
-                        className="import-pipeline-code"
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
-                        placeholder="Paste pipeline code here..."
-                        rows={4}
-                    />
-                </div>
+                <textarea
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    placeholder="Paste pipeline code here..."
+                    rows={4}
+                />
 
                 {error && (
-                    <div className="import-pipeline-error">
-                        ⚠️ {error}
-                    </div>
+                    <Paragraph>⚠️ {error}</Paragraph>
                 )}
 
                 {decoded && validation && !validation.valid && (
-                    <div className="import-pipeline-missing">
-                        <h4>Missing Connections</h4>
-                        <p>Connect these services before importing:</p>
-                        <ul>
+                    <Stack gap="sm">
+                        <Heading level={4}>Missing Connections</Heading>
+                        <Paragraph>Connect these services before importing:</Paragraph>
+                        <List>
                             {validation.missingConnections.map(connId => {
                                 const info = getMissingConnectionInfo(connId, registry);
                                 return (
-                                    <li key={connId}>
-                                        <span className="missing-icon">{info?.icon}</span>
-                                        <span className="missing-name">{info?.name}</span>
-                                        <Button
-                                            variant="secondary"
-                                            size="small"
-                                            onClick={() => navigate(`/app/connections`)}
-                                        >
-                                            Connect
-                                        </Button>
-                                    </li>
+                                    <ListItem key={connId}>
+                                        <Stack direction="horizontal" gap="sm" align="center">
+                                            <Paragraph inline>{info?.icon}</Paragraph>
+                                            <Paragraph inline>{info?.name}</Paragraph>
+                                            <Button
+                                                variant="secondary"
+                                                size="small"
+                                                onClick={() => navigate(`/app/connections`)}
+                                            >
+                                                Connect
+                                            </Button>
+                                        </Stack>
+                                    </ListItem>
                                 );
                             })}
-                        </ul>
-                    </div>
+                        </List>
+                    </Stack>
                 )}
 
                 {decoded && validation?.valid && (
-                    <div className="import-pipeline-preview">
-                        <h4>Pipeline Preview</h4>
-                        <div className="preview-details">
-                            <div className="preview-row">
-                                <span className="preview-label">Name</span>
-                                <span className="preview-value">{decoded.n} (Imported)</span>
-                            </div>
-                            <div className="preview-row">
-                                <span className="preview-label">Source</span>
-                                <span className="preview-value">{getSourceName(decoded.s)}</span>
-                            </div>
-                            <div className="preview-row">
-                                <span className="preview-label">Enrichers</span>
-                                <span className="preview-value">
+                    <Stack gap="sm">
+                        <Heading level={4}>Pipeline Preview</Heading>
+                        <Stack gap="xs">
+                            <Stack direction="horizontal" gap="sm">
+                                <Paragraph inline bold>Name</Paragraph>
+                                <Paragraph inline>{decoded.n} (Imported)</Paragraph>
+                            </Stack>
+                            <Stack direction="horizontal" gap="sm">
+                                <Paragraph inline bold>Source</Paragraph>
+                                <Paragraph inline>{getSourceName(decoded.s)}</Paragraph>
+                            </Stack>
+                            <Stack direction="horizontal" gap="sm">
+                                <Paragraph inline bold>Enrichers</Paragraph>
+                                <Paragraph inline>
                                     {decoded.e.length === 0
                                         ? 'None'
                                         : decoded.e.map(e => getEnricherName(e.p)).join(', ')}
-                                </span>
-                            </div>
-                            <div className="preview-row">
-                                <span className="preview-label">Destinations</span>
-                                <span className="preview-value">
+                                </Paragraph>
+                            </Stack>
+                            <Stack direction="horizontal" gap="sm">
+                                <Paragraph inline bold>Destinations</Paragraph>
+                                <Paragraph inline>
                                     {decoded.d.map(d => getDestinationName(d)).join(', ')}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                                </Paragraph>
+                            </Stack>
+                        </Stack>
+                    </Stack>
                 )}
 
-                <div className="import-pipeline-actions">
+                <Stack direction="horizontal" gap="sm" justify="end">
                     <Button variant="secondary" onClick={onClose}>Cancel</Button>
                     {!validation?.valid ? (
                         <Button
@@ -182,9 +181,9 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess }) => 
                             {importing ? 'Importing...' : '✓ Import Pipeline'}
                         </Button>
                     )}
-                </div>
-            </div>
-        </div>
+                </Stack>
+            </Stack>
+        </Modal>
     );
 };
 

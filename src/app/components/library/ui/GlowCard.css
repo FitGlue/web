@@ -1,0 +1,179 @@
+/* ==========================================================================
+   GlowCard - Premium Card with Gradient Header Background
+   ========================================================================== */
+@import '../tokens.css';
+
+.glow-card {
+  position: relative;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+/* Header with gradient background */
+.glow-card__header {
+  padding: 0.875rem 1.25rem;
+  background: linear-gradient(90deg,
+      var(--color-primary, #ff1b8d) 0%,
+      var(--color-secondary, #9d4edd) 50%,
+      var(--color-primary, #ff1b8d) 100%);
+  background-size: 200% 100%;
+  animation: header-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes header-shimmer {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.glow-card__content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Variant: Success - green shimmer header */
+.glow-card--success .glow-card__header {
+  background: linear-gradient(90deg,
+      var(--color-success, #10b981) 0%,
+      #34d399 33%,
+      #059669 66%,
+      var(--color-success, #10b981) 100%);
+  background-size: 200% 100%;
+  animation: header-shimmer-success 4s ease-in-out infinite;
+}
+
+@keyframes header-shimmer-success {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Variant: Premium - more vibrant shimmer */
+.glow-card--premium .glow-card__header {
+  background: linear-gradient(90deg,
+      #ff1b8d 0%,
+      #9d4edd 33%,
+      #06b6d4 66%,
+      #ff1b8d 100%);
+  background-size: 300% 100%;
+  animation: header-shimmer-premium 4s ease-in-out infinite;
+}
+
+@keyframes header-shimmer-premium {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Loading state - pulsing shimmer */
+.glow-card--loading .glow-card__header {
+  animation: header-shimmer 2s ease-in-out infinite;
+}
+
+.glow-card--loading {
+  opacity: 0.9;
+}
+
+/* Clickable state */
+.glow-card--clickable {
+  cursor: pointer;
+}
+
+.glow-card--clickable:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Focus state for accessibility */
+.glow-card--clickable:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary, #ff1b8d);
+}
+
+/* Header text styling - make text visible on gradient */
+.glow-card__header h1,
+.glow-card__header h2,
+.glow-card__header h3,
+.glow-card__header h4,
+.glow-card__header h5,
+.glow-card__header h6,
+.glow-card__header p,
+.glow-card__header span {
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Muted text in header should still be visible */
+.glow-card__header .paragraph--muted {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Variant: Awaiting - orange gradient header */
+.glow-card--awaiting .glow-card__header {
+  background: linear-gradient(90deg,
+      #f59e0b 0%,
+      #fbbf24 33%,
+      #d97706 66%,
+      #f59e0b 100%);
+  background-size: 200% 100%;
+  animation: header-shimmer-awaiting 4s ease-in-out infinite;
+}
+
+@keyframes header-shimmer-awaiting {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Variant: Needs Input - pink gradient header */
+.glow-card--needs-input .glow-card__header {
+  background: linear-gradient(90deg,
+      #ff1b8d 0%,
+      #f472b6 33%,
+      #db2777 66%,
+      #ff1b8d 100%);
+  background-size: 200% 100%;
+  animation: header-shimmer-needs-input 4s ease-in-out infinite;
+}
+
+@keyframes header-shimmer-needs-input {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}

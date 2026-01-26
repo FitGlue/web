@@ -1,0 +1,59 @@
+/* ==========================================================================
+   LiveToggle Component - Pink Accent with Pulsing Dot
+   ========================================================================== */
+@import '../tokens.css';
+
+.live-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.live-toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Active state - Pink glow */
+.live-toggle--active {
+  color: var(--color-primary);
+  background: rgba(255, 27, 141, 0.15);
+  border: 1px solid rgba(255, 27, 141, 0.3);
+}
+
+.live-toggle__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.live-toggle--active .live-toggle__dot {
+  background: var(--color-primary);
+  box-shadow: 0 0 6px var(--color-primary);
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(1.3);
+  }
+}

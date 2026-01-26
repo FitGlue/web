@@ -1,8 +1,7 @@
 import React from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Button } from '../components/ui/Button';
-import { LoadingState } from '../components/ui/LoadingState';
+import { PageLayout, Stack } from '../components/library/layout';
+import { Button, LoadingState, Heading, Paragraph } from '../components/library/ui';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 
 const ConnectionErrorPage: React.FC = () => {
@@ -15,7 +14,6 @@ const ConnectionErrorPage: React.FC = () => {
     const integration = integrations.find(i => i.id === id);
     const displayName = integration?.name || id || 'Service';
 
-    // Map error reasons to user-friendly messages
     const getErrorMessage = (reason: string): string => {
         switch (reason) {
             case 'denied':
@@ -40,22 +38,22 @@ const ConnectionErrorPage: React.FC = () => {
 
     return (
         <PageLayout title="Connection Failed" backTo="/connections" backLabel="Connections">
-            <div className="connection-result">
-                <div className="connection-result__icon connection-result__icon--error">
+            <Stack gap="lg" align="center">
+                <Paragraph size="lg">
                     ⚠️
-                </div>
+                </Paragraph>
 
-                <h1 className="connection-result__title">Connection Failed</h1>
+                <Heading level={1} centered>Connection Failed</Heading>
 
-                <p className="connection-result__message">
+                <Paragraph centered>
                     {getErrorMessage(reason)}
-                </p>
+                </Paragraph>
 
-                <p className="connection-result__submessage">
+                <Paragraph muted centered>
                     Please try again or contact support if the issue persists.
-                </p>
+                </Paragraph>
 
-                <div className="connection-result__actions">
+                <Stack direction="horizontal" gap="md">
                     <Button
                         variant="primary"
                         onClick={() => navigate(`/connections/${id}/setup`)}
@@ -68,8 +66,8 @@ const ConnectionErrorPage: React.FC = () => {
                     >
                         Back to Connections
                     </Button>
-                </div>
-            </div>
+                </Stack>
+            </Stack>
         </PageLayout>
     );
 };

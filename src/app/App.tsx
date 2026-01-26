@@ -5,6 +5,9 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { initFirebase } from '../shared/firebase';
 import { userAtom, authLoadingAtom } from './state/authState';
 import { initSentry, setUser as setSentryUser, Sentry } from './infrastructure/sentry';
+import { Stack } from './components/library/layout';
+import { Card, Heading, Paragraph, Button, Code } from './components/library/ui';
+import { Link } from './components/library/navigation';
 
 // App pages (protected)
 import DashboardPage from './pages/DashboardPage';
@@ -39,13 +42,21 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const [loading] = useAtom(authLoadingAtom);
 
   if (loading) {
-    return <div className="container">Loading...</div>;
+    return (
+      <Card>
+        <Paragraph>Loading...</Paragraph>
+      </Card>
+    );
   }
 
   if (!user) {
     // Redirect to static auth page (outside React app)
     window.location.href = '/auth/login';
-    return <div className="container">Redirecting to login...</div>;
+    return (
+      <Card>
+        <Paragraph>Redirecting to login...</Paragraph>
+      </Card>
+    );
   }
 
   return <>{children}</>;
@@ -56,18 +67,22 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useUser();
 
   if (loading) {
-    return <div className="container">Loading admin console...</div>;
+    return (
+      <Card>
+        <Paragraph>Loading admin console...</Paragraph>
+      </Card>
+    );
   }
 
   if (!user?.isAdmin) {
     return (
-      <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>
-        <h2 style={{ color: 'var(--color-primary)' }}>Access Denied</h2>
-        <p>You do not have permission to view this page.</p>
-        <a href="/app" style={{ color: 'var(--color-accent)', textDecoration: 'none', fontWeight: 'bold' }}>
-          ← Back to Dashboard
-        </a>
-      </div>
+      <Card>
+        <Stack gap="md" align="center">
+          <Heading level={2}>Access Denied</Heading>
+          <Paragraph>You do not have permission to view this page.</Paragraph>
+          <Link to="/app">← Back to Dashboard</Link>
+        </Stack>
+      </Card>
     );
   }
 
@@ -104,35 +119,18 @@ const App: React.FC = () => {
   return (
     <Sentry.ErrorBoundary
       fallback={({ error, resetError }) => (
-        <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>
-          <h2 style={{ color: 'var(--color-error)' }}>Something went wrong</h2>
-          <p>We&apos;ve been notified and are working on a fix.</p>
-          <pre style={{
-            background: 'var(--color-bg-secondary)',
-            padding: '1rem',
-            borderRadius: '8px',
-            textAlign: 'left',
-            overflow: 'auto',
-            maxWidth: '600px',
-            margin: '2rem auto'
-          }}>
-            {error instanceof Error ? error.message : String(error)}
-          </pre>
-          <button
-            onClick={resetError}
-            style={{
-              background: 'var(--color-primary)',
-              color: 'white',
-              border: 'none',
-              padding: '0.75rem 1.5rem',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontWeight: 'bold'
-            }}
-          >
-            Try Again
-          </button>
-        </div>
+        <Card>
+          <Stack gap="md" align="center">
+            <Heading level={2}>Something went wrong</Heading>
+            <Paragraph>We&apos;ve been notified and are working on a fix.</Paragraph>
+            <Code>
+              {error instanceof Error ? error.message : String(error)}
+            </Code>
+            <Button onClick={resetError} variant="primary">
+              Try Again
+            </Button>
+          </Stack>
+        </Card>
       )}
     >
       <NerdModeProvider>
@@ -171,4 +169,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-

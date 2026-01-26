@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Button } from '../ui/Button';
-import { PluginIcon } from '../ui/PluginIcon';
+import { Button, Modal, Heading, Paragraph } from '../library/ui';
+import { Stack, ModalSection } from '../library/layout';
+import { Link } from '../library/navigation';
+import { PluginIcon } from '../library/ui/PluginIcon';
+import { Input, FormField } from '../library/forms';
 import { IntegrationManifest } from '../../types/plugin';
 import { useApi } from '../../hooks/useApi';
 import './ApiKeySetupModal.css';
@@ -43,58 +46,59 @@ export const ApiKeySetupModal: React.FC<ApiKeySetupModalProps> = ({
         }
     };
 
-    // Simple markdown-like rendering for bold text
     const renderInstructions = (text: string) => {
         if (!text) return null;
 
-        // Split by ** for bold sections
         const parts = text.split(/\*\*([^*]+)\*\*/g);
         return parts.map((part, i) =>
-            i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+            i % 2 === 1 ? <Paragraph key={i} inline bold>{part}</Paragraph> : part
         );
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content api-key-setup-modal" onClick={e => e.stopPropagation()}>
-                <div className="modal-header">
+        <Modal
+            isOpen={true}
+            onClose={onClose}
+            title={integration.setupTitle || `Connect ${integration.name}`}
+        >
+            <ModalSection>
+                <Stack direction="horizontal" gap="md" align="center">
                     <PluginIcon
                         icon={integration.icon}
                         iconType={integration.iconType}
                         iconPath={integration.iconPath}
                         size="large"
-                        className="integration-icon"
                     />
-                    <h2>{integration.setupTitle || `Connect ${integration.name}`}</h2>
-                    <button className="modal-close" onClick={onClose}>×</button>
-                </div>
+                    <Heading level={2}>{integration.setupTitle || `Connect ${integration.name}`}</Heading>
+                </Stack>
+            </ModalSection>
 
-                <div className="modal-body">
-                    {integration.setupInstructions && (
-                        <div className="setup-instructions">
-                            {integration.setupInstructions.split('\n').map((line, i) => (
-                                <p key={i}>{renderInstructions(line)}</p>
-                            ))}
-                        </div>
-                    )}
+            {integration.setupInstructions && (
+                <ModalSection>
+                    {integration.setupInstructions.split('\n').map((line, i) => (
+                        <Paragraph key={i}>{renderInstructions(line)}</Paragraph>
+                    ))}
+                </ModalSection>
+            )}
 
-                    {integration.apiKeyHelpUrl && (
-                        <a
-                            href={integration.apiKeyHelpUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="help-link"
+            {integration.apiKeyHelpUrl && (
+                <Link
+                    to={integration.apiKeyHelpUrl}
+                    external
+                    variant="primary"
+                >
+                    View detailed instructions →
+                </Link>
+            )}
+
+            <form onSubmit={handleSubmit}>
+                <ModalSection>
+                    <Stack gap="md">
+                        <FormField
+                            label={integration.apiKeyLabel || 'API Key'}
+                            htmlFor="apiKey"
                         >
-                            View detailed instructions →
-                        </a>
-                    )}
-
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="apiKey">
-                                {integration.apiKeyLabel || 'API Key'}
-                            </label>
-                            <input
+                            <Input
                                 id="apiKey"
                                 type="password"
                                 value={apiKey}
@@ -103,13 +107,13 @@ export const ApiKeySetupModal: React.FC<ApiKeySetupModalProps> = ({
                                 autoFocus
                                 disabled={submitting}
                             />
-                        </div>
+                        </FormField>
 
                         {error && (
-                            <div className="error-message">{error}</div>
+                            <Paragraph size="sm">{error}</Paragraph>
                         )}
 
-                        <div className="modal-actions">
+                        <Stack direction="horizontal" gap="sm" justify="end">
                             <Button
                                 type="button"
                                 variant="secondary"
@@ -125,10 +129,10 @@ export const ApiKeySetupModal: React.FC<ApiKeySetupModalProps> = ({
                             >
                                 {submitting ? 'Connecting...' : 'Connect'}
                             </Button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+                        </Stack>
+                    </Stack>
+                </ModalSection>
+            </form>
+        </Modal>
     );
 };

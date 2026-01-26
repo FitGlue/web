@@ -1,0 +1,74 @@
+.ui-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.ui-icon-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-primary, #ffffff);
+}
+
+.ui-icon-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Size variants */
+.ui-icon-button--sm {
+  width: 28px;
+  height: 28px;
+  font-size: 0.875rem;
+}
+
+.ui-icon-button--md {
+  width: 36px;
+  height: 36px;
+  font-size: 1.125rem;
+}
+
+.ui-icon-button--lg {
+  width: 44px;
+  height: 44px;
+  font-size: 1.375rem;
+}
+
+/* Variants */
+.ui-icon-button--ghost {
+  background: transparent;
+}
+
+.ui-icon-button--danger {
+  color: var(--color-error, #ef4444);
+}
+
+.ui-icon-button--danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-error, #ef4444);
+}
+
+/* Loading spinner */
+.ui-icon-button__spinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: ui-icon-button-spin 0.6s linear infinite;
+}
+
+@keyframes ui-icon-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ui-icon-button--loading {
+  cursor: wait;
+}

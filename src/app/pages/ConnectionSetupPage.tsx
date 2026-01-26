@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Button } from '../components/ui/Button';
-import { PluginIcon } from '../components/ui/PluginIcon';
+import { PageLayout, Stack } from '../components/library/layout';
+import { Button, Heading, Paragraph, LoadingState, List, ListItem } from '../components/library/ui';
+import { PluginIcon } from '../components/library/ui/PluginIcon';
+import { Input, FormField } from '../components/library/forms';
 import { renderInlineMarkdown } from '../utils/markdown';
-import { LoadingState } from '../components/ui/LoadingState';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useApi } from '../hooks/useApi';
 import { useUser } from '../hooks/useUser';
@@ -25,7 +24,6 @@ const ConnectionSetupPage: React.FC = () => {
     const integration = integrations.find(i => i.id === id);
 
     useEffect(() => {
-        // Scroll to top on mount
         window.scrollTo(0, 0);
     }, []);
 
@@ -40,12 +38,12 @@ const ConnectionSetupPage: React.FC = () => {
     if (!integration) {
         return (
             <PageLayout title="Connection Not Found" backTo="/connections" backLabel="Connections">
-                <div className="connection-setup__error">
-                    <p>This connection type does not exist.</p>
+                <Stack gap="md">
+                    <Paragraph>This connection type does not exist.</Paragraph>
                     <Button variant="primary" onClick={() => navigate('/connections')}>
                         Back to Connections
                     </Button>
-                </div>
+                </Stack>
             </PageLayout>
         );
     }
@@ -67,7 +65,6 @@ const ConnectionSetupPage: React.FC = () => {
                 ingressApiKey?: string;
                 ingressKeyLabel?: string;
             };
-            // Navigate to success page with the ingress key data
             navigate(`/connections/${integration.id}/success`, {
                 state: {
                     ingressApiKey: response.ingressApiKey,
@@ -90,7 +87,6 @@ const ConnectionSetupPage: React.FC = () => {
         try {
             const response = await api.post(`/users/me/integrations/${integration.id}/connect`);
             const { url } = response as { url: string };
-            // Redirect to OAuth provider
             window.location.href = url;
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Failed to start connection. Please try again.';
@@ -99,7 +95,6 @@ const ConnectionSetupPage: React.FC = () => {
         }
     };
 
-    // Parse instructions into steps
     const parseInstructions = (text: string): string[] => {
         if (!text) return [];
         return text
@@ -108,38 +103,33 @@ const ConnectionSetupPage: React.FC = () => {
             .map(line => line.replace(/^\d+\.\s*/, '').trim());
     };
 
-    // Use shared markdown renderer for bold text
-
     const renderApiKeySetup = () => {
         const steps = parseInstructions(integration.setupInstructions || '');
 
         return (
-            <div className="connection-setup">
-                <div className="connection-setup__header">
+            <Stack gap="lg">
+                <Stack direction="horizontal" align="center" gap="md">
                     <PluginIcon
                         icon={integration.icon}
                         iconType={integration.iconType}
                         iconPath={integration.iconPath}
                         size="large"
-                        className="connection-setup__icon"
+
                     />
-                    <h1>Connect {integration.name}</h1>
-                </div>
+                    <Heading level={1}>Connect {integration.name}</Heading>
+                </Stack>
 
                 <form onSubmit={handleApiKeySubmit}>
-                    <div className="connection-setup__section">
-                        <h2>Step 1: Generate your {integration.name} API Key</h2>
-                        <div className="connection-setup__instructions">
-                            <ol>
-                                {steps.map((step, i) => (
-                                    <li key={i}>{renderInlineMarkdown(step)}</li>
-                                ))}
-                            </ol>
-                        </div>
+                    <Stack gap="lg">
+                        <Heading level={2}>Step 1: Generate your {integration.name} API Key</Heading>
+                        <List variant="ordered">
+                            {steps.map((step, i) => (
+                                <ListItem key={i}>{renderInlineMarkdown(step)}</ListItem>
+                            ))}
+                        </List>
 
-                        <div className="connection-setup__input">
-                            <label htmlFor="apiKey">{integration.apiKeyLabel || 'API Key'}</label>
-                            <input
+                        <FormField label={integration.apiKeyLabel || 'API Key'} htmlFor="apiKey">
+                            <Input
                                 id="apiKey"
                                 type="text"
                                 value={apiKey}
@@ -147,14 +137,14 @@ const ConnectionSetupPage: React.FC = () => {
                                 placeholder={`Enter your ${integration.apiKeyLabel || 'API key'}`}
                                 disabled={submitting}
                             />
-                        </div>
-                    </div>
+                        </FormField>
+                    </Stack>
 
                     {error && (
-                        <div className="connection-setup__error-message">{error}</div>
+                        <Paragraph>{error}</Paragraph>
                     )}
 
-                    <div className="connection-setup__actions">
+                    <Stack direction="horizontal" gap="sm" justify="end">
                         <Button
                             type="button"
                             variant="secondary"
@@ -170,52 +160,52 @@ const ConnectionSetupPage: React.FC = () => {
                         >
                             {submitting ? 'Connecting...' : `Connect ${integration.name}`}
                         </Button>
-                    </div>
+                    </Stack>
                 </form>
-            </div>
+            </Stack>
         );
     };
 
     const renderOAuthSetup = () => {
         return (
-            <div className="connection-setup">
-                <div className="connection-setup__header">
+            <Stack gap="lg">
+                <Stack direction="horizontal" align="center" gap="md">
                     <PluginIcon
                         icon={integration.icon}
                         iconType={integration.iconType}
                         iconPath={integration.iconPath}
                         size="large"
-                        className="connection-setup__icon"
+
                     />
-                    <h1>Connect to {integration.name}</h1>
-                </div>
+                    <Heading level={1}>Connect to {integration.name}</Heading>
+                </Stack>
 
-                <div className="connection-setup__section">
-                    <p className="connection-setup__intro">
+                <Stack gap="md">
+                    <Paragraph>
                         You&apos;ll be redirected to {integration.name} to authorize FitGlue. Here&apos;s what will happen:
-                    </p>
+                    </Paragraph>
 
-                    <ul className="connection-setup__checklist">
-                        <li>✓ Sign in to your {integration.name} account</li>
-                        <li>✓ Review the permissions FitGlue needs</li>
-                        <li>✓ Click &quot;Authorize&quot; to connect</li>
-                        <li>✓ You&apos;ll be redirected back here automatically</li>
-                    </ul>
+                    <List>
+                        <ListItem>✓ Sign in to your {integration.name} account</ListItem>
+                        <ListItem>✓ Review the permissions FitGlue needs</ListItem>
+                        <ListItem>✓ Click &quot;Authorize&quot; to connect</ListItem>
+                        <ListItem>✓ You&apos;ll be redirected back here automatically</ListItem>
+                    </List>
 
-                    <div className="connection-setup__info-box connection-setup__info-box--security">
-                        <span className="connection-setup__info-icon">🔒</span>
-                        <div>
-                            <strong>Secure OAuth Connection</strong>
-                            <p>Your {integration.name} password is never shared with FitGlue.</p>
-                        </div>
-                    </div>
-                </div>
+                    <Stack direction="horizontal" gap="md" align="start">
+                        <Paragraph inline>🔒</Paragraph>
+                        <Stack gap="xs">
+                            <Paragraph bold>Secure OAuth Connection</Paragraph>
+                            <Paragraph size="sm">Your {integration.name} password is never shared with FitGlue.</Paragraph>
+                        </Stack>
+                    </Stack>
+                </Stack>
 
                 {error && (
-                    <div className="connection-setup__error-message">{error}</div>
+                    <Paragraph>{error}</Paragraph>
                 )}
 
-                <div className="connection-setup__actions">
+                <Stack direction="horizontal" gap="sm" justify="end">
                     <Button
                         variant="secondary"
                         onClick={() => navigate('/connections')}
@@ -230,8 +220,8 @@ const ConnectionSetupPage: React.FC = () => {
                     >
                         {submitting ? 'Redirecting...' : `Continue to ${integration.name} →`}
                     </Button>
-                </div>
-            </div>
+                </Stack>
+            </Stack>
         );
     };
 
@@ -241,54 +231,53 @@ const ConnectionSetupPage: React.FC = () => {
         const healthName = isApple ? 'Apple Health' : 'Health Connect';
 
         return (
-            <div className="connection-setup">
-                <div className="connection-setup__header">
+            <Stack gap="lg">
+                <Stack direction="horizontal" align="center" gap="md">
                     <PluginIcon
                         icon={integration.icon}
                         iconType={integration.iconType}
                         iconPath={integration.iconPath}
                         size="large"
-                        className="connection-setup__icon"
+
                     />
-                    <h1>Connect {integration.name}</h1>
-                </div>
+                    <Heading level={1}>Connect {integration.name}</Heading>
+                </Stack>
 
-                <div className="connection-setup__section">
-                    <p className="connection-setup__intro">
+                <Stack gap="md">
+                    <Paragraph>
                         {integration.name} data syncs through our mobile app.
-                    </p>
+                    </Paragraph>
 
-                    <div className="connection-setup__info-box connection-setup__info-box--app">
-                        <span className="connection-setup__info-icon">📱</span>
-                        <div>
-                            <strong>Get the FitGlue App</strong>
-                            <ol className="connection-setup__app-steps">
-                                <li>Download <strong>FitGlue</strong> from the {storeName}</li>
-                                <li>Sign in with your FitGlue account</li>
-                                <li>Grant <strong>{healthName}</strong> permissions</li>
-                                <li>Workouts sync automatically!</li>
-                            </ol>
-                            {/* TODO: Add actual app store links when available */}
+                    <Stack direction="horizontal" gap="md" align="start">
+                        <Paragraph inline>📱</Paragraph>
+                        <Stack gap="sm">
+                            <Paragraph bold>Get the FitGlue App</Paragraph>
+                            <List variant="ordered">
+                                <ListItem>Download <strong>FitGlue</strong> from the {storeName}</ListItem>
+                                <ListItem>Sign in with your FitGlue account</ListItem>
+                                <ListItem>Grant <strong>{healthName}</strong> permissions</ListItem>
+                                <ListItem>Workouts sync automatically!</ListItem>
+                            </List>
                             <Button variant="primary" disabled>
                                 Download on the {storeName}
                             </Button>
-                        </div>
-                    </div>
+                        </Stack>
+                    </Stack>
 
-                    <p className="connection-setup__note">
+                    <Paragraph size="sm">
                         <strong>Note:</strong> {integration.name} data can only be accessed from your {isApple ? 'iOS' : 'Android'} device.
-                    </p>
-                </div>
+                    </Paragraph>
+                </Stack>
 
-                <div className="connection-setup__actions">
+                <Stack direction="horizontal" gap="sm">
                     <Button
                         variant="secondary"
                         onClick={() => navigate('/connections')}
                     >
                         ← Back to Connections
                     </Button>
-                </div>
-            </div>
+                </Stack>
+            </Stack>
         );
     };
 
@@ -296,32 +285,29 @@ const ConnectionSetupPage: React.FC = () => {
         const steps = parseInstructions(integration.setupInstructions || '');
 
         return (
-            <div className="connection-setup">
-                <div className="connection-setup__header">
+            <Stack gap="lg">
+                <Stack direction="horizontal" align="center" gap="md">
                     <PluginIcon
                         icon={integration.icon}
                         iconType={integration.iconType}
                         iconPath={integration.iconPath}
                         size="large"
-                        className="connection-setup__icon"
+
                     />
-                    <h1>Connect {integration.name}</h1>
-                </div>
+                    <Heading level={1}>Connect {integration.name}</Heading>
+                </Stack>
 
                 <form onSubmit={handleApiKeySubmit}>
-                    <div className="connection-setup__section">
-                        <h2>Enter your {integration.name} Details</h2>
-                        <div className="connection-setup__instructions">
-                            <ol>
-                                {steps.map((step, i) => (
-                                    <li key={i}>{renderInlineMarkdown(step)}</li>
-                                ))}
-                            </ol>
-                        </div>
+                    <Stack gap="lg">
+                        <Heading level={2}>Enter your {integration.name} Details</Heading>
+                        <List variant="ordered">
+                            {steps.map((step, i) => (
+                                <ListItem key={i}>{renderInlineMarkdown(step)}</ListItem>
+                            ))}
+                        </List>
 
-                        <div className="connection-setup__input">
-                            <label htmlFor="apiKey">{integration.apiKeyLabel || 'ID'}</label>
-                            <input
+                        <FormField label={integration.apiKeyLabel || 'ID'} htmlFor="apiKey">
+                            <Input
                                 id="apiKey"
                                 type="text"
                                 value={apiKey}
@@ -329,14 +315,14 @@ const ConnectionSetupPage: React.FC = () => {
                                 placeholder={`Enter your ${integration.apiKeyLabel || 'ID'}`}
                                 disabled={submitting}
                             />
-                        </div>
-                    </div>
+                        </FormField>
+                    </Stack>
 
                     {error && (
-                        <div className="connection-setup__error-message">{error}</div>
+                        <Paragraph>{error}</Paragraph>
                     )}
 
-                    <div className="connection-setup__actions">
+                    <Stack direction="horizontal" gap="sm" justify="end">
                         <Button
                             type="button"
                             variant="secondary"
@@ -352,13 +338,12 @@ const ConnectionSetupPage: React.FC = () => {
                         >
                             {submitting ? 'Connecting...' : `Connect ${integration.name}`}
                         </Button>
-                    </div>
+                    </Stack>
                 </form>
-            </div>
+            </Stack>
         );
     };
 
-    // Render based on auth type
     const authType = integration.authType as number;
 
     return (
@@ -372,12 +357,12 @@ const ConnectionSetupPage: React.FC = () => {
             {authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_APP_SYNC && renderAppSyncSetup()}
             {authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_PUBLIC_ID && renderPublicIdSetup()}
             {authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_UNSPECIFIED && (
-                <div className="connection-setup__error">
-                    <p>This connection type is not configured correctly.</p>
+                <Stack gap="md">
+                    <Paragraph>This connection type is not configured correctly.</Paragraph>
                     <Button variant="primary" onClick={() => navigate('/connections')}>
                         Back to Connections
                     </Button>
-                </div>
+                </Stack>
             )}
         </PageLayout>
     );

@@ -1,0 +1,187 @@
+/* ==========================================================================
+   Button Component - Premium Dark Mode Styling
+   ========================================================================== */
+@import '../tokens.css';
+
+/* Base Button */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: 0.75rem 1.5rem;
+  margin: 0;
+  /* Reset legacy margin */
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  text-decoration: none;
+  width: auto;
+  /* Reset legacy width: 100% */
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Primary Variant - Vibrant Gradient with Shimmer */
+.btn.primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn.primary::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.15) 50%,
+      transparent 70%);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+}
+
+.btn.primary:hover:not(:disabled)::before {
+  opacity: 1;
+  animation: shimmer 2s infinite;
+}
+
+.btn.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.btn.primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn.primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 27, 141, 0.3);
+}
+
+/* Secondary Variant - Outlined */
+.btn.secondary {
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-emphasis);
+}
+
+.btn.secondary:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-hover);
+  transform: translateY(-2px);
+}
+
+.btn.secondary:active:not(:disabled) {
+  background: var(--color-surface-active);
+  transform: translateY(0);
+}
+
+.btn.secondary:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 27, 141, 0.2);
+}
+
+/* Secondary Light - For use on colored/gradient backgrounds */
+.btn.secondary-light {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+}
+
+.btn.secondary-light:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
+}
+
+.btn.secondary-light:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn.secondary-light:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Text Variant - Minimal */
+.btn.text {
+  background: transparent;
+  color: var(--color-text-secondary);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.btn.text:hover:not(:disabled) {
+  color: var(--color-text-primary);
+  background: var(--color-surface-hover);
+}
+
+.btn.text:focus {
+  outline: none;
+  background: var(--color-surface-hover);
+}
+
+/* Danger Variant - Alert Actions */
+.btn.danger {
+  background: transparent;
+  color: var(--color-error);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.btn.danger:hover:not(:disabled) {
+  background: var(--color-error-bg);
+  border-color: var(--color-error);
+  transform: translateY(-2px);
+}
+
+.btn.danger:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn.danger:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* Size Variants */
+.btn.small {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: var(--radius-sm);
+}
+
+.btn.large {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  border-radius: var(--radius-lg);
+}
+
+/* Full Width Modifier */
+.btn.full-width {
+  width: 100%;
+}
+
+/* Icon Button adjustment */
+.btn svg,
+.btn .icon {
+  flex-shrink: 0;
+}

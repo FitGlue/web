@@ -1,0 +1,3 @@
+.wizard-option-grid {
+  gap: var(--spacing-md, 1rem);
+}

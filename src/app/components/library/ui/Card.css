@@ -1,0 +1,98 @@
+/* ==========================================================================
+   Card Component - Beautiful Dark Mode Styling
+   Matches the premium patterns from main.css
+   ========================================================================== */
+@import '../tokens.css';
+
+/* Base Card - Subtle gradient background, clean borders */
+.card {
+  background: var(--gradient-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: left;
+  transition:
+    border-color var(--transition-normal),
+    background var(--transition-normal);
+}
+
+/* Elevated Variant - Slightly brighter */
+.card.card-elevated {
+  background: var(--gradient-card-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Premium Variant - Gradient background with shimmer */
+.card.card-premium {
+  background: linear-gradient(135deg, #9D4EDD, #FF1B8D);
+  border-color: rgba(255, 255, 255, 0.2);
+  padding: 0.75rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.card.card-premium::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent);
+  animation: card-shimmer 4s ease-in-out infinite;
+}
+
+@keyframes card-shimmer {
+  0% {
+    left: -100%;
+  }
+
+  50%,
+  100% {
+    left: 100%;
+  }
+}
+
+/* Interactive/Clickable Cards */
+.card.clickable {
+  cursor: pointer;
+}
+
+.card.clickable:hover {
+  background: var(--gradient-card-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.card.clickable:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.card.clickable:active {
+  background: var(--gradient-card);
+}
+
+/* Card Footer */
+.card-footer {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Highlighted Variant - Premium content with glow */
+.card.card-highlighted {
+  border-color: rgba(157, 78, 221, 0.5);
+  box-shadow:
+    0 0 20px rgba(157, 78, 221, 0.2),
+    0 0 40px rgba(255, 27, 141, 0.1);
+}
+
+.card.card-highlighted:hover {
+  border-color: rgba(157, 78, 221, 0.7);
+  box-shadow:
+    0 0 25px rgba(157, 78, 221, 0.3),
+    0 0 50px rgba(255, 27, 141, 0.15);
+}

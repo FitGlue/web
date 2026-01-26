@@ -1,26 +1,16 @@
 import React, { ReactNode } from 'react';
-import { LoadingState } from '../ui/LoadingState';
+import { LoadingState } from '../library/ui/LoadingState';
+import { Stack } from '../library/layout';
 
 interface DataListProps<T> {
-    /** Items to render */
     items: T[];
-    /** Render function for each item */
     renderItem: (item: T, index: number) => ReactNode;
-    /** Key extractor for items */
     keyExtractor?: (item: T, index: number) => string | number;
-    /** Loading state */
     loading?: boolean;
-    /** Loading message */
     loadingMessage?: string;
-    /** Empty state component */
     emptyState?: ReactNode;
-    /** Container className */
-    className?: string;
 }
 
-/**
- * DataList renders a list of items with loading and empty states.
- */
 export function DataList<T>({
     items,
     renderItem,
@@ -28,7 +18,6 @@ export function DataList<T>({
     loading = false,
     loadingMessage = 'Loading...',
     emptyState,
-    className = 'inputs-list',
 }: DataListProps<T>) {
     if (loading && items.length === 0) {
         return <LoadingState message={loadingMessage} />;
@@ -39,12 +28,12 @@ export function DataList<T>({
     }
 
     return (
-        <div className={className}>
+        <Stack gap="sm">
             {items.map((item, index) => (
                 <React.Fragment key={keyExtractor ? keyExtractor(item, index) : index}>
                     {renderItem(item, index)}
                 </React.Fragment>
             ))}
-        </div>
+        </Stack>
     );
 }

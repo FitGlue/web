@@ -1,18 +1,14 @@
 import React from 'react';
 import { ExecutionRecord } from '../services/ActivitiesService';
+import { TraceItem } from './TraceItem';
+import { LoadingState, EmptyState, Heading, Paragraph, Code } from './library/ui';
+import { Stack } from './library/layout';
 
 interface PipelineTraceProps {
   trace: ExecutionRecord[];
   pipelineExecutionId?: string;
   isLoading?: boolean;
 }
-
-// ... (imports)
-import { TraceItem } from './TraceItem';
-import { LoadingState } from './ui/LoadingState';
-import { EmptyState } from './EmptyState';
-
-// ... (remove helper functions formatDuration and truncateJson as they are moved to TraceItem)
 
 export const PipelineTrace: React.FC<PipelineTraceProps> = ({ trace, pipelineExecutionId, isLoading }) => {
   if (isLoading) {
@@ -24,24 +20,22 @@ export const PipelineTrace: React.FC<PipelineTraceProps> = ({ trace, pipelineExe
           <EmptyState
               icon="🔍"
               title="No Trace Data"
-              message="No execution trace steps found for this pipeline."
+              description="No execution trace steps found for this pipeline."
           />
       );
   }
 
   return (
-    <>
-      <h3>Pipeline Execution Trace</h3>
+    <Stack gap="md">
+      <Heading level={3}>Pipeline Execution Trace</Heading>
       {pipelineExecutionId && (
-        <p className="pipeline-id">Pipeline ID: <code>{pipelineExecutionId}</code></p>
+        <Paragraph>Pipeline ID: <Code>{pipelineExecutionId}</Code></Paragraph>
       )}
-      <div className="card pipeline-trace-card">
-          <div className="trace-timeline">
-              {trace.map((exec, index) => (
-                  <TraceItem key={exec.executionId || index} execution={exec} index={index} />
-              ))}
-          </div>
-      </div>
-    </>
+      <Stack gap="sm">
+          {trace.map((exec, index) => (
+              <TraceItem key={exec.executionId || index} execution={exec} index={index} />
+          ))}
+      </Stack>
+    </Stack>
   );
 };

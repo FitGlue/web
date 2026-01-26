@@ -1,0 +1,104 @@
+/* ==========================================================================
+   AppHeader Component - Beautiful Branding
+   ========================================================================== */
+
+/* Header defaults handled by main.css header styling */
+/* This file provides additional library-specific enhancements */
+
+/* FitGlue Logo - Gradient Text */
+.app-header__logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.app-header__logo span:first-child {
+  background: linear-gradient(135deg, var(--color-primary, #FF1B8D), var(--color-secondary, #9D4EDD));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.app-header__logo span:last-child {
+  color: var(--color-text-primary, #ffffff);
+}
+
+/* User Avatar Button */
+.app-header__avatar {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary, #FF1B8D), var(--color-secondary, #9D4EDD));
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app-header__avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 27, 141, 0.3);
+}
+
+/* ATHLETE Badge */
+.app-header__tier-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: var(--color-primary, #FF1B8D);
+  color: white;
+  font-size: 0.55rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 2px solid var(--color-bg, #0a0a0a);
+}
+
+/* Dropdown Menu */
+.app-header__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: rgba(30, 30, 35, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
+
+.app-header__menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--color-text-primary, #ffffff);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.app-header__menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.app-header__menu-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0.5rem 0;
+}
+
+.app-header__menu-email {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+}

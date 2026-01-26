@@ -1,0 +1,78 @@
+/* ==========================================================================
+   Grid Component - CSS Grid Layout Utility
+   ========================================================================== */
+@import '../tokens.css';
+
+.ui-grid {
+  display: grid;
+  width: 100%;
+}
+
+/* Auto-fit mode (default) */
+.ui-grid:not([class*="ui-grid--cols-"]) {
+  grid-template-columns: repeat(auto-fit, minmax(var(--grid-min-col-width, 280px), 1fr));
+}
+
+/* Fixed column counts */
+.ui-grid--cols-1 {
+  grid-template-columns: 1fr;
+}
+
+.ui-grid--cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.ui-grid--cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ui-grid--cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.ui-grid--cols-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.ui-grid--cols-6 {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+/* Gap variants using tokens */
+.ui-grid--gap-none {
+  gap: 0;
+}
+
+.ui-grid--gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.ui-grid--gap-md {
+  gap: var(--spacing-md);
+}
+
+.ui-grid--gap-lg {
+  gap: var(--spacing-lg);
+}
+
+/* Responsive: collapse to single column on mobile */
+@media (max-width: 768px) {
+
+  .ui-grid--responsive.ui-grid--cols-2,
+  .ui-grid--responsive.ui-grid--cols-3,
+  .ui-grid--responsive.ui-grid--cols-4,
+  .ui-grid--responsive.ui-grid--cols-5,
+  .ui-grid--responsive.ui-grid--cols-6 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tablet: 2-col max for larger grids */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  .ui-grid--responsive.ui-grid--cols-4,
+  .ui-grid--responsive.ui-grid--cols-5,
+  .ui-grid--responsive.ui-grid--cols-6 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

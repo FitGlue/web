@@ -1,0 +1,59 @@
+/* ==========================================================================
+   Link Component - Beautiful Pink Accent
+   ========================================================================== */
+
+.ui-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.ui-link:hover {
+  opacity: 0.8;
+}
+
+/* Variants */
+.ui-link--default {
+  color: var(--color-primary);
+}
+
+.ui-link--muted {
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  font-weight: 400;
+}
+
+.ui-link--muted:hover {
+  color: var(--color-text-primary, #ffffff);
+}
+
+.ui-link--primary {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Arrow link - "View All →" style */
+.ui-link--arrow::after {
+  content: ' →';
+}
+
+/* Nav variant */
+.ui-link--nav {
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ui-link--nav:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-primary, #ffffff);
+}
+
+.ui-link--nav.active {
+  color: var(--color-primary);
+  background: rgba(255, 27, 141, 0.15);
+}

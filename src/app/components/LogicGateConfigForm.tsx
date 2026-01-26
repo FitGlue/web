@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './LogicGateConfigForm.css';
+import { Stack } from './library/layout/Stack';
+import { Heading } from './library/ui/Heading';
+import { Text } from './library/ui/Text';
+import { Paragraph } from './library/ui/Paragraph';
+import { Button } from './library/ui/Button';
+import { Select } from './library/forms/Select';
+import { Input } from './library/forms/Input';
+import { Checkbox } from './library/forms/Checkbox';
+import { FormField } from './library/forms/FormField';
+import { Card } from './library/ui/Card';
 
 interface Rule {
   field: string;
@@ -167,26 +176,23 @@ export const LogicGateConfigForm: React.FC<Props> = ({ initialValues = {}, onCha
     switch (fieldDef.valueType) {
       case 'select':
         return (
-          <select
+          <Select
             value={rule.values[0] || ''}
             onChange={e => updateRule(index, { values: [e.target.value] })}
-            className="logic-gate-value-select"
-          >
-            <option value="">Select...</option>
-            {fieldDef.options?.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
+            options={fieldDef.options || []}
+            placeholder="Select..."
+          />
         );
 
       case 'days':
         return (
-          <div className="logic-gate-days-picker">
+          <Stack direction="horizontal" gap="xs" wrap>
             {DAYS.map(day => (
-              <button
+              <Button
                 key={day.value}
                 type="button"
-                className={`day-chip ${rule.values.includes(day.value) ? 'selected' : ''}`}
+                variant={rule.values.includes(day.value) ? 'primary' : 'secondary'}
+                size="small"
                 onClick={() => {
                   const newValues = rule.values.includes(day.value)
                     ? rule.values.filter(v => v !== day.value)
@@ -195,56 +201,54 @@ export const LogicGateConfigForm: React.FC<Props> = ({ initialValues = {}, onCha
                 }}
               >
                 {day.label}
-              </button>
+              </Button>
             ))}
-          </div>
+          </Stack>
         );
 
       case 'time':
         return (
-          <input
+          <Input
             type="time"
             value={rule.values[0] || ''}
             onChange={e => updateRule(index, { values: [e.target.value] })}
-            className="logic-gate-time-input"
           />
         );
 
       case 'location':
         return (
-          <div className="logic-gate-location-inputs">
-            <input
+          <Stack direction="horizontal" gap="sm">
+            <Input
               type="text"
               placeholder="Latitude"
               value={rule.values[0] || ''}
               onChange={e => updateRule(index, { values: [e.target.value, rule.values[1] || '', rule.values[2] || '500'] })}
-              className="logic-gate-coord-input"
+              fullWidth={false}
             />
-            <input
+            <Input
               type="text"
               placeholder="Longitude"
               value={rule.values[1] || ''}
               onChange={e => updateRule(index, { values: [rule.values[0] || '', e.target.value, rule.values[2] || '500'] })}
-              className="logic-gate-coord-input"
+              fullWidth={false}
             />
-            <input
+            <Input
               type="number"
               placeholder="Radius (m)"
               value={rule.values[2] || '500'}
               onChange={e => updateRule(index, { values: [rule.values[0] || '', rule.values[1] || '', e.target.value] })}
-              className="logic-gate-radius-input"
+              fullWidth={false}
             />
-          </div>
+          </Stack>
         );
 
       default:
         return (
-          <input
+          <Input
             type="text"
             value={rule.values[0] || ''}
             onChange={e => updateRule(index, { values: [e.target.value] })}
             placeholder="Enter value..."
-            className="logic-gate-text-input"
           />
         );
     }
@@ -259,131 +263,125 @@ export const LogicGateConfigForm: React.FC<Props> = ({ initialValues = {}, onCha
     return `${prefix}${fieldDef.label} ${opLabel} ${valueStr}`;
   };
 
+  const matchModeOptions = [
+    { value: 'all', label: 'All', icon: '∧', description: 'All rules must match' },
+    { value: 'any', label: 'Any', icon: '∨', description: 'Any rule matches' },
+    { value: 'none', label: 'None', icon: '¬', description: 'No rules match' },
+  ];
+
+  const actionOptions = [
+    { value: 'continue', label: '✅ Continue pipeline' },
+    { value: 'halt', label: '🛑 Halt pipeline' },
+  ];
+
   return (
-    <div className="logic-gate-config">
+    <Stack gap="lg">
       {/* Match Mode Section */}
-      <div className="logic-gate-section">
-        <h4 className="section-title">Match Mode</h4>
-        <div className="match-mode-options">
-          {[
-            { value: 'all', label: 'All', icon: '∧', description: 'All rules must match' },
-            { value: 'any', label: 'Any', icon: '∨', description: 'Any rule matches' },
-            { value: 'none', label: 'None', icon: '¬', description: 'No rules match' },
-          ].map(mode => (
-            <label key={mode.value} className={`match-mode-option ${config.match_mode === mode.value ? 'selected' : ''}`}>
-              <input
-                type="radio"
-                name="match_mode"
-                value={mode.value}
-                checked={config.match_mode === mode.value}
-                onChange={e => setConfig(prev => ({ ...prev, match_mode: e.target.value }))}
-              />
-              <span className="mode-icon">{mode.icon}</span>
-              <span className="mode-label">{mode.label}</span>
-              <span className="mode-description">{mode.description}</span>
-            </label>
+      <Stack gap="sm">
+        <Heading level={4}>Match Mode</Heading>
+        <Stack direction="horizontal" gap="sm" wrap>
+          {matchModeOptions.map(mode => (
+            <Card
+              key={mode.value}
+              onClick={() => setConfig(prev => ({ ...prev, match_mode: mode.value }))}
+              variant={config.match_mode === mode.value ? 'elevated' : 'default'}
+            >
+              <Stack direction="horizontal" gap="sm" align="center">
+                <Text>{mode.icon}</Text>
+                <Stack gap="none">
+                  <Text>{mode.label}</Text>
+                  <Text variant="small">{mode.description}</Text>
+                </Stack>
+              </Stack>
+            </Card>
           ))}
-        </div>
-      </div>
+        </Stack>
+      </Stack>
 
       {/* Rules Section */}
-      <div className="logic-gate-section">
-        <h4 className="section-title">Rules</h4>
-        <div className="rules-list">
+      <Stack gap="sm">
+        <Heading level={4}>Rules</Heading>
+        <Stack gap="md">
           {config.rules.map((rule, index) => (
-            <div key={index} className={`rule-card ${rule.negate ? 'negated' : ''}`}>
-              <div className="rule-header">
-                <span className="rule-number">#{index + 1}</span>
-                <label className="negate-toggle">
-                  <input
-                    type="checkbox"
-                    checked={rule.negate}
-                    onChange={e => updateRule(index, { negate: e.target.checked })}
-                  />
-                  <span>NOT</span>
-                </label>
-                <button
-                  type="button"
-                  className="remove-rule-btn"
-                  onClick={() => removeRule(index)}
-                  disabled={config.rules.length <= 1}
-                  title="Remove rule"
-                >
-                  ×
-                </button>
-              </div>
+            <Card key={index} variant={rule.negate ? 'elevated' : 'default'}>
+              <Stack gap="sm">
+                <Stack direction="horizontal" gap="sm" align="center" justify="between">
+                  <Text>#{index + 1}</Text>
+                  <Stack direction="horizontal" gap="sm" align="center">
+                    <Checkbox
+                      checked={rule.negate}
+                      onChange={e => updateRule(index, { negate: e.target.checked })}
+                      label="NOT"
+                    />
+                    <Button
+                      type="button"
+                      variant="danger"
+                      size="small"
+                      onClick={() => removeRule(index)}
+                      disabled={config.rules.length <= 1}
+                      title="Remove rule"
+                    >
+                      ×
+                    </Button>
+                  </Stack>
+                </Stack>
 
-              <div className="rule-body">
-                <div className="rule-field-row">
-                  <select
-                    value={rule.field}
-                    onChange={e => updateRule(index, { field: e.target.value })}
-                    className="logic-gate-field-select"
-                  >
-                    {Object.entries(FIELD_DEFINITIONS).map(([key, def]) => (
-                      <option key={key} value={key}>{def.icon} {def.label}</option>
-                    ))}
-                  </select>
-
-                  <select
-                    value={rule.op}
-                    onChange={e => updateRule(index, { op: e.target.value })}
-                    className="logic-gate-op-select"
-                  >
-                    {FIELD_DEFINITIONS[rule.field]?.operators.map(op => (
-                      <option key={op.value} value={op.value}>{op.label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="rule-value-row">
+                <Stack gap="sm">
+                  <Stack direction="horizontal" gap="sm">
+                    <Select
+                      value={rule.field}
+                      onChange={e => updateRule(index, { field: e.target.value })}
+                      options={Object.entries(FIELD_DEFINITIONS).map(([key, def]) => ({
+                        value: key,
+                        label: `${def.icon} ${def.label}`,
+                      }))}
+                    />
+                    <Select
+                      value={rule.op}
+                      onChange={e => updateRule(index, { op: e.target.value })}
+                      options={FIELD_DEFINITIONS[rule.field]?.operators.map(op => ({
+                        value: op.value,
+                        label: op.label,
+                      })) || []}
+                    />
+                  </Stack>
                   {renderValueInput(rule, index)}
-                </div>
-              </div>
+                </Stack>
 
-              <div className="rule-preview">
-                {getRuleDescription(rule)}
-              </div>
-            </div>
+                <Text variant="muted">{getRuleDescription(rule)}</Text>
+              </Stack>
+            </Card>
           ))}
-        </div>
-        <button type="button" className="add-rule-btn" onClick={addRule}>
+        </Stack>
+        <Button type="button" variant="secondary" onClick={addRule}>
           + Add Rule
-        </button>
-      </div>
+        </Button>
+      </Stack>
 
       {/* Actions Section */}
-      <div className="logic-gate-section">
-        <h4 className="section-title">Actions</h4>
-        <div className="actions-grid">
-          <div className="action-field">
-            <label>On Match</label>
-            <select
+      <Stack gap="sm">
+        <Heading level={4}>Actions</Heading>
+        <Stack direction="horizontal" gap="md">
+          <FormField label="On Match">
+            <Select
               value={config.on_match}
               onChange={e => setConfig(prev => ({ ...prev, on_match: e.target.value }))}
-              className="action-select"
-            >
-              <option value="continue">✅ Continue pipeline</option>
-              <option value="halt">🛑 Halt pipeline</option>
-            </select>
-          </div>
-          <div className="action-field">
-            <label>On No Match</label>
-            <select
+              options={actionOptions}
+            />
+          </FormField>
+          <FormField label="On No Match">
+            <Select
               value={config.on_no_match}
               onChange={e => setConfig(prev => ({ ...prev, on_no_match: e.target.value }))}
-              className="action-select"
-            >
-              <option value="continue">✅ Continue pipeline</option>
-              <option value="halt">🛑 Halt pipeline</option>
-            </select>
-          </div>
-        </div>
-        <p className="action-summary">
+              options={actionOptions}
+            />
+          </FormField>
+        </Stack>
+        <Paragraph>
           If <strong>{config.match_mode}</strong> rules match → <strong>{config.on_match}</strong>; otherwise → <strong>{config.on_no_match}</strong>
-        </p>
-      </div>
-    </div>
+        </Paragraph>
+      </Stack>
+    </Stack>
   );
 };
 

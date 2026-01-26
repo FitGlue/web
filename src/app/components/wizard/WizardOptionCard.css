@@ -1,0 +1,51 @@
+.wizard-option-card {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 160px;
+  flex: 1;
+  max-width: 280px;
+}
+
+.wizard-option-card:hover:not(.disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.15));
+}
+
+.wizard-option-card.selected {
+  border-color: var(--color-primary, #6366f1);
+  background: var(--color-primary-subtle, rgba(99, 102, 241, 0.08));
+}
+
+.wizard-option-card.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wizard-option-card.premium {
+  border-color: var(--color-premium, #f59e0b);
+}
+
+.wizard-option-card-header {
+  gap: var(--spacing-xs, 0.25rem);
+  margin-bottom: var(--spacing-xs, 0.25rem);
+}
+
+.wizard-option-icon {
+  font-size: 1.5rem;
+}
+
+.wizard-selected-check {
+  position: absolute;
+  top: var(--spacing-sm, 0.5rem);
+  right: var(--spacing-sm, 0.5rem);
+  color: var(--color-primary, #6366f1);
+  font-weight: bold;
+}
+
+.wizard-has-config {
+  position: absolute;
+  bottom: var(--spacing-sm, 0.5rem);
+  right: var(--spacing-sm, 0.5rem);
+  opacity: 0.7;
+}

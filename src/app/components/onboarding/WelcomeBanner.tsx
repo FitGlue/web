@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card } from '../ui/Card';
+import { Heading, Paragraph, Button, Card, Badge } from '../library/ui';
+import { Stack } from '../library/layout';
 import './WelcomeBanner.css';
 
 interface WelcomeBannerProps {
@@ -62,93 +63,66 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
 }) => {
     const navigate = useNavigate();
 
-    // Determine which steps are completed
     const stepCompletion = [hasConnections, hasPipelines, hasSyncs];
 
     return (
-        <Card className="welcome-banner">
-            <div className="welcome-header">
-                <div className="welcome-header-content">
-                    <div className="welcome-icon">👋</div>
-                    <div className="welcome-text">
-                        <h2>
-                            Welcome to{' '}
-                            <span className="brand">
-                                <span className="fit">Fit</span>
-                                <span className="glue">Glue</span>
-                            </span>
-                            !
-                        </h2>
-                        <p>Let&apos;s get you set up in 3 easy steps</p>
-                    </div>
-                </div>
-                {onDismiss && (
-                    <button
-                        className="dismiss-btn"
-                        onClick={onDismiss}
-                        aria-label="Dismiss"
-                    >
-                        <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
+        <Card>
+            <Stack gap="lg">
+                <Stack direction="horizontal" justify="between" align="start">
+                    <Stack direction="horizontal" gap="md" align="center">
+                        <Paragraph inline>👋</Paragraph>
+                        <Stack gap="xs">
+                            <Heading level={2}>
+                                Welcome to <Paragraph inline bold>Fit</Paragraph><Paragraph inline bold>Glue</Paragraph>!
+                            </Heading>
+                            <Paragraph>Let&apos;s get you set up in 3 easy steps</Paragraph>
+                        </Stack>
+                    </Stack>
+                    {onDismiss && (
+                        <Button
+                            variant="text"
+                            size="small"
+                            onClick={onDismiss}
+                            aria-label="Dismiss"
                         >
-                            <path d="M12 4L4 12M4 4l8 8" />
-                        </svg>
-                    </button>
-                )}
-            </div>
+                            ✕
+                        </Button>
+                    )}
+                </Stack>
 
-            <div className="onboarding-steps">
-                {STEPS.map((step, index) => {
-                    const isCompleted = stepCompletion[index];
-                    return (
-                        <button
-                            key={step.number}
-                            className={`step-card ${isCompleted ? 'completed' : ''}`}
-                            onClick={() => !isCompleted && navigate(step.route)}
-                            style={{ '--step-index': index } as React.CSSProperties}
-                            disabled={isCompleted}
-                        >
-                            <div className={`step-number ${isCompleted ? 'completed' : ''}`}>
-                                {isCompleted ? '✓' : step.number}
-                            </div>
-                            <div className="step-content">
-                                <div className="step-icon">{step.icon}</div>
-                                <div className="step-info">
-                                    <h4>{isCompleted ? step.completedTitle : step.title}</h4>
-                                    <p>{isCompleted ? step.completedDescription : step.description}</p>
-                                </div>
-                            </div>
-                            <div className="step-action">
-                                {isCompleted ? (
-                                    <span className="step-complete-badge">Done</span>
-                                ) : (
-                                    <span className="step-cta">
-                                        {step.buttonText}
-                                        <svg
-                                            width="16"
-                                            height="16"
-                                            viewBox="0 0 16 16"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <path d="M6 12l4-4-4-4" />
-                                        </svg>
-                                    </span>
-                                )}
-                            </div>
-                        </button>
-                    );
-                })}
-            </div>
+                <Stack gap="sm">
+                    {STEPS.map((step, index) => {
+                        const isCompleted = stepCompletion[index];
+                        return (
+                            <Card
+                                key={step.number}
+                                variant={isCompleted ? 'default' : 'elevated'}
+                                onClick={!isCompleted ? () => navigate(step.route) : undefined}
+                            >
+                                <Stack direction="horizontal" align="center" justify="between">
+                                    <Stack direction="horizontal" gap="md" align="center">
+                                        <Badge variant={isCompleted ? 'success' : 'default'} size="sm">
+                                            {isCompleted ? '✓' : step.number}
+                                        </Badge>
+                                        <Paragraph inline>{step.icon}</Paragraph>
+                                        <Stack gap="xs">
+                                            <Heading level={4}>{isCompleted ? step.completedTitle : step.title}</Heading>
+                                            <Paragraph size="sm" muted>{isCompleted ? step.completedDescription : step.description}</Paragraph>
+                                        </Stack>
+                                    </Stack>
+                                    {isCompleted ? (
+                                        <Badge variant="success" size="sm">Done</Badge>
+                                    ) : (
+                                        <Button variant="primary" size="small">
+                                            {step.buttonText} →
+                                        </Button>
+                                    )}
+                                </Stack>
+                            </Card>
+                        );
+                    })}
+                </Stack>
+            </Stack>
         </Card>
     );
 };

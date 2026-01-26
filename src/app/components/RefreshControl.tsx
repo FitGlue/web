@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './RefreshControl.css';
 
 interface RefreshControlProps {
   onRefresh: () => void;
@@ -46,22 +47,31 @@ export const RefreshControl: React.FC<RefreshControlProps> = ({ onRefresh, lastU
   }, [lastUpdated]);
 
   return (
-    <div className="refresh-pill" onClick={!loading ? onRefresh : undefined} title="Click to refresh">
-        <div className={`refresh-icon ${loading ? 'spinning' : ''}`}>
-             ↻
-        </div>
-        <div className="refresh-text">
-            {loading ? 'Updating...' : (lastUpdated ? `Updated ${timeAgo}` : 'Update Now')}
-        </div>
-      <style>{`
-        .spinning {
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }
-        }
-      `}</style>
-    </div>
+    <button
+      className={`refresh-control ${loading ? 'refresh-control--loading' : ''}`}
+      onClick={!loading ? onRefresh : undefined}
+      disabled={loading}
+      title="Click to refresh"
+    >
+      <svg
+        className="refresh-control__icon"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+        <path d="M3 3v5h5" />
+        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+        <path d="M21 21v-5h-5" />
+      </svg>
+      <span className="refresh-control__text">
+        {loading ? 'Updating...' : (lastUpdated ? `Updated ${timeAgo}` : 'Update Now')}
+      </span>
+    </button>
   );
 };
-

@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Card } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
+import { PageLayout, Stack, Grid } from '../components/library/layout';
+import { Card, Button, CardSkeleton, ConfirmDialog, Pill, Heading, Paragraph } from '../components/library/ui';
 import { useApi } from '../hooks/useApi';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { CardSkeleton } from '../components/ui/CardSkeleton';
-import { ConfirmDialog } from '../components/ui/ConfirmDialog';
-import { Pill } from '../components/ui/Pill';
-import '../components/ui/CardSkeleton.css';
+import '../components/library/ui/CardSkeleton.css';
 import { ApiKeySetupModal } from '../components/integrations/ApiKeySetupModal';
 import { IntegrationAuthType, IntegrationManifest } from '../types/plugin';
 
@@ -49,28 +45,28 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
     const isConnected = status?.connected ?? false;
 
     return (
-        <Card className="integration-card">
-            <div className="integration-header">
-                <span className="integration-icon">{icon}</span>
-                <div className="integration-info">
-                    <h3>{displayName}</h3>
-                    <p className="integration-description">{description}</p>
-                </div>
-            </div>
-            <div className="integration-status">
+        <Card>
+            <Stack direction="horizontal" align="center" gap="md">
+                <Paragraph size="lg">{icon}</Paragraph>
+                <Stack gap="xs">
+                    <Heading level={3} size="md">{displayName}</Heading>
+                    <Paragraph size="sm" muted>{description}</Paragraph>
+                </Stack>
+            </Stack>
+            <Stack direction="horizontal" align="center" gap="sm" wrap>
                 <Pill variant={isConnected ? 'success' : 'default'}>
                     {isConnected ? '✓ Connected' : '○ Not Connected'}
                 </Pill>
                 {isConnected && status?.externalUserId && (
-                    <span className="external-id">ID: {status.externalUserId}</span>
+                    <Paragraph size="sm" muted>ID: {status.externalUserId}</Paragraph>
                 )}
                 {isConnected && status?.lastUsedAt && (
-                    <span className="last-used">
+                    <Paragraph size="sm" muted>
                         Last used: {new Date(status.lastUsedAt).toLocaleDateString()}
-                    </span>
+                    </Paragraph>
                 )}
-            </div>
-            <div className="integration-actions">
+            </Stack>
+            <Stack>
                 {isConnected ? (
                     <Button
                         variant="danger"
@@ -88,7 +84,7 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
                         {connecting ? 'Connecting...' : 'Connect'}
                     </Button>
                 )}
-            </div>
+            </Stack>
         </Card>
     );
 };
@@ -111,7 +107,6 @@ const IntegrationsPage: React.FC = () => {
         try {
             const response = await api.post(`/users/me/integrations/${provider}/connect`);
             const { url } = response as { url: string };
-            // Redirect to OAuth flow
             window.location.href = url;
         } catch (error) {
             console.error(`Failed to connect ${provider}:`, error);
@@ -147,11 +142,11 @@ const IntegrationsPage: React.FC = () => {
     if (loading || registryLoading) {
         return (
             <PageLayout title="Integrations" backTo="/" backLabel="Dashboard">
-                <div className="integrations-grid">
+                <Grid>
                     <CardSkeleton variant="integration" />
                     <CardSkeleton variant="integration" />
                     <CardSkeleton variant="integration" />
-                </div>
+                </Grid>
             </PageLayout>
         );
     }
@@ -163,7 +158,7 @@ const IntegrationsPage: React.FC = () => {
             backLabel="Dashboard"
             onRefresh={refreshIntegrations}
         >
-            <div className="integrations-grid">
+            <Grid>
                 {registryIntegrations.map(integration => {
                     const status = integrations?.[integration.id as keyof IntegrationsSummary];
                     const supportsOAuth = integration.authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_OAUTH;
@@ -185,7 +180,7 @@ const IntegrationsPage: React.FC = () => {
                         />
                     );
                 })}
-            </div>
+            </Grid>
 
             {setupModalIntegration && (
                 <ApiKeySetupModal

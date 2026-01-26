@@ -1,0 +1,26 @@
+.ui-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.15s ease;
+}
+
+.ui-back-link:hover {
+  color: var(--color-text-primary, #ffffff);
+}
+
+.ui-back-link__arrow {
+  font-size: 1.125rem;
+  transition: transform 0.15s ease;
+}
+
+.ui-back-link:hover .ui-back-link__arrow {
+  transform: translateX(-2px);
+}
+
+.ui-back-link__label {
+  font-weight: 500;
+}

@@ -1,0 +1,112 @@
+/* ==========================================================================
+   TabbedCard - Card with Integrated Tab Navigation
+   ========================================================================== */
+@import '../tokens.css';
+
+.tabbed-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Tabs container */
+.tabbed-card__tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Individual tab */
+.tabbed-card__tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.tabbed-card__tab:hover {
+  color: var(--color-text, #ffffff);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tabbed-card__tab--active {
+  color: #ffffff;
+  background: rgba(255, 27, 141, 0.1);
+  border-bottom-color: var(--color-primary, #ff1b8d);
+}
+
+.tabbed-card__tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary, #ff1b8d), var(--color-secondary, #9d4edd));
+}
+
+/* Warning variant */
+.tabbed-card__tab--warning.tabbed-card__tab--active {
+  background: rgba(245, 158, 11, 0.1);
+  border-bottom-color: #f59e0b;
+}
+
+.tabbed-card__tab--warning.tabbed-card__tab--active::after {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+/* Tab elements */
+.tabbed-card__tab-icon {
+  font-size: 1rem;
+}
+
+.tabbed-card__tab-label {
+  font-weight: 600;
+}
+
+.tabbed-card__tab-count {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+.tabbed-card__tab--active .tabbed-card__tab-count {
+  background: linear-gradient(135deg, var(--color-primary, #ff1b8d), var(--color-secondary, #9d4edd));
+  color: white;
+}
+
+.tabbed-card__tab--warning.tabbed-card__tab--active .tabbed-card__tab-count {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  color: #1a1a2e;
+}
+
+/* Content area */
+.tabbed-card__content {
+  padding: 1.25rem;
+}
+
+/* Footer */
+.tabbed-card__footer {
+  padding: 0.75rem 1.25rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

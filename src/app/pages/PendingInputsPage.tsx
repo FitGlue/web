@@ -4,13 +4,10 @@ import { InputsService, PendingInput } from '../services/InputsService';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { usePluginLookup } from '../hooks/usePluginLookup';
 import { usePipelines } from '../hooks/usePipelines';
-import { PageLayout } from '../components/layout/PageLayout';
-import { EmptyState } from '../components/EmptyState';
+import { PageLayout, Stack } from '../components/library/layout';
 import { DataList } from '../components/data/DataList';
-import { Card } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
-import { Pill } from '../components/ui/Pill';
-import { Text } from '../components/ui/Text';
+import { Button, Pill, Paragraph, Heading, EmptyState, GlowCard, DashboardSummaryCard } from '../components/library/ui';
+import { Select, Textarea, Input, FormField } from '../components/library/forms';
 import { PipelineConfig } from '../state/pipelinesState';
 
 interface ParsedInputInfo {
@@ -20,34 +17,27 @@ interface ParsedInputInfo {
   timestamp: string;
 }
 
-// Derive source and pipeline info from the pending input and pipeline lookup
 const getInputDisplayInfo = (
     input: PendingInput,
     pipelines: PipelineConfig[],
     getSourceInfo: (sourceId: string) => { name: string; icon: string }
 ): ParsedInputInfo => {
-    // Find the pipeline for this input
     const pipeline = input.pipelineId
         ? pipelines.find(p => p.id === input.pipelineId)
         : undefined;
 
-    // Get source from pipeline or fallback to parsing activity ID
     let sourceId = pipeline?.source?.toLowerCase() || '';
     if (!sourceId) {
-        // Fallback: try to extract from activity ID (e.g., "FILE_UPLOAD:12345")
         const [sourcePart] = (input.activityId || '').split(':');
         sourceId = sourcePart?.toLowerCase().replace('source_', '') || 'unknown';
     }
-    // Remove source_ prefix if present
     sourceId = sourceId.replace('source_', '');
 
-    // Use the plugin lookup hook for consistent source info
     const sourceInfo = getSourceInfo(sourceId);
     const sourceName = sourceInfo.name;
     const sourceIcon = sourceInfo.icon;
     const pipelineName = pipeline?.name || pipeline?.id || '';
 
-    // Try to parse timestamp from createdAt
     let timestamp = '';
     if (input.createdAt) {
         const date = new Date(input.createdAt);
@@ -72,10 +62,8 @@ const PendingInputsPage: React.FC = () => {
     const { pipelines, fetchIfNeeded } = usePipelines();
     const { getSourceInfo } = usePluginLookup();
 
-    // Ensure pipelines are loaded for source lookup
     fetchIfNeeded();
 
-    // Local state to track form values for each pending input
     const [formValues, setFormValues] = useState<Record<string, Record<string, string>>>({});
     const [submittingIds, setSubmittingIds] = useState<Set<string>>(new Set());
 
@@ -167,30 +155,28 @@ const PendingInputsPage: React.FC = () => {
         }
     };
 
-    // Helper to render appropriate input type based on field name
     const renderField = (activityId: string, field: string) => {
         const value = getFieldValue(activityId, field);
 
         if (field === 'activity_type') {
             return (
-                <select
-                    className="input-select"
+                <Select
                     value={value}
                     onChange={(e) => handleInputChange(activityId, field, e.target.value)}
-                >
-                    <option value="">Select Type...</option>
-                    <option value="RUN">Run</option>
-                    <option value="RIDE">Ride</option>
-                    <option value="WEIGHT_TRAINING">Weight Training</option>
-                    <option value="WORKOUT">Workout</option>
-                </select>
+                    options={[
+                        { value: '', label: 'Select Type...' },
+                        { value: 'RUN', label: 'Run' },
+                        { value: 'RIDE', label: 'Ride' },
+                        { value: 'WEIGHT_TRAINING', label: 'Weight Training' },
+                        { value: 'WORKOUT', label: 'Workout' },
+                    ]}
+                />
             );
         }
 
         if (field === 'description') {
             return (
-                <textarea
-                    className="input-textarea"
+                <Textarea
                     placeholder="Enter description..."
                     value={value}
                     onChange={(e) => handleInputChange(activityId, field, e.target.value)}
@@ -200,9 +186,8 @@ const PendingInputsPage: React.FC = () => {
         }
 
         return (
-            <input
+            <Input
                 type="text"
-                className="input-text"
                 placeholder={`Enter ${field}...`}
                 value={value}
                 onChange={(e) => handleInputChange(activityId, field, e.target.value)}
@@ -226,24 +211,26 @@ const PendingInputsPage: React.FC = () => {
             loading={loading}
             lastUpdated={lastUpdated}
         >
-            <Text variant="muted">These activities need a bit more info before they can be synced.</Text>
+            <DashboardSummaryCard
+                title="Pending Items"
+                icon="⏳"
+                showLink={false}
+                footerText={inputs.length > 0 ? `${inputs.length} pending` : undefined}
+            >
+                <DataList
+                    items={inputs}
+                    loading={loading}
+                    loadingMessage="Checking for pending items..."
 
-            <DataList
-                items={inputs}
-                loading={loading}
-                loadingMessage="Checking for pending items..."
-                className="pending-inputs-grid"
                 keyExtractor={(input) => input.id}
                 renderItem={(input) => {
                     const displayInfo = getInputDisplayInfo(input, pipelines, getSourceInfo);
                     const isAutoPopulated = input.autoPopulated === true;
                     const autoDeadline = input.autoDeadline ? new Date(input.autoDeadline) : null;
-                    // Lookup enricher name from registry
                     const enricherId = input.enricherProviderId || '';
                     const enricherInfo = enrichers.find(e => e.id === enricherId.toLowerCase());
                     const enricherName = enricherInfo?.name || (enricherId ? enricherId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'Unknown Enricher');
 
-                    // Calculate time remaining (if auto-populated)
                     const getTimeRemaining = () => {
                         if (!autoDeadline) return null;
                         const now = new Date();
@@ -257,82 +244,79 @@ const PendingInputsPage: React.FC = () => {
                     };
 
                     return (
-                        <Card className={`pending-input-card ${isAutoPopulated ? 'pending-input-card--auto' : ''}`}>
-                            {/* Enhanced Header */}
-                            <div className="pending-input-card__header">
-                                <div className="pending-input-card__source">
-                                    <span className="pending-input-card__source-icon">{displayInfo.sourceIcon}</span>
-                                    <div className="pending-input-card__source-info">
-                                        <span className="pending-input-card__source-name">{displayInfo.sourceName}</span>
-                                        {displayInfo.pipelineName && (
-                                            <span className="pending-input-card__pipeline-name">via {displayInfo.pipelineName}</span>
-                                        )}
-                                    </div>
-                                </div>
-                                {isAutoPopulated ? (
-                                    <Pill variant="info">
-                                        Awaiting {enricherName.charAt(0).toUpperCase() + enricherName.slice(1)} Results
-                                    </Pill>
-                                ) : (
-                                    <Pill variant="warning">
-                                        Needs Info
-                                    </Pill>
-                                )}
-                            </div>
+                        <GlowCard
+                            variant={isAutoPopulated ? 'awaiting' : 'needs-input'}
+                            header={
+                                <Stack direction="horizontal" align="center" justify="between">
+                                    <Stack direction="horizontal" align="center" gap="sm">
+                                        <Paragraph inline>{displayInfo.sourceIcon}</Paragraph>
+                                        <Stack gap="xs">
+                                            <Paragraph inline>{displayInfo.sourceName}</Paragraph>
+                                            {displayInfo.pipelineName && (
+                                                <Paragraph inline muted size="sm">via {displayInfo.pipelineName}</Paragraph>
+                                            )}
+                                        </Stack>
+                                    </Stack>
+                                    {isAutoPopulated ? (
+                                        <Pill variant="info">
+                                            Awaiting {enricherName.charAt(0).toUpperCase() + enricherName.slice(1)} Results
+                                        </Pill>
+                                    ) : (
+                                        <Pill variant="warning">
+                                            Needs Info
+                                        </Pill>
+                                    )}
+                                </Stack>
+                            }
+                        >
 
-                            {/* Auto-populated info banner */}
                             {isAutoPopulated && (
-                                <div className="pending-input-card__auto-banner">
-                                    <span className="pending-input-card__auto-icon">⏳</span>
-                                    <div className="pending-input-card__auto-info">
-                                        <p className="pending-input-card__auto-title">Waiting for official results</p>
-                                        <p className="pending-input-card__auto-description">
+                                <Stack direction="horizontal" gap="sm">
+                                    <Paragraph inline>⏳</Paragraph>
+                                    <Stack gap="xs">
+                                        <Paragraph bold>Waiting for official results</Paragraph>
+                                        <Paragraph muted size="sm">
                                             Your activity was synced successfully. We&apos;re waiting for official {enricherName} results to be published.
-                                        </p>
+                                        </Paragraph>
                                         {autoDeadline && (
-                                            <p className="pending-input-card__auto-countdown">
+                                            <Paragraph size="sm">
                                                 {getTimeRemaining()}
-                                            </p>
+                                            </Paragraph>
                                         )}
-                                    </div>
-                                </div>
+                                    </Stack>
+                                </Stack>
                             )}
 
-                            {/* Form Section - Only show for non-auto-populated OR if deadline has passed */}
                             {!isAutoPopulated && (
-                                <div className="pending-input-card__form">
-                                    <h4 className="pending-input-card__form-title">
+                                <Stack gap="md">
+                                    <Heading level={4}>
                                         ✨ Complete the magic
-                                    </h4>
+                                    </Heading>
                                     {input.requiredFields?.map((field) => (
-                                        <div key={field} className="pending-input-card__field">
-                                            <label className="pending-input-card__label">{formatLabel(field)}</label>
+                                        <FormField key={field} label={formatLabel(field)} htmlFor={`field-${field}`}>
                                             {renderField(input.activityId, field)}
-                                        </div>
+                                        </FormField>
                                     ))}
-                                </div>
+                                </Stack>
                             )}
 
-                            {/* Manual Entry Fallback for Auto-populated */}
                             {isAutoPopulated && autoDeadline && new Date() > autoDeadline && (
-                                <div className="pending-input-card__form pending-input-card__form--fallback">
-                                    <h4 className="pending-input-card__form-title">
+                                <Stack gap="md">
+                                    <Heading level={4}>
                                         📝 Enter results manually
-                                    </h4>
-                                    <p className="pending-input-card__form-description">
+                                    </Heading>
+                                    <Paragraph muted size="sm">
                                         Automatic results weren&apos;t found. You can enter your results manually below.
-                                    </p>
+                                    </Paragraph>
                                     {input.requiredFields?.map((field) => (
-                                        <div key={field} className="pending-input-card__field">
-                                            <label className="pending-input-card__label">{formatLabel(field)}</label>
+                                        <FormField key={field} label={formatLabel(field)} htmlFor={`field-${field}`}>
                                             {renderField(input.activityId, field)}
-                                        </div>
+                                        </FormField>
                                     ))}
-                                </div>
+                                </Stack>
                             )}
 
-                            {/* Actions - Adjust based on auto-populated status */}
-                            <div className="pending-input-card__actions">
+                            <Stack gap="sm">
                                 {!isAutoPopulated || (autoDeadline && new Date() > autoDeadline) ? (
                                     <>
                                         <Button
@@ -343,32 +327,31 @@ const PendingInputsPage: React.FC = () => {
                                         >
                                             {submittingIds.has(input.activityId) ? '✨ Syncing...' : '✨ Complete & Sync'}
                                         </Button>
-                                        <button
-                                            className="pending-input-card__dismiss"
+                                        <Button
+                                            variant="secondary"
                                             onClick={() => handleDismiss(input.activityId)}
                                             disabled={submittingIds.has(input.activityId)}
                                         >
                                             Dismiss
-                                        </button>
+                                        </Button>
                                     </>
                                 ) : (
-                                    <button
-                                        className="pending-input-card__dismiss"
+                                    <Button
+                                        variant="secondary"
                                         onClick={() => handleDismiss(input.activityId)}
                                         disabled={submittingIds.has(input.activityId)}
                                     >
                                         Don&apos;t wait - dismiss this
-                                    </button>
+                                    </Button>
                                 )}
-                            </div>
+                            </Stack>
 
-                            {/* Footer */}
                             {input.createdAt && (
-                                <div className="pending-input-card__footer">
+                                <Paragraph muted size="sm" centered>
                                     Created: {new Date(input.createdAt).toLocaleString()}
-                                </div>
+                                </Paragraph>
                             )}
-                        </Card>
+                        </GlowCard>
                     );
                 }}
 
@@ -376,12 +359,13 @@ const PendingInputsPage: React.FC = () => {
                     <EmptyState
                         icon="🎉"
                         title="All Caught Up!"
-                        message="There are no activities waiting for your input right now."
+                        description="There are no activities waiting for your input right now."
                         actionLabel="Check Again"
                         onAction={refresh}
                     />
                 }
-            />
+                />
+            </DashboardSummaryCard>
         </PageLayout>
     );
 };

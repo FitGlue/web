@@ -1,0 +1,54 @@
+/* ==========================================================================
+   FlowVisualization - Source → Center → Destination Flow Layout
+   ========================================================================== */
+@import '../tokens.css';
+
+.flow-visualization {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+}
+
+.flow-visualization__source {
+  flex-shrink: 0;
+}
+
+.flow-visualization__arrow {
+  flex-shrink: 0;
+  color: var(--color-primary, #ff1b8d);
+  font-weight: 600;
+  font-size: 1.125rem;
+  opacity: 0.8;
+}
+
+.flow-visualization__center {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.flow-visualization__destination {
+  flex-shrink: 0;
+}
+
+/* Responsive: stack vertically on small screens */
+@media (max-width: 640px) {
+  .flow-visualization {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .flow-visualization__arrow {
+    transform: rotate(90deg);
+    text-align: center;
+  }
+
+  .flow-visualization__center {
+    justify-content: flex-start;
+  }
+}

@@ -1,6 +1,10 @@
 import React from 'react';
-import { StatusPill } from './ui/StatusPill';
+import { StatusPill } from './library/ui/StatusPill';
 import { MetaBadge } from './MetaBadge';
+import { Card } from './library/ui/Card';
+import { Stack } from './library/layout/Stack';
+import { Heading } from './library/ui/Heading';
+import { Text } from './library/ui/Text';
 
 interface ActivityCardProps {
   title: string;
@@ -34,27 +38,25 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
   }) : 'N/A';
 
   return (
-    <div className={`card clickable activity-card ${isUnsynchronized ? 'unsync-card' : ''}`} onClick={onClick}>
-      <div className="card-top">
-        <h3 className="card-title">{title}</h3>
-        {status && <StatusPill status={status} />}
-        {!status && !isUnsynchronized && <StatusPill status="SYNCED" />}
-      </div>
+    <Card onClick={onClick} variant={isUnsynchronized ? 'default' : 'interactive'}>
+      <Stack gap="sm">
+        <Stack direction="horizontal" align="center" justify="between">
+          <Heading level={3}>{title}</Heading>
+          {status && <StatusPill status={status} />}
+          {!status && !isUnsynchronized && <StatusPill status="SYNCED" />}
+        </Stack>
 
-      <div className="card-meta-row">
-        <MetaBadge label="Type" value={type} />
-        <MetaBadge label="Source" value={source} />
-      </div>
+        <Stack direction="horizontal" gap="sm">
+          <MetaBadge label="Type" value={type} />
+          <MetaBadge label="Source" value={source} />
+        </Stack>
 
-      {errorMessage && (
-        <div className="error-preview-box">
-          <span className="error-icon">⚠️</span> {errorMessage}
-        </div>
-      )}
+        {errorMessage && (
+          <Text variant="muted">⚠️ {errorMessage}</Text>
+        )}
 
-      <div className="card-footer">
-        <span className="timestamp-label">{isUnsynchronized ? 'Attempted' : 'Synced'}: {dateStr}</span>
-      </div>
-    </div>
+        <Text variant="small">{isUnsynchronized ? 'Attempted' : 'Synced'}: {dateStr}</Text>
+      </Stack>
+    </Card>
   );
 };

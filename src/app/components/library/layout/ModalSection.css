@@ -1,0 +1,32 @@
+.modal-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-section--spacing-sm {
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+}
+
+.modal-section--spacing-md {
+  gap: var(--space-md);
+  padding: var(--space-md) 0;
+}
+
+.modal-section--spacing-lg {
+  gap: var(--space-lg);
+  padding: var(--space-lg) 0;
+}
+
+.modal-section__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 var(--space-xs) 0;
+}
+
+.modal-section__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}

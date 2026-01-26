@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Card } from './ui/Card';
-import { PremiumBadge } from './ui/PremiumBadge';
+import { Card } from './library/ui/Card';
+import { PremiumBadge } from './library/ui/PremiumBadge';
+import { Button } from './library/ui/Button';
+import { Badge } from './library/ui/Badge';
+import { Stack } from './library/layout/Stack';
+import { Heading } from './library/ui/Heading';
+import { Paragraph } from './library/ui/Paragraph';
+import { PluginIcon } from './library/ui/PluginIcon';
 import { PluginManifest } from '../types/plugin';
 import { PluginCategory } from '../utils/pluginCategories';
-import './PluginCategorySection.css';
 
 interface PluginCategorySectionProps {
   category: PluginCategory;
@@ -31,23 +36,23 @@ export const PluginCategorySection: React.FC<PluginCategorySectionProps> = ({
   if (plugins.length === 0) return null;
 
   return (
-    <div className="plugin-category-section">
-      <button
-        className="category-header"
+    <Stack gap="md">
+      <Button
+        variant="text"
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
         type="button"
       >
-        <span className="category-emoji">{category.emoji}</span>
-        <span className="category-name">{category.name}</span>
-        <span className="category-count">{plugins.length}</span>
-        <span className={`category-chevron ${expanded ? 'expanded' : ''}`}>
-          ▾
-        </span>
-      </button>
+        <Stack direction="horizontal" gap="sm" align="center">
+          <Paragraph inline>{category.emoji}</Paragraph>
+          <Paragraph inline bold>{category.name}</Paragraph>
+          <Badge variant="default" size="sm">{plugins.length}</Badge>
+          <Paragraph inline>{expanded ? '▾' : '▸'}</Paragraph>
+        </Stack>
+      </Button>
 
       {expanded && (
-        <div className="category-plugins">
+        <Stack gap="sm">
           {plugins.map((plugin) => {
             const isSelected = selectedIds.includes(plugin.id);
             const isDisabled = disabledPlugins.has(plugin.id);
@@ -56,49 +61,49 @@ export const PluginCategorySection: React.FC<PluginCategorySectionProps> = ({
             return (
               <Card
                 key={plugin.id}
-                className={`option-card clickable
-                  ${isSelected ? 'selected' : ''}
-                  ${isDisabled ? 'disabled' : ''}
-                  ${plugin.isPremium ? 'premium' : ''}`}
                 onClick={() => !isDisabled && onSelect(plugin)}
+                variant={isSelected ? 'elevated' : 'default'}
               >
-                <div className="plugin-card-header">
-                  {/* Render SVG or emoji icon based on iconType */}
-                  {plugin.iconType && plugin.iconPath ? (
-                    <img
-                      src={plugin.iconPath}
-                      alt=""
-                      className={`option-icon-${plugin.iconType}`}
-                    />
-                  ) : (
-                    <span className="option-icon">{plugin.icon}</span>
+                <Stack gap="sm">
+                  <Stack direction="horizontal" gap="sm" align="center" justify="between">
+                    <Stack direction="horizontal" gap="sm" align="center">
+                      <PluginIcon
+                        icon={plugin.icon}
+                        iconType={plugin.iconType}
+                        iconPath={plugin.iconPath}
+                        size="medium"
+                      />
+                      {plugin.isPremium && <PremiumBadge />}
+                    </Stack>
+                    <Stack direction="horizontal" gap="sm" align="center">
+                      {isSelected && <Badge variant="success" size="sm">✓</Badge>}
+                      {onInfoClick && (
+                        <Button
+                          variant="text"
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onInfoClick(plugin);
+                          }}
+                          aria-label={`More info about ${plugin.name}`}
+                          type="button"
+                        >
+                          ⓘ
+                        </Button>
+                      )}
+                    </Stack>
+                  </Stack>
+                  <Heading level={4}>{plugin.name}</Heading>
+                  <Paragraph size="sm">{plugin.description}</Paragraph>
+                  {isDisabled && disabledReason && (
+                    <Paragraph size="sm" muted>{disabledReason}</Paragraph>
                   )}
-                  {plugin.isPremium && <PremiumBadge />}
-                </div>
-                <h4>{plugin.name}</h4>
-                <p>{plugin.description}</p>
-                {isSelected && <span className="selected-check">✓</span>}
-                {isDisabled && disabledReason && (
-                  <span className="disabled-reason">{disabledReason}</span>
-                )}
-                {onInfoClick && (
-                  <button
-                    className="info-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onInfoClick(plugin);
-                    }}
-                    aria-label={`More info about ${plugin.name}`}
-                    type="button"
-                  >
-                    ⓘ
-                  </button>
-                )}
+                </Stack>
               </Card>
             );
           })}
-        </div>
+        </Stack>
       )}
-    </div>
+    </Stack>
   );
 };

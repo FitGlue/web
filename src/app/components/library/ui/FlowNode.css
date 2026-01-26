@@ -1,0 +1,51 @@
+/* ==========================================================================
+   FlowNode Component - Clean Pipeline Visualization
+   ========================================================================== */
+@import '../tokens.css';
+
+.flow-node {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.flow-node__icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.flow-node__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.flow-node__badge {
+  margin-left: auto;
+  padding: 0.125rem 0.375rem;
+  background: var(--gradient-primary);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 9999px;
+}
+
+/* Type-specific styling - subtle colored borders */
+.flow-node--source {
+  border-color: var(--color-success);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.flow-node--destination {
+  border-color: var(--color-secondary);
+  background: rgba(157, 78, 221, 0.05);
+}
+
+.flow-node--enricher {
+  border-color: var(--color-warning);
+  background: rgba(245, 158, 11, 0.05);
+}

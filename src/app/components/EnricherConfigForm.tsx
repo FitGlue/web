@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { ConfigFieldSchema, ConfigFieldType } from '../types/plugin';
 import { useApi } from '../hooks/useApi';
-import './EnricherConfigForm.css';
+import { Stack } from './library/layout/Stack';
+import { Text } from './library/ui/Text';
+import { Paragraph } from './library/ui/Paragraph';
+import { Button } from './library/ui/Button';
+import { Select } from './library/forms/Select';
+import { Input } from './library/forms/Input';
+import { Checkbox } from './library/forms/Checkbox';
+import { FormField } from './library/forms/FormField';
 
 interface Props {
   schema: ConfigFieldSchema[];
@@ -43,82 +50,72 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
     switch (field.fieldType) {
       case ConfigFieldType.CONFIG_FIELD_TYPE_STRING:
         return (
-          <input
+          <Input
             type="text"
             id={field.key}
             value={value}
             onChange={e => handleChange(field.key, e.target.value)}
             placeholder={field.description}
-            className="config-input"
           />
         );
 
       case ConfigFieldType.CONFIG_FIELD_TYPE_NUMBER:
         return (
-          <input
+          <Input
             type="number"
             id={field.key}
             value={value}
             onChange={e => handleChange(field.key, e.target.value)}
             min={field.validation?.minValue}
             max={field.validation?.maxValue}
-            className="config-input"
           />
         );
 
       case ConfigFieldType.CONFIG_FIELD_TYPE_BOOLEAN:
         return (
-          <label className="config-toggle">
-            <input
-              type="checkbox"
-              id={field.key}
-              checked={value === 'true'}
-              onChange={e => handleChange(field.key, e.target.checked ? 'true' : 'false')}
-            />
-            <span className="toggle-label">{value === 'true' ? 'Enabled' : 'Disabled'}</span>
-          </label>
+          <Checkbox
+            id={field.key}
+            checked={value === 'true'}
+            onChange={e => handleChange(field.key, e.target.checked ? 'true' : 'false')}
+            label={value === 'true' ? 'Enabled' : 'Disabled'}
+          />
         );
 
       case ConfigFieldType.CONFIG_FIELD_TYPE_SELECT:
         return (
-          <select
+          <Select
             id={field.key}
             value={value}
             onChange={e => handleChange(field.key, e.target.value)}
-            className="config-select"
-          >
-            <option value="">Select...</option>
-            {(field.options || []).map(opt => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+            options={(field.options || []).map(opt => ({
+              value: opt.value,
+              label: opt.label,
+            }))}
+            placeholder="Select..."
+          />
         );
 
       case ConfigFieldType.CONFIG_FIELD_TYPE_MULTI_SELECT:
         return (
-          <div className="config-multi-select">
+          <Stack gap="xs">
             {(field.options || []).map(opt => {
               const selected = value.split(',').includes(opt.value);
               return (
-                <label key={opt.value} className="multi-select-option">
-                  <input
-                    type="checkbox"
-                    checked={selected}
-                    onChange={e => {
-                      const current = value ? value.split(',').filter(v => v) : [];
-                      const updated = e.target.checked
-                        ? [...current, opt.value]
-                        : current.filter(v => v !== opt.value);
-                      handleChange(field.key, updated.join(','));
-                    }}
-                  />
-                  {opt.label}
-                </label>
+                <Checkbox
+                  key={opt.value}
+                  checked={selected}
+                  onChange={e => {
+                    const current = value ? value.split(',').filter(v => v) : [];
+                    const updated = e.target.checked
+                      ? [...current, opt.value]
+                      : current.filter(v => v !== opt.value);
+                    handleChange(field.key, updated.join(','));
+                  }}
+                  label={opt.label}
+                />
               );
             })}
-          </div>
+          </Stack>
         );
 
       case ConfigFieldType.CONFIG_FIELD_TYPE_KEY_VALUE_MAP:
@@ -144,34 +141,34 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
 
       default:
         return (
-          <input
+          <Input
             type="text"
             id={field.key}
             value={value}
             onChange={e => handleChange(field.key, e.target.value)}
-            className="config-input"
           />
         );
     }
   };
 
   if (schema.length === 0) {
-    return <p className="no-config">No configuration required</p>;
+    return <Paragraph>No configuration required</Paragraph>;
   }
 
   return (
-    <div className="enricher-config-form">
+    <Stack gap="md">
       {schema.filter(isFieldVisible).map(field => (
-        <div key={field.key} className="config-field">
-          <label htmlFor={field.key} className="config-label">
-            {field.label}
-            {field.required && <span className="required">*</span>}
-          </label>
+        <FormField
+          key={field.key}
+          label={field.label}
+          required={field.required}
+          hint={field.description}
+          htmlFor={field.key}
+        >
           {renderField(field)}
-          {field.description && <p className="config-description">{field.description}</p>}
-        </div>
+        </FormField>
       ))}
-    </div>
+    </Stack>
   );
 };
 
@@ -233,63 +230,55 @@ const KeyValueMapEditor: React.FC<KeyValueMapEditorProps> = ({
   };
 
   return (
-    <div className="key-value-editor">
+    <Stack gap="sm">
       {entries.map((entry, i) => (
-        <div key={i} className="key-value-row">
+        <Stack key={i} direction="horizontal" gap="sm" align="center">
           {keyOptions ? (
-            <select
+            <Select
               value={entry.key}
               onChange={e => handleEntryChange(i, 'key', e.target.value)}
-              className="kv-key kv-select"
-            >
-              <option value="">Select...</option>
-              {keyOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              options={keyOptions.map(opt => ({
+                value: opt.value,
+                label: opt.label,
+              }))}
+              placeholder="Select..."
+            />
           ) : (
-            <input
+            <Input
               type="text"
               value={entry.key}
               onChange={e => handleEntryChange(i, 'key', e.target.value)}
               placeholder={keyPlaceholder}
-              className="kv-key"
             />
           )}
-          <span className="kv-arrow">→</span>
+          <Text>→</Text>
           {valueOptions ? (
-            <select
+            <Select
               value={entry.value}
               onChange={e => handleEntryChange(i, 'value', e.target.value)}
-              className="kv-value kv-select"
-            >
-              <option value="">Select...</option>
-              {valueOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              options={valueOptions.map(opt => ({
+                value: opt.value,
+                label: opt.label,
+              }))}
+              placeholder="Select..."
+            />
           ) : (
-            <input
+            <Input
               type="text"
               value={entry.value}
               onChange={e => handleEntryChange(i, 'value', e.target.value)}
               placeholder={valuePlaceholder}
-              className="kv-value"
             />
           )}
-          <button type="button" onClick={() => removeEntry(i)} className="kv-remove" title="Remove">
+          <Button type="button" variant="danger" size="small" onClick={() => removeEntry(i)} title="Remove">
             ×
-          </button>
-        </div>
+          </Button>
+        </Stack>
       ))}
-      <button type="button" onClick={addEntry} className="kv-add">
+      <Button type="button" variant="secondary" onClick={addEntry}>
         + Add Rule
-      </button>
-    </div>
+      </Button>
+    </Stack>
   );
 };
 
@@ -348,53 +337,48 @@ const DynamicSelectField: React.FC<DynamicSelectFieldProps> = ({ field, value, o
   }, [loading, value, options]);
 
   if (loading) {
-    return <div className="config-input">Loading options...</div>;
+    return <Text variant="muted">Loading options...</Text>;
   }
 
   return (
-    <div className="dynamic-select-field">
-      <div className="dynamic-select-header">
-        <button
+    <Stack gap="sm">
+      <Stack direction="horizontal" gap="xs">
+        <Button
           type="button"
-          className={`dynamic-select-tab ${mode === 'select' ? 'active' : ''}`}
+          variant={mode === 'select' ? 'primary' : 'secondary'}
+          size="small"
           onClick={() => { setMode('select'); onChange(''); }}
         >
           Select Existing
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          className={`dynamic-select-tab ${mode === 'custom' ? 'active' : ''}`}
+          variant={mode === 'custom' ? 'primary' : 'secondary'}
+          size="small"
           onClick={() => setMode('custom')}
         >
           Create New
-        </button>
-      </div>
+        </Button>
+      </Stack>
 
       {mode === 'select' ? (
-        <select
+        <Select
           id={field.key}
           value={value}
           onChange={e => onChange(e.target.value)}
-          className="config-select"
-        >
-          <option value="">Select...</option>
-          {options.map(opt => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+          options={options}
+          placeholder="Select..."
+        />
       ) : (
-        <input
+        <Input
           type="text"
           id={field.key}
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder="Enter new counter key"
-          className="config-input"
         />
       )}
-    </div>
+    </Stack>
   );
 };
 

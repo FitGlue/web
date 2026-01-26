@@ -1,0 +1,125 @@
+/* ==========================================================================
+   Badge Component - Compact Status Indicators
+   ========================================================================== */
+@import '../tokens.css';
+
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  transition: transform var(--transition-fast);
+}
+
+/* Size variants */
+.ui-badge--sm {
+  padding: 0.1875rem 0.5rem;
+  font-size: 0.6875rem;
+}
+
+.ui-badge--md {
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+}
+
+/* Color variants */
+.ui-badge--default {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-weight: 400;
+}
+
+.ui-badge--success {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.ui-badge--warning {
+  background: rgba(234, 179, 8, 0.2);
+  color: #eab308;
+}
+
+.ui-badge--error {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.ui-badge--info {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.ui-badge--premium {
+  background: linear-gradient(135deg, #9D4EDD, #FF1B8D);
+  color: #ffffff;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-badge--premium::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent);
+  animation: badge-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes badge-shimmer {
+  0% {
+    left: -100%;
+  }
+
+  50%,
+  100% {
+    left: 100%;
+  }
+}
+
+/* Light variant - frosted glass for use on gradient backgrounds */
+.ui-badge--light {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ui-badge__icon {
+  display: flex;
+  align-items: center;
+  font-size: 0.875em;
+}
+
+/* Booster variant - green with lighter border */
+.ui-badge--booster {
+  background: rgba(16, 185, 129, 0.25);
+  border: 1px solid rgba(52, 211, 153, 0.5);
+  color: #ffffff;
+  font-weight: 400;
+}
+
+/* Source variant - purple tint */
+.ui-badge--source {
+  background: rgba(157, 78, 221, 0.25);
+  border: 1px solid rgba(167, 139, 250, 0.5);
+  color: #ffffff;
+  font-weight: 400;
+}
+
+/* Destination variant - pink/magenta */
+.ui-badge--destination {
+  background: rgba(255, 27, 141, 0.25);
+  border: 1px solid rgba(255, 105, 180, 0.5);
+  color: #ffffff;
+  font-weight: 400;
+}

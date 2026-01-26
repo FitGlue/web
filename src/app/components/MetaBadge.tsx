@@ -1,5 +1,7 @@
 import React from 'react';
-import { stringToColor } from '../../lib/colorUtils';
+import { Badge } from './library/ui/Badge';
+import { Stack } from './library/layout/Stack';
+import { Paragraph } from './library/ui/Paragraph';
 
 interface MetaBadgeProps {
   label: string;
@@ -7,11 +9,12 @@ interface MetaBadgeProps {
 }
 
 export const MetaBadge: React.FC<MetaBadgeProps> = ({ label, value }) => {
-  const { style, className } = stringToColor(value);
-
   return (
-    <span className={`meta-badge ${className}`} style={style}>
-      <span className="meta-label">{label}:</span> {value}
-    </span>
+    <Badge variant="default" size="sm">
+      <Stack direction="horizontal" gap="xs">
+        <Paragraph inline size="sm" bold>{label}:</Paragraph>
+        <Paragraph inline size="sm">{value}</Paragraph>
+      </Stack>
+    </Badge>
   );
 };

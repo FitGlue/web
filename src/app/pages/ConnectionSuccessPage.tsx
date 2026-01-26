@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Button } from '../components/ui/Button';
-import { LoadingState } from '../components/ui/LoadingState';
+import { PageLayout, Stack } from '../components/library/layout';
+import { Button, LoadingState, Heading, Paragraph, Code } from '../components/library/ui';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useIntegrations } from '../hooks/useIntegrations';
 
@@ -12,13 +11,8 @@ interface LocationState {
     integrationName?: string;
 }
 
-/**
- * Get the webhook URL based on the current environment
- */
 const getWebhookUrl = (integrationId: string): string => {
     const hostname = window.location.hostname;
-
-    // Determine environment from hostname
     let baseUrl: string;
     if (hostname.includes('dev.fitglue') || hostname === 'localhost') {
         baseUrl = 'https://dev.fitglue.tech';
@@ -27,7 +21,6 @@ const getWebhookUrl = (integrationId: string): string => {
     } else {
         baseUrl = 'https://fitglue.tech';
     }
-
     return `${baseUrl}/hooks/${integrationId}`;
 };
 
@@ -40,7 +33,6 @@ const ConnectionSuccessPage: React.FC = () => {
     const [copiedKey, setCopiedKey] = useState(false);
     const [copiedUrl, setCopiedUrl] = useState(false);
 
-    // Get data passed from API key setup flow
     const state = location.state as LocationState | null;
     const ingressApiKey = state?.ingressApiKey;
     const ingressKeyLabel = state?.ingressKeyLabel;
@@ -49,12 +41,10 @@ const ConnectionSuccessPage: React.FC = () => {
     const displayName = state?.integrationName || integration?.name || id || 'Service';
     const icon = integration?.icon || '✓';
 
-    // Determine if this integration requires webhook configuration (currently only Hevy)
     const requiresWebhookSetup = id === 'hevy';
     const webhookUrl = useMemo(() => requiresWebhookSetup && id ? getWebhookUrl(id) : '', [id, requiresWebhookSetup]);
 
     useEffect(() => {
-        // Refresh integrations to update connection status
         refreshIntegrations();
     }, [refreshIntegrations]);
 
@@ -84,141 +74,120 @@ const ConnectionSuccessPage: React.FC = () => {
 
     return (
         <PageLayout title="Connected!" backTo="/connections" backLabel="Connections">
-            <div className="connection-result">
-                <div className="connection-result__icon connection-result__icon--success">
+            <Stack gap="lg" align="center">
+                <Paragraph size="lg">
                     {icon}
-                </div>
+                </Paragraph>
 
-                <h1 className="connection-result__title">Success!</h1>
+                <Heading level={1} centered>Success!</Heading>
 
-                <p className="connection-result__message">
+                <Paragraph centered>
                     Your <strong>{displayName}</strong> account has been successfully connected to FitGlue.
-                </p>
+                </Paragraph>
 
-                {/* Show webhook configuration section for integrations that need it */}
                 {ingressApiKey && requiresWebhookSetup && (
-                    <div className="connection-result__ingress-section">
-                        <div className="connection-result__ingress-card">
-                            <h2>🔧 Complete Your {displayName} Setup</h2>
-                            <p>
+                    <Stack gap="md">
+                        <Stack gap="md">
+                            <Heading level={2}>🔧 Complete Your {displayName} Setup</Heading>
+                            <Paragraph>
                                 To receive workouts from {displayName}, you need to configure webhooks in the <strong>{displayName} app</strong>.
                                 Open <strong>Settings → Developer</strong> in {displayName} and configure the following:
-                            </p>
+                            </Paragraph>
 
-                            {/* Step 1: Webhook URL */}
-                            <div className="connection-result__config-step">
-                                <label className="connection-result__config-label">
+                            <Stack gap="sm">
+                                <Paragraph bold>
                                     1️⃣ Webhook URL
-                                </label>
-                                <p className="connection-result__config-hint">
+                                </Paragraph>
+                                <Paragraph muted size="sm">
                                     Paste this into &quot;Url you want to get notified on&quot;:
-                                </p>
-                                <div className="connection-result__key-container">
-                                    <code className="connection-result__key">{webhookUrl}</code>
-                                    <Button
-                                        variant="secondary"
-                                        onClick={handleCopyUrl}
-                                    >
+                                </Paragraph>
+                                <Stack direction="horizontal" align="center" gap="sm">
+                                    <Code>{webhookUrl}</Code>
+                                    <Button variant="secondary" onClick={handleCopyUrl}>
                                         {copiedUrl ? '✓ Copied!' : '📋 Copy'}
                                     </Button>
-                                </div>
-                            </div>
+                                </Stack>
+                            </Stack>
 
-                            {/* Step 2: Authorization Header */}
-                            <div className="connection-result__config-step">
-                                <label className="connection-result__config-label">
+                            <Stack gap="sm">
+                                <Paragraph bold>
                                     2️⃣ Authorization Header
-                                </label>
-                                <p className="connection-result__config-hint">
+                                </Paragraph>
+                                <Paragraph muted size="sm">
                                     Paste this into &quot;Your authorization header&quot;:
-                                </p>
-                                <div className="connection-result__key-container">
-                                    <code className="connection-result__key">{ingressApiKey}</code>
-                                    <Button
-                                        variant="secondary"
-                                        onClick={handleCopyKey}
-                                    >
+                                </Paragraph>
+                                <Stack direction="horizontal" align="center" gap="sm">
+                                    <Code>{ingressApiKey}</Code>
+                                    <Button variant="secondary" onClick={handleCopyKey}>
                                         {copiedKey ? '✓ Copied!' : '📋 Copy'}
                                     </Button>
-                                </div>
-                            </div>
+                                </Stack>
+                            </Stack>
 
-                            {/* Step 3: Subscribe */}
-                            <div className="connection-result__config-step">
-                                <label className="connection-result__config-label">
+                            <Stack gap="sm">
+                                <Paragraph bold>
                                     3️⃣ Click &quot;Subscribe&quot; in {displayName}
-                                </label>
-                                <p className="connection-result__config-hint">
+                                </Paragraph>
+                                <Paragraph muted size="sm">
                                     Once subscribed, your workouts will sync automatically!
-                                </p>
-                            </div>
+                                </Paragraph>
+                            </Stack>
 
-                            <p className="connection-result__key-warning">
+                            <Paragraph>
                                 ⚠️ <strong>Save the authorization header now!</strong> It won&apos;t be shown again.
-                            </p>
+                            </Paragraph>
                             {ingressKeyLabel && (
-                                <p className="connection-result__key-label">
+                                <Paragraph muted size="sm">
                                     Label: {ingressKeyLabel}
-                                </p>
+                                </Paragraph>
                             )}
-                        </div>
-                    </div>
+                        </Stack>
+                    </Stack>
                 )}
 
-                {/* Standard ingress key display for non-webhook integrations */}
                 {ingressApiKey && !requiresWebhookSetup && (
-                    <div className="connection-result__ingress-section">
-                        <div className="connection-result__ingress-card">
-                            <h2>🔑 Important: Configure {displayName}</h2>
-                            <p>
+                    <Stack gap="md">
+                        <Stack gap="md">
+                            <Heading level={2}>🔑 Important: Configure {displayName}</Heading>
+                            <Paragraph>
                                 Copy this <strong>FitGlue Ingress API Key</strong> and add it to your {displayName} webhook settings
                                 as the Authorization header:
-                            </p>
-                            <div className="connection-result__key-container">
-                                <code className="connection-result__key">{ingressApiKey}</code>
-                                <Button
-                                    variant="secondary"
-                                    onClick={handleCopyKey}
-                                >
+                            </Paragraph>
+                            <Stack direction="horizontal" align="center" gap="sm">
+                                <Code>{ingressApiKey}</Code>
+                                <Button variant="secondary" onClick={handleCopyKey}>
                                     {copiedKey ? '✓ Copied!' : '📋 Copy'}
                                 </Button>
-                            </div>
-                            <p className="connection-result__key-warning">
+                            </Stack>
+                            <Paragraph>
                                 ⚠️ <strong>Save this key now!</strong> It won&apos;t be shown again.
-                            </p>
+                            </Paragraph>
                             {ingressKeyLabel && (
-                                <p className="connection-result__key-label">
+                                <Paragraph muted size="sm">
                                     Label: {ingressKeyLabel}
-                                </p>
+                                </Paragraph>
                             )}
-                        </div>
-                    </div>
+                        </Stack>
+                    </Stack>
                 )}
 
                 {!ingressApiKey && (
-                    <p className="connection-result__submessage">
+                    <Paragraph muted centered>
                         Your activities will now sync automatically.
-                    </p>
+                    </Paragraph>
                 )}
 
-                <div className="connection-result__actions">
-                    <Button
-                        variant="primary"
-                        onClick={() => navigate('/connections')}
-                    >
+                <Stack direction="horizontal" gap="md">
+                    <Button variant="primary" onClick={() => navigate('/connections')}>
                         View Connections
                     </Button>
-                    <Button
-                        variant="secondary"
-                        onClick={() => navigate('/')}
-                    >
+                    <Button variant="secondary" onClick={() => navigate('/')}>
                         Go to Dashboard
                     </Button>
-                </div>
-            </div>
+                </Stack>
+            </Stack>
         </PageLayout>
     );
 };
 
 export default ConnectionSuccessPage;
-

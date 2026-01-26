@@ -1,19 +1,24 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Card } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
+import { PageLayout } from '../components/library/layout/PageLayout';
+import { Stack } from '../components/library/layout/Stack';
+import { Card } from '../components/library/ui/Card';
+import { Button } from '../components/library/ui/Button';
+import { Heading } from '../components/library/ui/Heading';
+import { Paragraph } from '../components/library/ui/Paragraph';
 import { EnricherConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { SharePipelineModal } from '../components/SharePipelineModal';
+import { WizardOptionGrid, WizardExcludedSection } from '../components/wizard';
 import { useApi } from '../hooks/useApi';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useIntegrations } from '../hooks/useIntegrations';
 import { usePipelines } from '../hooks/usePipelines';
-import { LoadingState } from '../components/ui/LoadingState';
+import { LoadingState } from '../components/library/ui/LoadingState';
 import { PluginManifest } from '../types/plugin';
+import { Input } from '../components/library/forms';
 import { encodePipeline } from '../../shared/pipeline-sharing';
 
 interface EnricherConfig {
@@ -42,12 +47,10 @@ const PipelineEditPage: React.FC = () => {
     const { integrations: userIntegrations, fetchIfNeeded: fetchIntegrations } = useIntegrations();
     const { invalidate: invalidatePipelines } = usePipelines();
 
-    // Fetch user integrations on mount
     useEffect(() => {
         fetchIntegrations();
     }, [fetchIntegrations]);
 
-    // Helper: Check if a plugin's required integrations are all connected
     const isPluginAvailable = (plugin: PluginManifest): boolean => {
         if (!plugin.requiredIntegrations?.length) return true;
         return plugin.requiredIntegrations.every(integrationId => {
@@ -56,7 +59,6 @@ const PipelineEditPage: React.FC = () => {
         });
     };
 
-    // Helper: Get missing integration names for a plugin
     const getMissingIntegrations = (plugin: PluginManifest): string[] => {
         if (!plugin.requiredIntegrations?.length) return [];
         return plugin.requiredIntegrations.filter(integrationId => {
@@ -68,12 +70,14 @@ const PipelineEditPage: React.FC = () => {
         });
     };
 
+    const getExcludedHint = (plugin: PluginManifest): string => {
+        return `Connect ${getMissingIntegrations(plugin).join(', ')} to enable`;
+    };
+
     const [pipeline, setPipeline] = useState<PipelineConfig | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
-    // Editable state
     const [pipelineName, setPipelineName] = useState('');
     const [selectedSource, setSelectedSource] = useState<string>('');
     const [selectedEnrichers, setSelectedEnrichers] = useState<SelectedEnricher[]>([]);
@@ -85,31 +89,22 @@ const PipelineEditPage: React.FC = () => {
 
     const fetchPipeline = useCallback(async () => {
         if (!pipelineId) return;
-
         setLoading(true);
         try {
             const response = await api.get(`/users/me/pipelines/${pipelineId}`);
             const pipelineData = response as PipelineConfig;
             setPipeline(pipelineData);
-
-            // Populate editable state
             setPipelineName(pipelineData.name || '');
             setSelectedSource(pipelineData.source);
             setSelectedDestinations(pipelineData.destinations.map(d => String(d)));
-
-            // Map enricher configs to selected enrichers with manifests
             const enricherConfigs: SelectedEnricher[] = pipelineData.enrichers.map(e => {
-                const manifest = enrichers.find(
-                    m => Number(m.enricherProviderType) === Number(e.providerType)
-                );
+                const manifest = enrichers.find(m => Number(m.enricherProviderType) === Number(e.providerType));
                 return {
                     manifest: manifest || { id: `unknown-${e.providerType}`, name: `Enricher ${e.providerType}` } as PluginManifest,
                     config: e.typedConfig || {}
                 };
             }).filter(e => e.manifest);
-
             setSelectedEnrichers(enricherConfigs);
-
         } catch (err) {
             setError('Failed to load pipeline');
             console.error(err);
@@ -119,31 +114,25 @@ const PipelineEditPage: React.FC = () => {
     }, [pipelineId, api, enrichers]);
 
     useEffect(() => {
-        if (!registryLoading && enrichers.length > 0) {
-            fetchPipeline();
-        }
+        if (!registryLoading && enrichers.length > 0) fetchPipeline();
     }, [fetchPipeline, registryLoading, enrichers]);
 
     const handleSave = async () => {
         if (!pipelineId) return;
-
         setSaving(true);
         setError(null);
-
         try {
             const enricherConfigs = selectedEnrichers.map(e => ({
                 providerType: e.manifest.enricherProviderType,
                 typedConfig: e.config
             }));
-
             await api.patch(`/users/me/pipelines/${pipelineId}`, {
-                name: pipelineName || undefined, // Only send if not empty
+                name: pipelineName || undefined,
                 source: selectedSource,
                 enrichers: enricherConfigs,
                 destinations: selectedDestinations.map(d => isNaN(Number(d)) ? d : Number(d))
             });
-
-            invalidatePipelines(); // Mark pipelines cache as stale
+            invalidatePipelines();
             navigate('/settings/pipelines');
         } catch (err) {
             setError('Failed to save pipeline');
@@ -155,15 +144,9 @@ const PipelineEditPage: React.FC = () => {
 
     const toggleEnricher = (manifest: PluginManifest) => {
         setSelectedEnrichers(prev => {
-            // Multi-instance boosters always add a new instance
-            if (manifest.allowMultipleInstances) {
-                return [...prev, { manifest, config: {} }];
-            }
-            // Standard toggle behavior for single-instance boosters
+            if (manifest.allowMultipleInstances) return [...prev, { manifest, config: {} }];
             const exists = prev.find(e => e.manifest.id === manifest.id);
-            if (exists) {
-                return prev.filter(e => e.manifest.id !== manifest.id);
-            }
+            if (exists) return prev.filter(e => e.manifest.id !== manifest.id);
             return [...prev, { manifest, config: {} }];
         });
     };
@@ -171,12 +154,18 @@ const PipelineEditPage: React.FC = () => {
     const updateEnricherConfig = useCallback((index: number, config: Record<string, string>) => {
         setSelectedEnrichers(prev => {
             const updated = [...prev];
-            if (updated[index]) {
-                updated[index] = { ...updated[index], config };
-            }
+            if (updated[index]) updated[index] = { ...updated[index], config };
             return updated;
         });
     }, []);
+
+    const toggleDestination = (dest: PluginManifest) => {
+        setSelectedDestinations(prev => {
+            const isSelected = prev.some(sd => sd === dest.id || Number(sd) === dest.destinationType);
+            if (isSelected) return prev.filter(d => d !== dest.id && Number(d) !== dest.destinationType);
+            return [...prev, dest.id];
+        });
+    };
 
     const enrichersNeedConfig = selectedEnrichers.some(e => (e.manifest.configSchema?.length ?? 0) > 0);
     const currentEnricher = selectedEnrichers[currentEnricherIndex];
@@ -192,275 +181,175 @@ const PipelineEditPage: React.FC = () => {
     if (!pipeline) {
         return (
             <PageLayout title="Edit Pipeline" backTo="/settings/pipelines" backLabel="Pipelines">
-                <Card>
-                    <p>Pipeline not found</p>
-                </Card>
+                <Card><Paragraph>Pipeline not found</Paragraph></Card>
             </PageLayout>
         );
     }
 
+    const availableSources = sources.filter(s => s.enabled && isPluginAvailable(s));
+    const excludedSources = sources.filter(s => s.enabled && !isPluginAvailable(s));
+    const availableEnrichers = enrichers.filter(e => e.enabled && isPluginAvailable(e));
+    const excludedEnrichers = enrichers.filter(e => e.enabled && !isPluginAvailable(e));
+    const availableDestinations = destinations.filter(d => d.enabled && isPluginAvailable(d));
+    const excludedDestinations = destinations.filter(d => d.enabled && !isPluginAvailable(d));
+
     return (
-    <>
-        <PageLayout title="Edit Pipeline" backTo="/settings/pipelines" backLabel="Pipelines">
-            {error && (
-                <div className="auth-message error" onClick={() => setError(null)}>
-                    {error}
-                </div>
-            )}
+        <>
+            <PageLayout title="Edit Pipeline" backTo="/settings/pipelines" backLabel="Pipelines">
+                {error && (
+                    <Card onClick={() => setError(null)}>{error}</Card>
+                )}
+                <Stack>
+                    {/* Pipeline Name Section */}
+                    <Card>
+                        <Heading level={3}>🏷️ Pipeline Name</Heading>
+                        <Paragraph>Give your pipeline a friendly name (optional)</Paragraph>
+                        <Stack>
+                            <Input type="text" placeholder="e.g., Morning Gym Sessions" value={pipelineName}
+                                onChange={(e) => setPipelineName(e.target.value)} maxLength={64} />
+                        </Stack>
+                    </Card>
 
-            <div className="pipeline-edit">
-                {/* Pipeline Name Section */}
-                <Card className="edit-section">
-                    <h3>🏷️ Pipeline Name</h3>
-                    <p className="section-description">Give your pipeline a friendly name (optional)</p>
-                    <div className="pipeline-name-field">
-                        <input
-                            type="text"
-                            placeholder="e.g., Morning Gym Sessions"
-                            value={pipelineName}
-                            onChange={(e) => setPipelineName(e.target.value)}
-                            maxLength={64}
-                            className="pipeline-name-input"
+                    {/* Source Section */}
+                    <Card>
+                        <Heading level={3}>📥 Source</Heading>
+                        <Paragraph>Where activities come from</Paragraph>
+                        <WizardOptionGrid
+                            options={availableSources}
+                            selectedIds={availableSources.filter(s => selectedSource.toLowerCase().includes(s.id)).map(s => s.id)}
+                            onSelect={(source) => setSelectedSource(source.id)}
                         />
-                    </div>
-                </Card>
+                        <WizardExcludedSection
+                            items={excludedSources}
+                            getKey={s => s.id}
+                            getIcon={s => s.icon}
+                            getName={s => s.name}
+                            getHint={getExcludedHint}
+                        />
+                    </Card>
 
-                {/* Source Section */}
-                <Card className="edit-section">
-                    <h3>📥 Source</h3>
-                    <p className="section-description">Where activities come from</p>
-                    <div className="option-grid">
-                        {sources.filter(s => s.enabled && isPluginAvailable(s)).map(source => (
-                            <Card
-                                key={source.id}
-                                className={`option-card ${selectedSource.toLowerCase().includes(source.id) ? 'selected' : ''}`}
-                                onClick={() => setSelectedSource(source.id)}
-                            >
-                                <span className="option-icon">{source.icon}</span>
-                                <h4>{source.name}</h4>
-                                <p>{source.description}</p>
-                                {selectedSource.toLowerCase().includes(source.id) && (
-                                    <span className="selected-check">✓</span>
+                    {/* Enrichers Section */}
+                    <Card>
+                        <Stack direction="horizontal" align="center" justify="between">
+                            <Stack gap="xs">
+                                <Heading level={3}>✨ Enrichers</Heading>
+                                <Paragraph>Data enhancements applied to activities</Paragraph>
+                            </Stack>
+                            <Button variant="secondary" size="small" onClick={() => setEditingEnrichers(!editingEnrichers)}>
+                                {editingEnrichers ? 'Done' : 'Edit Enrichers'}
+                            </Button>
+                        </Stack>
+                        {editingEnrichers ? (
+                            <>
+                                <WizardOptionGrid
+                                    options={availableEnrichers}
+                                    selectedIds={selectedEnrichers.map(e => e.manifest.id)}
+                                    onSelect={(option) => toggleEnricher(option as unknown as PluginManifest)}
+                                />
+                                <WizardExcludedSection
+                                    items={excludedEnrichers}
+                                    getKey={e => e.id}
+                                    getIcon={e => e.icon}
+                                    getName={e => e.name}
+                                    getHint={getExcludedHint}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                {selectedEnrichers.length === 0 ? (
+                                    <Paragraph>No enrichers selected. Click &quot;Edit Enrichers&quot; to add boosters.</Paragraph>
+                                ) : (
+                                    <EnricherTimeline
+                                        enrichers={selectedEnrichers}
+                                        onReorder={setSelectedEnrichers}
+                                        onRemove={(index) => setSelectedEnrichers(prev => prev.filter((_, i) => i !== index))}
+                                        onInfoClick={(manifest) => setInfoEnricher(manifest)}
+                                    />
                                 )}
-                            </Card>
-                        ))}
-                    </div>
-                    {sources.filter(s => s.enabled && !isPluginAvailable(s)).length > 0 && (
-                        <div className="excluded-plugins-section">
-                            <span className="excluded-label">Needs Connection</span>
-                            <div className="excluded-plugins-grid">
-                                {sources.filter(s => s.enabled && !isPluginAvailable(s)).map(source => (
-                                    <div key={source.id} className="excluded-plugin-card">
-                                        <span className="excluded-icon">{source.icon}</span>
-                                        <span className="excluded-name">{source.name}</span>
-                                        <span className="excluded-hint">
-                                            Connect {getMissingIntegrations(source).join(', ')} to enable
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </Card>
-
-                {/* Enrichers Section */}
-                <Card className="edit-section">
-                    <div className="section-header-row">
-                        <div>
-                            <h3>✨ Enrichers</h3>
-                            <p className="section-description">Data enhancements applied to activities</p>
-                        </div>
-                        <Button
-                            variant="secondary"
-                            size="small"
-                            onClick={() => setEditingEnrichers(!editingEnrichers)}
-                        >
-                            {editingEnrichers ? 'Done' : 'Edit Enrichers'}
-                        </Button>
-                    </div>
-
-                    {editingEnrichers ? (
-                        <>
-                        <div className="option-grid">
-                            {enrichers.filter(e => e.enabled && isPluginAvailable(e)).map(enricher => {
-                                const isSelected = selectedEnrichers.some(e => e.manifest.id === enricher.id);
-                                return (
-                                    <Card
-                                        key={enricher.id}
-                                        className={`option-card clickable ${isSelected ? 'selected' : ''}`}
-                                        onClick={() => toggleEnricher(enricher)}
-                                    >
-                                        <span className="option-icon">{enricher.icon}</span>
-                                        <h4>{enricher.name}</h4>
-                                        <p>{enricher.description}</p>
-                                        {isSelected && <span className="selected-check">✓</span>}
-                                        {enricher.configSchema && enricher.configSchema.length > 0 && (
-                                            <span className="has-config" title="Has configuration options">⚙️</span>
-                                        )}
-                                    </Card>
-                                );
-                            })}
-                        </div>
-                        {enrichers.filter(e => e.enabled && !isPluginAvailable(e)).length > 0 && (
-                            <div className="excluded-plugins-section">
-                                <span className="excluded-label">Needs Connection</span>
-                                <div className="excluded-plugins-grid">
-                                    {enrichers.filter(e => e.enabled && !isPluginAvailable(e)).map(enricher => (
-                                        <div key={enricher.id} className="excluded-plugin-card">
-                                            <span className="excluded-icon">{enricher.icon}</span>
-                                            <span className="excluded-name">{enricher.name}</span>
-                                            <span className="excluded-hint">
-                                                Connect {getMissingIntegrations(enricher).join(', ')} to enable
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </>
-                    ) : (
-                        <>
-                            {selectedEnrichers.length === 0 ? (
-                                <p className="no-items">No enrichers selected. Click &ldquo;Edit Enrichers&rdquo; to add boosters.</p>
-                            ) : (
-                                <EnricherTimeline
-                                    enrichers={selectedEnrichers}
-                                    onReorder={setSelectedEnrichers}
-                                    onRemove={(index) => setSelectedEnrichers(prev => prev.filter((_, i) => i !== index))}
-                                    onInfoClick={(manifest) => setInfoEnricher(manifest)}
-                                />
-                            )}
-                        </>
-                    )}
-                </Card>
-
-                {/* Enricher Configuration */}
-                {enrichersNeedConfig && !editingEnrichers && (
-                    <Card className="edit-section">
-                        <h3>⚙️ Configure Enrichers</h3>
-                        <div className="enricher-config-tabs">
-                            {selectedEnrichers.filter(e => (e.manifest.configSchema?.length ?? 0) > 0).map((e) => (
-                                <Button
-                                    key={e.manifest.id}
-                                    variant={currentEnricherIndex === selectedEnrichers.indexOf(e) ? 'primary' : 'secondary'}
-                                    size="small"
-                                    onClick={() => setCurrentEnricherIndex(selectedEnrichers.indexOf(e))}
-                                >
-                                    {e.manifest.icon} {e.manifest.name}
-                                </Button>
-                            ))}
-                        </div>
-                        {currentEnricher && (currentEnricher.manifest.configSchema?.length ?? 0) > 0 && (
-                            currentEnricher.manifest.id === 'logic-gate' ? (
-                                <LogicGateConfigForm
-                                    key={currentEnricher.manifest.id}
-                                    initialValues={currentEnricher.config}
-                                    onChange={config => updateEnricherConfig(currentEnricherIndex, config)}
-                                />
-                            ) : (
-                                <EnricherConfigForm
-                                    key={currentEnricher.manifest.id}
-                                    schema={currentEnricher.manifest.configSchema ?? []}
-                                    initialValues={currentEnricher.config}
-                                    onChange={config => updateEnricherConfig(currentEnricherIndex, config)}
-                                />
-                            )
+                            </>
                         )}
                     </Card>
-                )}
 
-                {/* Destinations Section */}
-                <Card className="edit-section">
-                    <h3>📤 Destinations</h3>
-                    <p className="section-description">Where to send processed activities</p>
-                    <div className="option-grid">
-                        {destinations.filter(d => d.enabled && isPluginAvailable(d)).map(dest => {
-                            const isSelected = selectedDestinations.some(
-                                sd => sd === dest.id || Number(sd) === dest.destinationType
-                            );
-                            return (
-                                <Card
-                                    key={dest.id}
-                                    className={`option-card ${isSelected ? 'selected' : ''}`}
-                                    onClick={() => {
-                                        setSelectedDestinations(prev => {
-                                            if (isSelected) {
-                                                return prev.filter(d => d !== dest.id && Number(d) !== dest.destinationType);
-                                            }
-                                            return [...prev, dest.id];
-                                        });
-                                    }}
-                                >
-                                    <span className="option-icon">{dest.icon}</span>
-                                    <h4>{dest.name}</h4>
-                                    <p>{dest.description}</p>
-                                    {isSelected && <span className="selected-check">✓</span>}
-                                </Card>
-                            );
-                        })}
-                    </div>
-                    {destinations.filter(d => d.enabled && !isPluginAvailable(d)).length > 0 && (
-                        <div className="excluded-plugins-section">
-                            <span className="excluded-label">Needs Connection</span>
-                            <div className="excluded-plugins-grid">
-                                {destinations.filter(d => d.enabled && !isPluginAvailable(d)).map(dest => (
-                                    <div key={dest.id} className="excluded-plugin-card">
-                                        <span className="excluded-icon">{dest.icon}</span>
-                                        <span className="excluded-name">{dest.name}</span>
-                                        <span className="excluded-hint">
-                                            Connect {getMissingIntegrations(dest).join(', ')} to enable
-                                        </span>
-                                    </div>
+                    {/* Enricher Configuration */}
+                    {enrichersNeedConfig && !editingEnrichers && (
+                        <Card>
+                            <Heading level={3}>⚙️ Configure Enrichers</Heading>
+                            <Stack direction="horizontal" wrap>
+                                {selectedEnrichers.filter(e => (e.manifest.configSchema?.length ?? 0) > 0).map((e) => (
+                                    <Button key={e.manifest.id}
+                                        variant={currentEnricherIndex === selectedEnrichers.indexOf(e) ? 'primary' : 'secondary'}
+                                        size="small" onClick={() => setCurrentEnricherIndex(selectedEnrichers.indexOf(e))}>
+                                        {e.manifest.icon} {e.manifest.name}
+                                    </Button>
                                 ))}
-                            </div>
-                        </div>
+                            </Stack>
+                            {currentEnricher && (currentEnricher.manifest.configSchema?.length ?? 0) > 0 && (
+                                currentEnricher.manifest.id === 'logic-gate' ? (
+                                    <LogicGateConfigForm key={currentEnricher.manifest.id} initialValues={currentEnricher.config}
+                                        onChange={config => updateEnricherConfig(currentEnricherIndex, config)} />
+                                ) : (
+                                    <EnricherConfigForm key={currentEnricher.manifest.id}
+                                        schema={currentEnricher.manifest.configSchema ?? []} initialValues={currentEnricher.config}
+                                        onChange={config => updateEnricherConfig(currentEnricherIndex, config)} />
+                                )
+                            )}
+                        </Card>
                     )}
-                </Card>
 
-                {/* Actions */}
-                <div className="wizard-actions">
-                    <Button variant="secondary" onClick={() => setShowShareModal(true)}>
-                        📤 Share
-                    </Button>
-                    <div style={{ flex: 1 }} />
-                    <Button variant="secondary" onClick={() => navigate('/settings/pipelines')}>
-                        Cancel
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={handleSave}
-                        disabled={saving || !selectedSource || selectedDestinations.length === 0}
-                    >
-                        {saving ? 'Saving...' : 'Save Changes'}
-                    </Button>
-                </div>
-            </div>
-        </PageLayout>
+                    {/* Destinations Section */}
+                    <Card>
+                        <Heading level={3}>📤 Destinations</Heading>
+                        <Paragraph>Where to send processed activities</Paragraph>
+                        <WizardOptionGrid
+                            options={availableDestinations}
+                            selectedIds={selectedDestinations}
+                            onSelect={(option) => toggleDestination(option as unknown as PluginManifest)}
+                            getOptionProps={(dest) => ({
+                                selected: selectedDestinations.some(sd => sd === dest.id || Number(sd) === (dest as unknown as PluginManifest).destinationType)
+                            })}
+                        />
+                        <WizardExcludedSection
+                            items={excludedDestinations}
+                            getKey={d => d.id}
+                            getIcon={d => d.icon}
+                            getName={d => d.name}
+                            getHint={getExcludedHint}
+                        />
+                    </Card>
 
-        {infoEnricher && (
-            <EnricherInfoModal
-                enricher={infoEnricher}
-                onClose={() => setInfoEnricher(null)}
-            />
-        )}
+                    {/* Actions */}
+                    <Stack direction="horizontal" justify="between">
+                        <Button variant="secondary" onClick={() => setShowShareModal(true)}>📤 Share</Button>
+                        <Stack direction="horizontal" gap="sm">
+                            <Button variant="secondary" onClick={() => navigate('/settings/pipelines')}>Cancel</Button>
+                            <Button variant="primary" onClick={handleSave}
+                                disabled={saving || !selectedSource || selectedDestinations.length === 0}>
+                                {saving ? 'Saving...' : 'Save Changes'}
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </Stack>
+            </PageLayout>
 
-        {showShareModal && pipeline && (
-            <SharePipelineModal
-                encodedPipeline={encodePipeline({
-                    id: pipeline.id,
-                    name: pipelineName,
-                    source: selectedSource,
-                    enrichers: selectedEnrichers.map(e => ({
-                        providerType: e.manifest.enricherProviderType || 0,
-                        inputs: e.config
-                    })),
-                    destinations: selectedDestinations
-                })}
-                pipelineName={pipelineName || 'Unnamed Pipeline'}
-                onClose={() => setShowShareModal(false)}
-            />
-        )}
-    </>
+            {infoEnricher && <EnricherInfoModal enricher={infoEnricher} onClose={() => setInfoEnricher(null)} />}
+
+            {showShareModal && pipeline && (
+                <SharePipelineModal
+                    encodedPipeline={encodePipeline({
+                        id: pipeline.id,
+                        name: pipelineName,
+                        source: selectedSource,
+                        enrichers: selectedEnrichers.map(e => ({
+                            providerType: e.manifest.enricherProviderType || 0,
+                            inputs: e.config
+                        })),
+                        destinations: selectedDestinations
+                    })}
+                    pipelineName={pipelineName || 'Unnamed Pipeline'}
+                    onClose={() => setShowShareModal(false)}
+                />
+            )}
+        </>
     );
 };
 

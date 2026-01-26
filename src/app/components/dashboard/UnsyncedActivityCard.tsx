@@ -1,7 +1,7 @@
 import React from 'react';
 import { UnsynchronizedEntry } from '../../services/ActivitiesService';
-import { Card } from '../ui/Card';
-import { Pill } from '../ui/Pill';
+import { Card, Pill, Heading, Paragraph } from '../library/ui';
+import { Stack } from '../library/layout';
 import { formatActivityType, formatActivitySource } from '../../../types/pb/enum-formatters';
 
 interface UnsyncedActivityCardProps {
@@ -9,37 +9,10 @@ interface UnsyncedActivityCardProps {
     onClick?: () => void;
 }
 
-
-
-/**
- * Format source name for display
- */
 const formatSourceName = (source?: string): string => {
     return formatActivitySource(source);
 };
 
-/**
- * Get status color class based on status
- */
-const getStatusClass = (status?: string): string => {
-    if (!status) return 'unsynced-activity-card--pending';
-
-    switch (status.toUpperCase()) {
-        case 'FAILED':
-        case 'ERROR':
-            return 'unsynced-activity-card--failed';
-        case 'STALLED':
-        case 'AWAITING_INPUT':
-            return 'unsynced-activity-card--stalled';
-        default:
-            return 'unsynced-activity-card--pending';
-    }
-};
-
-/**
- * UnsyncedActivityCard displays pipeline executions that failed or stalled
- * Shows error information and status prominently
- */
 export const UnsyncedActivityCard: React.FC<UnsyncedActivityCardProps> = ({
     entry,
     onClick,
@@ -60,42 +33,37 @@ export const UnsyncedActivityCard: React.FC<UnsyncedActivityCardProps> = ({
     const statusLabel = entry.status?.replace(/_/g, ' ').toLowerCase() || 'pending';
 
     return (
-        <Card
-            className={`unsynced-activity-card ${getStatusClass(entry.status)}`}
-            onClick={onClick}
-        >
-            {/* Header: Title + Status Badge */}
-            <div className="unsynced-activity-card__header">
-                <div className="unsynced-activity-card__title-section">
-                    <Pill variant="gradient">{activityType}</Pill>
-                    <h4 className="unsynced-activity-card__title">{activityTitle}</h4>
-                </div>
-                <Pill variant={entry.status === 'FAILED' ? 'error' : 'warning'}>
-                    {statusLabel}
-                </Pill>
-            </div>
+        <Card onClick={onClick}>
+            <Stack gap="sm">
+                <Stack direction="horizontal" justify="between" align="start">
+                    <Stack direction="horizontal" gap="sm" align="center">
+                        <Pill variant="gradient">{activityType}</Pill>
+                        <Heading level={4}>{activityTitle}</Heading>
+                    </Stack>
+                    <Pill variant={entry.status === 'FAILED' ? 'error' : 'warning'}>
+                        {statusLabel}
+                    </Pill>
+                </Stack>
 
-            {/* Source Info */}
-            <div className="unsynced-activity-card__source-row">
-                <span className="unsynced-activity-card__source-icon">📥</span>
-                <span className="unsynced-activity-card__source-label">From {sourceName}</span>
-                {attemptDate && (
-                    <span className="unsynced-activity-card__date">Attempted: {attemptDate}</span>
+                <Stack direction="horizontal" gap="sm" align="center">
+                    <Paragraph inline>📥</Paragraph>
+                    <Paragraph size="sm">From {sourceName}</Paragraph>
+                    {attemptDate && (
+                        <Paragraph size="sm" muted>Attempted: {attemptDate}</Paragraph>
+                    )}
+                </Stack>
+
+                {entry.errorMessage && (
+                    <Stack direction="horizontal" gap="sm" align="start">
+                        <Paragraph inline>⚠️</Paragraph>
+                        <Paragraph size="sm">{entry.errorMessage}</Paragraph>
+                    </Stack>
                 )}
-            </div>
 
-            {/* Error Message */}
-            {entry.errorMessage && (
-                <div className="unsynced-activity-card__error">
-                    <span className="unsynced-activity-card__error-icon">⚠️</span>
-                    <span className="unsynced-activity-card__error-text">{entry.errorMessage}</span>
-                </div>
-            )}
-
-            {/* Action hint */}
-            <div className="unsynced-activity-card__action-hint">
-                <span>Click to view details →</span>
-            </div>
+                <Paragraph size="sm" muted>
+                    Click to view details →
+                </Paragraph>
+            </Stack>
         </Card>
     );
 };

@@ -5,18 +5,16 @@ import { usePipelines } from '../hooks/usePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { SynchronizedActivity, ExecutionRecord } from '../services/ActivitiesService';
 import { PipelineTrace } from '../components/PipelineTrace';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Card } from '../components/ui/Card';
-import { CardSkeleton } from '../components/ui/CardSkeleton';
-import { Pill } from '../components/ui/Pill';
-import '../components/ui/CardSkeleton.css';
+import { PageLayout, Stack, Grid } from '../components/library/layout';
+import { Card, CardSkeleton, Pill, Button, Heading, Paragraph, Code } from '../components/library/ui';
+import '../components/library/ui/CardSkeleton.css';
 import { EnricherBadge } from '../components/dashboard/EnricherBadge';
 import { RepostActionsMenu } from '../components/RepostActionsMenu';
 import { useNerdMode } from '../state/NerdModeContext';
 import { formatActivityType } from '../../types/pb/enum-formatters';
 import { buildDestinationUrl } from '../utils/destinationUrls';
 import { PluginManifest } from '../types/plugin';
-import './ActivityDetailPage.css';
+import { Link } from '../components/library/navigation';
 
 interface ProviderExecution {
     ProviderName: string;
@@ -24,13 +22,10 @@ interface ProviderExecution {
     Metadata?: Record<string, unknown>;
 }
 
-// Helper to derive original trigger source from pipeline execution trace
-// Uses generic pattern detection instead of hardcoded platform names
 const deriveOriginalSource = (activity: SynchronizedActivity): string => {
     if (activity.pipelineExecution && activity.pipelineExecution.length > 0) {
         const firstService = activity.pipelineExecution[0].service;
         if (firstService) {
-            // Remove common suffixes and format the name nicely
             return firstService
                 .replace(/-handler$/, '')
                 .replace(/-webhook$/, '')
@@ -41,7 +36,6 @@ const deriveOriginalSource = (activity: SynchronizedActivity): string => {
     return activity.source || 'Unknown';
 };
 
-// Extract enricher executions from pipeline
 const extractEnricherExecutions = (pipelineExecution?: ExecutionRecord[]): ProviderExecution[] => {
     if (!pipelineExecution) return [];
 
@@ -56,7 +50,6 @@ const extractEnricherExecutions = (pipelineExecution?: ExecutionRecord[]): Provi
     }
 };
 
-// Extract generated assets from provider executions
 interface GeneratedAsset {
     type: string;
     url: string;
@@ -71,7 +64,6 @@ const extractGeneratedAssets = (providerExecutions: ProviderExecution[]): Genera
             continue;
         }
 
-        // Check for asset_* keys in metadata
         for (const [key, value] of Object.entries(execution.Metadata)) {
             if (key.startsWith('asset_') && typeof value === 'string' && value.startsWith('http')) {
                 const assetType = key.replace('asset_', '');
@@ -87,7 +79,6 @@ const extractGeneratedAssets = (providerExecutions: ProviderExecution[]): Genera
     return assets;
 };
 
-// Format asset type for display
 const formatAssetType = (type: string): string => {
     const typeMap: Record<string, string> = {
         'ai_banner': 'AI Banner',
@@ -97,19 +88,16 @@ const formatAssetType = (type: string): string => {
     return typeMap[type] || type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 };
 
-// Check if URL points to an SVG asset
 const isSvgUrl = (url: string): boolean => {
     try {
         const urlObj = new URL(url);
         const pathname = urlObj.pathname.toLowerCase();
-        // Check for .svg extension or SVG content type indicators in GCS URLs
         return pathname.endsWith('.svg') || pathname.includes('.svg');
     } catch {
         return url.toLowerCase().includes('.svg');
     }
 };
 
-// Component to render SVG inline by fetching and embedding the content
 const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ url, alt, className }) => {
     const [svgContent, setSvgContent] = useState<string | null>(null);
     const [error, setError] = useState(false);
@@ -124,12 +112,10 @@ const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ 
             })
             .then(text => {
                 if (cancelled) return;
-                // Parse and sanitize the SVG content
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(text, 'image/svg+xml');
                 const svgElement = doc.querySelector('svg');
                 if (svgElement) {
-                    // Remove any existing width/height to allow CSS control
                     svgElement.removeAttribute('width');
                     svgElement.removeAttribute('height');
                     svgElement.setAttribute('aria-label', alt);
@@ -150,12 +136,10 @@ const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ 
     }, [url, alt, className]);
 
     if (error) {
-        // Fallback to img tag if SVG fetch/parse fails
         return <img src={url} alt={alt} className={className} />;
     }
 
     if (!svgContent) {
-        // Loading state - show placeholder
         return <div className={className} style={{ opacity: 0.5 }} aria-label={`Loading ${alt}`} />;
     }
 
@@ -163,12 +147,9 @@ const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ 
     return <div dangerouslySetInnerHTML={{ __html: svgContent }} />;
 };
 
-// Get destination activity type from pipeline outputs
-// Uses generic -uploader suffix detection instead of hardcoded service names
 const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): string | null => {
     if (!pipelineExecution) return null;
 
-    // Check router first, then any uploader output
     const checkOrder = ['router', ...pipelineExecution
         .filter(r => r.service?.endsWith('-uploader'))
         .map(r => r.service as string)
@@ -188,7 +169,6 @@ const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): stri
     return null;
 };
 
-// Format platform name and icon using registry data (centralized in registry.ts)
 const formatPlatformName = (
     platform: string,
     sources: PluginManifest[],
@@ -196,18 +176,15 @@ const formatPlatformName = (
 ): { name: string; icon: string } => {
     const key = platform.toLowerCase();
 
-    // Try to find in registry (sources + destinations)
     const allPlugins = [...sources, ...destinations];
     const plugin = allPlugins.find(p => p.id === key);
 
     const name = plugin?.name || platform.charAt(0).toUpperCase() + platform.slice(1).toLowerCase();
-    // Use icon from registry if available, fallback to generic icon
     const icon = plugin?.icon || '📱';
 
     return { name, icon };
 };
 
-// Format datetime nicely
 const formatDateTime = (dateStr?: string): string => {
     if (!dateStr) return 'Unknown';
     const date = new Date(dateStr);
@@ -229,7 +206,6 @@ const ActivityDetailPage: React.FC = () => {
     const [traceExpanded, setTraceExpanded] = useState(false);
     const { isNerdMode } = useNerdMode();
 
-    // Fetch pipelines to look up name
     useEffect(() => {
         fetchPipelines();
     }, [fetchPipelines]);
@@ -240,7 +216,6 @@ const ActivityDetailPage: React.FC = () => {
         }
     }, [id, activities]);
 
-    // Auto-expand trace in nerd mode
     useEffect(() => {
         if (isNerdMode) {
             setTraceExpanded(true);
@@ -258,11 +233,11 @@ const ActivityDetailPage: React.FC = () => {
     if (!activity) {
         return (
             <PageLayout title="Not Found" backTo="/activities" backLabel="Activities">
-                <div className="activity-detail__empty">
-                    <span className="activity-detail__empty-icon">🔍</span>
-                    <h3>Activity not found</h3>
-                    <p>This activity may have been deleted or doesn&apos;t exist.</p>
-                </div>
+                <Stack align="center" gap="md">
+                    <Paragraph inline>🔍</Paragraph>
+                    <Heading level={3}>Activity not found</Heading>
+                    <Paragraph muted>This activity may have been deleted or doesn&apos;t exist.</Paragraph>
+                </Stack>
             </PageLayout>
         );
     }
@@ -279,7 +254,6 @@ const ActivityDetailPage: React.FC = () => {
     const failedBoosters = providerExecutions.filter(p => p.Status?.toUpperCase() === 'FAILED');
     const generatedAssets = extractGeneratedAssets(providerExecutions);
 
-    // Look up pipeline name by ID
     const pipelineName = activity.pipelineId
         ? pipelines.find(p => p.id === activity.pipelineId)?.name
         : undefined;
@@ -292,43 +266,38 @@ const ActivityDetailPage: React.FC = () => {
             onRefresh={refresh}
             loading={loading}
         >
-            {/* Hero Header */}
-            <div className="activity-detail__hero">
-                <div className="activity-detail__hero-header">
-                    <div className="activity-detail__hero-meta">
+            <Stack gap="lg">
+                <Stack direction="horizontal" align="center" justify="between">
+                    <Stack direction="horizontal" align="center" gap="sm">
                         <Pill variant="gradient">{activityType}</Pill>
                         {pipelineName && (
-                            <span className="activity-detail__pipeline-name">via {pipelineName}</span>
+                            <Paragraph inline muted>via {pipelineName}</Paragraph>
                         )}
-                        <span className="activity-detail__date">{formatDateTime(activity.startTime)}</span>
-                    </div>
+                        <Paragraph inline muted>{formatDateTime(activity.startTime)}</Paragraph>
+                    </Stack>
                     <RepostActionsMenu
                         activity={activity}
                         onSuccess={refresh}
                         isPro={true}
                     />
-                </div>
+                </Stack>
 
                 {activity.description && (
-                    <p className="activity-detail__description">{activity.description}</p>
+                    <Paragraph>{activity.description}</Paragraph>
                 )}
 
-                {/* Flow Visualization with Boosters */}
-                <div className="activity-detail__flow">
-                    <div className="activity-detail__flow-node activity-detail__flow-node--source">
-                        <span className="activity-detail__flow-icon">{sourceInfo.icon}</span>
-                        <span className="activity-detail__flow-label">{sourceInfo.name}</span>
-                    </div>
+                <Stack direction="horizontal" align="center" gap="md" wrap>
+                    <Stack align="center" gap="xs">
+                        <Paragraph inline>{sourceInfo.icon}</Paragraph>
+                        <Paragraph inline>{sourceInfo.name}</Paragraph>
+                    </Stack>
 
-                    <span className="activity-detail__flow-arrow">→</span>
+                    <Paragraph inline>→</Paragraph>
 
-                    {/* FitGlue Magic Center - with boosters */}
-                    <div className="activity-detail__flow-center">
-                        <span className="activity-detail__flow-magic-label">
-                            ✨ FitGlue Magic
-                        </span>
+                    <Stack align="center" gap="xs">
+                        <Paragraph inline>✨ FitGlue Magic</Paragraph>
                         {providerExecutions.length > 0 && (
-                            <div className="activity-detail__flow-boosters">
+                            <Stack direction="horizontal" gap="xs" wrap>
                                 {providerExecutions.map((exec, idx) => (
                                     <EnricherBadge
                                         key={idx}
@@ -337,159 +306,149 @@ const ActivityDetailPage: React.FC = () => {
                                         metadata={exec.Metadata}
                                     />
                                 ))}
-                            </div>
+                            </Stack>
                         )}
                         {providerExecutions.length === 0 && (
-                            <span className="activity-detail__flow-no-boosters">No boosters applied</span>
+                            <Paragraph size="sm" muted>No boosters applied</Paragraph>
                         )}
                         {failedBoosters.length > 0 && (
-                            <span className="activity-detail__flow-booster-note">
-                                ⚠️ {failedBoosters.length} skipped
-                            </span>
+                            <Paragraph size="sm">⚠️ {failedBoosters.length} skipped</Paragraph>
                         )}
-                    </div>
+                    </Stack>
 
-                    <span className="activity-detail__flow-arrow">→</span>
+                    <Paragraph inline>→</Paragraph>
 
                     {destinations.length > 0 ? (
-                        <div className="activity-detail__flow-destinations">
+                        <Stack direction="horizontal" gap="sm" wrap>
                             {destinations.map(([platform]) => {
                                 const destInfo = formatPlatformName(platform, sources, registryDestinations);
                                 return (
-                                    <div key={platform} className="activity-detail__flow-node activity-detail__flow-node--destination">
-                                        <span className="activity-detail__flow-icon">{destInfo.icon}</span>
-                                        <span className="activity-detail__flow-label">{destInfo.name}</span>
-                                    </div>
+                                    <Stack key={platform} align="center" gap="xs">
+                                        <Paragraph inline>{destInfo.icon}</Paragraph>
+                                        <Paragraph inline>{destInfo.name}</Paragraph>
+                                    </Stack>
                                 );
                             })}
-                        </div>
+                        </Stack>
                     ) : (
-                        <div className="activity-detail__flow-node activity-detail__flow-node--pending">
-                            <span className="activity-detail__flow-icon">⏳</span>
-                            <span className="activity-detail__flow-label">Pending</span>
-                        </div>
+                        <Stack align="center" gap="xs">
+                            <Paragraph inline>⏳</Paragraph>
+                            <Paragraph inline>Pending</Paragraph>
+                        </Stack>
                     )}
-                </div>
-            </div>
+                </Stack>
+            </Stack>
 
-            {/* Destinations */}
             {destinations.length > 0 && (
-                <Card className="activity-detail__destinations-card">
-                    <h3 className="activity-detail__section-title">
-                        <span className="activity-detail__section-icon">🚀</span>
+                <Card>
+                    <Heading level={3}>
+                        <Paragraph inline>🚀</Paragraph>
                         Synced Destinations
-                    </h3>
-                    <div className="activity-detail__destinations-grid">
+                    </Heading>
+                    <Grid cols={2} gap="md">
                         {destinations.map(([platform, activityId]) => {
                             const destInfo = formatPlatformName(platform, sources, registryDestinations);
                             const activityIdStr = String(activityId);
-                            // Use registry-provided URL templates instead of hardcoded URLs
                             const externalUrl = buildDestinationUrl(registryDestinations, platform, activityIdStr);
 
                             return (
-                                <div key={platform} className="activity-detail__destination">
-                                    <div className="activity-detail__destination-header">
-                                        <span className="activity-detail__destination-icon">{destInfo.icon}</span>
-                                        <span className="activity-detail__destination-name">{destInfo.name}</span>
-                                    </div>
-                                    <div className="activity-detail__destination-id">
+                                <Stack key={platform} gap="sm">
+                                    <Stack direction="horizontal" align="center" gap="sm">
+                                        <Paragraph inline>{destInfo.icon}</Paragraph>
+                                        <Paragraph bold>{destInfo.name}</Paragraph>
+                                    </Stack>
+                                    <Stack>
                                         {externalUrl ? (
-                                            <a
-                                                href={externalUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="activity-detail__destination-link"
+                                            <Link
+                                                to={externalUrl}
+                                                external
+
                                             >
                                                 {activityIdStr} ↗
-                                            </a>
+                                            </Link>
                                         ) : (
-                                            <code>{activityIdStr}</code>
+                                            <Code>{activityIdStr}</Code>
                                         )}
-                                    </div>
-                                </div>
+                                    </Stack>
+                                </Stack>
                             );
                         })}
-                    </div>
+                    </Grid>
                 </Card>
             )}
 
-            {/* Generated Assets */}
             {generatedAssets.length > 0 && (
-                <Card className="activity-detail__assets-card">
-                    <h3 className="activity-detail__section-title">
-                        <span className="activity-detail__section-icon">🎨</span>
+                <Card>
+                    <Heading level={3}>
+                        <Paragraph inline>🎨</Paragraph>
                         Generated Assets
-                    </h3>
-                    <div className="activity-detail__assets-grid">
+                    </Heading>
+                    <Grid cols={3} gap="md">
                         {generatedAssets.map((asset, idx) => (
-                            <div key={idx} className="activity-detail__asset-item">
-                                <a
-                                    href={asset.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="activity-detail__asset-link"
+                            <Stack key={idx} align="center" gap="sm">
+                                <Link
+                                    to={asset.url}
+                                    external
+
                                 >
-                                    <div className="activity-detail__asset-preview">
+                                    <Stack align="center" gap="xs">
                                         {isSvgUrl(asset.url) ? (
                                             <SvgAsset
                                                 url={asset.url}
                                                 alt={formatAssetType(asset.type)}
-                                                className="activity-detail__asset-svg"
+
                                             />
                                         ) : (
                                             <img
                                                 src={asset.url}
                                                 alt={formatAssetType(asset.type)}
-                                                className="activity-detail__asset-image"
+
                                             />
                                         )}
-                                    </div>
-                                    <div className="activity-detail__asset-label">
+                                    </Stack>
+                                    <Paragraph size="sm" centered>
                                         {formatAssetType(asset.type)}
-                                    </div>
-                                </a>
-                            </div>
+                                    </Paragraph>
+                                </Link>
+                            </Stack>
                         ))}
-                    </div>
+                    </Grid>
                 </Card>
             )}
 
-            {/* Pipeline Trace (Collapsible) */}
             {activity.pipelineExecution && activity.pipelineExecution.length > 0 && (
-                <div className="activity-detail__trace-section">
-                    <button
-                        className="activity-detail__trace-toggle"
+                <Stack gap="sm">
+                    <Button
+                        variant="text"
                         onClick={() => setTraceExpanded(!traceExpanded)}
+
                     >
-                        <span className="activity-detail__trace-toggle-icon">
+                        <Paragraph inline>
                             {traceExpanded ? '▼' : '▶'}
-                        </span>
-                        <span className="activity-detail__trace-toggle-text">
+                        </Paragraph>
+                        <Paragraph inline>
                             Pipeline Execution Trace
-                        </span>
-                        <span className="activity-detail__trace-toggle-count">
+                        </Paragraph>
+                        <Paragraph inline muted>
                             {activity.pipelineExecution.length} steps
-                        </span>
-                    </button>
+                        </Paragraph>
+                    </Button>
 
                     {traceExpanded && (
-                        <div className="activity-detail__trace-content">
+                        <Stack>
                             <PipelineTrace
                                 trace={activity.pipelineExecution}
                                 pipelineExecutionId={activity.pipelineExecutionId}
                                 isLoading={loading}
                             />
-                        </div>
+                        </Stack>
                     )}
-                </div>
+                </Stack>
             )}
 
-            {/* Metadata Footer */}
-            <div className="activity-detail__metadata">
-                <span className="activity-detail__metadata-item">
-                    Synced: {formatDateTime(activity.syncedAt)}
-                </span>
-            </div>
+            <Paragraph size="sm" muted centered>
+                Synced: {formatDateTime(activity.syncedAt)}
+            </Paragraph>
         </PageLayout>
     );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Card } from '../components/ui/Card';
+import { PageLayout, Stack, Grid } from '../components/library/layout';
+import { Card, Heading, Paragraph } from '../components/library/ui';
 
 interface SettingsLinkCardProps {
     title: string;
@@ -11,16 +11,16 @@ interface SettingsLinkCardProps {
 }
 
 const SettingsLinkCard: React.FC<SettingsLinkCardProps> = ({ title, description, icon, to }) => (
-    <Link to={to} className="settings-link-card">
-        <Card className="settings-card clickable">
-            <div className="settings-card-content">
-                <span className="settings-card-icon">{icon}</span>
-                <div className="settings-card-text">
-                    <h3>{title}</h3>
-                    <p>{description}</p>
-                </div>
-                <span className="settings-card-arrow">→</span>
-            </div>
+    <Link to={to}>
+        <Card>
+            <Stack direction="horizontal" align="center" gap="md">
+                <Paragraph size="lg">{icon}</Paragraph>
+                <Stack gap="xs">
+                    <Heading level={3} size="md">{title}</Heading>
+                    <Paragraph muted size="sm">{description}</Paragraph>
+                </Stack>
+                <Paragraph>→</Paragraph>
+            </Stack>
         </Card>
     </Link>
 );
@@ -28,7 +28,7 @@ const SettingsLinkCard: React.FC<SettingsLinkCardProps> = ({ title, description,
 const SettingsPage: React.FC = () => {
     return (
         <PageLayout title="Settings">
-            <div className="settings-grid">
+            <Grid cols={1} gap="md">
                 <SettingsLinkCard
                     title="Integrations"
                     description="Connect and manage your fitness services"
@@ -47,7 +47,7 @@ const SettingsPage: React.FC = () => {
                     icon="👤"
                     to="/settings/account"
                 />
-            </div>
+            </Grid>
         </PageLayout>
     );
 };

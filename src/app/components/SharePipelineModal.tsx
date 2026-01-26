@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Button } from './ui/Button';
-import './SharePipelineModal.css';
+import { Modal } from './library/ui/Modal';
+import { Button } from './library/ui/Button';
+import { Stack } from './library/layout/Stack';
+import { Heading } from './library/ui/Heading';
+import { Paragraph } from './library/ui/Paragraph';
 
 interface Props {
     encodedPipeline: string;
@@ -22,37 +25,32 @@ export const SharePipelineModal: React.FC<Props> = ({ encodedPipeline, pipelineN
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="share-pipeline-modal" onClick={e => e.stopPropagation()}>
-                <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
+        <Modal isOpen={true} onClose={onClose} title="Share Pipeline">
+            <Stack gap="md">
+                <Stack direction="horizontal" gap="sm" align="center">
+                    <Paragraph inline>📤</Paragraph>
+                    <Heading level={2}>Share Pipeline</Heading>
+                </Stack>
 
-                <div className="share-pipeline-header">
-                    <span className="share-pipeline-icon">📤</span>
-                    <h2>Share Pipeline</h2>
-                </div>
-
-                <p className="share-pipeline-description">
+                <Paragraph>
                     Share this code with others to let them import your <strong>{pipelineName}</strong> pipeline.
-                </p>
+                </Paragraph>
 
-                <div className="share-pipeline-code-container">
-                    <textarea
-                        className="share-pipeline-code"
-                        value={encodedPipeline}
-                        readOnly
-                        rows={4}
-                        onClick={(e) => e.currentTarget.select()}
-                    />
-                </div>
+                <textarea
+                    value={encodedPipeline}
+                    readOnly
+                    rows={4}
+                    onClick={(e) => e.currentTarget.select()}
+                />
 
-                <div className="share-pipeline-actions">
+                <Stack direction="horizontal" gap="sm" justify="end">
                     <Button variant="secondary" onClick={onClose}>Cancel</Button>
                     <Button variant="primary" onClick={handleCopy}>
                         {copied ? '✓ Copied!' : '📋 Copy Code'}
                     </Button>
-                </div>
-            </div>
-        </div>
+                </Stack>
+            </Stack>
+        </Modal>
     );
 };
 
