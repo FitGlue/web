@@ -4,7 +4,7 @@ import { PageLayout, Stack } from '../components/library/layout';
 import { Button, CardSkeleton, Heading, Paragraph, Code } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { useIntegrations } from '../hooks/useIntegrations';
+import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 
 interface LocationState {
     ingressApiKey?: string;
@@ -30,7 +30,7 @@ const ConnectionSuccessPage: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { integrations, loading: registryLoading } = usePluginRegistry();
-    const { refresh: refreshIntegrations } = useIntegrations();
+    const { refresh: refreshIntegrations } = useRealtimeIntegrations();
     const [copiedKey, setCopiedKey] = useState(false);
     const [copiedUrl, setCopiedUrl] = useState(false);
 
@@ -45,6 +45,7 @@ const ConnectionSuccessPage: React.FC = () => {
     const requiresWebhookSetup = id === 'hevy';
     const webhookUrl = useMemo(() => requiresWebhookSetup && id ? getWebhookUrl(id) : '', [id, requiresWebhookSetup]);
 
+    // Realtime hook auto-refreshes, but we can still trigger manual refresh
     useEffect(() => {
         refreshIntegrations();
     }, [refreshIntegrations]);

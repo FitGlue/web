@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useInputs } from '../hooks/useInputs';
-import { useActivities } from '../hooks/useActivities';
-import { useRealtimeActivities } from '../hooks/useRealtimeActivities';
-import { usePipelines } from '../hooks/usePipelines';
-import { useIntegrations } from '../hooks/useIntegrations';
+import { useRealtimeInputs } from '../hooks/useRealtimeInputs';
+import { useRealtimeActivities, useRealtimeStats } from '../hooks/useRealtimeActivities';
+import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
+import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
 
@@ -28,13 +27,25 @@ const DashboardPage: React.FC = () => {
     const [onboardingComplete, setOnboardingComplete] = useState(() => {
         return localStorage.getItem(ONBOARDING_COMPLETE_KEY) === 'true';
     });
-    const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
-    const { loading: inputsLoading, refresh: inputsRefresh } = useInputs();
-    const { activities, loading: statsLoading, refresh: statsRefresh } = useActivities('dashboard');
-    const { integrations, loading: integrationsLoading, refresh: integrationsRefresh, fetchIfNeeded: fetchIntegrations } = useIntegrations();
-    const { pipelines, loading: pipelinesLoading, refresh: pipelinesRefresh, fetchIfNeeded: fetchPipelines } = usePipelines();
 
-    const { isEnabled: liveEnabled, isListening, toggleRealtime } = useRealtimeActivities(true, 10);
+    // Plugin registry (still REST for now - global static data)
+    const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
+
+    // Real-time hooks (Firebase SDK) - no REST calls for reads
+    const { loading: inputsLoading } = useRealtimeInputs();
+    const { integrations } = useRealtimeIntegrations();
+    const { pipelines } = useRealtimePipelines();
+    const {
+        activities,
+        loading: activitiesLoading,
+        isEnabled: liveEnabled,
+        isListening,
+        toggleRealtime,
+        forceRefresh
+    } = useRealtimeActivities(true, 10);
+
+    // Real-time stats listener
+    useRealtimeStats(true);
 
     const liveToggle = (
         <LiveToggle
@@ -52,19 +63,14 @@ const DashboardPage: React.FC = () => {
         }
     }, [searchParams, setSearchParams]);
 
-    useEffect(() => {
-        fetchIntegrations();
-        fetchPipelines();
-    }, [fetchIntegrations, fetchPipelines]);
-
+    // Real-time hooks auto-subscribe, no manual fetch needed
     const refresh = () => {
-        inputsRefresh();
-        statsRefresh();
-        integrationsRefresh();
-        pipelinesRefresh();
+        // Force refresh just updates the lastUpdated timestamp
+        // Real-time listeners will automatically provide fresh data
+        forceRefresh();
     };
 
-    const isLoading = statsLoading || inputsLoading || integrationsLoading || pipelinesLoading || registryLoading;
+    const isLoading = activitiesLoading || inputsLoading || registryLoading;
 
     // Onboarding status
     const connectedCount = registryIntegrations.filter(
@@ -112,7 +118,7 @@ const DashboardPage: React.FC = () => {
                 <GalleryOfBoosts
                     activities={activities}
                     onActivityClick={(activityId) => navigate(`/activities/${activityId}`)}
-                    loading={statsLoading}
+                    loading={activitiesLoading}
                 />
             </Stack>
         </PageLayout>

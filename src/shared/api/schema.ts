@@ -50,29 +50,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List pending inputs */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description List of pending inputs */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            inputs?: components["schemas"]["PendingInput"][];
-                        };
-                    };
-                };
-            };
-        };
+        get?: never;
         put?: never;
         /** Resolve a pending input */
         post: {
@@ -307,48 +285,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/activities": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List synchronized activities */
-        get: {
-            parameters: {
-                query?: {
-                    limit?: number;
-                    /** @description When true, include pipelineExecution details for each activity (limited to 10 activities for performance) */
-                    includeExecution?: boolean;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description List of activities */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            activities?: components["schemas"]["SynchronizedActivity"][];
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/activities/{id}": {
         parameters: {
             query?: never;
@@ -356,7 +292,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get activity details */
+        /**
+         * Get activity details with execution trace
+         * @description Returns activity details including pipelineExecution for trace visualization
+         */
         get: {
             parameters: {
                 query?: never;
@@ -494,37 +433,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get current user profile
-         * @description Returns the current user's profile including integrations and pipelines
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description User profile */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["UserProfile"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        get?: never;
         put?: never;
         post?: never;
         /**
@@ -633,52 +542,6 @@ export interface paths {
                             /** @description Current counter value */
                             count?: number;
                         }[];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/users/me/integrations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List user integrations
-         * @description Returns all integrations with masked tokens
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description List of integrations */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["IntegrationsSummary"];
                     };
                 };
                 /** @description Unauthorized */
@@ -817,39 +680,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * List user pipelines
-         * @description Returns all pipelines configured for the user
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description List of pipelines */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            pipelines?: components["schemas"]["PipelineConfig"][];
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        get?: never;
         put?: never;
         /**
          * Create pipeline
@@ -1035,7 +866,7 @@ export interface components {
             linkedActivityId?: string;
             /** @description ID of the pipeline that contains the enricher which created this pending input */
             pipelineId?: string;
-            /** @description Provider-specific metadata (e.g., lap data for hybrid race tagger) */
+            /** @description Provider-specific metadata for rich UI interactions (e.g., laps, presets) */
             providerMetadata?: {
                 [key: string]: string;
             };

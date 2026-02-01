@@ -1,5 +1,5 @@
 import React from 'react';
-import { useIntegrations } from '../../hooks/useIntegrations';
+import { useRealtimeIntegrations } from '../../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 import { Stack } from '../library/layout';
 import {
@@ -15,7 +15,7 @@ import { IntegrationsSummary } from '../../state/integrationsState';
  */
 export const ConnectionsSummaryCard: React.FC = () => {
   const { integrations: registryIntegrations } = usePluginRegistry();
-  const { integrations, loading, loaded } = useIntegrations();
+  const { integrations, loading } = useRealtimeIntegrations();
 
   const connectedCount = registryIntegrations.filter(
     ri => integrations?.[ri.id as keyof IntegrationsSummary]?.connected
@@ -30,7 +30,7 @@ export const ConnectionsSummaryCard: React.FC = () => {
       footerText={<><strong>{connectedCount}</strong> of {registryIntegrations.length} connected</>}
     >
       <SkeletonLoading
-        loading={loading || !loaded}
+        loading={loading}
         skeleton={<CardSkeleton variant="connections" itemCount={4} />}
       >
         <Stack gap="xs">

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout/PageLayout';
 import { Stack } from '../components/library/layout/Stack';
@@ -8,9 +8,9 @@ import { Heading } from '../components/library/ui/Heading';
 import { Paragraph } from '../components/library/ui/Paragraph';
 import { useApi } from '../hooks/useApi';
 import { FormField, Input as FormInput } from '../components/library/forms';
-import { usePipelines } from '../hooks/usePipelines';
+import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { useIntegrations } from '../hooks/useIntegrations';
+import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { useUser } from '../hooks/useUser';
 import { EnricherConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
@@ -32,16 +32,12 @@ type WizardStep = 'source' | 'enrichers' | 'enricher-config' | 'destinations' | 
 const PipelineWizardPage: React.FC = () => {
     const navigate = useNavigate();
     const api = useApi();
-    const { refresh: refreshPipelines } = usePipelines();
+    const { refresh: refreshPipelines } = useRealtimePipelines();
     const { sources, enrichers, destinations, integrations: registryIntegrations, loading, error: registryError } = usePluginRegistry();
-    const { integrations: userIntegrations, fetchIfNeeded: fetchIntegrations } = useIntegrations();
+    const { integrations: userIntegrations } = useRealtimeIntegrations();
     const { user } = useUser();
 
     const userTier = user ? getEffectiveTier(user) : TIER_HOBBYIST;
-
-    useEffect(() => {
-        fetchIntegrations();
-    }, [fetchIntegrations]);
 
     const isTierGated = (plugin: PluginManifest): boolean => {
         if (!plugin.requiredTier) return false;

@@ -1,13 +1,12 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useActivities } from '../hooks/useActivities';
 import { useRealtimeActivities } from '../hooks/useRealtimeActivities';
 import { PageLayout, Stack } from '../components/library/layout';
 import { EnrichedActivityCard } from '../components/dashboard/EnrichedActivityCard';
 import { UnsyncedActivityCard } from '../components/dashboard/UnsyncedActivityCard';
 import { CardSkeleton, StatInline, LiveToggle, Heading, Paragraph, Button, TabbedCard } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
-import { ActivitiesService, SynchronizedActivity, UnsynchronizedEntry } from '../services/ActivitiesService';
+import { ActivitiesService, UnsynchronizedEntry } from '../services/ActivitiesService';
 
 type TabMode = 'enhanced' | 'failed';
 const PAGE_SIZE = 20;
@@ -19,9 +18,7 @@ const ActivitiesListPage: React.FC = () => {
     const navigate = useNavigate();
 
     const [loadingMore, setLoadingMore] = useState(false);
-    const [hasMoreActivities, setHasMoreActivities] = useState(true);
     const [hasMoreUnsync, setHasMoreUnsync] = useState(true);
-    const [extraActivities, setExtraActivities] = useState<SynchronizedActivity[]>([]);
     const [extraUnsync, setExtraUnsync] = useState<UnsynchronizedEntry[]>([]);
 
     const handleTabChange = (mode: TabMode) => {
@@ -29,9 +26,31 @@ const ActivitiesListPage: React.FC = () => {
         setSearchParams({ tab: mode });
     };
 
-    const { activities: initialActivities, unsynchronized: initialUnsync, stats: initialStats, loading, refreshAll, lastUpdated } = useActivities('dashboard');
+    const { activities: initialActivities, loading, isEnabled: liveEnabled, isListening, toggleRealtime, forceRefresh } = useRealtimeActivities(true, 20);
 
-    const { isEnabled: liveEnabled, isListening, toggleRealtime } = useRealtimeActivities(true, 20);
+    // For unsynchronized activities, we still need REST API as it's not in Firestore
+    const [initialUnsync, setInitialUnsync] = useState<UnsynchronizedEntry[]>([]);
+    const [statsLoading, setStatsLoading] = useState(true);
+    const [initialStats, setInitialStats] = useState<{ totalSynced?: number; monthlySynced?: number } | null>(null);
+
+    // Load unsynchronized and stats on mount
+    React.useEffect(() => {
+        const loadData = async () => {
+            try {
+                const [unsync, stats] = await Promise.all([
+                    ActivitiesService.listUnsynchronized(PAGE_SIZE),
+                    ActivitiesService.getStats()
+                ]);
+                setInitialUnsync(unsync);
+                setInitialStats(stats);
+            } catch (e) {
+                console.error('Failed to load unsync/stats', e);
+            } finally {
+                setStatsLoading(false);
+            }
+        };
+        loadData();
+    }, []);
 
     const liveToggle = (
         <LiveToggle
@@ -42,14 +61,13 @@ const ActivitiesListPage: React.FC = () => {
     );
 
     const activities = useMemo(() => {
-        const combined = [...initialActivities, ...extraActivities];
         const seen = new Set<string>();
-        return combined.filter(a => {
+        return initialActivities.filter(a => {
             if (!a.activityId || seen.has(a.activityId)) return false;
             seen.add(a.activityId);
             return true;
         });
-    }, [initialActivities, extraActivities]);
+    }, [initialActivities]);
 
     const unsynchronized = useMemo(() => {
         const combined = [...initialUnsync, ...extraUnsync];
@@ -64,25 +82,8 @@ const ActivitiesListPage: React.FC = () => {
     const handleActivityClick = (id: string) => navigate(`/activities/${id}`);
     const handleUnsyncClick = (pipelineExecutionId: string) => navigate(`/activities/unsynchronized/${pipelineExecutionId}`);
 
-    const loadMoreActivities = useCallback(async () => {
-        if (loadingMore || !hasMoreActivities) return;
-
-        setLoadingMore(true);
-        try {
-            const offset = activities.length;
-            const newActivities = await ActivitiesService.list(PAGE_SIZE, true, offset);
-
-            if (newActivities.length < PAGE_SIZE) {
-                setHasMoreActivities(false);
-            }
-
-            setExtraActivities(prev => [...prev, ...newActivities]);
-        } catch (e) {
-            console.error('Failed to load more activities', e);
-        } finally {
-            setLoadingMore(false);
-        }
-    }, [activities.length, loadingMore, hasMoreActivities]);
+    // Note: "Load more" for activities removed - real-time updates provide continuous fresh data
+    // Users see most recent activities via useRealtimeActivities hook
 
     const loadMoreUnsync = useCallback(async () => {
         if (loadingMore || !hasMoreUnsync) return;
@@ -104,12 +105,10 @@ const ActivitiesListPage: React.FC = () => {
         }
     }, [unsynchronized.length, loadingMore, hasMoreUnsync]);
 
-    const handleRefresh = () => {
-        setExtraActivities([]);
+    const handleRefresh = async () => {
         setExtraUnsync([]);
-        setHasMoreActivities(true);
         setHasMoreUnsync(true);
-        refreshAll();
+        await forceRefresh();
     };
 
     const stats = useMemo(() => {
@@ -125,8 +124,7 @@ const ActivitiesListPage: React.FC = () => {
             backTo="/"
             backLabel="Dashboard"
             onRefresh={handleRefresh}
-            loading={loading}
-            lastUpdated={lastUpdated}
+            loading={loading || statsLoading}
             headerActions={liveToggle}
         >
             <Stack gap="lg">
@@ -194,18 +192,6 @@ const ActivitiesListPage: React.FC = () => {
                                             onClick={() => handleActivityClick(activity.activityId!)}
                                         />
                                     ))}
-
-                                    {hasMoreActivities && (
-                                        <Stack align="center">
-                                            <Button
-                                                variant="secondary"
-                                                onClick={loadMoreActivities}
-                                                disabled={loadingMore}
-                                            >
-                                                {loadingMore ? 'Loading...' : 'Load More Activities'}
-                                            </Button>
-                                        </Stack>
-                                    )}
                                 </Stack>
                             )}
                         </>

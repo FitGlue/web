@@ -10,7 +10,7 @@ import { Input, Textarea, FormField } from '../library/forms';
 import { Stack } from '../library/layout/Stack';
 import { Grid } from '../library/layout/Grid';
 import { useApi } from '../../hooks/useApi';
-import { usePipelines } from '../../hooks/usePipelines';
+import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import './FileUploadPanel.css';
 
 /**
@@ -18,7 +18,7 @@ import './FileUploadPanel.css';
  */
 export const FileUploadPanel: React.FC = () => {
   const api = useApi();
-  const { pipelines, loading: pipelinesLoading, loaded: pipelinesLoaded } = usePipelines();
+  const { pipelines, loading: pipelinesLoading } = useRealtimePipelines();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
@@ -27,12 +27,12 @@ export const FileUploadPanel: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const hasFileUploadPipeline = pipelines.some(p =>
+  const hasFileUploadPipeline = pipelines.some((p: { source?: string }) =>
     p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload'
   );
 
   // Show skeleton while loading pipelines
-  if (pipelinesLoading && !pipelinesLoaded) {
+  if (pipelinesLoading) {
     return <CardSkeleton variant="file-upload" />;
   }
 

@@ -7,7 +7,7 @@ import { Heading } from './library/ui/Heading';
 import { Paragraph } from './library/ui/Paragraph';
 import { List, ListItem } from './library/ui/List';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { useIntegrations } from '../hooks/useIntegrations';
+import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { useApi } from '../hooks/useApi';
 import {
     decodePipeline,
@@ -26,7 +26,7 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess }) => 
     const navigate = useNavigate();
     const api = useApi();
     const { sources, enrichers, destinations, integrations } = usePluginRegistry();
-    const { integrations: userIntegrations } = useIntegrations();
+    const { integrations: userIntegrations } = useRealtimeIntegrations();
 
     const [code, setCode] = useState('');
     const [decoded, setDecoded] = useState<PortablePipeline | null>(null);

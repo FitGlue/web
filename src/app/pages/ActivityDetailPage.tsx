@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useActivities } from '../hooks/useActivities';
-import { usePipelines } from '../hooks/usePipelines';
+import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { SynchronizedActivity, ExecutionRecord } from '../services/ActivitiesService';
+import { SynchronizedActivity, ExecutionRecord, ActivitiesService } from '../services/ActivitiesService';
 import { PipelineTrace } from '../components/PipelineTrace';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
 import { Card, CardSkeleton, Pill, Button, Heading, Paragraph, Code } from '../components/library/ui';
@@ -199,22 +198,30 @@ const formatDateTime = (dateStr?: string): string => {
 
 const ActivityDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const { activities, loading, refresh } = useActivities('single', id);
-    const { pipelines, fetchIfNeeded: fetchPipelines } = usePipelines();
-    const { sources, destinations: registryDestinations } = usePluginRegistry();
+    // Use ActivitiesService directly for single activity fetch instead of batched REST hook
+    const [loading, setLoading] = useState(true);
     const [activity, setActivity] = useState<SynchronizedActivity | null>(null);
+    const { pipelines } = useRealtimePipelines();
+    const { sources, destinations: registryDestinations } = usePluginRegistry();
     const [traceExpanded, setTraceExpanded] = useState(false);
     const { isNerdMode } = useNerdMode();
 
-    useEffect(() => {
-        fetchPipelines();
-    }, [fetchPipelines]);
+    const fetchActivity = async () => {
+        if (!id) return;
+        setLoading(true);
+        try {
+            const data = await ActivitiesService.get(id);
+            setActivity(data || null);
+        } catch (e) {
+            console.error('Failed to load activity', e);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        if (id && activities.length > 0) {
-            setActivity(activities.find(a => a.activityId === id) || null);
-        }
-    }, [id, activities]);
+        fetchActivity();
+    }, [id]);
 
     useEffect(() => {
         if (isNerdMode) {
@@ -263,7 +270,7 @@ const ActivityDetailPage: React.FC = () => {
             title={activity.title || 'Activity Details'}
             backTo="/activities"
             backLabel="Activities"
-            onRefresh={refresh}
+            onRefresh={fetchActivity}
             loading={loading}
         >
             <Stack gap="lg">
@@ -277,7 +284,7 @@ const ActivityDetailPage: React.FC = () => {
                     </Stack>
                     <RepostActionsMenu
                         activity={activity}
-                        onSuccess={refresh}
+                        onSuccess={fetchActivity}
                         isPro={true}
                     />
                 </Stack>

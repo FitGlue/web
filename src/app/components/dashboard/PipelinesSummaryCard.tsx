@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePipelines } from '../../hooks/usePipelines';
+import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { usePluginLookup } from '../../hooks/usePluginLookup';
 import { Stack } from '../library/layout';
 import {
@@ -18,7 +18,7 @@ import {
  */
 export const PipelinesSummaryCard: React.FC = () => {
   const navigate = useNavigate();
-  const { pipelines, loading, loaded } = usePipelines();
+  const { pipelines, loading } = useRealtimePipelines();
   const { getSourceName, getSourceIcon, getDestinationName } = usePluginLookup();
 
   const pipelineContent = pipelines.length === 0 ? (
@@ -33,8 +33,8 @@ export const PipelinesSummaryCard: React.FC = () => {
       {pipelines.slice(0, 5).map(pipeline => (
         <SummaryListItem
           key={pipeline.id}
-          title={pipeline.name || `${getSourceName(pipeline.source)}→${pipeline.destinations.map(d => getDestinationName(d)).join('/')}`}
-          subtitle={pipeline.name ? `${getSourceIcon(pipeline.source)} ${getSourceName(pipeline.source)}→${pipeline.destinations.map(d => getDestinationName(d)).join('/')}` : undefined}
+          title={pipeline.name || `${getSourceName(pipeline.source)}→${pipeline.destinations.map((d: string | number) => getDestinationName(d)).join('/')}`}
+          subtitle={pipeline.name ? `${getSourceIcon(pipeline.source)} ${getSourceName(pipeline.source)}→${pipeline.destinations.map((d: string | number) => getDestinationName(d)).join('/')}` : undefined}
           status={<Pill variant="primary">{pipeline.enrichers?.length ?? 0} booster{(pipeline.enrichers?.length ?? 0) !== 1 ? 's' : ''}</Pill>}
         />
       ))}
@@ -53,7 +53,7 @@ export const PipelinesSummaryCard: React.FC = () => {
       footerText={pipelines.length > 0 ? <><strong>{pipelines.length}</strong> active pipeline{pipelines.length !== 1 ? 's' : ''}</> : undefined}
     >
       <SkeletonLoading
-        loading={loading || !loaded}
+        loading={loading}
         skeleton={<CardSkeleton variant="pipelines" itemCount={3} />}
       >
         {pipelineContent}

@@ -1,7 +1,9 @@
 import { atom } from 'jotai';
 import { SynchronizedActivity, UnsynchronizedEntry } from '../services/ActivitiesService';
+import { PipelineRun } from '../../types/pb/user';
 
 export const activitiesAtom = atom<SynchronizedActivity[]>([]);
+export const pipelineRunsAtom = atom<PipelineRun[]>([]);
 export const activityStatsAtom = atom<{
   synchronizedCount: number;
   totalSynced?: number;

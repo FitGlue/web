@@ -21,8 +21,8 @@ export interface IActivitiesService {
     monthlySynced: number;
     weeklySynced: number;
   }>;
-  list(limit?: number, includeExecution?: boolean, offset?: number): Promise<SynchronizedActivity[]>;
-  get(id: string): Promise<SynchronizedActivity | null>;
+  // list() removed - use useRealtimeActivities hook
+  get(id: string): Promise<SynchronizedActivity | null>; // Kept for on-demand trace loading
   listUnsynchronized(limit?: number, offset?: number): Promise<UnsynchronizedEntry[]>;
   getUnsynchronizedTrace(pipelineExecutionId: string): Promise<{ pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null>;
   // Re-post methods
@@ -57,26 +57,7 @@ export const ActivitiesService: IActivitiesService = {
     };
   },
 
-  async list(limit = 20, includeExecution = false, offset = 0) {
-    const headers = await getAuthHeader();
-    const { data, error } = await client.GET('/activities', {
-      headers,
-      params: {
-        query: {
-          limit,
-          includeExecution,
-          offset
-        }
-      }
-    });
-
-    if (error) {
-      console.error('Failed to fetch activities list', error);
-      return [];
-    }
-
-    return data?.activities || [];
-  },
+  // list() removed - use useRealtimeActivities hook instead
 
   async get(id: string) {
     const headers = await getAuthHeader();

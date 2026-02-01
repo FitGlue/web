@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useInputs } from '../hooks/useInputs';
-import { InputsService, PendingInput } from '../services/InputsService';
+import { useRealtimeInputs, PendingInput } from '../hooks/useRealtimeInputs';
+import { InputsService } from '../services/InputsService';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { usePluginLookup } from '../hooks/usePluginLookup';
-import { usePipelines } from '../hooks/usePipelines';
+import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { PageLayout, Stack } from '../components/library/layout';
 import { DataList } from '../components/data/DataList';
 import { Button, Pill, Paragraph, Heading, EmptyState, GlowCard, DashboardSummaryCard } from '../components/library/ui';
@@ -58,12 +58,10 @@ const getInputDisplayInfo = (
 
 
 const PendingInputsPage: React.FC = () => {
-    const { inputs, loading, refresh, lastUpdated } = useInputs();
+    const { inputs, loading, refresh } = useRealtimeInputs();
     const { enrichers } = usePluginRegistry();
-    const { pipelines, fetchIfNeeded } = usePipelines();
+    const { pipelines } = useRealtimePipelines();
     const { getSourceInfo } = usePluginLookup();
-
-    fetchIfNeeded();
 
     const [formValues, setFormValues] = useState<Record<string, Record<string, string>>>({});
     const [submittingIds, setSubmittingIds] = useState<Set<string>>(new Set());
@@ -86,7 +84,7 @@ const PendingInputsPage: React.FC = () => {
         const activityId = input.activityId;
         const values = formValues[activityId] || {};
 
-        const missingFields = input.requiredFields?.filter((f) => !values[f] || values[f].trim() === '');
+        const missingFields = input.requiredFields?.filter((f: string) => !values[f] || values[f].trim() === '');
         if (missingFields && missingFields.length > 0) {
             alert(`Please fill in: ${missingFields.join(', ')}`);
             return;
@@ -273,7 +271,6 @@ const PendingInputsPage: React.FC = () => {
             backLabel="Dashboard"
             onRefresh={refresh}
             loading={loading}
-            lastUpdated={lastUpdated}
         >
             <DashboardSummaryCard
                 title="Pending Items"

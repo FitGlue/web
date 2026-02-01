@@ -1,9 +1,9 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { SynchronizedActivity, ActivitiesService, RepostResponse } from '../services/ActivitiesService';
 import { Destination } from '../../types/pb/events';
 import { formatDestination } from '../../types/pb/enum-formatters';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { useIntegrations } from '../hooks/useIntegrations';
+import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { PluginManifest } from '../types/plugin';
 import { Modal, Button, Card, Heading, Paragraph } from './library/ui';
 import { Stack } from './library/layout';
@@ -66,11 +66,7 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
     const [result, setResult] = useState<RepostResponse | null>(null);
 
     const { destinations: registryDestinations } = usePluginRegistry();
-    const { integrations: userIntegrations, fetchIfNeeded: fetchIntegrations } = useIntegrations();
-
-    useEffect(() => {
-        fetchIntegrations();
-    }, [fetchIntegrations]);
+    const { integrations: userIntegrations } = useRealtimeIntegrations();
 
     const availableDestinations = useMemo(
         () => getAvailableDestinations(
@@ -222,8 +218,8 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
                 onClose={closeModal}
                 title={
                     modalType === 'missed' ? `📤 Send to ${selectedDestination}` :
-                    modalType === 'retry' ? `🔄 Retry ${selectedDestination}` :
-                    '✨ Re-run Pipeline'
+                        modalType === 'retry' ? `🔄 Retry ${selectedDestination}` :
+                            '✨ Re-run Pipeline'
                 }
                 size="sm"
                 footer={

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout/PageLayout';
 import { Stack } from '../components/library/layout/Stack';
@@ -14,8 +14,8 @@ import { SharePipelineModal } from '../components/SharePipelineModal';
 import { WizardOptionGrid, WizardExcludedSection } from '../components/wizard';
 import { useApi } from '../hooks/useApi';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { useIntegrations } from '../hooks/useIntegrations';
-import { usePipelines } from '../hooks/usePipelines';
+import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
+import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { CardSkeleton } from '../components/library/ui/CardSkeleton';
 import '../components/library/ui/CardSkeleton.css';
 import { PluginManifest } from '../types/plugin';
@@ -45,12 +45,8 @@ const PipelineEditPage: React.FC = () => {
     const navigate = useNavigate();
     const api = useApi();
     const { sources, enrichers, destinations, integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
-    const { integrations: userIntegrations, fetchIfNeeded: fetchIntegrations } = useIntegrations();
-    const { invalidate: invalidatePipelines } = usePipelines();
-
-    useEffect(() => {
-        fetchIntegrations();
-    }, [fetchIntegrations]);
+    const { integrations: userIntegrations } = useRealtimeIntegrations();
+    const { refresh: invalidatePipelines } = useRealtimePipelines();
 
     const isPluginAvailable = (plugin: PluginManifest): boolean => {
         if (!plugin.requiredIntegrations?.length) return true;

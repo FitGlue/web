@@ -1,201 +1,121 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useAtom } from 'jotai';
-import {
-  collection,
-  query,
-  orderBy,
-  limit,
-  onSnapshot,
-  doc,
-  Unsubscribe
-} from 'firebase/firestore';
-import { getFirebaseFirestore, getFirebaseAuth } from '../../shared/firebase';
+import { collection, query, orderBy, limit } from 'firebase/firestore';
+import { useFirestoreListener } from './useFirestoreListener';
 import { activitiesAtom, activityStatsAtom, activitiesLastUpdatedAtom } from '../state/activitiesState';
-import { SynchronizedActivity, ActivitiesService } from '../services/ActivitiesService';
-import { useRef } from 'react';
+import { SynchronizedActivity } from '../services/ActivitiesService';
+import { getFirebaseFirestore, getFirebaseAuth } from '../../shared/firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
+
+// Helper to convert Firestore Timestamp to Date string
+const toDateString = (value: unknown): string | undefined => {
+  if (!value) return undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const v = value as any;
+  if (v.toDate && typeof v.toDate === 'function') {
+    return v.toDate().toISOString();
+  }
+  if (v instanceof Date) {
+    return v.toISOString();
+  }
+  if (typeof v === 'string') {
+    return v;
+  }
+  return undefined;
+};
 
 /**
- * useRealtimeActivities - Phase 3 Live-Updating Hook
+ * useRealtimeActivities - Firebase SDK Real-time Hook
  *
- * This hook establishes Firestore onSnapshot listeners for:
- * 1. User's synchronized activities (for live activity feed)
- * 2. User's activity counters (for live stats)
- *
- * It automatically updates the global Jotai state when activities are added/modified,
- * enabling the dashboard to update in real-time without manual refresh.
- *
- * @param initialEnabled - Whether to initially enable real-time listening (default: true)
- * @param activityLimit - Maximum activities to listen to (default: 10)
+ * Listens to `users/{userId}/activities` via onSnapshot.
+ * Uses the shared useFirestoreListener for common functionality.
+ * 
+ * Architecture: Firebase SDK for reads, REST for mutations only.
+ * Execution traces (boosts) are loaded on-demand via useActivityTrace.
  */
 export const useRealtimeActivities = (initialEnabled = true, activityLimit = 10) => {
-  const auth = getFirebaseAuth();
-  const currentUser = auth?.currentUser;
-  const [, setActivities] = useAtom(activitiesAtom);
+  const [activities, setActivities] = useAtom(activitiesAtom);
   const [, setActivitiesLastUpdated] = useAtom(activitiesLastUpdatedAtom);
-
   const [isEnabled, setIsEnabled] = useState(initialEnabled);
-  const [isListening, setIsListening] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
-  // Track if this is the first snapshot (to avoid over-writing initial API data)
-  const [hasReceivedFirstSnapshot, setHasReceivedFirstSnapshot] = useState(false);
-
-  // Track activities already being fetched for rich data to avoid redundant calls
-  const pendingFetches = useRef<Set<string>>(new Set());
-
-  useEffect(() => {
-    if (!isEnabled || !currentUser?.uid) {
-      setIsListening(false);
-      return;
-    }
-
-    const firestore = getFirebaseFirestore();
-    if (!firestore) {
-      console.warn('Firestore not initialized - real-time updates disabled');
-      return;
-    }
-
-    const unsubscribers: Unsubscribe[] = [];
-
-    try {
-      // --- Listener 1: Synchronized Activities ---
-      const activitiesRef = collection(firestore, 'users', currentUser.uid, 'activities');
-      const activitiesQuery = query(
+  const queryFactory = useCallback(
+    (firestore: ReturnType<typeof import('../../shared/firebase').getFirebaseFirestore>, userId: string) => {
+      if (!firestore || !isEnabled) return null;
+      const activitiesRef = collection(firestore, 'users', userId, 'activities');
+      return query(
         activitiesRef,
         orderBy('synced_at', 'desc'),
         limit(activityLimit)
       );
+    },
+    [activityLimit, isEnabled]
+  );
 
-      const activitiesUnsubscribe = onSnapshot(
-        activitiesQuery,
-        (snapshot) => {
-          // Identify new activities or those needing rich data updates
-          // and fetch them from the API in the background.
-          snapshot.docChanges().forEach((change) => {
-            if (change.type === 'added' || change.type === 'modified') {
-              const activityId = change.doc.id;
+  const mapper = useCallback((snapshot: unknown): SynchronizedActivity[] => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const querySnapshot = snapshot as any;
+    return querySnapshot.docs.map((doc: { id: string; data: () => Record<string, unknown> }) => {
+      const data = doc.data();
+      const activity: SynchronizedActivity = {
+        activityId: doc.id,
+        title: data.title as string,
+        description: data.description as string | undefined,
+        type: data.type as number | undefined,
+        source: data.source as string | undefined,
+        startTime: toDateString(data.start_time) || toDateString(data.startTime),
+        syncedAt: toDateString(data.synced_at) || toDateString(data.syncedAt),
+        pipelineId: data.pipeline_id as string | undefined,
+        pipelineExecutionId: data.pipeline_execution_id as string | undefined,
+        destinations: (data.destinations || {}) as Record<string, string>
+      };
+      return activity;
+    });
+  }, []);
 
-              // Skip if already being fetched or if we already have rich data in state
-              // (Wait, we check the state later, but let's avoid redundant hits)
-              if (!pendingFetches.current.has(activityId)) {
-                pendingFetches.current.add(activityId);
-
-                ActivitiesService.get(activityId).then(richActivity => {
-                  if (richActivity && richActivity.pipelineExecution) {
-                    setActivities(prev => prev.map(a =>
-                      a.activityId === activityId
-                        ? { ...a, pipelineExecution: richActivity.pipelineExecution }
-                        : a
-                    ));
-                  }
-                }).catch(err => {
-                  console.error(`Failed to fetch rich data for activity ${activityId}:`, err);
-                }).finally(() => {
-                  pendingFetches.current.delete(activityId);
-                });
-              }
-            }
+  const handleData = useCallback((data: SynchronizedActivity[]) => {
+    // Merge with existing data to preserve pipelineExecution if loaded
+    setActivities(prev => {
+      const existingMap = new Map(prev.map(a => [a.activityId, a]));
+      for (const activity of data) {
+        const existing = existingMap.get(activity.activityId);
+        if (existing) {
+          existingMap.set(activity.activityId, {
+            ...activity,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            pipelineExecution: (existing as any).pipelineExecution,
           });
-
-          // Skip the first snapshot if we already have data from API
-          // to avoid flickering/replacing richer API data
-          if (!hasReceivedFirstSnapshot) {
-            setHasReceivedFirstSnapshot(true);
-          }
-
-          const activities: SynchronizedActivity[] = snapshot.docs.map((doc) => {
-            const data = doc.data();
-            return {
-              activityId: doc.id,
-              title: data.title || '',
-              description: data.description || '',
-              // Convert numeric enums to strings for component compatibility
-              // (will be properly formatted by formatters in the UI)
-              type: data.type,
-              source: data.source,
-              startTime: data.start_time?.toDate?.()?.toISOString() || data.start_time,
-              destinations: data.destinations || {},
-              syncedAt: data.synced_at?.toDate?.()?.toISOString() || data.synced_at,
-              pipelineId: data.pipeline_id || '',
-              pipelineExecutionId: data.pipeline_execution_id || '',
-            };
-          });
-
-          // Merge with existing activities (preserving execution traces from API)
-          setActivities((prev) => {
-            // Create a map of existing activities by ID
-            const existingMap = new Map(prev.map(a => [a.activityId, a]));
-
-            // Update with new data, preserving fields not in Firestore
-            for (const activity of activities) {
-              const existing = existingMap.get(activity.activityId);
-              if (existing) {
-                // Preserve pipelineExecution from API if it exists
-                existingMap.set(activity.activityId, {
-                  ...activity,
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  pipelineExecution: (existing as any).pipelineExecution,
-                });
-              } else {
-                existingMap.set(activity.activityId, activity);
-              }
-            }
-
-            // Sort by syncedAt descending
-            const merged = Array.from(existingMap.values());
-            return merged.sort((a, b) => {
-              const dateA = a.syncedAt ? new Date(a.syncedAt).getTime() : 0;
-              const dateB = b.syncedAt ? new Date(b.syncedAt).getTime() : 0;
-              return dateB - dateA;
-            }).slice(0, activityLimit);
-          });
-
-          setActivitiesLastUpdated(new Date());
-        },
-        (err) => {
-          console.error('Realtime activities listener error:', err);
-          setError(err);
+        } else {
+          existingMap.set(activity.activityId, activity);
         }
-      );
-      unsubscribers.push(activitiesUnsubscribe);
-
-      // --- Listener 2: Activity Counters (from user doc) ---
-      // This listener watches the user document for activityCounts changes
-      // Note: We're using the REST API for user doc since it's already loaded
-      // A full implementation would add another listener here
-
-      setIsListening(true);
-      setError(null);
-
-    } catch (err) {
-      console.error('Failed to setup realtime listeners:', err);
-      setError(err as Error);
-    }
-
-    // Cleanup: unsubscribe all listeners
-    return () => {
-      unsubscribers.forEach(unsub => unsub());
-      setIsListening(false);
-    };
-  }, [isEnabled, currentUser?.uid, activityLimit, setActivities, setActivitiesLastUpdated, hasReceivedFirstSnapshot]);
-
-  // Manual refresh function - force re-fetch from API
-  const forceRefresh = useCallback(async () => {
-    // This will be handled by the existing useActivities hook
-    // The real-time listener will automatically pick up changes
+      }
+      const merged = Array.from(existingMap.values());
+      return merged.sort((a, b) => {
+        const dateA = a.syncedAt ? new Date(a.syncedAt).getTime() : 0;
+        const dateB = b.syncedAt ? new Date(b.syncedAt).getTime() : 0;
+        return dateB - dateA;
+      }).slice(0, activityLimit);
+    });
     setActivitiesLastUpdated(new Date());
-  }, [setActivitiesLastUpdated]);
+  }, [setActivities, setActivitiesLastUpdated, activityLimit]);
 
-  // Toggle real-time updates on/off
+  const { loading, error, isListening, refresh } = useFirestoreListener({
+    queryFactory,
+    mapper,
+    onData: handleData,
+    enabled: isEnabled,
+  });
+
   const toggleRealtime = useCallback(() => {
     setIsEnabled(prev => !prev);
   }, []);
 
   return {
+    activities,
+    loading,
     isEnabled,
     isListening,
     error,
-    forceRefresh,
+    forceRefresh: refresh,
     toggleRealtime,
   };
 };
@@ -210,16 +130,14 @@ export const useRealtimeStats = (enabled = true) => {
   const currentUser = auth?.currentUser;
   const [, setStats] = useAtom(activityStatsAtom);
 
-  useEffect(() => {
-    if (!enabled || !currentUser?.uid) return;
+  // This hook doesn't use useFirestoreListener because it's a simple
+  // document listener that just extracts a specific nested field
+  const firestore = getFirebaseFirestore();
 
-    const firestore = getFirebaseFirestore();
-    if (!firestore) return;
-
-    // Listen to user document for activityCounts changes
+  if (enabled && currentUser?.uid && firestore) {
     const userRef = doc(firestore, 'users', currentUser.uid);
 
-    const unsubscribe = onSnapshot(
+    onSnapshot(
       userRef,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (snapshot: any) => {
@@ -234,7 +152,5 @@ export const useRealtimeStats = (enabled = true) => {
         console.error('Realtime stats listener error:', err);
       }
     );
-
-    return () => unsubscribe();
-  }, [enabled, currentUser?.uid, setStats]);
+  }
 };

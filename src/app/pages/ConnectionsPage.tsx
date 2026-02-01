@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
 import { Button, PluginIcon, CardSkeleton, ConfirmDialog, Pill, Heading, Paragraph, Card } from '../components/library/ui';
 import { useApi } from '../hooks/useApi';
-import { useIntegrations } from '../hooks/useIntegrations';
+import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import '../components/library/ui/CardSkeleton.css';
 import { IntegrationManifest } from '../types/plugin';
@@ -35,51 +35,51 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
         <Card variant={isConnected ? 'elevated' : 'default'}>
             <Stack gap="md">
                 <Stack direction="horizontal" align="center" gap="md">
-                <PluginIcon
-                    icon={integration.icon}
-                    iconType={integration.iconType}
-                    iconPath={integration.iconPath}
-                    size="medium"
+                    <PluginIcon
+                        icon={integration.icon}
+                        iconType={integration.iconType}
+                        iconPath={integration.iconPath}
+                        size="medium"
 
-                />
-                <Stack gap="xs">
-                    <Heading level={3} size="md">{integration.name}</Heading>
-                    <Paragraph muted size="sm">{integration.description}</Paragraph>
+                    />
+                    <Stack gap="xs">
+                        <Heading level={3} size="md">{integration.name}</Heading>
+                        <Paragraph muted size="sm">{integration.description}</Paragraph>
+                    </Stack>
                 </Stack>
-            </Stack>
 
-            <Stack direction="horizontal" align="center" gap="sm" wrap>
-                <Pill variant={isConnected ? 'success' : 'default'}>
-                    {isConnected ? '✓ Connected' : '○ Not Connected'}
-                </Pill>
-                {isConnected && status?.externalUserId && (
-                    <Paragraph size="sm" muted>ID: {status.externalUserId}</Paragraph>
-                )}
-                {isConnected && status?.lastUsedAt && (
-                    <Paragraph size="sm" muted>
-                        Last synced: {new Date(status.lastUsedAt).toLocaleDateString()}
-                    </Paragraph>
-                )}
-            </Stack>
+                <Stack direction="horizontal" align="center" gap="sm" wrap>
+                    <Pill variant={isConnected ? 'success' : 'default'}>
+                        {isConnected ? '✓ Connected' : '○ Not Connected'}
+                    </Pill>
+                    {isConnected && status?.externalUserId && (
+                        <Paragraph size="sm" muted>ID: {status.externalUserId}</Paragraph>
+                    )}
+                    {isConnected && status?.lastUsedAt && (
+                        <Paragraph size="sm" muted>
+                            Last synced: {new Date(status.lastUsedAt).toLocaleDateString()}
+                        </Paragraph>
+                    )}
+                </Stack>
 
-            <Stack>
-                {isConnected ? (
-                    <Button
-                        variant="danger"
-                        onClick={onDisconnect}
-                        disabled={disconnecting}
-                    >
-                        {disconnecting ? 'Disconnecting...' : 'Disconnect'}
-                    </Button>
-                ) : (
-                    <Button
-                        variant="primary"
-                        onClick={onConnect}
-                    >
-                        Connect
-                    </Button>
-                )}
-            </Stack>
+                <Stack>
+                    {isConnected ? (
+                        <Button
+                            variant="danger"
+                            onClick={onDisconnect}
+                            disabled={disconnecting}
+                        >
+                            {disconnecting ? 'Disconnecting...' : 'Disconnect'}
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="primary"
+                            onClick={onConnect}
+                        >
+                            Connect
+                        </Button>
+                    )}
+                </Stack>
             </Stack>
         </Card>
     );
@@ -89,13 +89,9 @@ const ConnectionsPage: React.FC = () => {
     const navigate = useNavigate();
     const api = useApi();
     const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
-    const { integrations, loading, refresh: refreshIntegrations, fetchIfNeeded } = useIntegrations();
+    const { integrations, loading, refresh: refreshIntegrations } = useRealtimeIntegrations();
     const [disconnecting, setDisconnecting] = useState<string | null>(null);
-    const [disconnectConfirm, setDisconnectConfirm] = useState<{id: string, name: string} | null>(null);
-
-    useEffect(() => {
-        fetchIfNeeded();
-    }, [fetchIfNeeded]);
+    const [disconnectConfirm, setDisconnectConfirm] = useState<{ id: string, name: string } | null>(null);
 
     const handleConnect = (integration: IntegrationManifest) => {
         navigate(`/connections/${integration.id}/setup`);
@@ -104,7 +100,7 @@ const ConnectionsPage: React.FC = () => {
     const handleRequestDisconnect = (provider: string) => {
         const integration = registryIntegrations.find(i => i.id === provider);
         const displayName = integration?.name || provider;
-        setDisconnectConfirm({id: provider, name: displayName});
+        setDisconnectConfirm({ id: provider, name: displayName });
     };
 
     const handleDisconnectConfirm = async () => {

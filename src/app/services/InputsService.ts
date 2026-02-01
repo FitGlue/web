@@ -6,7 +6,7 @@ export type PendingInput = components['schemas']['PendingInput'];
 export type InputResolutionRequest = components['schemas']['InputResolutionRequest'];
 
 export interface IInputsService {
-  getPendingInputs(): Promise<PendingInput[]>;
+  // getPendingInputs() removed - use useRealtimeInputs hook
   resolveInput(request: InputResolutionRequest): Promise<boolean>;
   dismissInput(activityId: string): Promise<boolean>;
   setFCMToken(token: string): Promise<boolean>;
@@ -19,18 +19,7 @@ const getAuthHeader = async () => {
 };
 
 export const InputsService: IInputsService = {
-  async getPendingInputs() {
-    const headers = await getAuthHeader();
-    const { data, error } = await client.GET('/inputs', {
-      headers,
-    });
-
-    if (error) {
-      throw new Error('Failed to fetch pending inputs');
-    }
-
-    return data.inputs || [];
-  },
+  // getPendingInputs() removed - use useRealtimeInputs hook instead
 
   async resolveInput(request) {
     const headers = await getAuthHeader();

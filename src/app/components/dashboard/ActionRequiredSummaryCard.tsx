@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useInputs } from '../../hooks/useInputs';
-import { usePipelines } from '../../hooks/usePipelines';
+import { useRealtimeInputs } from '../../hooks/useRealtimeInputs';
+import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { usePluginLookup } from '../../hooks/usePluginLookup';
 import { formatFieldLabel } from '../../utils/formatters';
 import { Stack } from '../library/layout';
@@ -19,8 +19,8 @@ import {
  */
 export const ActionRequiredSummaryCard: React.FC = () => {
   const navigate = useNavigate();
-  const { inputs, loading, loaded } = useInputs();
-  const { pipelines } = usePipelines();
+  const { inputs, loading } = useRealtimeInputs();
+  const { pipelines } = useRealtimePipelines();
   const { getSourceInfo } = usePluginLookup();
 
   const getInputSourceInfo = (input: typeof inputs[0]): { source: string; icon: string; isAuto: boolean } => {
@@ -74,7 +74,7 @@ export const ActionRequiredSummaryCard: React.FC = () => {
       footerText={<><strong>{inputs.length}</strong> pending</>}
     >
       <SkeletonLoading
-        loading={loading || !loaded}
+        loading={loading}
         skeleton={<CardSkeleton variant="actions" itemCount={2} />}
       >
         {inputContent}

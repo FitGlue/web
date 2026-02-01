@@ -9,10 +9,13 @@ import { Badge } from '../library/ui/Badge';
 import { GlowCard } from '../library/ui/GlowCard';
 import { FlowVisualization } from '../library/ui/FlowVisualization';
 import { BoosterGrid } from '../library/ui/BoosterGrid';
-import { formatActivityType, formatDestination, formatActivitySource } from '../../../types/pb/enum-formatters';
-import { usePipelines } from '../../hooks/usePipelines';
+import { formatActivityType, formatDestination, formatActivitySource, formatDestinationStatus } from '../../../types/pb/enum-formatters';
+import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
+import { useLazyActivityTrace } from '../../hooks/useActivityTrace';
+import { usePipelineRunLookup } from '../../hooks/usePipelineRuns';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 import { PluginManifest } from '../../types/plugin';
+import { BoosterExecution } from '../../../types/pb/user';
 
 interface EnrichedActivityCardProps {
     activity: SynchronizedActivity;
@@ -35,6 +38,18 @@ const extractEnricherExecutions = (pipelineExecution?: ExecutionRecord[]): Provi
     } catch {
         return [];
     }
+};
+
+/**
+ * Convert PipelineRun.boosters to ProviderExecution format for display
+ */
+const mapBoostersToExecutions = (boosters?: BoosterExecution[]): ProviderExecution[] => {
+    if (!boosters || boosters.length === 0) return [];
+    return boosters.map(b => ({
+        ProviderName: b.providerName,
+        Status: b.status,
+        Metadata: b.metadata as Record<string, unknown>,
+    }));
 };
 
 const getEnrichedTitle = (pipelineExecution?: ExecutionRecord[]): string | null => {
@@ -99,17 +114,39 @@ const getPlatformInfo = (
 /**
  * EnrichedActivityCard - Premium card showing the boost flow
  * Uses GlowCard with gradient header and FlowVisualization for the pipeline display
+ * Lazy loads execution traces when card enters viewport
  */
 export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     activity,
     onClick,
 }) => {
-    const { pipelines } = usePipelines();
+    const { pipelines } = useRealtimePipelines();
     const { sources, destinations: registryDestinations } = usePluginRegistry();
-    const providerExecutions = extractEnricherExecutions(activity.pipelineExecution);
-    const enrichedTitle = getEnrichedTitle(activity.pipelineExecution);
-    const destinationActivityType = getDestinationActivityType(activity.pipelineExecution);
-    const destinationStatuses = extractDestinationStatuses(activity.pipelineExecution);
+    const { ref, hasTrace, loading: traceLoading, pipelineExecution } = useLazyActivityTrace(activity.activityId);
+
+    // Try to get booster data from PipelineRun first (new architecture)
+    const pipelineRun = usePipelineRunLookup(activity.pipelineExecutionId);
+
+    // Use trace from lazy loading hook (which updates global state and returns latest)
+    // Falls back to activity.pipelineExecution if already present
+    const trace = pipelineExecution || activity.pipelineExecution;
+
+    // Use PipelineRun boosters if available, fallback to lazy-loaded trace
+    const providerExecutions = pipelineRun?.boosters && pipelineRun.boosters.length > 0
+        ? mapBoostersToExecutions(pipelineRun.boosters)
+        : extractEnricherExecutions(trace);
+
+    const enrichedTitle = getEnrichedTitle(trace);
+    const destinationActivityType = getDestinationActivityType(trace);
+
+    // Use PipelineRun destination statuses if available, fallback to trace
+    const destinationStatuses: Record<string, string> = pipelineRun?.destinations
+        ? pipelineRun.destinations.reduce((acc, d) => {
+            const destName = formatDestination(d.destination) || 'unknown';
+            acc[destName.toLowerCase()] = formatDestinationStatus(d.status) || 'UNKNOWN';
+            return acc;
+        }, {} as Record<string, string>)
+        : extractDestinationStatuses(trace);
 
     const activityTitle = enrichedTitle || activity.title || 'Untitled Activity';
     const titleWasEnhanced = enrichedTitle && enrichedTitle !== activity.title;
@@ -119,24 +156,25 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
         : formatActivityType(activity.type);
     const syncDate = activity.syncedAt
         ? new Date(activity.syncedAt).toLocaleString(undefined, {
-              month: 'short',
-              day: 'numeric',
-              hour: 'numeric',
-              minute: '2-digit',
-          })
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+        })
         : null;
 
     const sourceInfo = getPlatformInfo(activity.source || 'unknown', sources, registryDestinations);
     const destinations = activity.destinations ? Object.keys(activity.destinations) : [];
 
     const pipelineName = activity.pipelineId
-        ? pipelines.find(p => p.id === activity.pipelineId)?.name
+        ? pipelines.find((p: { id: string }) => p.id === activity.pipelineId)?.name
         : undefined;
 
-    const isPartiallyLoaded = !activity.pipelineExecution;
+    const isPartiallyLoaded = !hasTrace && (traceLoading || activity.pipelineExecutionId);
 
     // Determine card variant based on state
     const cardVariant = isPartiallyLoaded ? 'default' : 'success';
+
 
     // Header content - activity type, title, pipeline, date
     const headerContent = (
@@ -197,7 +235,7 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
 
     // Center boosters
     const boostersNode = (
-        <BoosterGrid loading={isPartiallyLoaded} emptyText="No boosters">
+        <BoosterGrid loading={!!isPartiallyLoaded} emptyText="No boosters">
             {providerExecutions.map((exec, idx) => (
                 <EnricherBadge
                     key={idx}
@@ -210,18 +248,20 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     );
 
     return (
-        <GlowCard
-            onClick={onClick}
-            variant={cardVariant}
-            loading={isPartiallyLoaded}
-            header={headerContent}
-        >
-            {/* Flow Visualization: Source → Boosters → Destination */}
-            <FlowVisualization
-                source={sourceNode}
-                center={boostersNode}
-                destination={destinationNode}
-            />
-        </GlowCard>
+        <div ref={ref}>
+            <GlowCard
+                onClick={onClick}
+                variant={cardVariant}
+                loading={!!isPartiallyLoaded}
+                header={headerContent}
+            >
+                {/* Flow Visualization: Source → Boosters → Destination */}
+                <FlowVisualization
+                    source={sourceNode}
+                    center={boostersNode}
+                    destination={destinationNode}
+                />
+            </GlowCard>
+        </div>
     );
 };

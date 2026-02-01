@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout, Stack } from '../components/library/layout';
 import { Card, Button, Heading, Paragraph, CardSkeleton, ConfirmDialog, IdBadge, Badge, GlowCard, FlowVisualization, BoosterGrid, Pill } from '../components/library/ui';
 
 import { useApi } from '../hooks/useApi';
-import { usePipelines } from '../hooks/usePipelines';
+import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { usePluginLookup } from '../hooks/usePluginLookup';
-import { useIntegrations } from '../hooks/useIntegrations';
+import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { useNerdMode } from '../state/NerdModeContext';
 import { ImportPipelineModal } from '../components/ImportPipelineModal';
 import '../components/library/ui/CardSkeleton.css';
+
 
 interface EnricherConfig {
     providerType: number;
@@ -147,17 +148,14 @@ const PipelinesPage: React.FC = () => {
     const api = useApi();
     const navigate = useNavigate();
     const { loading: registryLoading } = usePluginRegistry();
-    const { pipelines, loading, refresh: refreshPipelines, fetchIfNeeded } = usePipelines();
-    const { fetchIfNeeded: fetchIntegrations } = useIntegrations();
+    const { pipelines, loading, refresh: refreshPipelines } = useRealtimePipelines();
+    // Realtime integrations auto-subscribes - no manual fetch needed
+    useRealtimeIntegrations();
     const [deleting, setDeleting] = useState<string | null>(null);
     const [toggling, setToggling] = useState<string | null>(null);
     const [showImportModal, setShowImportModal] = useState(false);
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-    useEffect(() => {
-        fetchIfNeeded();
-        fetchIntegrations();
-    }, [fetchIfNeeded, fetchIntegrations]);
 
     const handleDeleteConfirm = async () => {
         if (!deleteConfirm) return;
