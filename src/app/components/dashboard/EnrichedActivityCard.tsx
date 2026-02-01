@@ -17,8 +17,13 @@ import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 import { PluginManifest } from '../../types/plugin';
 import { BoosterExecution } from '../../../types/pb/user';
 
+import { PipelineRun } from '../../../types/pb/user';
+
 interface EnrichedActivityCardProps {
-    activity: SynchronizedActivity;
+    /** @deprecated Use pipelineRun instead - activity-based rendering uses old executions collection */
+    activity?: SynchronizedActivity;
+    /** New: Use PipelineRun directly from pipeline_runs collection */
+    pipelineRun?: PipelineRun;
     onClick?: () => void;
 }
 
@@ -114,22 +119,33 @@ const getPlatformInfo = (
 /**
  * EnrichedActivityCard - Premium card showing the boost flow
  * Uses GlowCard with gradient header and FlowVisualization for the pipeline display
- * Lazy loads execution traces when card enters viewport
+ * 
+ * Supports two modes:
+ * 1. PipelineRun mode (preferred): Pass pipelineRun directly - uses new pipeline_runs collection
+ * 2. Activity mode (deprecated): Pass activity - lazy loads traces from old executions collection
  */
 export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     activity,
+    pipelineRun: propPipelineRun,
     onClick,
 }) => {
     const { pipelines } = useRealtimePipelines();
     const { sources, destinations: registryDestinations } = usePluginRegistry();
-    const { ref, hasTrace, loading: traceLoading, pipelineExecution } = useLazyActivityTrace(activity.activityId);
+
+    // Only use lazy trace loading when we have an activity but no pipelineRun
+    const shouldLazyLoad = !!activity && !propPipelineRun;
+    const { ref, hasTrace, loading: traceLoading, pipelineExecution } = useLazyActivityTrace(
+        shouldLazyLoad ? activity?.activityId : undefined
+    );
 
     // Try to get booster data from PipelineRun first (new architecture)
-    const pipelineRun = usePipelineRunLookup(activity.pipelineExecutionId);
+    // If pipelineRun is passed directly, use it. Otherwise try lookup by activity's pipelineExecutionId
+    const lookedUpPipelineRun = usePipelineRunLookup(activity?.pipelineExecutionId);
+    const pipelineRun = propPipelineRun || lookedUpPipelineRun;
 
     // Use trace from lazy loading hook (which updates global state and returns latest)
     // Falls back to activity.pipelineExecution if already present
-    const trace = pipelineExecution || activity.pipelineExecution;
+    const trace = pipelineExecution || activity?.pipelineExecution;
 
     // Use PipelineRun boosters if available, fallback to lazy-loaded trace
     const providerExecutions = pipelineRun?.boosters && pipelineRun.boosters.length > 0
@@ -148,14 +164,18 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
         }, {} as Record<string, string>)
         : extractDestinationStatuses(trace);
 
-    const activityTitle = enrichedTitle || activity.title || 'Untitled Activity';
-    const titleWasEnhanced = enrichedTitle && enrichedTitle !== activity.title;
+    // Get display values from pipelineRun or activity
+    const activityTitle = enrichedTitle || pipelineRun?.title || activity?.title || 'Untitled Activity';
+    const originalTitle = pipelineRun?.title || activity?.title;
+    const titleWasEnhanced = enrichedTitle && enrichedTitle !== originalTitle;
 
     const activityType = destinationActivityType
         ? formatActivityType(destinationActivityType)
-        : formatActivityType(activity.type);
-    const syncDate = activity.syncedAt
-        ? new Date(activity.syncedAt).toLocaleString(undefined, {
+        : formatActivityType(pipelineRun?.type || activity?.type);
+
+    const rawSyncDate = pipelineRun?.createdAt || activity?.syncedAt;
+    const syncDate = rawSyncDate
+        ? new Date(rawSyncDate).toLocaleString(undefined, {
             month: 'short',
             day: 'numeric',
             hour: 'numeric',
@@ -163,14 +183,16 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
         })
         : null;
 
-    const sourceInfo = getPlatformInfo(activity.source || 'unknown', sources, registryDestinations);
-    const destinations = activity.destinations ? Object.keys(activity.destinations) : [];
+    const sourceInfo = getPlatformInfo(pipelineRun?.source || activity?.source || 'unknown', sources, registryDestinations);
+    const destinations = activity?.destinations ? Object.keys(activity.destinations) :
+        pipelineRun?.destinations?.map(d => formatDestination(d.destination)?.toLowerCase() || 'unknown') || [];
 
-    const pipelineName = activity.pipelineId
-        ? pipelines.find((p: { id: string }) => p.id === activity.pipelineId)?.name
+    const pipelineId = pipelineRun?.pipelineId || activity?.pipelineId;
+    const pipelineName = pipelineId
+        ? pipelines.find((p: { id: string }) => p.id === pipelineId)?.name
         : undefined;
 
-    const isPartiallyLoaded = !hasTrace && (traceLoading || activity.pipelineExecutionId);
+    const isPartiallyLoaded = !propPipelineRun && !hasTrace && (traceLoading || activity?.pipelineExecutionId);
 
     // Determine card variant based on state
     const cardVariant = isPartiallyLoaded ? 'default' : 'success';
@@ -261,6 +283,14 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
                     center={boostersNode}
                     destination={destinationNode}
                 />
+                {/* Status message for success/failure context */}
+                {pipelineRun?.statusMessage && (
+                    <Stack gap="xs">
+                        <Paragraph muted size="sm">
+                            ℹ️ {pipelineRun.statusMessage}
+                        </Paragraph>
+                    </Stack>
+                )}
             </GlowCard>
         </div>
     );

@@ -116,9 +116,7 @@ const DashboardPage: React.FC = () => {
                 <FileUploadPanel />
 
                 <GalleryOfBoosts
-                    activities={activities}
                     onActivityClick={(activityId) => navigate(`/activities/${activityId}`)}
-                    loading={activitiesLoading}
                 />
             </Stack>
         </PageLayout>

@@ -63,7 +63,8 @@ const mapFirestoreToPipelineRun = (docId: string, data: Record<string, unknown>)
         updatedAt: toDate(data.updated_at || data.updatedAt),
         boosters,
         destinations,
-        errorMessage: data.error_message as string | undefined,
+        statusMessage: (data.status_message || data.statusMessage) as string | undefined,
+        originalPayloadUri: (data.original_payload_uri || data.originalPayloadUri || '') as string,
         pendingInputId: (data.pending_input_id || data.pendingInputId) as string | undefined,
     };
 };
