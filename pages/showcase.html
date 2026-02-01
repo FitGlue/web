@@ -142,6 +142,16 @@
       <div id="exercise-list" class="exercise-list"></div>
     </div>
 
+    <!-- Hybrid Race Breakdown -->
+    <div id="hybrid-race-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>🏁 Race Breakdown</h2>
+        <span id="hybrid-race-name" class="section-subtitle"></span>
+      </div>
+      <div id="hybrid-race-bars" class="hybrid-race-bars"></div>
+      <div id="hybrid-race-total" class="hybrid-race-total"></div>
+    </div>
+
     <!-- Tags -->
     <div id="tags-section" class="showcase-section" style="display: none;">
       <div id="activity-tags" class="activity-tags"></div>
@@ -920,6 +930,113 @@
     align-items: center;
     padding: 1rem;
   }
+
+  /* ========================================
+     HYBRID RACE BAR CHART
+     ======================================== */
+  .hybrid-race-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .hybrid-race-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hybrid-race-bar-icon {
+    font-size: 1.25rem;
+    width: 2rem;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .hybrid-race-bar-container {
+    flex: 1;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hybrid-race-bar {
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0.75rem;
+    min-width: 60px;
+    transition: width 0.6s ease-out;
+  }
+
+  /* Run segments - cyan/teal */
+  .hybrid-race-bar.bar-run {
+    background: linear-gradient(90deg, #4CC9F0 0%, #38B6DC 100%);
+  }
+
+  /* Station segments - pink/purple gradient */
+  .hybrid-race-bar.bar-station {
+    background: linear-gradient(90deg, #FF1B8D 0%, #9D4EDD 100%);
+  }
+
+  .hybrid-race-bar-time {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+  }
+
+  .hybrid-race-bar-label {
+    width: 140px;
+    font-size: 0.875rem;
+    color: #ddd;
+    flex-shrink: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .hybrid-race-bar-label {
+      width: 100px;
+      font-size: 0.75rem;
+    }
+
+    .hybrid-race-bar-time {
+      font-size: 0.75rem;
+    }
+  }
+
+  .hybrid-race-total {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(255, 27, 141, 0.15), rgba(157, 78, 221, 0.15));
+    border: 1px solid rgba(255, 27, 141, 0.3);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .hybrid-race-total-label {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .hybrid-race-total-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FF1B8D, #9D4EDD);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 </style>
 
 <script>
@@ -1221,6 +1338,116 @@
           const heatmapContainer = document.getElementById('muscle-heatmap-container');
           renderAsset(heatmapUrl, 'Muscle Activation Heatmap', 'muscle-heatmap-image', heatmapContainer);
           heatmapSection.style.display = 'block';
+        }
+
+        // --- HYBRID RACE BAR CHART ---
+        const timeMarkers = session.timeMarkers || [];
+        const activityName = data.activityData?.name || '';
+        const activityTags = data.activityData?.tags || [];
+
+        // Detect hybrid race type from name or tags
+        const isHybridRace =
+          activityName.toLowerCase().includes('hyrox') ||
+          activityName.toLowerCase().includes('athx') ||
+          activityTags.some(t => t.toLowerCase().includes('hyrox')) ||
+          activityTags.some(t => t.toLowerCase().includes('athx'));
+
+        if (isHybridRace && timeMarkers.length > 0) {
+          const hybridSection = document.getElementById('hybrid-race-section');
+          const hybridBarsContainer = document.getElementById('hybrid-race-bars');
+          const hybridTotal = document.getElementById('hybrid-race-total');
+          const hybridName = document.getElementById('hybrid-race-name');
+
+          // Determine race type for subtitle
+          const raceType = activityName.toLowerCase().includes('hyrox') ? 'HYROX' : 'ATHX';
+          hybridName.textContent = raceType + ' Race';
+
+          // Calculate total duration for bar widths
+          let totalDuration = 0;
+          const segments = [];
+
+          for (let i = 0; i < timeMarkers.length; i++) {
+            const marker = timeMarkers[i];
+            const nextMarker = timeMarkers[i + 1];
+
+            // Calculate duration to next marker or use marker's own duration if available
+            let duration = 0;
+            if (nextMarker && marker.timestamp && nextMarker.timestamp) {
+              const startMs = new Date(marker.timestamp).getTime();
+              const endMs = new Date(nextMarker.timestamp).getTime();
+              duration = (endMs - startMs) / 1000; // seconds
+            } else if (marker.durationSeconds) {
+              duration = marker.durationSeconds;
+            }
+
+            if (duration > 0) {
+              totalDuration += duration;
+              segments.push({
+                label: marker.label || `Station ${i + 1}`,
+                icon: marker.icon || getStationIcon(marker.label || ''),
+                duration: duration,
+                isRun: (marker.markerType === 'run_start' || marker.label?.toLowerCase().includes('run'))
+              });
+            }
+          }
+
+          // Fallback: If no time markers, try to infer from laps
+          if (segments.length === 0 && session.laps && session.laps.length > 0) {
+            session.laps.forEach((lap, i) => {
+              if (lap.totalElapsedTime > 0) {
+                const isRun = lap.exerciseName?.toLowerCase().includes('run') || !lap.exerciseName;
+                totalDuration += lap.totalElapsedTime;
+                segments.push({
+                  label: lap.exerciseName || `Lap ${i + 1}`,
+                  icon: getStationIcon(lap.exerciseName || ''),
+                  duration: lap.totalElapsedTime,
+                  isRun: isRun
+                });
+              }
+            });
+          }
+
+          if (segments.length > 0) {
+            // Render the bar chart
+            hybridBarsContainer.innerHTML = segments.map(seg => {
+              const widthPercent = Math.max(5, (seg.duration / totalDuration) * 100);
+              const barClass = seg.isRun ? 'bar-run' : 'bar-station';
+              return `
+                <div class="hybrid-race-bar-row">
+                  <span class="hybrid-race-bar-icon">${seg.icon}</span>
+                  <span class="hybrid-race-bar-label">${seg.label}</span>
+                  <div class="hybrid-race-bar-container">
+                    <div class="hybrid-race-bar ${barClass}" style="width: ${widthPercent}%;">
+                      <span class="hybrid-race-bar-time">${formatDuration(seg.duration)}</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+
+            // Render total
+            hybridTotal.innerHTML = `
+              <span class="hybrid-race-total-label">⏱️ Total Race Time</span>
+              <span class="hybrid-race-total-value">${formatDuration(totalDuration)}</span>
+            `;
+
+            hybridSection.style.display = 'block';
+          }
+        }
+
+        // Helper function for station icons
+        function getStationIcon(name) {
+          const n = name.toLowerCase();
+          if (n.includes('run')) return '🏃';
+          if (n.includes('ski')) return '⛷️';
+          if (n.includes('sled push')) return '🛷';
+          if (n.includes('sled pull')) return '🛷';
+          if (n.includes('burpee')) return '🏋️';
+          if (n.includes('row')) return '🚣';
+          if (n.includes('farmer')) return '🧳';
+          if (n.includes('sandbag') || n.includes('lunge')) return '🎒';
+          if (n.includes('wall ball')) return '🏐';
+          return '🏁';
         }
       }
 

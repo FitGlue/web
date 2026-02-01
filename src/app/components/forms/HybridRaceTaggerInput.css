@@ -1,0 +1,78 @@
+.hybrid-race-tagger {
+    width: 100%;
+}
+
+.hybrid-race-tagger__actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.hybrid-race-tagger__merge-section {
+    background: var(--color-surface-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.hybrid-race-tagger__merged-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.hybrid-race-tagger__laps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.hybrid-race-tagger__lap-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--color-surface-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: var(--color-text-secondary);
+    min-width: 80px;
+}
+
+.hybrid-race-tagger__lap-chip:hover:not(:disabled) {
+    border-color: var(--color-accent);
+    background: var(--color-surface-accent);
+}
+
+.hybrid-race-tagger__lap-chip.selected {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: white;
+}
+
+.hybrid-race-tagger__lap-chip.merged {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hybrid-race-tagger__lap-chip:disabled {
+    cursor: not-allowed;
+}
+
+.hybrid-race-tagger__lap-number {
+    font-weight: 600;
+}
+
+.hybrid-race-tagger__lap-info {
+    font-size: var(--font-size-xxs);
+    opacity: 0.8;
+}

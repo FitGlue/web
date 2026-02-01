@@ -1035,6 +1035,10 @@ export interface components {
             linkedActivityId?: string;
             /** @description ID of the pipeline that contains the enricher which created this pending input */
             pipelineId?: string;
+            /** @description Provider-specific metadata (e.g., lap data for hybrid race tagger) */
+            providerMetadata?: {
+                [key: string]: string;
+            };
         };
         InputResolutionRequest: {
             activityId: string;

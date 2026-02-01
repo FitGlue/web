@@ -425,6 +425,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .card-skeleton__subscription-right {

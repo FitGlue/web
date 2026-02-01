@@ -88,6 +88,10 @@ export const AppHeader: React.FC = () => {
                             <span className="dropdown-icon">👤</span>
                             Account
                         </Link>
+                        <Link to="/settings/enricher-data" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
+                            <span className="dropdown-icon">📊</span>
+                            Booster Data
+                        </Link>
                         {profile?.isAdmin && (
                             <Link to="/admin" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
                                 <span className="dropdown-icon">🛠️</span>

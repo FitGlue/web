@@ -58,16 +58,17 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
     }
   }, [loaded, setActivities, setLoaded, setLoading, setActivitiesLastUpdated]);
 
-  // Dashboard mode: fetch with includeExecution=true for rich enrichment data
-  // Also fetches unsynchronized and stats in parallel to populate everything
+  // Dashboard mode: fetch activities efficiently without heavy execution data
+  // Execution traces are loaded lazily when user clicks on an activity
   const fetchDashboard = useCallback(async (force = false) => {
     if (!force && loaded && unsyncLoaded && statsLoaded) return;
 
     setLoading(true);
     try {
       // Fetch activities, unsynchronized, and stats in parallel
+      // Note: includeExecution=false for initial load - traces loaded lazily on click
       const [activitiesData, unsyncData, statsData] = await Promise.all([
-        (!force && loaded) ? Promise.resolve(null) : ActivitiesService.list(20, true),
+        (!force && loaded) ? Promise.resolve(null) : ActivitiesService.list(20, false),
         (!force && unsyncLoaded) ? Promise.resolve(null) : ActivitiesService.listUnsynchronized(20),
         (!force && statsLoaded) ? Promise.resolve(null) : ActivitiesService.getStats()
       ]);
@@ -159,8 +160,9 @@ export const useActivities = (mode: FetchMode = 'list', id?: string) => {
   const refreshAll = useCallback(async () => {
     setLoading(true);
     try {
+      // Note: includeExecution=false for faster refresh - traces loaded lazily
       const [activitiesData, unsyncData, statsData] = await Promise.all([
-        ActivitiesService.list(20, true),
+        ActivitiesService.list(20, false),
         ActivitiesService.listUnsynchronized(20),
         ActivitiesService.getStats()
       ]);

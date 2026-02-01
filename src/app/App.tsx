@@ -15,7 +15,6 @@ import PendingInputsPage from './pages/PendingInputsPage';
 import ActivitiesListPage from './pages/ActivitiesListPage';
 import ActivityDetailPage from './pages/ActivityDetailPage';
 import UnsynchronizedDetailPage from './pages/UnsynchronizedDetailPage';
-import SettingsPage from './pages/SettingsPage';
 import ConnectionsPage from './pages/ConnectionsPage';
 import ConnectionSetupPage from './pages/ConnectionSetupPage';
 import ConnectionSuccessPage from './pages/ConnectionSuccessPage';
@@ -24,6 +23,7 @@ import PipelinesPage from './pages/PipelinesPage';
 import PipelineWizardPage from './pages/PipelineWizardPage';
 import PipelineEditPage from './pages/PipelineEditPage';
 import AccountSettingsPage from './pages/AccountSettingsPage';
+import EnricherDataPage from './pages/EnricherDataPage';
 import SubscriptionPage from './pages/SubscriptionPage';
 import AdminPage from './pages/AdminPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -142,7 +142,6 @@ const App: React.FC = () => {
             <Route path="/activities" element={<ProtectedRoute><ActivitiesListPage /></ProtectedRoute>} />
             <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<ProtectedRoute><UnsynchronizedDetailPage /></ProtectedRoute>} />
             <Route path="/activities/:id" element={<ProtectedRoute><ActivityDetailPage /></ProtectedRoute>} />
-            <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
             <Route path="/settings/integrations" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
             <Route path="/connections" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
             <Route path="/connections/:id/setup" element={<ProtectedRoute><ConnectionSetupPage /></ProtectedRoute>} />
@@ -152,6 +151,7 @@ const App: React.FC = () => {
             <Route path="/settings/pipelines/new" element={<ProtectedRoute><PipelineWizardPage /></ProtectedRoute>} />
             <Route path="/settings/pipelines/:pipelineId/edit" element={<ProtectedRoute><PipelineEditPage /></ProtectedRoute>} />
             <Route path="/settings/account" element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
+            <Route path="/settings/enricher-data" element={<ProtectedRoute><EnricherDataPage /></ProtectedRoute>} />
             <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
             <Route path="/settings/upgrade" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
             <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />

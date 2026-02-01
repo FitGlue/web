@@ -125,6 +125,34 @@
         }
       },
       {
+        "source": "/api/users/me/counters",
+        "run": {
+          "serviceId": "user-data-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/users/me/counters/**",
+        "run": {
+          "serviceId": "user-data-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/users/me/personal-records",
+        "run": {
+          "serviceId": "user-data-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/users/me/personal-records/**",
+        "run": {
+          "serviceId": "user-data-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/users/me/**",
         "run": {
           "serviceId": "user-profile-handler",
