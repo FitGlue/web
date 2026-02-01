@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.2.0](https://github.com/fitglue/web/compare/v8.1.1...v8.2.0) (2026-02-01)
+
+
+### Features
+
+* **api:** update generated types for running dynamics support ([30ad859](https://github.com/fitglue/web/commit/30ad859d3441a3b10a0bfd48c2fccbb9b0f74dde))
+* **web:** enhance account management and implement enricher data UI ([bfa47d3](https://github.com/fitglue/web/commit/bfa47d3b5ec9a31ac0dcf2658c74f24a79abd922))
+
 ### [8.1.1](https://github.com/fitglue/web/compare/v8.1.0...v8.1.1) (2026-01-26)
 
 ## [8.1.0](https://github.com/fitglue/web/compare/v8.0.0...v8.1.0) (2026-01-26)
