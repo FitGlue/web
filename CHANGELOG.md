@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [8.4.1](https://github.com/fitglue/web/compare/v8.4.0...v8.4.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* **pipeline runs:** transition to realtime pipeline runs and clean up Firestore rules ([194e552](https://github.com/fitglue/web/commit/194e5521027570e223f827398cdd45ff7a979750))
+
 ## [8.4.0](https://github.com/fitglue/web/compare/v8.3.2...v8.4.0) (2026-02-02)
 
 
