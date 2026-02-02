@@ -1,31 +1,40 @@
 # API Integration
 
-The React app communicates with the backend via REST APIs. This document covers the API client, type generation, and error handling.
+The React app uses a **dual data access pattern**: Firestore SDK for real-time reads and REST API for mutations.
 
-## Architecture
+## Data Access Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                     React Components                          │
-│                                                               │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────────────┐   │
-│  │   Hooks      │  │   Services   │  │     useApi        │   │
-│  │ useActivities│──│ ActivitiesSvc│──│  (HTTP client)    │   │
-│  └──────────────┘  └──────────────┘  └─────────┬─────────┘   │
-│                                                  │            │
-└──────────────────────────────────────────────────┼────────────┘
-                                                   │
-                                                   ▼
-┌──────────────────────────────────────────────────────────────┐
-│                    Firebase Auth Token                        │
-└──────────────────────────────────────────────────────────────┘
-                                                   │
-                                                   ▼
-┌──────────────────────────────────────────────────────────────┐
-│                      /api/* Endpoints                         │
-│              (via Firebase Hosting Rewrites)                  │
-└──────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                         React Components                              │
+│                                                                       │
+│  ┌─────────────────────┐              ┌─────────────────────┐        │
+│  │   Real-time Hooks   │              │      useApi         │        │
+│  │ (Firestore Reads)   │              │   (REST Writes)     │        │
+│  │                     │              │                     │        │
+│  │ • useRealtimePipelines             │ • POST /pipelines   │        │
+│  │ • useRealtimeActivities            │ • PATCH /users/me   │        │
+│  │ • useRealtimeInputs                │ • DELETE /pipelines │        │
+│  │ • usePipelineRuns   │              │ • POST /inputs/respond       │
+│  └──────────┬──────────┘              └──────────┬──────────┘        │
+│             │                                    │                    │
+│             ▼                                    ▼                    │
+│      ┌─────────────┐                      ┌─────────────┐            │
+│      │  Firestore  │                      │   Cloud     │            │
+│      │    SDK      │                      │  Functions  │            │
+│      └─────────────┘                      └─────────────┘            │
+│                                                                       │
+└──────────────────────────────────────────────────────────────────────┘
 ```
+
+## Why This Pattern?
+
+| Operation | Method | Why |
+|-----------|--------|-----|
+| **Reads** | Firestore SDK | Instant updates via `onSnapshot`, no polling |
+| **Writes** | REST API | Server-side validation, authorization checks |
+
+**Key Insight:** Most service class methods that previously fetched data are now replaced by real-time hooks. Use service classes only for mutations.
 
 ## useApi Hook
 
@@ -45,7 +54,7 @@ export const useApi = () => {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', ...headers },
     });
-    if (!response.ok) throw new Error(`GET ${path} failed`);
+    if (!response.ok) throw new ApiError(response.status, await response.text());
     return response.json();
   }, [getAuthHeader]);
 
@@ -61,113 +70,140 @@ export const useApi = () => {
 - Automatic Firebase auth token injection
 - Memoized to prevent re-renders
 - Consistent error handling
+- Sentry error capture for 5xx errors
 
-## Service Classes
+## When to Use What
 
-Domain-specific API wrappers in `src/app/services/`:
-
-### ActivitiesService
+### Use Real-time Hooks (Reads)
 
 ```typescript
-// src/app/services/ActivitiesService.ts
-export class ActivitiesService {
-  constructor(private api: ReturnType<typeof useApi>) {}
-
-  async list(): Promise<Activity[]> {
-    return this.api.get('/activities');
-  }
-
-  async get(id: string): Promise<Activity> {
-    return this.api.get(`/activities/${id}`);
-  }
-
-  async getStats(): Promise<ActivityStats> {
-    return this.api.get('/activities/stats');
-  }
+// ✅ Good: Real-time data via hooks
+function PipelinesList() {
+  const { pipelines, loading } = useRealtimePipelines();
+  // Data updates automatically when Firestore changes
+  
+  if (loading) return <SkeletonLoading />;
+  return <ul>{pipelines.map(p => <li key={p.id}>{p.name}</li>)}</ul>;
 }
 ```
 
-### InputsService
+### Use useApi (Writes)
 
 ```typescript
-// src/app/services/InputsService.ts
-export class InputsService {
-  constructor(private api: ReturnType<typeof useApi>) {}
-
-  async list(): Promise<PendingInput[]> {
-    return this.api.get('/inputs');
-  }
-
-  async respond(inputId: string, response: InputResponse): Promise<void> {
-    return this.api.post(`/inputs/${inputId}/respond`, response);
-  }
+// ✅ Good: Mutations via REST API
+function CreatePipelineButton() {
+  const api = useApi();
+  
+  const handleCreate = async () => {
+    await api.post('/users/me/pipelines', { 
+      name: 'My Pipeline',
+      source: 'HEVY',
+      destinations: ['STRAVA']
+    });
+    // Firestore listener auto-updates the list
+  };
+  
+  return <Button onClick={handleCreate}>Create</Button>;
 }
 ```
+
+### Use useApi for Non-Firestore Data
+
+```typescript
+// ✅ Good: Data not in Firestore (registry, external APIs)
+function usePluginRegistry() {
+  const api = useApi();
+  const [registry, setRegistry] = useAtom(pluginRegistryAtom);
+  
+  useEffect(() => {
+    api.get('/registry').then(setRegistry);
+  }, []);
+  
+  return registry;
+}
+```
+
+## Available Real-time Hooks
+
+| Hook | Replaces | Data Source |
+|------|----------|-------------|
+| `useRealtimePipelines` | `PipelinesService.list()` | `users/{userId}/pipelines` |
+| `useRealtimeActivities` | `ActivitiesService.list()` | `users/{userId}/activities` |
+| `useRealtimeInputs` | `InputsService.list()` | `users/{userId}/pending_inputs` |
+| `usePipelineRuns` | N/A (new) | `users/{userId}/pipeline_runs` |
+| `useRealtimeIntegrations` | `IntegrationsService.list()` | `users/{userId}` (integrations field) |
+
+## REST API Endpoints (Mutations Only)
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/users/me` | PATCH | Update profile |
+| `/api/users/me/pipelines` | POST | Create pipeline |
+| `/api/users/me/pipelines/:id` | PATCH | Update pipeline |
+| `/api/users/me/pipelines/:id` | DELETE | Delete pipeline |
+| `/api/inputs/:id/respond` | POST | Submit input response |
+| `/api/activities/:id/repost` | POST | Repost to destinations |
+| `/api/billing/**` | * | Billing operations |
+
+## REST API Endpoints (Reads - Special Cases)
+
+Some data still requires REST API reads:
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/registry` | GET | Plugin registry (cached) |
+| `/api/activities/:id/executions` | GET | Detailed execution trace |
+| `/api/admin/**` | GET | Admin dashboard data |
 
 ## Type Generation
 
-API types are generated from OpenAPI/Swagger:
+API types are generated from Protobufs:
 
 ```bash
-npm run gen-api
+# In web/
+npm run gen-proto
 ```
 
-This generates `src/shared/api/schema.ts` from `src/openapi/swagger.json`.
+This generates `src/shared/generated/` from server protobufs.
 
-**Usage**:
+**Usage:**
 ```typescript
-import { paths, components } from '../shared/api/schema';
-
-type Activity = components['schemas']['Activity'];
-type Pipeline = components['schemas']['Pipeline'];
+import { PipelineConfig, SynchronizedActivity } from '../shared/generated';
 ```
-
-## Endpoint Reference
-
-| Endpoint | Method | Handler | Purpose |
-|----------|--------|---------|---------|
-| `/api/users/me` | GET | user-profile-handler | Get profile |
-| `/api/users/me` | PATCH | user-profile-handler | Update profile |
-| `/api/users/me/integrations` | GET | user-integrations-handler | List integrations |
-| `/api/users/me/pipelines` | GET | user-pipelines-handler | List pipelines |
-| `/api/users/me/pipelines` | POST | user-pipelines-handler | Create pipeline |
-| `/api/activities` | GET | activities-handler | List activities |
-| `/api/activities/:id` | GET | activities-handler | Get activity |
-| `/api/activities/stats` | GET | activities-handler | Get stats |
-| `/api/inputs` | GET | inputs-handler | List pending inputs |
-| `/api/inputs/:id/respond` | POST | inputs-handler | Submit response |
-| `/api/billing/**` | * | billing-handler | Billing operations |
 
 ## Error Handling
 
-### Basic Pattern
+### With Loading State and Skeleton
 
 ```typescript
-const fetchData = async () => {
-  try {
-    const data = await api.get('/activities');
-    setActivities(data);
-  } catch (error) {
-    console.error('Failed to fetch activities:', error);
-    setError('Could not load activities');
+function ActivityList() {
+  const { activities, loading, error } = useRealtimeActivities();
+  
+  if (loading) {
+    return <SkeletonLoading count={3}><CardSkeleton /></SkeletonLoading>;
   }
-};
+  
+  if (error) {
+    return <ErrorBanner message="Failed to load activities" />;
+  }
+  
+  return <ActivityCards activities={activities} />;
+}
 ```
 
-### With Loading State
+### API Mutation with Error Handling
 
 ```typescript
-const [loading, setLoading] = useState(false);
-const [error, setError] = useState<string | null>(null);
-
-const fetchData = async () => {
+const handleSubmit = async () => {
   setLoading(true);
   setError(null);
   try {
-    const data = await api.get('/activities');
-    setActivities(data);
+    await api.post('/users/me/pipelines', pipelineData);
+    toast.success('Pipeline created');
+    navigate('/app/settings/pipelines');
   } catch (e) {
-    setError('Failed to load data');
+    setError('Failed to create pipeline');
+    Sentry.captureException(e);
   } finally {
     setLoading(false);
   }
@@ -191,8 +227,6 @@ proxy: {
 },
 ```
 
-This forwards to local Cloud Functions emulator.
-
 ### Full Local Testing
 
 ```bash
@@ -201,8 +235,35 @@ npm run serve  # Build + Firebase emulator
 
 API requests go through Firebase Hosting rewrites to Cloud Run.
 
+## Migration Notes
+
+### Deprecated Patterns
+
+```typescript
+// ❌ Deprecated: Fetching via API for Firestore data
+const activities = await api.get('/activities');
+
+// ✅ Current: Real-time hooks
+const { activities } = useRealtimeActivities();
+```
+
+### Service Classes
+
+Service classes are now primarily for mutations:
+
+```typescript
+// ❌ Deprecated methods (use hooks instead)
+ActivitiesService.list()
+PipelinesService.list()
+InputsService.list()
+
+// ✅ Still valid (mutations)
+InputsService.respond(inputId, response)
+ActivitiesService.repost(activityId, destinations)
+```
+
 ## Related Documentation
 
-- [State Management](./state-management.md)
+- [State Management](./state-management.md) - Real-time hooks and atoms
 - [Routing](./routing.md)
 - [Authentication](../architecture/authentication.md)

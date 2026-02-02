@@ -2,22 +2,33 @@
 
 The React app uses **React Router v6** for client-side navigation. Routes are defined in `src/app/App.tsx`.
 
-## Route Structure
+## URL Structure
+
+The React app is mounted at `/app`, so all routes are prefixed:
+
+| Full URL | React Route | Component |
+|----------|-------------|-----------|
+| `/app` | `/` | DashboardPage |
+| `/app/activities` | `/activities` | ActivitiesListPage |
+| `/app/settings/pipelines` | `/settings/pipelines` | PipelinesPage |
+
+## Route Table
 
 | Path | Component | Protection | Purpose |
 |------|-----------|------------|---------|
 | `/` | `DashboardPage` | Protected | Main dashboard |
 | `/inputs` | `PendingInputsPage` | Protected | Pending user inputs |
 | `/activities` | `ActivitiesListPage` | Protected | Activity history |
-| `/activities/:id` | `ActivityDetailPage` | Protected | Single activity |
+| `/activities/:id` | `ActivityDetailPage` | Protected | Single activity detail |
 | `/activities/unsynchronized/:id` | `UnsynchronizedDetailPage` | Protected | Failed sync detail |
 | `/settings` | `SettingsPage` | Protected | Settings hub |
-| `/settings/integrations` | `IntegrationsPage` | Protected | Connected services |
+| `/settings/integrations` | `ConnectionsPage` | Protected | Connected services |
 | `/settings/pipelines` | `PipelinesPage` | Protected | Pipeline list |
 | `/settings/pipelines/new` | `PipelineWizardPage` | Protected | Create pipeline |
 | `/settings/pipelines/:id/edit` | `PipelineEditPage` | Protected | Edit pipeline |
 | `/settings/account` | `AccountSettingsPage` | Protected | Account settings |
-| `/settings/upgrade` | `UpgradePage` | Protected | Pro upgrade |
+| `/settings/subscription` | `SubscriptionPage` | Protected | Subscription management |
+| `/settings/enricher-data` | `EnricherDataPage` | Protected | Enricher data (PRs, etc.) |
 | `/admin` | `AdminPage` | Admin | Admin console |
 | `*` | `NotFoundPage` | None | 404 handler |
 
@@ -27,13 +38,29 @@ The React app uses **React Router v6** for client-side navigation. Routes are de
 // src/app/App.tsx
 <Router basename="/app">
   <Routes>
-    {/* Protected routes */}
+    {/* Dashboard */}
     <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+    
+    {/* Activities */}
+    <Route path="/activities" element={<ProtectedRoute><ActivitiesListPage /></ProtectedRoute>} />
+    <Route path="/activities/:id" element={<ProtectedRoute><ActivityDetailPage /></ProtectedRoute>} />
+    
+    {/* Inputs */}
+    <Route path="/inputs" element={<ProtectedRoute><PendingInputsPage /></ProtectedRoute>} />
+    
+    {/* Settings */}
     <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-
-    {/* Admin-only routes */}
+    <Route path="/settings/integrations" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
+    <Route path="/settings/pipelines" element={<ProtectedRoute><PipelinesPage /></ProtectedRoute>} />
+    <Route path="/settings/pipelines/new" element={<ProtectedRoute><PipelineWizardPage /></ProtectedRoute>} />
+    <Route path="/settings/pipelines/:id/edit" element={<ProtectedRoute><PipelineEditPage /></ProtectedRoute>} />
+    <Route path="/settings/account" element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
+    <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
+    <Route path="/settings/enricher-data" element={<ProtectedRoute><EnricherDataPage /></ProtectedRoute>} />
+    
+    {/* Admin-only */}
     <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
-
+    
     {/* Catch-all */}
     <Route path="*" element={<NotFoundPage />} />
   </Routes>
@@ -51,11 +78,11 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const [user] = useAtom(userAtom);
   const [loading] = useAtom(authLoadingAtom);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <SkeletonLoading />;
 
   if (!user) {
     window.location.href = '/auth/login';
-    return <div>Redirecting...</div>;
+    return null;
   }
 
   return <>{children}</>;
@@ -70,27 +97,29 @@ Requires admin role:
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useUser();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <SkeletonLoading />;
 
   if (!user?.isAdmin) {
-    return <div>Access Denied</div>;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
 };
 ```
 
-## 404 Handling
+## Page Layout
 
-The `NotFoundPage` redirects to dashboard with a toast notification:
+All protected pages use `PageLayout` from the component library:
 
 ```typescript
-// src/app/pages/NotFoundPage.tsx
-useEffect(() => {
-  // Set flash message
-  sessionStorage.setItem('404-redirect', 'true');
-  navigate('/', { replace: true });
-}, [navigate]);
+// src/app/pages/ActivitiesListPage.tsx
+export const ActivitiesListPage: React.FC = () => {
+  return (
+    <PageLayout title="Activities" breadcrumbs={['Dashboard', 'Activities']}>
+      {/* Page content */}
+    </PageLayout>
+  );
+};
 ```
 
 ## Navigation Patterns
@@ -111,10 +140,22 @@ const MyComponent = () => {
 
 ### Link Component
 
+Use the library `Link` component for internal navigation:
+
 ```typescript
-import { Link } from 'react-router-dom';
+import { Link } from '@/components/library';
 
 <Link to="/activities">View Activities</Link>
+```
+
+### BackLink
+
+For pages with clear parent relationships:
+
+```typescript
+import { BackLink } from '@/components/library';
+
+<BackLink to="/settings/pipelines">Back to Pipelines</BackLink>
 ```
 
 ### Route Parameters
@@ -124,7 +165,9 @@ import { useParams } from 'react-router-dom';
 
 const ActivityDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  // Fetch activity by id
+  // Use real-time hooks with the ID
+  const { activities } = useRealtimeActivities();
+  const activity = activities.find(a => a.id === id);
 };
 ```
 
@@ -134,23 +177,32 @@ All page components are in `src/app/pages/`:
 
 ```
 pages/
-├── DashboardPage.tsx        # Main dashboard
-├── ActivitiesListPage.tsx   # Activity list
-├── ActivityDetailPage.tsx   # Activity detail
-├── PendingInputsPage.tsx    # Pending inputs
-├── SettingsPage.tsx         # Settings hub
-├── IntegrationsPage.tsx     # Connected services
-├── PipelinesPage.tsx        # Pipeline list
-├── PipelineWizardPage.tsx   # Create pipeline
-├── PipelineEditPage.tsx     # Edit pipeline
-├── AccountSettingsPage.tsx  # Account settings
-├── UpgradePage.tsx          # Pro upgrade
-├── AdminPage.tsx            # Admin console
-└── NotFoundPage.tsx         # 404 handler
+├── DashboardPage.tsx           # Main dashboard with panels
+├── ActivitiesListPage.tsx      # Activity gallery
+├── ActivityDetailPage.tsx      # Activity detail + trace
+├── UnsynchronizedDetailPage.tsx # Failed activity detail
+├── PendingInputsPage.tsx       # Pending inputs list
+├── SettingsPage.tsx            # Settings hub
+├── ConnectionsPage.tsx         # Connected services
+├── PipelinesPage.tsx           # Pipeline list
+├── PipelineWizardPage.tsx      # Create pipeline wizard
+├── PipelineEditPage.tsx        # Edit pipeline
+├── AccountSettingsPage.tsx     # Profile, password, delete
+├── SubscriptionPage.tsx        # Subscription management
+├── EnricherDataPage.tsx        # Personal records, etc.
+├── AdminPage.tsx               # Admin console
+└── NotFoundPage.tsx            # 404 handler
 ```
+
+## Adding a New Route
+
+1. Create page component in `src/app/pages/`
+2. Add route to `src/app/App.tsx`
+3. Update this documentation (`web/docs/react-app/routing.md`)
+4. Add navigation from relevant pages
 
 ## Related Documentation
 
-- [State Management](./state-management.md)
-- [API Integration](./api-integration.md)
-- [Authentication](../architecture/authentication.md)
+- [State Management](./state-management.md) - Data loading in pages
+- [API Integration](./api-integration.md) - Mutations from pages
+- [Authentication](../architecture/authentication.md) - Auth flow

@@ -1,27 +1,85 @@
 # State Management
 
-The React app uses **Jotai** for atomic state management. State files are in `src/app/state/`.
+The React app uses **Jotai** for atomic state management combined with **real-time Firestore hooks** for live data updates.
 
 ## Architecture
 
 ```
-┌────────────────────────────────────────────────────────────┐
-│                     React Components                        │
-│                                                             │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │
-│  │   useAtom    │  │    Hooks     │  │    Context       │  │
-│  │ (read/write) │  │  (derived)   │  │  (NerdMode)      │  │
-│  └──────┬───────┘  └──────┬───────┘  └────────┬─────────┘  │
-│         │                 │                   │             │
-│         └─────────────────┴───────────────────┘             │
-│                           │                                 │
-│                           ▼                                 │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │                   Jotai Atoms                         │  │
-│  │  authState · userState · activitiesState · etc.      │  │
-│  └──────────────────────────────────────────────────────┘  │
-│                                                             │
-└────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────┐
+│                          React Components                                   │
+│                                                                             │
+│  ┌──────────────┐   ┌──────────────────────┐   ┌──────────────────┐        │
+│  │   useAtom    │   │   Real-time Hooks    │   │    useApi        │        │
+│  │ (read state) │   │ (Firebase SDK reads) │   │  (REST writes)   │        │
+│  └──────┬───────┘   └──────────┬───────────┘   └────────┬─────────┘        │
+│         │                      │                        │                   │
+│         │         ┌────────────┴────────────┐           │                   │
+│         │         │     onSnapshot          │           │                   │
+│         │         │  (Firestore listeners)  │           │                   │
+│         │         └────────────┬────────────┘           │                   │
+│         │                      │                        │                   │
+│         ▼                      ▼                        │                   │
+│  ┌──────────────────────────────────────────────────────────────────────┐  │
+│  │                          Jotai Atoms                                  │  │
+│  │  pipelinesAtom · activitiesAtom · integrationsAtom · inputsAtom      │  │
+│  └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                             │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Data Access Pattern
+
+| Operation | Method | When to Use |
+|-----------|--------|-------------|
+| **Reads** | Firestore SDK (`onSnapshot`) | Real-time data (pipelines, activities, inputs) |
+| **Writes** | REST API (`useApi`) | Create, update, delete operations |
+
+**Why this pattern?**
+- Firestore SDK provides instant updates without polling
+- REST API ensures server-side validation for mutations
+- Real-time hooks automatically update atoms
+
+## Real-time Hooks
+
+### useFirestoreListener (Generic)
+
+Base hook for Firestore real-time listeners:
+
+```typescript
+// src/app/hooks/useFirestoreListener.ts
+interface UseFirestoreListenerOptions<T, R> {
+  queryFactory: (firestore: Firestore, userId: string) => Query | DocumentReference;
+  mapper: (snapshot: QuerySnapshot | DocumentSnapshot) => R;
+  onData: (data: R) => void;
+}
+
+function useFirestoreListener<T, R>(options: UseFirestoreListenerOptions<T, R>);
+```
+
+**Features:**
+- Handles auth state (waits for user)
+- Manages loading/error states
+- Automatic cleanup on unmount
+- Provides `refresh()` function
+
+### Domain-Specific Hooks
+
+| Hook | Collection | Atom Updated |
+|------|------------|--------------|
+| `useRealtimePipelines` | `users/{userId}/pipelines` | `pipelinesAtom` |
+| `useRealtimeActivities` | `users/{userId}/activities` | `activitiesAtom` |
+| `useRealtimeInputs` | `users/{userId}/pending_inputs` | `pendingInputsAtom` |
+| `useRealtimeIntegrations` | `users/{userId}` (integrations field) | `integrationsAtom` |
+| `usePipelineRuns` | `users/{userId}/pipeline_runs` | `pipelineRunsAtom` |
+
+**Example Usage:**
+
+```typescript
+// In a page component
+const { pipelines, loading, error, refresh } = useRealtimePipelines();
+
+// Atom is automatically updated when Firestore changes
+const [pipelines] = useAtom(pipelinesAtom); // Same data, can use in any component
 ```
 
 ## State Files
@@ -31,140 +89,174 @@ The React app uses **Jotai** for atomic state management. State files are in `sr
 Firebase authentication state:
 
 ```typescript
-// src/app/state/authState.ts
-import { atom } from 'jotai';
-import { User } from 'firebase/auth';
-
 export const userAtom = atom<User | null>(null);
 export const authLoadingAtom = atom(true);
 ```
 
-**Usage**:
-```typescript
-const [user] = useAtom(userAtom);
-const [loading] = useAtom(authLoadingAtom);
-```
-
 ### userState.ts
 
-User profile data from Firestore:
+User profile from API:
 
 ```typescript
-// src/app/state/userState.ts
-import { atom } from 'jotai';
-
-export interface UserProfile {
-  id: string;
-  email: string;
-  tier: 'free' | 'pro';
-  isAdmin: boolean;
-  // ...
-}
-
 export const userProfileAtom = atom<UserProfile | null>(null);
-```
-
-### activitiesState.ts
-
-Activity list and filters:
-
-```typescript
-// src/app/state/activitiesState.ts
-export const activitiesAtom = atom<Activity[]>([]);
-export const activitiesLoadingAtom = atom(false);
+export const profileLoadingAtom = atom(true);
+export const profileErrorAtom = atom<string | null>(null);
 ```
 
 ### pipelinesState.ts
 
-Pipeline configuration:
+Pipeline configurations (real-time):
 
 ```typescript
-// src/app/state/pipelinesState.ts
-export const pipelinesAtom = atom<Pipeline[]>([]);
+export const pipelinesAtom = atom<PipelineConfig[]>([]);
+export const pipelinesLastUpdatedAtom = atom<Date | null>(null);
+export const isLoadingPipelinesAtom = atom(true);
+export const isPipelinesLoadedAtom = atom(false);
 ```
 
-### integrationsState.ts
+### activitiesState.ts
 
-Connected services (Strava, Fitbit, etc.):
+Activities and execution data (real-time):
 
 ```typescript
-// src/app/state/integrationsState.ts
-export const integrationsAtom = atom<Integration[]>([]);
+export const activitiesAtom = atom<SynchronizedActivity[]>([]);
+export const pipelineRunsAtom = atom<PipelineRun[]>([]);
+export const activityStatsAtom = atom<ActivityStats>({ ... });
+export const unsynchronizedAtom = atom<UnsynchronizedEntry[]>([]);
 ```
 
 ### inputsState.ts
 
-Pending user inputs:
+Pending user inputs (real-time):
 
 ```typescript
-// src/app/state/inputsState.ts
-export const inputsAtom = atom<PendingInput[]>([]);
+export const pendingInputsAtom = atom<PendingInput[]>([]);
+export const inputsLastUpdatedAtom = atom<Date | null>(null);
+export const isLoadingInputsAtom = atom(true);
+```
+
+### integrationsState.ts
+
+Connected services (real-time):
+
+```typescript
+export const integrationsAtom = atom<IntegrationsSummary | null>(null);
+export const integrationsLastUpdatedAtom = atom<Date | null>(null);
+```
+
+### pluginRegistryState.ts
+
+Plugin registry from API (cached):
+
+```typescript
+export const pluginRegistryAtom = atom<PluginRegistryResponse | null>(null);
+export const pluginRegistryLastUpdatedAtom = atom<Date | null>(null);
+// Cached for 10 minutes
 ```
 
 ## Context
 
 ### NerdModeContext
 
-Toggle for advanced features:
+Toggle for advanced/debug features (persisted in localStorage):
 
 ```typescript
-// src/app/state/NerdModeContext.tsx
 export const NerdModeContext = createContext({
   nerdMode: false,
   toggleNerdMode: () => {},
 });
 
-export const NerdModeProvider: React.FC = ({ children }) => {
-  const [nerdMode, setNerdMode] = useState(false);
-  // ...
-};
-```
-
-**Usage**:
-```typescript
+// Usage
 const { nerdMode, toggleNerdMode } = useContext(NerdModeContext);
 ```
 
-## Related Hooks
-
-State is often accessed via hooks that add derived logic:
-
-| Hook | State Used | Purpose |
-|------|------------|---------|
-| `useAuth` | `authState` | Sign in/out operations |
-| `useUser` | `userState` | Profile data + tier |
-| `useActivities` | `activitiesState` | Activity CRUD |
-| `usePipelines` | `pipelinesState` | Pipeline management |
-| `useIntegrations` | `integrationsState` | Connection status |
-| `useInputs` | `inputsState` | Pending inputs |
-
 ## Patterns
 
-### Atom Updates
+### Hook Updates Atom Automatically
 
 ```typescript
-// Read only
-const [activities] = useAtom(activitiesAtom);
+// Real-time hook internally calls setAtom
+const useRealtimePipelines = () => {
+  const [, setPipelines] = useAtom(pipelinesAtom);
+  
+  useFirestoreListener({
+    queryFactory: (db, userId) => collection(db, 'users', userId, 'pipelines'),
+    mapper: (snapshot) => snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })),
+    onData: setPipelines, // Updates atom on every Firestore change
+  });
+};
+```
 
-// Read + write
-const [activities, setActivities] = useAtom(activitiesAtom);
+### Component Reads from Atom
 
-// Update with callback
-setActivities(prev => [...prev, newActivity]);
+```typescript
+// Any component can read the atom
+function PipelinesList() {
+  const [pipelines] = useAtom(pipelinesAtom);
+  const [loading] = useAtom(isLoadingPipelinesAtom);
+  
+  if (loading) return <SkeletonLoading />;
+  return <ul>{pipelines.map(p => <li key={p.id}>{p.name}</li>)}</ul>;
+}
+```
+
+### Mutations via REST API
+
+```typescript
+function CreatePipelineButton() {
+  const api = useApi();
+  const { refresh } = useRealtimePipelines();
+  
+  const handleCreate = async () => {
+    await api.post('/users/me/pipelines', { name, source, destinations });
+    // Firestore listener will auto-update, but refresh() ensures immediate sync
+    await refresh();
+  };
+}
 ```
 
 ### Derived State
 
 ```typescript
 // Atom that derives from another
-const filteredActivitiesAtom = atom((get) => {
-  const activities = get(activitiesAtom);
-  return activities.filter(a => !a.archived);
+const activePipelinesAtom = atom((get) => {
+  const pipelines = get(pipelinesAtom);
+  return pipelines.filter(p => !p.disabled);
 });
+```
+
+### Skeleton Loading
+
+```typescript
+import { SkeletonLoading, CardSkeleton } from '@/components/library';
+
+function ActivityList() {
+  const [activities] = useAtom(activitiesAtom);
+  const [loading] = useAtom(isLoadingActivitiesAtom);
+  
+  if (loading) {
+    return <SkeletonLoading count={3}><CardSkeleton /></SkeletonLoading>;
+  }
+  return <ActivityCards activities={activities} />;
+}
+```
+
+## Pipeline Run Lookup
+
+For activity cards that need pipeline execution details:
+
+```typescript
+// Get pipeline run for an activity
+const { pipelineRuns } = usePipelineRuns();
+const run = pipelineRuns.find(r => r.activityId === activity.id);
+
+// Access booster executions and destination outcomes
+const boosters = run?.boosters || [];
+const destinations = run?.destinations || [];
 ```
 
 ## Related Documentation
 
-- [Routing](./routing.md)
-- [API Integration](./api-integration.md)
-- [Authentication](../architecture/authentication.md)
+- [API Integration](./api-integration.md) - REST API for mutations
+- [Routing](./routing.md) - Page structure
+- [Authentication](../architecture/authentication.md) - Auth flow

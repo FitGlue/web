@@ -16,40 +16,51 @@ FitGlue Web is a **hybrid architecture** combining a static marketing site with 
 │   │                           │    │                           │     │
 │   │  • Landing page           │    │  • Dashboard              │     │
 │   │  • Features               │    │  • Activities             │     │
-│   │  • Pricing                │    │  • Settings               │     │
-│   │  • How It Works           │    │  • Pipelines              │     │
-│   │  • Plugin pages           │    │  • Admin console          │     │
-│   │  • Auth pages             │    │                           │     │
-│   │                           │    │                           │     │
+│   │  • Pricing                │    │  • Pipelines              │     │
+│   │  • How It Works           │    │  • Connections            │     │
+│   │  • Plugin pages           │    │  • Pending Inputs         │     │
+│   │  • Auth pages             │    │  • Account Settings       │     │
+│   │  • Guides                 │    │  • Enricher Data          │     │
+│   │                           │    │  • Admin console          │     │
 │   │  Output: static-dist/     │    │  Output: dist/app/        │     │
 │   └───────────────────────────┘    └───────────────────────────┘     │
 │                                                                       │
-│                    ┌───────────────────────────┐                      │
-│                    │       Shared CSS          │                      │
-│                    │       main.css            │                      │
-│                    │   (design tokens, comps)  │                      │
-│                    └───────────────────────────┘                      │
-│                                                                       │
 └───────────────────────────────────────────────────────────────────────┘
                               │
-                              │ Firebase Rewrites
-                              ▼
-┌───────────────────────────────────────────────────────────────────────┐
-│                       Cloud Run Functions                              │
-│                                                                        │
-│  /api/users/**      → user-profile-handler                            │
-│  /api/activities/** → activities-handler                              │
-│  /api/billing/**    → billing-handler                                 │
-│  /hooks/hevy        → hevy-handler                            │
-│  /hooks/fitbit      → fitbit-handler                                  │
-│  /auth/*/callback   → oauth-handlers                                  │
-│                                                                        │
-└───────────────────────────────────────────────────────────────────────┘
+              ┌───────────────┴───────────────┐
+              │                               │
+              ▼                               ▼
+┌─────────────────────────┐    ┌─────────────────────────────────────┐
+│      Firestore          │    │       Cloud Run Functions           │
+│   (Real-time reads)     │    │       (REST API writes)             │
+│                         │    │                                     │
+│  users/{userId}/        │    │  /api/users/**    → user handlers   │
+│    pipelines/           │    │  /api/activities/** → activities    │
+│    activities/          │    │  /api/inputs/**   → inputs          │
+│    pipeline_runs/       │    │  /api/billing/**  → billing         │
+│    pending_inputs/      │    │  /hooks/**        → webhooks        │
+└─────────────────────────┘    └─────────────────────────────────────┘
+```
+
+## Data Access Pattern
+
+The React app uses a **split architecture** for data access:
+
+| Operation | Method | Why |
+|-----------|--------|-----|
+| **Reads** | Firestore SDK (`onSnapshot`) | Real-time updates, no polling |
+| **Writes** | REST API (`useApi`) | Server-side validation |
+
+```
+┌─────────────┐    Firestore SDK     ┌─────────────┐
+│   React     │ ◀────────────────────│  Firestore  │
+│   App       │                      │             │
+│             │    REST API          │  Cloud      │
+│             │ ─────────────────────▶│  Functions  │
+└─────────────┘                      └─────────────┘
 ```
 
 ## URL Routing
-
-Firebase Hosting routes requests to the appropriate handler:
 
 ### Static Pages (Marketing Site)
 | URL | Served From |
@@ -58,23 +69,25 @@ Firebase Hosting routes requests to the appropriate handler:
 | `/features` | `static-dist/features.html` |
 | `/pricing` | `static-dist/pricing.html` |
 | `/how-it-works` | `static-dist/how-it-works.html` |
-| `/plugins/boosters/*` | `static-dist/plugins/boosters/*.html` |
-| `/auth/login` | `static-dist/auth/login.html` |
+| `/connections/*` | Dynamic pages from registry |
+| `/boosters/*` | Dynamic pages from registry |
+| `/guides/*` | Static guide pages |
+| `/auth/*` | Auth pages (login, register, etc.) |
 
 ### React SPA
-| URL | Served From |
-|-----|-------------|
-| `/app/**` | `dist/app/index.html` (SPA routing) |
-
-### API & Webhooks (Cloud Functions)
-| URL | Handler |
-|-----|---------|
-| `/api/users/me/**` | `user-profile-handler` |
-| `/api/activities/**` | `activities-handler` |
-| `/hooks/hevy` | `hevy-handler` |
-| `/auth/strava/callback` | `strava-oauth-handler` |
-
-See [firebase.json](file:///home/ripixel/dev/fitglue/web/firebase.json) for complete rewrite rules.
+| URL | Page Component |
+|-----|----------------|
+| `/app` | DashboardPage |
+| `/app/activities` | ActivitiesListPage |
+| `/app/activities/:id` | ActivityDetailPage |
+| `/app/inputs` | PendingInputsPage |
+| `/app/settings/pipelines` | PipelinesPage |
+| `/app/settings/pipelines/new` | PipelineWizardPage |
+| `/app/settings/integrations` | ConnectionsPage |
+| `/app/settings/account` | AccountSettingsPage |
+| `/app/settings/enricher-data` | EnricherDataPage |
+| `/app/settings/subscription` | SubscriptionPage |
+| `/app/admin` | AdminPage |
 
 ## Build Pipeline
 
@@ -92,14 +105,6 @@ See [firebase.json](file:///home/ripixel/dev/fitglue/web/firebase.json) for comp
              │                                      │
              ▼                                      ▼
        static-dist/                            dist/app/
-    ┌──────────────────┐                   ┌──────────────────┐
-    │ • index.html     │                   │ • index.html     │
-    │ • features.html  │                   │ • assets/*.js    │
-    │ • pricing.html   │                   │ • assets/*.css   │
-    │ • plugins/...    │                   └──────────────────┘
-    │ • styles.min.css │                            │
-    │ • images/        │                            │
-    └────────┬─────────┘                            │
              │                                      │
              └───────────────────┬──────────────────┘
                                  │
@@ -110,14 +115,6 @@ See [firebase.json](file:///home/ripixel/dev/fitglue/web/firebase.json) for comp
                                 │
                                 ▼
                             dist/ (final)
-                    ┌──────────────────────┐
-                    │ • index.html         │
-                    │ • features.html      │
-                    │ • plugins/...        │
-                    │ • app/index.html     │
-                    │ • styles.min.css     │
-                    │ • images/            │
-                    └──────────────────────┘
                                 │
                                 ▼
                       Firebase Hosting Deploy
@@ -139,7 +136,8 @@ See [firebase.json](file:///home/ripixel/dev/fitglue/web/firebase.json) for comp
 | [React 19](https://react.dev/) | UI framework |
 | [React Router](https://reactrouter.com/) | Client-side routing |
 | [Jotai](https://jotai.org/) | Atomic state management |
-| [Firebase](https://firebase.google.com/) | Auth + Firestore |
+| [Firebase SDK](https://firebase.google.com/) | Auth + Firestore (reads) |
+| [Sentry](https://sentry.io/) | Error tracking |
 | TypeScript | Type safety |
 
 ### Infrastructure
@@ -150,78 +148,77 @@ See [firebase.json](file:///home/ripixel/dev/fitglue/web/firebase.json) for comp
 | Terraform | Infrastructure as code |
 | CircleCI | CI/CD pipeline |
 
-## Shared CSS Architecture
+## Component Library
 
-Both applications use the same CSS, ensuring design consistency:
+The React app uses a custom component library in `src/app/components/library/`:
 
 ```
-assets/styles/
-├── main.css       # Primary stylesheet (78KB)
-│   ├── CSS variables (design tokens)
-│   ├── Base styles (reset, typography)
-│   ├── Layout utilities
-│   ├── Component styles
-│   └── Page-specific sections
-└── _auth.css      # Auth page overrides
+components/library/
+├── ui/          # Presentational (Button, Card, Badge, Modal, etc.)
+├── layout/      # Layout (PageLayout, Stack, Grid, Container)
+├── forms/       # Form components (Input, Select, FormField)
+├── navigation/  # Navigation (Link, BackLink)
+└── functional/  # Complex (Wizard, Timeline, ActionMenu)
 ```
 
-### Design Tokens
+**Patterns:**
+- CSS modules for styling
+- Variant props (`variant`, `size`)
+- TypeScript interfaces
+- Composition via `children`
 
-```css
-:root {
-  /* Colors */
-  --color-primary: #FF006E;
-  --color-secondary: #8338EC;
-  --color-accent: #3A86FF;
-  --color-success: #06FFA5;
+## Real-time Hooks
 
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 4rem;
+The app uses Firebase SDK for real-time reads via custom hooks:
 
-  /* Typography */
-  --font-family: 'Inter', sans-serif;
-  --font-size-sm: 0.875rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.25rem;
-}
-```
+| Hook | Collection | State Updated |
+|------|------------|---------------|
+| `useRealtimePipelines` | `users/{userId}/pipelines` | `pipelinesAtom` |
+| `useRealtimeActivities` | `users/{userId}/activities` | `activitiesAtom` |
+| `useRealtimeInputs` | `users/{userId}/pending_inputs` | `pendingInputsAtom` |
+| `usePipelineRuns` | `users/{userId}/pipeline_runs` | `pipelineRunsAtom` |
 
-See [Styling Guide](../development/styling.md) for details.
+See [State Management](../react-app/state-management.md) for details.
+
+## Observability
+
+### Sentry Integration
+
+- Initialized in `src/app/infrastructure/sentry.ts`
+- Error boundary wraps the app
+- User context set on auth
+- API errors captured with context
+
+### Loading States
+
+- Skeleton loading components (`SkeletonLoading`, `CardSkeleton`)
+- Loading atoms track fetch state
+- Graceful error handling
 
 ## Development Modes
 
 ### Marketing Site Only
-
 ```bash
 npm run dev:static
-# Skier watch mode
-# http://localhost:5000
+# Skier watch mode → http://localhost:5000
 ```
 
 ### React App Only
-
 ```bash
 npm run dev
-# Vite dev server
-# http://localhost:5173/app
+# Vite dev server → http://localhost:5173/app
 ```
 
 ### Full Local Testing
-
 ```bash
 npm run serve
-# Builds both + Firebase emulator
-# http://localhost:5000
+# Builds both + Firebase emulator → http://localhost:5000
 ```
 
 ## Related Documentation
 
 - [Local Development](../development/local-development.md)
+- [State Management](../react-app/state-management.md)
+- [API Integration](../react-app/api-integration.md)
 - [Skier Pipeline](../marketing-site/skier-pipeline.md)
-- [React App Routing](../react-app/routing.md)
 - [Authentication](./authentication.md)
-- [ADRs](../decisions/ADR.md)
