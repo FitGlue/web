@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useApi } from '../useApi';
-import { AdminPipelineRun, pipelineRunFiltersAtom } from '../../state/adminState';
+import { AdminPipelineRun, pipelineRunFiltersAtom, selectedPipelineRunDetailAtom } from '../../state/adminState';
 
 export interface PipelineRunStats {
   total: number;
@@ -36,9 +36,11 @@ export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
   const [stats, setStats] = useState<PipelineRunStats | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedRun, setSelectedRun] = useState<AdminPipelineRun | null>(null);
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [hasMore, setHasMore] = useState(false);
+  
+  // Use shared atom for selected pipeline run
+  const [selectedRun, setSelectedRun] = useAtom(selectedPipelineRunDetailAtom);
   
   const filters = useAtomValue(pipelineRunFiltersAtom);
   const api = useApi();

@@ -6,6 +6,7 @@ import { Card } from '../components/library/ui/Card';
 import { Button } from '../components/library/ui/Button';
 import { Heading } from '../components/library/ui/Heading';
 import { Paragraph } from '../components/library/ui/Paragraph';
+import { useToast } from '../components/library/ui/Toast';
 import { EnricherConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
@@ -110,6 +111,8 @@ const PipelineEditPage: React.FC = () => {
         }
     }, [pipelineId, api, enrichers]);
 
+    const toast = useToast();
+
     useEffect(() => {
         if (!registryLoading && enrichers.length > 0) fetchPipeline();
     }, [fetchPipeline, registryLoading, enrichers]);
@@ -130,9 +133,11 @@ const PipelineEditPage: React.FC = () => {
                 destinations: selectedDestinations.map(d => isNaN(Number(d)) ? d : Number(d))
             });
             invalidatePipelines();
+            toast.success('Pipeline Saved', `"${pipelineName || 'Pipeline'}" has been updated`);
             navigate('/settings/pipelines');
         } catch (err) {
             setError('Failed to save pipeline');
+            toast.error('Save Failed', 'Failed to save pipeline. Please try again.');
             console.error(err);
         } finally {
             setSaving(false);

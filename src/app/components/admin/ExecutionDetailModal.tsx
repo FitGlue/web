@@ -2,8 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { Stack, Grid } from '../library/layout';
 import { Modal, Badge, Code, KeyValue, Paragraph } from '../library/ui';
-import { useAdminExecutions } from '../../hooks/admin';
-import { selectedExecutionIdAtom } from '../../state/adminState';
+import { selectedExecutionIdAtom, selectedExecutionDetailAtom } from '../../state/adminState';
 
 // Status badge variant mapping
 const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 'default'> = {
@@ -22,11 +21,11 @@ const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 
  */
 export const ExecutionDetailModal: React.FC = () => {
   const [selectedExecutionId, setSelectedExecutionId] = useAtom(selectedExecutionIdAtom);
-  const { selectedExecution, selectExecution } = useAdminExecutions();
+  const [selectedExecution, setSelectedExecution] = useAtom(selectedExecutionDetailAtom);
 
   const handleClose = () => {
     setSelectedExecutionId(null);
-    selectExecution(null);
+    setSelectedExecution(null);
   };
 
   const isOpen = !!selectedExecutionId && !!selectedExecution;

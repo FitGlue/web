@@ -54,7 +54,7 @@ const AdminPage: React.FC = () => {
 
   return (
     <PageLayout title="Admin Console">
-      <Container>
+      <Container size="full">
         <TabbedCard
           tabs={tabs}
           activeTab={activeTab}

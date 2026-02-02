@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout, Stack } from '../components/library/layout';
-import { Card, Button, Heading, Paragraph, CardSkeleton, ConfirmDialog, IdBadge, Badge, GlowCard, FlowVisualization, BoosterGrid, Pill } from '../components/library/ui';
+import { Card, Button, Heading, Paragraph, CardSkeleton, ConfirmDialog, IdBadge, Badge, GlowCard, FlowVisualization, BoosterGrid, Pill, useToast } from '../components/library/ui';
 
 import { useApi } from '../hooks/useApi';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
@@ -146,6 +146,7 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
 const PipelinesPage: React.FC = () => {
     const api = useApi();
     const navigate = useNavigate();
+    const toast = useToast();
     const { loading: registryLoading } = usePluginRegistry();
     const { pipelines, loading, refresh: refreshPipelines } = useRealtimePipelines();
     // Realtime integrations auto-subscribes - no manual fetch needed
@@ -159,13 +160,16 @@ const PipelinesPage: React.FC = () => {
     const handleDeleteConfirm = async () => {
         if (!deleteConfirm) return;
         const pipelineId = deleteConfirm;
+        const pipeline = pipelines.find(p => p.id === pipelineId);
         setDeleteConfirm(null);
         setDeleting(pipelineId);
         try {
             await api.delete(`/users/me/pipelines/${pipelineId}`);
             await refreshPipelines();
+            toast.success('Pipeline Deleted', `"${pipeline?.name || 'Pipeline'}" has been deleted`);
         } catch (error) {
             console.error('Failed to delete pipeline:', error);
+            toast.error('Delete Failed', 'Failed to delete pipeline. Please try again.');
         } finally {
             setDeleting(null);
         }
@@ -173,11 +177,17 @@ const PipelinesPage: React.FC = () => {
 
     const handleToggleDisabled = async (pipelineId: string, disabled: boolean) => {
         setToggling(pipelineId);
+        const pipeline = pipelines.find(p => p.id === pipelineId);
         try {
             await api.patch(`/users/me/pipelines/${pipelineId}`, { disabled });
             await refreshPipelines();
+            toast.success(
+                disabled ? 'Pipeline Disabled' : 'Pipeline Enabled',
+                `"${pipeline?.name || 'Pipeline'}" has been ${disabled ? 'disabled' : 'enabled'}`
+            );
         } catch (error) {
             console.error('Failed to toggle pipeline:', error);
+            toast.error('Update Failed', 'Failed to update pipeline. Please try again.');
         } finally {
             setToggling(null);
         }

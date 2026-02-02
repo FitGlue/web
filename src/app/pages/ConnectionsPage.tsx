@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Button, PluginIcon, CardSkeleton, ConfirmDialog, Pill, Heading, Paragraph, Card } from '../components/library/ui';
+import { Button, PluginIcon, CardSkeleton, ConfirmDialog, Pill, Heading, Paragraph, Card, useToast } from '../components/library/ui';
 import { useApi } from '../hooks/useApi';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
@@ -88,6 +88,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
 const ConnectionsPage: React.FC = () => {
     const navigate = useNavigate();
     const api = useApi();
+    const toast = useToast();
     const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { integrations, loading, refresh: refreshIntegrations } = useRealtimeIntegrations();
     const [disconnecting, setDisconnecting] = useState<string | null>(null);
@@ -106,13 +107,16 @@ const ConnectionsPage: React.FC = () => {
     const handleDisconnectConfirm = async () => {
         if (!disconnectConfirm) return;
         const provider = disconnectConfirm.id;
+        const displayName = disconnectConfirm.name;
         setDisconnectConfirm(null);
         setDisconnecting(provider);
         try {
             await api.delete(`/users/me/integrations/${provider}`);
             await refreshIntegrations();
+            toast.success('Disconnected', `${displayName} has been disconnected`);
         } catch (error) {
             console.error(`Failed to disconnect ${provider}:`, error);
+            toast.error('Disconnect Failed', `Failed to disconnect ${displayName}. Please try again.`);
         } finally {
             setDisconnecting(null);
         }

@@ -2,8 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { Stack, Grid } from '../library/layout';
 import { Modal, Badge, Code, Card, Text, Heading, KeyValue, Paragraph } from '../library/ui';
-import { useAdminPipelineRuns } from '../../hooks/admin';
-import { selectedPipelineRunIdAtom } from '../../state/adminState';
+import { selectedPipelineRunIdAtom, selectedPipelineRunDetailAtom } from '../../state/adminState';
 
 // Status badge variant mapping
 const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 'default'> = {
@@ -25,11 +24,11 @@ const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 
  */
 export const PipelineRunDetailModal: React.FC = () => {
   const [selectedRunId, setSelectedRunId] = useAtom(selectedPipelineRunIdAtom);
-  const { selectedRun, selectRun } = useAdminPipelineRuns();
+  const [selectedRun, setSelectedRun] = useAtom(selectedPipelineRunDetailAtom);
 
   const handleClose = () => {
     setSelectedRunId(null);
-    selectRun(null);
+    setSelectedRun(null);
   };
 
   const isOpen = !!selectedRunId && !!selectedRun;

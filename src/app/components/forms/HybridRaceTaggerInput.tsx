@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Stack } from '../library/layout';
 import { Select } from '../library/forms';
-import { Button, Paragraph, Heading } from '../library/ui';
+import { Button, Paragraph, Heading, useToast } from '../library/ui';
 import './HybridRaceTaggerInput.css';
 
 interface LapInfo {
@@ -51,6 +51,7 @@ export const HybridRaceTaggerInput: React.FC<HybridRaceTaggerInputProps> = ({
     value,
     onChange,
 }) => {
+    const toast = useToast();
     const [laps, setLaps] = useState<LapInfo[]>([]);
     const [presets, setPresets] = useState<PresetOption[]>([]);
     const [selectedPresetId, setSelectedPresetId] = useState<string>('');
@@ -140,12 +141,13 @@ export const HybridRaceTaggerInput: React.FC<HybridRaceTaggerInputProps> = ({
         );
 
         if (!isAdjacent) {
-            alert('Only adjacent laps can be merged');
+            toast.warning('Invalid Selection', 'Only adjacent laps can be merged');
             return;
         }
 
         setMergedLaps(prev => [...prev, indices]);
         setSelectedLaps(new Set());
+        toast.success('Laps Merged', `Merged laps ${indices.map(i => i + 1).join(', ')}`);
     };
 
     const clearMerges = () => {

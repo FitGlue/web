@@ -154,30 +154,31 @@ export const AdminExecutions: React.FC = () => {
         </FilterField>
       </FilterBar>
 
-      {/* Error state */}
-      {error && (
+      {/* Error state OR Executions table */}
+      {error ? (
         <Card>
           <EmptyState 
             title="Error loading executions" 
             description={error}
+            actionLabel="Retry"
+            onAction={() => fetchExecutions()}
           />
         </Card>
+      ) : (
+        <DataTable
+          data={executions}
+          columns={columns}
+          rowKey="id"
+          loading={loading}
+          onRowClick={handleRowClick}
+          emptyState={
+            <EmptyState 
+              title="No executions found" 
+              description="No executions match the current filters."
+            />
+          }
+        />
       )}
-
-      {/* Executions table */}
-      <DataTable
-        data={executions}
-        columns={columns}
-        rowKey="id"
-        loading={loading}
-        onRowClick={handleRowClick}
-        emptyState={
-          <EmptyState 
-            title="No executions found" 
-            description="No executions match the current filters."
-          />
-        }
-      />
     </Stack>
   );
 };

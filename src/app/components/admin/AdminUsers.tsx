@@ -67,13 +67,18 @@ export const AdminUsers: React.FC = () => {
     {
       key: 'userId',
       header: 'User',
-      render: (user) => (
-        <Stack gap="xs">
-          <Code>{user.userId.slice(0, 8)}...</Code>
-          {user.isAdmin && <Badge variant="premium" size="sm">Admin</Badge>}
-        </Stack>
+      render: (user) => <Code>{user.userId.slice(0, 8)}...</Code>,
+      width: '120px',
+    },
+    {
+      key: 'isAdmin',
+      header: 'Role',
+      render: (user) => user.isAdmin ? (
+        <Badge variant="premium" size="sm">Admin</Badge>
+      ) : (
+        <Text variant="muted">-</Text>
       ),
-      width: '150px',
+      width: '80px',
     },
     {
       key: 'accessEnabled',
@@ -114,7 +119,11 @@ export const AdminUsers: React.FC = () => {
     {
       key: 'integrations',
       header: 'Integrations',
-      render: (user) => user.integrations.length > 0 ? user.integrations.join(', ') : '-',
+      render: (user) => (
+        <Text variant="body">
+          {user.integrations.length > 0 ? user.integrations.join(', ') : '-'}
+        </Text>
+      ),
     },
     {
       key: 'actions',
@@ -157,30 +166,31 @@ export const AdminUsers: React.FC = () => {
         </FilterField>
       </FilterBar>
 
-      {/* Error state */}
-      {error && (
+      {/* Error state OR Users table */}
+      {error ? (
         <Card>
           <EmptyState 
             title="Error loading users" 
             description={error}
+            actionLabel="Retry"
+            onAction={() => fetchUsers(1)}
           />
         </Card>
+      ) : (
+        <DataTable
+          data={users}
+          columns={columns}
+          rowKey="userId"
+          loading={loading}
+          onRowClick={handleRowClick}
+          emptyState={
+            <EmptyState 
+              title="No users found" 
+              description="No users match the current filters."
+            />
+          }
+        />
       )}
-
-      {/* Users table */}
-      <DataTable
-        data={users}
-        columns={columns}
-        rowKey="userId"
-        loading={loading}
-        onRowClick={handleRowClick}
-        emptyState={
-          <EmptyState 
-            title="No users found" 
-            description="No users match the current filters."
-          />
-        }
-      />
 
       {/* Pagination */}
       {pagination && (

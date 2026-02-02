@@ -6,6 +6,7 @@ import { Card } from '../components/library/ui/Card';
 import { Button } from '../components/library/ui/Button';
 import { Heading } from '../components/library/ui/Heading';
 import { Paragraph } from '../components/library/ui/Paragraph';
+import { useToast } from '../components/library/ui/Toast';
 import { useApi } from '../hooks/useApi';
 import { FormField, Input as FormInput } from '../components/library/forms';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
@@ -145,6 +146,8 @@ const PipelineWizardPage: React.FC = () => {
         }
     };
 
+    const toast = useToast();
+
     const handleCreate = async () => {
         if (!selectedSource || selectedDestinations.length === 0) return;
         setCreating(true);
@@ -161,10 +164,12 @@ const PipelineWizardPage: React.FC = () => {
                 destinations: selectedDestinations
             });
             await refreshPipelines();
+            toast.success('Pipeline Created', `"${pipelineName || 'New Pipeline'}" has been created`);
             navigate('/settings/pipelines');
         } catch (err) {
             console.error('Failed to create pipeline:', err);
             setError('Failed to create pipeline. Please try again.');
+            toast.error('Creation Failed', 'Failed to create pipeline. Please try again.');
         } finally {
             setCreating(false);
         }

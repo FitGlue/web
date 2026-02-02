@@ -1,11 +1,13 @@
 import { useState, useCallback } from 'react';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useApi } from '../useApi';
 import { 
   AdminUser, 
   AdminUserDetail, 
   Pagination, 
   userFiltersAtom,
+  selectedUserDetailAtom,
+  selectedUserLoadingAtom,
 } from '../../state/adminState';
 
 export interface UseAdminUsersResult {
@@ -35,8 +37,10 @@ export function useAdminUsers(): UseAdminUsersResult {
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedUser, setSelectedUser] = useState<AdminUserDetail | null>(null);
-  const [selectedUserLoading, setSelectedUserLoading] = useState(false);
+  
+  // Use shared atoms for selected user detail
+  const [selectedUser, setSelectedUser] = useAtom(selectedUserDetailAtom);
+  const [selectedUserLoading, setSelectedUserLoading] = useAtom(selectedUserLoadingAtom);
   
   const filters = useAtomValue(userFiltersAtom);
   const api = useApi();

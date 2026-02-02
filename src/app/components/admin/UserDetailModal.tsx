@@ -4,7 +4,7 @@ import { Stack, Grid } from '../library/layout';
 import { Modal, Button, Badge, Text, Heading, LoadingState, EmptyState, useToast, KeyValue, Paragraph } from '../library/ui';
 import { Link } from '../library/navigation';
 import { useAdminUsers } from '../../hooks/admin';
-import { selectedUserIdAtom } from '../../state/adminState';
+import { selectedUserIdAtom, selectedUserDetailAtom, selectedUserLoadingAtom } from '../../state/adminState';
 import { UserTier } from '../../../types/pb/user';
 
 /**
@@ -12,14 +12,15 @@ import { UserTier } from '../../../types/pb/user';
  */
 export const UserDetailModal: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useAtom(selectedUserIdAtom);
+  const [selectedUser, setSelectedUser] = useAtom(selectedUserDetailAtom);
+  const [selectedUserLoading] = useAtom(selectedUserLoadingAtom);
   const toast = useToast();
   const { 
-    selectedUser, 
-    selectedUserLoading,
     updateUser,
     deleteUserData,
-    clearSelectedUser,
   } = useAdminUsers();
+  
+  const clearSelectedUser = () => setSelectedUser(null);
 
   const handleClose = () => {
     setSelectedUserId(null);

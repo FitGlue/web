@@ -19,6 +19,14 @@ export const selectedExecutionIdAtom = atom<string | null>(null);
 export const selectedPipelineRunIdAtom = atom<string | null>(null);
 
 // ============================================================================
+// Selected Item Detail State (shared across components)
+// ============================================================================
+export const selectedUserDetailAtom = atom<AdminUserDetail | null>(null);
+export const selectedUserLoadingAtom = atom<boolean>(false);
+export const selectedExecutionDetailAtom = atom<Execution | null>(null);
+export const selectedPipelineRunDetailAtom = atom<AdminPipelineRun | null>(null);
+
+// ============================================================================
 // Filter State
 // ============================================================================
 export interface UserFilters {

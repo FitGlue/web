@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useApi } from '../useApi';
-import { Execution, executionFiltersAtom } from '../../state/adminState';
+import { Execution, executionFiltersAtom, selectedExecutionDetailAtom } from '../../state/adminState';
 
 export interface UseAdminExecutionsResult {
   executions: Execution[];
@@ -26,7 +26,9 @@ export function useAdminExecutions(): UseAdminExecutionsResult {
   const [availableServices, setAvailableServices] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedExecution, setSelectedExecution] = useState<Execution | null>(null);
+  
+  // Use shared atom for selected execution
+  const [selectedExecution, setSelectedExecution] = useAtom(selectedExecutionDetailAtom);
   
   const filters = useAtomValue(executionFiltersAtom);
   const api = useApi();

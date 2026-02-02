@@ -66,7 +66,13 @@ export const AdminBilling: React.FC = () => {
                 </TableEmpty>
               )}
               {billingUsers.map((user) => (
-                <TableRow key={user.userId}>
+                <TableRow 
+                  key={user.userId}
+                  onClick={user.stripeCustomerId 
+                    ? () => window.open(`https://dashboard.stripe.com/customers/${user.stripeCustomerId}`, '_blank')
+                    : undefined
+                  }
+                >
                   <TableCell>
                     <Code>{user.userId.slice(0, 8)}...</Code>
                   </TableCell>
@@ -85,12 +91,12 @@ export const AdminBilling: React.FC = () => {
                   </TableCell>
                   <TableCell>
                     {user.trialEndsAt ? (
-                      new Date(user.trialEndsAt).toLocaleDateString()
+                      <Text variant="body">{new Date(user.trialEndsAt).toLocaleDateString()}</Text>
                     ) : (
                       <Text variant="muted">-</Text>
                     )}
                   </TableCell>
-                  <TableCell>{user.syncCountThisMonth}</TableCell>
+                  <TableCell><Text variant="body">{user.syncCountThisMonth}</Text></TableCell>
                 </TableRow>
               ))}
             </TableBody>

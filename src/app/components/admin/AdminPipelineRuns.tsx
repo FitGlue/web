@@ -218,29 +218,31 @@ export const AdminPipelineRuns: React.FC = () => {
       </FilterBar>
 
       {/* Error state */}
-      {error && (
+      {error ? (
         <Card>
           <EmptyState 
             title="Error loading pipeline runs" 
             description={error}
+            actionLabel="Retry"
+            onAction={() => fetchRuns()}
           />
         </Card>
+      ) : (
+        /* Pipeline runs table */
+        <DataTable
+          data={runs}
+          columns={columns}
+          rowKey="id"
+          loading={loading}
+          onRowClick={handleRowClick}
+          emptyState={
+            <EmptyState 
+              title="No pipeline runs found" 
+              description="No pipeline runs match the current filters."
+            />
+          }
+        />
       )}
-
-      {/* Pipeline runs table */}
-      <DataTable
-        data={runs}
-        columns={columns}
-        rowKey="id"
-        loading={loading}
-        onRowClick={handleRowClick}
-        emptyState={
-          <EmptyState 
-            title="No pipeline runs found" 
-            description="No pipeline runs match the current filters."
-          />
-        }
-      />
 
       {/* Load more */}
       {hasMore && (

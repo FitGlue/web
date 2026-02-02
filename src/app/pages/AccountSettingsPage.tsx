@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { updateProfile, verifyBeforeUpdateEmail } from 'firebase/auth';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, Button, Heading, Paragraph, Badge, Code, List, ListItem, GlowCard, Avatar, ProgressBar } from '../components/library/ui';
+import { Card, Button, Heading, Paragraph, Badge, Code, List, ListItem, GlowCard, Avatar, ProgressBar, useToast } from '../components/library/ui';
 import { Link } from '../components/library/navigation';
 import { useApi } from '../hooks/useApi';
 import { useUser } from '../hooks/useUser';
@@ -16,6 +16,7 @@ const AccountSettingsPage: React.FC = () => {
     const [firebaseUser] = useAtom(userAtom);
     const { user: profile } = useUser();
     const api = useApi();
+    const toast = useToast();
     const { isNerdMode } = useNerdMode();
 
     // Name editing - always visible, dirty state detection
@@ -53,8 +54,10 @@ const AccountSettingsPage: React.FC = () => {
         try {
             await updateProfile(firebaseUser, { displayName: editedName.trim() });
             await firebaseUser.reload();
+            toast.success('Name Updated', 'Your display name has been saved');
         } catch (err) {
             console.error('Failed to update name:', err);
+            toast.error('Update Failed', 'Failed to update name. Please try again.');
         } finally {
             setSavingName(false);
         }
@@ -74,9 +77,12 @@ const AccountSettingsPage: React.FC = () => {
 
             await verifyBeforeUpdateEmail(firebaseUser, editedEmail.trim());
             setEmailSent(true);
+            toast.info('Verification Sent', `Check ${editedEmail} for the verification link`);
         } catch (err: unknown) {
             console.error('Failed to send email change verification:', err);
-            setEmailError(err instanceof Error ? err.message : 'Failed to send verification email');
+            const errorMsg = err instanceof Error ? err.message : 'Failed to send verification email';
+            setEmailError(errorMsg);
+            toast.error('Email Update Failed', errorMsg);
         } finally {
             setSavingEmail(false);
         }
@@ -88,8 +94,10 @@ const AccountSettingsPage: React.FC = () => {
             await navigator.clipboard.writeText(firebaseUser.uid);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
+            toast.success('Copied', 'User ID copied to clipboard');
         } catch (err) {
             console.error('Failed to copy:', err);
+            toast.error('Copy Failed', 'Failed to copy to clipboard');
         }
     };
 

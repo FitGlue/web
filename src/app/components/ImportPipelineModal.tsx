@@ -6,6 +6,7 @@ import { Stack } from './library/layout/Stack';
 import { Heading } from './library/ui/Heading';
 import { Paragraph } from './library/ui/Paragraph';
 import { List, ListItem } from './library/ui/List';
+import { useToast } from './library/ui/Toast';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { useApi } from '../hooks/useApi';
@@ -25,6 +26,7 @@ interface Props {
 export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess }) => {
     const navigate = useNavigate();
     const api = useApi();
+    const toast = useToast();
     const { sources, enrichers, destinations, integrations } = usePluginRegistry();
     const { integrations: userIntegrations } = useRealtimeIntegrations();
 
@@ -53,15 +55,17 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess }) => 
     };
 
     const handleImport = async () => {
-        if (!validation?.valid || !validation.request) return;
+        if (!validation?.valid || !validation.request || !decoded) return;
 
         setImporting(true);
         try {
             await api.post('/users/me/pipelines', validation.request);
+            toast.success('Pipeline Imported', `"${decoded.n}" has been imported successfully`);
             onSuccess();
             onClose();
         } catch {
             setError('Failed to import pipeline. Please try again.');
+            toast.error('Import Failed', 'Failed to import pipeline. Please try again.');
         } finally {
             setImporting(false);
         }

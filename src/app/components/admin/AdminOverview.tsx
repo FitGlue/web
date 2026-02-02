@@ -49,20 +49,36 @@ export const AdminOverview: React.FC = () => {
         </Card>
       </Grid>
 
-      <Card>
-        <Heading level={4}>Recent Executions</Heading>
-        <Stack direction="horizontal" gap="xl">
-          <Stack gap="xs" align="center">
-            <Badge variant="success" size="md">{stats.recentExecutions.success} Success</Badge>
+      <Heading level={4}>Recent Executions</Heading>
+      <Grid cols={3} gap="md">
+        <Card variant="elevated">
+          <Stack gap="xs">
+            <Text variant="muted">Success</Text>
+            <Stack direction="horizontal" gap="sm" align="center">
+              <Heading level={2}>{stats.recentExecutions.success}</Heading>
+              <Badge variant="success" size="sm">✓</Badge>
+            </Stack>
           </Stack>
-          <Stack gap="xs" align="center">
-            <Badge variant="error" size="md">{stats.recentExecutions.failed} Failed</Badge>
+        </Card>
+        <Card variant="elevated">
+          <Stack gap="xs">
+            <Text variant="muted">Failed</Text>
+            <Stack direction="horizontal" gap="sm" align="center">
+              <Heading level={2}>{stats.recentExecutions.failed}</Heading>
+              {stats.recentExecutions.failed > 0 && <Badge variant="error" size="sm">!</Badge>}
+            </Stack>
           </Stack>
-          <Stack gap="xs" align="center">
-            <Badge variant="info" size="md">{stats.recentExecutions.started} Started</Badge>
+        </Card>
+        <Card variant="elevated">
+          <Stack gap="xs">
+            <Text variant="muted">Started</Text>
+            <Stack direction="horizontal" gap="sm" align="center">
+              <Heading level={2}>{stats.recentExecutions.started}</Heading>
+              {stats.recentExecutions.started > 0 && <Badge variant="info" size="sm">⏳</Badge>}
+            </Stack>
           </Stack>
-        </Stack>
-      </Card>
+        </Card>
+      </Grid>
     </Stack>
   );
 };

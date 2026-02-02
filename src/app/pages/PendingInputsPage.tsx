@@ -6,7 +6,7 @@ import { usePluginLookup } from '../hooks/usePluginLookup';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { PageLayout, Stack } from '../components/library/layout';
 import { DataList } from '../components/data/DataList';
-import { Button, Pill, Paragraph, Heading, EmptyState, GlowCard, DashboardSummaryCard } from '../components/library/ui';
+import { Button, Pill, Paragraph, Heading, EmptyState, GlowCard, DashboardSummaryCard, useToast } from '../components/library/ui';
 import { Select, Textarea, Input, FormField } from '../components/library/forms';
 import { PipelineConfig } from '../state/pipelinesState';
 import { HybridRaceTaggerInput } from '../components/forms/HybridRaceTaggerInput';
@@ -62,6 +62,7 @@ const PendingInputsPage: React.FC = () => {
     const { enrichers } = usePluginRegistry();
     const { pipelines } = useRealtimePipelines();
     const { getSourceInfo } = usePluginLookup();
+    const toast = useToast();
 
     const [formValues, setFormValues] = useState<Record<string, Record<string, string>>>({});
     const [submittingIds, setSubmittingIds] = useState<Set<string>>(new Set());
@@ -86,7 +87,7 @@ const PendingInputsPage: React.FC = () => {
 
         const missingFields = input.requiredFields?.filter((f: string) => !values[f] || values[f].trim() === '');
         if (missingFields && missingFields.length > 0) {
-            alert(`Please fill in: ${missingFields.join(', ')}`);
+            toast.warning('Missing Fields', `Please fill in: ${missingFields.join(', ')}`);
             return;
         }
 
@@ -103,6 +104,7 @@ const PendingInputsPage: React.FC = () => {
             });
 
             if (success) {
+                toast.success('Input Resolved', 'Activity details submitted successfully');
                 refresh();
                 setFormValues((prev) => {
                     const next = { ...prev };
@@ -111,7 +113,7 @@ const PendingInputsPage: React.FC = () => {
                 });
             }
         } catch (error) {
-            alert('Failed to submit details. Please try again.');
+            toast.error('Submission Failed', 'Failed to submit details. Please try again.');
             console.error(error);
         } finally {
             setSubmittingIds((prev) => {
@@ -136,6 +138,7 @@ const PendingInputsPage: React.FC = () => {
         try {
             const success = await InputsService.dismissInput(activityId);
             if (success) {
+                toast.success('Input Dismissed', 'The pending input has been dismissed');
                 refresh();
                 setFormValues((prev) => {
                     const next = { ...prev };
@@ -144,7 +147,7 @@ const PendingInputsPage: React.FC = () => {
                 });
             }
         } catch {
-            alert('Failed to dismiss input.');
+            toast.error('Dismiss Failed', 'Failed to dismiss input. Please try again.');
         } finally {
             setSubmittingIds((prev) => {
                 const next = new Set(prev);
