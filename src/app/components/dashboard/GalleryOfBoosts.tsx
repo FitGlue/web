@@ -1,7 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { usePipelineRuns } from '../../hooks/usePipelineRuns';
 import { EnrichedActivityCard } from './EnrichedActivityCard';
-import { CardSkeleton, Paragraph, DashboardSummaryCard } from '../library/ui';
+import { CardSkeleton, Paragraph, DashboardSummaryCard, EmptyState } from '../library/ui';
 import { Stack } from '../library/layout';
 import { PipelineRunStatus } from '../../../types/pb/user';
 
@@ -20,6 +21,7 @@ export const GalleryOfBoosts: React.FC<GalleryOfBoostsProps> = ({
     onActivityClick,
     limit = 6,
 }) => {
+    const navigate = useNavigate();
     const { pipelineRuns, loading } = usePipelineRuns(true, limit);
 
     // Filter to only show runs that have boosters applied (synced or partial success)
@@ -45,9 +47,26 @@ export const GalleryOfBoosts: React.FC<GalleryOfBoostsProps> = ({
         );
     }
 
-    if (completedRuns.length === 0) {
-        return null;
-    }
+    const boostsContent = completedRuns.length === 0 ? (
+        <EmptyState
+            variant="mini"
+            icon="🚀"
+            title="No boosted activities yet"
+            description="Connect your fitness apps and set up a pipeline to start enhancing your activities."
+            actionLabel="Create Pipeline"
+            onAction={() => navigate('/settings/pipelines/new')}
+        />
+    ) : (
+        <Stack gap="md">
+            {completedRuns.map(run => (
+                <EnrichedActivityCard
+                    key={run.id}
+                    pipelineRun={run}
+                    onClick={onActivityClick && run.activityId ? () => onActivityClick(run.activityId) : undefined}
+                />
+            ))}
+        </Stack>
+    );
 
     return (
         <DashboardSummaryCard
@@ -55,17 +74,10 @@ export const GalleryOfBoosts: React.FC<GalleryOfBoostsProps> = ({
             icon="✨"
             linkTo="/activities"
             linkLabel="View All →"
-            footerText={<><Paragraph inline><strong>{completedRuns.length}</strong></Paragraph> recent enhanced activities</>}
+            showLink={completedRuns.length > 0}
+            footerText={completedRuns.length > 0 ? <><Paragraph inline><strong>{completedRuns.length}</strong></Paragraph> recent enhanced activities</> : undefined}
         >
-            <Stack gap="md">
-                {completedRuns.map(run => (
-                    <EnrichedActivityCard
-                        key={run.id}
-                        pipelineRun={run}
-                        onClick={onActivityClick && run.activityId ? () => onActivityClick(run.activityId) : undefined}
-                    />
-                ))}
-            </Stack>
+            {boostsContent}
         </DashboardSummaryCard>
     );
 };
