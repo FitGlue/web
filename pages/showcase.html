@@ -1236,42 +1236,37 @@
           `;
 
           hrSection.style.display = 'block';
-          setTimeout(() => initHrChart(allRecords.filter(r => r.heartRate > 0), timeMarkers), 100);
+          setTimeout(() => initHrChart(allRecords, timeMarkers), 100);
         }
 
         // --- ELEVATION GRAPH ---
-        const elevRecords = allRecords.filter(r => r.altitude !== undefined);
-        if (elevRecords.length > 10) {
+        if (allRecords.some(r => r.altitude !== undefined)) {
           document.getElementById('elevation-section').style.display = 'block';
-          setTimeout(() => initElevationChart(elevRecords, timeMarkers), 100);
+          setTimeout(() => initElevationChart(allRecords, timeMarkers), 100);
         }
 
         // --- PACE GRAPH (from speed data) ---
-        const paceRecords = allRecords.filter(r => r.speed > 0);
-        if (paceRecords.length > 10) {
+        if (allRecords.filter(r => r.speed > 0).length > 10) {
           document.getElementById('pace-section').style.display = 'block';
-          setTimeout(() => initPaceChart(paceRecords, timeMarkers), 100);
+          setTimeout(() => initPaceChart(allRecords, timeMarkers), 100);
         }
 
         // --- POWER GRAPH ---
-        const powerRecords = allRecords.filter(r => r.power > 0);
-        if (powerRecords.length > 10) {
+        if (allRecords.filter(r => r.power > 0).length > 10) {
           document.getElementById('power-section').style.display = 'block';
-          setTimeout(() => initPowerChart(powerRecords, timeMarkers), 100);
+          setTimeout(() => initPowerChart(allRecords, timeMarkers), 100);
         }
 
         // --- CADENCE GRAPH ---
-        const cadenceRecords = allRecords.filter(r => r.cadence > 0);
-        if (cadenceRecords.length > 10) {
+        if (allRecords.filter(r => r.cadence > 0).length > 10) {
           document.getElementById('cadence-section').style.display = 'block';
-          setTimeout(() => initCadenceChart(cadenceRecords, timeMarkers), 100);
+          setTimeout(() => initCadenceChart(allRecords, timeMarkers), 100);
         }
 
         // --- SPEED GRAPH ---
-        const speedRecords = allRecords.filter(r => r.speed > 0);
-        if (speedRecords.length > 10) {
+        if (allRecords.filter(r => r.speed > 0).length > 10) {
           document.getElementById('speed-section').style.display = 'block';
-          setTimeout(() => initSpeedChart(speedRecords, timeMarkers), 100);
+          setTimeout(() => initSpeedChart(allRecords, timeMarkers), 100);
         }
 
         // --- EXERCISES ---
@@ -1556,25 +1551,45 @@
       map.fitBounds(routeLine.getBounds(), { padding: [30, 30] });
     }
 
+    // --- ELAPSED TIME HELPER ---
+    // Generates time labels for chart X-axis in MM:SS format
+    function generateTimeLabels(records) {
+      if (!records || records.length === 0) return [];
+
+      const firstRecord = records.find(r => r.timestamp);
+      if (!firstRecord) return records.map((_, i) => i); // Fallback to indices
+
+      const startTime = new Date(firstRecord.timestamp).getTime();
+
+      return records.map(r => {
+        if (!r.timestamp) return '';
+        const elapsed = (new Date(r.timestamp).getTime() - startTime) / 1000; // seconds
+        const mins = Math.floor(elapsed / 60);
+        const secs = Math.floor(elapsed % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+      });
+    }
+
     // --- TIME MARKER ANNOTATIONS HELPER ---
+    // Calculates marker positions based on elapsed time from activity start
     function calculateMarkerAnnotations(records, timeMarkers) {
       if (!timeMarkers || timeMarkers.length === 0 || !records || records.length === 0) {
         return {};
       }
 
-      // Build array of {index, timestamp} for records that have timestamps
-      const recordsWithTime = [];
-      records.forEach((r, idx) => {
-        if (r.timestamp) {
-          recordsWithTime.push({ idx, time: new Date(r.timestamp).getTime() });
-        }
-      });
-      if (recordsWithTime.length === 0) return {};
+      // Find first and last record timestamps to establish time range
+      const recordsWithTime = records.filter(r => r.timestamp);
+      if (recordsWithTime.length < 2) return {};
+
+      const firstTime = new Date(recordsWithTime[0].timestamp).getTime();
+      const lastTime = new Date(recordsWithTime[recordsWithTime.length - 1].timestamp).getTime();
+      const totalDuration = lastTime - firstTime;
+      if (totalDuration <= 0) return {};
 
       const annotations = {};
       const colors = ['#4CC9F0', '#FF1B8D', '#9D4EDD', '#FFD93D', '#6BCB77', '#FF6B6B'];
 
-      // Sort markers by timestamp to ensure order
+      // Sort markers by timestamp
       const sortedMarkers = [...timeMarkers]
         .filter(m => m.timestamp)
         .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
@@ -1582,25 +1597,24 @@
       sortedMarkers.forEach((marker, idx) => {
         const markerTime = new Date(marker.timestamp).getTime();
 
-        // Find the closest record index in the filtered array
-        let closestRecord = recordsWithTime[0];
-        let closestDiff = Math.abs(closestRecord.time - markerTime);
-        for (const rec of recordsWithTime) {
-          const diff = Math.abs(rec.time - markerTime);
-          if (diff < closestDiff) {
-            closestDiff = diff;
-            closestRecord = rec;
-          }
-        }
+        // Calculate where this marker falls as a proportion of total time
+        const elapsed = markerTime - firstTime;
+        const proportion = elapsed / totalDuration;
 
-        // Create short label (truncate to first word or abbreviate)
+        // Map to chart index (0 to records.length - 1)
+        const chartIndex = Math.round(proportion * (records.length - 1));
+
+        // Skip if marker is outside the data range
+        if (chartIndex < 0 || chartIndex >= records.length) return;
+
+        // Short label for readability
         const fullLabel = marker.label || `M${idx + 1}`;
-        const shortLabel = fullLabel.split(' ')[0].substring(0, 8);
+        const shortLabel = fullLabel.split(' ')[0].substring(0, 10);
 
         annotations['marker' + idx] = {
           type: 'line',
-          xMin: closestRecord.idx,
-          xMax: closestRecord.idx,
+          xMin: chartIndex,
+          xMax: chartIndex,
           borderColor: colors[idx % colors.length],
           borderWidth: 1,
           borderDash: [4, 4],
@@ -1623,8 +1637,26 @@
     // --- HEART RATE CHART ---
     function initHrChart(records, timeMarkers) {
       const ctx = document.getElementById('hr-chart').getContext('2d');
-      const hrData = records.map(r => r.heartRate);
-      const labels = records.map((_, i) => i);
+
+      // Interpolate missing HR values for continuous line
+      const hrData = records.map((r, i) => {
+        if (r.heartRate > 0) return r.heartRate;
+
+        // Find nearest valid HR before and after
+        let prevHR = null, nextHR = null;
+        for (let j = i - 1; j >= 0; j--) {
+          if (records[j].heartRate > 0) { prevHR = records[j].heartRate; break; }
+        }
+        for (let j = i + 1; j < records.length; j++) {
+          if (records[j].heartRate > 0) { nextHR = records[j].heartRate; break; }
+        }
+
+        // Interpolate or use nearest valid
+        if (prevHR !== null && nextHR !== null) return (prevHR + nextHR) / 2;
+        return prevHR || nextHR || null;
+      });
+
+      const labels = generateTimeLabels(records);
       const annotations = calculateMarkerAnnotations(records, timeMarkers);
 
       new Chart(ctx, {
@@ -1639,7 +1671,8 @@
             fill: true,
             tension: 0.4,
             pointRadius: 0,
-            borderWidth: 2
+            borderWidth: 2,
+            spanGaps: true
           }]
         },
         options: {
@@ -1650,7 +1683,15 @@
             annotation: { annotations }
           },
           scales: {
-            x: { display: false },
+            x: {
+              display: true,
+              grid: { display: false },
+              ticks: {
+                color: '#666',
+                maxTicksLimit: 8,
+                font: { size: 9 }
+              }
+            },
             y: {
               grid: { color: 'rgba(255,255,255,0.05)' },
               ticks: { color: '#aaa' }
@@ -1663,8 +1704,23 @@
     // --- ELEVATION CHART ---
     function initElevationChart(records, timeMarkers) {
       const ctx = document.getElementById('elevation-chart').getContext('2d');
-      const elevData = records.map(r => r.altitude);
-      const labels = records.map((_, i) => i);
+
+      // Interpolate missing altitude values
+      const elevData = records.map((r, i) => {
+        if (r.altitude !== undefined) return r.altitude;
+
+        let prev = null, next = null;
+        for (let j = i - 1; j >= 0; j--) {
+          if (records[j].altitude !== undefined) { prev = records[j].altitude; break; }
+        }
+        for (let j = i + 1; j < records.length; j++) {
+          if (records[j].altitude !== undefined) { next = records[j].altitude; break; }
+        }
+        if (prev !== null && next !== null) return (prev + next) / 2;
+        return prev || next || null;
+      });
+
+      const labels = generateTimeLabels(records);
       const annotations = calculateMarkerAnnotations(records, timeMarkers);
 
       new Chart(ctx, {
@@ -1679,7 +1735,8 @@
             fill: true,
             tension: 0.4,
             pointRadius: 0,
-            borderWidth: 2
+            borderWidth: 2,
+            spanGaps: true
           }]
         },
         options: {
@@ -1687,7 +1744,11 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false }, annotation: { annotations } },
           scales: {
-            x: { display: false },
+            x: {
+              display: true,
+              grid: { display: false },
+              ticks: { color: '#666', maxTicksLimit: 8, font: { size: 9 } }
+            },
             y: {
               grid: { color: 'rgba(255,255,255,0.05)' },
               ticks: { color: '#aaa', callback: v => v + 'm' }
@@ -1700,12 +1761,33 @@
     // --- PACE CHART (converts speed m/s to min/km) ---
     function initPaceChart(records, timeMarkers) {
       const ctx = document.getElementById('pace-chart').getContext('2d');
-      // Convert speed (m/s) to pace (min/km)
-      const paceData = records.map(r => {
-        if (r.speed <= 0) return null;
-        return (1000 / r.speed) / 60; // minutes per km
-      }).filter(p => p !== null && p < 15); // Filter out unreasonable paces (over 15 min/km)
-      const labels = paceData.map((_, i) => i);
+
+      // Convert speed to pace, interpolate missing values
+      const paceData = records.map((r, i) => {
+        if (r.speed > 0) {
+          const pace = (1000 / r.speed) / 60;
+          return pace < 15 ? pace : null; // Cap unreasonable paces
+        }
+
+        // Find nearest valid pace
+        let prevPace = null, nextPace = null;
+        for (let j = i - 1; j >= 0; j--) {
+          if (records[j].speed > 0) {
+            const p = (1000 / records[j].speed) / 60;
+            if (p < 15) { prevPace = p; break; }
+          }
+        }
+        for (let j = i + 1; j < records.length; j++) {
+          if (records[j].speed > 0) {
+            const p = (1000 / records[j].speed) / 60;
+            if (p < 15) { nextPace = p; break; }
+          }
+        }
+        if (prevPace !== null && nextPace !== null) return (prevPace + nextPace) / 2;
+        return prevPace || nextPace || null;
+      });
+
+      const labels = generateTimeLabels(records);
 
       new Chart(ctx, {
         type: 'line',
@@ -1719,7 +1801,8 @@
             fill: true,
             tension: 0.4,
             pointRadius: 0,
-            borderWidth: 2
+            borderWidth: 2,
+            spanGaps: true
           }]
         },
         options: {
@@ -1727,7 +1810,11 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false }, annotation: { annotations: calculateMarkerAnnotations(records, timeMarkers) } },
           scales: {
-            x: { display: false },
+            x: {
+              display: true,
+              grid: { display: false },
+              ticks: { color: '#666', maxTicksLimit: 8, font: { size: 9 } }
+            },
             y: {
               reverse: true, // Lower pace = faster, so reverse axis
               grid: { color: 'rgba(255,255,255,0.05)' },
@@ -1748,8 +1835,23 @@
     // --- POWER CHART ---
     function initPowerChart(records, timeMarkers) {
       const ctx = document.getElementById('power-chart').getContext('2d');
-      const powerData = records.map(r => r.power);
-      const labels = records.map((_, i) => i);
+
+      // Interpolate missing power values
+      const powerData = records.map((r, i) => {
+        if (r.power > 0) return r.power;
+
+        let prev = null, next = null;
+        for (let j = i - 1; j >= 0; j--) {
+          if (records[j].power > 0) { prev = records[j].power; break; }
+        }
+        for (let j = i + 1; j < records.length; j++) {
+          if (records[j].power > 0) { next = records[j].power; break; }
+        }
+        if (prev !== null && next !== null) return (prev + next) / 2;
+        return prev || next || null;
+      });
+
+      const labels = generateTimeLabels(records);
 
       new Chart(ctx, {
         type: 'line',
@@ -1763,7 +1865,8 @@
             fill: true,
             tension: 0.4,
             pointRadius: 0,
-            borderWidth: 2
+            borderWidth: 2,
+            spanGaps: true
           }]
         },
         options: {
@@ -1771,7 +1874,11 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false }, annotation: { annotations: calculateMarkerAnnotations(records, timeMarkers) } },
           scales: {
-            x: { display: false },
+            x: {
+              display: true,
+              grid: { display: false },
+              ticks: { color: '#666', maxTicksLimit: 8, font: { size: 9 } }
+            },
             y: {
               grid: { color: 'rgba(255,255,255,0.05)' },
               ticks: { color: '#aaa', callback: v => v + 'W' }
@@ -1784,8 +1891,23 @@
     // --- CADENCE CHART ---
     function initCadenceChart(records, timeMarkers) {
       const ctx = document.getElementById('cadence-chart').getContext('2d');
-      const cadenceData = records.map(r => r.cadence);
-      const labels = records.map((_, i) => i);
+
+      // Interpolate missing cadence values
+      const cadenceData = records.map((r, i) => {
+        if (r.cadence > 0) return r.cadence;
+
+        let prev = null, next = null;
+        for (let j = i - 1; j >= 0; j--) {
+          if (records[j].cadence > 0) { prev = records[j].cadence; break; }
+        }
+        for (let j = i + 1; j < records.length; j++) {
+          if (records[j].cadence > 0) { next = records[j].cadence; break; }
+        }
+        if (prev !== null && next !== null) return (prev + next) / 2;
+        return prev || next || null;
+      });
+
+      const labels = generateTimeLabels(records);
 
       new Chart(ctx, {
         type: 'line',
@@ -1799,7 +1921,8 @@
             fill: true,
             tension: 0.4,
             pointRadius: 0,
-            borderWidth: 2
+            borderWidth: 2,
+            spanGaps: true
           }]
         },
         options: {
@@ -1807,7 +1930,11 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false }, annotation: { annotations: calculateMarkerAnnotations(records, timeMarkers) } },
           scales: {
-            x: { display: false },
+            x: {
+              display: true,
+              grid: { display: false },
+              ticks: { color: '#666', maxTicksLimit: 8, font: { size: 9 } }
+            },
             y: {
               grid: { color: 'rgba(255,255,255,0.05)' },
               ticks: { color: '#aaa', callback: v => v + ' rpm' }
@@ -1820,8 +1947,23 @@
     // --- SPEED CHART (converts m/s to km/h) ---
     function initSpeedChart(records, timeMarkers) {
       const ctx = document.getElementById('speed-chart').getContext('2d');
-      const speedData = records.map(r => r.speed * 3.6); // m/s to km/h
-      const labels = records.map((_, i) => i);
+
+      // Interpolate missing speed values
+      const speedData = records.map((r, i) => {
+        if (r.speed > 0) return r.speed * 3.6; // m/s to km/h
+
+        let prev = null, next = null;
+        for (let j = i - 1; j >= 0; j--) {
+          if (records[j].speed > 0) { prev = records[j].speed * 3.6; break; }
+        }
+        for (let j = i + 1; j < records.length; j++) {
+          if (records[j].speed > 0) { next = records[j].speed * 3.6; break; }
+        }
+        if (prev !== null && next !== null) return (prev + next) / 2;
+        return prev || next || null;
+      });
+
+      const labels = generateTimeLabels(records);
 
       new Chart(ctx, {
         type: 'line',
@@ -1835,7 +1977,8 @@
             fill: true,
             tension: 0.4,
             pointRadius: 0,
-            borderWidth: 2
+            borderWidth: 2,
+            spanGaps: true
           }]
         },
         options: {
@@ -1843,7 +1986,11 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false }, annotation: { annotations: calculateMarkerAnnotations(records, timeMarkers) } },
           scales: {
-            x: { display: false },
+            x: {
+              display: true,
+              grid: { display: false },
+              ticks: { color: '#666', maxTicksLimit: 8, font: { size: 9 } }
+            },
             y: {
               grid: { color: 'rgba(255,255,255,0.05)' },
               ticks: { color: '#aaa', callback: v => v.toFixed(1) + ' km/h' }
