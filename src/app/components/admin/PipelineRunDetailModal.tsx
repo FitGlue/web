@@ -36,8 +36,8 @@ export const PipelineRunDetailModal: React.FC = () => {
   if (!isOpen || !selectedRun) return null;
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={handleClose}
       title="Pipeline Run Details"
       size="lg"

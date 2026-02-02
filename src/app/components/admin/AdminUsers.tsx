@@ -2,11 +2,11 @@ import React, { useEffect, useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { Stack } from '../library/layout';
 import { Card, Button, Badge, EmptyState, useToast, Code, Text } from '../library/ui';
-import { 
-  DataTable, 
+import {
+  DataTable,
   DataTableColumn,
-  FilterBar, 
-  FilterField, 
+  FilterBar,
+  FilterField,
   Pagination,
 } from '../library/ui';
 import { useAdminUsers } from '../../hooks/admin';
@@ -20,12 +20,12 @@ export const AdminUsers: React.FC = () => {
   const [filters, setFilters] = useAtom(userFiltersAtom);
   const [, setSelectedUserId] = useAtom(selectedUserIdAtom);
   const toast = useToast();
-  const { 
-    users, 
-    pagination, 
-    loading, 
-    error, 
-    fetchUsers, 
+  const {
+    users,
+    pagination,
+    loading,
+    error,
+    fetchUsers,
     fetchUserDetail,
     updateUser,
   } = useAdminUsers();
@@ -94,8 +94,8 @@ export const AdminUsers: React.FC = () => {
       key: 'tier',
       header: 'Tier',
       render: (user) => (
-        <Badge 
-          variant={user.tier === UserTier.USER_TIER_ATHLETE ? 'premium' : 'default'} 
+        <Badge
+          variant={user.tier === UserTier.USER_TIER_ATHLETE ? 'premium' : 'default'}
           size="sm"
         >
           {user.tier === UserTier.USER_TIER_ATHLETE ? 'Athlete' : 'Hobbyist'}
@@ -169,8 +169,8 @@ export const AdminUsers: React.FC = () => {
       {/* Error state OR Users table */}
       {error ? (
         <Card>
-          <EmptyState 
-            title="Error loading users" 
+          <EmptyState
+            title="Error loading users"
             description={error}
             actionLabel="Retry"
             onAction={() => fetchUsers(1)}
@@ -184,8 +184,8 @@ export const AdminUsers: React.FC = () => {
           loading={loading}
           onRowClick={handleRowClick}
           emptyState={
-            <EmptyState 
-              title="No users found" 
+            <EmptyState
+              title="No users found"
               description="No users match the current filters."
             />
           }

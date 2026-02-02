@@ -29,7 +29,7 @@ const captureApiError = (method: string, path: string, status: number, statusTex
 const waitForAuth = async (maxWaitMs = 5000): Promise<boolean> => {
   const auth = getFirebaseAuth();
   if (auth?.currentUser) return true;
-  
+
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitMs) {
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -45,7 +45,7 @@ const waitForAuth = async (maxWaitMs = 5000): Promise<boolean> => {
  */
 export const useApi = () => {
   const authLoading = useAtomValue(authLoadingAtom);
-  
+
   const getAuthHeader = useCallback(async (): Promise<Record<string, string>> => {
     // If auth is still loading, wait for it to be ready
     if (authLoading) {
@@ -55,12 +55,12 @@ export const useApi = () => {
         return {};
       }
     }
-    
+
     const auth = getFirebaseAuth();
     if (!auth?.currentUser) {
       return {};
     }
-    
+
     try {
       const token = await auth.currentUser.getIdToken();
       return token ? { Authorization: `Bearer ${token}` } : {};

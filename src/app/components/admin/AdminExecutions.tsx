@@ -2,10 +2,10 @@ import React, { useEffect, useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { Stack } from '../library/layout';
 import { Card, Badge, EmptyState, Text, Code } from '../library/ui';
-import { 
-  DataTable, 
+import {
+  DataTable,
   DataTableColumn,
-  FilterBar, 
+  FilterBar,
   FilterField,
 } from '../library/ui';
 import { useAdminExecutions } from '../../hooks/admin';
@@ -29,12 +29,12 @@ const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 
 export const AdminExecutions: React.FC = () => {
   const [filters, setFilters] = useAtom(executionFiltersAtom);
   const [, setSelectedExecutionId] = useAtom(selectedExecutionIdAtom);
-  const { 
-    executions, 
+  const {
+    executions,
     availableServices,
-    loading, 
-    error, 
-    fetchExecutions, 
+    loading,
+    error,
+    fetchExecutions,
     selectExecution,
   } = useAdminExecutions();
 
@@ -157,8 +157,8 @@ export const AdminExecutions: React.FC = () => {
       {/* Error state OR Executions table */}
       {error ? (
         <Card>
-          <EmptyState 
-            title="Error loading executions" 
+          <EmptyState
+            title="Error loading executions"
             description={error}
             actionLabel="Retry"
             onAction={() => fetchExecutions()}
@@ -172,8 +172,8 @@ export const AdminExecutions: React.FC = () => {
           loading={loading}
           onRowClick={handleRowClick}
           emptyState={
-            <EmptyState 
-              title="No executions found" 
+            <EmptyState
+              title="No executions found"
               description="No executions match the current filters."
             />
           }

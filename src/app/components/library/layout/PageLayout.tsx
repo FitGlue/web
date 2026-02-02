@@ -20,6 +20,8 @@ interface PageLayoutProps {
     lastUpdated?: Date | null;
     /** Additional actions to show in header */
     headerActions?: ReactNode;
+    /** Use full width layout (no max-width constraint) */
+    fullWidth?: boolean;
     /** Page content */
     children: ReactNode;
 }
@@ -36,11 +38,17 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
     loading = false,
     lastUpdated = null,
     headerActions,
+    fullWidth = false,
     children,
 }) => {
+    const contentClasses = [
+        'app-page-content',
+        fullWidth && 'app-page-content--full-width',
+    ].filter(Boolean).join(' ');
+
     return (
         <div className="app-page-layout">
-            <div className="app-page-content">
+            <div className={contentClasses}>
                 <AppHeader />
                 <PageHeader
                     title={title}

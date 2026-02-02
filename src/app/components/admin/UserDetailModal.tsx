@@ -15,11 +15,11 @@ export const UserDetailModal: React.FC = () => {
   const [selectedUser, setSelectedUser] = useAtom(selectedUserDetailAtom);
   const [selectedUserLoading] = useAtom(selectedUserLoadingAtom);
   const toast = useToast();
-  const { 
+  const {
     updateUser,
     deleteUserData,
   } = useAdminUsers();
-  
+
   const clearSelectedUser = () => setSelectedUser(null);
 
   const handleClose = () => {
@@ -50,8 +50,8 @@ export const UserDetailModal: React.FC = () => {
   if (!isOpen) return null;
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={handleClose}
       title="User Details"
       size="lg"
@@ -86,9 +86,9 @@ export const UserDetailModal: React.FC = () => {
               <KeyValue label="Trial Ends" value={selectedUser.trialEndsAt} format="date" />
               <Stack direction="horizontal" gap="sm" align="center">
                 <Paragraph><strong>Syncs:</strong> {selectedUser.syncCountThisMonth}</Paragraph>
-                <Button 
-                  size="small" 
-                  variant="text" 
+                <Button
+                  size="small"
+                  variant="text"
                   onClick={() => handleUpdateUser(selectedUser.userId, { syncCountThisMonth: 0 }, 'Sync count reset to 0')}
                 >
                   Reset
@@ -97,21 +97,21 @@ export const UserDetailModal: React.FC = () => {
               <KeyValue label="Prevented" value={selectedUser.preventedSyncCount} />
             </Grid>
             <Stack direction="horizontal" gap="sm">
-              <Button 
+              <Button
                 size="small"
-                onClick={() => handleUpdateUser(selectedUser.userId, { 
-                  tier: selectedUser.tier === UserTier.USER_TIER_ATHLETE 
-                    ? UserTier.USER_TIER_HOBBYIST 
-                    : UserTier.USER_TIER_ATHLETE 
+                onClick={() => handleUpdateUser(selectedUser.userId, {
+                  tier: selectedUser.tier === UserTier.USER_TIER_ATHLETE
+                    ? UserTier.USER_TIER_HOBBYIST
+                    : UserTier.USER_TIER_ATHLETE
                 }, `Tier changed to ${selectedUser.tier === UserTier.USER_TIER_ATHLETE ? 'Hobbyist' : 'Athlete'}`)}
               >
                 Toggle Tier
               </Button>
-              <Button 
-                size="small" 
+              <Button
+                size="small"
                 variant="secondary"
-                onClick={() => handleUpdateUser(selectedUser.userId, { 
-                  trialEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() 
+                onClick={() => handleUpdateUser(selectedUser.userId, {
+                  trialEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
                 }, 'Trial extended by 30 days')}
               >
                 Extend Trial 30d
@@ -127,8 +127,8 @@ export const UserDetailModal: React.FC = () => {
                 {Object.entries(selectedUser.integrations).map(([provider]) => (
                   <Stack key={provider} direction="horizontal" justify="between" align="center">
                     <Paragraph>{provider}</Paragraph>
-                    <Button 
-                      size="small" 
+                    <Button
+                      size="small"
                       variant="text"
                       onClick={() => {
                         if (confirm(`Remove ${provider} integration?`)) {
@@ -159,8 +159,8 @@ export const UserDetailModal: React.FC = () => {
                         {p.source} → [{p.destinations.join(', ')}]
                       </Text>
                     </Stack>
-                    <Button 
-                      size="small" 
+                    <Button
+                      size="small"
                       variant="text"
                       onClick={() => {
                         if (confirm(`Remove pipeline "${p.name}"?`)) {
@@ -184,8 +184,8 @@ export const UserDetailModal: React.FC = () => {
             <Stack gap="md">
               <Stack direction="horizontal" justify="between" align="center">
                 <Paragraph>Synchronized Activities: {selectedUser.activityCount}</Paragraph>
-                <Button 
-                  size="small" 
+                <Button
+                  size="small"
                   variant="text"
                   disabled={selectedUser.activityCount === 0}
                   onClick={() => {
@@ -199,8 +199,8 @@ export const UserDetailModal: React.FC = () => {
               </Stack>
               <Stack direction="horizontal" justify="between" align="center">
                 <Paragraph>Pending Inputs: {selectedUser.pendingInputCount}</Paragraph>
-                <Button 
-                  size="small" 
+                <Button
+                  size="small"
                   variant="text"
                   disabled={selectedUser.pendingInputCount === 0}
                   onClick={() => {
@@ -221,7 +221,7 @@ export const UserDetailModal: React.FC = () => {
               <Heading level={4}>Billing</Heading>
               <Paragraph>
                 <strong>Stripe Customer: </strong>
-                <Link 
+                <Link
                   to={`https://dashboard.stripe.com/customers/${selectedUser.stripeCustomerId}`}
                   variant="primary"
                   external

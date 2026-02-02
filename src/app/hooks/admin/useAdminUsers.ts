@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { useApi } from '../useApi';
-import { 
-  AdminUser, 
-  AdminUserDetail, 
-  Pagination, 
+import {
+  AdminUser,
+  AdminUserDetail,
+  Pagination,
   userFiltersAtom,
   selectedUserDetailAtom,
   selectedUserLoadingAtom,
@@ -37,11 +37,11 @@ export function useAdminUsers(): UseAdminUsersResult {
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Use shared atoms for selected user detail
   const [selectedUser, setSelectedUser] = useAtom(selectedUserDetailAtom);
   const [selectedUserLoading, setSelectedUserLoading] = useAtom(selectedUserLoadingAtom);
-  
+
   const filters = useAtomValue(userFiltersAtom);
   const api = useApi();
 
@@ -52,7 +52,7 @@ export function useAdminUsers(): UseAdminUsersResult {
       const params = new URLSearchParams();
       params.set('page', String(page));
       params.set('limit', '25');
-      
+
       // Apply filters
       if (filters.tier) params.set('tier', filters.tier);
       if (filters.userId) params.set('userId', filters.userId);
@@ -96,15 +96,15 @@ export function useAdminUsers(): UseAdminUsersResult {
   }, [api, fetchUsers, fetchUserDetail, pagination, selectedUser]);
 
   const deleteUserData = useCallback(async (
-    userId: string, 
-    dataType: 'integrations' | 'pipelines' | 'activities' | 'pending-inputs', 
+    userId: string,
+    dataType: 'integrations' | 'pipelines' | 'activities' | 'pending-inputs',
     subId?: string
   ) => {
     try {
       const path = subId
         ? `/admin/users/${userId}/${dataType}/${subId}`
         : `/admin/users/${userId}/${dataType}`;
-      
+
       await api.delete(path);
       // Refresh user detail
       await fetchUserDetail(userId);

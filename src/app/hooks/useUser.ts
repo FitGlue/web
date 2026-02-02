@@ -33,14 +33,14 @@ export function useUser() {
   useEffect(() => {
     // Don't fetch while Firebase auth is still loading
     if (authLoading) return;
-    
+
     // If there's no Firebase user, clear the profile
     if (!firebaseUser) {
       setUser(null);
       setLoading(false);
       return;
     }
-    
+
     // Fetch profile if we have a Firebase user but no profile yet
     if (!user && !loading && !error) {
       fetchProfile();

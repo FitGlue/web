@@ -33,8 +33,8 @@ export const ExecutionDetailModal: React.FC = () => {
   if (!isOpen || !selectedExecution) return null;
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={handleClose}
       title="Execution Details"
       size="lg"
@@ -49,10 +49,10 @@ export const ExecutionDetailModal: React.FC = () => {
               {selectedExecution.status}
             </Badge>
           </Stack>
-          <KeyValue 
-            label="Timestamp" 
-            value={selectedExecution.timestamp} 
-            format="datetime" 
+          <KeyValue
+            label="Timestamp"
+            value={selectedExecution.timestamp}
+            format="datetime"
           />
           {selectedExecution.userId && (
             <KeyValue label="User ID" value={selectedExecution.userId} format="code" />

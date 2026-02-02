@@ -19,7 +19,7 @@ import {
 
 /**
  * AdminPage - Platform administration dashboard
- * 
+ *
  * Features:
  * - Overview: Platform-wide statistics
  * - Users: User management with filtering
@@ -53,8 +53,8 @@ const AdminPage: React.FC = () => {
   ];
 
   return (
-    <PageLayout title="Admin Console">
-      <Container size="full">
+    <PageLayout title="Admin Console" fullWidth>
+      <Container size="full" centered={false}>
         <TabbedCard
           tabs={tabs}
           activeTab={activeTab}

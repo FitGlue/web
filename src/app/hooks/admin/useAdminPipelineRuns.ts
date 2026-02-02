@@ -38,10 +38,10 @@ export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
   const [error, setError] = useState<string | null>(null);
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [hasMore, setHasMore] = useState(false);
-  
+
   // Use shared atom for selected pipeline run
   const [selectedRun, setSelectedRun] = useAtom(selectedPipelineRunDetailAtom);
-  
+
   const filters = useAtomValue(pipelineRunFiltersAtom);
   const api = useApi();
 
@@ -70,7 +70,7 @@ export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
 
   const loadMore = useCallback(async () => {
     if (!cursor || loading) return;
-    
+
     setLoading(true);
     try {
       const params = new URLSearchParams();

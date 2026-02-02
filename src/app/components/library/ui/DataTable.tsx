@@ -150,8 +150,8 @@ export function DataTable<T extends object>({
       <TableRow key={`skeleton-${index}`} hoverable={false} className="ui-table-skeleton-row">
         {columns.map((column) => (
           <TableCell key={column.key}>
-            <div style={{ 
-              height: '1em', 
+            <div style={{
+              height: '1em',
               background: 'var(--color-surface-elevated)',
               borderRadius: 'var(--radius-sm)',
             }} />

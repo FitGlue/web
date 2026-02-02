@@ -26,10 +26,10 @@ export function useAdminExecutions(): UseAdminExecutionsResult {
   const [availableServices, setAvailableServices] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Use shared atom for selected execution
   const [selectedExecution, setSelectedExecution] = useAtom(selectedExecutionDetailAtom);
-  
+
   const filters = useAtomValue(executionFiltersAtom);
   const api = useApi();
 

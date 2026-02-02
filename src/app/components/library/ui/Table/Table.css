@@ -76,8 +76,7 @@
 }
 
 /* Table Body */
-.ui-table-body {
-}
+.ui-table-body {}
 
 /* Table Row */
 .ui-table-row {
@@ -157,12 +156,10 @@
 
 /* Skeleton row */
 .ui-table-skeleton-row .ui-table-cell {
-  background: linear-gradient(
-    90deg,
-    var(--color-surface) 25%,
-    var(--color-surface-elevated) 50%,
-    var(--color-surface) 75%
-  );
+  background: linear-gradient(90deg,
+      var(--color-surface) 25%,
+      var(--color-surface-elevated) 50%,
+      var(--color-surface) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }

@@ -40,7 +40,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const hideToast = useCallback((id: string) => {
     // Mark as exiting for animation
     setToasts(prev => prev.map(t => t.id === id ? { ...t, exiting: true } : t));
-    
+
     // Remove after animation
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));

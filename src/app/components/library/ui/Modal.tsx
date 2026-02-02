@@ -71,15 +71,15 @@ export const Modal: React.FC<ModalProps> = ({
   ].filter(Boolean).join(' ');
 
   return (
-    <div onClick={handleBackdropClick}>
+    <div className="ui-modal__backdrop" onClick={handleBackdropClick}>
       <div className={classes} role="dialog" aria-modal="true">
         {(title || showClose) && (
-          <div>
-            {title && <div>{title}</div>}
+          <div className="ui-modal__header">
+            {title && <div className="ui-modal__title">{title}</div>}
             {showClose && (
               <button
                 type="button"
-               
+                className="ui-modal__close"
                 onClick={onClose}
                 aria-label="Close"
               >
@@ -88,8 +88,8 @@ export const Modal: React.FC<ModalProps> = ({
             )}
           </div>
         )}
-        <div>{children}</div>
-        {footer && <div>{footer}</div>}
+        <div className="ui-modal__body">{children}</div>
+        {footer && <div className="ui-modal__footer">{footer}</div>}
       </div>
     </div>
   );

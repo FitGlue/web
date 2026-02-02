@@ -2,10 +2,10 @@ import React, { useEffect, useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { Stack, Grid } from '../library/layout';
 import { Card, Badge, EmptyState, Button, Text, Heading, Code } from '../library/ui';
-import { 
-  DataTable, 
+import {
+  DataTable,
   DataTableColumn,
-  FilterBar, 
+  FilterBar,
   FilterField,
 } from '../library/ui';
 import { useAdminPipelineRuns } from '../../hooks/admin';
@@ -28,13 +28,13 @@ const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 
 export const AdminPipelineRuns: React.FC = () => {
   const [filters, setFilters] = useAtom(pipelineRunFiltersAtom);
   const [, setSelectedRunId] = useAtom(selectedPipelineRunIdAtom);
-  const { 
-    runs, 
-    stats, 
-    loading, 
-    error, 
+  const {
+    runs,
+    stats,
+    loading,
+    error,
     hasMore,
-    fetchRuns, 
+    fetchRuns,
     selectRun,
     loadMore,
   } = useAdminPipelineRuns();
@@ -115,7 +115,7 @@ export const AdminPipelineRuns: React.FC = () => {
       header: 'Boosters',
       render: (run) => (
         <Text variant="small">
-          {run.boosters.length > 0 
+          {run.boosters.length > 0
             ? run.boosters.map(b => b.providerName).join(', ')
             : '-'
           }
@@ -130,7 +130,7 @@ export const AdminPipelineRuns: React.FC = () => {
       render: (run) => (
         <Stack direction="horizontal" gap="xs">
           {run.destinations.map((d, i) => (
-            <Badge 
+            <Badge
               key={i}
               variant={d.status === 'Success' || d.status === '2' ? 'success' : d.status === 'Failed' || d.status === '3' ? 'error' : 'default'}
               size="sm"
@@ -220,8 +220,8 @@ export const AdminPipelineRuns: React.FC = () => {
       {/* Error state */}
       {error ? (
         <Card>
-          <EmptyState 
-            title="Error loading pipeline runs" 
+          <EmptyState
+            title="Error loading pipeline runs"
             description={error}
             actionLabel="Retry"
             onAction={() => fetchRuns()}
@@ -236,8 +236,8 @@ export const AdminPipelineRuns: React.FC = () => {
           loading={loading}
           onRowClick={handleRowClick}
           emptyState={
-            <EmptyState 
-              title="No pipeline runs found" 
+            <EmptyState
+              title="No pipeline runs found"
               description="No pipeline runs match the current filters."
             />
           }
@@ -247,8 +247,8 @@ export const AdminPipelineRuns: React.FC = () => {
       {/* Load more */}
       {hasMore && (
         <Stack align="center">
-          <Button 
-            variant="secondary" 
+          <Button
+            variant="secondary"
             onClick={loadMore}
             disabled={loading}
           >

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Stack } from '../library/layout';
 import { Card, Text, Heading, EmptyState, Code } from '../library/ui';
 import { Link } from '../library/navigation';
-import { 
+import {
   Table,
   TableHead,
   TableBody,
@@ -33,8 +33,8 @@ export const AdminBilling: React.FC = () => {
   if (error) {
     return (
       <Card>
-        <EmptyState 
-          title="Error loading billing data" 
+        <EmptyState
+          title="Error loading billing data"
           description={error}
         />
       </Card>
@@ -45,7 +45,7 @@ export const AdminBilling: React.FC = () => {
     <Stack gap="md">
       <Card>
         <Heading level={4}>Athlete Users with Stripe</Heading>
-        
+
         <Stack gap="md">
           <Table loading={loading}>
             <TableHead>
@@ -59,16 +59,16 @@ export const AdminBilling: React.FC = () => {
             <TableBody>
               {billingUsers.length === 0 && !loading && (
                 <TableEmpty colSpan={4}>
-                  <EmptyState 
-                    title="No billing users" 
+                  <EmptyState
+                    title="No billing users"
                     description="No users with billing information found."
                   />
                 </TableEmpty>
               )}
               {billingUsers.map((user) => (
-                <TableRow 
+                <TableRow
                   key={user.userId}
-                  onClick={user.stripeCustomerId 
+                  onClick={user.stripeCustomerId
                     ? () => window.open(`https://dashboard.stripe.com/customers/${user.stripeCustomerId}`, '_blank')
                     : undefined
                   }
@@ -78,7 +78,7 @@ export const AdminBilling: React.FC = () => {
                   </TableCell>
                   <TableCell>
                     {user.stripeCustomerId ? (
-                      <Link 
+                      <Link
                         to={`https://dashboard.stripe.com/customers/${user.stripeCustomerId}`}
                         variant="primary"
                         external
