@@ -45,6 +45,16 @@
     <!-- Stats Grid - Hero Cards -->
     <div id="stats-section" class="stats-grid" style="display: none;"></div>
 
+    <!-- Hybrid Race Breakdown - PRIORITY POSITION for race activities -->
+    <div id="hybrid-race-section" class="showcase-section glass-card" style="display: none;">
+      <div class="section-header">
+        <h2>🏁 Race Breakdown</h2>
+        <span id="hybrid-race-name" class="section-subtitle"></span>
+      </div>
+      <div id="hybrid-race-bars" class="hybrid-race-bars"></div>
+      <div id="hybrid-race-total" class="hybrid-race-total"></div>
+    </div>
+
     <!-- Map Section -->
     <div id="map-section" class="showcase-section glass-card" style="display: none;">
       <div class="section-header">
@@ -142,15 +152,6 @@
       <div id="exercise-list" class="exercise-list"></div>
     </div>
 
-    <!-- Hybrid Race Breakdown -->
-    <div id="hybrid-race-section" class="showcase-section glass-card" style="display: none;">
-      <div class="section-header">
-        <h2>🏁 Race Breakdown</h2>
-        <span id="hybrid-race-name" class="section-subtitle"></span>
-      </div>
-      <div id="hybrid-race-bars" class="hybrid-race-bars"></div>
-      <div id="hybrid-race-total" class="hybrid-race-total"></div>
-    </div>
 
     <!-- Tags -->
     <div id="tags-section" class="showcase-section" style="display: none;">
@@ -191,6 +192,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
 
 <style>
   /* ========================================
@@ -310,7 +312,7 @@
 
   /* Content Container - No bounding box on mobile */
   .showcase-content {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
     animation: fadeInUp 0.6s ease-out;
@@ -1234,42 +1236,42 @@
           `;
 
           hrSection.style.display = 'block';
-          setTimeout(() => initHrChart(allRecords.filter(r => r.heartRate > 0)), 100);
+          setTimeout(() => initHrChart(allRecords.filter(r => r.heartRate > 0), timeMarkers), 100);
         }
 
         // --- ELEVATION GRAPH ---
         const elevRecords = allRecords.filter(r => r.altitude !== undefined);
         if (elevRecords.length > 10) {
           document.getElementById('elevation-section').style.display = 'block';
-          setTimeout(() => initElevationChart(elevRecords), 100);
+          setTimeout(() => initElevationChart(elevRecords, timeMarkers), 100);
         }
 
         // --- PACE GRAPH (from speed data) ---
         const paceRecords = allRecords.filter(r => r.speed > 0);
         if (paceRecords.length > 10) {
           document.getElementById('pace-section').style.display = 'block';
-          setTimeout(() => initPaceChart(paceRecords), 100);
+          setTimeout(() => initPaceChart(paceRecords, timeMarkers), 100);
         }
 
         // --- POWER GRAPH ---
         const powerRecords = allRecords.filter(r => r.power > 0);
         if (powerRecords.length > 10) {
           document.getElementById('power-section').style.display = 'block';
-          setTimeout(() => initPowerChart(powerRecords), 100);
+          setTimeout(() => initPowerChart(powerRecords, timeMarkers), 100);
         }
 
         // --- CADENCE GRAPH ---
         const cadenceRecords = allRecords.filter(r => r.cadence > 0);
         if (cadenceRecords.length > 10) {
           document.getElementById('cadence-section').style.display = 'block';
-          setTimeout(() => initCadenceChart(cadenceRecords), 100);
+          setTimeout(() => initCadenceChart(cadenceRecords, timeMarkers), 100);
         }
 
         // --- SPEED GRAPH ---
         const speedRecords = allRecords.filter(r => r.speed > 0);
         if (speedRecords.length > 10) {
           document.getElementById('speed-section').style.display = 'block';
-          setTimeout(() => initSpeedChart(speedRecords), 100);
+          setTimeout(() => initSpeedChart(speedRecords, timeMarkers), 100);
         }
 
         // --- EXERCISES ---
@@ -1409,9 +1411,13 @@
           }
 
           if (segments.length > 0) {
+            // Find the longest segment for scaling (so longest bar = 100%)
+            const maxDuration = Math.max(...segments.map(s => s.duration));
+
             // Render the bar chart
             hybridBarsContainer.innerHTML = segments.map(seg => {
-              const widthPercent = Math.max(5, (seg.duration / totalDuration) * 100);
+              // Scale relative to longest segment, minimum 15% to keep readable
+              const widthPercent = Math.max(15, (seg.duration / maxDuration) * 100);
               const barClass = seg.isRun ? 'bar-run' : 'bar-station';
               return `
                 <div class="hybrid-race-bar-row">
@@ -1419,7 +1425,7 @@
                   <span class="hybrid-race-bar-label">${seg.label}</span>
                   <div class="hybrid-race-bar-container">
                     <div class="hybrid-race-bar ${barClass}" style="width: ${widthPercent}%;">
-                      <span class="hybrid-race-bar-time">${formatDuration(seg.duration)}</span>
+                      <span class="hybrid-race-bar-time">${formatTime(seg.duration)}</span>
                     </div>
                   </div>
                 </div>
@@ -1550,11 +1556,76 @@
       map.fitBounds(routeLine.getBounds(), { padding: [30, 30] });
     }
 
+    // --- TIME MARKER ANNOTATIONS HELPER ---
+    function calculateMarkerAnnotations(records, timeMarkers) {
+      if (!timeMarkers || timeMarkers.length === 0 || !records || records.length === 0) {
+        return {};
+      }
+
+      // Build array of {index, timestamp} for records that have timestamps
+      const recordsWithTime = [];
+      records.forEach((r, idx) => {
+        if (r.timestamp) {
+          recordsWithTime.push({ idx, time: new Date(r.timestamp).getTime() });
+        }
+      });
+      if (recordsWithTime.length === 0) return {};
+
+      const annotations = {};
+      const colors = ['#4CC9F0', '#FF1B8D', '#9D4EDD', '#FFD93D', '#6BCB77', '#FF6B6B'];
+
+      // Sort markers by timestamp to ensure order
+      const sortedMarkers = [...timeMarkers]
+        .filter(m => m.timestamp)
+        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+      sortedMarkers.forEach((marker, idx) => {
+        const markerTime = new Date(marker.timestamp).getTime();
+
+        // Find the closest record index in the filtered array
+        let closestRecord = recordsWithTime[0];
+        let closestDiff = Math.abs(closestRecord.time - markerTime);
+        for (const rec of recordsWithTime) {
+          const diff = Math.abs(rec.time - markerTime);
+          if (diff < closestDiff) {
+            closestDiff = diff;
+            closestRecord = rec;
+          }
+        }
+
+        // Create short label (truncate to first word or abbreviate)
+        const fullLabel = marker.label || `M${idx + 1}`;
+        const shortLabel = fullLabel.split(' ')[0].substring(0, 8);
+
+        annotations['marker' + idx] = {
+          type: 'line',
+          xMin: closestRecord.idx,
+          xMax: closestRecord.idx,
+          borderColor: colors[idx % colors.length],
+          borderWidth: 1,
+          borderDash: [4, 4],
+          label: {
+            display: true,
+            content: shortLabel,
+            position: 'start',
+            yAdjust: -5,
+            backgroundColor: 'transparent',
+            color: colors[idx % colors.length],
+            font: { size: 9, weight: 'bold' },
+            padding: 2
+          }
+        };
+      });
+
+      return annotations;
+    }
+
     // --- HEART RATE CHART ---
-    function initHrChart(records) {
+    function initHrChart(records, timeMarkers) {
       const ctx = document.getElementById('hr-chart').getContext('2d');
       const hrData = records.map(r => r.heartRate);
       const labels = records.map((_, i) => i);
+      const annotations = calculateMarkerAnnotations(records, timeMarkers);
 
       new Chart(ctx, {
         type: 'line',
@@ -1574,7 +1645,10 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: {
+            legend: { display: false },
+            annotation: { annotations }
+          },
           scales: {
             x: { display: false },
             y: {
@@ -1587,10 +1661,11 @@
     }
 
     // --- ELEVATION CHART ---
-    function initElevationChart(records) {
+    function initElevationChart(records, timeMarkers) {
       const ctx = document.getElementById('elevation-chart').getContext('2d');
       const elevData = records.map(r => r.altitude);
       const labels = records.map((_, i) => i);
+      const annotations = calculateMarkerAnnotations(records, timeMarkers);
 
       new Chart(ctx, {
         type: 'line',
@@ -1610,7 +1685,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: { legend: { display: false }, annotation: { annotations } },
           scales: {
             x: { display: false },
             y: {
@@ -1623,7 +1698,7 @@
     }
 
     // --- PACE CHART (converts speed m/s to min/km) ---
-    function initPaceChart(records) {
+    function initPaceChart(records, timeMarkers) {
       const ctx = document.getElementById('pace-chart').getContext('2d');
       // Convert speed (m/s) to pace (min/km)
       const paceData = records.map(r => {
@@ -1650,7 +1725,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: { legend: { display: false }, annotation: { annotations: calculateMarkerAnnotations(records, timeMarkers) } },
           scales: {
             x: { display: false },
             y: {
@@ -1671,7 +1746,7 @@
     }
 
     // --- POWER CHART ---
-    function initPowerChart(records) {
+    function initPowerChart(records, timeMarkers) {
       const ctx = document.getElementById('power-chart').getContext('2d');
       const powerData = records.map(r => r.power);
       const labels = records.map((_, i) => i);
@@ -1694,7 +1769,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: { legend: { display: false }, annotation: { annotations: calculateMarkerAnnotations(records, timeMarkers) } },
           scales: {
             x: { display: false },
             y: {
@@ -1707,7 +1782,7 @@
     }
 
     // --- CADENCE CHART ---
-    function initCadenceChart(records) {
+    function initCadenceChart(records, timeMarkers) {
       const ctx = document.getElementById('cadence-chart').getContext('2d');
       const cadenceData = records.map(r => r.cadence);
       const labels = records.map((_, i) => i);
@@ -1730,7 +1805,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: { legend: { display: false }, annotation: { annotations: calculateMarkerAnnotations(records, timeMarkers) } },
           scales: {
             x: { display: false },
             y: {
@@ -1743,7 +1818,7 @@
     }
 
     // --- SPEED CHART (converts m/s to km/h) ---
-    function initSpeedChart(records) {
+    function initSpeedChart(records, timeMarkers) {
       const ctx = document.getElementById('speed-chart').getContext('2d');
       const speedData = records.map(r => r.speed * 3.6); // m/s to km/h
       const labels = records.map((_, i) => i);
@@ -1766,7 +1841,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: { legend: { display: false }, annotation: { annotations: calculateMarkerAnnotations(records, timeMarkers) } },
           scales: {
             x: { display: false },
             y: {

@@ -6,56 +6,24 @@ import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { SynchronizedActivity, ExecutionRecord, ActivitiesService } from '../services/ActivitiesService';
 import { PipelineTrace } from '../components/PipelineTrace';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, CardSkeleton, Pill, Button, Heading, Paragraph, Code, TabbedCard } from '../components/library/ui';
+import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard } from '../components/library/ui';
+import { FlowVisualization } from '../components/library/ui/FlowVisualization';
+import { BoosterGrid } from '../components/library/ui/BoosterGrid';
 import '../components/library/ui/CardSkeleton.css';
 import { EnricherBadge } from '../components/dashboard/EnricherBadge';
 import { RepostActionsMenu } from '../components/RepostActionsMenu';
 import { useNerdMode } from '../state/NerdModeContext';
-import { formatActivityType, formatDestinationStatus } from '../../types/pb/enum-formatters';
+import { formatActivityType, formatDestination, formatDestinationStatus } from '../../types/pb/enum-formatters';
 import { buildDestinationUrl } from '../utils/destinationUrls';
 import { PluginManifest } from '../types/plugin';
 import { Link } from '../components/library/navigation';
-import { PipelineRunStatus } from '../../types/pb/user';
+import { BoosterExecution, PipelineRun } from '../../types/pb/user';
 
 interface ProviderExecution {
     ProviderName: string;
     Status: string;
     Metadata?: Record<string, unknown>;
 }
-
-// Status groupings for filtering pipeline runs
-type RunsTabMode = 'all' | 'completed' | 'attention';
-
-const COMPLETED_STATUSES = [
-    PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED,
-    PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL,
-];
-
-const ATTENTION_STATUSES = [
-    PipelineRunStatus.PIPELINE_RUN_STATUS_RUNNING,
-    PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING,
-    PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED,
-    PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED,
-];
-
-const getStatusInfo = (status?: PipelineRunStatus): { label: string; icon: string; variant: 'success' | 'warning' | 'error' | 'default' } => {
-    switch (status) {
-        case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED:
-            return { label: 'Synced', icon: '✅', variant: 'success' };
-        case PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL:
-            return { label: 'Partial', icon: '⚠️', variant: 'warning' };
-        case PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED:
-            return { label: 'Failed', icon: '❌', variant: 'error' };
-        case PipelineRunStatus.PIPELINE_RUN_STATUS_RUNNING:
-            return { label: 'Running', icon: '🔄', variant: 'default' };
-        case PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING:
-            return { label: 'Awaiting Input', icon: '⏳', variant: 'warning' };
-        case PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED:
-            return { label: 'Skipped', icon: '⏭️', variant: 'default' };
-        default:
-            return { label: 'Unknown', icon: '❓', variant: 'default' };
-    }
-};
 
 const deriveOriginalSource = (activity: SynchronizedActivity): string => {
     if (activity.pipelineExecution && activity.pipelineExecution.length > 0) {
@@ -83,6 +51,18 @@ const extractEnricherExecutions = (pipelineExecution?: ExecutionRecord[]): Provi
     } catch {
         return [];
     }
+};
+
+/**
+ * Convert PipelineRun.boosters to ProviderExecution format for display
+ */
+const mapBoostersToExecutions = (boosters?: BoosterExecution[]): ProviderExecution[] => {
+    if (!boosters || boosters.length === 0) return [];
+    return boosters.map(b => ({
+        ProviderName: b.providerName,
+        Status: b.status,
+        Metadata: b.metadata as Record<string, unknown>,
+    }));
 };
 
 interface GeneratedAsset {
@@ -220,9 +200,9 @@ const formatPlatformName = (
     return { name, icon };
 };
 
-const formatDateTime = (dateStr?: string): string => {
+const formatDateTime = (dateStr?: string | Date): string => {
     if (!dateStr) return 'Unknown';
-    const date = new Date(dateStr);
+    const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
     return date.toLocaleString(undefined, {
         weekday: 'short',
         month: 'short',
@@ -232,44 +212,34 @@ const formatDateTime = (dateStr?: string): string => {
     });
 };
 
+const formatMetadataKey = (key: string): string => {
+    return key
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, c => c.toUpperCase());
+};
+
+const formatMetadataValue = (value: unknown): string => {
+    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+    if (typeof value === 'number') return value.toLocaleString();
+    if (typeof value === 'string') return value;
+    return JSON.stringify(value);
+};
+
+const getGlowCardVariant = (hasDestinations: boolean): 'default' | 'success' | 'premium' | 'awaiting' => {
+    if (hasDestinations) return 'success';
+    return 'awaiting';
+};
+
 const ActivityDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    // Use ActivitiesService directly for single activity fetch instead of batched REST hook
     const [loading, setLoading] = useState(true);
     const [activity, setActivity] = useState<SynchronizedActivity | null>(null);
     const { pipelines } = useRealtimePipelines();
     const { sources, destinations: registryDestinations } = usePluginRegistry();
-    const [traceExpanded, setTraceExpanded] = useState(false);
     const { isNerdMode } = useNerdMode();
-    const [runsTabMode, setRunsTabMode] = useState<RunsTabMode>('all');
 
-    // Get all pipeline runs and filter by this activity
-    const { pipelineRuns, loading: runsLoading } = useRealtimePipelineRuns(true, 50);
-
-    // Filter pipeline runs for this activity
-    const activityRuns = useMemo(() => {
-        return pipelineRuns.filter(run => run.activityId === id);
-    }, [pipelineRuns, id]);
-
-    // Filter by status tab
-    const filteredRuns = useMemo(() => {
-        switch (runsTabMode) {
-            case 'completed':
-                return activityRuns.filter(run => COMPLETED_STATUSES.includes(run.status));
-            case 'attention':
-                return activityRuns.filter(run => ATTENTION_STATUSES.includes(run.status));
-            case 'all':
-            default:
-                return activityRuns;
-        }
-    }, [activityRuns, runsTabMode]);
-
-    // Count runs by category
-    const runsCounts = useMemo(() => ({
-        all: activityRuns.length,
-        completed: activityRuns.filter(run => COMPLETED_STATUSES.includes(run.status)).length,
-        attention: activityRuns.filter(run => ATTENTION_STATUSES.includes(run.status)).length,
-    }), [activityRuns]);
+    // Get pipeline runs for this activity - this has booster metadata!
+    const { pipelineRuns } = useRealtimePipelineRuns(true, 50);
 
     const fetchActivity = async () => {
         if (!id) return;
@@ -288,11 +258,72 @@ const ActivityDetailPage: React.FC = () => {
         fetchActivity();
     }, [id]);
 
-    useEffect(() => {
-        if (isNerdMode) {
-            setTraceExpanded(true);
+    // Get the most recent pipeline run for this activity (has booster data with metadata)
+    const activityPipelineRun = useMemo((): PipelineRun | undefined => {
+        return pipelineRuns.find(run => run.activityId === id);
+    }, [pipelineRuns, id]);
+
+    // Memoized data extraction - prefer pipeline run data for boosters
+    const {
+        sourceInfo,
+        destinations,
+        providerExecutions,
+        activityType,
+        generatedAssets,
+        pipelineName,
+        successfulEnrichers,
+        failedEnrichers,
+        pipelineRunDestinations,
+    } = useMemo(() => {
+        if (!activity) {
+            return {
+                sourceInfo: { name: '', icon: '' },
+                destinations: [],
+                providerExecutions: [],
+                activityType: '',
+                generatedAssets: [],
+                pipelineName: undefined,
+                successfulEnrichers: [],
+                failedEnrichers: [],
+                pipelineRunDestinations: [],
+            };
         }
-    }, [isNerdMode]);
+
+        const originalSource = deriveOriginalSource(activity);
+        const sourceInfo = formatPlatformName(originalSource, sources, registryDestinations);
+        const destinations = activity.destinations ? Object.entries(activity.destinations) : [];
+
+        // Prefer pipeline run boosters (has metadata) over legacy execution trace
+        const providerExecutions = activityPipelineRun?.boosters
+            ? mapBoostersToExecutions(activityPipelineRun.boosters)
+            : extractEnricherExecutions(activity.pipelineExecution);
+
+        const destinationActivityType = getDestinationActivityType(activity.pipelineExecution);
+        const activityType = destinationActivityType
+            ? formatActivityType(destinationActivityType)
+            : formatActivityType(activity.type);
+        const generatedAssets = extractGeneratedAssets(providerExecutions);
+        const pipelineName = activity.pipelineId
+            ? pipelines.find(p => p.id === activity.pipelineId)?.name
+            : undefined;
+        const successfulEnrichers = providerExecutions.filter(p => p.Status?.toUpperCase() === 'SUCCESS');
+        const failedEnrichers = providerExecutions.filter(p => p.Status?.toUpperCase() !== 'SUCCESS');
+
+        // Get detailed destination info from pipeline run
+        const pipelineRunDestinations = activityPipelineRun?.destinations || [];
+
+        return {
+            sourceInfo,
+            destinations,
+            providerExecutions,
+            activityType,
+            generatedAssets,
+            pipelineName,
+            successfulEnrichers,
+            failedEnrichers,
+            pipelineRunDestinations,
+        };
+    }, [activity, sources, registryDestinations, pipelines, activityPipelineRun]);
 
     if (loading && !activity) {
         return (
@@ -314,21 +345,67 @@ const ActivityDetailPage: React.FC = () => {
         );
     }
 
-    const originalSource = deriveOriginalSource(activity);
-    const sourceInfo = formatPlatformName(originalSource, sources, registryDestinations);
-    const destinations = activity.destinations ? Object.entries(activity.destinations) : [];
-    const providerExecutions = extractEnricherExecutions(activity.pipelineExecution);
-    const destinationActivityType = getDestinationActivityType(activity.pipelineExecution);
-    const activityType = destinationActivityType
-        ? formatActivityType(destinationActivityType)
-        : formatActivityType(activity.type);
+    // Build flow visualization nodes
+    const sourceNode = (
+        <Badge variant="source" size="sm">
+            <Stack direction="horizontal" gap="xs" align="center">
+                <Paragraph inline>{sourceInfo.icon}</Paragraph>
+                <Paragraph inline size="sm">{sourceInfo.name}</Paragraph>
+            </Stack>
+        </Badge>
+    );
 
-    const failedBoosters = providerExecutions.filter(p => p.Status?.toUpperCase() === 'FAILED');
-    const generatedAssets = extractGeneratedAssets(providerExecutions);
+    const boostersNode = (
+        <BoosterGrid emptyText="No boosters applied">
+            {providerExecutions.map((exec, idx) => (
+                <EnricherBadge
+                    key={idx}
+                    providerName={exec.ProviderName}
+                    status={exec.Status}
+                    metadata={exec.Metadata}
+                />
+            ))}
+        </BoosterGrid>
+    );
 
-    const pipelineName = activity.pipelineId
-        ? pipelines.find(p => p.id === activity.pipelineId)?.name
-        : undefined;
+    const destinationNode = destinations.length > 0 ? (
+        <Stack direction="horizontal" gap="xs">
+            {destinations.map(([platform]) => {
+                const destInfo = formatPlatformName(platform, sources, registryDestinations);
+                return (
+                    <Badge key={platform} variant="destination" size="sm">
+                        <Stack direction="horizontal" gap="xs" align="center">
+                            <Paragraph inline>{destInfo.icon}</Paragraph>
+                            <Paragraph inline size="sm">{destInfo.name}</Paragraph>
+                        </Stack>
+                    </Badge>
+                );
+            })}
+        </Stack>
+    ) : (
+        <Badge variant="default" size="sm">
+            <Stack direction="horizontal" gap="xs" align="center">
+                <Paragraph inline>⏳</Paragraph>
+                <Paragraph inline size="sm">Pending</Paragraph>
+            </Stack>
+        </Badge>
+    );
+
+    // Header content for GlowCard
+    const heroHeader = (
+        <Stack direction="horizontal" align="center" justify="between">
+            <Stack direction="horizontal" gap="sm" align="center" wrap>
+                <Pill variant="gradient" size="small">{activityType}</Pill>
+                <Heading level={3}>{activity.title || 'Untitled Activity'}</Heading>
+            </Stack>
+            <Stack direction="horizontal" gap="sm" align="center">
+                {pipelineName && (
+                    <Paragraph muted size="sm">via {pipelineName}</Paragraph>
+                )}
+                <Paragraph muted size="sm">{formatDateTime(activity.startTime)}</Paragraph>
+            </Stack>
+        </Stack>
+    );
 
     return (
         <PageLayout
@@ -339,291 +416,206 @@ const ActivityDetailPage: React.FC = () => {
             loading={loading}
         >
             <Stack gap="lg">
-                <Stack direction="horizontal" align="center" justify="between">
-                    <Stack direction="horizontal" align="center" gap="sm">
-                        <Pill variant="gradient">{activityType}</Pill>
-                        {pipelineName && (
-                            <Paragraph inline muted>via {pipelineName}</Paragraph>
+                {/* Hero Card with Flow Visualization */}
+                <GlowCard variant={getGlowCardVariant(destinations.length > 0)} header={heroHeader}>
+                    <Stack gap="md">
+                        {/* Description */}
+                        {activity.description && (
+                            <Paragraph><span style={{ whiteSpace: 'pre-line' }}>{activity.description}</span></Paragraph>
                         )}
-                        <Paragraph inline muted>{formatDateTime(activity.startTime)}</Paragraph>
+
+                        {/* Flow Visualization */}
+                        <FlowVisualization
+                            source={sourceNode}
+                            center={boostersNode}
+                            destination={destinationNode}
+                        />
                     </Stack>
-                    <RepostActionsMenu
-                        activity={activity}
-                        onSuccess={fetchActivity}
-                        isPro={true}
-                    />
-                </Stack>
+                </GlowCard>
 
-                {activity.description && (
-                    <Paragraph>{activity.description}</Paragraph>
-                )}
-
-                <Stack direction="horizontal" align="center" gap="md" wrap>
-                    <Stack align="center" gap="xs">
-                        <Paragraph inline>{sourceInfo.icon}</Paragraph>
-                        <Paragraph inline>{sourceInfo.name}</Paragraph>
-                    </Stack>
-
-                    <Paragraph inline>→</Paragraph>
-
-                    <Stack align="center" gap="xs">
-                        <Paragraph inline>✨ FitGlue Magic</Paragraph>
-                        {providerExecutions.length > 0 && (
-                            <Stack direction="horizontal" gap="xs" wrap>
-                                {providerExecutions.map((exec, idx) => (
-                                    <EnricherBadge
-                                        key={idx}
-                                        providerName={exec.ProviderName}
-                                        status={exec.Status}
-                                        metadata={exec.Metadata}
-                                    />
-                                ))}
-                            </Stack>
-                        )}
-                        {providerExecutions.length === 0 && (
-                            <Paragraph size="sm" muted>No boosters applied</Paragraph>
-                        )}
-                        {failedBoosters.length > 0 && (
-                            <Paragraph size="sm">⚠️ {failedBoosters.length} skipped</Paragraph>
-                        )}
-                    </Stack>
-
-                    <Paragraph inline>→</Paragraph>
-
-                    {destinations.length > 0 ? (
-                        <Stack direction="horizontal" gap="sm" wrap>
-                            {destinations.map(([platform]) => {
-                                const destInfo = formatPlatformName(platform, sources, registryDestinations);
-                                return (
-                                    <Stack key={platform} align="center" gap="xs">
-                                        <Paragraph inline>{destInfo.icon}</Paragraph>
-                                        <Paragraph inline>{destInfo.name}</Paragraph>
-                                    </Stack>
-                                );
-                            })}
-                        </Stack>
-                    ) : (
-                        <Stack align="center" gap="xs">
-                            <Paragraph inline>⏳</Paragraph>
-                            <Paragraph inline>Pending</Paragraph>
-                        </Stack>
-                    )}
-                </Stack>
-            </Stack>
-
-            {destinations.length > 0 && (
-                <Card>
-                    <Heading level={3}>
-                        <Paragraph inline>🚀</Paragraph>
-                        Synced Destinations
-                    </Heading>
-                    <Grid cols={2} gap="md">
-                        {destinations.map(([platform, activityId]) => {
-                            const destInfo = formatPlatformName(platform, sources, registryDestinations);
-                            const activityIdStr = String(activityId);
-                            const externalUrl = buildDestinationUrl(registryDestinations, platform, activityIdStr);
-
-                            return (
-                                <Stack key={platform} gap="sm">
-                                    <Stack direction="horizontal" align="center" gap="sm">
-                                        <Paragraph inline>{destInfo.icon}</Paragraph>
-                                        <Paragraph bold>{destInfo.name}</Paragraph>
-                                    </Stack>
-                                    <Stack>
-                                        {externalUrl ? (
-                                            <Link
-                                                to={externalUrl}
-                                                external
-
-                                            >
-                                                {activityIdStr} ↗
-                                            </Link>
-                                        ) : (
-                                            <Code>{activityIdStr}</Code>
-                                        )}
-                                    </Stack>
-                                </Stack>
-                            );
-                        })}
-                    </Grid>
-                </Card>
-            )}
-
-            {generatedAssets.length > 0 && (
-                <Card>
-                    <Heading level={3}>
-                        <Paragraph inline>🎨</Paragraph>
-                        Generated Assets
-                    </Heading>
-                    <Grid cols={3} gap="md">
-                        {generatedAssets.map((asset, idx) => (
-                            <Stack key={idx} align="center" gap="sm">
-                                <Link
-                                    to={asset.url}
-                                    external
-
-                                >
-                                    <Stack align="center" gap="xs">
-                                        {isSvgUrl(asset.url) ? (
-                                            <SvgAsset
-                                                url={asset.url}
-                                                alt={formatAssetType(asset.type)}
-
-                                            />
-                                        ) : (
-                                            <img
-                                                src={asset.url}
-                                                alt={formatAssetType(asset.type)}
-
-                                            />
-                                        )}
-                                    </Stack>
-                                    <Paragraph size="sm" centered>
-                                        {formatAssetType(asset.type)}
-                                    </Paragraph>
-                                </Link>
-                            </Stack>
-                        ))}
-                    </Grid>
-                </Card>
-            )}
-
-            {/* Pipeline Runs Section - Shows all runs for this activity */}
-            {activityRuns.length > 0 && (
-                <TabbedCard
-                    tabs={[
-                        { id: 'all', icon: '📋', label: 'All Runs', count: runsCounts.all },
-                        { id: 'completed', icon: '✅', label: 'Completed', count: runsCounts.completed },
-                        { id: 'attention', icon: '⚡', label: 'In Progress', count: runsCounts.attention, variant: runsCounts.attention > 0 ? 'warning' : undefined },
-                    ]}
-                    activeTab={runsTabMode}
-                    onTabChange={(tabId) => setRunsTabMode(tabId as RunsTabMode)}
-                    footerText={filteredRuns.length > 0 ? `${filteredRuns.length} pipeline runs` : undefined}
-                >
-                    {runsLoading && filteredRuns.length === 0 ? (
+                {/* Enricher Details - Expanded Metadata */}
+                {successfulEnrichers.length > 0 && (
+                    <Card>
                         <Stack gap="md">
-                            <CardSkeleton variant="activity" />
-                        </Stack>
-                    ) : filteredRuns.length === 0 ? (
-                        <Stack gap="md" align="center">
-                            <Paragraph size="lg">
-                                {runsTabMode === 'completed' ? '🏃' : runsTabMode === 'attention' ? '✅' : '📋'}
-                            </Paragraph>
                             <Heading level={4}>
-                                {runsTabMode === 'completed' ? 'No completed runs' : runsTabMode === 'attention' ? 'No runs need attention' : 'No pipeline runs'}
+                                <Stack direction="horizontal" gap="xs" align="center">
+                                    <Paragraph inline>✨</Paragraph>
+                                    Enrichments Applied
+                                </Stack>
                             </Heading>
-                        </Stack>
-                    ) : (
-                        <Stack gap="md">
-                            {filteredRuns.map(run => {
-                                const statusInfo = getStatusInfo(run.status);
-                                const runPipeline = pipelines.find(p => p.id === run.pipelineId);
-                                const boosters = run.boosters || [];
-
-                                return (
-                                    <Card key={run.id}>
+                            <Grid cols={2} gap="md">
+                                {successfulEnrichers.map((enricher, idx) => (
+                                    <Card key={idx}>
                                         <Stack gap="sm">
-                                            <Stack direction="horizontal" align="center" justify="between">
-                                                <Stack direction="horizontal" gap="sm" align="center">
-                                                    <Pill variant={statusInfo.variant === 'success' ? 'success' : statusInfo.variant === 'error' ? 'error' : 'default'}>
-                                                        {statusInfo.icon} {statusInfo.label}
-                                                    </Pill>
-                                                    {runPipeline && (
-                                                        <Paragraph muted size="sm">via {runPipeline.name}</Paragraph>
-                                                    )}
-                                                </Stack>
-                                                <Paragraph muted size="sm">
-                                                    {run.createdAt ? new Date(run.createdAt).toLocaleString(undefined, {
-                                                        month: 'short',
-                                                        day: 'numeric',
-                                                        hour: 'numeric',
-                                                        minute: '2-digit',
-                                                    }) : 'Unknown time'}
-                                                </Paragraph>
-                                            </Stack>
-
-                                            {run.statusMessage && (
-                                                <Paragraph size="sm" muted>
-                                                    ℹ️ {run.statusMessage}
-                                                </Paragraph>
-                                            )}
-
-                                            {boosters.length > 0 && (
-                                                <Stack direction="horizontal" gap="xs" wrap>
-                                                    {boosters.map((booster, idx) => (
-                                                        <EnricherBadge
-                                                            key={idx}
-                                                            providerName={booster.providerName}
-                                                            status={booster.status}
-                                                            metadata={booster.metadata as Record<string, unknown>}
-                                                        />
-                                                    ))}
-                                                </Stack>
-                                            )}
-
-                                            {run.destinations && run.destinations.length > 0 && (
-                                                <Stack direction="horizontal" gap="xs" wrap>
-                                                    {run.destinations.map((dest, idx) => {
-                                                        const destStatus = formatDestinationStatus(dest.status) || 'PENDING';
-                                                        const destInfo = formatPlatformName(
-                                                            dest.destination?.toString() || 'unknown',
-                                                            sources,
-                                                            registryDestinations
-                                                        );
-                                                        return (
-                                                            <Pill
-                                                                key={idx}
-                                                                variant={destStatus === 'SUCCESS' ? 'success' : destStatus === 'FAILED' ? 'error' : 'default'}
-                                                                size="small"
-                                                            >
-                                                                {destInfo.icon} {destInfo.name}
-                                                            </Pill>
-                                                        );
-                                                    })}
+                                            <EnricherBadge
+                                                providerName={enricher.ProviderName}
+                                                status={enricher.Status}
+                                                metadata={enricher.Metadata}
+                                            />
+                                            {enricher.Metadata && Object.keys(enricher.Metadata).length > 0 && (
+                                                <Stack gap="xs">
+                                                    {Object.entries(enricher.Metadata)
+                                                        .filter(([key]) => !key.startsWith('asset_'))
+                                                        .slice(0, 6)
+                                                        .map(([key, value]) => (
+                                                            <Stack key={key} direction="horizontal" justify="between">
+                                                                <Paragraph size="sm" muted>{formatMetadataKey(key)}</Paragraph>
+                                                                <Paragraph size="sm">{formatMetadataValue(value)}</Paragraph>
+                                                            </Stack>
+                                                        ))}
                                                 </Stack>
                                             )}
                                         </Stack>
                                     </Card>
+                                ))}
+                            </Grid>
+                            {failedEnrichers.length > 0 && (
+                                <Paragraph size="sm" muted>
+                                    ⚠️ {failedEnrichers.length} enricher{failedEnrichers.length > 1 ? 's' : ''} skipped
+                                </Paragraph>
+                            )}
+                        </Stack>
+                    </Card>
+                )}
+
+                {/* Synced Destinations - Big Clickable GlowCards */}
+                {destinations.length > 0 && (
+                    <Stack gap="md">
+                        <Heading level={4}>
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph inline>🚀</Paragraph>
+                                Synced Destinations
+                            </Stack>
+                        </Heading>
+                        <Grid cols={2} gap="md">
+                            {destinations.map(([platform, activityId]) => {
+                                const destInfo = formatPlatformName(platform, sources, registryDestinations);
+                                const activityIdStr = String(activityId);
+                                const externalUrl = buildDestinationUrl(registryDestinations, platform, activityIdStr);
+
+                                // Get status from pipeline run destinations
+                                const runDest = pipelineRunDestinations.find(d =>
+                                    formatDestination(d.destination)?.toLowerCase() === platform.toLowerCase()
+                                );
+                                const status = runDest ? formatDestinationStatus(runDest.status) : 'SUCCESS';
+                                const isSuccess = status === 'SUCCESS';
+
+                                const cardHeader = (
+                                    <Stack direction="horizontal" align="center" gap="sm">
+                                        <span style={{ fontSize: '1.5rem' }}>{destInfo.icon}</span>
+                                        <Heading level={4}>{destInfo.name}</Heading>
+                                    </Stack>
+                                );
+
+                                return (
+                                    <GlowCard
+                                        key={platform}
+                                        variant={isSuccess ? 'success' : 'default'}
+                                        header={cardHeader}
+                                        onClick={externalUrl ? () => window.open(externalUrl, '_blank') : undefined}
+                                    >
+                                        <Stack gap="xs">
+                                            {externalUrl ? (
+                                                <Link to={externalUrl} external>
+                                                    View on {destInfo.name} ↗
+                                                </Link>
+                                            ) : (
+                                                <Code>{activityIdStr}</Code>
+                                            )}
+                                            <Paragraph size="sm" muted>
+                                                {isSuccess ? '✓ Synced successfully' : `Status: ${status}`}
+                                            </Paragraph>
+                                        </Stack>
+                                    </GlowCard>
                                 );
                             })}
+                        </Grid>
+                    </Stack>
+                )}
+
+                {/* Generated Assets */}
+                {generatedAssets.length > 0 && (
+                    <Card>
+                        <Stack gap="md">
+                            <Heading level={4}>
+                                <Stack direction="horizontal" gap="xs" align="center">
+                                    <Paragraph inline>🎨</Paragraph>
+                                    Generated Assets
+                                </Stack>
+                            </Heading>
+                            <Grid cols={3} gap="md">
+                                {generatedAssets.map((asset, idx) => (
+                                    <Stack key={idx} align="center" gap="sm">
+                                        <Link to={asset.url} external>
+                                            <Stack align="center" gap="xs">
+                                                {isSvgUrl(asset.url) ? (
+                                                    <SvgAsset
+                                                        url={asset.url}
+                                                        alt={formatAssetType(asset.type)}
+                                                    />
+                                                ) : (
+                                                    <img
+                                                        src={asset.url}
+                                                        alt={formatAssetType(asset.type)}
+                                                    />
+                                                )}
+                                            </Stack>
+                                            <Paragraph size="sm" centered>
+                                                {formatAssetType(asset.type)}
+                                            </Paragraph>
+                                        </Link>
+                                    </Stack>
+                                ))}
+                            </Grid>
                         </Stack>
-                    )}
-                </TabbedCard>
-            )}
+                    </Card>
+                )}
 
-            {activity.pipelineExecution && activity.pipelineExecution.length > 0 && (
-                <Stack gap="sm">
-                    <Button
-                        variant="text"
-                        onClick={() => setTraceExpanded(!traceExpanded)}
-
-                    >
-                        <Paragraph inline>
-                            {traceExpanded ? '▼' : '▶'}
-                        </Paragraph>
-                        <Paragraph inline>
-                            Pipeline Execution Trace (Legacy)
-                        </Paragraph>
-                        <Paragraph inline muted>
-                            {activity.pipelineExecution.length} steps
-                        </Paragraph>
-                    </Button>
-
-                    {traceExpanded && (
-                        <Stack>
+                {/* Pipeline Execution Trace - Nerd Mode Only */}
+                {isNerdMode && activity.pipelineExecution && activity.pipelineExecution.length > 0 && (
+                    <Card>
+                        <Stack gap="md">
+                            <Heading level={4}>
+                                <Stack direction="horizontal" gap="xs" align="center">
+                                    <Paragraph inline>🔧</Paragraph>
+                                    Pipeline Execution Trace
+                                    <Badge variant="default" size="sm">
+                                        {activity.pipelineExecution.length} steps
+                                    </Badge>
+                                </Stack>
+                            </Heading>
                             <PipelineTrace
                                 trace={activity.pipelineExecution}
                                 pipelineExecutionId={activity.pipelineExecutionId}
                                 isLoading={loading}
                             />
                         </Stack>
-                    )}
-                </Stack>
-            )}
+                    </Card>
+                )}
 
-            <Paragraph size="sm" muted centered>
-                Synced: {formatDateTime(activity.syncedAt)}
-            </Paragraph>
+                {/* Magic Actions Section */}
+                <Card>
+                    <Stack gap="md">
+                        <Heading level={4}>
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph inline>⚡</Paragraph>
+                                Magic Actions
+                            </Stack>
+                        </Heading>
+                        <RepostActionsMenu
+                            activity={activity}
+                            onSuccess={fetchActivity}
+                            isPro={true}
+                            inline
+                        />
+                    </Stack>
+                </Card>
+
+                {/* Footer */}
+                <Paragraph size="sm" muted centered>
+                    Synced: {formatDateTime(activity.syncedAt)}
+                </Paragraph>
+            </Stack>
         </PageLayout>
     );
 };

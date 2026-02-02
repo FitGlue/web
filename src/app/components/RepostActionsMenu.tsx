@@ -50,6 +50,8 @@ interface RepostActionsMenuProps {
     activity: SynchronizedActivity;
     onSuccess: () => void;
     isPro?: boolean;
+    /** If true, renders buttons inline without a dropdown toggle */
+    inline?: boolean;
 }
 
 type ModalType = 'missed' | 'retry' | 'full' | null;
@@ -58,8 +60,9 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
     activity,
     onSuccess,
     isPro = true,
+    inline = false,
 }) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(inline); // Start open if inline
     const [modalType, setModalType] = useState<ModalType>(null);
     const [selectedDestination, setSelectedDestination] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -123,7 +126,7 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
         setModalType(type);
         setSelectedDestination(destination || null);
         setResult(null);
-        setIsOpen(false);
+        if (!inline) setIsOpen(false);
     };
 
     const closeModal = () => {
@@ -136,80 +139,99 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
         return null;
     }
 
-    return (
-        <Stack gap="sm">
-            {/* Dropdown Toggle */}
-            <Button
-                variant="secondary"
-                onClick={() => setIsOpen(!isOpen)}
-                aria-expanded={isOpen}
-            >
-                <Stack direction="horizontal" gap="sm" align="center">
-                    <Paragraph inline>⚡</Paragraph>
-                    <Paragraph inline>Magic Actions</Paragraph>
-                    <Paragraph inline>{isOpen ? '▲' : '▼'}</Paragraph>
-                </Stack>
-            </Button>
-
-            {/* Dropdown Menu */}
-            {isOpen && (
-                <Card>
-                    <Stack gap="md">
-                        {/* Missed Destination */}
-                        {missedDestinations.length > 0 && (
-                            <Stack gap="sm">
-                                <Heading level={5}>📤 Send to another destination</Heading>
-                                {missedDestinations.map(dest => (
-                                    <Button
-                                        key={dest.key}
-                                        variant="text"
-                                        onClick={() => openModal('missed', dest.key)}
-                                    >
-                                        <Stack direction="horizontal" gap="sm" align="center">
-                                            <Paragraph inline>{dest.icon}</Paragraph>
-                                            <Paragraph inline>Send to {dest.name}</Paragraph>
-                                        </Stack>
-                                    </Button>
-                                ))}
-                            </Stack>
-                        )}
-
-                        {/* Retry Destination */}
-                        {syncedDestinations.length > 0 && (
-                            <Stack gap="sm">
-                                <Heading level={5}>🔄 Retry destination</Heading>
-                                {syncedDestinations.map(destKey => {
-                                    const dest = availableDestinations.find(d => d.key === destKey);
-                                    return (
-                                        <Button
-                                            key={destKey}
-                                            variant="text"
-                                            onClick={() => openModal('retry', destKey)}
-                                        >
-                                            <Stack direction="horizontal" gap="sm" align="center">
-                                                <Paragraph inline>{dest?.icon || '📱'}</Paragraph>
-                                                <Paragraph inline>Retry {dest?.name || destKey}</Paragraph>
-                                            </Stack>
-                                        </Button>
-                                    );
-                                })}
-                            </Stack>
-                        )}
-
-                        {/* Full Re-execution */}
-                        <Stack gap="sm">
+    // Inline content - rendered as buttons in a grid/stack
+    const actionsContent = (
+        <Stack gap="lg">
+            {/* Send to Another Destination */}
+            {missedDestinations.length > 0 && (
+                <Stack gap="sm">
+                    <Heading level={5}>📤 Send to another destination</Heading>
+                    <Paragraph size="sm" muted>
+                        Send this activity to a platform it hasn&apos;t been synced to yet. Uses the existing enrichments.
+                    </Paragraph>
+                    <Stack direction="horizontal" gap="sm" wrap>
+                        {missedDestinations.map(dest => (
                             <Button
-                                variant="text"
-                                onClick={() => openModal('full')}
+                                key={dest.key}
+                                variant="secondary"
+                                onClick={() => openModal('missed', dest.key)}
                             >
                                 <Stack direction="horizontal" gap="sm" align="center">
-                                    <Paragraph inline>✨</Paragraph>
-                                    <Paragraph inline>Re-run entire pipeline</Paragraph>
+                                    <Paragraph inline>{dest.icon}</Paragraph>
+                                    <Paragraph inline>{dest.name}</Paragraph>
                                 </Stack>
                             </Button>
-                        </Stack>
+                        ))}
                     </Stack>
-                </Card>
+                </Stack>
+            )}
+
+            {/* Retry Destinations */}
+            {syncedDestinations.length > 0 && (
+                <Stack gap="sm">
+                    <Heading level={5}>🔄 Retry destination</Heading>
+                    <Paragraph size="sm" muted>
+                        Re-send this activity to a platform it&apos;s already synced to. Useful if the previous sync had issues.
+                    </Paragraph>
+                    <Stack direction="horizontal" gap="sm" wrap>
+                        {syncedDestinations.map(destKey => {
+                            const dest = availableDestinations.find(d => d.key === destKey);
+                            return (
+                                <Button
+                                    key={destKey}
+                                    variant="secondary"
+                                    onClick={() => openModal('retry', destKey)}
+                                >
+                                    <Stack direction="horizontal" gap="sm" align="center">
+                                        <Paragraph inline>{dest?.icon || '📱'}</Paragraph>
+                                        <Paragraph inline>{dest?.name || destKey}</Paragraph>
+                                    </Stack>
+                                </Button>
+                            );
+                        })}
+                    </Stack>
+                </Stack>
+            )}
+
+            {/* Full Re-execution */}
+            <Stack gap="sm">
+                <Heading level={5}>✨ Advanced</Heading>
+                <Paragraph size="sm" muted>
+                    Re-process through the full pipeline with current boosters. May create duplicates on some platforms.
+                </Paragraph>
+                <Button
+                    variant="secondary"
+                    onClick={() => openModal('full')}
+                >
+                    <Stack direction="horizontal" gap="sm" align="center">
+                        <Paragraph inline>🔄</Paragraph>
+                        <Paragraph inline>Re-run entire pipeline</Paragraph>
+                    </Stack>
+                </Button>
+            </Stack>
+        </Stack>
+    );
+
+    return (
+        <Stack gap="sm">
+            {/* Dropdown Toggle - only when not inline */}
+            {!inline && (
+                <Button
+                    variant="secondary"
+                    onClick={() => setIsOpen(!isOpen)}
+                    aria-expanded={isOpen}
+                >
+                    <Stack direction="horizontal" gap="sm" align="center">
+                        <Paragraph inline>⚡</Paragraph>
+                        <Paragraph inline>Magic Actions</Paragraph>
+                        <Paragraph inline>{isOpen ? '▲' : '▼'}</Paragraph>
+                    </Stack>
+                </Button>
+            )}
+
+            {/* Actions Content */}
+            {(inline || isOpen) && (
+                inline ? actionsContent : <Card>{actionsContent}</Card>
             )}
 
             {/* Confirmation Modal */}
