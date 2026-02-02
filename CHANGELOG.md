@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.3.0](https://github.com/fitglue/web/compare/v8.2.0...v8.3.0) (2026-02-02)
+
+
+### Features
+
+* refactor activity, pipeline, input, and integration data fetching to use new realtime hooks and remove the API key setup modal. ([dace5a2](https://github.com/fitglue/web/commit/dace5a239f1b755f0010f85dc63552956d8dbf25))
+
 ## [8.2.0](https://github.com/fitglue/web/compare/v8.1.1...v8.2.0) (2026-02-01)
 
 
