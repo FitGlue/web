@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.6.0](https://github.com/fitglue/web/compare/v8.5.0...v8.6.0) (2026-02-02)
+
+
+### Features
+
+* add full-width layout option and enhance modal styling ([d015c8e](https://github.com/fitglue/web/commit/d015c8ec29760e22637ba6e3741aca007fb9d3ff))
+
 ## [8.5.0](https://github.com/fitglue/web/compare/v8.4.4...v8.5.0) (2026-02-02)
 
 
