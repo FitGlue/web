@@ -21,7 +21,7 @@ The React app uses **Jotai** for atomic state management combined with **real-ti
 │         ▼                      ▼                        │                   │
 │  ┌──────────────────────────────────────────────────────────────────────┐  │
 │  │                          Jotai Atoms                                  │  │
-│  │  pipelinesAtom · activitiesAtom · integrationsAtom · inputsAtom      │  │
+│  │  pipelinesAtom · pipelineRunsAtom · integrationsAtom · inputsAtom    │  │
 │  └──────────────────────────────────────────────────────────────────────┘  │
 │                                                                             │
 └────────────────────────────────────────────────────────────────────────────┘
@@ -67,10 +67,10 @@ function useFirestoreListener<T, R>(options: UseFirestoreListenerOptions<T, R>);
 | Hook | Collection | Atom Updated |
 |------|------------|--------------|
 | `useRealtimePipelines` | `users/{userId}/pipelines` | `pipelinesAtom` |
-| `useRealtimeActivities` | `users/{userId}/activities` | `activitiesAtom` |
+| `useRealtimePipelineRuns` | `users/{userId}/pipeline_runs` | `pipelineRunsAtom` |
 | `useRealtimeInputs` | `users/{userId}/pending_inputs` | `pendingInputsAtom` |
 | `useRealtimeIntegrations` | `users/{userId}` (integrations field) | `integrationsAtom` |
-| `usePipelineRuns` | `users/{userId}/pipeline_runs` | `pipelineRunsAtom` |
+| `useRealtimeStats` | `users/{userId}` (activityCounts field) | `activityStatsAtom` |
 
 **Example Usage:**
 
@@ -116,10 +116,9 @@ export const isPipelinesLoadedAtom = atom(false);
 
 ### activitiesState.ts
 
-Activities and execution data (real-time):
+Pipeline runs and stats (real-time):
 
 ```typescript
-export const activitiesAtom = atom<SynchronizedActivity[]>([]);
 export const pipelineRunsAtom = atom<PipelineRun[]>([]);
 export const activityStatsAtom = atom<ActivityStats>({ ... });
 export const unsynchronizedAtom = atom<UnsynchronizedEntry[]>([]);
@@ -230,14 +229,13 @@ const activePipelinesAtom = atom((get) => {
 ```typescript
 import { SkeletonLoading, CardSkeleton } from '@/components/library';
 
-function ActivityList() {
-  const [activities] = useAtom(activitiesAtom);
-  const [loading] = useAtom(isLoadingActivitiesAtom);
+function PipelineRunsList() {
+  const { pipelineRuns, loading } = useRealtimePipelineRuns();
   
   if (loading) {
     return <SkeletonLoading count={3}><CardSkeleton /></SkeletonLoading>;
   }
-  return <ActivityCards activities={activities} />;
+  return <PipelineRunCards runs={pipelineRuns} />;
 }
 ```
 

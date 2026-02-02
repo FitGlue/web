@@ -21,8 +21,8 @@ export interface IActivitiesService {
     monthlySynced: number;
     weeklySynced: number;
   }>;
-  // list() removed - use useRealtimeActivities hook
-  get(id: string): Promise<SynchronizedActivity | null>; // Kept for on-demand trace loading
+  // list() removed - use useRealtimePipelineRuns hook instead
+  get(id: string): Promise<SynchronizedActivity | null>; // Kept for detail page
   listUnsynchronized(limit?: number, offset?: number): Promise<UnsynchronizedEntry[]>;
   getUnsynchronizedTrace(pipelineExecutionId: string): Promise<{ pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null>;
   // Re-post methods
@@ -57,7 +57,7 @@ export const ActivitiesService: IActivitiesService = {
     };
   },
 
-  // list() removed - use useRealtimeActivities hook instead
+  // list() removed - use useRealtimePipelineRuns hook instead
 
   async get(id: string) {
     const headers = await getAuthHeader();

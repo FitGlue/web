@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useRealtimeInputs } from '../hooks/useRealtimeInputs';
-import { useRealtimeStats } from '../hooks/useRealtimeActivities';
+import { useRealtimeStats } from '../hooks/useRealtimeStats';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';

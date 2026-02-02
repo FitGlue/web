@@ -174,9 +174,9 @@ The app uses Firebase SDK for real-time reads via custom hooks:
 | Hook | Collection | State Updated |
 |------|------------|---------------|
 | `useRealtimePipelines` | `users/{userId}/pipelines` | `pipelinesAtom` |
-| `useRealtimeActivities` | `users/{userId}/activities` | `activitiesAtom` |
+| `useRealtimePipelineRuns` | `users/{userId}/pipeline_runs` | `pipelineRunsAtom` |
 | `useRealtimeInputs` | `users/{userId}/pending_inputs` | `pendingInputsAtom` |
-| `usePipelineRuns` | `users/{userId}/pipeline_runs` | `pipelineRunsAtom` |
+| `useRealtimeStats` | `users/{userId}` (activityCounts) | `activityStatsAtom` |
 
 See [State Management](../react-app/state-management.md) for details.
 

@@ -13,9 +13,9 @@ The React app uses a **dual data access pattern**: Firestore SDK for real-time r
 │  │ (Firestore Reads)   │              │   (REST Writes)     │        │
 │  │                     │              │                     │        │
 │  │ • useRealtimePipelines             │ • POST /pipelines   │        │
-│  │ • useRealtimeActivities            │ • PATCH /users/me   │        │
+│  │ • useRealtimePipelineRuns          │ • PATCH /users/me   │        │
 │  │ • useRealtimeInputs                │ • DELETE /pipelines │        │
-│  │ • usePipelineRuns   │              │ • POST /inputs/respond       │
+│  │ • useRealtimeStats  │              │ • POST /inputs/respond       │
 │  └──────────┬──────────┘              └──────────┬──────────┘        │
 │             │                                    │                    │
 │             ▼                                    ▼                    │
@@ -128,10 +128,10 @@ function usePluginRegistry() {
 | Hook | Replaces | Data Source |
 |------|----------|-------------|
 | `useRealtimePipelines` | `PipelinesService.list()` | `users/{userId}/pipelines` |
-| `useRealtimeActivities` | `ActivitiesService.list()` | `users/{userId}/activities` |
+| `useRealtimePipelineRuns` | N/A (new) | `users/{userId}/pipeline_runs` |
 | `useRealtimeInputs` | `InputsService.list()` | `users/{userId}/pending_inputs` |
-| `usePipelineRuns` | N/A (new) | `users/{userId}/pipeline_runs` |
 | `useRealtimeIntegrations` | `IntegrationsService.list()` | `users/{userId}` (integrations field) |
+| `useRealtimeStats` | `ActivitiesService.getStats()` | `users/{userId}` (activityCounts field) |
 
 ## REST API Endpoints (Mutations Only)
 
@@ -176,8 +176,8 @@ import { PipelineConfig, SynchronizedActivity } from '../shared/generated';
 ### With Loading State and Skeleton
 
 ```typescript
-function ActivityList() {
-  const { activities, loading, error } = useRealtimeActivities();
+function PipelineRunsList() {
+  const { pipelineRuns, loading, error } = useRealtimePipelineRuns();
   
   if (loading) {
     return <SkeletonLoading count={3}><CardSkeleton /></SkeletonLoading>;
@@ -244,7 +244,7 @@ API requests go through Firebase Hosting rewrites to Cloud Run.
 const activities = await api.get('/activities');
 
 // ✅ Current: Real-time hooks
-const { activities } = useRealtimeActivities();
+const { pipelineRuns } = useRealtimePipelineRuns();
 ```
 
 ### Service Classes

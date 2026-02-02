@@ -1,5 +1,4 @@
 import React from 'react';
-import { SynchronizedActivity, ExecutionRecord } from '../../services/ActivitiesService';
 import { EnricherBadge } from './EnricherBadge';
 import { Pill } from '../library/ui/Pill';
 import { Stack } from '../library/layout/Stack';
@@ -9,20 +8,15 @@ import { Badge } from '../library/ui/Badge';
 import { GlowCard } from '../library/ui/GlowCard';
 import { FlowVisualization } from '../library/ui/FlowVisualization';
 import { BoosterGrid } from '../library/ui/BoosterGrid';
-import { formatActivityType, formatDestination, formatActivitySource, formatDestinationStatus } from '../../../types/pb/enum-formatters';
+import { formatActivityType, formatDestination, formatDestinationStatus } from '../../../types/pb/enum-formatters';
 import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
-import { useLazyActivityTrace } from '../../hooks/useActivityTrace';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 import { PluginManifest } from '../../types/plugin';
-import { BoosterExecution } from '../../../types/pb/user';
-
-import { PipelineRun, PipelineRunStatus } from '../../../types/pb/user';
+import { BoosterExecution, PipelineRun, PipelineRunStatus } from '../../../types/pb/user';
 
 interface EnrichedActivityCardProps {
-    /** @deprecated Use pipelineRun instead - activity-based rendering uses old executions collection */
-    activity?: SynchronizedActivity;
-    /** New: Use PipelineRun directly from pipeline_runs collection */
-    pipelineRun?: PipelineRun;
+    /** PipelineRun from pipeline_runs collection */
+    pipelineRun: PipelineRun;
     onClick?: () => void;
 }
 
@@ -31,18 +25,6 @@ interface ProviderExecution {
     Status: string;
     Metadata?: Record<string, unknown>;
 }
-
-const extractEnricherExecutions = (pipelineExecution?: ExecutionRecord[]): ProviderExecution[] => {
-    if (!pipelineExecution) return [];
-    const enricherRecord = pipelineExecution.find(record => record.service === 'enricher');
-    if (!enricherRecord?.outputsJson) return [];
-    try {
-        const outputs = JSON.parse(enricherRecord.outputsJson);
-        return Array.isArray(outputs.provider_executions) ? outputs.provider_executions : [];
-    } catch {
-        return [];
-    }
-};
 
 /**
  * Convert PipelineRun.boosters to ProviderExecution format for display
@@ -56,52 +38,6 @@ const mapBoostersToExecutions = (boosters?: BoosterExecution[]): ProviderExecuti
     }));
 };
 
-const getEnrichedTitle = (pipelineExecution?: ExecutionRecord[]): string | null => {
-    if (!pipelineExecution) return null;
-    for (const service of ['router', 'strava-uploader']) {
-        const record = pipelineExecution.find(r => r.service === service);
-        if (record?.outputsJson) {
-            try {
-                const outputs = JSON.parse(record.outputsJson);
-                if (outputs.activity_name) return outputs.activity_name;
-                if (outputs.name) return outputs.name;
-            } catch {
-                continue;
-            }
-        }
-    }
-    return null;
-};
-
-const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): string | null => {
-    if (!pipelineExecution) return null;
-    const services = ['strava-uploader', 'router'];
-    for (const service of services) {
-        const record = pipelineExecution.find(r => r.service === service);
-        if (record?.outputsJson) {
-            try {
-                const outputs = JSON.parse(record.outputsJson);
-                if (outputs.activity_type) return String(outputs.activity_type);
-            } catch {
-                continue;
-            }
-        }
-    }
-    return null;
-};
-
-const extractDestinationStatuses = (pipelineExecution?: ExecutionRecord[]): Record<string, string> => {
-    if (!pipelineExecution) return {};
-    const statuses: Record<string, string> = {};
-    for (const record of pipelineExecution) {
-        if (record.service?.endsWith('-uploader')) {
-            const destinationId = record.service.replace('-uploader', '');
-            statuses[destinationId] = record.status?.toUpperCase() || 'UNKNOWN';
-        }
-    }
-    return statuses;
-};
-
 const getPlatformInfo = (
     platform: string,
     sources: PluginManifest[],
@@ -110,7 +46,7 @@ const getPlatformInfo = (
     const key = platform.toLowerCase();
     const allPlugins = [...sources, ...destinations];
     const plugin = allPlugins.find(p => p.id === key);
-    const name = plugin?.name || formatActivitySource(platform) || formatDestination(platform);
+    const name = plugin?.name || formatDestination(platform) || platform;
     const icon = plugin?.icon || '📱';
     return { name, icon };
 };
@@ -148,60 +84,33 @@ const getStatusInfo = (status?: PipelineRunStatus): {
  * EnrichedActivityCard - Premium card showing the boost flow
  * Uses GlowCard with gradient header and FlowVisualization for the pipeline display
  *
- * Supports two modes:
- * 1. PipelineRun mode (preferred): Pass pipelineRun directly - uses new pipeline_runs collection
- * 2. Activity mode (deprecated): Pass activity - lazy loads traces from old executions collection
+ * Displays PipelineRun data from the pipeline_runs collection.
  */
 export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
-    activity,
-    pipelineRun: propPipelineRun,
+    pipelineRun,
     onClick,
 }) => {
     const { pipelines } = useRealtimePipelines();
     const { sources, destinations: registryDestinations } = usePluginRegistry();
 
-    // Only use lazy trace loading when we have an activity but no pipelineRun
-    const shouldLazyLoad = !!activity && !propPipelineRun;
-    const { ref, hasTrace, loading: traceLoading, pipelineExecution } = useLazyActivityTrace(
-        shouldLazyLoad ? activity?.activityId : undefined
-    );
+    // Get booster executions from pipeline run
+    const providerExecutions = mapBoostersToExecutions(pipelineRun.boosters);
 
-    // Use pipelineRun prop directly (new architecture)
-    const pipelineRun = propPipelineRun;
-
-    // Use trace from lazy loading hook (which updates global state and returns latest)
-    // Falls back to activity.pipelineExecution if already present
-    const trace = pipelineExecution || activity?.pipelineExecution;
-
-    // Use PipelineRun boosters if available, fallback to lazy-loaded trace
-    const providerExecutions = pipelineRun?.boosters && pipelineRun.boosters.length > 0
-        ? mapBoostersToExecutions(pipelineRun.boosters)
-        : extractEnricherExecutions(trace);
-
-    const enrichedTitle = getEnrichedTitle(trace);
-    const destinationActivityType = getDestinationActivityType(trace);
-
-    // Use PipelineRun destination statuses if available, fallback to trace
-    const destinationStatuses: Record<string, string> = pipelineRun?.destinations
+    // Get destination statuses from pipeline run
+    const destinationStatuses: Record<string, string> = pipelineRun.destinations
         ? pipelineRun.destinations.reduce((acc, d) => {
             const destName = formatDestination(d.destination) || 'unknown';
             acc[destName.toLowerCase()] = formatDestinationStatus(d.status) || 'UNKNOWN';
             return acc;
         }, {} as Record<string, string>)
-        : extractDestinationStatuses(trace);
+        : {};
 
-    // Get display values from pipelineRun or activity
-    const activityTitle = enrichedTitle || pipelineRun?.title || activity?.title || 'Untitled Activity';
-    const originalTitle = pipelineRun?.title || activity?.title;
-    const titleWasEnhanced = enrichedTitle && enrichedTitle !== originalTitle;
+    // Get display values from pipelineRun
+    const activityTitle = pipelineRun.title || 'Untitled Activity';
+    const activityType = formatActivityType(pipelineRun.type);
 
-    const activityType = destinationActivityType
-        ? formatActivityType(destinationActivityType)
-        : formatActivityType(pipelineRun?.type || activity?.type);
-
-    const rawSyncDate = pipelineRun?.createdAt || activity?.syncedAt;
-    const syncDate = rawSyncDate
-        ? new Date(rawSyncDate).toLocaleString(undefined, {
+    const syncDate = pipelineRun.createdAt
+        ? new Date(pipelineRun.createdAt).toLocaleString(undefined, {
             month: 'short',
             day: 'numeric',
             hour: 'numeric',
@@ -209,30 +118,22 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
         })
         : null;
 
-    const sourceInfo = getPlatformInfo(pipelineRun?.source || activity?.source || 'unknown', sources, registryDestinations);
-    const destinations = activity?.destinations ? Object.keys(activity.destinations) :
-        pipelineRun?.destinations?.map(d => formatDestination(d.destination)?.toLowerCase() || 'unknown') || [];
+    const sourceInfo = getPlatformInfo(pipelineRun.source || 'unknown', sources, registryDestinations);
+    const destinations = pipelineRun.destinations?.map(d => formatDestination(d.destination)?.toLowerCase() || 'unknown') || [];
 
-    const pipelineId = pipelineRun?.pipelineId || activity?.pipelineId;
-    const pipelineName = pipelineId
-        ? pipelines.find((p: { id: string }) => p.id === pipelineId)?.name
+    const pipelineName = pipelineRun.pipelineId
+        ? pipelines.find((p: { id: string }) => p.id === pipelineRun.pipelineId)?.name
         : undefined;
 
-    const isPartiallyLoaded = !propPipelineRun && !hasTrace && (traceLoading || activity?.pipelineExecutionId);
-
     // Determine card variant and status display based on pipeline run status
-    const statusInfo = getStatusInfo(pipelineRun?.status);
-    const cardVariant = isPartiallyLoaded ? 'default' : statusInfo.cardVariant;
+    const statusInfo = getStatusInfo(pipelineRun.status);
 
     // Header content - activity type, title, pipeline, date, status
     const headerContent = (
         <Stack direction="horizontal" align="center" justify="between">
             <Stack direction="horizontal" gap="sm" align="center" wrap>
                 <Pill variant="gradient" size="small">{activityType}</Pill>
-                <Heading level={4}>
-                    {activityTitle}
-                    {titleWasEnhanced && <Paragraph inline> ✨</Paragraph>}
-                </Heading>
+                <Heading level={4}>{activityTitle}</Heading>
                 {pipelineName && (
                     <Paragraph muted size="sm">via {pipelineName}</Paragraph>
                 )}
@@ -293,7 +194,7 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
 
     // Center boosters
     const boostersNode = (
-        <BoosterGrid loading={!!isPartiallyLoaded} emptyText="No boosters">
+        <BoosterGrid emptyText="No boosters">
             {providerExecutions.map((exec, idx) => (
                 <EnricherBadge
                     key={idx}
@@ -306,13 +207,11 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     );
 
     return (
-        <div ref={ref}>
-            <GlowCard
-                onClick={onClick}
-                variant={cardVariant}
-                loading={!!isPartiallyLoaded}
-                header={headerContent}
-            >
+        <GlowCard
+            onClick={onClick}
+            variant={statusInfo.cardVariant}
+            header={headerContent}
+        >
                 {/* Flow Visualization: Source → Boosters → Destination */}
                 <FlowVisualization
                     source={sourceNode}
@@ -327,7 +226,6 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
                         </Paragraph>
                     </Stack>
                 )}
-            </GlowCard>
-        </div>
+        </GlowCard>
     );
 };

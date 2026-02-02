@@ -166,8 +166,8 @@ import { useParams } from 'react-router-dom';
 const ActivityDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   // Use real-time hooks with the ID
-  const { activities } = useRealtimeActivities();
-  const activity = activities.find(a => a.id === id);
+  const { pipelineRuns } = useRealtimePipelineRuns();
+  const run = pipelineRuns.find(r => r.activityId === id);
 };
 ```
 
