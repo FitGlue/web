@@ -6,7 +6,7 @@ import { initFirebase } from '../shared/firebase';
 import { userAtom, authLoadingAtom } from './state/authState';
 import { initSentry, setUser as setSentryUser, Sentry } from './infrastructure/sentry';
 import { Stack } from './components/library/layout';
-import { Card, Heading, Paragraph, Button, Code } from './components/library/ui';
+import { Card, Heading, Paragraph, Button, Code, ToastProvider } from './components/library/ui';
 import { Link } from './components/library/navigation';
 
 // App pages (protected)
@@ -66,10 +66,14 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useUser();
 
+  // useUser now properly includes auth loading, so this handles the full loading story
   if (loading) {
     return (
       <Card>
-        <Paragraph>Loading admin console...</Paragraph>
+        <Stack gap="md" align="center">
+          <Heading level={3}>Loading Admin Console</Heading>
+          <Paragraph>Verifying admin permissions...</Paragraph>
+        </Stack>
       </Card>
     );
   }
@@ -79,7 +83,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <Card>
         <Stack gap="md" align="center">
           <Heading level={2}>Access Denied</Heading>
-          <Paragraph>You do not have permission to view this page.</Paragraph>
+          <Paragraph>You do not have admin privileges to view this page.</Paragraph>
           <Link to="/app">← Back to Dashboard</Link>
         </Stack>
       </Card>
@@ -133,8 +137,9 @@ const App: React.FC = () => {
         </Card>
       )}
     >
-      <NerdModeProvider>
-        <Router basename="/app">
+      <ToastProvider>
+        <NerdModeProvider>
+          <Router basename="/app">
           <Routes>
             {/* Protected app routes */}
             <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
@@ -162,8 +167,9 @@ const App: React.FC = () => {
             {/* Catch-all for unknown routes */}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
-        </Router>
-      </NerdModeProvider>
+          </Router>
+        </NerdModeProvider>
+      </ToastProvider>
     </Sentry.ErrorBoundary>
   );
 };

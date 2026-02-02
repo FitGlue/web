@@ -1,6 +1,8 @@
 import { useMemo, useCallback } from 'react';
+import { useAtomValue } from 'jotai';
 import { getFirebaseAuth } from '../../shared/firebase';
 import { Sentry } from '../infrastructure/sentry';
+import { authLoadingAtom } from '../state/authState';
 
 /**
  * Capture API error in Sentry with context
@@ -21,15 +23,52 @@ const captureApiError = (method: string, path: string, status: number, statusTex
 };
 
 /**
+ * Wait for Firebase auth to be ready with a timeout
+ * This handles race conditions where API calls are made before auth is initialized
+ */
+const waitForAuth = async (maxWaitMs = 5000): Promise<boolean> => {
+  const auth = getFirebaseAuth();
+  if (auth?.currentUser) return true;
+  
+  const startTime = Date.now();
+  while (Date.now() - startTime < maxWaitMs) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    const currentAuth = getFirebaseAuth();
+    if (currentAuth?.currentUser) return true;
+  }
+  return false;
+};
+
+/**
  * Generic API hook for making authenticated requests
  * Memoized to prevent infinite re-renders in consuming components
  */
 export const useApi = () => {
+  const authLoading = useAtomValue(authLoadingAtom);
+  
   const getAuthHeader = useCallback(async (): Promise<Record<string, string>> => {
+    // If auth is still loading, wait for it to be ready
+    if (authLoading) {
+      const ready = await waitForAuth();
+      if (!ready) {
+        console.warn('Auth not ready after timeout, proceeding without token');
+        return {};
+      }
+    }
+    
     const auth = getFirebaseAuth();
-    const token = await auth?.currentUser?.getIdToken();
-    return token ? { Authorization: `Bearer ${token}` } : {};
-  }, []);
+    if (!auth?.currentUser) {
+      return {};
+    }
+    
+    try {
+      const token = await auth.currentUser.getIdToken();
+      return token ? { Authorization: `Bearer ${token}` } : {};
+    } catch (err) {
+      console.error('Failed to get auth token:', err);
+      return {};
+    }
+  }, [authLoading]);
 
   const get = useCallback(async (path: string) => {
     const headers = await getAuthHeader();

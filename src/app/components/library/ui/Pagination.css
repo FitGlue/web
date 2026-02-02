@@ -1,0 +1,70 @@
+/* ==========================================================================
+   Pagination Component Styles
+   ========================================================================== */
+
+.ui-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+}
+
+.ui-pagination__info {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.ui-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.ui-pagination__page-info {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  min-width: 100px;
+  text-align: center;
+}
+
+.ui-pagination__page-size {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.ui-pagination__page-size-label {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.ui-pagination__page-size-select {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.ui-pagination__page-size-select:hover {
+  border-color: var(--color-border-hover);
+}
+
+.ui-pagination__page-size-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* Compact variant */
+.ui-pagination--compact {
+  padding: var(--spacing-xs) 0;
+  gap: var(--spacing-sm);
+}
+
+.ui-pagination--compact .ui-pagination__info,
+.ui-pagination--compact .ui-pagination__page-info {
+  font-size: 0.8125rem;
+}

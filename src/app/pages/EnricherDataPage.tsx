@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, Button, Heading, Paragraph, Badge } from '../components/library/ui';
+import { Card, Button, Heading, Paragraph, Badge, Text } from '../components/library/ui';
 import { Input, FormField, Select } from '../components/library/forms';
 import { useApi } from '../hooks/useApi';
 
@@ -268,7 +268,7 @@ const DurationInput: React.FC<DurationInputProps> = ({ value, onChange, id }) =>
                 style={{ width: '60px', textAlign: 'center' }}
                 aria-label="Hours"
             />
-            <span>:</span>
+            <Text variant="body">:</Text>
             <Input
                 type="number"
                 min={0}
@@ -278,7 +278,7 @@ const DurationInput: React.FC<DurationInputProps> = ({ value, onChange, id }) =>
                 style={{ width: '60px', textAlign: 'center' }}
                 aria-label="Minutes"
             />
-            <span>:</span>
+            <Text variant="body">:</Text>
             <Input
                 type="number"
                 min={0}

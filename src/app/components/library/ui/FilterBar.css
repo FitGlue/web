@@ -1,0 +1,89 @@
+/* ==========================================================================
+   FilterBar Component Styles
+   ========================================================================== */
+
+.ui-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.ui-filter-bar__fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--spacing-md);
+  flex: 1;
+}
+
+.ui-filter-bar__actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* Filter Field */
+.ui-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 120px;
+}
+
+.ui-filter-field__label {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Filter inputs - shared styles */
+.ui-filter-bar select,
+.ui-filter-bar input[type="text"],
+.ui-filter-bar input[type="search"] {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.875rem;
+  min-width: 140px;
+  transition: border-color var(--transition-fast);
+}
+
+.ui-filter-bar select:hover,
+.ui-filter-bar input:hover {
+  border-color: var(--color-border-hover);
+}
+
+.ui-filter-bar select:focus,
+.ui-filter-bar input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.ui-filter-bar input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Inline variant */
+.ui-filter-bar--inline {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.ui-filter-bar--inline .ui-filter-field {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: auto;
+}
+
+.ui-filter-bar--inline .ui-filter-field__label {
+  text-transform: none;
+  letter-spacing: normal;
+}

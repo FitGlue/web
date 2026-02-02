@@ -102,3 +102,42 @@ export { ActionCard } from './ActionCard';
 
 // Tabbed cards
 export { TabbedCard } from './TabbedCard';
+
+// Table components
+export {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableHeaderCell,
+  TableCell,
+  TableEmpty,
+} from './Table';
+export type {
+  TableProps,
+  TableHeadProps,
+  TableBodyProps,
+  TableRowProps,
+  TableHeaderCellProps,
+  TableCellProps,
+  TableEmptyProps,
+  TableVariant,
+  TableAlign,
+  SortDirection,
+} from './Table';
+
+// DataTable (high-level composition)
+export { DataTable } from './DataTable';
+export type { DataTableProps, DataTableColumn } from './DataTable';
+
+// Pagination
+export { Pagination } from './Pagination';
+export type { PaginationProps } from './Pagination';
+
+// Filter components
+export { FilterBar, FilterField } from './FilterBar';
+export type { FilterBarProps, FilterFieldProps } from './FilterBar';
+
+// Toast notifications
+export { ToastProvider, useToast } from './Toast';
+export type { Toast, ToastVariant, ToastContextValue } from './Toast';

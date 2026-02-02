@@ -1,0 +1,168 @@
+/* ==========================================================================
+   Table Component Styles
+   Premium data table styling for FitGlue
+   ========================================================================== */
+
+/* Base Table */
+.ui-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.ui-table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+/* Variants */
+.ui-table--striped tbody tr:nth-child(even) {
+  background: var(--color-surface-elevated);
+}
+
+.ui-table--compact th,
+.ui-table--compact td {
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* Table Header */
+.ui-table-header {
+  background: var(--color-surface-elevated);
+}
+
+.ui-table-header-cell {
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.ui-table-header-cell--center {
+  text-align: center;
+}
+
+.ui-table-header-cell--right {
+  text-align: right;
+}
+
+.ui-table-header-cell--sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--transition-fast);
+}
+
+.ui-table-header-cell--sortable:hover {
+  color: var(--color-text-primary);
+}
+
+.ui-table-header-cell__sort-icon {
+  margin-left: var(--spacing-xs);
+  opacity: 0.5;
+  font-size: 0.65rem;
+}
+
+.ui-table-header-cell--sorted .ui-table-header-cell__sort-icon {
+  opacity: 1;
+  color: var(--color-primary);
+}
+
+/* Table Body */
+.ui-table-body {
+}
+
+/* Table Row */
+.ui-table-row {
+  transition: background var(--transition-fast);
+}
+
+.ui-table-row--hoverable:hover {
+  background: var(--color-surface-hover);
+}
+
+.ui-table-row--clickable {
+  cursor: pointer;
+}
+
+.ui-table-row--selected {
+  background: rgba(255, 27, 141, 0.08);
+}
+
+.ui-table-row--selected:hover {
+  background: rgba(255, 27, 141, 0.12);
+}
+
+/* Table Cell */
+.ui-table-cell {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+  vertical-align: middle;
+}
+
+.ui-table-cell--center {
+  text-align: center;
+}
+
+.ui-table-cell--right {
+  text-align: right;
+}
+
+.ui-table-cell--truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-table-cell--muted {
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+}
+
+/* Last row no border */
+.ui-table-body .ui-table-row:last-child .ui-table-cell {
+  border-bottom: none;
+}
+
+/* Empty State */
+.ui-table-empty {
+  padding: var(--spacing-2xl) var(--spacing-md);
+  text-align: center;
+}
+
+/* Loading State */
+.ui-table-loading {
+  position: relative;
+  min-height: 200px;
+}
+
+.ui-table-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Skeleton row */
+.ui-table-skeleton-row .ui-table-cell {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-elevated) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
