@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.5.0](https://github.com/fitglue/web/compare/v8.4.4...v8.5.0) (2026-02-02)
+
+
+### Features
+
+* enhance user feedback with toast notifications and improve error handling ([97b319e](https://github.com/fitglue/web/commit/97b319e402b7d676d9454bcbdd18dc5ac387934a))
+
 ### [8.4.4](https://github.com/fitglue/web/compare/v8.4.3...v8.4.4) (2026-02-02)
 
 ### [8.4.3](https://github.com/fitglue/web/compare/v8.4.2...v8.4.3) (2026-02-02)
