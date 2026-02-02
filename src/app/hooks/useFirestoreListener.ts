@@ -73,7 +73,9 @@ export function useFirestoreListener<TData>(
     onDataRef.current = onData;
 
     useEffect(() => {
+        console.log('[useFirestoreListener] Effect running - enabled:', enabled, 'userId:', currentUser?.uid);
         if (!enabled || !currentUser?.uid) {
+            console.log('[useFirestoreListener] Skipping - enabled:', enabled, 'hasUser:', !!currentUser?.uid);
             setIsListening(false);
             setLoading(false);
             return;
@@ -81,7 +83,7 @@ export function useFirestoreListener<TData>(
 
         const firestore = getFirebaseFirestore();
         if (!firestore) {
-            console.warn('Firestore not initialized - real-time listener disabled');
+            console.warn('[useFirestoreListener] Firestore not initialized - real-time listener disabled');
             setLoading(false);
             return;
         }
@@ -96,9 +98,11 @@ export function useFirestoreListener<TData>(
                 return;
             }
 
+            console.log('[useFirestoreListener] Setting up onSnapshot listener');
             unsubscribe = onSnapshot(
                 queryOrRef as Query,
                 (snapshot) => {
+                    console.log('[useFirestoreListener] Snapshot received, size:', (snapshot as { size?: number }).size);
                     try {
                         const mappedData = mapperRef.current(snapshot);
                         setData(mappedData);
@@ -106,14 +110,14 @@ export function useFirestoreListener<TData>(
                         setError(null);
                         setIsListening(true);
                     } catch (err) {
-                        console.error('Error mapping Firestore data:', err);
+                        console.error('[useFirestoreListener] Error mapping Firestore data:', err);
                         setError(err instanceof Error ? err : new Error('Mapping error'));
                     } finally {
                         setLoading(false);
                     }
                 },
                 (err) => {
-                    console.error('Firestore listener error:', err);
+                    console.error('[useFirestoreListener] Firestore listener error:', err);
                     setError(err);
                     setLoading(false);
                     setIsListening(false);

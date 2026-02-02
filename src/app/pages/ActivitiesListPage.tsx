@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { usePipelineRuns } from '../hooks/usePipelineRuns';
+import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout, Stack } from '../components/library/layout';
 import { PipelineRunsList, FilterMode } from '../components/dashboard/PipelineRunsList';
 import { StatInline, LiveToggle, Heading, Paragraph } from '../components/library/ui';
@@ -16,7 +16,7 @@ const ActivitiesListPage: React.FC = () => {
     };
 
     // Get loading/listening state from hook for header indicators
-    const { loading, isListening, forceRefresh } = usePipelineRuns(true, 50);
+    const { loading, isListening, forceRefresh } = useRealtimePipelineRuns(true, 50);
     const [liveEnabled, setLiveEnabled] = useState(true);
 
     // Load stats on mount (still needed for totals)

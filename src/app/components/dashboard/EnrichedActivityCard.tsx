@@ -12,7 +12,6 @@ import { BoosterGrid } from '../library/ui/BoosterGrid';
 import { formatActivityType, formatDestination, formatActivitySource, formatDestinationStatus } from '../../../types/pb/enum-formatters';
 import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { useLazyActivityTrace } from '../../hooks/useActivityTrace';
-import { usePipelineRunLookup } from '../../hooks/usePipelineRuns';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 import { PluginManifest } from '../../types/plugin';
 import { BoosterExecution } from '../../../types/pb/user';
@@ -167,10 +166,8 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
         shouldLazyLoad ? activity?.activityId : undefined
     );
 
-    // Try to get booster data from PipelineRun first (new architecture)
-    // If pipelineRun is passed directly, use it. Otherwise try lookup by activity's pipelineExecutionId
-    const lookedUpPipelineRun = usePipelineRunLookup(activity?.pipelineExecutionId);
-    const pipelineRun = propPipelineRun || lookedUpPipelineRun;
+    // Use pipelineRun prop directly (new architecture)
+    const pipelineRun = propPipelineRun;
 
     // Use trace from lazy loading hook (which updates global state and returns latest)
     // Falls back to activity.pipelineExecution if already present

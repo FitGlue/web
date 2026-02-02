@@ -15,18 +15,6 @@ service cloud.firestore {
         allow write: if false;
       }
 
-      // Synchronized activities subcollection
-      match /synchronized_activities/{activityId} {
-        allow read: if request.auth != null && request.auth.uid == userId;
-        allow write: if false;
-      }
-
-      // Executions subcollection: allow authenticated user to read their own execution traces
-      match /executions/{executionId} {
-        allow read: if request.auth != null && request.auth.uid == userId;
-        allow write: if false;
-      }
-
       // Pending inputs subcollection: allow authenticated user to read their pending inputs
       match /pending_inputs/{inputId} {
         allow read: if request.auth != null && request.auth.uid == userId;
@@ -39,8 +27,8 @@ service cloud.firestore {
         allow write: if false;
       }
 
-      // Counters subcollection: allow authenticated user to read their counters
-      match /counters/{counterId} {
+      // Pipeline runs subcollection: allow authenticated user to read their pipeline runs
+      match /pipeline_runs/{runId} {
         allow read: if request.auth != null && request.auth.uid == userId;
         allow write: if false;
       }

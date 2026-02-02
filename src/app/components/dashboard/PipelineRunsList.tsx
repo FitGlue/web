@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePipelineRuns } from '../../hooks/usePipelineRuns';
+import { useRealtimePipelineRuns } from '../../hooks/useRealtimePipelineRuns';
 import { EnrichedActivityCard } from './EnrichedActivityCard';
 import { CardSkeleton, Paragraph, DashboardSummaryCard, EmptyState, TabbedCard, Heading } from '../library/ui';
 import { Stack } from '../library/layout';
@@ -64,7 +64,19 @@ export const PipelineRunsList: React.FC<PipelineRunsListProps> = ({
 }) => {
     const navigate = useNavigate();
     const [tabMode, setTabMode] = useState<FilterMode>(initialTab || defaultFilter);
-    const { pipelineRuns, loading } = usePipelineRuns(true, limit);
+    const { pipelineRuns, loading, error, isListening } = useRealtimePipelineRuns(true, limit);
+
+    // Debug logging
+    console.log('[PipelineRunsList] State:', {
+        pipelineRunsCount: pipelineRuns.length,
+        loading,
+        error: error?.message,
+        isListening,
+        limit,
+    });
+    if (pipelineRuns.length > 0) {
+        console.log('[PipelineRunsList] First run:', pipelineRuns[0]);
+    }
 
     const handleTabChange = (mode: FilterMode) => {
         setTabMode(mode);

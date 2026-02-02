@@ -1,6 +1,8 @@
 /**
  * Update Version Task
  * Syncs version from CHANGELOG.md to package.json and .env
+ * - Local: skips file writes to avoid dirty git state
+ * - CI/Production: syncs version to ensure consistency
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
@@ -26,6 +28,13 @@ export function updateVersionTask(config) {
 
       const version = match[1];
       ctx.logger.info(`Found version: ${version}`);
+
+      // Local dev mode: skip file writes to avoid dirty git state
+      const isLocal = !process.env.CI && process.env.NODE_ENV !== 'production';
+      if (isLocal) {
+        ctx.logger.info('Local mode: skipping version file updates');
+        return { version };
+      }
 
       // Update package.json
       const packageJson = JSON.parse(readFileSync(cfg.packagePath, 'utf-8'));

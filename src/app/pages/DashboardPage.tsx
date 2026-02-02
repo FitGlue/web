@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useRealtimeInputs } from '../hooks/useRealtimeInputs';
 import { useRealtimeStats } from '../hooks/useRealtimeActivities';
-import { usePipelineRuns } from '../hooks/usePipelineRuns';
+import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
@@ -41,7 +41,7 @@ const DashboardPage: React.FC = () => {
         loading: runsLoading,
         isListening,
         forceRefresh
-    } = usePipelineRuns(true, 10);
+    } = useRealtimePipelineRuns(true, 10);
     const [liveEnabled, setLiveEnabled] = useState(true);
 
     // Real-time stats listener

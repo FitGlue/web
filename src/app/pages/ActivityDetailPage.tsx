@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { usePipelineRuns } from '../hooks/usePipelineRuns';
+import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { SynchronizedActivity, ExecutionRecord, ActivitiesService } from '../services/ActivitiesService';
 import { PipelineTrace } from '../components/PipelineTrace';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
@@ -244,7 +244,7 @@ const ActivityDetailPage: React.FC = () => {
     const [runsTabMode, setRunsTabMode] = useState<RunsTabMode>('all');
 
     // Get all pipeline runs and filter by this activity
-    const { pipelineRuns, loading: runsLoading } = usePipelineRuns(true, 50);
+    const { pipelineRuns, loading: runsLoading } = useRealtimePipelineRuns(true, 50);
 
     // Filter pipeline runs for this activity
     const activityRuns = useMemo(() => {

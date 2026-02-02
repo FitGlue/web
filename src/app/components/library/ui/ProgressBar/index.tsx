@@ -32,7 +32,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   ariaLabel,
 }) => {
   const percentage = Math.min(100, Math.max(0, (value / max) * 100));
-  
+
   const containerClasses = [
     'ui-progress',
     `ui-progress--${size}`,

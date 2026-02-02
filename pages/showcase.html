@@ -1341,7 +1341,8 @@
         }
 
         // --- HYBRID RACE BAR CHART ---
-        const timeMarkers = session.timeMarkers || [];
+        // Note: timeMarkers is on the activity level, not session level
+        const timeMarkers = activity.timeMarkers || [];
         const activityName = data.activityData?.name || '';
         const activityTags = data.activityData?.tags || [];
 

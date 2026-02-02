@@ -65,12 +65,13 @@ const mapFirestoreToPipelineRun = (docId: string, data: Record<string, unknown>)
         destinations,
         statusMessage: (data.status_message || data.statusMessage) as string | undefined,
         originalPayloadUri: (data.original_payload_uri || data.originalPayloadUri || '') as string,
+        enrichedEventUri: (data.enriched_event_uri || data.enrichedEventUri || '') as string,
         pendingInputId: (data.pending_input_id || data.pendingInputId) as string | undefined,
     };
 };
 
 /**
- * usePipelineRuns - Firebase SDK Real-time Hook for PipelineRun documents
+ * useRealtimePipelineRuns - Firebase SDK Real-time Hook for PipelineRun documents
  * 
  * Listens to `users/{userId}/pipeline_runs` via onSnapshot.
  * Provides booster execution details and destination outcomes in real-time
@@ -79,12 +80,13 @@ const mapFirestoreToPipelineRun = (docId: string, data: Record<string, unknown>)
  * Architecture: This replaces the old pattern of loading SynchronizedActivity + 
  * on-demand execution traces with a single unified source of truth.
  */
-export const usePipelineRuns = (initialEnabled = true, runLimit = 10) => {
+export const useRealtimePipelineRuns = (initialEnabled = true, runLimit = 10) => {
     const [pipelineRuns, setPipelineRuns] = useAtom(pipelineRunsAtom);
 
     const queryFactory = useCallback(
         (firestore: ReturnType<typeof getFirebaseFirestore>, userId: string) => {
             if (!firestore) return null;
+            console.log('[useRealtimePipelineRuns] Creating query for userId:', userId, 'limit:', runLimit);
             const runsRef = collection(firestore, 'users', userId, 'pipeline_runs');
             return query(
                 runsRef,
@@ -98,10 +100,14 @@ export const usePipelineRuns = (initialEnabled = true, runLimit = 10) => {
     const mapper = useCallback((snapshot: unknown): PipelineRun[] => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const querySnapshot = snapshot as any;
-        return querySnapshot.docs.map((doc: { id: string; data: () => Record<string, unknown> }) => {
+        console.log('[useRealtimePipelineRuns] Received snapshot with', querySnapshot.docs?.length || 0, 'documents');
+        const runs = querySnapshot.docs.map((doc: { id: string; data: () => Record<string, unknown> }) => {
             const data = doc.data();
+            console.log('[useRealtimePipelineRuns] Document:', doc.id, 'status:', data.status, 'created_at:', data.created_at);
             return mapFirestoreToPipelineRun(doc.id, data);
         });
+        console.log('[useRealtimePipelineRuns] Mapped', runs.length, 'pipeline runs');
+        return runs;
     }, []);
 
     const handleData = useCallback((data: PipelineRun[]) => {
@@ -124,15 +130,3 @@ export const usePipelineRuns = (initialEnabled = true, runLimit = 10) => {
     };
 };
 
-/**
- * usePipelineRunLookup - Helper to lookup a PipelineRun by pipelineExecutionId
- * 
- * Used by components that have an activityId but need the booster/destination info.
- */
-export const usePipelineRunLookup = (pipelineExecutionId: string | undefined) => {
-    const [pipelineRuns] = useAtom(pipelineRunsAtom);
-
-    if (!pipelineExecutionId) return null;
-
-    return pipelineRuns.find(run => run.id === pipelineExecutionId) || null;
-};
