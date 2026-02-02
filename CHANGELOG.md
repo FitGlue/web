@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.4.0](https://github.com/fitglue/web/compare/v8.3.2...v8.4.0) (2026-02-02)
+
+
+### Features
+
+* Massive styling pass ([3f408b9](https://github.com/fitglue/web/commit/3f408b91a5eb15ab501a8f2e5de1a1260dffb391))
+
 ### [8.3.2](https://github.com/fitglue/web/compare/v8.3.1...v8.3.2) (2026-02-02)
 
 ### [8.3.1](https://github.com/fitglue/web/compare/v8.3.0...v8.3.1) (2026-02-02)
