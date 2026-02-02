@@ -8,7 +8,7 @@ import { Badge } from '../library/ui/Badge';
 import { GlowCard } from '../library/ui/GlowCard';
 import { FlowVisualization } from '../library/ui/FlowVisualization';
 import { BoosterGrid } from '../library/ui/BoosterGrid';
-import { formatActivityType, formatDestination, formatDestinationStatus } from '../../../types/pb/enum-formatters';
+import { formatActivityType, formatActivitySource, formatDestination, formatDestinationStatus } from '../../../types/pb/enum-formatters';
 import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 import { PluginManifest } from '../../types/plugin';
@@ -38,16 +38,28 @@ const mapBoostersToExecutions = (boosters?: BoosterExecution[]): ProviderExecuti
     }));
 };
 
-const getPlatformInfo = (
-    platform: string,
-    sources: PluginManifest[],
-    destinations: PluginManifest[]
+const getSourceInfo = (
+    source: string,
+    sources: PluginManifest[]
 ): { name: string; icon: string } => {
-    const key = platform.toLowerCase();
-    const allPlugins = [...sources, ...destinations];
-    const plugin = allPlugins.find(p => p.id === key);
-    const name = plugin?.name || formatDestination(platform) || platform;
+    // Try to match plugin by source enum (e.g., SOURCE_HEVY -> hevy)
+    const key = source.replace(/^SOURCE_/, '').toLowerCase();
+    const plugin = sources.find(p => p.id === key);
+    const name = plugin?.name || formatActivitySource(source) || source;
     const icon = plugin?.icon || '📱';
+    return { name, icon };
+};
+
+const getDestinationInfo = (
+    destinationKey: string,
+    destinations: PluginManifest[],
+    formattedName?: string
+): { name: string; icon: string } => {
+    const key = destinationKey.toLowerCase();
+    const plugin = destinations.find(p => p.id === key);
+    // Use plugin name, or the pre-formatted name if provided, or try to format, or fallback
+    const name = plugin?.name || formattedName || formatDestination(destinationKey) || destinationKey;
+    const icon = plugin?.icon || '🚀';
     return { name, icon };
 };
 
@@ -96,11 +108,11 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     // Get booster executions from pipeline run
     const providerExecutions = mapBoostersToExecutions(pipelineRun.boosters);
 
-    // Get destination statuses from pipeline run
+    // Get destination statuses from pipeline run (keyed by formatted name)
     const destinationStatuses: Record<string, string> = pipelineRun.destinations
         ? pipelineRun.destinations.reduce((acc, d) => {
-            const destName = formatDestination(d.destination) || 'unknown';
-            acc[destName.toLowerCase()] = formatDestinationStatus(d.status) || 'UNKNOWN';
+            const destName = formatDestination(d.destination) || 'Unknown';
+            acc[destName] = formatDestinationStatus(d.status) || 'UNKNOWN';
             return acc;
         }, {} as Record<string, string>)
         : {};
@@ -118,8 +130,9 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
         })
         : null;
 
-    const sourceInfo = getPlatformInfo(pipelineRun.source || 'unknown', sources, registryDestinations);
-    const destinations = pipelineRun.destinations?.map(d => formatDestination(d.destination)?.toLowerCase() || 'unknown') || [];
+    const sourceInfo = getSourceInfo(pipelineRun.source || 'unknown', sources);
+    // Keep proper-cased destination names for display and lookup
+    const destinations = pipelineRun.destinations?.map(d => formatDestination(d.destination) || 'Unknown') || [];
 
     const pipelineName = pipelineRun.pipelineId
         ? pipelines.find((p: { id: string }) => p.id === pipelineRun.pipelineId)?.name
@@ -168,7 +181,8 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
             {destinations.map(dest => {
                 const status = destinationStatuses[dest];
                 const isFailed = status === 'FAILED';
-                const destInfo = getPlatformInfo(dest, sources, registryDestinations);
+                // Pass lowercase key for plugin lookup, and the formatted name as fallback
+                const destInfo = getDestinationInfo(dest.toLowerCase(), registryDestinations, dest);
                 return (
                     <Badge
                         key={dest}
@@ -218,8 +232,9 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
                     center={boostersNode}
                     destination={destinationNode}
                 />
-                {/* Status message for success/failure context */}
-                {pipelineRun?.statusMessage && (
+                {/* Status message - only show for non-terminal states or failures */}
+                {pipelineRun?.statusMessage &&
+                 pipelineRun.status !== PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED && (
                     <Stack gap="xs">
                         <Paragraph muted size="sm">
                             ℹ️ {pipelineRun.statusMessage}

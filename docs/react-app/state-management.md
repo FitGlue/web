@@ -177,7 +177,7 @@ const { nerdMode, toggleNerdMode } = useContext(NerdModeContext);
 // Real-time hook internally calls setAtom
 const useRealtimePipelines = () => {
   const [, setPipelines] = useAtom(pipelinesAtom);
-  
+
   useFirestoreListener({
     queryFactory: (db, userId) => collection(db, 'users', userId, 'pipelines'),
     mapper: (snapshot) => snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })),
@@ -193,7 +193,7 @@ const useRealtimePipelines = () => {
 function PipelinesList() {
   const [pipelines] = useAtom(pipelinesAtom);
   const [loading] = useAtom(isLoadingPipelinesAtom);
-  
+
   if (loading) return <SkeletonLoading />;
   return <ul>{pipelines.map(p => <li key={p.id}>{p.name}</li>)}</ul>;
 }
@@ -205,7 +205,7 @@ function PipelinesList() {
 function CreatePipelineButton() {
   const api = useApi();
   const { refresh } = useRealtimePipelines();
-  
+
   const handleCreate = async () => {
     await api.post('/users/me/pipelines', { name, source, destinations });
     // Firestore listener will auto-update, but refresh() ensures immediate sync
@@ -231,7 +231,7 @@ import { SkeletonLoading, CardSkeleton } from '@/components/library';
 
 function PipelineRunsList() {
   const { pipelineRuns, loading } = useRealtimePipelineRuns();
-  
+
   if (loading) {
     return <SkeletonLoading count={3}><CardSkeleton /></SkeletonLoading>;
   }

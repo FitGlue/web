@@ -51,23 +51,23 @@ function getListenerKey(baseKey: string, userId: string): string {
 
 /**
  * useFirestoreListener - Generic Firestore Real-time Listener Hook
- * 
+ *
  * This hook provides a consistent pattern for listening to Firestore data.
  * It uses a GLOBAL LISTENER REGISTRY to ensure only ONE Firestore listener
  * is created per unique listenerKey, regardless of how many components use it.
- * 
+ *
  * Features:
  * - Firebase auth state handling
  * - Firestore initialization
  * - Loading/error/listening states
  * - Automatic cleanup on unmount
  * - SHARED LISTENERS across components (via listenerKey)
- * 
+ *
  * Usage:
  * ```ts
  * const { data, loading, error } = useFirestoreListener({
  *   listenerKey: 'pipelines',
- *   queryFactory: (firestore, userId) => 
+ *   queryFactory: (firestore, userId) =>
  *     collection(firestore, 'users', userId, 'pipelines'),
  *   mapper: (snapshot) => snapshot.docs.map(doc => mapPipeline(doc)),
  *   onData: setPipelines, // optional Jotai setter
@@ -112,14 +112,14 @@ export function useFirestoreListener<TData>(
         }
 
         const fullKey = getListenerKey(baseKey, userId);
-        
+
         // Check if listener already exists
         const existingEntry = listenerRegistry.get(fullKey);
         if (existingEntry) {
             // Listener exists - just subscribe to updates
             existingEntry.subscriberCount++;
             console.log(`[useFirestoreListener] Reusing existing listener for ${baseKey} (${existingEntry.subscriberCount} subscribers)`);
-            
+
             // Use existing data immediately
             if (existingEntry.latestData !== undefined) {
                 const mappedData = mapperRef.current(existingEntry.latestData);
@@ -129,7 +129,7 @@ export function useFirestoreListener<TData>(
             setIsListening(existingEntry.isListening);
             setError(existingEntry.error);
             setLoading(false);
-            
+
             // Register callback for future updates
             if (!listenerCallbacks.has(fullKey)) {
                 listenerCallbacks.set(fullKey, new Set());
@@ -140,7 +140,7 @@ export function useFirestoreListener<TData>(
                 onDataRef.current?.(mappedData);
             };
             listenerCallbacks.get(fullKey)!.add(callback);
-            
+
             return () => {
                 listenerCallbacks.get(fullKey)?.delete(callback);
                 const entry = listenerRegistry.get(fullKey);
@@ -173,7 +173,7 @@ export function useFirestoreListener<TData>(
             if (!listenerCallbacks.has(fullKey)) {
                 listenerCallbacks.set(fullKey, new Set());
             }
-            
+
             // Register this component's callback
             const callback = (snapshot: unknown) => {
                 const mappedData = mapperRef.current(snapshot);
@@ -191,7 +191,7 @@ export function useFirestoreListener<TData>(
                         entry.isListening = true;
                         entry.error = null;
                     }
-                    
+
                     // Notify all subscribers
                     const callbacks = listenerCallbacks.get(fullKey);
                     if (callbacks) {
@@ -203,7 +203,7 @@ export function useFirestoreListener<TData>(
                             }
                         });
                     }
-                    
+
                     setIsListening(true);
                     setError(null);
                     setLoading(false);

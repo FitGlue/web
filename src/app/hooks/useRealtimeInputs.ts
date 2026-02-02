@@ -42,7 +42,7 @@ const toISOString = (value: unknown): string | undefined => {
  *
  * Listens to `users/{userId}/pending_inputs` via onSnapshot.
  * Uses the shared useFirestoreListener for common functionality.
- * 
+ *
  * Architecture: Firebase SDK for reads, REST for mutations only.
  */
 export const useRealtimeInputs = () => {

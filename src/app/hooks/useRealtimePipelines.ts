@@ -15,7 +15,7 @@ import {
  *
  * Listens to `users/{userId}/pipelines` via onSnapshot.
  * Uses the shared useFirestoreListener for common functionality.
- * 
+ *
  * Architecture: Firebase SDK for reads, REST for mutations only.
  */
 export const useRealtimePipelines = () => {

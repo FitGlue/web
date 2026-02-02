@@ -26,7 +26,7 @@ const toDate = (value: unknown): Date | undefined => {
 
 /**
  * mapFirestoreToPipelineRun - Maps Firestore document data to typed PipelineRun
- * 
+ *
  * Handles snake_case field names from Firestore storage.
  */
 const mapFirestoreToPipelineRun = (docId: string, data: Record<string, unknown>): PipelineRun => {
@@ -72,12 +72,12 @@ const mapFirestoreToPipelineRun = (docId: string, data: Record<string, unknown>)
 
 /**
  * useRealtimePipelineRuns - Firebase SDK Real-time Hook for PipelineRun documents
- * 
+ *
  * Listens to `users/{userId}/pipeline_runs` via onSnapshot.
  * Provides booster execution details and destination outcomes in real-time
  * without needing lazy-loaded execution traces.
- * 
- * Architecture: This replaces the old pattern of loading SynchronizedActivity + 
+ *
+ * Architecture: This replaces the old pattern of loading SynchronizedActivity +
  * on-demand execution traces with a single unified source of truth.
  */
 export const useRealtimePipelineRuns = (initialEnabled = true, runLimit = 10) => {

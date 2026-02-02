@@ -16,7 +16,7 @@ import {
  *
  * Listens to the user document's `integrations` field via onSnapshot.
  * Uses the shared useFirestoreDocument for common functionality.
- * 
+ *
  * Architecture: Firebase SDK for reads, REST for mutations only.
  */
 export const useRealtimeIntegrations = () => {

@@ -81,7 +81,7 @@ export const useApi = () => {
 function PipelinesList() {
   const { pipelines, loading } = useRealtimePipelines();
   // Data updates automatically when Firestore changes
-  
+
   if (loading) return <SkeletonLoading />;
   return <ul>{pipelines.map(p => <li key={p.id}>{p.name}</li>)}</ul>;
 }
@@ -93,16 +93,16 @@ function PipelinesList() {
 // ✅ Good: Mutations via REST API
 function CreatePipelineButton() {
   const api = useApi();
-  
+
   const handleCreate = async () => {
-    await api.post('/users/me/pipelines', { 
+    await api.post('/users/me/pipelines', {
       name: 'My Pipeline',
       source: 'HEVY',
       destinations: ['STRAVA']
     });
     // Firestore listener auto-updates the list
   };
-  
+
   return <Button onClick={handleCreate}>Create</Button>;
 }
 ```
@@ -114,11 +114,11 @@ function CreatePipelineButton() {
 function usePluginRegistry() {
   const api = useApi();
   const [registry, setRegistry] = useAtom(pluginRegistryAtom);
-  
+
   useEffect(() => {
     api.get('/registry').then(setRegistry);
   }, []);
-  
+
   return registry;
 }
 ```
@@ -178,15 +178,15 @@ import { PipelineConfig, SynchronizedActivity } from '../shared/generated';
 ```typescript
 function PipelineRunsList() {
   const { pipelineRuns, loading, error } = useRealtimePipelineRuns();
-  
+
   if (loading) {
     return <SkeletonLoading count={3}><CardSkeleton /></SkeletonLoading>;
   }
-  
+
   if (error) {
     return <ErrorBanner message="Failed to load activities" />;
   }
-  
+
   return <ActivityCards activities={activities} />;
 }
 ```

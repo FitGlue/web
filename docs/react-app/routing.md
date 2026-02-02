@@ -40,14 +40,14 @@ The React app is mounted at `/app`, so all routes are prefixed:
   <Routes>
     {/* Dashboard */}
     <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-    
+
     {/* Activities */}
     <Route path="/activities" element={<ProtectedRoute><ActivitiesListPage /></ProtectedRoute>} />
     <Route path="/activities/:id" element={<ProtectedRoute><ActivityDetailPage /></ProtectedRoute>} />
-    
+
     {/* Inputs */}
     <Route path="/inputs" element={<ProtectedRoute><PendingInputsPage /></ProtectedRoute>} />
-    
+
     {/* Settings */}
     <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
     <Route path="/settings/integrations" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
@@ -57,10 +57,10 @@ The React app is mounted at `/app`, so all routes are prefixed:
     <Route path="/settings/account" element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
     <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
     <Route path="/settings/enricher-data" element={<ProtectedRoute><EnricherDataPage /></ProtectedRoute>} />
-    
+
     {/* Admin-only */}
     <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
-    
+
     {/* Catch-all */}
     <Route path="*" element={<NotFoundPage />} />
   </Routes>
