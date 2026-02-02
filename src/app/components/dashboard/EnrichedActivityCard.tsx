@@ -17,7 +17,7 @@ import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 import { PluginManifest } from '../../types/plugin';
 import { BoosterExecution } from '../../../types/pb/user';
 
-import { PipelineRun } from '../../../types/pb/user';
+import { PipelineRun, PipelineRunStatus } from '../../../types/pb/user';
 
 interface EnrichedActivityCardProps {
     /** @deprecated Use pipelineRun instead - activity-based rendering uses old executions collection */
@@ -117,9 +117,38 @@ const getPlatformInfo = (
 };
 
 /**
+ * Get card variant and status info based on pipeline run status
+ * GlowCard variants: 'default' | 'success' | 'premium' | 'awaiting' | 'needs-input'
+ * Badge variants: 'default' | 'success' | 'warning' | 'error' | etc.
+ */
+const getStatusInfo = (status?: PipelineRunStatus): {
+    cardVariant: 'default' | 'success' | 'premium' | 'awaiting' | 'needs-input';
+    badgeVariant: 'default' | 'success' | 'warning' | 'error';
+    statusLabel?: string;
+    statusIcon?: string;
+} => {
+    switch (status) {
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED:
+            return { cardVariant: 'success', badgeVariant: 'success', statusLabel: 'Synced', statusIcon: '✅' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL:
+            return { cardVariant: 'awaiting', badgeVariant: 'warning', statusLabel: 'Partial', statusIcon: '⚠️' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED:
+            return { cardVariant: 'default', badgeVariant: 'error', statusLabel: 'Failed', statusIcon: '❌' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_RUNNING:
+            return { cardVariant: 'awaiting', badgeVariant: 'default', statusLabel: 'Running', statusIcon: '🔄' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING:
+            return { cardVariant: 'needs-input', badgeVariant: 'warning', statusLabel: 'Awaiting Input', statusIcon: '⏳' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED:
+            return { cardVariant: 'default', badgeVariant: 'default', statusLabel: 'Skipped', statusIcon: '⏭️' };
+        default:
+            return { cardVariant: 'default', badgeVariant: 'default' };
+    }
+};
+
+/**
  * EnrichedActivityCard - Premium card showing the boost flow
  * Uses GlowCard with gradient header and FlowVisualization for the pipeline display
- * 
+ *
  * Supports two modes:
  * 1. PipelineRun mode (preferred): Pass pipelineRun directly - uses new pipeline_runs collection
  * 2. Activity mode (deprecated): Pass activity - lazy loads traces from old executions collection
@@ -194,11 +223,11 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
 
     const isPartiallyLoaded = !propPipelineRun && !hasTrace && (traceLoading || activity?.pipelineExecutionId);
 
-    // Determine card variant based on state
-    const cardVariant = isPartiallyLoaded ? 'default' : 'success';
+    // Determine card variant and status display based on pipeline run status
+    const statusInfo = getStatusInfo(pipelineRun?.status);
+    const cardVariant = isPartiallyLoaded ? 'default' : statusInfo.cardVariant;
 
-
-    // Header content - activity type, title, pipeline, date
+    // Header content - activity type, title, pipeline, date, status
     const headerContent = (
         <Stack direction="horizontal" align="center" justify="between">
             <Stack direction="horizontal" gap="sm" align="center" wrap>
@@ -211,7 +240,17 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
                     <Paragraph muted size="sm">via {pipelineName}</Paragraph>
                 )}
             </Stack>
-            {syncDate && <Paragraph muted size="sm">{syncDate}</Paragraph>}
+            <Stack direction="horizontal" gap="sm" align="center">
+                {statusInfo.statusLabel && (
+                    <Badge variant={statusInfo.badgeVariant} size="sm">
+                        <Stack direction="horizontal" gap="xs" align="center">
+                            <Paragraph inline size="sm">{statusInfo.statusIcon}</Paragraph>
+                            <Paragraph inline size="sm">{statusInfo.statusLabel}</Paragraph>
+                        </Stack>
+                    </Badge>
+                )}
+                {syncDate && <Paragraph muted size="sm">{syncDate}</Paragraph>}
+            </Stack>
         </Stack>
     );
 

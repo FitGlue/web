@@ -1,0 +1,47 @@
+/* ==========================================================================
+   Avatar Component - User Initial Display
+   ========================================================================== */
+@import '../../tokens.css';
+
+.ui-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-bold);
+  color: #ffffff;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Size variants */
+.ui-avatar--sm {
+  width: 32px;
+  height: 32px;
+  font-size: 0.875rem;
+}
+
+.ui-avatar--md {
+  width: 48px;
+  height: 48px;
+  font-size: 1.25rem;
+}
+
+.ui-avatar--lg {
+  width: 64px;
+  height: 64px;
+  font-size: 1.5rem;
+}
+
+/* Gradient variant - premium look */
+.ui-avatar--gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  box-shadow: var(--shadow-glow-primary);
+}
+
+/* Solid variant - subtle background */
+.ui-avatar--solid {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+}

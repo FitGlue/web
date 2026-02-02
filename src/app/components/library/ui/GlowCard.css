@@ -97,6 +97,11 @@
   opacity: 0.9;
 }
 
+/* Disabled state */
+.glow-card--disabled {
+  opacity: 0.6;
+}
+
 /* Clickable state */
 .glow-card--clickable {
   cursor: pointer;

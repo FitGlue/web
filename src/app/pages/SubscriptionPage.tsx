@@ -88,10 +88,10 @@ const SubscriptionPage: React.FC = () => {
                         <Stack gap="md">
                             <Stack direction="horizontal" align="center" justify="between">
                                 <Badge variant="premium">✨ ATHLETE</Badge>
-                                <Paragraph inline>
-                                    <span style={{ fontSize: '2rem', fontWeight: 700 }}>£5</span>
-                                    <span style={{ fontSize: '0.875rem', opacity: 0.7 }}>/month</span>
-                                </Paragraph>
+                                <Stack direction="horizontal" align="end" gap="xs">
+                                    <Heading level={1}>£5</Heading>
+                                    <Paragraph inline muted>/month</Paragraph>
+                                </Stack>
                             </Stack>
                             <Grid cols={2} gap="sm">
                                 <Paragraph size="sm">✓ Unlimited Syncs</Paragraph>

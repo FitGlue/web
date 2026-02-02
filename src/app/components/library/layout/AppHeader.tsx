@@ -4,6 +4,7 @@ import { useAtom } from 'jotai';
 import { useUser } from '../../../hooks/useUser';
 import { userAtom } from '../../../state/authState';
 import { getEffectiveTier, TIER_ATHLETE } from '../../../utils/tier';
+import './AppHeader.css';
 
 export const AppHeader: React.FC = () => {
     const { user: profile, loading } = useUser();
@@ -46,62 +47,66 @@ export const AppHeader: React.FC = () => {
     };
 
     return (
-        <header className="app-header-global">
-            <Link to="/" className="logo-link">
-                <h1 className="title small">
-                    <span className="fit">Fit</span><span className="glue">Glue</span>
+        <header className="app-header">
+            <Link to="/" className="app-header__logo-link">
+                <h1 className="app-header__logo">
+                    <span className="app-header__logo-fit">Fit</span>
+                    <span className="app-header__logo-glue">Glue</span>
                 </h1>
             </Link>
-            <div ref={menuRef} className="user-menu-container">
+            <div ref={menuRef} className="app-header__user-menu">
                 <button
-                    className="user-avatar-button"
+                    className="app-header__avatar"
                     onClick={() => setShowMenu(!showMenu)}
                     aria-label="User menu"
                     aria-expanded={showMenu}
                 >
                     {getInitial()}
                     {profile && getEffectiveTier(profile) === TIER_ATHLETE && (
-                        <div style={{
-                            position: 'absolute',
-                            bottom: '-4px',
-                            right: '-4px',
-                            background: 'var(--color-primary)',
-                            color: 'white',
-                            fontSize: '0.6rem',
-                            padding: '1px 4px',
-                            borderRadius: '4px',
-                            fontWeight: 'bold',
-                            border: '2px solid var(--color-bg)'
-                        }}>
-                            ATHLETE
-                        </div>
+                        <span className="app-header__tier-badge">ATHLETE</span>
                     )}
                 </button>
 
                 {showMenu && (
-                    <div className="user-dropdown-menu">
-                        <div className="user-dropdown-header">
-                            <span className="user-email">{firebaseUser?.displayName || firebaseUser?.email || 'User'}</span>
+                    <div className="app-header__dropdown">
+                        <div className="app-header__dropdown-header">
+                            <span className="app-header__dropdown-email">
+                                {firebaseUser?.displayName || firebaseUser?.email || 'User'}
+                            </span>
                         </div>
-                        <div className="user-dropdown-divider" />
-                        <Link to="/settings/account" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
-                            <span className="dropdown-icon">👤</span>
+                        <div className="app-header__dropdown-divider" />
+                        <Link
+                            to="/settings/account"
+                            className="app-header__dropdown-item"
+                            onClick={() => setShowMenu(false)}
+                        >
+                            <span className="app-header__dropdown-icon">👤</span>
                             Account
                         </Link>
-                        <Link to="/settings/enricher-data" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
-                            <span className="dropdown-icon">📊</span>
+                        <Link
+                            to="/settings/enricher-data"
+                            className="app-header__dropdown-item"
+                            onClick={() => setShowMenu(false)}
+                        >
+                            <span className="app-header__dropdown-icon">📊</span>
                             Booster Data
                         </Link>
                         {profile?.isAdmin && (
-                            <Link to="/admin" className="user-dropdown-item" onClick={() => setShowMenu(false)}>
-                                <span className="dropdown-icon">🛠️</span>
+                            <Link
+                                to="/admin"
+                                className="app-header__dropdown-item"
+                                onClick={() => setShowMenu(false)}
+                            >
+                                <span className="app-header__dropdown-icon">🛠️</span>
                                 Admin Console
                             </Link>
                         )}
-                        <div className="user-dropdown-divider" />
-
-                        <a href="/auth/logout" className="user-dropdown-item user-dropdown-item-danger">
-                            <span className="dropdown-icon">🚪</span>
+                        <div className="app-header__dropdown-divider" />
+                        <a
+                            href="/auth/logout"
+                            className="app-header__dropdown-item app-header__dropdown-item--danger"
+                        >
+                            <span className="app-header__dropdown-icon">🚪</span>
                             Logout
                         </a>
                     </div>

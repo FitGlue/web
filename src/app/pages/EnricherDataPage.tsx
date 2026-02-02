@@ -213,7 +213,7 @@ const EnricherDataPage: React.FC = () => {
                         ) : (
                             <Stack gap="sm">
                                 {counters.map((counter) => (
-                                    <div key={counter.id} className="enricher-data-item">
+                                    <Card key={counter.id} variant="elevated">
                                         {editingCounter?.id === counter.id ? (
                                             <Stack direction="horizontal" gap="sm" align="center">
                                                 <Input
@@ -246,7 +246,7 @@ const EnricherDataPage: React.FC = () => {
                                                 </Stack>
                                             </Stack>
                                         )}
-                                    </div>
+                                    </Card>
                                 ))}
                             </Stack>
                         )}
@@ -321,7 +321,7 @@ const EnricherDataPage: React.FC = () => {
                         ) : (
                             <Stack gap="sm">
                                 {records.map((record) => (
-                                    <div key={record.recordType} className="enricher-data-item">
+                                    <Card key={record.recordType} variant="elevated">
                                         {editingRecord?.recordType === record.recordType ? (
                                             <Stack gap="sm">
                                                 <Grid cols={2} gap="md">
@@ -372,7 +372,7 @@ const EnricherDataPage: React.FC = () => {
                                                 </Stack>
                                             </Stack>
                                         )}
-                                    </div>
+                                    </Card>
                                 ))}
                             </Stack>
                         )}

@@ -109,37 +109,36 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
     );
 
     return (
-        <div style={pipeline.disabled ? { opacity: 0.6 } : undefined}>
-            <GlowCard
-                variant="premium"
-                header={headerContent}
-            >
-                {/* Flow Visualization: Source → Boosters → Destination */}
-                <FlowVisualization
-                    source={sourceNode}
-                    center={centerNode}
-                    destination={destinationNode}
-                />
+        <GlowCard
+            variant="premium"
+            header={headerContent}
+            disabled={pipeline.disabled}
+        >
+            {/* Flow Visualization: Source → Boosters → Destination */}
+            <FlowVisualization
+                source={sourceNode}
+                center={centerNode}
+                destination={destinationNode}
+            />
 
-                {/* Actions footer */}
-                <Stack direction="horizontal" align="center" justify="end" gap="sm">
-                    <Button
-                        variant={pipeline.disabled ? 'primary' : 'secondary'}
-                        size="small"
-                        onClick={() => onToggleDisabled(!pipeline.disabled)}
-                        disabled={toggling}
-                    >
-                        {toggling ? 'Updating...' : (pipeline.disabled ? 'Enable' : 'Disable')}
-                    </Button>
-                    <Button variant="secondary" size="small" onClick={onEdit}>
-                        Edit
-                    </Button>
-                    <Button variant="danger" size="small" onClick={onDelete} disabled={deleting}>
-                        {deleting ? 'Deleting...' : 'Delete'}
-                    </Button>
-                </Stack>
-            </GlowCard>
-        </div>
+            {/* Actions footer */}
+            <Stack direction="horizontal" align="center" justify="end" gap="sm">
+                <Button
+                    variant={pipeline.disabled ? 'primary' : 'secondary'}
+                    size="small"
+                    onClick={() => onToggleDisabled(!pipeline.disabled)}
+                    disabled={toggling}
+                >
+                    {toggling ? 'Updating...' : (pipeline.disabled ? 'Enable' : 'Disable')}
+                </Button>
+                <Button variant="secondary" size="small" onClick={onEdit}>
+                    Edit
+                </Button>
+                <Button variant="danger" size="small" onClick={onDelete} disabled={deleting}>
+                    {deleting ? 'Deleting...' : 'Delete'}
+                </Button>
+            </Stack>
+        </GlowCard>
     );
 };
 

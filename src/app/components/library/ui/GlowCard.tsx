@@ -8,6 +8,8 @@ interface GlowCardProps {
   variant?: GlowCardVariant;
   /** Whether the card is in a loading/pending state */
   loading?: boolean;
+  /** Whether the card appears disabled (reduced opacity) */
+  disabled?: boolean;
   /** Header content - rendered with gradient background */
   header?: ReactNode;
   /** Click handler */
@@ -24,6 +26,7 @@ interface GlowCardProps {
 export const GlowCard: React.FC<GlowCardProps> = ({
   variant = 'default',
   loading = false,
+  disabled = false,
   header,
   onClick,
   children,
@@ -32,6 +35,7 @@ export const GlowCard: React.FC<GlowCardProps> = ({
     'glow-card',
     `glow-card--${variant}`,
     loading && 'glow-card--loading',
+    disabled && 'glow-card--disabled',
     onClick && 'glow-card--clickable',
   ].filter(Boolean).join(' ');
 

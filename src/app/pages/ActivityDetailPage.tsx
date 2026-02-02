@@ -1,25 +1,61 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { usePipelineRuns } from '../hooks/usePipelineRuns';
 import { SynchronizedActivity, ExecutionRecord, ActivitiesService } from '../services/ActivitiesService';
 import { PipelineTrace } from '../components/PipelineTrace';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, CardSkeleton, Pill, Button, Heading, Paragraph, Code } from '../components/library/ui';
+import { Card, CardSkeleton, Pill, Button, Heading, Paragraph, Code, TabbedCard } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { EnricherBadge } from '../components/dashboard/EnricherBadge';
 import { RepostActionsMenu } from '../components/RepostActionsMenu';
 import { useNerdMode } from '../state/NerdModeContext';
-import { formatActivityType } from '../../types/pb/enum-formatters';
+import { formatActivityType, formatDestinationStatus } from '../../types/pb/enum-formatters';
 import { buildDestinationUrl } from '../utils/destinationUrls';
 import { PluginManifest } from '../types/plugin';
 import { Link } from '../components/library/navigation';
+import { PipelineRunStatus } from '../../types/pb/user';
 
 interface ProviderExecution {
     ProviderName: string;
     Status: string;
     Metadata?: Record<string, unknown>;
 }
+
+// Status groupings for filtering pipeline runs
+type RunsTabMode = 'all' | 'completed' | 'attention';
+
+const COMPLETED_STATUSES = [
+    PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED,
+    PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL,
+];
+
+const ATTENTION_STATUSES = [
+    PipelineRunStatus.PIPELINE_RUN_STATUS_RUNNING,
+    PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING,
+    PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED,
+    PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED,
+];
+
+const getStatusInfo = (status?: PipelineRunStatus): { label: string; icon: string; variant: 'success' | 'warning' | 'error' | 'default' } => {
+    switch (status) {
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED:
+            return { label: 'Synced', icon: '✅', variant: 'success' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL:
+            return { label: 'Partial', icon: '⚠️', variant: 'warning' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED:
+            return { label: 'Failed', icon: '❌', variant: 'error' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_RUNNING:
+            return { label: 'Running', icon: '🔄', variant: 'default' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING:
+            return { label: 'Awaiting Input', icon: '⏳', variant: 'warning' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED:
+            return { label: 'Skipped', icon: '⏭️', variant: 'default' };
+        default:
+            return { label: 'Unknown', icon: '❓', variant: 'default' };
+    }
+};
 
 const deriveOriginalSource = (activity: SynchronizedActivity): string => {
     if (activity.pipelineExecution && activity.pipelineExecution.length > 0) {
@@ -205,6 +241,35 @@ const ActivityDetailPage: React.FC = () => {
     const { sources, destinations: registryDestinations } = usePluginRegistry();
     const [traceExpanded, setTraceExpanded] = useState(false);
     const { isNerdMode } = useNerdMode();
+    const [runsTabMode, setRunsTabMode] = useState<RunsTabMode>('all');
+
+    // Get all pipeline runs and filter by this activity
+    const { pipelineRuns, loading: runsLoading } = usePipelineRuns(true, 50);
+
+    // Filter pipeline runs for this activity
+    const activityRuns = useMemo(() => {
+        return pipelineRuns.filter(run => run.activityId === id);
+    }, [pipelineRuns, id]);
+
+    // Filter by status tab
+    const filteredRuns = useMemo(() => {
+        switch (runsTabMode) {
+            case 'completed':
+                return activityRuns.filter(run => COMPLETED_STATUSES.includes(run.status));
+            case 'attention':
+                return activityRuns.filter(run => ATTENTION_STATUSES.includes(run.status));
+            case 'all':
+            default:
+                return activityRuns;
+        }
+    }, [activityRuns, runsTabMode]);
+
+    // Count runs by category
+    const runsCounts = useMemo(() => ({
+        all: activityRuns.length,
+        completed: activityRuns.filter(run => COMPLETED_STATUSES.includes(run.status)).length,
+        attention: activityRuns.filter(run => ATTENTION_STATUSES.includes(run.status)).length,
+    }), [activityRuns]);
 
     const fetchActivity = async () => {
         if (!id) return;
@@ -423,6 +488,109 @@ const ActivityDetailPage: React.FC = () => {
                 </Card>
             )}
 
+            {/* Pipeline Runs Section - Shows all runs for this activity */}
+            {activityRuns.length > 0 && (
+                <TabbedCard
+                    tabs={[
+                        { id: 'all', icon: '📋', label: 'All Runs', count: runsCounts.all },
+                        { id: 'completed', icon: '✅', label: 'Completed', count: runsCounts.completed },
+                        { id: 'attention', icon: '⚡', label: 'In Progress', count: runsCounts.attention, variant: runsCounts.attention > 0 ? 'warning' : undefined },
+                    ]}
+                    activeTab={runsTabMode}
+                    onTabChange={(tabId) => setRunsTabMode(tabId as RunsTabMode)}
+                    footerText={filteredRuns.length > 0 ? `${filteredRuns.length} pipeline runs` : undefined}
+                >
+                    {runsLoading && filteredRuns.length === 0 ? (
+                        <Stack gap="md">
+                            <CardSkeleton variant="activity" />
+                        </Stack>
+                    ) : filteredRuns.length === 0 ? (
+                        <Stack gap="md" align="center">
+                            <Paragraph size="lg">
+                                {runsTabMode === 'completed' ? '🏃' : runsTabMode === 'attention' ? '✅' : '📋'}
+                            </Paragraph>
+                            <Heading level={4}>
+                                {runsTabMode === 'completed' ? 'No completed runs' : runsTabMode === 'attention' ? 'No runs need attention' : 'No pipeline runs'}
+                            </Heading>
+                        </Stack>
+                    ) : (
+                        <Stack gap="md">
+                            {filteredRuns.map(run => {
+                                const statusInfo = getStatusInfo(run.status);
+                                const runPipeline = pipelines.find(p => p.id === run.pipelineId);
+                                const boosters = run.boosters || [];
+
+                                return (
+                                    <Card key={run.id}>
+                                        <Stack gap="sm">
+                                            <Stack direction="horizontal" align="center" justify="between">
+                                                <Stack direction="horizontal" gap="sm" align="center">
+                                                    <Pill variant={statusInfo.variant === 'success' ? 'success' : statusInfo.variant === 'error' ? 'error' : 'default'}>
+                                                        {statusInfo.icon} {statusInfo.label}
+                                                    </Pill>
+                                                    {runPipeline && (
+                                                        <Paragraph muted size="sm">via {runPipeline.name}</Paragraph>
+                                                    )}
+                                                </Stack>
+                                                <Paragraph muted size="sm">
+                                                    {run.createdAt ? new Date(run.createdAt).toLocaleString(undefined, {
+                                                        month: 'short',
+                                                        day: 'numeric',
+                                                        hour: 'numeric',
+                                                        minute: '2-digit',
+                                                    }) : 'Unknown time'}
+                                                </Paragraph>
+                                            </Stack>
+
+                                            {run.statusMessage && (
+                                                <Paragraph size="sm" muted>
+                                                    ℹ️ {run.statusMessage}
+                                                </Paragraph>
+                                            )}
+
+                                            {boosters.length > 0 && (
+                                                <Stack direction="horizontal" gap="xs" wrap>
+                                                    {boosters.map((booster, idx) => (
+                                                        <EnricherBadge
+                                                            key={idx}
+                                                            providerName={booster.providerName}
+                                                            status={booster.status}
+                                                            metadata={booster.metadata as Record<string, unknown>}
+                                                        />
+                                                    ))}
+                                                </Stack>
+                                            )}
+
+                                            {run.destinations && run.destinations.length > 0 && (
+                                                <Stack direction="horizontal" gap="xs" wrap>
+                                                    {run.destinations.map((dest, idx) => {
+                                                        const destStatus = formatDestinationStatus(dest.status) || 'PENDING';
+                                                        const destInfo = formatPlatformName(
+                                                            dest.destination?.toString() || 'unknown',
+                                                            sources,
+                                                            registryDestinations
+                                                        );
+                                                        return (
+                                                            <Pill
+                                                                key={idx}
+                                                                variant={destStatus === 'SUCCESS' ? 'success' : destStatus === 'FAILED' ? 'error' : 'default'}
+                                                                size="small"
+                                                            >
+                                                                {destInfo.icon} {destInfo.name}
+                                                            </Pill>
+                                                        );
+                                                    })}
+                                                </Stack>
+                                            )}
+                                        </Stack>
+                                    </Card>
+                                );
+                            })}
+                        </Stack>
+                    )}
+                </TabbedCard>
+            )}
+
             {activity.pipelineExecution && activity.pipelineExecution.length > 0 && (
                 <Stack gap="sm">
                     <Button
@@ -434,7 +602,7 @@ const ActivityDetailPage: React.FC = () => {
                             {traceExpanded ? '▼' : '▶'}
                         </Paragraph>
                         <Paragraph inline>
-                            Pipeline Execution Trace
+                            Pipeline Execution Trace (Legacy)
                         </Paragraph>
                         <Paragraph inline muted>
                             {activity.pipelineExecution.length} steps

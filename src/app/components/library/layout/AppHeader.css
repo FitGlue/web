@@ -1,26 +1,41 @@
 /* ==========================================================================
-   AppHeader Component - Beautiful Branding
+   AppHeader Component - Navigation Header with User Menu
    ========================================================================== */
+@import '../tokens.css';
 
-/* Header defaults handled by main.css header styling */
-/* This file provides additional library-specific enhancements */
+/* Header Container */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  width: 100%;
+}
 
-/* FitGlue Logo - Gradient Text */
-.app-header__logo {
-  font-size: 1.5rem;
-  font-weight: 700;
+/* Logo Link */
+.app-header__logo-link {
   text-decoration: none;
 }
 
-.app-header__logo span:first-child {
-  background: linear-gradient(135deg, var(--color-primary, #FF1B8D), var(--color-secondary, #9D4EDD));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Logo Title */
+.app-header__logo {
+  font-size: 1.75rem;
+  font-weight: 900;
+  margin: 0;
+  letter-spacing: -0.02em;
 }
 
-.app-header__logo span:last-child {
-  color: var(--color-text-primary, #ffffff);
+.app-header__logo-fit {
+  color: var(--color-primary, #FF1B8D);
+}
+
+.app-header__logo-glue {
+  color: var(--color-secondary, #9D4EDD);
+}
+
+/* User Menu Container */
+.app-header__user-menu {
+  position: relative;
 }
 
 /* User Avatar Button */
@@ -43,7 +58,7 @@
 
 .app-header__avatar:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(255, 27, 141, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* ATHLETE Badge */
@@ -53,52 +68,74 @@
   right: -4px;
   background: var(--color-primary, #FF1B8D);
   color: white;
-  font-size: 0.55rem;
-  padding: 2px 5px;
+  font-size: 0.6rem;
+  padding: 1px 4px;
   border-radius: 4px;
   font-weight: 700;
-  letter-spacing: 0.02em;
   border: 2px solid var(--color-bg, #0a0a0a);
 }
 
 /* Dropdown Menu */
-.app-header__menu {
+.app-header__dropdown {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  min-width: 200px;
-  background: rgba(30, 30, 35, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 220px;
+  background: var(--color-bg, #0a0a0a);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  padding: 0.5rem;
+  overflow: hidden;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-  z-index: 100;
+  z-index: var(--z-dropdown, 100);
 }
 
-.app-header__menu-item {
+/* Dropdown Header */
+.app-header__dropdown-header {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.app-header__dropdown-email {
+  font-size: 0.85rem;
+  color: var(--color-text-muted, #AAA);
+  word-break: break-all;
+}
+
+/* Dropdown Divider */
+.app-header__dropdown-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0;
+}
+
+/* Dropdown Menu Item */
+.app-header__dropdown-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  color: var(--color-text-primary, #ffffff);
   text-decoration: none;
-  border-radius: 8px;
-  transition: background 0.15s ease;
+  color: var(--color-text, #FFF);
+  transition: background var(--transition-fast, 0.15s ease);
 }
 
-.app-header__menu-item:hover {
+.app-header__dropdown-item:hover {
   background: rgba(255, 255, 255, 0.08);
 }
 
-.app-header__menu-divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 0.5rem 0;
+/* Danger item (logout) */
+.app-header__dropdown-item--danger {
+  color: #FF453A;
 }
 
-.app-header__menu-email {
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+.app-header__dropdown-item--danger:hover {
+  background: rgba(255, 69, 58, 0.1);
+}
+
+/* Dropdown Icon */
+.app-header__dropdown-icon {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
 }

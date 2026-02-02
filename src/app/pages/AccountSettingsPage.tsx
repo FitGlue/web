@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { updateProfile, verifyBeforeUpdateEmail } from 'firebase/auth';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, Button, Heading, Paragraph, Badge, Code, List, ListItem, GlowCard } from '../components/library/ui';
+import { Card, Button, Heading, Paragraph, Badge, Code, List, ListItem, GlowCard, Avatar, ProgressBar } from '../components/library/ui';
 import { Link } from '../components/library/navigation';
 import { useApi } from '../hooks/useApi';
 import { useUser } from '../hooks/useUser';
@@ -124,9 +124,6 @@ const AccountSettingsPage: React.FC = () => {
     const maxConnections = isAthlete ? '∞' : String(HOBBYIST_TIER_LIMITS.MAX_CONNECTIONS);
     const maxSyncs = isAthlete ? '∞' : String(HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH);
     const syncsUsed = profile?.syncCountThisMonth ?? 0;
-    const syncsPercentage = !isAthlete && HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH > 0
-        ? Math.min(100, (syncsUsed / HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH) * 100)
-        : 0;
 
     // Get user initial for avatar
     const getInitial = () => {
@@ -151,10 +148,7 @@ const AccountSettingsPage: React.FC = () => {
                     <Stack gap="md">
                         <Heading level={3}>Profile</Heading>
                         <Stack direction="horizontal" gap="lg" align="start">
-                            {/* Gradient Avatar Roundel */}
-                            <div className="profile-avatar">
-                                {getInitial()}
-                            </div>
+                            <Avatar initial={getInitial()} size="lg" />
                             <Stack gap="md" fullWidth>
                                 {/* Name field - always editable with dirty detection */}
                                 <FormField label="Name" htmlFor="profile-name">
@@ -233,31 +227,33 @@ const AccountSettingsPage: React.FC = () => {
                         </Stack>
 
                         <Grid cols={2} gap="md">
-                            {/* Syncs Usage */}
-                            <div className="account-stat-card">
-                                <Paragraph size="sm" muted>Syncs This Month</Paragraph>
-                                <Stack direction="horizontal" align="end" gap="xs">
-                                    <span className="account-stat-value">{syncsUsed}</span>
-                                    <Paragraph inline muted>/ {maxSyncs}</Paragraph>
-                                </Stack>
-                                {!isAthlete && (
-                                    <div className="account-progress-bar">
-                                        <div
-                                            className="account-progress-fill"
-                                            style={{ width: `${syncsPercentage}%` }}
+                            <Card variant="elevated">
+                                <Stack gap="sm">
+                                    <Paragraph size="sm" muted>Syncs This Month</Paragraph>
+                                    <Stack direction="horizontal" align="end" gap="xs">
+                                        <Heading level={2}>{syncsUsed}</Heading>
+                                        <Paragraph inline muted>/ {maxSyncs}</Paragraph>
+                                    </Stack>
+                                    {!isAthlete && (
+                                        <ProgressBar
+                                            value={syncsUsed}
+                                            max={HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH}
+                                            variant="gradient"
+                                            size="sm"
                                         />
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Connections */}
-                            <div className="account-stat-card">
-                                <Paragraph size="sm" muted>Connections</Paragraph>
-                                <Stack direction="horizontal" align="end" gap="xs">
-                                    <span className="account-stat-value">{connectionCount}</span>
-                                    <Paragraph inline muted>/ {maxConnections}</Paragraph>
+                                    )}
                                 </Stack>
-                            </div>
+                            </Card>
+
+                            <Card variant="elevated">
+                                <Stack gap="sm">
+                                    <Paragraph size="sm" muted>Connections</Paragraph>
+                                    <Stack direction="horizontal" align="end" gap="xs">
+                                        <Heading level={2}>{connectionCount}</Heading>
+                                        <Paragraph inline muted>/ {maxConnections}</Paragraph>
+                                    </Stack>
+                                </Stack>
+                            </Card>
                         </Grid>
 
                         <Button
@@ -275,22 +271,28 @@ const AccountSettingsPage: React.FC = () => {
                         <Heading level={3}>Help & Support</Heading>
                         <Grid cols={3} gap="md">
                             <Link to="/help">
-                                <div className="account-support-item">
-                                    <div className="account-support-icon">📚</div>
-                                    <Paragraph size="sm">FAQ & Guides</Paragraph>
-                                </div>
+                                <Card variant="interactive">
+                                    <Stack gap="sm" align="center">
+                                        <Paragraph size="lg">📚</Paragraph>
+                                        <Paragraph size="sm">FAQ & Guides</Paragraph>
+                                    </Stack>
+                                </Card>
                             </Link>
                             <Link to="mailto:support@fitglue.tech" external>
-                                <div className="account-support-item">
-                                    <div className="account-support-icon">📧</div>
-                                    <Paragraph size="sm">Contact Support</Paragraph>
-                                </div>
+                                <Card variant="interactive">
+                                    <Stack gap="sm" align="center">
+                                        <Paragraph size="lg">📧</Paragraph>
+                                        <Paragraph size="sm">Contact Support</Paragraph>
+                                    </Stack>
+                                </Card>
                             </Link>
                             <Link to="/feedback">
-                                <div className="account-support-item">
-                                    <div className="account-support-icon">💡</div>
-                                    <Paragraph size="sm">Request a Feature</Paragraph>
-                                </div>
+                                <Card variant="interactive">
+                                    <Stack gap="sm" align="center">
+                                        <Paragraph size="lg">💡</Paragraph>
+                                        <Paragraph size="sm">Request a Feature</Paragraph>
+                                    </Stack>
+                                </Card>
                             </Link>
                         </Grid>
                     </Stack>

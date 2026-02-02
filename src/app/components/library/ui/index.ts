@@ -11,6 +11,14 @@ export { Card } from './Card';
 export { Text } from './Text';
 export { LoadingState } from './LoadingState';
 
+// Avatar
+export { Avatar } from './Avatar';
+export type { AvatarProps, AvatarSize, AvatarVariant } from './Avatar';
+
+// ProgressBar
+export { ProgressBar } from './ProgressBar';
+export type { ProgressBarProps, ProgressBarSize, ProgressBarVariant } from './ProgressBar';
+
 // Header components
 export { CardHeader } from './CardHeader';
 

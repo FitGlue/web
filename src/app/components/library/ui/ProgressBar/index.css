@@ -1,0 +1,64 @@
+/* ==========================================================================
+   ProgressBar Component - Visual Progress Indicator
+   ========================================================================== */
+@import '../../tokens.css';
+
+.ui-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.ui-progress__track {
+  flex: 1;
+  background: var(--color-surface);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+/* Size variants */
+.ui-progress--sm .ui-progress__track {
+  height: 4px;
+}
+
+.ui-progress--md .ui-progress__track {
+  height: 8px;
+}
+
+/* Fill bar */
+.ui-progress__fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal);
+}
+
+/* Fill variants */
+.ui-progress__fill--default {
+  background: var(--color-primary);
+}
+
+.ui-progress__fill--gradient {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+}
+
+.ui-progress__fill--success {
+  background: var(--color-success);
+}
+
+.ui-progress__fill--warning {
+  background: var(--color-warning);
+}
+
+.ui-progress__fill--error {
+  background: var(--color-error);
+}
+
+/* Label */
+.ui-progress__label {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  min-width: 2.5rem;
+  text-align: right;
+}

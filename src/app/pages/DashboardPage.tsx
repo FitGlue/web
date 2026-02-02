@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useRealtimeInputs } from '../hooks/useRealtimeInputs';
-import { useRealtimeActivities, useRealtimeStats } from '../hooks/useRealtimeActivities';
+import { useRealtimeStats } from '../hooks/useRealtimeActivities';
+import { usePipelineRuns } from '../hooks/usePipelineRuns';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
@@ -9,7 +10,7 @@ import { PageLayout, Stack, Grid } from '../components/library/layout';
 
 import { LiveToggle } from '../components/library/ui';
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
-import { GalleryOfBoosts } from '../components/dashboard/GalleryOfBoosts';
+import { PipelineRunsList } from '../components/dashboard/PipelineRunsList';
 import { FileUploadPanel } from '../components/dashboard/FileUploadPanel';
 import { ConnectionsSummaryCard } from '../components/dashboard/ConnectionsSummaryCard';
 import { PipelinesSummaryCard } from '../components/dashboard/PipelinesSummaryCard';
@@ -36,13 +37,12 @@ const DashboardPage: React.FC = () => {
     const { integrations } = useRealtimeIntegrations();
     const { pipelines } = useRealtimePipelines();
     const {
-        activities,
-        loading: activitiesLoading,
-        isEnabled: liveEnabled,
+        pipelineRuns,
+        loading: runsLoading,
         isListening,
-        toggleRealtime,
         forceRefresh
-    } = useRealtimeActivities(true, 10);
+    } = usePipelineRuns(true, 10);
+    const [liveEnabled, setLiveEnabled] = useState(true);
 
     // Real-time stats listener
     useRealtimeStats(true);
@@ -51,7 +51,7 @@ const DashboardPage: React.FC = () => {
         <LiveToggle
             isEnabled={liveEnabled}
             isListening={isListening}
-            onToggle={toggleRealtime}
+            onToggle={() => setLiveEnabled(prev => !prev)}
         />
     );
 
@@ -70,7 +70,7 @@ const DashboardPage: React.FC = () => {
         forceRefresh();
     };
 
-    const isLoading = activitiesLoading || inputsLoading || registryLoading;
+    const isLoading = runsLoading || inputsLoading || registryLoading;
 
     // Onboarding status
     const connectedCount = registryIntegrations.filter(
@@ -78,8 +78,8 @@ const DashboardPage: React.FC = () => {
     ).length;
     const hasConnections = connectedCount > 0;
     const hasPipelines = pipelines.length > 0;
-    const hasActivities = activities.length > 0;
-    const allOnboardingComplete = hasConnections && hasPipelines && hasActivities;
+    const hasSyncs = pipelineRuns.length > 0;
+    const allOnboardingComplete = hasConnections && hasPipelines && hasSyncs;
 
     useEffect(() => {
         if (!isLoading && allOnboardingComplete && !onboardingComplete) {
@@ -100,7 +100,7 @@ const DashboardPage: React.FC = () => {
                 <WelcomeBanner
                     hasConnections={hasConnections}
                     hasPipelines={hasPipelines}
-                    hasSyncs={hasActivities}
+                    hasSyncs={hasSyncs}
                 />
             )}
 
@@ -115,8 +115,12 @@ const DashboardPage: React.FC = () => {
 
                 <FileUploadPanel />
 
-                <GalleryOfBoosts
-                    onActivityClick={(activityId) => navigate(`/activities/${activityId}`)}
+                <PipelineRunsList
+                    variant="dashboard"
+                    title="Recent Runs"
+                    defaultFilter="all"
+                    limit={6}
+                    onRunClick={(run) => run.activityId && navigate(`/activities/${run.activityId}`)}
                 />
             </Stack>
         </PageLayout>
