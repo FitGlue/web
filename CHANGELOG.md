@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [8.4.2](https://github.com/fitglue/web/compare/v8.4.1...v8.4.2) (2026-02-02)
+
+
+### Bug Fixes
+
+* implement global listener registry for Firestore hooks ([f5110d5](https://github.com/fitglue/web/commit/f5110d52ee2ac441491c49db00146fcb372c1b77))
+* transition to realtime pipeline runs and update related components ([a63c63d](https://github.com/fitglue/web/commit/a63c63ddfc659fac2c84602a9c6ded64969d50b3))
+
 ### [8.4.1](https://github.com/fitglue/web/compare/v8.4.0...v8.4.1) (2026-02-02)
 
 
