@@ -60,6 +60,7 @@ export const useRealtimePipelines = () => {
     }, [setPipelines, setLastUpdated, setLoaded, setLoading]);
 
     const { loading, error, isListening, refresh } = useFirestoreListener({
+        listenerKey: 'pipelines',
         queryFactory,
         mapper,
         onData: handleData,

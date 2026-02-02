@@ -94,6 +94,7 @@ export const useRealtimeInputs = () => {
     }, [setInputs, setLastUpdated, setLoaded, setLoading]);
 
     const { loading, error, isListening, refresh } = useFirestoreListener({
+        listenerKey: 'pending_inputs',
         queryFactory,
         mapper,
         onData: handleData,

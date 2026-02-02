@@ -65,6 +65,7 @@ export const useRealtimeIntegrations = () => {
     }, [setIntegrations, setLastUpdated, setLoaded, setLoading]);
 
     const { loading, error, isListening, refresh } = useFirestoreDocument({
+        listenerKey: 'user_integrations',
         docFactory,
         mapper,
         onData: handleData,

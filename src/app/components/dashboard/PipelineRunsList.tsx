@@ -64,19 +64,9 @@ export const PipelineRunsList: React.FC<PipelineRunsListProps> = ({
 }) => {
     const navigate = useNavigate();
     const [tabMode, setTabMode] = useState<FilterMode>(initialTab || defaultFilter);
-    const { pipelineRuns, loading, error, isListening } = useRealtimePipelineRuns(true, limit);
 
-    // Debug logging
-    console.log('[PipelineRunsList] State:', {
-        pipelineRunsCount: pipelineRuns.length,
-        loading,
-        error: error?.message,
-        isListening,
-        limit,
-    });
-    if (pipelineRuns.length > 0) {
-        console.log('[PipelineRunsList] First run:', pipelineRuns[0]);
-    }
+    // Hook uses singleton pattern - safe to call from multiple components with same limit
+    const { pipelineRuns, loading } = useRealtimePipelineRuns(true, limit);
 
     const handleTabChange = (mode: FilterMode) => {
         setTabMode(mode);

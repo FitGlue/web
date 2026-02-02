@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAtom } from 'jotai';
 import { useRealtimeInputs } from '../hooks/useRealtimeInputs';
 import { useRealtimeStats } from '../hooks/useRealtimeStats';
-import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { pipelineRunsAtom } from '../state/activitiesState';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
 
-import { LiveToggle } from '../components/library/ui';
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
 import { PipelineRunsList } from '../components/dashboard/PipelineRunsList';
 import { FileUploadPanel } from '../components/dashboard/FileUploadPanel';
@@ -36,24 +36,11 @@ const DashboardPage: React.FC = () => {
     const { loading: inputsLoading } = useRealtimeInputs();
     const { integrations } = useRealtimeIntegrations();
     const { pipelines } = useRealtimePipelines();
-    const {
-        pipelineRuns,
-        loading: runsLoading,
-        isListening,
-        forceRefresh
-    } = useRealtimePipelineRuns(true, 10);
-    const [liveEnabled, setLiveEnabled] = useState(true);
+    // Read pipelineRuns from atom - PipelineRunsList component manages the listener
+    const [pipelineRuns] = useAtom(pipelineRunsAtom);
 
     // Real-time stats listener
     useRealtimeStats(true);
-
-    const liveToggle = (
-        <LiveToggle
-            isEnabled={liveEnabled}
-            isListening={isListening}
-            onToggle={() => setLiveEnabled(prev => !prev)}
-        />
-    );
 
     useEffect(() => {
         if (searchParams.get('redirected') === 'true') {
@@ -63,14 +50,7 @@ const DashboardPage: React.FC = () => {
         }
     }, [searchParams, setSearchParams]);
 
-    // Real-time hooks auto-subscribe, no manual fetch needed
-    const refresh = () => {
-        // Force refresh just updates the lastUpdated timestamp
-        // Real-time listeners will automatically provide fresh data
-        forceRefresh();
-    };
-
-    const isLoading = runsLoading || inputsLoading || registryLoading;
+    const isLoading = inputsLoading || registryLoading;
 
     // Onboarding status
     const connectedCount = registryIntegrations.filter(
@@ -89,7 +69,7 @@ const DashboardPage: React.FC = () => {
     }, [isLoading, allOnboardingComplete, onboardingComplete]);
 
     return (
-        <PageLayout title="Dashboard" onRefresh={refresh} loading={isLoading} headerActions={liveToggle}>
+        <PageLayout title="Dashboard" loading={isLoading}>
             {showRedirectNotification && (
                 <RedirectNotification
                     onDismiss={() => setShowRedirectNotification(false)}

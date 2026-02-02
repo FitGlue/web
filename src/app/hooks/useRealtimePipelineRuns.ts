@@ -86,7 +86,6 @@ export const useRealtimePipelineRuns = (initialEnabled = true, runLimit = 10) =>
     const queryFactory = useCallback(
         (firestore: ReturnType<typeof getFirebaseFirestore>, userId: string) => {
             if (!firestore) return null;
-            console.log('[useRealtimePipelineRuns] Creating query for userId:', userId, 'limit:', runLimit);
             const runsRef = collection(firestore, 'users', userId, 'pipeline_runs');
             return query(
                 runsRef,
@@ -100,14 +99,10 @@ export const useRealtimePipelineRuns = (initialEnabled = true, runLimit = 10) =>
     const mapper = useCallback((snapshot: unknown): PipelineRun[] => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const querySnapshot = snapshot as any;
-        console.log('[useRealtimePipelineRuns] Received snapshot with', querySnapshot.docs?.length || 0, 'documents');
-        const runs = querySnapshot.docs.map((doc: { id: string; data: () => Record<string, unknown> }) => {
+        return querySnapshot.docs.map((doc: { id: string; data: () => Record<string, unknown> }) => {
             const data = doc.data();
-            console.log('[useRealtimePipelineRuns] Document:', doc.id, 'status:', data.status, 'created_at:', data.created_at);
             return mapFirestoreToPipelineRun(doc.id, data);
         });
-        console.log('[useRealtimePipelineRuns] Mapped', runs.length, 'pipeline runs');
-        return runs;
     }, []);
 
     const handleData = useCallback((data: PipelineRun[]) => {
@@ -115,6 +110,7 @@ export const useRealtimePipelineRuns = (initialEnabled = true, runLimit = 10) =>
     }, [setPipelineRuns]);
 
     const { loading, error, isListening, refresh } = useFirestoreListener({
+        listenerKey: `pipeline_runs_${runLimit}`,
         queryFactory,
         mapper,
         onData: handleData,

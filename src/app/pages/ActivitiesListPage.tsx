@@ -16,6 +16,7 @@ const ActivitiesListPage: React.FC = () => {
     };
 
     // Get loading/listening state from hook for header indicators
+    // The hook uses singleton pattern, so calling it here shares the listener with PipelineRunsList
     const { loading, isListening, forceRefresh } = useRealtimePipelineRuns(true, 50);
     const [liveEnabled, setLiveEnabled] = useState(true);
 
