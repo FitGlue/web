@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [9.0.0](https://github.com/fitglue/web/compare/v8.6.0...v9.0.0) (2026-02-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ui:** Destination badges now render by status category
+(success/failed/pending) instead of all together. UI consumers
+expecting a single flat list of destinations will see different markup.
+
+- Display destinations by status (success, failed, pending) with distinct styling
+- Show pending destinations with muted opacity when pipeline failed at enricher
+- Add dedicated Failed Destinations section with error messages
+- Add Not Synced section for configured but unexecuted destinations
+- Fix RepostActionsMenu to correctly show icons for retry actions
+- Update EnrichedActivityCard to handle pending destination badges
+- Update showcase.html with Wall Balls station data
+
+### Features
+
+* much prettier showcase page and activity detail page ([1ae7252](https://github.com/fitglue/web/commit/1ae72529e124e3de714e4327e4efe794af817209))
+* **ui:** improve destination status display on Activity Detail Page ([b85a8b4](https://github.com/fitglue/web/commit/b85a8b4e5caab8b297db5727be29ffb273afc370))
+
+
+### Bug Fixes
+
+* pipeline runs display ([0b58c4e](https://github.com/fitglue/web/commit/0b58c4e19dfccc7a9dc0b57b3eb5e2a54f119ed7))
+* show all interpolated heart rate data ([0c214db](https://github.com/fitglue/web/commit/0c214dbbd5802765410934c6fc73b3456c8abca2))
+
 ## [8.6.0](https://github.com/fitglue/web/compare/v8.5.0...v8.6.0) (2026-02-02)
 
 
