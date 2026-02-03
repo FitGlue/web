@@ -8,6 +8,7 @@ import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { pipelineRunsAtom } from '../state/activitiesState';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
+import { useToast } from '../components/library/ui/Toast/Toast';
 
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
 import { PipelineRunsList } from '../components/dashboard/PipelineRunsList';
@@ -17,14 +18,13 @@ import { PipelinesSummaryCard } from '../components/dashboard/PipelinesSummaryCa
 import { ActionRequiredSummaryCard } from '../components/dashboard/ActionRequiredSummaryCard';
 import { SubscriptionBanner } from '../components/dashboard/SubscriptionBanner';
 import { IntegrationsSummary } from '../state/integrationsState';
-import { RedirectNotification } from './NotFoundPage';
 
 const ONBOARDING_COMPLETE_KEY = 'fitglue_onboarding_complete';
 
 const DashboardPage: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
-    const [showRedirectNotification, setShowRedirectNotification] = useState(false);
+    const { info } = useToast();
     const [onboardingComplete, setOnboardingComplete] = useState(() => {
         return localStorage.getItem(ONBOARDING_COMPLETE_KEY) === 'true';
     });
@@ -44,11 +44,11 @@ const DashboardPage: React.FC = () => {
 
     useEffect(() => {
         if (searchParams.get('redirected') === 'true') {
-            setShowRedirectNotification(true);
+            info('Page Not Found', "The page you visited doesn't exist — we've brought you back home.");
             searchParams.delete('redirected');
             setSearchParams(searchParams, { replace: true });
         }
-    }, [searchParams, setSearchParams]);
+    }, [searchParams, setSearchParams, info]);
 
     const isLoading = inputsLoading || registryLoading;
 
@@ -70,12 +70,6 @@ const DashboardPage: React.FC = () => {
 
     return (
         <PageLayout title="Dashboard" loading={isLoading}>
-            {showRedirectNotification && (
-                <RedirectNotification
-                    onDismiss={() => setShowRedirectNotification(false)}
-                />
-            )}
-
             {!onboardingComplete && !isLoading && !allOnboardingComplete && (
                 <WelcomeBanner
                     hasConnections={hasConnections}

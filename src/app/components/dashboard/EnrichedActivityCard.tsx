@@ -175,22 +175,48 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
         </Badge>
     );
 
-    // Destination node for flow
+    // Destination node for flow - group by status for visual distinction
+    const successDestinations = destinations.filter(dest => destinationStatuses[dest] === 'SUCCESS');
+    const pendingDestinations = destinations.filter(dest =>
+        destinationStatuses[dest] === 'PENDING' || !destinationStatuses[dest]
+    );
+    const failedDestinations = destinations.filter(dest => destinationStatuses[dest] === 'FAILED');
+
     const destinationNode = destinations.length > 0 ? (
         <Stack direction="horizontal" gap="xs">
-            {destinations.map(dest => {
-                const status = destinationStatuses[dest];
-                const isFailed = status === 'FAILED';
-                // Pass lowercase key for plugin lookup, and the formatted name as fallback
+            {/* SUCCESS destinations - normal destination styling */}
+            {successDestinations.map(dest => {
                 const destInfo = getDestinationInfo(dest.toLowerCase(), registryDestinations, dest);
                 return (
-                    <Badge
-                        key={dest}
-                        variant={isFailed ? 'error' : 'destination'}
-                        size="sm"
-                    >
+                    <Badge key={dest} variant="destination" size="sm">
                         <Stack direction="horizontal" gap="xs" align="center">
                             <Paragraph inline>{destInfo.icon}</Paragraph>
+                            <Paragraph inline size="sm">{destInfo.name}</Paragraph>
+                        </Stack>
+                    </Badge>
+                );
+            })}
+            {/* PENDING destinations - muted/greyed styling */}
+            {pendingDestinations.map(dest => {
+                const destInfo = getDestinationInfo(dest.toLowerCase(), registryDestinations, dest);
+                return (
+                    <span key={dest} style={{ opacity: 0.5 }}>
+                        <Badge variant="default" size="sm">
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph inline>⏳</Paragraph>
+                                <Paragraph inline size="sm">{destInfo.name}</Paragraph>
+                            </Stack>
+                        </Badge>
+                    </span>
+                );
+            })}
+            {/* FAILED destinations - error styling */}
+            {failedDestinations.map(dest => {
+                const destInfo = getDestinationInfo(dest.toLowerCase(), registryDestinations, dest);
+                return (
+                    <Badge key={dest} variant="error" size="sm">
+                        <Stack direction="horizontal" gap="xs" align="center">
+                            <Paragraph inline>❌</Paragraph>
                             <Paragraph inline size="sm">{destInfo.name}</Paragraph>
                         </Stack>
                     </Badge>
@@ -226,15 +252,15 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
             variant={statusInfo.cardVariant}
             header={headerContent}
         >
-                {/* Flow Visualization: Source → Boosters → Destination */}
-                <FlowVisualization
-                    source={sourceNode}
-                    center={boostersNode}
-                    destination={destinationNode}
-                />
-                {/* Status message - only show for non-terminal states or failures */}
-                {pipelineRun?.statusMessage &&
-                 pipelineRun.status !== PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED && (
+            {/* Flow Visualization: Source → Boosters → Destination */}
+            <FlowVisualization
+                source={sourceNode}
+                center={boostersNode}
+                destination={destinationNode}
+            />
+            {/* Status message - only show for non-terminal states or failures */}
+            {pipelineRun?.statusMessage &&
+                pipelineRun.status !== PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED && (
                     <Stack gap="xs">
                         <Paragraph muted size="sm">
                             ℹ️ {pipelineRun.statusMessage}

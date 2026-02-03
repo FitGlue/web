@@ -1364,9 +1364,13 @@
           let totalDuration = 0;
           const segments = [];
 
+          // Get session total elapsed time to calculate the last segment's duration
+          const sessionTotalTime = session.totalElapsedTime || 0;
+
           for (let i = 0; i < timeMarkers.length; i++) {
             const marker = timeMarkers[i];
             const nextMarker = timeMarkers[i + 1];
+            const isLastMarker = i === timeMarkers.length - 1;
 
             // Calculate duration to next marker or use marker's own duration if available
             let duration = 0;
@@ -1374,6 +1378,9 @@
               const startMs = new Date(marker.timestamp).getTime();
               const endMs = new Date(nextMarker.timestamp).getTime();
               duration = (endMs - startMs) / 1000; // seconds
+            } else if (isLastMarker && sessionTotalTime > 0 && totalDuration > 0) {
+              // For the last marker, calculate remaining time from session total
+              duration = sessionTotalTime - totalDuration;
             } else if (marker.durationSeconds) {
               duration = marker.durationSeconds;
             }

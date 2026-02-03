@@ -189,8 +189,9 @@ const formatMetadataValue = (value: unknown): string => {
     return JSON.stringify(value);
 };
 
-const getGlowCardVariant = (hasDestinations: boolean): 'default' | 'success' | 'premium' | 'awaiting' => {
-    if (hasDestinations) return 'success';
+const getGlowCardVariant = (hasSuccessfulDestinations: boolean, hasFailedDestinations: boolean): 'default' | 'success' | 'premium' | 'awaiting' => {
+    if (hasSuccessfulDestinations) return 'success';
+    if (hasFailedDestinations) return 'default';
     return 'awaiting';
 };
 
@@ -310,17 +311,46 @@ const ActivityDetailPage: React.FC = () => {
         </BoosterGrid>
     );
 
+    // Separate destinations by status for visual distinction
+    const successDestinations = destinations.filter(d => d.status === 'Success');
+    const pendingDestinations = destinations.filter(d => d.status === 'Pending' || d.status === 'Unknown');
+    const failedDestinations = destinations.filter(d => d.status === 'Failed');
+
     const destinationNode = destinations.length > 0 ? (
         <Stack direction="horizontal" gap="xs">
-            {destinations.map(dest => {
+            {/* SUCCESS destinations */}
+            {successDestinations.map(dest => {
                 const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
-                const isFailed = dest.status === 'Failed';
-                const isSuccess = dest.status === 'Success';
-                const badgeVariant = isFailed ? 'error' : isSuccess ? 'destination' : 'default';
                 return (
-                    <Badge key={dest.name} variant={badgeVariant as 'destination' | 'error' | 'default'} size="sm">
+                    <Badge key={dest.name} variant="destination" size="sm">
                         <Stack direction="horizontal" gap="xs" align="center">
                             <Paragraph inline>{destInfo.icon}</Paragraph>
+                            <Paragraph inline size="sm">{destInfo.name}</Paragraph>
+                        </Stack>
+                    </Badge>
+                );
+            })}
+            {/* PENDING destinations - muted styling */}
+            {pendingDestinations.map(dest => {
+                const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                return (
+                    <span key={dest.name} style={{ opacity: 0.5 }}>
+                        <Badge variant="default" size="sm">
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph inline>⏳</Paragraph>
+                                <Paragraph inline size="sm">{destInfo.name}</Paragraph>
+                            </Stack>
+                        </Badge>
+                    </span>
+                );
+            })}
+            {/* FAILED destinations - error styling */}
+            {failedDestinations.map(dest => {
+                const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                return (
+                    <Badge key={dest.name} variant="error" size="sm">
+                        <Stack direction="horizontal" gap="xs" align="center">
+                            <Paragraph inline>❌</Paragraph>
                             <Paragraph inline size="sm">{destInfo.name}</Paragraph>
                         </Stack>
                     </Badge>
@@ -361,7 +391,7 @@ const ActivityDetailPage: React.FC = () => {
         >
             <Stack gap="lg">
                 {/* Hero Card with Flow Visualization */}
-                <GlowCard variant={getGlowCardVariant(destinations.length > 0)} header={heroHeader}>
+                <GlowCard variant={getGlowCardVariant(successDestinations.length > 0, failedDestinations.length > 0)} header={heroHeader}>
                     <Stack gap="md">
                         {/* Description */}
                         {pipelineRun.description && (
@@ -423,7 +453,7 @@ const ActivityDetailPage: React.FC = () => {
                 )}
 
                 {/* Synced Destinations - Big Clickable GlowCards */}
-                {destinations.length > 0 && (
+                {successDestinations.length > 0 && (
                     <Stack gap="md">
                         <Heading level={4}>
                             <Stack direction="horizontal" gap="xs" align="center">
@@ -432,7 +462,7 @@ const ActivityDetailPage: React.FC = () => {
                             </Stack>
                         </Heading>
                         <Grid cols={2} gap="md">
-                            {destinations.filter(d => d.status === 'Success').map(dest => {
+                            {successDestinations.map(dest => {
                                 const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
                                 const externalUrl = buildDestinationUrl(registryDestinations, dest.name.toLowerCase(), dest.externalId);
 
@@ -462,6 +492,84 @@ const ActivityDetailPage: React.FC = () => {
                                                 ✓ Synced successfully
                                             </Paragraph>
                                         </Stack>
+                                    </GlowCard>
+                                );
+                            })}
+                        </Grid>
+                    </Stack>
+                )}
+
+                {/* Failed Destinations - Show error information */}
+                {failedDestinations.length > 0 && (
+                    <Stack gap="md">
+                        <Heading level={4}>
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph inline>❌</Paragraph>
+                                Failed Destinations
+                            </Stack>
+                        </Heading>
+                        <Grid cols={2} gap="md">
+                            {failedDestinations.map(dest => {
+                                const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                                // Find the destination outcome from pipelineRun to get error message
+                                const destOutcome = pipelineRun.destinations?.find(
+                                    d => formatDestination(d.destination) === dest.name
+                                );
+
+                                const cardHeader = (
+                                    <Stack direction="horizontal" align="center" gap="sm">
+                                        <span style={{ fontSize: '1.5rem' }}>{destInfo.icon}</span>
+                                        <Heading level={4}>{destInfo.name}</Heading>
+                                    </Stack>
+                                );
+
+                                return (
+                                    <GlowCard key={dest.name} variant="default" header={cardHeader}>
+                                        <Stack gap="xs">
+                                            <Paragraph size="sm" muted>
+                                                ❌ Sync failed
+                                            </Paragraph>
+                                            {destOutcome?.error && (
+                                                <Code>{destOutcome.error}</Code>
+                                            )}
+                                        </Stack>
+                                    </GlowCard>
+                                );
+                            })}
+                        </Grid>
+                    </Stack>
+                )}
+
+                {/* Not Synced Destinations - When pipeline failed at enricher stage */}
+                {pendingDestinations.length > 0 && (
+                    <Stack gap="md">
+                        <Heading level={4}>
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph inline>⏳</Paragraph>
+                                Not Synced
+                            </Stack>
+                        </Heading>
+                        <Paragraph size="sm" muted>
+                            These destinations were configured but the pipeline did not complete successfully.
+                        </Paragraph>
+                        <Grid cols={2} gap="md">
+                            {pendingDestinations.map(dest => {
+                                const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+
+                                const cardHeader = (
+                                    <span style={{ opacity: 0.6 }}>
+                                        <Stack direction="horizontal" align="center" gap="sm">
+                                            <span style={{ fontSize: '1.5rem' }}>{destInfo.icon}</span>
+                                            <Heading level={4}>{destInfo.name}</Heading>
+                                        </Stack>
+                                    </span>
+                                );
+
+                                return (
+                                    <GlowCard key={dest.name} variant="default" header={cardHeader}>
+                                        <Paragraph size="sm" muted>
+                                            ⏳ Pending - not synced
+                                        </Paragraph>
                                     </GlowCard>
                                 );
                             })}

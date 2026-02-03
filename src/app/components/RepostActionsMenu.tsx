@@ -79,11 +79,25 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
         [registryDestinations, userIntegrations]
     );
 
-    const syncedDestinations = activity.destinations ? Object.keys(activity.destinations) : [];
+    // Extract the source key from the activity source (e.g., 'SOURCE_HEVY' -> 'hevy')
+    // This is used to filter out the source from destination options
+    const sourceKey = activity.source
+        ? activity.source.replace(/^SOURCE_/, '').toLowerCase()
+        : null;
 
+    const syncedDestinations = activity.destinations ? Object.keys(activity.destinations) : [];
+    // Normalize to lowercase for comparison
+    const syncedDestinationsLower = syncedDestinations.map(k => k.toLowerCase());
+
+    // Filter out destinations that have already been synced AND the source platform
+    // (you shouldn't send an activity back to its origin platform)
     const missedDestinations = availableDestinations.filter(
-        d => !syncedDestinations.includes(d.key)
+        d => !syncedDestinationsLower.includes(d.key.toLowerCase()) && d.key !== sourceKey
     );
+
+    // Also filter out the source from synced destinations for retry
+    // (in case the source was somehow also a destination, don't show it for retry)
+    const retryDestinations = syncedDestinations.filter(destKey => destKey.toLowerCase() !== sourceKey);
 
     const handleAction = async () => {
         if (!modalType) return;
@@ -167,15 +181,15 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
             )}
 
             {/* Retry Destinations */}
-            {syncedDestinations.length > 0 && (
+            {retryDestinations.length > 0 && (
                 <Stack gap="sm">
                     <Heading level={5}>🔄 Retry destination</Heading>
                     <Paragraph size="sm" muted>
                         Re-send this activity to a platform it&apos;s already synced to. Useful if the previous sync had issues.
                     </Paragraph>
                     <Stack direction="horizontal" gap="sm" wrap>
-                        {syncedDestinations.map(destKey => {
-                            const dest = availableDestinations.find(d => d.key === destKey);
+                        {retryDestinations.map(destKey => {
+                            const dest = availableDestinations.find(d => d.key.toLowerCase() === destKey.toLowerCase());
                             return (
                                 <Button
                                     key={destKey}

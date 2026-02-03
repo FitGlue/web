@@ -64,7 +64,7 @@ interface AccessCheckResult {
 async function checkUserAccess(user: User): Promise<AccessCheckResult> {
   const result: AccessCheckResult = {
     mustVerifyEmail: false,
-    hasAccessEnabled: true // Default to true for backwards compat
+    hasAccessEnabled: false // Default to false - access denied until explicitly enabled
   };
 
   // Google OAuth users are automatically verified
