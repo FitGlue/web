@@ -6,6 +6,8 @@ import './WizardOptionGrid.css';
 export interface WizardOptionGridOption {
     id: string;
     icon?: string;
+    iconType?: string;
+    iconPath?: string;
     name: string;
     description?: string;
     isPremium?: boolean;
@@ -16,6 +18,8 @@ export interface WizardOptionGridProps<T extends WizardOptionGridOption> {
     options: T[];
     selectedIds: string[];
     onSelect: (option: T) => void;
+    /** 'single' for radio-style, 'multi' for checkbox-style */
+    selectionMode?: 'single' | 'multi';
     getOptionProps?: (option: T, isSelected: boolean) => Partial<WizardOptionCardProps>;
 }
 
@@ -23,6 +27,7 @@ export function WizardOptionGrid<T extends WizardOptionGridOption>({
     options,
     selectedIds,
     onSelect,
+    selectionMode = 'multi',
     getOptionProps,
 }: WizardOptionGridProps<T>): React.ReactElement {
     return (
@@ -35,11 +40,14 @@ export function WizardOptionGrid<T extends WizardOptionGridOption>({
                     <WizardOptionCard
                         key={option.id}
                         icon={option.icon || ''}
+                        iconType={option.iconType}
+                        iconPath={option.iconPath}
                         title={option.name}
                         description={option.description}
                         selected={isSelected}
                         isPremium={option.isPremium}
                         hasConfig={Array.isArray(option.configSchema) && option.configSchema.length > 0}
+                        selectionMode={selectionMode}
                         onClick={() => onSelect(option)}
                         {...customProps}
                     />

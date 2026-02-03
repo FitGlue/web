@@ -1,0 +1,60 @@
+/* PipelineReviewFlow Component Styles */
+
+.pipeline-review-flow {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md, 1rem);
+}
+
+/* Step badge - Gradient circle with number */
+.pipeline-review-flow__step-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary, #a855f7), var(--color-secondary, #ec4899));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+}
+
+.pipeline-review-flow__step-badge--muted {
+    background: var(--color-surface-secondary, rgba(255, 255, 255, 0.1));
+    opacity: 0.5;
+}
+
+/* Arrow between sections */
+.pipeline-review-flow__arrow {
+    text-align: center;
+    font-size: 1.25rem;
+    opacity: 0.5;
+}
+
+/* Content flex wrapper */
+.pipeline-review-flow__content {
+    flex: 1;
+}
+
+/* Individual enricher/destination item */
+.pipeline-review-flow__item {
+    padding: var(--spacing-sm, 0.5rem);
+    background: var(--color-surface-secondary, rgba(255, 255, 255, 0.05));
+    border-radius: var(--radius-sm, 0.375rem);
+}
+
+/* Item number prefix */
+.pipeline-review-flow__item-number {
+    opacity: 0.5;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    width: 1.5rem;
+}
+
+/* Config summary indented */
+.pipeline-review-flow__item-config {
+    margin-left: 2.5rem;
+    margin-top: var(--spacing-xs, 0.25rem);
+}

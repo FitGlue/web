@@ -112,7 +112,7 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     const destinationStatuses: Record<string, string> = pipelineRun.destinations
         ? pipelineRun.destinations.reduce((acc, d) => {
             const destName = formatDestination(d.destination) || 'Unknown';
-            acc[destName] = formatDestinationStatus(d.status) || 'UNKNOWN';
+            acc[destName] = formatDestinationStatus(d.status) || 'Unknown';
             return acc;
         }, {} as Record<string, string>)
         : {};
@@ -176,11 +176,12 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     );
 
     // Destination node for flow - group by status for visual distinction
-    const successDestinations = destinations.filter(dest => destinationStatuses[dest] === 'SUCCESS');
+    // Note: formatDestinationStatus returns Title case ('Success', 'Pending', 'Failed')
+    const successDestinations = destinations.filter(dest => destinationStatuses[dest] === 'Success');
     const pendingDestinations = destinations.filter(dest =>
-        destinationStatuses[dest] === 'PENDING' || !destinationStatuses[dest]
+        destinationStatuses[dest] === 'Pending' || !destinationStatuses[dest]
     );
-    const failedDestinations = destinations.filter(dest => destinationStatuses[dest] === 'FAILED');
+    const failedDestinations = destinations.filter(dest => destinationStatuses[dest] === 'Failed');
 
     const destinationNode = destinations.length > 0 ? (
         <Stack direction="horizontal" gap="xs">

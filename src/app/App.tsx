@@ -19,6 +19,7 @@ import ConnectionsPage from './pages/ConnectionsPage';
 import ConnectionSetupPage from './pages/ConnectionSetupPage';
 import ConnectionSuccessPage from './pages/ConnectionSuccessPage';
 import ConnectionErrorPage from './pages/ConnectionErrorPage';
+import ConnectionDetailPage from './pages/ConnectionDetailPage';
 import PipelinesPage from './pages/PipelinesPage';
 import PipelineWizardPage from './pages/PipelineWizardPage';
 import PipelineEditPage from './pages/PipelineEditPage';
@@ -140,33 +141,34 @@ const App: React.FC = () => {
       <ToastProvider>
         <NerdModeProvider>
           <Router basename="/app">
-          <Routes>
-            {/* Protected app routes */}
-            <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-            <Route path="/inputs" element={<ProtectedRoute><PendingInputsPage /></ProtectedRoute>} />
-            <Route path="/activities" element={<ProtectedRoute><ActivitiesListPage /></ProtectedRoute>} />
-            <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<ProtectedRoute><UnsynchronizedDetailPage /></ProtectedRoute>} />
-            <Route path="/activities/:id" element={<ProtectedRoute><ActivityDetailPage /></ProtectedRoute>} />
-            <Route path="/settings/integrations" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
-            <Route path="/connections" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
-            <Route path="/connections/:id/setup" element={<ProtectedRoute><ConnectionSetupPage /></ProtectedRoute>} />
-            <Route path="/connections/:id/success" element={<ProtectedRoute><ConnectionSuccessPage /></ProtectedRoute>} />
-            <Route path="/connections/:id/error" element={<ProtectedRoute><ConnectionErrorPage /></ProtectedRoute>} />
-            <Route path="/settings/pipelines" element={<ProtectedRoute><PipelinesPage /></ProtectedRoute>} />
-            <Route path="/settings/pipelines/new" element={<ProtectedRoute><PipelineWizardPage /></ProtectedRoute>} />
-            <Route path="/settings/pipelines/:pipelineId/edit" element={<ProtectedRoute><PipelineEditPage /></ProtectedRoute>} />
-            <Route path="/settings/account" element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
-            <Route path="/settings/enricher-data" element={<ProtectedRoute><EnricherDataPage /></ProtectedRoute>} />
-            <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
-            <Route path="/settings/upgrade" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
-            <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
+            <Routes>
+              {/* Protected app routes */}
+              <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+              <Route path="/inputs" element={<ProtectedRoute><PendingInputsPage /></ProtectedRoute>} />
+              <Route path="/activities" element={<ProtectedRoute><ActivitiesListPage /></ProtectedRoute>} />
+              <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<ProtectedRoute><UnsynchronizedDetailPage /></ProtectedRoute>} />
+              <Route path="/activities/:id" element={<ProtectedRoute><ActivityDetailPage /></ProtectedRoute>} />
+              <Route path="/settings/integrations" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
+              <Route path="/connections" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
+              <Route path="/connections/:id/setup" element={<ProtectedRoute><ConnectionSetupPage /></ProtectedRoute>} />
+              <Route path="/connections/:id/success" element={<ProtectedRoute><ConnectionSuccessPage /></ProtectedRoute>} />
+              <Route path="/connections/:id/error" element={<ProtectedRoute><ConnectionErrorPage /></ProtectedRoute>} />
+              <Route path="/connections/:id" element={<ProtectedRoute><ConnectionDetailPage /></ProtectedRoute>} />
+              <Route path="/settings/pipelines" element={<ProtectedRoute><PipelinesPage /></ProtectedRoute>} />
+              <Route path="/settings/pipelines/new" element={<ProtectedRoute><PipelineWizardPage /></ProtectedRoute>} />
+              <Route path="/settings/pipelines/:pipelineId/edit" element={<ProtectedRoute><PipelineEditPage /></ProtectedRoute>} />
+              <Route path="/settings/account" element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
+              <Route path="/settings/enricher-data" element={<ProtectedRoute><EnricherDataPage /></ProtectedRoute>} />
+              <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
+              <Route path="/settings/upgrade" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
+              <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
 
 
 
 
-            {/* Catch-all for unknown routes */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+              {/* Catch-all for unknown routes */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
           </Router>
         </NerdModeProvider>
       </ToastProvider>

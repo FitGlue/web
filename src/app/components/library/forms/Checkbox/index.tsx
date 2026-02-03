@@ -40,19 +40,19 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({
         ref={ref}
         type="checkbox"
         id={checkboxId}
-       
+        className="form-checkbox__input"
         {...props}
       />
-      <label htmlFor={checkboxId}>
-        <span>
-          <svg viewBox="0 0 12 10" fill="none">
-            <path d="M1 5L4.5 8.5L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <label htmlFor={checkboxId} className="form-checkbox__label">
+        <span className="form-checkbox__box">
+          <svg className="form-checkbox__check" viewBox="0 0 12 10" fill="none">
+            <path d="M1 5L4.5 8.5L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
         {(label || description) && (
-          <span>
-            {label && <span>{label}</span>}
-            {description && <span>{description}</span>}
+          <span className="form-checkbox__text">
+            {label && <span className="form-checkbox__label-text">{label}</span>}
+            {description && <span className="form-checkbox__description">{description}</span>}
           </span>
         )}
       </label>

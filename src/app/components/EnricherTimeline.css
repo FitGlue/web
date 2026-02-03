@@ -1,0 +1,149 @@
+.enricher-timeline {
+    display: flex;
+    flex-direction: column;
+}
+
+.enricher-timeline__header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm, 0.5rem);
+}
+
+.enricher-timeline__title {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.enricher-timeline__hint {
+    font-size: 0.75rem;
+    color: var(--color-text-muted, rgba(255, 255, 255, 0.5));
+}
+
+/* Timeline node wrapper */
+.timeline-node {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.timeline-node.dragging {
+    opacity: 0.5;
+    transform: scale(0.98);
+}
+
+.timeline-node.drag-over {
+    border-top: 2px solid var(--color-primary, #a855f7);
+}
+
+/* Node content container */
+.timeline-node__content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm, 0.5rem);
+    width: 100%;
+}
+
+/* Prominent drag handle */
+.timeline-drag-handle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 32px;
+    cursor: grab;
+    color: var(--color-text-muted, rgba(255, 255, 255, 0.4));
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    border-radius: 4px;
+}
+
+.timeline-drag-handle:hover {
+    color: var(--color-primary, #a855f7);
+    background: rgba(168, 85, 247, 0.1);
+}
+
+.timeline-drag-handle:active {
+    cursor: grabbing;
+    color: var(--color-primary, #a855f7);
+}
+
+/* Grip icon dots */
+.timeline-drag-handle__dots {
+    display: grid;
+    grid-template-columns: repeat(2, 4px);
+    gap: 2px;
+}
+
+.timeline-drag-handle__dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* Order number badge */
+.timeline-order-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-primary, #a855f7);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+/* Plugin info */
+.timeline-plugin-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs, 0.25rem);
+    flex: 1;
+    min-width: 0;
+}
+
+.timeline-plugin-name {
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Actions */
+.timeline-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs, 0.25rem);
+    flex-shrink: 0;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .timeline-node__content {
+        gap: var(--spacing-xs, 0.25rem);
+    }
+
+    .timeline-drag-handle {
+        width: 20px;
+        height: 28px;
+    }
+
+    .timeline-order-badge {
+        width: 20px;
+        height: 20px;
+        font-size: 0.625rem;
+    }
+
+    .timeline-plugin-name {
+        font-size: 0.75rem;
+    }
+
+    /* Long-press feedback for mobile */
+    .timeline-node.long-pressing {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+    }
+}

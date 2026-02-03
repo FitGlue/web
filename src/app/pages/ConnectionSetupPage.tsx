@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout, Stack } from '../components/library/layout';
-import { Button, Heading, Paragraph, CardSkeleton, List, ListItem } from '../components/library/ui';
+import { Button, Heading, Paragraph, CardSkeleton, List, ListItem, Card, Badge } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { PluginIcon } from '../components/library/ui/PluginIcon';
 import { Input, FormField } from '../components/library/forms';
@@ -171,60 +171,63 @@ const ConnectionSetupPage: React.FC = () => {
 
     const renderOAuthSetup = () => {
         return (
-            <Stack gap="lg">
-                <Stack direction="horizontal" align="center" gap="md">
-                    <PluginIcon
-                        icon={integration.icon}
-                        iconType={integration.iconType}
-                        iconPath={integration.iconPath}
-                        size="large"
+            <Card variant="elevated">
+                <Stack gap="lg">
+                    <Stack direction="horizontal" align="center" gap="md">
+                        <PluginIcon
+                            icon={integration.icon}
+                            iconType={integration.iconType}
+                            iconPath={integration.iconPath}
+                            size="large"
+                        />
+                        <Heading level={2}>Connect to {integration.name}</Heading>
+                    </Stack>
 
-                    />
-                    <Heading level={1}>Connect to {integration.name}</Heading>
-                </Stack>
+                    <Stack gap="md">
+                        <Paragraph>
+                            You&apos;ll be redirected to {integration.name} to authorize FitGlue. Here&apos;s what will happen:
+                        </Paragraph>
 
-                <Stack gap="md">
-                    <Paragraph>
-                        You&apos;ll be redirected to {integration.name} to authorize FitGlue. Here&apos;s what will happen:
-                    </Paragraph>
+                        <List>
+                            <ListItem>✓ Sign in to your {integration.name} account</ListItem>
+                            <ListItem>✓ Review the permissions FitGlue needs</ListItem>
+                            <ListItem>✓ Click &quot;Authorize&quot; to connect</ListItem>
+                            <ListItem>✓ You&apos;ll be redirected back here automatically</ListItem>
+                        </List>
 
-                    <List>
-                        <ListItem>✓ Sign in to your {integration.name} account</ListItem>
-                        <ListItem>✓ Review the permissions FitGlue needs</ListItem>
-                        <ListItem>✓ Click &quot;Authorize&quot; to connect</ListItem>
-                        <ListItem>✓ You&apos;ll be redirected back here automatically</ListItem>
-                    </List>
+                        <Card variant="default">
+                            <Stack direction="horizontal" gap="md" align="start">
+                                <Paragraph inline>🔒</Paragraph>
+                                <Stack gap="xs">
+                                    <Paragraph bold>Secure OAuth Connection</Paragraph>
+                                    <Paragraph size="sm">Your {integration.name} password is never shared with FitGlue.</Paragraph>
+                                </Stack>
+                            </Stack>
+                        </Card>
+                    </Stack>
 
-                    <Stack direction="horizontal" gap="md" align="start">
-                        <Paragraph inline>🔒</Paragraph>
-                        <Stack gap="xs">
-                            <Paragraph bold>Secure OAuth Connection</Paragraph>
-                            <Paragraph size="sm">Your {integration.name} password is never shared with FitGlue.</Paragraph>
-                        </Stack>
+                    {error && (
+                        <Paragraph>{error}</Paragraph>
+                    )}
+
+                    <Stack direction="horizontal" gap="sm" justify="end">
+                        <Button
+                            variant="secondary"
+                            onClick={() => navigate('/connections')}
+                            disabled={submitting}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={handleOAuthConnect}
+                            disabled={submitting}
+                        >
+                            {submitting ? 'Redirecting...' : `Continue to ${integration.name} →`}
+                        </Button>
                     </Stack>
                 </Stack>
-
-                {error && (
-                    <Paragraph>{error}</Paragraph>
-                )}
-
-                <Stack direction="horizontal" gap="sm" justify="end">
-                    <Button
-                        variant="secondary"
-                        onClick={() => navigate('/connections')}
-                        disabled={submitting}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={handleOAuthConnect}
-                        disabled={submitting}
-                    >
-                        {submitting ? 'Redirecting...' : `Continue to ${integration.name} →`}
-                    </Button>
-                </Stack>
-            </Stack>
+            </Card>
         );
     };
 
@@ -234,53 +237,59 @@ const ConnectionSetupPage: React.FC = () => {
         const healthName = isApple ? 'Apple Health' : 'Health Connect';
 
         return (
-            <Stack gap="lg">
-                <Stack direction="horizontal" align="center" gap="md">
-                    <PluginIcon
-                        icon={integration.icon}
-                        iconType={integration.iconType}
-                        iconPath={integration.iconPath}
-                        size="large"
-
-                    />
-                    <Heading level={1}>Connect {integration.name}</Heading>
-                </Stack>
-
-                <Stack gap="md">
-                    <Paragraph>
-                        {integration.name} data syncs through our mobile app.
-                    </Paragraph>
-
-                    <Stack direction="horizontal" gap="md" align="start">
-                        <Paragraph inline>📱</Paragraph>
-                        <Stack gap="sm">
-                            <Paragraph bold>Get the FitGlue App</Paragraph>
-                            <List variant="ordered">
-                                <ListItem>Download <strong>FitGlue</strong> from the {storeName}</ListItem>
-                                <ListItem>Sign in with your FitGlue account</ListItem>
-                                <ListItem>Grant <strong>{healthName}</strong> permissions</ListItem>
-                                <ListItem>Workouts sync automatically!</ListItem>
-                            </List>
-                            <Button variant="primary" disabled>
-                                Download on the {storeName}
-                            </Button>
-                        </Stack>
+            <Card variant="elevated">
+                <Stack gap="lg">
+                    <Stack direction="horizontal" align="center" gap="md">
+                        <PluginIcon
+                            icon={integration.icon}
+                            iconType={integration.iconType}
+                            iconPath={integration.iconPath}
+                            size="large"
+                        />
+                        <Heading level={2}>Connect {integration.name}</Heading>
                     </Stack>
 
-                    <Paragraph size="sm">
-                        <strong>Note:</strong> {integration.name} data can only be accessed from your {isApple ? 'iOS' : 'Android'} device.
-                    </Paragraph>
-                </Stack>
+                    <Stack gap="md">
+                        <Paragraph>
+                            {integration.name} data syncs through our mobile app.
+                        </Paragraph>
 
-                <Stack direction="horizontal" gap="sm">
-                    <Button
-                        variant="secondary"
-                        onClick={() => navigate('/connections')}
-                    >
-                        ← Back to Connections
-                    </Button>
+                        <Card variant="default">
+                            <Stack direction="horizontal" gap="md" align="start">
+                                <Paragraph inline>📱</Paragraph>
+                                <Stack gap="sm">
+                                    <Paragraph bold>Get the FitGlue App</Paragraph>
+                                    <List variant="ordered">
+                                        <ListItem>Download <strong>FitGlue</strong> from the {storeName}</ListItem>
+                                        <ListItem>Sign in with your FitGlue account</ListItem>
+                                        <ListItem>Grant <strong>{healthName}</strong> permissions</ListItem>
+                                        <ListItem>Workouts sync automatically!</ListItem>
+                                    </List>
+                                    <Stack direction="horizontal" gap="sm" align="center">
+                                        <Button variant="primary" disabled>
+                                            Download on the {storeName}
+                                        </Button>
+                                        <Badge variant="warning">Coming Soon</Badge>
+                                    </Stack>
+                                </Stack>
+                            </Stack>
+                        </Card>
+
+                        <Paragraph size="sm">
+                            <strong>Note:</strong> {integration.name} data can only be accessed from your {isApple ? 'iOS' : 'Android'} device.
+                        </Paragraph>
+                    </Stack>
+
+                    <Stack direction="horizontal" gap="sm">
+                        <Button
+                            variant="secondary"
+                            onClick={() => navigate('/connections')}
+                        >
+                            ← Back to Connections
+                        </Button>
+                    </Stack>
                 </Stack>
-            </Stack>
+            </Card>
         );
     };
 

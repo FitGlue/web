@@ -1,7 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heading, Paragraph, Button, Card, Badge } from '../library/ui';
-import { Stack } from '../library/layout';
 import './WelcomeBanner.css';
 
 interface WelcomeBannerProps {
@@ -66,63 +64,65 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
     const stepCompletion = [hasConnections, hasPipelines, hasSyncs];
 
     return (
-        <Card>
-            <Stack gap="lg">
-                <Stack direction="horizontal" justify="between" align="start">
-                    <Stack direction="horizontal" gap="md" align="center">
-                        <Paragraph inline>👋</Paragraph>
-                        <Stack gap="xs">
-                            <Heading level={2}>
-                                Welcome to <Paragraph inline bold>Fit</Paragraph><Paragraph inline bold>Glue</Paragraph>!
-                            </Heading>
-                            <Paragraph>Let&apos;s get you set up in 3 easy steps</Paragraph>
-                        </Stack>
-                    </Stack>
-                    {onDismiss && (
-                        <Button
-                            variant="text"
-                            size="small"
-                            onClick={onDismiss}
-                            aria-label="Dismiss"
-                        >
-                            ✕
-                        </Button>
-                    )}
-                </Stack>
+        <div className="welcome-banner">
+            <div className="welcome-header">
+                <div className="welcome-header-content">
+                    <span className="welcome-icon">👋</span>
+                    <div className="welcome-text">
+                        <h2>
+                            Welcome to <span className="brand"><span className="fit">Fit</span><span className="glue">Glue</span></span>!
+                        </h2>
+                        <p>Let&apos;s get you set up in 3 easy steps</p>
+                    </div>
+                </div>
+                {onDismiss && (
+                    <button
+                        className="dismiss-btn"
+                        onClick={onDismiss}
+                        aria-label="Dismiss"
+                    >
+                        ✕
+                    </button>
+                )}
+            </div>
 
-                <Stack gap="sm">
-                    {STEPS.map((step, index) => {
-                        const isCompleted = stepCompletion[index];
-                        return (
-                            <Card
-                                key={step.number}
-                                variant={isCompleted ? 'default' : 'elevated'}
-                                onClick={!isCompleted ? () => navigate(step.route) : undefined}
-                            >
-                                <Stack direction="horizontal" align="center" justify="between">
-                                    <Stack direction="horizontal" gap="md" align="center">
-                                        <Badge variant={isCompleted ? 'success' : 'default'} size="sm">
-                                            {isCompleted ? '✓' : step.number}
-                                        </Badge>
-                                        <Paragraph inline>{step.icon}</Paragraph>
-                                        <Stack gap="xs">
-                                            <Heading level={4}>{isCompleted ? step.completedTitle : step.title}</Heading>
-                                            <Paragraph size="sm" muted>{isCompleted ? step.completedDescription : step.description}</Paragraph>
-                                        </Stack>
-                                    </Stack>
-                                    {isCompleted ? (
-                                        <Badge variant="success" size="sm">Done</Badge>
-                                    ) : (
-                                        <Button variant="primary" size="small">
-                                            {step.buttonText} →
-                                        </Button>
-                                    )}
-                                </Stack>
-                            </Card>
-                        );
-                    })}
-                </Stack>
-            </Stack>
-        </Card>
+            <div className="onboarding-steps">
+                {STEPS.map((step, index) => {
+                    const isCompleted = stepCompletion[index];
+                    return (
+                        <button
+                            key={step.number}
+                            className={`step-card ${isCompleted ? 'completed' : ''}`}
+                            style={{ '--step-index': index } as React.CSSProperties}
+                            onClick={!isCompleted ? () => navigate(step.route) : undefined}
+                            disabled={isCompleted}
+                        >
+                            <div className={`step-number ${isCompleted ? 'completed' : ''}`}>
+                                {isCompleted ? '✓' : step.number}
+                            </div>
+                            <div className="step-content">
+                                <span className="step-icon">{step.icon}</span>
+                                <div className="step-info">
+                                    <h4>{isCompleted ? step.completedTitle : step.title}</h4>
+                                    <p>{isCompleted ? step.completedDescription : step.description}</p>
+                                </div>
+                            </div>
+                            <div className="step-action">
+                                {isCompleted ? (
+                                    <span className="step-complete-badge">Done</span>
+                                ) : (
+                                    <span className="step-cta">
+                                        {step.buttonText}
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M5 12h14M12 5l7 7-7 7" />
+                                        </svg>
+                                    </span>
+                                )}
+                            </div>
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
     );
 };

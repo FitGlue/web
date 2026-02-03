@@ -18,7 +18,7 @@ import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginCategorySection } from '../components/PluginCategorySection';
-import { WizardOptionGrid, WizardExcludedSection, WizardReviewBlock } from '../components/wizard';
+import { WizardOptionGrid, WizardExcludedSection, WizardStepIndicator, PipelineReviewFlow } from '../components/wizard';
 import { PluginManifest, ConfigFieldType } from '../types/plugin';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST } from '../utils/tier';
 import { ENRICHER_CATEGORIES, groupPluginsByCategory, getRecommendedPlugins } from '../utils/pluginCategories';
@@ -83,6 +83,7 @@ const PipelineWizardPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
     const [enricherSearchQuery, setEnricherSearchQuery] = useState('');
+    const [expandAllCategories, setExpandAllCategories] = useState(false);
 
     const steps: WizardStep[] = ['source', 'enrichers', 'enricher-config', 'destinations', 'review'];
     const currentStepIndex = steps.indexOf(step);
@@ -140,6 +141,9 @@ const PipelineWizardPage: React.FC = () => {
             } else {
                 setStep('enrichers');
             }
+        } else if (step === 'destinations' && !enrichersNeedConfig) {
+            // Skip enricher-config when no config is needed
+            setStep('enrichers');
         } else {
             const prevIndex = currentStepIndex - 1;
             if (prevIndex >= 0) setStep(steps[prevIndex]);
@@ -199,20 +203,11 @@ const PipelineWizardPage: React.FC = () => {
     const renderStepIndicator = () => {
         const displaySteps = enrichersNeedConfig ? steps : steps.filter(s => s !== 'enricher-config');
         const displayIndex = displaySteps.indexOf(step);
-        return (
-            <Stack direction="horizontal">
-                {displaySteps.map((s, i) => (
-                    <Card key={s} variant={i === displayIndex ? 'elevated' : 'default'}>
-                        <Stack direction="horizontal" gap="xs" align="center">
-                            <Paragraph inline bold={i === displayIndex}>{i + 1}</Paragraph>
-                            <Paragraph inline bold={i === displayIndex}>
-                                {s === 'enricher-config' ? 'Configure' : s.charAt(0).toUpperCase() + s.slice(1)}
-                            </Paragraph>
-                        </Stack>
-                    </Card>
-                ))}
-            </Stack>
-        );
+        const stepConfig = displaySteps.map(s => ({
+            id: s,
+            label: s === 'enricher-config' ? 'Configure' : s.charAt(0).toUpperCase() + s.slice(1),
+        }));
+        return <WizardStepIndicator steps={stepConfig} currentStepIndex={displayIndex} />;
     };
 
     const renderSourceStep = () => {
@@ -222,7 +217,7 @@ const PipelineWizardPage: React.FC = () => {
         return (
             <Stack>
                 <Heading level={3}>Select a Source</Heading>
-                <Paragraph>Choose where your activities will come from.</Paragraph>
+                <Paragraph>Pick <strong>one</strong> source for your activities.</Paragraph>
                 {loading ? (
                     <Paragraph>Loading sources...</Paragraph>
                 ) : (
@@ -231,6 +226,7 @@ const PipelineWizardPage: React.FC = () => {
                             options={availableSources}
                             selectedIds={selectedSource ? [selectedSource] : []}
                             onSelect={(source) => setSelectedSource(source.id)}
+                            selectionMode="single"
                         />
                         <WizardExcludedSection
                             items={excludedSources}
@@ -269,7 +265,7 @@ const PipelineWizardPage: React.FC = () => {
         return (
             <Stack>
                 <Heading level={3}>Add Boosters (Optional)</Heading>
-                <Paragraph>Click to add boosters. They will process your activities in order.</Paragraph>
+                <Paragraph>Click to add boosters. Drag the <strong>grip handle</strong> to reorder.</Paragraph>
                 <EnricherTimeline
                     enrichers={selectedEnrichers}
                     onReorder={setSelectedEnrichers}
@@ -280,10 +276,6 @@ const PipelineWizardPage: React.FC = () => {
                     <Paragraph>Loading enrichers...</Paragraph>
                 ) : (
                     <>
-                        <Stack>
-                            <FormInput type="text" placeholder="Search boosters..." value={enricherSearchQuery}
-                                onChange={(e) => setEnricherSearchQuery(e.target.value)} />
-                        </Stack>
                         {!enricherSearchQuery && recommended.length > 0 && (
                             <Stack>
                                 <Heading level={4}>⭐ Recommended for You</Heading>
@@ -294,6 +286,13 @@ const PipelineWizardPage: React.FC = () => {
                                 />
                             </Stack>
                         )}
+                        <Stack direction="horizontal" align="center" justify="between">
+                            <FormInput type="text" placeholder="Search boosters..." value={enricherSearchQuery}
+                                onChange={(e) => setEnricherSearchQuery(e.target.value)} />
+                            <Button variant="secondary" size="small" onClick={() => setExpandAllCategories(!expandAllCategories)}>
+                                {expandAllCategories ? 'Collapse All' : 'Expand All'}
+                            </Button>
+                        </Stack>
                         {Array.from(groupedEnrichers.entries()).map(([category, plugins]) => (
                             <PluginCategorySection
                                 key={category.id}
@@ -304,7 +303,7 @@ const PipelineWizardPage: React.FC = () => {
                                 onInfoClick={setInfoEnricher}
                                 disabledPlugins={new Set(excludedEnrichers.map(e => e.id))}
                                 getDisabledReason={getDisabledReason}
-                                defaultExpanded={!!enricherSearchQuery}
+                                defaultExpanded={!!enricherSearchQuery || expandAllCategories}
                             />
                         ))}
                         {!enricherSearchQuery && (
@@ -356,7 +355,7 @@ const PipelineWizardPage: React.FC = () => {
         return (
             <Stack>
                 <Heading level={3}>Select Destinations</Heading>
-                <Paragraph>Choose where your activities will be sent. Select at least one.</Paragraph>
+                <Paragraph>Select <strong>at least one</strong> destination for your activities</Paragraph>
                 {loading ? (
                     <Paragraph>Loading destinations...</Paragraph>
                 ) : (
@@ -365,6 +364,7 @@ const PipelineWizardPage: React.FC = () => {
                             options={availableDestinations}
                             selectedIds={selectedDestinations}
                             onSelect={(dest) => toggleDestination(dest.id)}
+                            selectionMode="multi"
                         />
                         <WizardExcludedSection
                             items={excludedDestinations}
@@ -394,37 +394,31 @@ const PipelineWizardPage: React.FC = () => {
             return option?.label || value;
         };
 
-        const renderKeyValueMap = (enricher: SelectedEnricher, key: string, value: string): React.ReactNode => {
-            const field = (enricher.manifest.configSchema ?? []).find(f => f.key === key);
-            if (!field) return value;
-            try {
-                const mappings = JSON.parse(value) as Record<string, string>;
-                const entries = Object.entries(mappings);
-                if (entries.length === 0) return 'No mappings';
-                return (
-                    <Stack>
-                        {entries.map(([k, v]) => {
-                            const keyLabel = field.keyOptions?.find(opt => opt.value === k)?.label || k;
-                            const valueLabel = field.valueOptions?.find(opt => opt.value === v)?.label || v;
-                            return (
-                                <Stack key={k} direction="horizontal" align="center">
-                                    <Paragraph inline>{keyLabel}</Paragraph>
-                                    <Paragraph inline>→</Paragraph>
-                                    <Paragraph inline>{valueLabel}</Paragraph>
-                                </Stack>
-                            );
-                        })}
-                    </Stack>
-                );
-            } catch {
-                return value;
-            }
-        };
-
         const isKeyValueMap = (enricher: SelectedEnricher, key: string): boolean => {
             const field = (enricher.manifest.configSchema ?? []).find(f => f.key === key);
             return field?.fieldType === ConfigFieldType.CONFIG_FIELD_TYPE_KEY_VALUE_MAP;
         };
+
+        // Convert selected enrichers to ReviewEnricher format
+        const reviewEnrichers = selectedEnrichers.map(e => ({
+            id: e.manifest.id,
+            icon: e.manifest.icon,
+            iconType: e.manifest.iconType,
+            iconPath: e.manifest.iconPath,
+            name: e.manifest.name,
+            configSummary: Object.entries(e.config).map(([key, value]) =>
+                `${getFieldLabel(e, key)}: ${isKeyValueMap(e, key) ? '(custom mapping)' : getOptionLabel(e, key, value)}`
+            ),
+        }));
+
+        // Convert destinations to ReviewDestination format
+        const reviewDests = dests.map(d => ({
+            id: d.id,
+            icon: d.icon,
+            iconType: d.iconType,
+            iconPath: d.iconPath,
+            name: d.name,
+        }));
 
         return (
             <Stack>
@@ -435,50 +429,20 @@ const PipelineWizardPage: React.FC = () => {
                             value={pipelineName} onChange={(e) => setPipelineName(e.target.value)}
                             maxLength={64} />
                     </FormField>
-                    <Stack direction="horizontal" align="center" wrap>
-                        <WizardReviewBlock label="Source">
-                            <Stack direction="horizontal" align="center">
-                                <Paragraph inline>{source?.icon}</Paragraph> {source?.name}
-                            </Stack>
-                        </WizardReviewBlock>
-                        <Paragraph inline>→</Paragraph>
-                        {selectedEnrichers.length > 0 && (
-                            <>
-                                <WizardReviewBlock label="Boosters">
-                                    {selectedEnrichers.map((e, index) => (
-                                        <Stack key={e.manifest.id}>
-                                            <Stack direction="horizontal" align="center">
-                                                <Paragraph inline>{index + 1}</Paragraph>
-                                                <Paragraph inline>{e.manifest.icon}</Paragraph>
-                                                <Paragraph inline>{e.manifest.name}</Paragraph>
-                                            </Stack>
-                                            {Object.keys(e.config).length > 0 && (
-                                                <Stack>
-                                                    {Object.entries(e.config).map(([key, value]) => (
-                                                        <Stack key={key} direction="horizontal" wrap>
-                                                            <Paragraph inline>{getFieldLabel(e, key)}:</Paragraph>
-                                                            {isKeyValueMap(e, key) ? renderKeyValueMap(e, key, value) : (
-                                                                <Paragraph inline>{getOptionLabel(e, key, value)}</Paragraph>
-                                                            )}
-                                                        </Stack>
-                                                    ))}
-                                                </Stack>
-                                            )}
-                                        </Stack>
-                                    ))}
-                                </WizardReviewBlock>
-                                <Paragraph inline>→</Paragraph>
-                            </>
-                        )}
-                        <WizardReviewBlock label="Destinations">
-                            {dests.map(d => (
-                                <Stack key={d.id} direction="horizontal" align="center">
-                                    <Paragraph inline>{d.icon}</Paragraph> {d.name}
-                                </Stack>
-                            ))}
-                        </WizardReviewBlock>
-                    </Stack>
                 </Card>
+
+                <PipelineReviewFlow
+                    source={source ? {
+                        id: source.id,
+                        icon: source.icon,
+                        iconType: source.iconType,
+                        iconPath: source.iconPath,
+                        name: source.name,
+                    } : undefined}
+                    enrichers={reviewEnrichers}
+                    destinations={reviewDests}
+                />
+
                 {error && <Paragraph>{error}</Paragraph>}
             </Stack>
         );

@@ -12,7 +12,7 @@ import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { SharePipelineModal } from '../components/SharePipelineModal';
-import { WizardOptionGrid, WizardExcludedSection } from '../components/wizard';
+import { WizardOptionGrid, WizardExcludedSection, EnricherConfigTabs } from '../components/wizard';
 import { useApi } from '../hooks/useApi';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
@@ -218,11 +218,12 @@ const PipelineEditPage: React.FC = () => {
                     {/* Source Section */}
                     <Card>
                         <Heading level={3}>📥 Source</Heading>
-                        <Paragraph>Where activities come from</Paragraph>
+                        <Paragraph>Pick <strong>only one</strong> source for your activities</Paragraph>
                         <WizardOptionGrid
                             options={availableSources}
                             selectedIds={availableSources.filter(s => selectedSource.toLowerCase().includes(s.id)).map(s => s.id)}
                             onSelect={(source) => setSelectedSource(source.id)}
+                            selectionMode="single"
                         />
                         <WizardExcludedSection
                             items={excludedSources}
@@ -279,15 +280,23 @@ const PipelineEditPage: React.FC = () => {
                     {enrichersNeedConfig && !editingEnrichers && (
                         <Card>
                             <Heading level={3}>⚙️ Configure Enrichers</Heading>
-                            <Stack direction="horizontal" wrap>
-                                {selectedEnrichers.filter(e => (e.manifest.configSchema?.length ?? 0) > 0).map((e) => (
-                                    <Button key={e.manifest.id}
-                                        variant={currentEnricherIndex === selectedEnrichers.indexOf(e) ? 'primary' : 'secondary'}
-                                        size="small" onClick={() => setCurrentEnricherIndex(selectedEnrichers.indexOf(e))}>
-                                        {e.manifest.icon} {e.manifest.name}
-                                    </Button>
-                                ))}
-                            </Stack>
+                            <Paragraph>Configure settings for each booster below</Paragraph>
+                            <EnricherConfigTabs
+                                tabs={selectedEnrichers
+                                    .filter(e => (e.manifest.configSchema?.length ?? 0) > 0)
+                                    .map(e => ({
+                                        id: e.manifest.id,
+                                        icon: e.manifest.icon,
+                                        iconType: e.manifest.iconType,
+                                        iconPath: e.manifest.iconPath,
+                                        name: e.manifest.name,
+                                    }))}
+                                activeTabId={currentEnricher?.manifest.id ?? ''}
+                                onTabClick={(tabId) => {
+                                    const index = selectedEnrichers.findIndex(e => e.manifest.id === tabId);
+                                    if (index !== -1) setCurrentEnricherIndex(index);
+                                }}
+                            />
                             {currentEnricher && (currentEnricher.manifest.configSchema?.length ?? 0) > 0 && (
                                 currentEnricher.manifest.id === 'logic-gate' ? (
                                     <LogicGateConfigForm key={currentEnricher.manifest.id} initialValues={currentEnricher.config}
@@ -304,11 +313,12 @@ const PipelineEditPage: React.FC = () => {
                     {/* Destinations Section */}
                     <Card>
                         <Heading level={3}>📤 Destinations</Heading>
-                        <Paragraph>Where to send processed activities</Paragraph>
+                        <Paragraph>Select <strong>at least one</strong> destination</Paragraph>
                         <WizardOptionGrid
                             options={availableDestinations}
                             selectedIds={selectedDestinations}
                             onSelect={(option) => toggleDestination(option as unknown as PluginManifest)}
+                            selectionMode="multi"
                             getOptionProps={(dest) => ({
                                 selected: selectedDestinations.some(sd => sd === dest.id || Number(sd) === (dest as unknown as PluginManifest).destinationType)
                             })}

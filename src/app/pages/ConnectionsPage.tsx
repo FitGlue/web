@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Button, PluginIcon, CardSkeleton, ConfirmDialog, Badge, Heading, Paragraph, Card, GlowCard, useToast } from '../components/library/ui';
-import { useApi } from '../hooks/useApi';
+import { Button, PluginIcon, CardSkeleton, Badge, Heading, Paragraph, Card, GlowCard } from '../components/library/ui';
+
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useNerdMode } from '../state/NerdModeContext';
@@ -19,16 +19,14 @@ interface ConnectionCardProps {
     integration: IntegrationManifest;
     status: IntegrationStatus | undefined;
     onConnect: () => void;
-    onDisconnect: () => void;
-    disconnecting: boolean;
+    onView: () => void;
 }
 
 const ConnectionCard: React.FC<ConnectionCardProps> = ({
     integration,
     status,
     onConnect,
-    onDisconnect,
-    disconnecting,
+    onView,
 }) => {
     const isConnected = status?.connected ?? false;
     const { isNerdMode } = useNerdMode();
@@ -99,12 +97,11 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
                 <Stack direction="horizontal" justify="end">
                     {isConnected ? (
                         <Button
-                            variant="danger"
+                            variant="secondary"
                             size="small"
-                            onClick={onDisconnect}
-                            disabled={disconnecting}
+                            onClick={onView}
                         >
-                            {disconnecting ? 'Disconnecting...' : 'Disconnect'}
+                            View →
                         </Button>
                     ) : (
                         <Button
@@ -123,40 +120,17 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
 
 const ConnectionsPage: React.FC = () => {
     const navigate = useNavigate();
-    const api = useApi();
-    const toast = useToast();
     const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { integrations, loading, refresh: refreshIntegrations } = useRealtimeIntegrations();
-    const [disconnecting, setDisconnecting] = useState<string | null>(null);
-    const [disconnectConfirm, setDisconnectConfirm] = useState<{ id: string, name: string } | null>(null);
-
     const handleConnect = (integration: IntegrationManifest) => {
         navigate(`/connections/${integration.id}/setup`);
     };
 
-    const handleRequestDisconnect = (provider: string) => {
-        const integration = registryIntegrations.find(i => i.id === provider);
-        const displayName = integration?.name || provider;
-        setDisconnectConfirm({ id: provider, name: displayName });
+    const handleView = (integration: IntegrationManifest) => {
+        navigate(`/connections/${integration.id}`);
     };
 
-    const handleDisconnectConfirm = async () => {
-        if (!disconnectConfirm) return;
-        const provider = disconnectConfirm.id;
-        const displayName = disconnectConfirm.name;
-        setDisconnectConfirm(null);
-        setDisconnecting(provider);
-        try {
-            await api.delete(`/users/me/integrations/${provider}`);
-            await refreshIntegrations();
-            toast.success('Disconnected', `${displayName} has been disconnected`);
-        } catch (error) {
-            console.error(`Failed to disconnect ${provider}:`, error);
-            toast.error('Disconnect Failed', `Failed to disconnect ${displayName}. Please try again.`);
-        } finally {
-            setDisconnecting(null);
-        }
-    };
+
 
     // Count connected integrations
     const connectedCount = registryIntegrations.filter(i => {
@@ -221,25 +195,13 @@ const ConnectionsPage: React.FC = () => {
                                     integration={integration}
                                     status={status}
                                     onConnect={() => handleConnect(integration)}
-                                    onDisconnect={() => handleRequestDisconnect(integration.id)}
-                                    disconnecting={disconnecting === integration.id}
+                                    onView={() => handleView(integration)}
                                 />
                             );
                         })}
                     </Grid>
                 </Stack>
             </Card>
-
-            <ConfirmDialog
-                isOpen={!!disconnectConfirm}
-                title="Disconnect Integration"
-                message={`Are you sure you want to disconnect ${disconnectConfirm?.name}? You'll need to reconnect to sync activities again.`}
-                confirmLabel="Disconnect"
-                isDestructive={true}
-                onConfirm={handleDisconnectConfirm}
-                onCancel={() => setDisconnectConfirm(null)}
-                isLoading={!!disconnecting}
-            />
         </PageLayout>
     );
 };

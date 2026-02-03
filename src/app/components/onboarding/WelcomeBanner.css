@@ -1,12 +1,18 @@
 /* Welcome Banner Container */
 .welcome-banner {
   background: linear-gradient(135deg,
-      rgba(255, 0, 110, 0.08) 0%,
-      rgba(131, 56, 236, 0.08) 100%);
-  border: 1px solid rgba(255, 0, 110, 0.15);
+      rgba(255, 0, 110, 0.12) 0%,
+      rgba(131, 56, 236, 0.08) 50%,
+      rgba(255, 0, 110, 0.05) 100%);
+  border: 1px solid rgba(255, 0, 110, 0.2);
+  border-radius: var(--radius-lg);
   position: relative;
   overflow: hidden;
   padding: 0 !important;
+  box-shadow:
+    0 4px 24px rgba(255, 0, 110, 0.15),
+    0 1px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .welcome-banner::before {
@@ -15,8 +21,34 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #ff006e 0%, #8338ec 100%);
+  height: 4px;
+  background: linear-gradient(90deg, #ff006e 0%, #8338ec 50%, #ff006e 100%);
+  background-size: 200% 100%;
+  animation: shimmer-bar 3s ease-in-out infinite;
+}
+
+@keyframes shimmer-bar {
+
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+
+  50% {
+    background-position: 100% 0%;
+  }
+}
+
+.welcome-banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at top left, rgba(255, 0, 110, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(131, 56, 236, 0.08) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 /* Header */
@@ -24,43 +56,88 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 1.5rem 1.5rem 1rem;
+  padding: 2rem 2rem 1.25rem;
+  position: relative;
+  z-index: 1;
 }
 
 .welcome-header-content {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .welcome-icon {
-  font-size: 2.5rem;
+  font-size: 3rem;
   line-height: 1;
+  filter: drop-shadow(0 2px 8px rgba(255, 0, 110, 0.3));
+  animation: wave 2.5s ease-in-out infinite;
+}
+
+@keyframes wave {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  15% {
+    transform: rotate(14deg);
+  }
+
+  30% {
+    transform: rotate(-8deg);
+  }
+
+  40% {
+    transform: rotate(14deg);
+  }
+
+  50% {
+    transform: rotate(-4deg);
+  }
+
+  60% {
+    transform: rotate(10deg);
+  }
+
+  70%,
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 .welcome-text h2 {
-  margin: 0 0 0.25rem 0;
-  font-size: 1.375rem;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
   font-weight: 600;
   letter-spacing: -0.02em;
+  color: var(--color-text);
 }
 
 .welcome-text h2 .brand {
   display: inline-flex;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  position: relative;
 }
 
 .welcome-text h2 .fit {
   color: #ff006e;
+  text-shadow: 0 0 30px rgba(255, 0, 110, 0.5);
 }
 
 .welcome-text h2 .glue {
   color: #8338ec;
+  text-shadow: 0 0 30px rgba(131, 56, 236, 0.5);
 }
 
 .welcome-text p {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 0.9rem;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
 }
 
 /* Dismiss Button */
@@ -255,19 +332,27 @@
 /* Responsive */
 @media (max-width: 640px) {
   .welcome-header {
-    padding: 1.25rem 1.25rem 0.75rem;
+    padding: 1.5rem 1.25rem 1rem;
   }
 
   .welcome-icon {
-    font-size: 2rem;
+    font-size: 2.25rem;
   }
 
   .welcome-text h2 {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
+  }
+
+  .welcome-text h2 .brand {
+    font-size: 1.75rem;
+  }
+
+  .welcome-text p {
+    font-size: 0.9rem;
   }
 
   .onboarding-steps {
-    padding: 0 0.75rem 0.75rem;
+    padding: 0 0.75rem 1rem;
   }
 
   .step-card {

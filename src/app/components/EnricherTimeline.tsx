@@ -4,7 +4,8 @@ import { Stack } from './library/layout/Stack';
 import { Card } from './library/ui/Card';
 import { Button } from './library/ui/Button';
 import { Paragraph } from './library/ui/Paragraph';
-import { Badge } from './library/ui/Badge';
+import { PluginIcon } from './library/ui/PluginIcon';
+import './EnricherTimeline.css';
 
 interface SelectedEnricher {
     manifest: PluginManifest;
@@ -18,11 +19,28 @@ interface Props {
     onInfoClick: (manifest: PluginManifest) => void;
 }
 
+/**
+ * Drag handle component with grip dots pattern
+ */
+const DragHandle: React.FC = () => (
+    <div className="timeline-drag-handle" title="Drag to reorder">
+        <div className="timeline-drag-handle__dots">
+            <span className="timeline-drag-handle__dot" />
+            <span className="timeline-drag-handle__dot" />
+            <span className="timeline-drag-handle__dot" />
+            <span className="timeline-drag-handle__dot" />
+            <span className="timeline-drag-handle__dot" />
+            <span className="timeline-drag-handle__dot" />
+        </div>
+    </div>
+);
+
 export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemove, onInfoClick }) => {
     const [dragIndex, setDragIndex] = useState<number | null>(null);
     const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
     const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [longPressing, setLongPressing] = useState<number | null>(null);
 
     // Desktop drag handlers
     const handleDragStart = (index: number) => (e: React.DragEvent) => {
@@ -52,13 +70,16 @@ export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemo
         setDragIndex(null);
         setDragOverIndex(null);
         setIsDragging(false);
+        setLongPressing(null);
     };
 
-    // Mobile: long-press to enable drag
+    // Mobile: long-press to enable drag with visual feedback
     const handleTouchStart = (index: number) => () => {
+        setLongPressing(index);
         longPressTimer.current = setTimeout(() => {
             setIsDragging(true);
             setDragIndex(index);
+            setLongPressing(null);
         }, 500);
     };
 
@@ -67,6 +88,7 @@ export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemo
             clearTimeout(longPressTimer.current);
             longPressTimer.current = null;
         }
+        setLongPressing(null);
         if (isDragging && dragIndex !== null && dragOverIndex !== null && dragIndex !== dragOverIndex) {
             const reordered = [...enrichers];
             const [moved] = reordered.splice(dragIndex, 1);
@@ -92,59 +114,73 @@ export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemo
     return (
         <Card>
             <Stack gap="md">
-                <Stack direction="horizontal" gap="sm" align="center">
+                <div className="enricher-timeline__header">
                     <Paragraph inline>⚡</Paragraph>
-                    <Paragraph inline bold>Pipeline Order</Paragraph>
-                    <Paragraph inline muted size="sm">(drag to reorder)</Paragraph>
-                </Stack>
+                    <span className="enricher-timeline__title">Pipeline Order</span>
+                    <span className="enricher-timeline__hint">Drag handle to reorder</span>
+                </div>
                 {/* Using div wrapper for touch events - Stack doesn't support event handlers */}
                 <div onTouchMove={handleTouchMove}>
-                    <Stack gap="sm">
-                        {enrichers.map((e, i) => (
-                            /* Using div for draggable - Card doesn't support drag handlers */
-                            <div
-                                key={e.manifest.id}
-                                className={`timeline-node ${dragIndex === i ? 'dragging' : ''} ${dragOverIndex === i && dragIndex !== i ? 'drag-over' : ''}`}
-                                data-index={i}
-                                draggable
-                                onDragStart={handleDragStart(i)}
-                                onDragOver={handleDragOver(i)}
-                                onDrop={handleDrop(i)}
-                                onDragEnd={handleDragEnd}
-                                onTouchStart={handleTouchStart(i)}
-                                onTouchEnd={handleTouchEnd}
-                            >
-                                <Card variant={dragIndex === i ? 'elevated' : 'default'}>
-                                    <Stack direction="horizontal" align="center" justify="between">
-                                        <Stack direction="horizontal" gap="sm" align="center">
-                                            <Badge variant="default" size="sm">{i + 1}</Badge>
-                                            <Paragraph inline>{e.manifest.icon}</Paragraph>
-                                            <Paragraph inline>{e.manifest.name}</Paragraph>
-                                        </Stack>
-                                        <Stack direction="horizontal" gap="xs">
-                                            <Button
-                                                variant="text"
-                                                size="small"
-                                                onClick={(ev) => { ev.stopPropagation(); onInfoClick(e.manifest); }}
-                                                title="Learn more about this booster"
-                                                aria-label="Info"
-                                            >
-                                                ⓘ
-                                            </Button>
-                                            <Button
-                                                variant="text"
-                                                size="small"
-                                                onClick={(ev) => { ev.stopPropagation(); onRemove(i); }}
-                                                title="Remove"
-                                                aria-label="Remove"
-                                            >
-                                                ✕
-                                            </Button>
-                                        </Stack>
-                                    </Stack>
-                                </Card>
-                            </div>
-                        ))}
+                    <Stack gap="xs">
+                        {enrichers.map((e, i) => {
+                            const nodeClasses = [
+                                'timeline-node',
+                                dragIndex === i && 'dragging',
+                                dragOverIndex === i && dragIndex !== i && 'drag-over',
+                                longPressing === i && 'long-pressing',
+                            ].filter(Boolean).join(' ');
+
+                            return (
+                                <div
+                                    key={`${e.manifest.id}-${i}`}
+                                    className={nodeClasses}
+                                    data-index={i}
+                                    draggable
+                                    onDragStart={handleDragStart(i)}
+                                    onDragOver={handleDragOver(i)}
+                                    onDrop={handleDrop(i)}
+                                    onDragEnd={handleDragEnd}
+                                    onTouchStart={handleTouchStart(i)}
+                                    onTouchEnd={handleTouchEnd}
+                                >
+                                    <Card variant={dragIndex === i ? 'elevated' : 'default'}>
+                                        <div className="timeline-node__content">
+                                            <DragHandle />
+                                            <div className="timeline-order-badge">{i + 1}</div>
+                                            <div className="timeline-plugin-info">
+                                                <PluginIcon
+                                                    icon={e.manifest.icon}
+                                                    iconType={e.manifest.iconType}
+                                                    iconPath={e.manifest.iconPath}
+                                                    size="small"
+                                                />
+                                                <span className="timeline-plugin-name">{e.manifest.name}</span>
+                                            </div>
+                                            <div className="timeline-actions">
+                                                <Button
+                                                    variant="text"
+                                                    size="small"
+                                                    onClick={(ev) => { ev.stopPropagation(); onInfoClick(e.manifest); }}
+                                                    title="Learn more about this booster"
+                                                    aria-label="Info"
+                                                >
+                                                    ⓘ
+                                                </Button>
+                                                <Button
+                                                    variant="text"
+                                                    size="small"
+                                                    onClick={(ev) => { ev.stopPropagation(); onRemove(i); }}
+                                                    title="Remove"
+                                                    aria-label="Remove"
+                                                >
+                                                    ✕
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </div>
+                            );
+                        })}
                     </Stack>
                 </div>
             </Stack>
