@@ -39,13 +39,13 @@ const mapFirestoreToPipelineRun = (docId: string, data: Record<string, unknown>)
         error: b.error as string | undefined,
     }));
 
-    // Map destinations array
+    // Map destinations array - handle both PascalCase (Go) and camelCase (TS) field names
     const destinations = ((data.destinations || []) as Array<Record<string, unknown>>).map(d => ({
-        destination: (d.destination || 0) as Destination,
-        status: (d.status || 0) as DestinationStatus,
-        externalId: (d.external_id || d.externalId) as string | undefined,
-        error: d.error as string | undefined,
-        completedAt: toDate(d.completed_at || d.completedAt),
+        destination: (d.Destination || d.destination || 0) as Destination,
+        status: (d.Status || d.status || 0) as DestinationStatus,
+        externalId: (d.ExternalId || d.external_id || d.externalId) as string | undefined,
+        error: (d.Error || d.error) as string | undefined,
+        completedAt: toDate(d.CompletedAt || d.completed_at || d.completedAt),
     }));
 
     return {

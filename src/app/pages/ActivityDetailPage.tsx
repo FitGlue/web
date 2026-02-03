@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
-import { SynchronizedActivity, ExecutionRecord, ActivitiesService } from '../services/ActivitiesService';
-import { PipelineTrace } from '../components/PipelineTrace';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
 import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard } from '../components/library/ui';
 import { FlowVisualization } from '../components/library/ui/FlowVisualization';
@@ -18,6 +16,7 @@ import { buildDestinationUrl } from '../utils/destinationUrls';
 import { PluginManifest } from '../types/plugin';
 import { Link } from '../components/library/navigation';
 import { BoosterExecution, PipelineRun } from '../../types/pb/user';
+import { SynchronizedActivity } from '../services/ActivitiesService';
 
 interface ProviderExecution {
     ProviderName: string;
@@ -25,32 +24,17 @@ interface ProviderExecution {
     Metadata?: Record<string, unknown>;
 }
 
-const deriveOriginalSource = (activity: SynchronizedActivity): string => {
-    if (activity.pipelineExecution && activity.pipelineExecution.length > 0) {
-        const firstService = activity.pipelineExecution[0].service;
-        if (firstService) {
-            return firstService
-                .replace(/-handler$/, '')
-                .replace(/-webhook$/, '')
-                .replace(/-/g, ' ')
-                .replace(/\b\w/g, c => c.toUpperCase());
-        }
+const deriveOriginalSource = (pipelineRun: PipelineRun): string => {
+    // Use the source field directly from PipelineRun
+    if (pipelineRun.source) {
+        return pipelineRun.source
+            .replace(/^SOURCE_/, '')
+            .replace(/_/g, ' ')
+            .split(' ')
+            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
     }
-    return activity.source || 'Unknown';
-};
-
-const extractEnricherExecutions = (pipelineExecution?: ExecutionRecord[]): ProviderExecution[] => {
-    if (!pipelineExecution) return [];
-
-    const enricherRecord = pipelineExecution.find(record => record.service === 'enricher');
-    if (!enricherRecord?.outputsJson) return [];
-
-    try {
-        const outputs = JSON.parse(enricherRecord.outputsJson);
-        return Array.isArray(outputs.provider_executions) ? outputs.provider_executions : [];
-    } catch {
-        return [];
-    }
+    return 'Unknown';
 };
 
 /**
@@ -114,10 +98,10 @@ const isSvgUrl = (url: string): boolean => {
 };
 
 const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ url, alt, className }) => {
-    const [svgContent, setSvgContent] = useState<string | null>(null);
-    const [error, setError] = useState(false);
+    const [svgContent, setSvgContent] = React.useState<string | null>(null);
+    const [error, setError] = React.useState(false);
 
-    useEffect(() => {
+    React.useEffect(() => {
         let cancelled = false;
 
         fetch(url)
@@ -162,27 +146,7 @@ const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ 
     return <div dangerouslySetInnerHTML={{ __html: svgContent }} />;
 };
 
-const getDestinationActivityType = (pipelineExecution?: ExecutionRecord[]): string | null => {
-    if (!pipelineExecution) return null;
-
-    const checkOrder = ['router', ...pipelineExecution
-        .filter(r => r.service?.endsWith('-uploader'))
-        .map(r => r.service as string)
-    ];
-
-    for (const service of checkOrder) {
-        const record = pipelineExecution.find(r => r.service === service);
-        if (record?.outputsJson) {
-            try {
-                const outputs = JSON.parse(record.outputsJson);
-                if (outputs.activity_type) return String(outputs.activity_type);
-            } catch {
-                continue;
-            }
-        }
-    }
-    return null;
-};
+// Remove unused getDestinationActivityType - we now get type directly from PipelineRun
 
 const formatPlatformName = (
     platform: string,
@@ -232,38 +196,19 @@ const getGlowCardVariant = (hasDestinations: boolean): 'default' | 'success' | '
 
 const ActivityDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [loading, setLoading] = useState(true);
-    const [activity, setActivity] = useState<SynchronizedActivity | null>(null);
     const { pipelines } = useRealtimePipelines();
     const { sources, destinations: registryDestinations } = usePluginRegistry();
     const { isNerdMode } = useNerdMode();
 
-    // Get pipeline runs for this activity - this has booster metadata!
-    const { pipelineRuns } = useRealtimePipelineRuns(true, 50);
+    // Get pipeline runs - this is now the PRIMARY data source
+    const { pipelineRuns, loading } = useRealtimePipelineRuns(true, 50);
 
-    const fetchActivity = async () => {
-        if (!id) return;
-        setLoading(true);
-        try {
-            const data = await ActivitiesService.get(id);
-            setActivity(data || null);
-        } catch (e) {
-            console.error('Failed to load activity', e);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchActivity();
-    }, [id]);
-
-    // Get the most recent pipeline run for this activity (has booster data with metadata)
-    const activityPipelineRun = useMemo((): PipelineRun | undefined => {
+    // Find the pipeline run for this activity by activityId
+    const pipelineRun = useMemo((): PipelineRun | undefined => {
         return pipelineRuns.find(run => run.activityId === id);
     }, [pipelineRuns, id]);
 
-    // Memoized data extraction - prefer pipeline run data for boosters
+    // Memoized data extraction from PipelineRun
     const {
         sourceInfo,
         destinations,
@@ -273,9 +218,8 @@ const ActivityDetailPage: React.FC = () => {
         pipelineName,
         successfulEnrichers,
         failedEnrichers,
-        pipelineRunDestinations,
     } = useMemo(() => {
-        if (!activity) {
+        if (!pipelineRun) {
             return {
                 sourceInfo: { name: '', icon: '' },
                 destinations: [],
@@ -289,28 +233,27 @@ const ActivityDetailPage: React.FC = () => {
             };
         }
 
-        const originalSource = deriveOriginalSource(activity);
+        const originalSource = deriveOriginalSource(pipelineRun);
         const sourceInfo = formatPlatformName(originalSource, sources, registryDestinations);
-        const destinations = activity.destinations ? Object.entries(activity.destinations) : [];
 
-        // Prefer pipeline run boosters (has metadata) over legacy execution trace
-        const providerExecutions = activityPipelineRun?.boosters
-            ? mapBoostersToExecutions(activityPipelineRun.boosters)
-            : extractEnricherExecutions(activity.pipelineExecution);
+        // Build destinations from pipeline run destination outcomes (show all, with status)
+        const destinations: { name: string; externalId: string; status: string }[] = (pipelineRun.destinations || [])
+            .map(d => ({
+                name: formatDestination(d.destination) || 'Unknown',
+                externalId: d.externalId || '',
+                status: formatDestinationStatus(d.status) || 'Unknown'
+            }));
 
-        const destinationActivityType = getDestinationActivityType(activity.pipelineExecution);
-        const activityType = destinationActivityType
-            ? formatActivityType(destinationActivityType)
-            : formatActivityType(activity.type);
+        // Use pipeline run boosters for enrichment data
+        const providerExecutions = mapBoostersToExecutions(pipelineRun.boosters);
+
+        const activityType = formatActivityType(pipelineRun.type);
         const generatedAssets = extractGeneratedAssets(providerExecutions);
-        const pipelineName = activity.pipelineId
-            ? pipelines.find(p => p.id === activity.pipelineId)?.name
+        const pipelineName = pipelineRun.pipelineId
+            ? pipelines.find(p => p.id === pipelineRun.pipelineId)?.name
             : undefined;
-        const successfulEnrichers = providerExecutions.filter(p => p.Status?.toUpperCase() === 'SUCCESS');
-        const failedEnrichers = providerExecutions.filter(p => p.Status?.toUpperCase() !== 'SUCCESS');
-
-        // Get detailed destination info from pipeline run
-        const pipelineRunDestinations = activityPipelineRun?.destinations || [];
+        const successfulEnrichers = providerExecutions.filter((p: ProviderExecution) => p.Status?.toUpperCase() === 'SUCCESS');
+        const failedEnrichers = providerExecutions.filter((p: ProviderExecution) => p.Status?.toUpperCase() !== 'SUCCESS');
 
         return {
             sourceInfo,
@@ -321,11 +264,10 @@ const ActivityDetailPage: React.FC = () => {
             pipelineName,
             successfulEnrichers,
             failedEnrichers,
-            pipelineRunDestinations,
         };
-    }, [activity, sources, registryDestinations, pipelines, activityPipelineRun]);
+    }, [pipelineRun, sources, registryDestinations, pipelines]);
 
-    if (loading && !activity) {
+    if (loading && !pipelineRun) {
         return (
             <PageLayout title="Loading..." backTo="/activities" backLabel="Activities">
                 <CardSkeleton variant="activity-detail" />
@@ -333,7 +275,7 @@ const ActivityDetailPage: React.FC = () => {
         );
     }
 
-    if (!activity) {
+    if (!pipelineRun) {
         return (
             <PageLayout title="Not Found" backTo="/activities" backLabel="Activities">
                 <Stack align="center" gap="md">
@@ -370,10 +312,13 @@ const ActivityDetailPage: React.FC = () => {
 
     const destinationNode = destinations.length > 0 ? (
         <Stack direction="horizontal" gap="xs">
-            {destinations.map(([platform]) => {
-                const destInfo = formatPlatformName(platform, sources, registryDestinations);
+            {destinations.map(dest => {
+                const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                const isFailed = dest.status === 'Failed';
+                const isSuccess = dest.status === 'Success';
+                const badgeVariant = isFailed ? 'error' : isSuccess ? 'destination' : 'default';
                 return (
-                    <Badge key={platform} variant="destination" size="sm">
+                    <Badge key={dest.name} variant={badgeVariant as 'destination' | 'error' | 'default'} size="sm">
                         <Stack direction="horizontal" gap="xs" align="center">
                             <Paragraph inline>{destInfo.icon}</Paragraph>
                             <Paragraph inline size="sm">{destInfo.name}</Paragraph>
@@ -396,23 +341,22 @@ const ActivityDetailPage: React.FC = () => {
         <Stack direction="horizontal" align="center" justify="between">
             <Stack direction="horizontal" gap="sm" align="center" wrap>
                 <Pill variant="gradient" size="small">{activityType}</Pill>
-                <Heading level={3}>{activity.title || 'Untitled Activity'}</Heading>
+                <Heading level={3}>{pipelineRun.title || 'Untitled Activity'}</Heading>
             </Stack>
             <Stack direction="horizontal" gap="sm" align="center">
                 {pipelineName && (
                     <Paragraph muted size="sm">via {pipelineName}</Paragraph>
                 )}
-                <Paragraph muted size="sm">{formatDateTime(activity.startTime)}</Paragraph>
+                <Paragraph muted size="sm">{formatDateTime(pipelineRun.startTime)}</Paragraph>
             </Stack>
         </Stack>
     );
 
     return (
         <PageLayout
-            title={activity.title || 'Activity Details'}
+            title={pipelineRun.title || 'Activity Details'}
             backTo="/activities"
             backLabel="Activities"
-            onRefresh={fetchActivity}
             loading={loading}
         >
             <Stack gap="lg">
@@ -420,8 +364,8 @@ const ActivityDetailPage: React.FC = () => {
                 <GlowCard variant={getGlowCardVariant(destinations.length > 0)} header={heroHeader}>
                     <Stack gap="md">
                         {/* Description */}
-                        {activity.description && (
-                            <Paragraph><span style={{ whiteSpace: 'pre-line' }}>{activity.description}</span></Paragraph>
+                        {pipelineRun.description && (
+                            <Paragraph><span style={{ whiteSpace: 'pre-line' }}>{pipelineRun.description}</span></Paragraph>
                         )}
 
                         {/* Flow Visualization */}
@@ -488,17 +432,9 @@ const ActivityDetailPage: React.FC = () => {
                             </Stack>
                         </Heading>
                         <Grid cols={2} gap="md">
-                            {destinations.map(([platform, activityId]) => {
-                                const destInfo = formatPlatformName(platform, sources, registryDestinations);
-                                const activityIdStr = String(activityId);
-                                const externalUrl = buildDestinationUrl(registryDestinations, platform, activityIdStr);
-
-                                // Get status from pipeline run destinations
-                                const runDest = pipelineRunDestinations.find(d =>
-                                    formatDestination(d.destination)?.toLowerCase() === platform.toLowerCase()
-                                );
-                                const status = runDest ? formatDestinationStatus(runDest.status) : 'SUCCESS';
-                                const isSuccess = status === 'SUCCESS';
+                            {destinations.filter(d => d.status === 'Success').map(dest => {
+                                const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                                const externalUrl = buildDestinationUrl(registryDestinations, dest.name.toLowerCase(), dest.externalId);
 
                                 const cardHeader = (
                                     <Stack direction="horizontal" align="center" gap="sm">
@@ -509,8 +445,8 @@ const ActivityDetailPage: React.FC = () => {
 
                                 return (
                                     <GlowCard
-                                        key={platform}
-                                        variant={isSuccess ? 'success' : 'default'}
+                                        key={dest.name}
+                                        variant="success"
                                         header={cardHeader}
                                         onClick={externalUrl ? () => window.open(externalUrl, '_blank') : undefined}
                                     >
@@ -520,10 +456,10 @@ const ActivityDetailPage: React.FC = () => {
                                                     View on {destInfo.name} ↗
                                                 </Link>
                                             ) : (
-                                                <Code>{activityIdStr}</Code>
+                                                <Code>{dest.externalId}</Code>
                                             )}
                                             <Paragraph size="sm" muted>
-                                                {isSuccess ? '✓ Synced successfully' : `Status: ${status}`}
+                                                ✓ Synced successfully
                                             </Paragraph>
                                         </Stack>
                                     </GlowCard>
@@ -571,24 +507,35 @@ const ActivityDetailPage: React.FC = () => {
                     </Card>
                 )}
 
-                {/* Pipeline Execution Trace - Nerd Mode Only */}
-                {isNerdMode && activity.pipelineExecution && activity.pipelineExecution.length > 0 && (
+                {/* Nerd mode booster execution details - using PipelineRun boosters */}
+                {isNerdMode && pipelineRun.boosters && pipelineRun.boosters.length > 0 && (
                     <Card>
                         <Stack gap="md">
                             <Heading level={4}>
                                 <Stack direction="horizontal" gap="xs" align="center">
                                     <Paragraph inline>🔧</Paragraph>
-                                    Pipeline Execution Trace
+                                    Booster Execution Details
                                     <Badge variant="default" size="sm">
-                                        {activity.pipelineExecution.length} steps
+                                        {pipelineRun.boosters.length} boosters
                                     </Badge>
                                 </Stack>
                             </Heading>
-                            <PipelineTrace
-                                trace={activity.pipelineExecution}
-                                pipelineExecutionId={activity.pipelineExecutionId}
-                                isLoading={loading}
-                            />
+                            <Stack gap="sm">
+                                {pipelineRun.boosters.map((booster, idx) => (
+                                    <Card key={idx}>
+                                        <Stack gap="xs">
+                                            <Paragraph size="sm"><strong>{booster.providerName}</strong></Paragraph>
+                                            <Paragraph size="sm" muted>Status: {booster.status}</Paragraph>
+                                            {booster.durationMs > 0 && (
+                                                <Paragraph size="sm" muted>Duration: {booster.durationMs}ms</Paragraph>
+                                            )}
+                                            {booster.error && (
+                                                <Code>{booster.error}</Code>
+                                            )}
+                                        </Stack>
+                                    </Card>
+                                ))}
+                            </Stack>
                         </Stack>
                     </Card>
                 )}
@@ -603,8 +550,19 @@ const ActivityDetailPage: React.FC = () => {
                             </Stack>
                         </Heading>
                         <RepostActionsMenu
-                            activity={activity}
-                            onSuccess={fetchActivity}
+                            activity={{
+                                activityId: pipelineRun.activityId,
+                                title: pipelineRun.title,
+                                description: pipelineRun.description,
+                                type: pipelineRun.type,
+                                source: pipelineRun.source,
+                                startTime: pipelineRun.startTime,
+                                destinations: destinations.reduce((acc, d) => ({ ...acc, [d.name]: d.externalId }), {} as Record<string, string>),
+                                pipelineId: pipelineRun.pipelineId,
+                                pipelineExecutionId: pipelineRun.id,
+                                syncedAt: pipelineRun.updatedAt,
+                            } as SynchronizedActivity}
+                            onSuccess={() => { }}
                             isPro={true}
                             inline
                         />
@@ -613,7 +571,7 @@ const ActivityDetailPage: React.FC = () => {
 
                 {/* Footer */}
                 <Paragraph size="sm" muted centered>
-                    Synced: {formatDateTime(activity.syncedAt)}
+                    Synced: {formatDateTime(pipelineRun.updatedAt)}
                 </Paragraph>
             </Stack>
         </PageLayout>
