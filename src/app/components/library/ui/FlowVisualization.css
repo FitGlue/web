@@ -39,16 +39,23 @@
 @media (max-width: 640px) {
   .flow-visualization {
     flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0;
   }
 
   .flow-visualization__arrow {
     transform: rotate(90deg);
+    font-size: 1rem;
+    margin: 0.125rem 0;
+  }
+
+  .flow-visualization__source,
+  .flow-visualization__destination {
     text-align: center;
   }
 
   .flow-visualization__center {
-    justify-content: flex-start;
+    justify-content: center;
   }
 }

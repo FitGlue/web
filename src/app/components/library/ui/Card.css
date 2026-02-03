@@ -96,3 +96,15 @@
     0 0 25px rgba(157, 78, 221, 0.3),
     0 0 50px rgba(255, 27, 141, 0.15);
 }
+
+/* Mobile: Reduce padding for compact layout */
+@media (max-width: 768px) {
+  .card {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  .card.card-premium {
+    padding: 0.625rem 1rem;
+  }
+}

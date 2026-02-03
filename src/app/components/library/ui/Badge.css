@@ -123,3 +123,16 @@
   color: #ffffff;
   font-weight: 400;
 }
+
+/* Mobile: Slightly smaller badges for compact layout */
+@media (max-width: 768px) {
+  .ui-badge--sm {
+    padding: 0.125rem 0.375rem;
+    font-size: 0.625rem;
+  }
+
+  .ui-badge--md {
+    padding: 0.1875rem 0.5rem;
+    font-size: 0.6875rem;
+  }
+}

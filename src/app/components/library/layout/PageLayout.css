@@ -42,10 +42,10 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .app-page-content {
-    padding: 0 0.75rem;
+    padding: 0 0.5rem;
   }
 
   .app-page-content--full-width {
-    padding: 0 1rem;
+    padding: 0 0.75rem;
   }
 }

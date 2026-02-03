@@ -38,3 +38,14 @@
 .ui-paragraph--nowrap {
   white-space: nowrap;
 }
+
+/* Mobile: Slightly smaller text for compact layout */
+@media (max-width: 768px) {
+  .ui-paragraph--md {
+    font-size: 0.9375rem;
+  }
+
+  .ui-paragraph--lg {
+    font-size: 1rem;
+  }
+}
