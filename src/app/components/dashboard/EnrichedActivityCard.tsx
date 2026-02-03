@@ -86,7 +86,7 @@ const getStatusInfo = (status?: PipelineRunStatus): {
         case PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING:
             return { cardVariant: 'needs-input', badgeVariant: 'warning', statusLabel: 'Awaiting Input', statusIcon: '⏳' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED:
-            return { cardVariant: 'default', badgeVariant: 'default', statusLabel: 'Skipped', statusIcon: '⏭️' };
+            return { cardVariant: 'premium', badgeVariant: 'default', statusLabel: 'Skipped', statusIcon: '⏭️' };
         default:
             return { cardVariant: 'default', badgeVariant: 'default' };
     }

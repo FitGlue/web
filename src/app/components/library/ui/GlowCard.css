@@ -12,13 +12,13 @@
   transition: all 0.25s ease;
 }
 
-/* Header with gradient background */
+/* Header with gradient background (default: red/orange for Failed) */
 .glow-card__header {
   padding: 0.875rem 1.25rem;
   background: linear-gradient(90deg,
-      var(--color-primary, #ff1b8d) 0%,
-      var(--color-secondary, #9d4edd) 50%,
-      var(--color-primary, #ff1b8d) 100%);
+      #dc2626 0%,
+      #ea580c 50%,
+      #dc2626 100%);
   background-size: 200% 100%;
   animation: header-shimmer 3s ease-in-out infinite;
 }
@@ -42,13 +42,13 @@
   gap: 1.25rem;
 }
 
-/* Variant: Success - green shimmer header */
+/* Variant: Success - pink/purple shimmer header (Synced status) */
 .glow-card--success .glow-card__header {
   background: linear-gradient(90deg,
-      var(--color-success, #10b981) 0%,
-      #34d399 33%,
-      #059669 66%,
-      var(--color-success, #10b981) 100%);
+      #ff1b8d 0%,
+      #9d4edd 33%,
+      #c026d3 66%,
+      #ff1b8d 100%);
   background-size: 200% 100%;
   animation: header-shimmer-success 4s ease-in-out infinite;
 }
@@ -65,14 +65,14 @@
   }
 }
 
-/* Variant: Premium - more vibrant shimmer */
+/* Variant: Premium - orange/yellow shimmer (Skipped status) */
 .glow-card--premium .glow-card__header {
   background: linear-gradient(90deg,
-      #ff1b8d 0%,
-      #9d4edd 33%,
-      #06b6d4 66%,
-      #ff1b8d 100%);
-  background-size: 300% 100%;
+      #f59e0b 0%,
+      #fbbf24 33%,
+      #d97706 66%,
+      #f59e0b 100%);
+  background-size: 200% 100%;
   animation: header-shimmer-premium 4s ease-in-out infinite;
 }
 
@@ -137,13 +137,13 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* Variant: Awaiting - orange gradient header */
+/* Variant: Awaiting - blue gradient header (Running status) */
 .glow-card--awaiting .glow-card__header {
   background: linear-gradient(90deg,
-      #f59e0b 0%,
-      #fbbf24 33%,
-      #d97706 66%,
-      #f59e0b 100%);
+      #3b82f6 0%,
+      #60a5fa 33%,
+      #2563eb 66%,
+      #3b82f6 100%);
   background-size: 200% 100%;
   animation: header-shimmer-awaiting 4s ease-in-out infinite;
 }

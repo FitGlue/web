@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Button, PluginIcon, CardSkeleton, ConfirmDialog, Pill, Heading, Paragraph, Card, useToast } from '../components/library/ui';
+import { Button, PluginIcon, CardSkeleton, ConfirmDialog, Badge, Heading, Paragraph, Card, GlowCard, useToast } from '../components/library/ui';
 import { useApi } from '../hooks/useApi';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { useNerdMode } from '../state/NerdModeContext';
 import '../components/library/ui/CardSkeleton.css';
 import { IntegrationManifest } from '../types/plugin';
 
@@ -30,42 +31,76 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
     disconnecting,
 }) => {
     const isConnected = status?.connected ?? false;
+    const { isNerdMode } = useNerdMode();
+
+    // Format last synced date nicely
+    const formatLastSynced = (dateStr?: string) => {
+        if (!dateStr) return null;
+        const date = new Date(dateStr);
+        return date.toLocaleString(undefined, {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+        });
+    };
+
+    const lastSynced = formatLastSynced(status?.lastUsedAt);
+
+    // Header content with integration name and status badge
+    const headerContent = (
+        <Stack direction="horizontal" align="center" justify="between">
+            <Stack direction="horizontal" gap="sm" align="center">
+                <PluginIcon
+                    icon={integration.icon}
+                    iconType={integration.iconType}
+                    iconPath={integration.iconPath}
+                    size="medium"
+                />
+                <Heading level={4}>{integration.name}</Heading>
+            </Stack>
+            <Badge variant={isConnected ? 'success' : 'default'} size="sm">
+                <Stack direction="horizontal" gap="xs" align="center">
+                    <Paragraph inline size="sm">{isConnected ? '✓' : '○'}</Paragraph>
+                    <Paragraph inline size="sm">{isConnected ? 'Connected' : 'Not Connected'}</Paragraph>
+                </Stack>
+            </Badge>
+        </Stack>
+    );
 
     return (
-        <Card variant={isConnected ? 'elevated' : 'default'}>
+        <GlowCard
+            variant={isConnected ? 'success' : 'default'}
+            header={headerContent}
+        >
             <Stack gap="md">
-                <Stack direction="horizontal" align="center" gap="md">
-                    <PluginIcon
-                        icon={integration.icon}
-                        iconType={integration.iconType}
-                        iconPath={integration.iconPath}
-                        size="medium"
+                {/* Description */}
+                <Paragraph muted size="sm">{integration.description}</Paragraph>
 
-                    />
+                {/* Connection metadata - only when connected */}
+                {isConnected && (
                     <Stack gap="xs">
-                        <Heading level={3} size="md">{integration.name}</Heading>
-                        <Paragraph muted size="sm">{integration.description}</Paragraph>
+                        {isNerdMode && status?.externalUserId && (
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph size="sm" muted>ID:</Paragraph>
+                                <Paragraph size="sm">{status.externalUserId}</Paragraph>
+                            </Stack>
+                        )}
+                        {lastSynced && (
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph size="sm" muted>Last synced:</Paragraph>
+                                <Paragraph size="sm">{lastSynced}</Paragraph>
+                            </Stack>
+                        )}
                     </Stack>
-                </Stack>
+                )}
 
-                <Stack direction="horizontal" align="center" gap="sm" wrap>
-                    <Pill variant={isConnected ? 'success' : 'default'}>
-                        {isConnected ? '✓ Connected' : '○ Not Connected'}
-                    </Pill>
-                    {isConnected && status?.externalUserId && (
-                        <Paragraph size="sm" muted>ID: {status.externalUserId}</Paragraph>
-                    )}
-                    {isConnected && status?.lastUsedAt && (
-                        <Paragraph size="sm" muted>
-                            Last synced: {new Date(status.lastUsedAt).toLocaleDateString()}
-                        </Paragraph>
-                    )}
-                </Stack>
-
-                <Stack>
+                {/* Action button */}
+                <Stack direction="horizontal" justify="end">
                     {isConnected ? (
                         <Button
                             variant="danger"
+                            size="small"
                             onClick={onDisconnect}
                             disabled={disconnecting}
                         >
@@ -74,6 +109,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
                     ) : (
                         <Button
                             variant="primary"
+                            size="small"
                             onClick={onConnect}
                         >
                             Connect
@@ -81,7 +117,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
                     )}
                 </Stack>
             </Stack>
-        </Card>
+        </GlowCard>
     );
 };
 
@@ -122,17 +158,33 @@ const ConnectionsPage: React.FC = () => {
         }
     };
 
+    // Count connected integrations
+    const connectedCount = registryIntegrations.filter(i => {
+        const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[i.id];
+        return status?.connected;
+    }).length;
+
     if (loading || registryLoading) {
         return (
             <PageLayout title="Connections" backTo="/" backLabel="Dashboard">
-                <Paragraph>
-                    Connect your fitness apps and devices to sync your data with FitGlue.
-                </Paragraph>
-                <Grid>
-                    <CardSkeleton variant="integration" />
-                    <CardSkeleton variant="integration" />
-                    <CardSkeleton variant="integration" />
-                </Grid>
+                <Card>
+                    <Stack gap="lg">
+                        {/* Header skeleton */}
+                        <Stack direction="horizontal" justify="between" align="center">
+                            <Stack gap="xs">
+                                <Heading level={3}>🔗 Your Connections</Heading>
+                                <Paragraph muted size="sm">Connect your fitness apps and devices to sync your data with FitGlue</Paragraph>
+                            </Stack>
+                        </Stack>
+
+                        {/* Skeleton cards */}
+                        <Grid>
+                            <CardSkeleton variant="integration" />
+                            <CardSkeleton variant="integration" />
+                            <CardSkeleton variant="integration" />
+                        </Grid>
+                    </Stack>
+                </Card>
             </PageLayout>
         );
     }
@@ -144,25 +196,39 @@ const ConnectionsPage: React.FC = () => {
             backLabel="Dashboard"
             onRefresh={refreshIntegrations}
         >
-            <Paragraph>
-                Connect your fitness apps and devices to sync your data with FitGlue.
-            </Paragraph>
+            <Card>
+                <Stack gap="lg">
+                    {/* Header with title and stats */}
+                    <Stack direction="horizontal" justify="between" align="center">
+                        <Stack gap="xs">
+                            <Heading level={3}>🔗 Your Connections</Heading>
+                            <Paragraph muted size="sm">Connect your fitness apps and devices to sync your data with FitGlue</Paragraph>
+                        </Stack>
+                        {connectedCount > 0 && (
+                            <Badge variant="success" size="sm">
+                                {connectedCount} Connected
+                            </Badge>
+                        )}
+                    </Stack>
 
-            <Grid>
-                {registryIntegrations.map(integration => {
-                    const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
-                    return (
-                        <ConnectionCard
-                            key={integration.id}
-                            integration={integration}
-                            status={status}
-                            onConnect={() => handleConnect(integration)}
-                            onDisconnect={() => handleRequestDisconnect(integration.id)}
-                            disconnecting={disconnecting === integration.id}
-                        />
-                    );
-                })}
-            </Grid>
+                    {/* Connection cards grid */}
+                    <Grid>
+                        {registryIntegrations.map(integration => {
+                            const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
+                            return (
+                                <ConnectionCard
+                                    key={integration.id}
+                                    integration={integration}
+                                    status={status}
+                                    onConnect={() => handleConnect(integration)}
+                                    onDisconnect={() => handleRequestDisconnect(integration.id)}
+                                    disconnecting={disconnecting === integration.id}
+                                />
+                            );
+                        })}
+                    </Grid>
+                </Stack>
+            </Card>
 
             <ConfirmDialog
                 isOpen={!!disconnectConfirm}

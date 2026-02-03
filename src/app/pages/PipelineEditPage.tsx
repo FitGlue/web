@@ -348,7 +348,14 @@ const PipelineEditPage: React.FC = () => {
                             providerType: e.manifest.enricherProviderType || 0,
                             inputs: e.config
                         })),
-                        destinations: selectedDestinations
+                        // Convert numeric destinationType values to string IDs for sharing
+                        destinations: selectedDestinations.map(d => {
+                            // If it's already a string ID (not a number), return as-is
+                            if (isNaN(Number(d))) return d;
+                            // Find the destination manifest by destinationType and return its ID
+                            const destManifest = destinations.find(dest => dest.destinationType === Number(d));
+                            return destManifest?.id ?? d;
+                        })
                     })}
                     pipelineName={pipelineName || 'Unnamed Pipeline'}
                     onClose={() => setShowShareModal(false)}

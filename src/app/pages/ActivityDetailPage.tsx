@@ -100,9 +100,13 @@ const isSvgUrl = (url: string): boolean => {
 const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ url, alt, className }) => {
     const [svgContent, setSvgContent] = React.useState<string | null>(null);
     const [error, setError] = React.useState(false);
+    const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
         let cancelled = false;
+        setLoading(true);
+        setError(false);
+        setSvgContent(null);
 
         fetch(url)
             .then(res => {
@@ -115,8 +119,11 @@ const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ 
                 const doc = parser.parseFromString(text, 'image/svg+xml');
                 const svgElement = doc.querySelector('svg');
                 if (svgElement) {
-                    svgElement.removeAttribute('width');
-                    svgElement.removeAttribute('height');
+                    // Set responsive dimensions instead of removing them
+                    svgElement.setAttribute('width', '100%');
+                    svgElement.setAttribute('height', 'auto');
+                    svgElement.style.maxWidth = '300px';
+                    svgElement.style.display = 'block';
                     svgElement.setAttribute('aria-label', alt);
                     svgElement.setAttribute('role', 'img');
                     if (className) {
@@ -129,21 +136,55 @@ const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ 
             })
             .catch(() => {
                 if (!cancelled) setError(true);
+            })
+            .finally(() => {
+                if (!cancelled) setLoading(false);
             });
 
         return () => { cancelled = true; };
     }, [url, alt, className]);
 
+    // On error, fall back to img tag (works better with CORS)
     if (error) {
-        return <img src={url} alt={alt} className={className} />;
+        return <img src={url} alt={alt} className={className} style={{ maxWidth: '100%', height: 'auto' }} />;
     }
 
-    if (!svgContent) {
-        return <div className={className} style={{ opacity: 0.5 }} aria-label={`Loading ${alt}`} />;
+    // Show loading placeholder with visible dimensions
+    if (loading || !svgContent) {
+        return (
+            <div
+                className={className}
+                style={{
+                    minWidth: '150px',
+                    minHeight: '150px',
+                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%)',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'rgba(255, 255, 255, 0.5)',
+                    fontSize: '12px'
+                }}
+                aria-label={`Loading ${alt}`}
+            >
+                Loading...
+            </div>
+        );
     }
 
     // eslint-disable-next-line react/no-danger
-    return <div dangerouslySetInnerHTML={{ __html: svgContent }} />;
+    return (
+        <div
+            dangerouslySetInnerHTML={{ __html: svgContent }}
+            style={{
+                width: '100%',
+                maxWidth: '300px',
+                height: 'auto',
+                aspectRatio: '500 / 600' // Match the viewBox aspect ratio
+            }}
+            className={className}
+        />
+    );
 };
 
 // Remove unused getDestinationActivityType - we now get type directly from PipelineRun
@@ -452,129 +493,141 @@ const ActivityDetailPage: React.FC = () => {
                     </Card>
                 )}
 
-                {/* Synced Destinations - Big Clickable GlowCards */}
-                {successDestinations.length > 0 && (
-                    <Stack gap="md">
-                        <Heading level={4}>
-                            <Stack direction="horizontal" gap="xs" align="center">
-                                <Paragraph inline>🚀</Paragraph>
-                                Synced Destinations
-                            </Stack>
-                        </Heading>
-                        <Grid cols={2} gap="md">
-                            {successDestinations.map(dest => {
-                                const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
-                                const externalUrl = buildDestinationUrl(registryDestinations, dest.name.toLowerCase(), dest.externalId);
+                {/* Destinations Card - Contains all destination sections */}
+                {destinations.length > 0 && (
+                    <Card>
+                        <Stack gap="lg">
+                            <Heading level={4}>
+                                <Stack direction="horizontal" gap="xs" align="center">
+                                    <Paragraph inline>🚀</Paragraph>
+                                    Destinations
+                                </Stack>
+                            </Heading>
 
-                                const cardHeader = (
-                                    <Stack direction="horizontal" align="center" gap="sm">
-                                        <span style={{ fontSize: '1.5rem' }}>{destInfo.icon}</span>
-                                        <Heading level={4}>{destInfo.name}</Heading>
-                                    </Stack>
-                                );
-
-                                return (
-                                    <GlowCard
-                                        key={dest.name}
-                                        variant="success"
-                                        header={cardHeader}
-                                        onClick={externalUrl ? () => window.open(externalUrl, '_blank') : undefined}
-                                    >
-                                        <Stack gap="xs">
-                                            {externalUrl ? (
-                                                <Link to={externalUrl} external>
-                                                    View on {destInfo.name} ↗
-                                                </Link>
-                                            ) : (
-                                                <Code>{dest.externalId}</Code>
-                                            )}
-                                            <Paragraph size="sm" muted>
-                                                ✓ Synced successfully
-                                            </Paragraph>
+                            {/* Synced Destinations */}
+                            {successDestinations.length > 0 && (
+                                <Stack gap="sm">
+                                    <Heading level={5}>
+                                        <Stack direction="horizontal" gap="xs" align="center">
+                                            <Paragraph inline>✓</Paragraph>
+                                            Synced
                                         </Stack>
-                                    </GlowCard>
-                                );
-                            })}
-                        </Grid>
-                    </Stack>
-                )}
+                                    </Heading>
+                                    <Grid cols={2} gap="md">
+                                        {successDestinations.map(dest => {
+                                            const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                                            const externalUrl = buildDestinationUrl(registryDestinations, dest.name.toLowerCase(), dest.externalId);
 
-                {/* Failed Destinations - Show error information */}
-                {failedDestinations.length > 0 && (
-                    <Stack gap="md">
-                        <Heading level={4}>
-                            <Stack direction="horizontal" gap="xs" align="center">
-                                <Paragraph inline>❌</Paragraph>
-                                Failed Destinations
-                            </Stack>
-                        </Heading>
-                        <Grid cols={2} gap="md">
-                            {failedDestinations.map(dest => {
-                                const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
-                                // Find the destination outcome from pipelineRun to get error message
-                                const destOutcome = pipelineRun.destinations?.find(
-                                    d => formatDestination(d.destination) === dest.name
-                                );
+                                            const cardHeader = (
+                                                <Stack direction="horizontal" align="center" gap="sm">
+                                                    <span style={{ fontSize: '1.5rem' }}>{destInfo.icon}</span>
+                                                    <Heading level={4}>{destInfo.name}</Heading>
+                                                </Stack>
+                                            );
 
-                                const cardHeader = (
-                                    <Stack direction="horizontal" align="center" gap="sm">
-                                        <span style={{ fontSize: '1.5rem' }}>{destInfo.icon}</span>
-                                        <Heading level={4}>{destInfo.name}</Heading>
-                                    </Stack>
-                                );
+                                            return (
+                                                <GlowCard
+                                                    key={dest.name}
+                                                    variant="success"
+                                                    header={cardHeader}
+                                                    onClick={externalUrl ? () => window.open(externalUrl, '_blank') : undefined}
+                                                >
+                                                    <Stack gap="xs">
+                                                        {externalUrl ? (
+                                                            <Link to={externalUrl} external>
+                                                                View on {destInfo.name} ↗
+                                                            </Link>
+                                                        ) : (
+                                                            <Code>{dest.externalId}</Code>
+                                                        )}
+                                                        <Paragraph size="sm" muted>
+                                                            ✓ Synced successfully
+                                                        </Paragraph>
+                                                    </Stack>
+                                                </GlowCard>
+                                            );
+                                        })}
+                                    </Grid>
+                                </Stack>
+                            )}
 
-                                return (
-                                    <GlowCard key={dest.name} variant="default" header={cardHeader}>
-                                        <Stack gap="xs">
-                                            <Paragraph size="sm" muted>
-                                                ❌ Sync failed
-                                            </Paragraph>
-                                            {destOutcome?.error && (
-                                                <Code>{destOutcome.error}</Code>
-                                            )}
+                            {/* Not Synced Destinations - When pipeline failed at enricher stage */}
+                            {pendingDestinations.length > 0 && (
+                                <Stack gap="sm">
+                                    <Heading level={5}>
+                                        <Stack direction="horizontal" gap="xs" align="center">
+                                            <Paragraph inline>⏳</Paragraph>
+                                            Not Synced
                                         </Stack>
-                                    </GlowCard>
-                                );
-                            })}
-                        </Grid>
-                    </Stack>
-                )}
+                                    </Heading>
+                                    <Paragraph size="sm" muted>
+                                        These destinations were configured but the pipeline did not complete successfully.
+                                    </Paragraph>
+                                    <Grid cols={2} gap="md">
+                                        {pendingDestinations.map(dest => {
+                                            const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
 
-                {/* Not Synced Destinations - When pipeline failed at enricher stage */}
-                {pendingDestinations.length > 0 && (
-                    <Stack gap="md">
-                        <Heading level={4}>
-                            <Stack direction="horizontal" gap="xs" align="center">
-                                <Paragraph inline>⏳</Paragraph>
-                                Not Synced
-                            </Stack>
-                        </Heading>
-                        <Paragraph size="sm" muted>
-                            These destinations were configured but the pipeline did not complete successfully.
-                        </Paragraph>
-                        <Grid cols={2} gap="md">
-                            {pendingDestinations.map(dest => {
-                                const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                                            const cardHeader = (
+                                                <Stack direction="horizontal" align="center" gap="sm">
+                                                    <span style={{ fontSize: '1.5rem', opacity: 0.6 }}>{destInfo.icon}</span>
+                                                    <Heading level={4}>{destInfo.name}</Heading>
+                                                </Stack>
+                                            );
 
-                                const cardHeader = (
-                                    <span style={{ opacity: 0.6 }}>
-                                        <Stack direction="horizontal" align="center" gap="sm">
-                                            <span style={{ fontSize: '1.5rem' }}>{destInfo.icon}</span>
-                                            <Heading level={4}>{destInfo.name}</Heading>
+                                            return (
+                                                <GlowCard key={dest.name} variant="awaiting" header={cardHeader}>
+                                                    <Paragraph size="sm" muted>
+                                                        ⏳ Pending - not synced
+                                                    </Paragraph>
+                                                </GlowCard>
+                                            );
+                                        })}
+                                    </Grid>
+                                </Stack>
+                            )}
+
+                            {/* Failed Destinations - Show error information */}
+                            {failedDestinations.length > 0 && (
+                                <Stack gap="sm">
+                                    <Heading level={5}>
+                                        <Stack direction="horizontal" gap="xs" align="center">
+                                            <Paragraph inline>❌</Paragraph>
+                                            Failed
                                         </Stack>
-                                    </span>
-                                );
+                                    </Heading>
+                                    <Grid cols={2} gap="md">
+                                        {failedDestinations.map(dest => {
+                                            const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                                            // Find the destination outcome from pipelineRun to get error message
+                                            const destOutcome = pipelineRun.destinations?.find(
+                                                d => formatDestination(d.destination) === dest.name
+                                            );
 
-                                return (
-                                    <GlowCard key={dest.name} variant="default" header={cardHeader}>
-                                        <Paragraph size="sm" muted>
-                                            ⏳ Pending - not synced
-                                        </Paragraph>
-                                    </GlowCard>
-                                );
-                            })}
-                        </Grid>
-                    </Stack>
+                                            const cardHeader = (
+                                                <Stack direction="horizontal" align="center" gap="sm">
+                                                    <span style={{ fontSize: '1.5rem' }}>{destInfo.icon}</span>
+                                                    <Heading level={4}>{destInfo.name}</Heading>
+                                                </Stack>
+                                            );
+
+                                            return (
+                                                <GlowCard key={dest.name} variant="default" header={cardHeader}>
+                                                    <Stack gap="xs">
+                                                        <Paragraph size="sm" muted>
+                                                            ❌ Sync failed
+                                                        </Paragraph>
+                                                        {destOutcome?.error && (
+                                                            <Code>{destOutcome.error}</Code>
+                                                        )}
+                                                    </Stack>
+                                                </GlowCard>
+                                            );
+                                        })}
+                                    </Grid>
+                                </Stack>
+                            )}
+                        </Stack>
+                    </Card>
                 )}
 
                 {/* Generated Assets */}
