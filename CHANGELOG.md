@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [9.1.0](https://github.com/fitglue/web/compare/v9.0.1...v9.1.0) (2026-02-03)
+
+
+### Features
+
+* redesign connections page with premium GlowCard styling ([6ea765c](https://github.com/fitglue/web/commit/6ea765ca0912178eb1151ca9f2238456fe163e89))
+
 ### [9.0.1](https://github.com/fitglue/web/compare/v9.0.0...v9.0.1) (2026-02-03)
 
 ## [9.0.0](https://github.com/fitglue/web/compare/v8.6.0...v9.0.0) (2026-02-03)
