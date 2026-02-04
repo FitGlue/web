@@ -3,6 +3,9 @@
   "version": "9.2.0",
   "description": "FitGlue web frontend and Firebase Hosting configuration",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "npm run serve",
     "dev:static": "npx skier watch",
