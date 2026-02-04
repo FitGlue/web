@@ -36,19 +36,19 @@ export const FormField: React.FC<FormFieldProps> = ({
   return (
     <div className={classes}>
       {label && (
-        <label htmlFor={htmlFor}>
+        <label className="form-field__label" htmlFor={htmlFor}>
           {label}
-          {required && <span>*</span>}
+          {required && <span className="form-field__required">*</span>}
         </label>
       )}
-      <div>
+      <div className="form-field__control">
         {children}
       </div>
       {hint && !error && (
-        <span>{hint}</span>
+        <span className="form-field__hint">{hint}</span>
       )}
       {error && (
-        <span>{error}</span>
+        <span className="form-field__error">{error}</span>
       )}
     </div>
   );
