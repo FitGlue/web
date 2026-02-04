@@ -15,7 +15,7 @@ import { formatActivityType, formatDestination, formatDestinationStatus } from '
 import { buildDestinationUrl } from '../utils/destinationUrls';
 import { PluginManifest } from '../types/plugin';
 import { Link } from '../components/library/navigation';
-import { BoosterExecution, PipelineRun } from '../../types/pb/user';
+import { BoosterExecution, PipelineRun, PipelineRunStatus } from '../../types/pb/user';
 import { SynchronizedActivity } from '../services/ActivitiesService';
 
 interface ProviderExecution {
@@ -230,10 +230,32 @@ const formatMetadataValue = (value: unknown): string => {
     return JSON.stringify(value);
 };
 
-const getGlowCardVariant = (hasSuccessfulDestinations: boolean, hasFailedDestinations: boolean): 'default' | 'success' | 'premium' | 'awaiting' => {
-    if (hasSuccessfulDestinations) return 'success';
-    if (hasFailedDestinations) return 'default';
-    return 'awaiting';
+/**
+ * Get card variant and status info based on pipeline run status
+ * Mirrors the logic from EnrichedActivityCard for consistency
+ */
+const getStatusInfo = (status?: PipelineRunStatus): {
+    cardVariant: 'default' | 'success' | 'premium' | 'awaiting' | 'needs-input';
+    badgeVariant: 'default' | 'success' | 'warning' | 'error';
+    statusLabel?: string;
+    statusIcon?: string;
+} => {
+    switch (status) {
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED:
+            return { cardVariant: 'success', badgeVariant: 'success', statusLabel: 'Synced', statusIcon: '✅' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL:
+            return { cardVariant: 'awaiting', badgeVariant: 'warning', statusLabel: 'Partial', statusIcon: '⚠️' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED:
+            return { cardVariant: 'default', badgeVariant: 'error', statusLabel: 'Failed', statusIcon: '❌' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_RUNNING:
+            return { cardVariant: 'awaiting', badgeVariant: 'default', statusLabel: 'Running', statusIcon: '🔄' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING:
+            return { cardVariant: 'needs-input', badgeVariant: 'warning', statusLabel: 'Awaiting Input', statusIcon: '⏳' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED:
+            return { cardVariant: 'premium', badgeVariant: 'default', statusLabel: 'Skipped', statusIcon: '⏭️' };
+        default:
+            return { cardVariant: 'default', badgeVariant: 'default' };
+    }
 };
 
 const ActivityDetailPage: React.FC = () => {
@@ -407,6 +429,9 @@ const ActivityDetailPage: React.FC = () => {
         </Badge>
     );
 
+    // Get status info for card variant and badge display
+    const statusInfo = getStatusInfo(pipelineRun.status);
+
     // Header content for GlowCard
     const heroHeader = (
         <Stack direction="horizontal" align="center" justify="between">
@@ -415,6 +440,14 @@ const ActivityDetailPage: React.FC = () => {
                 <Heading level={3}>{pipelineRun.title || 'Untitled Activity'}</Heading>
             </Stack>
             <Stack direction="horizontal" gap="sm" align="center">
+                {statusInfo.statusLabel && (
+                    <Badge variant={statusInfo.badgeVariant} size="sm">
+                        <Stack direction="horizontal" gap="xs" align="center">
+                            <Paragraph inline size="sm">{statusInfo.statusIcon}</Paragraph>
+                            <Paragraph inline size="sm">{statusInfo.statusLabel}</Paragraph>
+                        </Stack>
+                    </Badge>
+                )}
                 {pipelineName && (
                     <Paragraph muted size="sm">via {pipelineName}</Paragraph>
                 )}
@@ -432,7 +465,7 @@ const ActivityDetailPage: React.FC = () => {
         >
             <Stack gap="lg">
                 {/* Hero Card with Flow Visualization */}
-                <GlowCard variant={getGlowCardVariant(successDestinations.length > 0, failedDestinations.length > 0)} header={heroHeader}>
+                <GlowCard variant={statusInfo.cardVariant} header={heroHeader}>
                     <Stack gap="md">
                         {/* Description */}
                         {pipelineRun.description && (
