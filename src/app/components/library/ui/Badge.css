@@ -100,10 +100,26 @@
   font-size: 0.875em;
 }
 
-/* Booster variant - green with lighter border */
+/* Booster variant - pink/purple shimmer (matches GlowCard success) */
 .ui-badge--booster {
-  background: rgba(16, 185, 129, 0.25);
-  border: 1px solid rgba(52, 211, 153, 0.5);
+  background: linear-gradient(135deg, rgba(255, 27, 141, 0.3), rgba(157, 78, 221, 0.3));
+  border: 1px solid rgba(255, 27, 141, 0.5);
+  color: #ffffff;
+  font-weight: 400;
+}
+
+/* Booster skipped variant - orange/yellow shimmer (matches GlowCard premium/skipped) */
+.ui-badge--booster-skipped {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(251, 191, 36, 0.3));
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  color: #ffffff;
+  font-weight: 400;
+}
+
+/* Booster error variant - red (matches GlowCard default/failed) */
+.ui-badge--booster-error {
+  background: rgba(220, 38, 38, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.5);
   color: #ffffff;
   font-weight: 400;
 }

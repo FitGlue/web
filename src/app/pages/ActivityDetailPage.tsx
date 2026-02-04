@@ -49,6 +49,57 @@ const mapBoostersToExecutions = (boosters?: BoosterExecution[]): ProviderExecuti
     }));
 };
 
+/**
+ * Determine effective status by checking metadata for status override.
+ * Enrichers may complete successfully at the execution level but report
+ * their own internal status (error, skipped) in metadata.
+ */
+const getEffectiveStatus = (execution: ProviderExecution): string => {
+    let status = execution.Status?.toUpperCase() || 'UNKNOWN';
+    
+    if (!execution.Metadata) return status;
+    
+    // Find status from metadata - check for any key that is exactly "status" or ends with "_status"
+    let metadataStatus: string | null = null;
+    for (const [key, val] of Object.entries(execution.Metadata)) {
+        if ((key === 'status' || key.endsWith('_status')) && typeof val === 'string') {
+            metadataStatus = val.toLowerCase();
+            break;
+        }
+    }
+    
+    // Override execution status with metadata status if more specific
+    if (status === 'SUCCESS' && metadataStatus) {
+        if (metadataStatus === 'error') {
+            status = 'ERROR';
+        } else if (metadataStatus === 'skipped') {
+            status = 'SKIPPED';
+        }
+    }
+    
+    return status;
+};
+
+/**
+ * Map effective status to GlowCard variant following the color scheme:
+ * - Success: pink/purple ('success')
+ * - Skipped: orange/yellow ('premium')
+ * - Error/Failed: red/orange ('default')
+ */
+const getBoosterCardVariant = (status: string): 'default' | 'success' | 'premium' | 'awaiting' => {
+    switch (status) {
+        case 'SUCCESS':
+            return 'success';
+        case 'SKIPPED':
+            return 'premium';
+        case 'ERROR':
+        case 'FAILED':
+            return 'default';
+        default:
+            return 'awaiting';
+    }
+};
+
 interface GeneratedAsset {
     type: string;
     url: string;
@@ -59,7 +110,8 @@ const extractGeneratedAssets = (providerExecutions: ProviderExecution[]): Genera
     const assets: GeneratedAsset[] = [];
 
     for (const execution of providerExecutions) {
-        if (execution.Status?.toUpperCase() !== 'SUCCESS' || !execution.Metadata) {
+        // Use effective status to honor metadata status override
+        if (getEffectiveStatus(execution) !== 'SUCCESS' || !execution.Metadata) {
             continue;
         }
 
@@ -261,7 +313,7 @@ const getStatusInfo = (status?: PipelineRunStatus): {
 const ActivityDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { pipelines } = useRealtimePipelines();
-    const { sources, destinations: registryDestinations } = usePluginRegistry();
+    const { sources, destinations: registryDestinations, enrichers } = usePluginRegistry();
     const { isNerdMode } = useNerdMode();
 
     // Get pipeline runs - this is now the PRIMARY data source
@@ -316,8 +368,9 @@ const ActivityDetailPage: React.FC = () => {
         const pipelineName = pipelineRun.pipelineId
             ? pipelines.find(p => p.id === pipelineRun.pipelineId)?.name
             : undefined;
-        const successfulEnrichers = providerExecutions.filter((p: ProviderExecution) => p.Status?.toUpperCase() === 'SUCCESS');
-        const failedEnrichers = providerExecutions.filter((p: ProviderExecution) => p.Status?.toUpperCase() !== 'SUCCESS');
+        // Use effective status to honor metadata status override
+        const successfulEnrichers = providerExecutions.filter((p: ProviderExecution) => getEffectiveStatus(p) === 'SUCCESS');
+        const failedEnrichers = providerExecutions.filter((p: ProviderExecution) => getEffectiveStatus(p) !== 'SUCCESS');
 
         return {
             sourceInfo,
@@ -481,26 +534,43 @@ const ActivityDetailPage: React.FC = () => {
                     </Stack>
                 </GlowCard>
 
-                {/* Enricher Details - Expanded Metadata */}
-                {successfulEnrichers.length > 0 && (
+                {/* Booster Details - Expanded Metadata */}
+                {providerExecutions.length > 0 && (
                     <Card>
                         <Stack gap="md">
                             <Heading level={4}>
                                 <Stack direction="horizontal" gap="xs" align="center">
                                     <Paragraph inline>✨</Paragraph>
-                                    Enrichments Applied
+                                    Boosters Applied
                                 </Stack>
                             </Heading>
                             <Grid cols={2} gap="md">
-                                {successfulEnrichers.map((enricher, idx) => (
-                                    <Card key={idx}>
-                                        <Stack gap="sm">
-                                            <EnricherBadge
-                                                providerName={enricher.ProviderName}
-                                                status={enricher.Status}
-                                                metadata={enricher.Metadata}
-                                            />
-                                            {enricher.Metadata && Object.keys(enricher.Metadata).length > 0 && (
+                                {providerExecutions.map((enricher, idx) => {
+                                    const effectiveStatus = getEffectiveStatus(enricher);
+                                    const cardVariant = getBoosterCardVariant(effectiveStatus);
+                                    // Look up enricher info from registry
+                                    const enricherPlugin = enrichers.find(
+                                        e => e.id === enricher.ProviderName || e.id === enricher.ProviderName?.replace(/_/g, '-')
+                                    );
+                                    const icon = enricherPlugin?.icon || '✨';
+                                    const displayName = enricherPlugin?.name || enricher.ProviderName
+                                        ?.replace(/[_-]/g, ' ')
+                                        .split(' ')
+                                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                        .join(' ') || 'Unknown';
+                                    
+                                    return (
+                                        <GlowCard
+                                            key={idx}
+                                            variant={cardVariant}
+                                            header={
+                                                <Stack direction="horizontal" gap="xs" align="center">
+                                                    <Paragraph inline>{icon}</Paragraph>
+                                                    <Paragraph inline>{displayName}</Paragraph>
+                                                </Stack>
+                                            }
+                                        >
+                                            {enricher.Metadata && Object.keys(enricher.Metadata).length > 0 ? (
                                                 <Stack gap="xs">
                                                     {Object.entries(enricher.Metadata)
                                                         .filter(([key]) => !key.startsWith('asset_'))
@@ -512,16 +582,13 @@ const ActivityDetailPage: React.FC = () => {
                                                             </Stack>
                                                         ))}
                                                 </Stack>
+                                            ) : (
+                                                <Paragraph size="sm" muted>No metadata</Paragraph>
                                             )}
-                                        </Stack>
-                                    </Card>
-                                ))}
+                                        </GlowCard>
+                                    );
+                                })}
                             </Grid>
-                            {failedEnrichers.length > 0 && (
-                                <Paragraph size="sm" muted>
-                                    ⚠️ {failedEnrichers.length} enricher{failedEnrichers.length > 1 ? 's' : ''} skipped
-                                </Paragraph>
-                            )}
                         </Stack>
                     </Card>
                 )}

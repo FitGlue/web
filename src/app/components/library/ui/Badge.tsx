@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import './Badge.css';
 
-export type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'premium' | 'light' | 'booster' | 'source' | 'destination';
+export type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'premium' | 'light' | 'booster' | 'booster-skipped' | 'booster-error' | 'source' | 'destination';
 export type BadgeSize = 'sm' | 'md';
 
 export interface BadgeProps {

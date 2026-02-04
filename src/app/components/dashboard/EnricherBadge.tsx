@@ -22,6 +22,57 @@ const humanizeProviderName = (name: string): string => {
 };
 
 /**
+ * Determine effective status by checking metadata for status override.
+ * Enrichers may complete successfully at the execution level but report
+ * their own internal status (error, skipped) in metadata.
+ */
+const getEffectiveStatus = (executionStatus: string, metadata?: Record<string, unknown>): string => {
+    let status = executionStatus?.toUpperCase() || 'UNKNOWN';
+    
+    if (!metadata) return status;
+    
+    // Find status from metadata - check for any key that is exactly "status" or ends with "_status"
+    let metadataStatus: string | null = null;
+    for (const [key, val] of Object.entries(metadata)) {
+        if ((key === 'status' || key.endsWith('_status')) && typeof val === 'string') {
+            metadataStatus = val.toLowerCase();
+            break;
+        }
+    }
+    
+    // Override execution status with metadata status if more specific
+    if (status === 'SUCCESS' && metadataStatus) {
+        if (metadataStatus === 'error') {
+            status = 'ERROR';
+        } else if (metadataStatus === 'skipped') {
+            status = 'SKIPPED';
+        }
+    }
+    
+    return status;
+};
+
+/**
+ * Map status to badge variant following GlowCard color scheme:
+ * - Success: pink/purple (booster)
+ * - Skipped: orange/yellow (booster-skipped)
+ * - Error/Failed: red (booster-error)
+ */
+const getStatusVariant = (status: string): 'booster' | 'booster-skipped' | 'booster-error' | 'default' => {
+    switch (status) {
+        case 'SUCCESS':
+            return 'booster';
+        case 'SKIPPED':
+            return 'booster-skipped';
+        case 'ERROR':
+        case 'FAILED':
+            return 'booster-error';
+        default:
+            return 'default';
+    }
+};
+
+/**
  * EnricherBadge displays a pill-style badge for an enricher that was applied to an activity.
  */
 export const EnricherBadge: React.FC<EnricherBadgeProps> = ({
@@ -34,7 +85,10 @@ export const EnricherBadge: React.FC<EnricherBadgeProps> = ({
     const enricherPlugin = enrichers.find(e => e.id === providerName || e.id === providerName.replace(/_/g, '-'));
     const icon = enricherPlugin?.icon || '✨';
     const displayName = enricherPlugin?.name || humanizeProviderName(providerName);
-    const statusVariant = status.toUpperCase() === 'SUCCESS' ? 'booster' : status.toUpperCase() === 'FAILED' ? 'error' : 'default';
+    
+    // Get effective status (honors metadata status override)
+    const effectiveStatus = getEffectiveStatus(status, metadata);
+    const statusVariant = getStatusVariant(effectiveStatus);
 
     // Extract key metric from metadata if available
     const metricDisplay = React.useMemo(() => {
@@ -50,7 +104,7 @@ export const EnricherBadge: React.FC<EnricherBadgeProps> = ({
             <Stack direction="horizontal" gap="xs" align="center">
                 <Paragraph inline>{icon}</Paragraph>
                 <Paragraph inline size="sm">{displayName}</Paragraph>
-                {metricDisplay && status === 'SUCCESS' && (
+                {metricDisplay && effectiveStatus === 'SUCCESS' && (
                     <Paragraph inline size="sm" muted>{metricDisplay}</Paragraph>
                 )}
             </Stack>
