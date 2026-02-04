@@ -436,6 +436,9 @@ const ActivityDetailPage: React.FC = () => {
     const pendingDestinations = destinations.filter(d => d.status === 'Pending' || d.status === 'Unknown');
     const failedDestinations = destinations.filter(d => d.status === 'Failed');
 
+    // Calculate sync credits used (1 credit per successful destination)
+    const creditsUsed = successDestinations.length;
+
     const destinationNode = destinations.length > 0 ? (
         <Stack direction="horizontal" gap="xs">
             {/* SUCCESS destinations */}
@@ -502,6 +505,14 @@ const ActivityDetailPage: React.FC = () => {
                         <Stack direction="horizontal" gap="xs" align="center">
                             <Paragraph inline size="sm">{statusInfo.statusIcon}</Paragraph>
                             <Paragraph inline size="sm">{statusInfo.statusLabel}</Paragraph>
+                        </Stack>
+                    </Badge>
+                )}
+                {creditsUsed > 0 && (
+                    <Badge variant="default" size="sm">
+                        <Stack direction="horizontal" gap="xs" align="center">
+                            <Paragraph inline size="sm">🎫</Paragraph>
+                            <Paragraph inline size="sm">{creditsUsed} credit{creditsUsed !== 1 ? 's' : ''}</Paragraph>
                         </Stack>
                     </Badge>
                 )}

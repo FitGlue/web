@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
+import { useUser } from '../hooks/useUser';
 import { PageLayout, Stack } from '../components/library/layout';
 import { PipelineRunsList, FilterMode } from '../components/dashboard/PipelineRunsList';
 import { StatInline, LiveToggle, Heading, Paragraph } from '../components/library/ui';
@@ -19,6 +20,9 @@ const ActivitiesListPage: React.FC = () => {
     // The hook uses singleton pattern, so calling it here shares the listener with PipelineRunsList
     const { loading, isListening, forceRefresh } = useRealtimePipelineRuns(true, 50);
     const [liveEnabled, setLiveEnabled] = useState(true);
+
+    // Get user profile for sync credits (billing counter)
+    const { user: profile, loading: profileLoading } = useUser();
 
     // Load stats on mount (still needed for totals)
     const [statsLoading, setStatsLoading] = useState(true);
@@ -53,9 +57,10 @@ const ActivitiesListPage: React.FC = () => {
     const stats = useMemo(() => {
         return {
             totalSynced: initialStats?.totalSynced || 0,
-            thisMonth: initialStats?.monthlySynced || 0,
+            activitiesThisMonth: initialStats?.monthlySynced || 0,
+            creditsUsedThisMonth: profile?.syncCountThisMonth ?? 0,
         };
-    }, [initialStats]);
+    }, [initialStats, profile]);
 
     return (
         <PageLayout
@@ -63,7 +68,7 @@ const ActivitiesListPage: React.FC = () => {
             backTo="/"
             backLabel="Dashboard"
             onRefresh={handleRefresh}
-            loading={loading || statsLoading}
+            loading={loading || statsLoading || profileLoading}
             headerActions={liveToggle}
         >
             <Stack gap="lg">
@@ -86,10 +91,16 @@ const ActivitiesListPage: React.FC = () => {
                         loading={loading && !initialStats?.totalSynced}
                     />
                     <StatInline
-                        value={stats.thisMonth}
-                        label="Synced"
+                        value={stats.activitiesThisMonth}
+                        label="Activities"
                         subLabel="This Month"
                         loading={loading && !initialStats?.monthlySynced}
+                    />
+                    <StatInline
+                        value={stats.creditsUsedThisMonth}
+                        label="Credits Used"
+                        subLabel="This Month"
+                        loading={profileLoading}
                     />
                 </Stack>
 
