@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.4.0](https://github.com/fitglue/web/compare/v10.3.0...v10.4.0) (2026-02-04)
+
+
+### Features
+
+* update pipeline edit page styling ([2b7eff8](https://github.com/fitglue/web/commit/2b7eff86b5807618093f8ddbe6372cf88c0b712a))
+
 ## [10.3.0](https://github.com/fitglue/web/compare/v10.2.0...v10.3.0) (2026-02-04)
 
 
