@@ -15,6 +15,7 @@ interface IntegrationStatus {
     connected: boolean;
     externalUserId?: string;
     lastUsedAt?: string;
+    additionalDetails?: Record<string, string>;
 }
 
 const ConnectionDetailPage: React.FC = () => {
@@ -37,6 +38,8 @@ const ConnectionDetailPage: React.FC = () => {
     const formatLastSynced = (dateStr?: string) => {
         if (!dateStr) return null;
         const date = new Date(dateStr);
+        // Check for invalid date
+        if (isNaN(date.getTime())) return null;
         return date.toLocaleString(undefined, {
             month: 'short',
             day: 'numeric',
@@ -195,6 +198,14 @@ const ConnectionDetailPage: React.FC = () => {
                                     </Button>
                                 </Stack>
                             )}
+
+                            {/* Display additional integration-specific details */}
+                            {status?.additionalDetails && Object.entries(status.additionalDetails).map(([label, value]) => (
+                                <Stack gap="xs" key={label}>
+                                    <Paragraph size="sm" muted>{label}</Paragraph>
+                                    <Paragraph><code>{value}</code></Paragraph>
+                                </Stack>
+                            ))}
 
                             {status?.lastUsedAt && (
                                 <Stack gap="xs">

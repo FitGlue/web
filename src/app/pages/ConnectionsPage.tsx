@@ -13,6 +13,7 @@ interface IntegrationStatus {
     connected: boolean;
     externalUserId?: string;
     lastUsedAt?: string;
+    additionalDetails?: Record<string, string>;
 }
 
 interface ConnectionCardProps {
@@ -35,6 +36,8 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
     const formatLastSynced = (dateStr?: string) => {
         if (!dateStr) return null;
         const date = new Date(dateStr);
+        // Check for invalid date
+        if (isNaN(date.getTime())) return null;
         return date.toLocaleString(undefined, {
             month: 'short',
             day: 'numeric',
