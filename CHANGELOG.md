@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.5.0](https://github.com/fitglue/web/compare/v10.4.1...v10.5.0) (2026-02-04)
+
+
+### Features
+
+* **help:** overhaul help system with registry-driven articles and clearer grouping ([03cb520](https://github.com/fitglue/web/commit/03cb52099d20aa63c88ce23b3b2de51d562ada76))
+
 ### [10.4.1](https://github.com/fitglue/web/compare/v10.4.0...v10.4.1) (2026-02-04)
 
 
