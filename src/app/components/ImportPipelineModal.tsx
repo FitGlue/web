@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from './library/ui/Modal';
 import { Button } from './library/ui/Button';
@@ -21,22 +21,37 @@ import {
 interface Props {
     onClose: () => void;
     onSuccess: () => void;
+    initialCode?: string;
 }
 
-export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess }) => {
+export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initialCode }) => {
     const navigate = useNavigate();
     const api = useApi();
     const toast = useToast();
     const { sources, enrichers, destinations, integrations } = usePluginRegistry();
     const { integrations: userIntegrations } = useRealtimeIntegrations();
 
-    const [code, setCode] = useState('');
+    const [code, setCode] = useState(initialCode || '');
     const [decoded, setDecoded] = useState<PortablePipeline | null>(null);
     const [validation, setValidation] = useState<ImportValidationResult | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [importing, setImporting] = useState(false);
 
     const registry = { sources, enrichers, destinations, integrations };
+
+    // Auto-validate if initialCode is provided
+    useEffect(() => {
+        if (initialCode && sources.length > 0) {
+            try {
+                const portable = decodePipeline(initialCode);
+                setDecoded(portable);
+                const result = validatePipelineImport(portable, userIntegrations, registry);
+                setValidation(result);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Invalid pipeline code');
+            }
+        }
+    }, [initialCode, sources.length, userIntegrations]);
 
     const handleValidate = () => {
         setError(null);

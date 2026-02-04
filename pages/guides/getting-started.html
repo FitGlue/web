@@ -1,0 +1,251 @@
+{{> header}}
+
+<main>
+  <!-- Guide Hero -->
+  <section class="guide-hero">
+    <div class="container">
+      <nav class="breadcrumb animate-on-scroll">
+        <a href="/">Home</a> /
+        <a href="/guides">Guides</a> /
+        <span>Getting Started</span>
+      </nav>
+      <h1 class="guide-title animate-on-scroll">Getting Started with FitGlue</h1>
+      <p class="guide-excerpt animate-on-scroll">From signup to your first boosted activity in under 10 minutes. Here's
+        everything you need to know to start transforming your fitness data.</p>
+      <div class="guide-meta animate-on-scroll">
+        <span class="guide-date">📅 February 2026</span>
+        <span class="guide-reading-time">⏱️ 8 min read</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Guide Content -->
+  <section class="section">
+    <div class="container">
+      <div class="guide-layout">
+        <article class="guide-article">
+          <div class="guide-content integration-content">
+            <h2>What is FitGlue?</h2>
+            <p>FitGlue is the <strong>magic layer</strong> between your fitness apps. It takes your raw workout data
+              and transforms it into something extraordinary—detailed summaries, muscle heatmaps, heart rate overlays,
+              official race results, and beautiful shareable pages.</p>
+            <p>Think of it as the glue that connects your fitness ecosystem and makes everything better.</p>
+
+            <div class="feature-highlight">
+              <h3>✨ The FitGlue Flow</h3>
+              <div class="flow-diagram">
+                <p><strong>Source</strong> (where workouts come from) → <strong>Boosters</strong> (the magic) →
+                  <strong>Targets</strong> (where they go)
+                </p>
+              </div>
+            </div>
+
+            <h2>Step 1: Create Your Account</h2>
+            <p>Head to <a href="/auth/register">fitglue.com/auth/register</a> and create your account. You can sign up
+              with email or use Google/GitHub for one-click login.</p>
+
+            <div class="info-box">
+              <h4>🎉 Your 30-Day Athlete Trial</h4>
+              <p>Every new account automatically starts with a <strong>30-day Athlete trial</strong>. This gives you
+                access to all premium features—AI summaries, muscle heatmap images, route thumbnails, and unlimited
+                syncs. No credit card required.</p>
+              <p>After 30 days, you'll automatically switch to the free Hobbyist tier. Upgrade anytime if you want to
+                keep the premium features.</p>
+            </div>
+
+            <h2>Step 2: Connect Your Apps</h2>
+            <p>FitGlue needs to talk to your fitness apps. Head to the <strong>Connections</strong> page in your
+              dashboard and connect the services you use:</p>
+
+            <h3>Common Sources (where workouts come from)</h3>
+            <ul class="feature-list">
+              <li>🏋️ <strong>Hevy</strong> — Requires Hevy Pro subscription for API access</li>
+              <li>⌚ <strong>Fitbit</strong> — OAuth connection, works with any Fitbit device</li>
+              <li>🚴 <strong>Strava</strong> — Can be both a source AND a target</li>
+            </ul>
+
+            <h3>Common Targets (where workouts go)</h3>
+            <ul class="feature-list">
+              <li>🚴 <strong>Strava</strong> — Upload your boosted activities to your feed</li>
+              <li>🔗 <strong>Showcase</strong> — Create beautiful public pages (no connection needed!)</li>
+            </ul>
+
+            <h2>Step 3: Create Your First Pipeline</h2>
+            <p>A <strong>Pipeline</strong> defines the journey your workout data takes. Go to <strong>Pipelines</strong>
+              and click <strong>Create Pipeline</strong>.</p>
+
+            <div class="setup-steps-list">
+              <div class="setup-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Choose Your Source</h4>
+                  <p>Select where workouts will come from—Hevy, Fitbit, Strava, or manual FIT file uploads.</p>
+                </div>
+              </div>
+              <div class="setup-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Add Boosters</h4>
+                  <p>This is where the magic happens! Add boosters like Workout Summary, Muscle Heatmap, Heart Rate
+                    overlay, Weather, and more. Each booster adds something special to your activity.</p>
+                </div>
+              </div>
+              <div class="setup-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Choose Your Targets</h4>
+                  <p>Select where your boosted activities should go—Strava, Showcase, or both!</p>
+                </div>
+              </div>
+              <div class="setup-step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h4>Save & Activate</h4>
+                  <p>Save your pipeline and it's immediately active. The next workout will flow through automatically.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <h2>Step 4: Complete a Workout</h2>
+            <p>Now the fun part—go work out! When you finish:</p>
+            <ul class="feature-list">
+              <li>✅ Your activity arrives at FitGlue (usually within seconds)</li>
+              <li>✅ Boosters transform the data (instant for most, ~2 hours for parkrun results)</li>
+              <li>✅ Enhanced activity is sent to your targets</li>
+              <li>✅ Check your Strava feed or Showcase link to see the magic!</li>
+            </ul>
+
+            <h2>Popular Booster Combinations</h2>
+
+            <h3>For Strength Training (Hevy)</h3>
+            <ul class="feature-list">
+              <li>📋 <strong>Workout Summary</strong> — Detailed exercise breakdown with sets/reps/weights</li>
+              <li>🔥 <strong>Muscle Heatmap</strong> — Emoji visualization of muscles trained</li>
+              <li>🖼️ <strong>Muscle Heatmap Image</strong> — Anatomical diagram (Athlete tier)</li>
+            </ul>
+
+            <h3>For Running (Strava/Fitbit)</h3>
+            <ul class="feature-list">
+              <li>❤️ <strong>Heart Rate Summary</strong> — Min/avg/max HR stats</li>
+              <li>💪 <strong>Training Load</strong> — TRIMP intensity calculation</li>
+              <li>🌤️ <strong>Weather</strong> — Temperature and conditions</li>
+              <li>📍 <strong>Location Naming</strong> — Auto-title from GPS location</li>
+            </ul>
+
+            <h3>For Parkrun</h3>
+            <ul class="feature-list">
+              <li>🏃 <strong>Parkrun</strong> — Official times, position, age grade, PB detection</li>
+              <li>🌤️ <strong>Weather</strong> — What were conditions like?</li>
+              <li>🏆 <strong>Personal Records</strong> — Track your parkrun progression</li>
+            </ul>
+
+            <h2>Understanding Your Tier</h2>
+
+            <div class="tier-comparison">
+              <h3>Hobbyist</h3>
+              <ul class="feature-list">
+                <li>✅ 25 syncs per month</li>
+                <li>✅ 2 connections</li>
+                <li>✅ All text-based boosters (summaries, heatmaps, stats)</li>
+                <li>❌ AI Companion, Image boosters</li>
+                <li>❌ Showcase pages expire after 30 days</li>
+              </ul>
+
+              <h3>Athlete</h3>
+              <ul class="feature-list">
+                <li>✅ Unlimited syncs</li>
+                <li>✅ Unlimited connections</li>
+                <li>✅ All boosters including AI and images</li>
+                <li>✅ Showcase pages never expire</li>
+                <li>✅ Early access to new features</li>
+              </ul>
+            </div>
+
+            <h2>Monitoring Your Syncs</h2>
+            <p>The <strong>Activity</strong> page in your dashboard shows every activity that's flowed through
+              FitGlue:</p>
+            <ul class="feature-list">
+              <li>📊 <strong>Status</strong> — Processing, completed, or failed</li>
+              <li>🔧 <strong>Boosters Applied</strong> — Which boosters ran</li>
+              <li>🎯 <strong>Targets</strong> — Where the activity was sent</li>
+              <li>🔗 <strong>Links</strong> — Quick access to Strava or Showcase</li>
+            </ul>
+
+            <h2>Quick Start Pipelines</h2>
+            <p>Want to skip the setup? Import one of these pre-configured pipelines:</p>
+
+            <div class="pipeline-import-section animate-on-scroll">
+              <div class="pipeline-import-cta">
+                <a href="/app/pipelines/import?code=eyJ2IjoxLCJuIjoiSGV2eSBTdHJlbmd0aCBTaG93Y2FzZSIsInMiOiJoZXZ5IiwiZSI6W3sicCI6Mn0seyJwIjozfV0sImQiOlsic3RyYXZhIiwic2hvd2Nhc2UiXX0="
+                  class="btn btn-secondary btn-sm">Import: Hevy Strength →</a>
+                <a href="/app/pipelines/import?code=eyJ2IjoxLCJuIjoiQ29tcGxldGUgQWN0aXZpdHkgRGF0YSIsInMiOiJzdHJhdmEiLCJlIjpbeyJwIjoxfSx7InAiOjE0fSx7InAiOjIxfV0sImQiOlsic3RyYXZhIiwic2hvd2Nhc2UiXX0="
+                  class="btn btn-secondary btn-sm">Import: Fitbit HR →</a>
+                <a href="/app/pipelines/import?code=eyJ2IjoxLCJuIjoiUGFya3J1biBNYWdpYyIsInMiOiJzdHJhdmEiLCJlIjpbeyJwIjo4fSx7InAiOjIzfSx7InAiOjIwfV0sImQiOlsic3RyYXZhIiwic2hvd2Nhc2UiXX0="
+                  class="btn btn-secondary btn-sm">Import: Parkrun →</a>
+              </div>
+            </div>
+
+            <h2>Need Help?</h2>
+            <p>Check out our other guides for specific use cases, or reach out via our <a href="/contact">contact
+                page</a>. Athlete tier subscribers get priority email support.</p>
+
+            <h2>Ready to Transform Your Fitness Data?</h2>
+            <p>You've got the knowledge—now it's time to put it into action. Create your account and experience the
+              magic!</p>
+          </div>
+
+          <!-- Author Box -->
+          <div class="author-box animate-on-scroll">
+            <div class="author-avatar">🧑‍💻</div>
+            <div class="author-info">
+              <h4>Written by the FitGlue Team</h4>
+              <p>Building the magic layer for your fitness data.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Sidebar -->
+        <aside class="guide-sidebar">
+          <div class="sidebar-section animate-on-scroll">
+            <h4>📚 Popular Guides</h4>
+            <ul class="related-guides-list">
+              <li><a href="/guides/hevy-to-strava">Hevy to Strava with Muscle Heatmaps</a></li>
+              <li><a href="/guides/fitbit-heart-rate">Add Fitbit Heart Rate to Strava</a></li>
+              <li><a href="/guides/parkrun-automation">Automate Parkrun Results</a></li>
+              <li><a href="/guides/showcase">Share with Showcase</a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-section animate-on-scroll">
+            <h4>🔗 Quick Links</h4>
+            <ul class="related-guides-list">
+              <li><a href="/features">All Features</a></li>
+              <li><a href="/pricing">Pricing</a></li>
+              <li><a href="/how-it-works">How It Works</a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-cta animate-on-scroll">
+            <h4>Ready to get started?</h4>
+            <p>Transform your fitness data with FitGlue.</p>
+            <a href="/auth/register" class="btn btn-primary btn-sm">Get Started Free</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Get Started</span>?</h2>
+        <p class="cta-subtitle animate-on-scroll">Start your 30-day free Athlete trial. No credit card required.</p>
+        <a href="/auth/register" class="btn btn-primary btn-lg animate-on-scroll">Create Your Account →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{> footer}}

@@ -1,0 +1,54 @@
+---
+description: Generate or update help articles from the plugin registry
+globs: server/src/typescript/shared/src/plugin/registry.ts
+alwaysApply: false
+---
+
+# Generate Help Articles from Registry
+
+When invoked, generate or update help articles for FitGlue plugins based on the registry.
+
+## Source of Truth
+
+Read **only** from [server/src/typescript/shared/src/plugin/registry.ts](server/src/typescript/shared/src/plugin/registry.ts). Do not use .cache/registry.json.
+
+## Output Location
+
+Write markdown files to `web/content/help-articles/registry/{type}/{id}.md`:
+
+- `sources/` — For each source (e.g. hevy.md, strava.md)
+- `enrichers/` — For each enricher/booster (e.g. workout-summary.md, muscle-heatmap.md)
+- `destinations/` — For each destination (e.g. strava.md, showcase.md)
+- `integrations/` — For each integration/connection (e.g. hevy.md, fitbit.md)
+
+## Article Structure
+
+Each article must have YAML frontmatter:
+
+```yaml
+---
+title: {Plugin Name} — setup and troubleshooting
+excerpt: One-line description from manifest
+date: YYYY-MM-DD
+category: registry
+---
+```
+
+## Content Guidelines
+
+1. **Overview** — What the plugin does, from marketingDescription
+2. **Setup** — How to connect or configure (from setupInstructions for integrations, configSchema for enrichers)
+3. **Confusion points** — Address these explicitly:
+   - Tier gating (requiredTier, isPremium)
+   - Auth type (OAuth vs API key vs app sync)
+   - Dependencies (requiredIntegrations)
+   - isTemporarilyUnavailable
+4. **Related** — Link to connection article if plugin requires one, or related plugins
+
+## When to Run
+
+Invoke this rule when:
+- Adding new plugins to registry.ts
+- Registry-derived docs need a refresh
+
+Human reviews output before commit. Do not run automatically on deploy.

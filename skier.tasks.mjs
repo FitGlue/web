@@ -11,6 +11,7 @@ import {
   setGlobalsTask,
   setGlobalFromMarkdownTask,
   generatePagesTask,
+  generateItemsTask,
 } from 'skier';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -152,17 +153,29 @@ export const tasks = [
           pageTitle: 'Guides & Tutorials',
           description: 'Step-by-step guides to transform your workouts. Learn how FitGlue brings the magic to Hevy, Fitbit, Strava, and more.',
         },
+        'getting-started': {
+          pageTitle: 'Getting Started with FitGlue',
+          description: 'From signup to your first boosted activity in under 10 minutes. Everything you need to know to start transforming your fitness data.',
+        },
         'hevy-to-strava': {
-          pageTitle: 'Transform Your Hevy Workouts with Muscle Heatmaps',
-          description: 'Turn boring "Weight Training – 45 min" into rich Strava stories with AI descriptions, set details, and visual muscle heatmaps.',
+          pageTitle: 'Transform Your Strength Training into Strava Posts Worth Sharing',
+          description: 'Turn boring "Weight Training – 45 min" into stunning posts with detailed exercise breakdowns, emoji muscle heatmaps, and shareable Showcase pages.',
         },
         'fitbit-heart-rate': {
-          pageTitle: 'Magically Merge Your Fitbit Heart Rate into Strava',
-          description: 'Your Fitbit captures perfect heart rate all day—now it can automatically enhance your Strava activities with accurate calorie burns and training zones.',
+          pageTitle: 'Your Fitbit Knows Your Heart. Now Your Strava Can Too.',
+          description: 'Merge Fitbit heart rate data with any Strava activity for accurate calories, training zones, and the complete picture of your workout.',
         },
         'parkrun-automation': {
-          pageTitle: 'Enrich Your Parkrun with Official Results',
-          description: 'Your Strava parkrun automatically gets your official time, finishing position, age grade, and PB celebrations. Like magic.',
+          pageTitle: 'Your Saturday Parkrun Deserves Official Recognition',
+          description: 'Automatic event detection, official times, finishing position, age grade, and PB celebrations—all without lifting a finger.',
+        },
+        'garmin-fit-upload': {
+          pageTitle: 'Transform Your Garmin Workouts with FIT File Upload',
+          description: 'Your Garmin captures incredible data. FitGlue transforms it into weather context, location titles, elevation stats, and beautiful pages.',
+        },
+        'showcase': {
+          pageTitle: 'Share Your Achievements with Showcase',
+          description: 'Create beautiful, shareable activity pages that anyone can view—no Strava account required. Perfect for coaches, friends, or social media.',
         },
       };
       const meta = guideMeta[currentPage] || { pageTitle: currentPage, description: 'FitGlue Guide' };
@@ -170,6 +183,72 @@ export const tasks = [
         ...meta,
         canonicalPath: currentPage === 'index' ? '/guides' : `/guides/${currentPage}`,
         isGuides: true,
+      };
+    },
+  }),
+
+  // Generate help pages
+  generatePagesTask({
+    pagesDir: './pages/help',
+    partialsDir: './partials',
+    outDir: './static-dist/help',
+    additionalVarsFn: ({ currentPage }) => {
+      /** @type {Record<string, {pageTitle: string, description: string}>} */
+      const helpMeta = {
+        index: {
+          pageTitle: 'Help & Support',
+          description: 'Find answers, browse guides, and get in touch. We\'re here to help you get the most out of FitGlue.',
+        },
+        faq: {
+          pageTitle: 'Frequently Asked Questions',
+          description: 'Quick answers to common questions about FitGlue, pricing, sync limits, and more.',
+        },
+        feedback: {
+          pageTitle: 'Request a Feature',
+          description: 'Have an idea to make FitGlue better? We\'d love to hear it.',
+        },
+        articles: {
+          pageTitle: 'Help Articles',
+          description: 'Troubleshooting, concepts, and how-to guides. Find what you need.',
+        },
+      };
+      const meta = helpMeta[currentPage] || { pageTitle: currentPage, description: 'FitGlue Help' };
+      return {
+        ...meta,
+        canonicalPath: currentPage === 'index' ? '/help' : `/help/${currentPage}`,
+        isHelp: true,
+      };
+    },
+  }),
+
+  // Generate help articles from Markdown
+  generateItemsTask({
+    itemsDir: './content/help-articles',
+    partialsDir: './partials',
+    outDir: './static-dist/help/articles',
+    outputVar: 'helpArticles',
+    flatStructure: false,
+    linkFn: ({ section, itemName }) => `/help/articles/${section ? section + '/' : ''}${itemName}`,
+    sortFn: (a, b) => (a.title || '').localeCompare(b.title || ''),
+    additionalVarsFn: ({ section, itemName }) => {
+      const canonicalPath = `/help/articles/${section ? section + '/' : ''}${itemName}`;
+      const breadcrumbSegments = [];
+      if (section && section.startsWith('registry/')) {
+        const type = section.split('/')[1];
+        if (type === 'sources') breadcrumbSegments.push({ label: 'Sources', url: '/help/articles#sources' });
+        else if (type === 'enrichers') breadcrumbSegments.push({ label: 'Boosters', url: '/help/articles#boosters' });
+        else if (type === 'destinations') breadcrumbSegments.push({ label: 'Destinations', url: '/help/articles#destinations' });
+        else if (type === 'integrations') breadcrumbSegments.push({ label: 'Connections', url: '/help/articles#connections' });
+      } else if (section === 'concepts') {
+        breadcrumbSegments.push({ label: 'Concepts', url: '/help/articles#concepts' });
+      } else if (section === 'troubleshooting') {
+        breadcrumbSegments.push({ label: 'Troubleshooting', url: '/help/articles#troubleshooting' });
+      }
+      return {
+        canonicalPath,
+        isHelpArticle: true,
+        category: section || 'general',
+        breadcrumbSegments,
       };
     },
   }),

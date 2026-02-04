@@ -1,0 +1,84 @@
+{{> header}}
+
+<main>
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="container">
+      <h1 class="text-center animate-on-scroll">Frequently Asked <span class="text-gradient">Questions</span></h1>
+      <p class="text-center text-muted animate-on-scroll" style="max-width: 600px; margin: var(--space-md) auto 0;">
+        Quick answers to common questions about FitGlue.
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container">
+      <div class="faq-grid stagger-children">
+        <div class="faq-item">
+          <h4>Why open source?</h4>
+          <p>We believe in transparency and community. Open source means you can audit the code, contribute
+            improvements, and never worry about vendor lock-in.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>How does the 30-day trial work?</h4>
+          <p>Every new account automatically starts with full Athlete access for 30 days. No credit card required upfront. After 30 days, you'll switch to the free Hobbyist tier unless you choose to subscribe. Your pipelines and data stay intact—you just lose access to premium features.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>What happens if I hit my sync limit?</h4>
+          <p>Your syncs will pause until the next month. Upgrade to Athlete anytime for unlimited syncs—or self-host for
+            free unlimited everything.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>What boosters are included in Hobbyist?</h4>
+          <p>Most boosters are free! Workout summaries, emoji muscle heatmaps, heart rate overlays, parkrun results, weather, and all stats boosters are included. Athlete-exclusive features include AI-generated content (AI Companion, AI Banners) and premium visuals (Muscle Heatmap Images, Route Thumbnails).</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>Can I change my plan later?</h4>
+          <p>Absolutely. Upgrade to Athlete anytime from your account settings. If you downgrade, you'll keep Athlete access until the end of your billing period, then switch to Hobbyist. No hassle, no hidden fees.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>What payment methods do you accept?</h4>
+          <p>We accept all major credit and debit cards via Stripe. Your payment information is securely handled by Stripe—we never see or store your card details.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>Is my data secure?</h4>
+          <p>Yes. We use industry-standard encryption for all data in transit and at rest. We only access your fitness data through official OAuth connections, and you can delete your data at any time from your account settings.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>Can I cancel anytime?</h4>
+          <p>Yes. Cancel your Athlete subscription from your account settings at any time. You'll keep access until the end of your billing period, then automatically switch to the free Hobbyist tier.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>Why can I only have one source per pipeline?</h4>
+          <p>Each pipeline is designed to process one activity at a time from a single source. This keeps the flow simple and predictable. If you want to sync from multiple sources (e.g. Hevy and Strava), create separate pipelines for each.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4>My pipeline isn't running — what do I check?</h4>
+          <p>First, ensure your connections are active (Settings → Connections). Check that the source app has new data to sync. If you've hit your sync limit, syncs will pause until next month. See our <a href="/help/articles/troubleshooting/pipeline-not-running">troubleshooting article</a> for more.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title animate-on-scroll">Can't Find Your <span class="text-gradient">Answer</span>?</h2>
+        <p class="cta-subtitle animate-on-scroll">Browse our <a href="/help/articles/getting-started">help articles</a> or <a href="/contact">contact us</a>.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{> footer}}

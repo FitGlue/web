@@ -1,0 +1,70 @@
+{{> header}}
+
+<main>
+  <!-- Article Hero -->
+  <section class="guide-hero">
+    <div class="container">
+      <nav class="breadcrumb animate-on-scroll">
+        <a href="/">Home</a> /
+        <a href="/help">Help</a> /
+        <a href="/help/articles">Articles</a>{{#if breadcrumbSegments}}{{#each breadcrumbSegments}} /
+        <a href="{{url}}">{{label}}</a>{{/each}}{{/if}} /
+        <span>{{title}}</span>
+      </nav>
+      <h1 class="guide-title animate-on-scroll">{{title}}</h1>
+      {{#if excerpt}}
+      <div class="guide-excerpt animate-on-scroll">{{{excerpt}}}</div>
+      {{/if}}
+      <div class="guide-meta animate-on-scroll">
+        {{#if dateDisplay}}
+        <span class="guide-date">📅 {{dateDisplay}}</span>
+        {{/if}}
+      </div>
+    </div>
+  </section>
+
+  <!-- Article Content -->
+  <section class="section">
+    <div class="container">
+      <div class="guide-layout">
+        <article class="guide-article">
+          <div class="guide-content integration-content">
+            {{{content}}}
+          </div>
+        </article>
+
+        <!-- Sidebar -->
+        <aside class="guide-sidebar">
+          <div class="sidebar-section animate-on-scroll">
+            <h4>📚 More Help</h4>
+            <ul class="related-guides-list">
+              <li><a href="/help">Help Hub</a></li>
+              <li><a href="/help/faq">FAQ</a></li>
+              <li><a href="/guides">Guides</a></li>
+              <li><a href="/contact">Contact</a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-cta animate-on-scroll">
+            <h4>Need more help?</h4>
+            <p>We're here for you.</p>
+            <a href="mailto:support@fitglue.tech" class="btn btn-primary btn-sm">Email Support</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Transform</span> Your Fitness Data?</h2>
+        <p class="cta-subtitle animate-on-scroll">Start your 30-day free Athlete trial. No credit card required.</p>
+        <a href="/auth/register" class="btn btn-primary btn-lg animate-on-scroll">Get Started Free →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{> footer}}

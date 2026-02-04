@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PageLayout, Stack } from '../components/library/layout';
 import { Card, Button, Heading, Paragraph, CardSkeleton, ConfirmDialog, IdBadge, Badge, GlowCard, FlowVisualization, BoosterGrid, Pill, useToast } from '../components/library/ui';
 
@@ -147,6 +147,7 @@ const PipelinesPage: React.FC = () => {
     const api = useApi();
     const navigate = useNavigate();
     const toast = useToast();
+    const [searchParams, setSearchParams] = useSearchParams();
     const { loading: registryLoading } = usePluginRegistry();
     const { pipelines, loading, refresh: refreshPipelines } = useRealtimePipelines();
     // Realtime integrations auto-subscribes - no manual fetch needed
@@ -154,7 +155,19 @@ const PipelinesPage: React.FC = () => {
     const [deleting, setDeleting] = useState<string | null>(null);
     const [toggling, setToggling] = useState<string | null>(null);
     const [showImportModal, setShowImportModal] = useState(false);
+    const [importCode, setImportCode] = useState<string | undefined>(undefined);
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+
+    // Check for ?code= query param on mount
+    useEffect(() => {
+        const code = searchParams.get('code');
+        if (code) {
+            setImportCode(code);
+            setShowImportModal(true);
+            // Clear the query param from URL
+            setSearchParams({}, { replace: true });
+        }
+    }, [searchParams, setSearchParams]);
 
 
     const handleDeleteConfirm = async () => {
@@ -241,7 +254,10 @@ const PipelinesPage: React.FC = () => {
                             <Paragraph muted size="sm">Configure how your activities flow from sources to destinations</Paragraph>
                         </Stack>
                         <Stack direction="horizontal" gap="sm">
-                            <Button variant="secondary" size="small" onClick={() => setShowImportModal(true)}>
+                            <Button variant="secondary" size="small" onClick={() => {
+                                setImportCode(undefined);
+                                setShowImportModal(true);
+                            }}>
                                 📥 Import
                             </Button>
                             <Button variant="primary" size="small" onClick={() => navigate('/settings/pipelines/new')}>
@@ -280,8 +296,12 @@ const PipelinesPage: React.FC = () => {
 
             {showImportModal && (
                 <ImportPipelineModal
-                    onClose={() => setShowImportModal(false)}
+                    onClose={() => {
+                        setShowImportModal(false);
+                        setImportCode(undefined);
+                    }}
                     onSuccess={() => refreshPipelines()}
+                    initialCode={importCode}
                 />
             )}
 

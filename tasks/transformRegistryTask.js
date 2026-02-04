@@ -72,9 +72,66 @@ export function transformRegistryTask() {
         }))
         .filter((cat) => cat.plugins.length > 0);
 
-      ctx.logger.info(`Transformed ${integrationsWithDetails.length} integrations, ${boosters.length} boosters`);
+      // Grouped by type for help articles — Sources, Boosters, Destinations, Connections.
+      // Excludes disabled/internal plugins (mock, parkrun_results).
+      const EXCLUDED_IDS = new Set(['mock', 'parkrun_results']);
+      const sortByName = (a, b) => (a.name || '').localeCompare(b.name || '');
+      const helpArticleByType = {
+        sources: (registry.sources || [])
+          .filter((/** @type {any} */ s) => s.enabled !== false && !EXCLUDED_IDS.has(s.id))
+          .map((/** @type {any} */ s) => ({
+            id: s.id,
+            name: s.name,
+            icon: s.icon,
+            iconPath: s.iconPath,
+            iconType: s.iconType,
+            description: s.description,
+            helpArticleUrl: `/help/articles/registry/sources/${s.id}`,
+          }))
+          .sort(sortByName),
+        boosters: (registry.enrichers || [])
+          .filter((/** @type {any} */ e) => e.enabled !== false && !EXCLUDED_IDS.has(e.id))
+          .map((/** @type {any} */ e) => ({
+            id: e.id,
+            name: e.name,
+            icon: e.icon,
+            iconPath: e.iconPath,
+            iconType: e.iconType,
+            description: e.description,
+            helpArticleUrl: `/help/articles/registry/enrichers/${e.id}`,
+          }))
+          .sort(sortByName),
+        destinations: (registry.destinations || [])
+          .filter((/** @type {any} */ d) => d.enabled !== false)
+          .map((/** @type {any} */ d) => ({
+            id: d.id,
+            name: d.name,
+            icon: d.icon,
+            iconPath: d.iconPath,
+            iconType: d.iconType,
+            description: d.description,
+            helpArticleUrl: `/help/articles/registry/destinations/${d.id}`,
+          }))
+          .sort(sortByName),
+        connections: (registry.integrations || [])
+          .filter((/** @type {any} */ i) => i.enabled !== false)
+          .map((/** @type {any} */ i) => ({
+            id: i.id,
+            name: i.name,
+            icon: i.icon,
+            iconPath: i.iconPath,
+            iconType: i.iconType,
+            description: i.description,
+            helpArticleUrl: `/help/articles/registry/integrations/${i.id}`,
+          }))
+          .sort(sortByName),
+      };
+      const totalPlugins = helpArticleByType.sources.length + helpArticleByType.boosters.length +
+        helpArticleByType.destinations.length + helpArticleByType.connections.length;
 
-      return { integrations, boosters, boostersByCategory, sources, destinations };
+      ctx.logger.info(`Transformed ${integrationsWithDetails.length} integrations, ${boosters.length} boosters, ${totalPlugins} help article plugins`);
+
+      return { integrations, boosters, boostersByCategory, sources, destinations, helpArticleByType };
     },
   };
 }

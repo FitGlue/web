@@ -1,0 +1,168 @@
+{{> header}}
+
+<main>
+  <!-- Hero Section -->
+  <section class="about-hero">
+    <div class="container">
+      <h1 class="text-center animate-on-scroll">
+        <span class="text-gradient">Help</span> Articles
+      </h1>
+      <p class="text-center text-muted animate-on-scroll" style="max-width: 600px; margin: var(--space-md) auto 0;">
+        Troubleshooting, concepts, and how-to guides. Find what you need.
+      </p>
+    </div>
+  </section>
+
+  <!-- Article Categories -->
+  <section class="section" id="getting-started">
+    <div class="container">
+      <h2 class="animate-on-scroll mb-md">Getting Started</h2>
+      <div class="guides-grid stagger-children">
+        <a href="/help/articles/getting-started" class="guide-card">
+          <div class="guide-card-icon">🚀</div>
+          <div class="guide-card-content">
+            <h3>Getting Started with FitGlue</h3>
+            <p>From signup to your first boosted activity in under 10 minutes.</p>
+            <span class="guide-card-cta">Read →</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="concepts">
+    <div class="container">
+      <h2 class="animate-on-scroll mb-md">Concepts</h2>
+      <div class="guides-grid stagger-children">
+        <a href="/help/articles/concepts/what-is-a-pipeline" class="guide-card">
+          <div class="guide-card-icon">🔀</div>
+          <div class="guide-card-content">
+            <h3>What is a pipeline?</h3>
+            <p>Understanding how FitGlue moves and transforms your fitness data.</p>
+            <span class="guide-card-cta">Read →</span>
+          </div>
+        </a>
+        <a href="/help/articles/concepts/sources-boosters-targets-explained" class="guide-card">
+          <div class="guide-card-icon">📦</div>
+          <div class="guide-card-content">
+            <h3>Sources, boosters, and targets</h3>
+            <p>How FitGlue's three-part model works.</p>
+            <span class="guide-card-cta">Read →</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="sources">
+    <div class="container">
+      <h2 class="animate-on-scroll mb-md">Sources</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Where your workouts come from — Hevy, Strava, Fitbit, Apple Health, and more.</p>
+      <div class="guides-grid">
+        {{#each helpArticleByType.sources}}
+        <a href="{{helpArticleUrl}}" class="guide-card">
+          <div class="guide-card-icon">{{#if iconPath}}<img src="{{iconPath}}" alt="" class="guide-card-icon-img" />{{else}}{{icon}}{{/if}}</div>
+          <div class="guide-card-content">
+            <h3>{{name}}</h3>
+            <p>{{description}}</p>
+            <span class="guide-card-cta">Read →</span>
+          </div>
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="boosters">
+    <div class="container">
+      <h2 class="animate-on-scroll mb-md">Boosters</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Transform your activities — Workout Summary, Muscle Heatmap, AI Companion, and more.</p>
+      <div class="guides-grid">
+        {{#each helpArticleByType.boosters}}
+        <a href="{{helpArticleUrl}}" class="guide-card">
+          <div class="guide-card-icon">{{#if iconPath}}<img src="{{iconPath}}" alt="" class="guide-card-icon-img" />{{else}}{{icon}}{{/if}}</div>
+          <div class="guide-card-content">
+            <h3>{{name}}</h3>
+            <p>{{description}}</p>
+            <span class="guide-card-cta">Read →</span>
+          </div>
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="destinations">
+    <div class="container">
+      <h2 class="animate-on-scroll mb-md">Destinations</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Where your boosted activities go — Strava, Hevy, Showcase, TrainingPeaks, and more.</p>
+      <div class="guides-grid">
+        {{#each helpArticleByType.destinations}}
+        <a href="{{helpArticleUrl}}" class="guide-card">
+          <div class="guide-card-icon">{{#if iconPath}}<img src="{{iconPath}}" alt="" class="guide-card-icon-img" />{{else}}{{icon}}{{/if}}</div>
+          <div class="guide-card-content">
+            <h3>{{name}}</h3>
+            <p>{{description}}</p>
+            <span class="guide-card-cta">Read →</span>
+          </div>
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="connections">
+    <div class="container">
+      <h2 class="animate-on-scroll mb-md">Connections</h2>
+      <p class="text-muted mb-lg animate-on-scroll">Connect your accounts — OAuth, API keys, and app sync setup guides.</p>
+      <div class="guides-grid">
+        {{#each helpArticleByType.connections}}
+        <a href="{{helpArticleUrl}}" class="guide-card">
+          <div class="guide-card-icon">{{#if iconPath}}<img src="{{iconPath}}" alt="" class="guide-card-icon-img" />{{else}}{{icon}}{{/if}}</div>
+          <div class="guide-card-content">
+            <h3>{{name}}</h3>
+            <p>{{description}}</p>
+            <span class="guide-card-cta">Read →</span>
+          </div>
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="troubleshooting">
+    <div class="container">
+      <h2 class="animate-on-scroll mb-md">Troubleshooting</h2>
+      <div class="guides-grid stagger-children">
+        <a href="/help/articles/troubleshooting/pipeline-not-running" class="guide-card">
+          <div class="guide-card-icon">🔧</div>
+          <div class="guide-card-content">
+            <h3>My pipeline isn't running</h3>
+            <p>Common causes and how to fix them when your pipeline isn't syncing.</p>
+            <span class="guide-card-cta">Read →</span>
+          </div>
+        </a>
+        <a href="/help/articles/troubleshooting/why-one-source-per-pipeline" class="guide-card">
+          <div class="guide-card-icon">❓</div>
+          <div class="guide-card-content">
+            <h3>Why can I only have one source per pipeline?</h3>
+            <p>Understanding FitGlue's one-source-per-pipeline design.</p>
+            <span class="guide-card-cta">Read →</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title animate-on-scroll">Can't Find Your <span class="text-gradient">Answer</span>?</h2>
+        <p class="cta-subtitle animate-on-scroll">Try our <a href="/help/faq">FAQ</a> or <a href="/contact">contact us</a>.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{> footer}}
