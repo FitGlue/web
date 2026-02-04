@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.3.0](https://github.com/fitglue/web/compare/v10.2.0...v10.3.0) (2026-02-04)
+
+
+### Features
+
+* enhance ActivitiesListPage and ActivityDetailPage with user sync credits tracking ([03d810c](https://github.com/fitglue/web/commit/03d810cb3bd1de23d3a4e6e7ac092dfd5a2247f2))
+
 ## [10.2.0](https://github.com/fitglue/web/compare/v10.1.1...v10.2.0) (2026-02-04)
 
 
