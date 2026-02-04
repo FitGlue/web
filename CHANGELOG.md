@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.1.0](https://github.com/fitglue/web/compare/v10.0.0...v10.1.0) (2026-02-04)
+
+
+### Features
+
+* update connections page and details page to show additional fields ([da477c1](https://github.com/fitglue/web/commit/da477c1972402dcb7b657603fb6f719f19f1d6f7))
+
 ## [10.0.0](https://github.com/fitglue/web/compare/v9.2.0...v10.0.0) (2026-02-04)
 
 
