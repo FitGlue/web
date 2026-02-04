@@ -153,6 +153,7 @@ const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ 
     const [svgContent, setSvgContent] = React.useState<string | null>(null);
     const [error, setError] = React.useState(false);
     const [loading, setLoading] = React.useState(true);
+    const isThumbnail = className?.includes('asset-thumbnail');
 
     React.useEffect(() => {
         let cancelled = false;
@@ -171,10 +172,9 @@ const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ 
                 const doc = parser.parseFromString(text, 'image/svg+xml');
                 const svgElement = doc.querySelector('svg');
                 if (svgElement) {
-                    // Set responsive dimensions instead of removing them
+                    // Set responsive dimensions
                     svgElement.setAttribute('width', '100%');
-                    svgElement.setAttribute('height', 'auto');
-                    svgElement.style.maxWidth = '300px';
+                    svgElement.setAttribute('height', '100%');
                     svgElement.style.display = 'block';
                     svgElement.setAttribute('aria-label', alt);
                     svgElement.setAttribute('role', 'img');
@@ -198,25 +198,40 @@ const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ 
 
     // On error, fall back to img tag (works better with CORS)
     if (error) {
-        return <img src={url} alt={alt} className={className} style={{ maxWidth: '100%', height: 'auto' }} />;
+        const imgStyle = isThumbnail
+            ? { width: '100%', height: '100%', objectFit: 'cover' as const }
+            : { maxWidth: '100%', height: 'auto' };
+        return <img src={url} alt={alt} className={className} style={imgStyle} />;
     }
 
     // Show loading placeholder with visible dimensions
     if (loading || !svgContent) {
+        const loadingStyle = isThumbnail
+            ? {
+                width: '100%',
+                height: '100%',
+                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'rgba(255, 255, 255, 0.5)',
+                fontSize: '12px'
+            }
+            : {
+                minWidth: '150px',
+                minHeight: '150px',
+                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'rgba(255, 255, 255, 0.5)',
+                fontSize: '12px'
+            };
         return (
             <div
                 className={className}
-                style={{
-                    minWidth: '150px',
-                    minHeight: '150px',
-                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%)',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'rgba(255, 255, 255, 0.5)',
-                    fontSize: '12px'
-                }}
+                style={loadingStyle}
                 aria-label={`Loading ${alt}`}
             >
                 Loading...
@@ -224,16 +239,15 @@ const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ 
         );
     }
 
+    const renderStyle = isThumbnail
+        ? { width: '100%', height: '100%' }
+        : { width: '100%', maxWidth: '300px', height: 'auto', aspectRatio: '500 / 600' };
+
     // eslint-disable-next-line react/no-danger
     return (
         <div
             dangerouslySetInnerHTML={{ __html: svgContent }}
-            style={{
-                width: '100%',
-                maxWidth: '300px',
-                height: 'auto',
-                aspectRatio: '500 / 600' // Match the viewBox aspect ratio
-            }}
+            style={renderStyle}
             className={className}
         />
     );
@@ -332,8 +346,6 @@ const ActivityDetailPage: React.FC = () => {
         activityType,
         generatedAssets,
         pipelineName,
-        successfulEnrichers,
-        failedEnrichers,
     } = useMemo(() => {
         if (!pipelineRun) {
             return {
@@ -343,9 +355,6 @@ const ActivityDetailPage: React.FC = () => {
                 activityType: '',
                 generatedAssets: [],
                 pipelineName: undefined,
-                successfulEnrichers: [],
-                failedEnrichers: [],
-                pipelineRunDestinations: [],
             };
         }
 
@@ -368,9 +377,6 @@ const ActivityDetailPage: React.FC = () => {
         const pipelineName = pipelineRun.pipelineId
             ? pipelines.find(p => p.id === pipelineRun.pipelineId)?.name
             : undefined;
-        // Use effective status to honor metadata status override
-        const successfulEnrichers = providerExecutions.filter((p: ProviderExecution) => getEffectiveStatus(p) === 'SUCCESS');
-        const failedEnrichers = providerExecutions.filter((p: ProviderExecution) => getEffectiveStatus(p) !== 'SUCCESS');
 
         return {
             sourceInfo,
@@ -379,8 +385,6 @@ const ActivityDetailPage: React.FC = () => {
             activityType,
             generatedAssets,
             pipelineName,
-            successfulEnrichers,
-            failedEnrichers,
         };
     }, [pipelineRun, sources, registryDestinations, pipelines]);
 
@@ -732,40 +736,50 @@ const ActivityDetailPage: React.FC = () => {
 
                 {/* Generated Assets */}
                 {generatedAssets.length > 0 && (
-                    <Card>
-                        <Stack gap="md">
-                            <Heading level={4}>
-                                <Stack direction="horizontal" gap="xs" align="center">
-                                    <Paragraph inline>🎨</Paragraph>
-                                    Generated Assets
-                                </Stack>
-                            </Heading>
-                            <Grid cols={3} gap="md">
-                                {generatedAssets.map((asset, idx) => (
-                                    <Stack key={idx} align="center" gap="sm">
-                                        <Link to={asset.url} external>
-                                            <Stack align="center" gap="xs">
-                                                {isSvgUrl(asset.url) ? (
-                                                    <SvgAsset
-                                                        url={asset.url}
-                                                        alt={formatAssetType(asset.type)}
-                                                    />
-                                                ) : (
-                                                    <img
-                                                        src={asset.url}
-                                                        alt={formatAssetType(asset.type)}
-                                                    />
-                                                )}
-                                            </Stack>
-                                            <Paragraph size="sm" centered>
-                                                {formatAssetType(asset.type)}
-                                            </Paragraph>
-                                        </Link>
+                    <Stack gap="md">
+                        <Heading level={4}>
+                            <Stack direction="horizontal" gap="xs" align="center">
+                                <Paragraph inline>🎨</Paragraph>
+                                Generated Assets
+                            </Stack>
+                        </Heading>
+                        <Grid cols={generatedAssets.length > 1 ? 2 : 1} gap="md">
+                            {generatedAssets.map((asset, idx) => (
+                                <Link key={idx} to={asset.url} external style={{ display: 'block' }}>
+                                    <Stack gap="xs">
+                                        <div style={{
+                                            width: '100%',
+                                            aspectRatio: '4 / 3',
+                                            borderRadius: 'var(--radius-lg)',
+                                            overflow: 'hidden',
+                                            backgroundColor: 'var(--color-surface-elevated)',
+                                        }}>
+                                            {isSvgUrl(asset.url) ? (
+                                                <SvgAsset
+                                                    url={asset.url}
+                                                    alt={formatAssetType(asset.type)}
+                                                    className="asset-thumbnail"
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={asset.url}
+                                                    alt={formatAssetType(asset.type)}
+                                                    style={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        objectFit: 'cover',
+                                                    }}
+                                                />
+                                            )}
+                                        </div>
+                                        <Paragraph size="sm" centered muted>
+                                            {formatAssetType(asset.type)}
+                                        </Paragraph>
                                     </Stack>
-                                ))}
-                            </Grid>
-                        </Stack>
-                    </Card>
+                                </Link>
+                            ))}
+                        </Grid>
+                    </Stack>
                 )}
 
                 {/* Nerd mode booster execution details - using PipelineRun boosters */}
