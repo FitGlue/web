@@ -64,9 +64,18 @@ export default defineConfig(({ mode }) => {
         input: {
           // Static pages are now built by Skier, only React app entry point here
           app: resolve(__dirname, 'public/app/index.html'),
+          // Service worker bundled separately (must be at root for proper scope)
+          'firebase-messaging-sw': resolve(__dirname, 'src/app/firebase-messaging-sw.ts'),
         },
         output: {
           sourcemapExcludeSources: false, // Include sources in source maps
+          // Ensure service worker outputs to correct location with correct name
+          entryFileNames: (chunkInfo) => {
+            if (chunkInfo.name === 'firebase-messaging-sw') {
+              return 'firebase-messaging-sw.js';
+            }
+            return 'assets/[name]-[hash].js';
+          },
         },
       },
     },

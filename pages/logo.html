@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitGlue Logo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            background: transparent;
+        }
+
+        .logo-container {
+            /* Fixed 1:1 square - adjust this size for your needs */
+            width: 512px;
+            height: 512px;
+
+            /* Rounded square */
+            border-radius: 22.37%;
+            /* iOS-style rounded square ratio */
+
+            /* The beautiful pink/purple gradient from FitGlue */
+            background: linear-gradient(135deg, #FF006E 0%, #8338EC 100%);
+
+            /* Center content */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            position: relative;
+            overflow: hidden;
+
+            /* Subtle inner shadow for depth */
+            box-shadow: inset 0 -4px 20px rgba(0, 0, 0, 0.2),
+                inset 0 4px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-text {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 280px;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+
+            display: flex;
+            gap: 0;
+            user-select: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-f {
+            /* Light peachy-pink color for F */
+            color: #FFD4E5;
+            text-shadow:
+                0 0 40px rgba(255, 77, 148, 0.8),
+                0 0 80px rgba(255, 0, 110, 0.5),
+                0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-g {
+            /* Light lavender color for G */
+            color: #E8D4FF;
+            text-shadow:
+                0 0 40px rgba(157, 92, 245, 0.8),
+                0 0 80px rgba(131, 56, 236, 0.5),
+                0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Diagonal gloss/shine effect */
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(135deg,
+                    transparent 0%,
+                    transparent 40%,
+                    rgba(255, 255, 255, 0.15) 45%,
+                    rgba(255, 255, 255, 0.25) 50%,
+                    rgba(255, 255, 255, 0.15) 55%,
+                    transparent 60%,
+                    transparent 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Subtle top-left highlight */
+        .logo-container::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 15%, rgba(255, 255, 255, 0.2) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Alternative sizes - use scale transform for pixel-perfect consistency */
+        .logo-wrapper {
+            display: inline-block;
+        }
+
+        .logo-wrapper--1024 {
+            transform: scale(2);
+            transform-origin: top center;
+            margin-bottom: 512px;
+            /* Account for scaled height */
+        }
+
+        .logo-wrapper--256 {
+            transform: scale(0.5);
+            transform-origin: top center;
+            margin-bottom: -256px;
+            /* Account for scaled height */
+        }
+
+        .logo-wrapper--192 {
+            transform: scale(0.375);
+            transform-origin: top center;
+            margin-bottom: -320px;
+            /* Account for scaled height */
+        }
+
+        .logo-wrapper--128 {
+            transform: scale(0.25);
+            transform-origin: top center;
+            margin-bottom: -384px;
+            /* Account for scaled height */
+        }
+
+        .logo-wrapper--72 {
+            transform: scale(0.140625);
+            transform-origin: top center;
+            margin-bottom: -440px;
+            /* Account for scaled height */
+        }
+
+        .logo-wrapper--64 {
+            transform: scale(0.125);
+            transform-origin: top center;
+            margin-bottom: -448px;
+            /* Account for scaled height */
+        }
+
+        /* Page layout for viewing all sizes */
+        .page {
+            min-height: 100vh;
+            padding: 40px;
+            background: #0A0A0A;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .size-label {
+            color: #666;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .logo-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .logo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 30px;
+        }
+
+        .download-btn {
+            margin-top: 12px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #FF006E 0%, #8338EC 100%);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255, 0, 110, 0.4);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <h1>FitGlue Logo</h1>
+        <p>Click to download the logo at each size as a PNG.</p>
+
+        <div class="logo-row">
+            <!-- Main 512px logo (base size) -->
+            <div class="logo-item">
+                <div class="size-label">512 × 512px</div>
+                <div class="logo-wrapper">
+                    <div class="logo-container" id="logo-512">
+                        <div class="logo-text">
+                            <span class="logo-f">F</span><span class="logo-g">G</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadLogo(512)">Download PNG</button>
+            </div>
+        </div>
+
+        <div class="logo-row">
+            <!-- Smaller sizes using scale -->
+            <div class="logo-item">
+                <div class="size-label">256 × 256px</div>
+                <div class="logo-wrapper logo-wrapper--256">
+                    <div class="logo-container">
+                        <div class="logo-text">
+                            <span class="logo-f">F</span><span class="logo-g">G</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadLogo(256)">Download PNG</button>
+            </div>
+
+            <div class="logo-item">
+                <div class="size-label">128 × 128px</div>
+                <div class="logo-wrapper logo-wrapper--128">
+                    <div class="logo-container">
+                        <div class="logo-text">
+                            <span class="logo-f">F</span><span class="logo-g">G</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadLogo(128)">Download PNG</button>
+            </div>
+
+            <div class="logo-item">
+                <div class="size-label">64 × 64px</div>
+                <div class="logo-wrapper logo-wrapper--64">
+                    <div class="logo-container">
+                        <div class="logo-text">
+                            <span class="logo-f">F</span><span class="logo-g">G</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadLogo(64)">Download PNG</button>
+            </div>
+        </div>
+
+        <!-- Extra large for high-res export -->
+        <div class="logo-row">
+            <div class="logo-item">
+                <div class="size-label">1024 × 1024px (for high-res export)</div>
+                <div class="logo-wrapper logo-wrapper--1024">
+                    <div class="logo-container">
+                        <div class="logo-text">
+                            <span class="logo-f">F</span><span class="logo-g">G</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadLogo(1024)">Download PNG</button>
+            </div>
+        </div>
+
+        <!-- Manifest Icons Section -->
+        <hr style="width: 100%; max-width: 800px; border: none; border-top: 1px solid #333; margin: 40px 0;">
+        <h2 style="color: white; font-family: 'Inter', sans-serif; font-weight: 900; margin-bottom: 10px;">📱 PWA
+            Manifest Icons</h2>
+        <p style="color: #666; font-family: 'Inter', sans-serif; margin-bottom: 30px;">Download icons for
+            /public/app/icons/ directory</p>
+
+        <div class="logo-row">
+            <div class="logo-item">
+                <div class="size-label">icon-512.png (512×512)</div>
+                <div class="logo-wrapper">
+                    <div class="logo-container">
+                        <div class="logo-text">
+                            <span class="logo-f">F</span><span class="logo-g">G</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadManifestIcon(512)">Download icon-512.png</button>
+            </div>
+
+            <div class="logo-item">
+                <div class="size-label">icon-192.png (192×192)</div>
+                <div class="logo-wrapper logo-wrapper--192">
+                    <div class="logo-container">
+                        <div class="logo-text">
+                            <span class="logo-f">F</span><span class="logo-g">G</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadManifestIcon(192)">Download icon-192.png</button>
+            </div>
+        </div>
+
+        <div class="logo-row" style="margin-top: 30px;">
+            <div class="logo-item">
+                <div class="size-label">badge-72.png (72×72 monochrome)</div>
+                <div class="logo-wrapper logo-wrapper--72 logo-wrapper--badge">
+                    <div class="logo-container" style="background: white; box-shadow: none;">
+                        <div class="logo-text" style="text-shadow: none;">
+                            <span style="color: #FF006E;">F</span><span style="color: #8338EC;">G</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="downloadBadge(72)">Download badge-72.png</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Render the FitGlue logo to a canvas and trigger download as PNG
+         * @param {number} size - The size in pixels (width and height)
+         * @param {string} [filename] - Optional custom filename
+         */
+        function downloadLogo(size, filename) {
+            const canvas = renderLogo(size);
+            triggerDownload(canvas, filename || `fitglue-logo-${size}x${size}.png`);
+        }
+
+        /**
+         * Download manifest icon with correct naming
+         * @param {number} size - The size in pixels
+         */
+        function downloadManifestIcon(size) {
+            const canvas = renderLogo(size);
+            triggerDownload(canvas, `icon-${size}.png`);
+        }
+
+        /**
+         * Download monochrome badge
+         * @param {number} size - The size in pixels
+         */
+        function downloadBadge(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            const radius = size * 0.2237;
+
+            // White background
+            ctx.beginPath();
+            roundedRect(ctx, 0, 0, size, size, radius);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+
+            // Draw "FG" text in gradient colors
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const fontSize = size * 0.36;
+            ctx.font = `900 ${fontSize}px Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+
+            // Measure text to position F and G separately
+            const fWidth = ctx.measureText('F').width;
+            const gWidth = ctx.measureText('G').width;
+            const totalWidth = fWidth + gWidth;
+            const startX = (size - totalWidth) / 2;
+
+            // Draw F in pink
+            ctx.fillStyle = '#FF006E';
+            ctx.textAlign = 'left';
+            ctx.fillText('F', startX, size / 2);
+
+            // Draw G in purple
+            ctx.fillStyle = '#8338EC';
+            ctx.fillText('G', startX + fWidth, size / 2);
+
+            triggerDownload(canvas, `badge-${size}.png`);
+        }
+
+        /**
+         * Render the full logo with all effects
+         * @param {number} size - The size in pixels
+         * @returns {HTMLCanvasElement}
+         */
+        function renderLogo(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            const radius = size * 0.2237;
+
+            // Draw rounded rectangle with gradient fill
+            ctx.beginPath();
+            roundedRect(ctx, 0, 0, size, size, radius);
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#FF006E');
+            gradient.addColorStop(1, '#8338EC');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Top-left radial highlight
+            ctx.beginPath();
+            roundedRect(ctx, 0, 0, size, size, radius);
+            ctx.clip();
+            const highlightGradient = ctx.createRadialGradient(
+                size * 0.2, size * 0.15, 0,
+                size * 0.2, size * 0.15, size * 0.4
+            );
+            highlightGradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+            highlightGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = highlightGradient;
+            ctx.fillRect(0, 0, size, size);
+
+            // Diagonal shine stripe
+            ctx.save();
+            ctx.beginPath();
+            roundedRect(ctx, 0, 0, size, size, radius);
+            ctx.clip();
+            const shineGradient = ctx.createLinearGradient(0, 0, size, size);
+            shineGradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
+            shineGradient.addColorStop(0.4, 'rgba(255, 255, 255, 0)');
+            shineGradient.addColorStop(0.45, 'rgba(255, 255, 255, 0.15)');
+            shineGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.25)');
+            shineGradient.addColorStop(0.55, 'rgba(255, 255, 255, 0.15)');
+            shineGradient.addColorStop(0.6, 'rgba(255, 255, 255, 0)');
+            shineGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = shineGradient;
+            ctx.fillRect(0, 0, size, size);
+            ctx.restore();
+
+            // Draw "FG" text - larger size (55% of container)
+            const fontSize = size * 0.55;
+            ctx.font = `900 ${fontSize}px Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+            ctx.textBaseline = 'middle';
+
+            // Measure text to position F and G separately
+            const fWidth = ctx.measureText('F').width;
+            const gWidth = ctx.measureText('G').width;
+            const gap = -size * 0.02; // Tight tracking
+            const totalWidth = fWidth + gWidth + gap;
+            const startX = (size - totalWidth) / 2;
+
+            // Draw F with pink glow
+            ctx.save();
+            ctx.shadowColor = 'rgba(255, 77, 148, 0.8)';
+            ctx.shadowBlur = size * 0.08;
+            ctx.fillStyle = '#FFD4E5';
+            ctx.textAlign = 'left';
+            ctx.fillText('F', startX, size / 2);
+            ctx.restore();
+
+            // Draw G with purple glow
+            ctx.save();
+            ctx.shadowColor = 'rgba(157, 92, 245, 0.8)';
+            ctx.shadowBlur = size * 0.08;
+            ctx.fillStyle = '#E8D4FF';
+            ctx.textAlign = 'left';
+            ctx.fillText('G', startX + fWidth + gap, size / 2);
+            ctx.restore();
+
+            return canvas;
+        }
+
+        /**
+         * Trigger download of a canvas as PNG
+         * @param {HTMLCanvasElement} canvas
+         * @param {string} filename
+         */
+        function triggerDownload(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        /**
+         * Draw a rounded rectangle path
+         */
+        function roundedRect(ctx, x, y, width, height, radius) {
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+    </script>
+</body>
+
+</html>

@@ -38,11 +38,14 @@ import { NerdModeProvider } from './state/NerdModeContext';
 initSentry();
 
 // Protected route wrapper - redirects to static /auth/login page
+// Also enforces waitlist by checking accessEnabled from user profile
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user] = useAtom(userAtom);
-  const [loading] = useAtom(authLoadingAtom);
+  const [firebaseUser] = useAtom(userAtom);
+  const [authLoading] = useAtom(authLoadingAtom);
+  const { user: profile, loading: profileLoading } = useUser();
 
-  if (loading) {
+  // Show loading while Firebase auth or profile is loading
+  if (authLoading || profileLoading) {
     return (
       <Card>
         <Paragraph>Loading...</Paragraph>
@@ -50,12 +53,23 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     );
   }
 
-  if (!user) {
-    // Redirect to static auth page (outside React app)
+  // Not authenticated - redirect to login
+  if (!firebaseUser) {
     window.location.href = '/auth/login';
     return (
       <Card>
         <Paragraph>Redirecting to login...</Paragraph>
+      </Card>
+    );
+  }
+
+  // Authenticated but waitlisted (no access enabled) - redirect to access-pending
+  // Admins always have access regardless of accessEnabled flag
+  if (profile && !profile.accessEnabled && !profile.isAdmin) {
+    window.location.href = '/auth/access-pending';
+    return (
+      <Card>
+        <Paragraph>Redirecting...</Paragraph>
       </Card>
     );
   }

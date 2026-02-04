@@ -11,6 +11,7 @@ import { useNerdMode } from '../state/NerdModeContext';
 import { initFirebase } from '../../shared/firebase';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST, HOBBYIST_TIER_LIMITS } from '../utils/tier';
 import { Input, FormField } from '../components/library/forms';
+import { NotificationPreferencesCard } from '../components/NotificationPreferencesCard';
 
 const AccountSettingsPage: React.FC = () => {
     const [firebaseUser] = useAtom(userAtom);
@@ -278,14 +279,14 @@ const AccountSettingsPage: React.FC = () => {
                     <Stack gap="md">
                         <Heading level={3}>Help & Support</Heading>
                         <Grid cols={3} gap="md">
-                            <a href="/help" style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Link to="/help">
                                 <Card variant="interactive">
                                     <Stack gap="sm" align="center">
                                         <Paragraph size="lg">📚</Paragraph>
                                         <Paragraph size="sm">FAQ & Guides</Paragraph>
                                     </Stack>
                                 </Card>
-                            </a>
+                            </Link>
                             <Link to="mailto:support@fitglue.tech" external>
                                 <Card variant="interactive">
                                     <Stack gap="sm" align="center">
@@ -294,17 +295,20 @@ const AccountSettingsPage: React.FC = () => {
                                     </Stack>
                                 </Card>
                             </Link>
-                            <a href="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Link to="/contact">
                                 <Card variant="interactive">
                                     <Stack gap="sm" align="center">
                                         <Paragraph size="lg">💡</Paragraph>
                                         <Paragraph size="sm">Request a Feature</Paragraph>
                                     </Stack>
                                 </Card>
-                            </a>
+                            </Link>
                         </Grid>
                     </Stack>
                 </GlowCard>
+
+                {/* Notification Preferences Card */}
+                <NotificationPreferencesCard />
 
                 {isNerdMode && (
                     <Card>

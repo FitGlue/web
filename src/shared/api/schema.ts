@@ -933,6 +933,8 @@ export interface components {
             tier?: "hobbyist" | "athlete";
             /** @description Whether user has admin privileges */
             isAdmin?: boolean;
+            /** @description Waitlist gate - false until admin enables access */
+            accessEnabled?: boolean;
             /**
              * Format: date-time
              * @description Trial expiration date, if applicable

@@ -239,6 +239,10 @@
             "type": "boolean",
             "description": "Whether user has admin privileges"
           },
+          "accessEnabled": {
+            "type": "boolean",
+            "description": "Waitlist gate - false until admin enables access"
+          },
           "trialEndsAt": {
             "type": "string",
             "format": "date-time",

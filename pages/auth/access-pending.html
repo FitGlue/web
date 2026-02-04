@@ -8,27 +8,38 @@
   </h1>
 
   <div class="auth-box" style="text-align: center;">
-    <div class="pending-icon" style="font-size: 4rem; margin-bottom: 1.5rem;">⏳</div>
-
-    <h2 style="color: #f5f5f5; margin-bottom: 1rem;">You're on the Waitlist!</h2>
-
-    <p class="auth-description" style="text-align: center; margin-bottom: 1.5rem;">
-      Thanks for signing up for <strong style="color: #FF006E;">Fit</strong><strong style="color: #8338EC;">Glue</strong>!
-      We're currently in early access mode.
+    <p class="auth-description" style="text-align: center; margin-bottom: 2rem; font-size: 1.1rem;">
+      Thanks for joining the <strong style="color: #FF006E;">Fit</strong><strong style="color: #8338EC;">Glue</strong>
+      waitlist! We're rolling out access in waves and will email you as soon as your spot is ready.
     </p>
 
-    <p class="auth-description" style="text-align: center; margin-bottom: 2rem;">
-      We'll send you an email at <strong id="user-email" style="color: #f5f5f5;"></strong> when your account is activated.
-    </p>
+    <div
+      style="background: rgba(30, 30, 35, 0.8); border: 1px solid rgba(131, 56, 236, 0.2); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; text-align: left;">
+      <h3
+        style="color: #a5a5a5; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em; margin: 0 0 1.25rem 0; text-transform: uppercase;">
+        What Happens Next</h3>
 
-    <div style="background: rgba(131, 56, 236, 0.1); border: 1px solid rgba(131, 56, 236, 0.3); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1.5rem;">
-      <p style="color: #a5a5a5; font-size: 0.9rem; margin: 0;">
-        <strong style="color: #8338EC;">What happens next?</strong><br>
-        We're rolling out access in waves. When it's your turn, you'll get an email and can start syncing your workouts immediately!
-      </p>
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+          <span style="font-size: 1.25rem;">📧</span>
+          <span style="color: #f5f5f5; font-size: 0.95rem;">Check your email to verify your address</span>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+          <span style="font-size: 1.25rem;">⏳</span>
+          <span style="color: #f5f5f5; font-size: 0.95rem;">We'll review your registration</span>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+          <span style="font-size: 1.25rem;">🚀</span>
+          <span style="color: #f5f5f5; font-size: 0.95rem;">You'll get an email when access is enabled</span>
+        </div>
+      </div>
     </div>
 
-    <button id="btn-logout" class="btn secondary" style="margin-top: 1rem;">Sign out</button>
+    <div style="border-top: 1px solid rgba(131, 56, 236, 0.2); padding-top: 1.5rem;">
+      <p style="color: #a5a5a5; margin-bottom: 1rem; font-size: 0.9rem;">Already received access?</p>
+      <a href="/auth/login" class="btn primary" id="btn-login"
+        style="display: block; width: 100%; text-align: center; text-decoration: none;">Login Now</a>
+    </div>
   </div>
 </div>
 
@@ -58,27 +69,15 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        // Not logged in, redirect to login
-        window.location.href = '/auth/login';
-        return;
-      }
-
-      // Show user email
-      const emailEl = document.getElementById('user-email');
-      if (emailEl) {
-        emailEl.textContent = user.email || 'your registered email';
-      }
-    });
-
-    document.getElementById('btn-logout').addEventListener('click', async () => {
+    // Login button should sign out first then redirect to login
+    document.getElementById('btn-login').addEventListener('click', async (e) => {
+      e.preventDefault();
       try {
         await signOut(auth);
-        window.location.href = '/auth/login';
       } catch (error) {
         console.error('Logout error:', error);
       }
+      window.location.href = '/auth/login';
     });
   }
 

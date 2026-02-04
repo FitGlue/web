@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { PluginRegistryResponse } from '../types/plugin';
 import {
   pluginRegistryAtom,
@@ -23,19 +23,14 @@ export const usePluginRegistry = () => {
   const [loaded, setLoaded] = useAtom(isPluginRegistryLoadedAtom);
   const [error, setError] = useAtom(pluginRegistryErrorAtom);
 
-  const isStale = !lastUpdated || Date.now() - lastUpdated.getTime() > STALE_THRESHOLD_MS;
+  // Track in-flight fetch to prevent duplicate calls
+  const fetchInProgressRef = useRef(false);
 
   const fetchRegistry = useCallback(async (force = false) => {
-    // Skip if already loaded and not stale (unless forced)
-    if (loaded && !isStale && !force) {
-      return;
-    }
+    // Prevent concurrent fetches (but allow if force is specified)
+    if (fetchInProgressRef.current && !force) return;
 
-    // Prevent concurrent fetches
-    if (loading) {
-      return;
-    }
-
+    fetchInProgressRef.current = true;
     setLoading(true);
     try {
       // No auth required for the plugins endpoint
@@ -52,16 +47,23 @@ export const usePluginRegistry = () => {
       console.error('Failed to fetch plugin registry:', err);
       setError(err instanceof Error ? err.message : 'Failed to load plugins');
     } finally {
+      fetchInProgressRef.current = false;
       setLoading(false);
     }
-  }, [loaded, isStale, loading, setRegistry, setLastUpdated, setLoaded, setLoading, setError]);
+  }, [setRegistry, setLastUpdated, setLoaded, setLoading, setError]);
+
+  // Check if data is stale
+  const isStale = !lastUpdated || Date.now() - lastUpdated.getTime() > STALE_THRESHOLD_MS;
 
   // Auto-fetch on mount if needed
   useEffect(() => {
     if (!loaded && !loading) {
       fetchRegistry();
+    } else if (loaded && isStale && !loading) {
+      // Refresh stale data
+      fetchRegistry(true);
     }
-  }, [loaded, loading, fetchRegistry]);
+  }, [loaded, loading, isStale, fetchRegistry]);
 
   return {
     registry,
