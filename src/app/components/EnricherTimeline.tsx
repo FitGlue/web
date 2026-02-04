@@ -5,6 +5,8 @@ import { Card } from './library/ui/Card';
 import { Button } from './library/ui/Button';
 import { Paragraph } from './library/ui/Paragraph';
 import { PluginIcon } from './library/ui/PluginIcon';
+import { EnricherConfigForm } from './EnricherConfigForm';
+import { LogicGateConfigForm } from './LogicGateConfigForm';
 import './EnricherTimeline.css';
 
 interface SelectedEnricher {
@@ -17,6 +19,8 @@ interface Props {
     onReorder: (enrichers: SelectedEnricher[]) => void;
     onRemove: (index: number) => void;
     onInfoClick: (manifest: PluginManifest) => void;
+    /** Optional: When provided, enables inline config editing with expand/collapse */
+    onConfigChange?: (index: number, config: Record<string, string>) => void;
 }
 
 /**
@@ -35,12 +39,16 @@ const DragHandle: React.FC = () => (
     </div>
 );
 
-export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemove, onInfoClick }) => {
+export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemove, onInfoClick, onConfigChange }) => {
     const [dragIndex, setDragIndex] = useState<number | null>(null);
     const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
     const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [longPressing, setLongPressing] = useState<number | null>(null);
+    const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+
+    const hasConfig = (e: SelectedEnricher) => (e.manifest.configSchema?.length ?? 0) > 0;
+    const canEditConfig = !!onConfigChange;
 
     // Desktop drag handlers
     const handleDragStart = (index: number) => (e: React.DragEvent) => {
@@ -130,20 +138,23 @@ export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemo
                                 longPressing === i && 'long-pressing',
                             ].filter(Boolean).join(' ');
 
+                            const isExpanded = expandedIndex === i;
+                            const showConfigButton = canEditConfig && hasConfig(e);
+
                             return (
                                 <div
                                     key={`${e.manifest.id}-${i}`}
-                                    className={nodeClasses}
+                                    className={`${nodeClasses}${isExpanded ? ' expanded' : ''}`}
                                     data-index={i}
-                                    draggable
-                                    onDragStart={handleDragStart(i)}
+                                    draggable={!isExpanded}
+                                    onDragStart={isExpanded ? undefined : handleDragStart(i)}
                                     onDragOver={handleDragOver(i)}
                                     onDrop={handleDrop(i)}
                                     onDragEnd={handleDragEnd}
-                                    onTouchStart={handleTouchStart(i)}
+                                    onTouchStart={isExpanded ? undefined : handleTouchStart(i)}
                                     onTouchEnd={handleTouchEnd}
                                 >
-                                    <Card variant={dragIndex === i ? 'elevated' : 'default'}>
+                                    <Card variant={dragIndex === i || isExpanded ? 'elevated' : 'default'}>
                                         <div className="timeline-node__content">
                                             <DragHandle />
                                             <div className="timeline-order-badge">{i + 1}</div>
@@ -157,6 +168,21 @@ export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemo
                                                 <span className="timeline-plugin-name">{e.manifest.name}</span>
                                             </div>
                                             <div className="timeline-actions">
+                                                {showConfigButton && (
+                                                    <Button
+                                                        variant="text"
+                                                        size="small"
+                                                        onClick={(ev) => {
+                                                            ev.stopPropagation();
+                                                            setExpandedIndex(isExpanded ? null : i);
+                                                        }}
+                                                        title={isExpanded ? 'Close settings' : 'Configure settings'}
+                                                        aria-label="Settings"
+                                                        className={`timeline-config-btn${isExpanded ? ' active' : ''}`}
+                                                    >
+                                                        ⚙️
+                                                    </Button>
+                                                )}
                                                 <Button
                                                     variant="text"
                                                     size="small"
@@ -177,6 +203,23 @@ export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemo
                                                 </Button>
                                             </div>
                                         </div>
+                                        {/* Expanded config form */}
+                                        {isExpanded && onConfigChange && (
+                                            <div className="timeline-config-panel">
+                                                {e.manifest.id === 'logic-gate' ? (
+                                                    <LogicGateConfigForm
+                                                        initialValues={e.config}
+                                                        onChange={(config) => onConfigChange(i, config)}
+                                                    />
+                                                ) : (
+                                                    <EnricherConfigForm
+                                                        schema={e.manifest.configSchema ?? []}
+                                                        initialValues={e.config}
+                                                        onChange={(config) => onConfigChange(i, config)}
+                                                    />
+                                                )}
+                                            </div>
+                                        )}
                                     </Card>
                                 </div>
                             );

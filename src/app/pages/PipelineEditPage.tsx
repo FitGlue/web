@@ -7,12 +7,10 @@ import { Button } from '../components/library/ui/Button';
 import { Heading } from '../components/library/ui/Heading';
 import { Paragraph } from '../components/library/ui/Paragraph';
 import { useToast } from '../components/library/ui/Toast';
-import { EnricherConfigForm } from '../components/EnricherConfigForm';
-import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { SharePipelineModal } from '../components/SharePipelineModal';
-import { WizardOptionGrid, WizardExcludedSection, EnricherConfigTabs } from '../components/wizard';
+import { WizardOptionGrid, WizardExcludedSection } from '../components/wizard';
 import { useApi } from '../hooks/useApi';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
@@ -80,7 +78,6 @@ const PipelineEditPage: React.FC = () => {
     const [selectedSource, setSelectedSource] = useState<string>('');
     const [selectedEnrichers, setSelectedEnrichers] = useState<SelectedEnricher[]>([]);
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
-    const [currentEnricherIndex, setCurrentEnricherIndex] = useState<number>(0);
     const [editingEnrichers, setEditingEnrichers] = useState(false);
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
     const [showShareModal, setShowShareModal] = useState(false);
@@ -168,9 +165,6 @@ const PipelineEditPage: React.FC = () => {
             return [...prev, dest.id];
         });
     };
-
-    const enrichersNeedConfig = selectedEnrichers.some(e => (e.manifest.configSchema?.length ?? 0) > 0);
-    const currentEnricher = selectedEnrichers[currentEnricherIndex];
 
     if (loading || registryLoading) {
         return (
@@ -270,45 +264,12 @@ const PipelineEditPage: React.FC = () => {
                                         onReorder={setSelectedEnrichers}
                                         onRemove={(index) => setSelectedEnrichers(prev => prev.filter((_, i) => i !== index))}
                                         onInfoClick={(manifest) => setInfoEnricher(manifest)}
+                                        onConfigChange={updateEnricherConfig}
                                     />
                                 )}
                             </>
                         )}
                     </Card>
-
-                    {/* Enricher Configuration */}
-                    {enrichersNeedConfig && !editingEnrichers && (
-                        <Card>
-                            <Heading level={3}>⚙️ Configure Enrichers</Heading>
-                            <Paragraph>Configure settings for each booster below</Paragraph>
-                            <EnricherConfigTabs
-                                tabs={selectedEnrichers
-                                    .filter(e => (e.manifest.configSchema?.length ?? 0) > 0)
-                                    .map(e => ({
-                                        id: e.manifest.id,
-                                        icon: e.manifest.icon,
-                                        iconType: e.manifest.iconType,
-                                        iconPath: e.manifest.iconPath,
-                                        name: e.manifest.name,
-                                    }))}
-                                activeTabId={currentEnricher?.manifest.id ?? ''}
-                                onTabClick={(tabId) => {
-                                    const index = selectedEnrichers.findIndex(e => e.manifest.id === tabId);
-                                    if (index !== -1) setCurrentEnricherIndex(index);
-                                }}
-                            />
-                            {currentEnricher && (currentEnricher.manifest.configSchema?.length ?? 0) > 0 && (
-                                currentEnricher.manifest.id === 'logic-gate' ? (
-                                    <LogicGateConfigForm key={currentEnricher.manifest.id} initialValues={currentEnricher.config}
-                                        onChange={config => updateEnricherConfig(currentEnricherIndex, config)} />
-                                ) : (
-                                    <EnricherConfigForm key={currentEnricher.manifest.id}
-                                        schema={currentEnricher.manifest.configSchema ?? []} initialValues={currentEnricher.config}
-                                        onChange={config => updateEnricherConfig(currentEnricherIndex, config)} />
-                                )
-                            )}
-                        </Card>
-                    )}
 
                     {/* Destinations Section */}
                     <Card>

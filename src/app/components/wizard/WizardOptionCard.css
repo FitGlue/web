@@ -5,6 +5,7 @@
   min-width: 160px;
   flex: 1;
   max-width: 280px;
+  height: 100%;
 }
 
 .wizard-option-card:hover:not(.disabled) {
@@ -23,8 +24,10 @@
 
 /* Card inner content - more breathing room */
 .wizard-option-card .card {
-  padding: var(--spacing-md, 1rem);
+  padding: var(--spacing-lg, 1.25rem);
   position: relative;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 /* Selection indicator - positioned top-right */
@@ -87,12 +90,13 @@
 
 /* Card content text spacing */
 .wizard-option-card h4 {
-  margin-top: var(--spacing-xs, 0.25rem);
+  margin-top: var(--spacing-sm, 0.5rem);
   line-height: 1.3;
 }
 
 .wizard-option-card p {
-  line-height: 1.4;
+  margin-top: var(--spacing-xs, 0.25rem);
+  line-height: 1.5;
 }
 
 /* Mobile responsive */
