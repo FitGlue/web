@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.0.0](https://github.com/fitglue/web/compare/v9.2.0...v10.0.0) (2026-02-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* Update node version to v22
+
+### Features
+
+* upgrade node version ([bd32130](https://github.com/fitglue/web/commit/bd321308d35b5d84e5b49f13b77e5ced6a42d64a))
+
 ## [9.2.0](https://github.com/fitglue/web/compare/v9.1.0...v9.2.0) (2026-02-03)
 
 
