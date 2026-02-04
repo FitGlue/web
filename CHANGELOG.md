@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.2.0](https://github.com/fitglue/web/compare/v10.1.1...v10.2.0) (2026-02-04)
+
+
+### Features
+
+* make booster statuses match colours ([f8e0ff2](https://github.com/fitglue/web/commit/f8e0ff2734ae0c74f8824079524fb42c0f23ec0e))
+
+
+### Bug Fixes
+
+* generated assets in activity detail page prettifying ([66fcd38](https://github.com/fitglue/web/commit/66fcd385ea92ee29998754b81eee84d990076653))
+
 ### [10.1.1](https://github.com/fitglue/web/compare/v10.1.0...v10.1.1) (2026-02-04)
 
 
