@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.1.1](https://github.com/fitglue/web/compare/v10.1.0...v10.1.1) (2026-02-04)
+
+
+### Bug Fixes
+
+* activity detail page to use similar colours and styling to pipeline run lists ([3255888](https://github.com/fitglue/web/commit/3255888753b2213260a136682eed12c103bde857))
+
 ## [10.1.0](https://github.com/fitglue/web/compare/v10.0.0...v10.1.0) (2026-02-04)
 
 
