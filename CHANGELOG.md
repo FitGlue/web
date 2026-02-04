@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.4.1](https://github.com/fitglue/web/compare/v10.4.0...v10.4.1) (2026-02-04)
+
+
+### Bug Fixes
+
+* better styling for form labels ([61702f7](https://github.com/fitglue/web/commit/61702f7fd95cc60cbbe1a3bdbba6b3236cfc7a08))
+
 ## [10.4.0](https://github.com/fitglue/web/compare/v10.3.0...v10.4.0) (2026-02-04)
 
 
