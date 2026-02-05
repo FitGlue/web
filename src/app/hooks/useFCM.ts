@@ -4,7 +4,6 @@ import { getFirebaseMessaging } from '../../shared/firebase';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '../state/authState';
 import { InputsService } from '../services/InputsService';
-import { useNavigate } from 'react-router-dom';
 
 const FIREBASE_VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
@@ -15,11 +14,13 @@ const FIREBASE_VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
  * - Service worker registration for background notifications
  * - Permission requests and FCM token management
  * - Foreground message display with rich notification options
- * - Navigation on notification click
+ * - Navigation on notification click (via window.location, not React Router)
+ * 
+ * Note: This hook is called outside Router context in App.tsx, so we use
+ * window.location for navigation instead of useNavigate.
  */
 export function useFCM() {
   const user = useAtomValue(userAtom);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) return;
@@ -105,7 +106,8 @@ export function useFCM() {
               };
               const targetPath = urlMap[notificationType];
               if (targetPath) {
-                navigate(targetPath);
+                // Use window.location for navigation since we're outside Router context
+                window.location.href = `/app${targetPath}`;
               }
             }
           };
@@ -114,5 +116,5 @@ export function useFCM() {
 
       return () => unsubscribe();
     }
-  }, [user, navigate]);
+  }, [user]);
 }
