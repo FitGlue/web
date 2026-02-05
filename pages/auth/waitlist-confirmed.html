@@ -42,7 +42,7 @@
       </ol>
     </div>
 
-    <div class="cta-section">
+    <div class="login-prompt">
       <p>Already received access?</p>
       <a href="/auth/login" class="btn primary">Login Now</a>
     </div>
@@ -187,19 +187,47 @@
     line-height: 1.4;
   }
 
-  .cta-section {
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  .confirmation-box {
+    animation: fadeIn 0.5s ease-out 0.7s both;
+    padding-bottom: 1.5rem;
   }
 
-  .cta-section p {
+  .login-prompt {
+    padding: 1.5rem 0 0 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 2;
+    background: transparent;
+    text-align: center;
+  }
+
+  .login-prompt::before {
+    display: none;
+  }
+
+  .login-prompt p {
     color: var(--color-text-muted, #AAA);
     font-size: 0.9rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
   }
 
-  .cta-section .btn {
+  .login-prompt .btn {
     min-width: 150px;
+    text-decoration: none;
+    position: relative;
+    z-index: 3;
+  }
+
+  .login-prompt .btn.primary {
+    display: inline-flex;
+    cursor: pointer;
+  }
+
+  .login-prompt .btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 110, 0.4);
   }
 </style>
 
