@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.7.4](https://github.com/fitglue/web/compare/v10.7.3...v10.7.4) (2026-02-05)
+
+
+### Bug Fixes
+
+* spacing on pipeline wizard component text ([4b43373](https://github.com/fitglue/web/commit/4b4337333263f25f5ff6d79ca9bd964b2b7c4185))
+
 ### [10.7.3](https://github.com/fitglue/web/compare/v10.7.2...v10.7.3) (2026-02-05)
 
 ### [10.7.2](https://github.com/fitglue/web/compare/v10.7.1...v10.7.2) (2026-02-05)
