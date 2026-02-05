@@ -1,6 +1,26 @@
 # FitGlue Changelog
 
-<!-- LAST_PUBLISHED: server=v9.4.0, web=v8.0.0 -->
+<!-- LAST_PUBLISHED: server=v12.2.0, web=v10.7.1 -->
+
+## Server v12.2.0 / Web v10.7.1 - February 5, 2026
+
+### ⚠ Breaking Changes
+
+- See the status of your synced activities more clearly! Destinations (like Strava, etc.) are now displayed by their status: success, failure, or pending, each with distinct styling. Failed destinations now show helpful error messages so you know what went wrong.
+
+### ✨ New Features
+
+- Get more control over your FitGlue experience! You can now customize your notification preferences.
+- Enjoy better looking and more informative pages! We've redesigned the connections page, activity detail page, help system, and more.
+- We've made it easier to connect your accounts and review the sync process, with new step indicators and configuration options.
+- Now you can generate AI images based on your workout data!
+
+### 🐛 Bug Fixes
+
+- We've improved the accuracy of heart rate data syncing, especially for activities that span across midnight.
+- Fixed an issue where some Hevy exercises weren't being mapped correctly.
+- Resolved various issues to improve the overall stability and performance of activity syncing.
+
 
 ## Server v9.4.0 / Web v8.0.0 - January 26, 2026
 
