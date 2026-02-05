@@ -70,7 +70,7 @@ export function encodePipeline(pipeline: PipelineConfig): string {
     s: pipeline.source,
     e: (pipeline.enrichers || []).map((e) => ({
       p: e.providerType,
-      c: e.inputs && Object.keys(e.inputs).length > 0 ? e.inputs : undefined,
+      c: e.typedConfig && Object.keys(e.typedConfig).length > 0 ? e.typedConfig : undefined,
     })),
     d: pipeline.destinations,
   };
@@ -163,7 +163,7 @@ export function validatePipelineImport(
   // Build the create request with "(Imported)" suffix
   const enrichers: EnricherConfig[] = portable.e.map((e) => ({
     providerType: e.p,
-    inputs: e.c || {},
+    typedConfig: e.c || {},
   }));
 
   return {

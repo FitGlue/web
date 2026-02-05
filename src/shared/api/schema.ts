@@ -196,54 +196,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/waitlist": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Join waitlist */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        email: string;
-                        websiteUrl?: string;
-                    };
-                };
-            };
-            responses: {
-                /** @description Successfully joined */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Already on waitlist */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/activities/stats": {
         parameters: {
             query?: never;
@@ -498,6 +450,106 @@ export interface paths {
                             success?: boolean;
                         };
                     };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/users/me/notification-preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get notification preferences
+         * @description Returns user notification preferences for push notifications
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Notification preferences */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Notify when pending input is required */
+                            notifyPendingInput?: boolean;
+                            /** @description Notify on successful pipeline completion */
+                            notifyPipelineSuccess?: boolean;
+                            /** @description Notify on pipeline failure */
+                            notifyPipelineFailure?: boolean;
+                        };
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update notification preferences
+         * @description Update one or more notification preferences
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        notifyPendingInput?: boolean;
+                        notifyPipelineSuccess?: boolean;
+                        notifyPipelineFailure?: boolean;
+                    };
+                };
+            };
+            responses: {
+                /** @description Preferences updated */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success?: boolean;
+                        };
+                    };
+                };
+                /** @description No valid preferences provided */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
                 };
                 /** @description Unauthorized */
                 401: {
@@ -969,7 +1021,7 @@ export interface components {
         EnricherConfig: {
             /** @description EnricherProviderType enum value */
             providerType: number;
-            inputs?: {
+            typedConfig?: {
                 [key: string]: string;
             };
         };

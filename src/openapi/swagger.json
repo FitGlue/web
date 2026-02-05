@@ -341,7 +341,7 @@
             "type": "integer",
             "description": "EnricherProviderType enum value"
           },
-          "inputs": {
+          "typedConfig": {
             "type": "object",
             "additionalProperties": {
               "type": "string"

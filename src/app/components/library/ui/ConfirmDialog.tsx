@@ -42,11 +42,11 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div onClick={onCancel}>
-      <div onClick={e => e.stopPropagation()}>
-        <h3>{title}</h3>
-        <p>{message}</p>
-        <div>
+    <div className="confirm-dialog-backdrop" onClick={onCancel}>
+      <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
+        <h3 className="confirm-dialog__title">{title}</h3>
+        <p className="confirm-dialog__message">{message}</p>
+        <div className="confirm-dialog__actions">
           <Button variant="secondary" onClick={onCancel} disabled={isLoading}>
             {cancelLabel}
           </Button>

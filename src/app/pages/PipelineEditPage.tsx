@@ -317,7 +317,7 @@ const PipelineEditPage: React.FC = () => {
                         source: selectedSource,
                         enrichers: selectedEnrichers.map(e => ({
                             providerType: e.manifest.enricherProviderType || 0,
-                            inputs: e.config
+                            typedConfig: e.config
                         })),
                         // Convert numeric destinationType values to string IDs for sharing
                         destinations: selectedDestinations.map(d => {
