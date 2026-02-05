@@ -1,4 +1,5 @@
 import React from 'react';
+import { MultiRingSpinner } from './MultiRingSpinner';
 import './IconButton.css';
 
 export type IconButtonSize = 'sm' | 'md' | 'lg';
@@ -46,7 +47,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
       {...props}
     >
       {loading ? (
-        <span />
+        <MultiRingSpinner size="sm" />
       ) : (
         icon
       )}

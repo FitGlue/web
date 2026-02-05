@@ -28,7 +28,7 @@ export const NotificationPreferencesCard: React.FC = () => {
     useEffect(() => {
         const fetchPreferences = async () => {
             try {
-                const data = await api.get('/user-data/notification-preferences');
+                const data = await api.get('/api/users/me/notification-preferences');
                 setPreferences({
                     notifyPendingInput: data.notifyPendingInput ?? true,
                     notifyPipelineSuccess: data.notifyPipelineSuccess ?? true,
@@ -52,7 +52,7 @@ export const NotificationPreferencesCard: React.FC = () => {
         setPreferences(prev => ({ ...prev, [key]: value }));
 
         try {
-            await api.patch('/user-data/notification-preferences', { [key]: value });
+            await api.patch('/api/users/me/notification-preferences', { [key]: value });
         } catch (err) {
             console.error('Failed to update preference:', err);
             // Revert on error

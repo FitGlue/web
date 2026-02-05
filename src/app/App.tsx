@@ -6,7 +6,7 @@ import { initFirebase } from '../shared/firebase';
 import { userAtom, authLoadingAtom } from './state/authState';
 import { initSentry, setUser as setSentryUser, Sentry } from './infrastructure/sentry';
 import { Stack } from './components/library/layout';
-import { Card, Heading, Paragraph, Button, Code, ToastProvider } from './components/library/ui';
+import { Card, Heading, Paragraph, Button, Code, ToastProvider, AppLoadingScreen } from './components/library/ui';
 import { Link } from './components/library/navigation';
 
 // App pages (protected)
@@ -46,11 +46,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   // Show loading while Firebase auth or profile is loading
   if (authLoading || profileLoading) {
-    return (
-      <Card>
-        <Paragraph>Loading...</Paragraph>
-      </Card>
-    );
+    return <AppLoadingScreen />;
   }
 
   // Not authenticated - redirect to login

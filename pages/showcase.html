@@ -13,10 +13,27 @@
 </style>
 
 <section class="showcase-page">
-  <!-- Loading State -->
+  <!-- Loading State - Full FitGlue Experience -->
   <div id="showcase-loading" class="showcase-loading">
-    <div class="loading-spinner"></div>
-    <p>Loading activity...</p>
+    <!-- Animated background gradient -->
+    <div class="loading-bg-gradient"></div>
+
+    <div class="loading-content">
+      <!-- Animated logo -->
+      <div class="loading-logo">
+        <span class="loading-logo-fit">Fit</span><span class="loading-logo-glue">Glue</span>
+      </div>
+
+      <!-- Premium multi-ring spinner -->
+      <div class="loading-spinner-container">
+        <div class="loading-spinner-ring"></div>
+        <div class="loading-spinner-ring loading-spinner-ring-2"></div>
+        <div class="loading-spinner-ring loading-spinner-ring-3"></div>
+      </div>
+
+      <!-- Rotating funny messages -->
+      <p id="loading-message" class="loading-message">Loading activity...</p>
+    </div>
   </div>
 
   <!-- Error State -->
@@ -206,28 +223,149 @@
   }
 
   .showcase-loading {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0A0A0A;
+    z-index: 9999;
+    overflow: hidden;
+  }
+
+  /* Animated background gradient */
+  .loading-bg-gradient {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(255, 27, 141, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(157, 78, 221, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(76, 201, 240, 0.03) 0%, transparent 70%);
+    animation: loading-bg-pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes loading-bg-pulse {
+
+    0%,
+    100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+
+  /* Content container */
+  .loading-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    color: #aaa;
-    gap: 1rem;
+    gap: 2rem;
+    animation: loading-fade-in 0.6s ease-out;
+    z-index: 1;
   }
 
-  .loading-spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #FF1B8D;
+  @keyframes loading-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Logo styling */
+  .loading-logo {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    display: flex;
+    gap: 0;
+  }
+
+  .loading-logo-fit {
+    background: linear-gradient(135deg, #FF1B8D 0%, #FF6BB3 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: loading-logo-shimmer 2s ease-in-out infinite;
+  }
+
+  .loading-logo-glue {
+    background: linear-gradient(135deg, #9D4EDD 0%, #C77DFF 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: loading-logo-shimmer 2s ease-in-out infinite 0.15s;
+  }
+
+  @keyframes loading-logo-shimmer {
+
+    0%,
+    100% {
+      opacity: 0.9;
+      filter: brightness(1);
+    }
+
+    50% {
+      opacity: 1;
+      filter: brightness(1.2);
+    }
+  }
+
+  /* Premium multi-ring spinner */
+  .loading-spinner-container {
+    position: relative;
+    width: 60px;
+    height: 60px;
+  }
+
+  .loading-spinner-ring {
+    position: absolute;
+    inset: 0;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    border: 3px solid transparent;
+    border-top-color: #FF1B8D;
+    animation: spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+  }
+
+  .loading-spinner-ring-2 {
+    inset: 6px;
+    border-top-color: #9D4EDD;
+    animation-duration: 1.8s;
+    animation-direction: reverse;
+  }
+
+  .loading-spinner-ring-3 {
+    inset: 12px;
+    border-top-color: #4CC9F0;
+    animation-duration: 2.4s;
   }
 
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
+  }
+
+  /* Message styling */
+  .loading-message {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    min-height: 1.5em;
+    transition: opacity 0.3s ease;
+  }
+
+  .loading-message.fade-out {
+    opacity: 0;
   }
 
   @keyframes fadeInUp {
@@ -1042,6 +1180,51 @@
 </style>
 
 <script>
+  // Sims-style rotating jokey fitness messages
+  const LOADING_MESSAGES = [
+    'Reticulating muscle fibers...',
+    'Calibrating sweat glands...',
+    'Polishing your running shoes...',
+    'Stretching the pixels...',
+    'Syncing your chakras...',
+    'Buffering endorphins...',
+    'Warming up the algorithms...',
+    'Hydrating the database...',
+    'Massaging the data points...',
+    'Doing some light cardio...',
+    'Flexing the API...',
+    'Counting backwards from 10...',
+    'Foam rolling the server...',
+    'Adjusting seat to upright position...',
+    'Untangling your headphones...',
+    'Finding your gym buddy...',
+    'Motivating the backend...',
+    'Applying anti-chafe cream...',
+    'Loading protein shakes...',
+    'Activating beast mode...',
+  ];
+
+  // Start rotating messages
+  let messageIndex = Math.floor(Math.random() * LOADING_MESSAGES.length);
+  const loadingMessageEl = document.getElementById('loading-message');
+
+  function rotateMessage() {
+    if (loadingMessageEl) {
+      loadingMessageEl.classList.add('fade-out');
+      setTimeout(() => {
+        messageIndex = (messageIndex + 1) % LOADING_MESSAGES.length;
+        loadingMessageEl.textContent = LOADING_MESSAGES[messageIndex];
+        loadingMessageEl.classList.remove('fade-out');
+      }, 300);
+    }
+  }
+
+  // Set initial message and start rotation
+  if (loadingMessageEl) {
+    loadingMessageEl.textContent = LOADING_MESSAGES[messageIndex];
+  }
+  const messageInterval = setInterval(rotateMessage, 2000);
+
   (async function () {
     // Extract ID from URL path: /showcase/{id}
     const pathParts = window.location.pathname.split('/').filter(Boolean);
@@ -1053,6 +1236,7 @@
     const errorMsgEl = document.getElementById('error-message');
 
     if (!showcaseId) {
+      clearInterval(messageInterval);
       loadingEl.style.display = 'none';
       errorEl.style.display = 'block';
       errorMsgEl.textContent = 'No showcase ID provided.';
@@ -1063,6 +1247,7 @@
       const response = await fetch(`/api/showcase/${showcaseId}`);
 
       if (!response.ok) {
+        clearInterval(messageInterval);
         loadingEl.style.display = 'none';
         errorEl.style.display = 'block';
         errorMsgEl.textContent = response.status === 404 ? "This showcase doesn't exist." :
@@ -1072,11 +1257,13 @@
 
       const data = await response.json();
       renderShowcase(data);
+      clearInterval(messageInterval);
       loadingEl.style.display = 'none';
       contentEl.style.display = 'block';
 
     } catch (error) {
       console.error('Error loading showcase:', error);
+      clearInterval(messageInterval);
       loadingEl.style.display = 'none';
       errorEl.style.display = 'block';
       errorMsgEl.textContent = 'An error occurred while loading.';

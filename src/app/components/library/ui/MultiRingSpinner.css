@@ -1,0 +1,73 @@
+/* ==========================================================================
+   MultiRingSpinner - Premium Multi-Ring Loading Spinner
+   ========================================================================== */
+
+.multi-ring-spinner {
+    position: relative;
+    display: inline-block;
+}
+
+/* Size variants */
+.multi-ring-spinner--sm {
+    width: 24px;
+    height: 24px;
+}
+
+.multi-ring-spinner--md {
+    width: 40px;
+    height: 40px;
+}
+
+.multi-ring-spinner--lg {
+    width: 60px;
+    height: 60px;
+}
+
+/* Ring styles */
+.multi-ring-spinner__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: var(--color-primary, #FF1B8D);
+    animation: multi-ring-spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+}
+
+.multi-ring-spinner--lg .multi-ring-spinner__ring {
+    border-width: 3px;
+}
+
+.multi-ring-spinner__ring--2 {
+    inset: 4px;
+    border-top-color: var(--color-secondary, #9D4EDD);
+    animation-duration: 1.8s;
+    animation-direction: reverse;
+}
+
+.multi-ring-spinner--sm .multi-ring-spinner__ring--2 {
+    inset: 3px;
+}
+
+.multi-ring-spinner--lg .multi-ring-spinner__ring--2 {
+    inset: 6px;
+}
+
+.multi-ring-spinner__ring--3 {
+    inset: 8px;
+    border-top-color: var(--color-accent, #4CC9F0);
+    animation-duration: 2.4s;
+}
+
+.multi-ring-spinner--sm .multi-ring-spinner__ring--3 {
+    inset: 6px;
+}
+
+.multi-ring-spinner--lg .multi-ring-spinner__ring--3 {
+    inset: 12px;
+}
+
+@keyframes multi-ring-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -14,14 +14,13 @@ export const CATEGORY_WEARABLES = 'wearables';
 export const CATEGORY_APPS = 'apps';
 export const CATEGORY_MANUAL = 'manual';
 
-// Enricher categories
-export const CATEGORY_AI_CONTENT = 'ai_content';
-export const CATEGORY_STATS = 'stats';
+// Enricher categories (Output-based taxonomy)
+export const CATEGORY_AI_IMAGES = 'ai_images';
+export const CATEGORY_SUMMARIES = 'summaries';
+export const CATEGORY_DATA = 'data';
 export const CATEGORY_DETECTION = 'detection';
-export const CATEGORY_TRANSFORMATION = 'transformation';
-export const CATEGORY_LOCATION = 'location';
-export const CATEGORY_LOGIC = 'logic';
-export const CATEGORY_REFERENCES = 'references';
+export const CATEGORY_LINKS = 'links';
+export const CATEGORY_WORKFLOW = 'workflow';
 
 // Destination categories
 export const CATEGORY_SOCIAL = 'social';
@@ -42,13 +41,12 @@ export const SOURCE_CATEGORIES: PluginCategory[] = [
 ];
 
 export const ENRICHER_CATEGORIES: PluginCategory[] = [
-  { id: CATEGORY_AI_CONTENT, name: 'AI & Content', emoji: '✨', pluginType: 'enricher' },
-  { id: CATEGORY_STATS, name: 'Stats', emoji: '📊', pluginType: 'enricher' },
-  { id: CATEGORY_DETECTION, name: 'Detection', emoji: '🎯', pluginType: 'enricher' },
-  { id: CATEGORY_TRANSFORMATION, name: 'Transformation', emoji: '🔧', pluginType: 'enricher' },
-  { id: CATEGORY_LOCATION, name: 'Location', emoji: '🗺️', pluginType: 'enricher' },
-  { id: CATEGORY_LOGIC, name: 'Logic', emoji: '⚙️', pluginType: 'enricher' },
-  { id: CATEGORY_REFERENCES, name: 'References', emoji: '🔗', pluginType: 'enricher' },
+  { id: CATEGORY_AI_IMAGES, name: 'AI & Images', emoji: '✨', pluginType: 'enricher' },
+  { id: CATEGORY_SUMMARIES, name: 'Summaries', emoji: '📝', pluginType: 'enricher' },
+  { id: CATEGORY_DATA, name: 'Data & Stats', emoji: '📊', pluginType: 'enricher' },
+  { id: CATEGORY_DETECTION, name: 'Smart Detection', emoji: '🎯', pluginType: 'enricher' },
+  { id: CATEGORY_LINKS, name: 'Links & References', emoji: '🔗', pluginType: 'enricher' },
+  { id: CATEGORY_WORKFLOW, name: 'Workflow', emoji: '⚙️', pluginType: 'enricher' },
 ];
 
 export const DESTINATION_CATEGORIES: PluginCategory[] = [
@@ -58,7 +56,7 @@ export const DESTINATION_CATEGORIES: PluginCategory[] = [
 ];
 
 /**
- * Group plugins by category, sorted by sortOrder then alphabetically
+ * Group plugins by category, sorted by premium status (Pro first), then sortOrder, then alphabetically
  */
 export function groupPluginsByCategory(
   plugins: PluginManifest[],
@@ -70,9 +68,14 @@ export function groupPluginsByCategory(
     const matching = plugins
       .filter((p) => p.category === cat.id)
       .sort((a, b) => {
-        // Sort by sortOrder first, then alphabetically
+        // Pro (isPremium) boosters first
+        if (a.isPremium !== b.isPremium) {
+          return a.isPremium ? -1 : 1;
+        }
+        // Then by sortOrder
         const orderDiff = (a.sortOrder ?? 99) - (b.sortOrder ?? 99);
         if (orderDiff !== 0) return orderDiff;
+        // Then alphabetically
         return a.name.localeCompare(b.name);
       });
     if (matching.length > 0) {
@@ -135,4 +138,3 @@ export function filterPluginsBySearch(
       (p.description ?? '').toLowerCase().includes(lowerQuery)
   );
 }
-

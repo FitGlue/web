@@ -4,7 +4,7 @@ import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard } from '../components/library/ui';
+import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard, MultiRingSpinner } from '../components/library/ui';
 import { FlowVisualization } from '../components/library/ui/FlowVisualization';
 import { BoosterGrid } from '../components/library/ui/BoosterGrid';
 import '../components/library/ui/CardSkeleton.css';
@@ -56,9 +56,9 @@ const mapBoostersToExecutions = (boosters?: BoosterExecution[]): ProviderExecuti
  */
 const getEffectiveStatus = (execution: ProviderExecution): string => {
     let status = execution.Status?.toUpperCase() || 'UNKNOWN';
-    
+
     if (!execution.Metadata) return status;
-    
+
     // Find status from metadata - check for any key that is exactly "status" or ends with "_status"
     let metadataStatus: string | null = null;
     for (const [key, val] of Object.entries(execution.Metadata)) {
@@ -67,7 +67,7 @@ const getEffectiveStatus = (execution: ProviderExecution): string => {
             break;
         }
     }
-    
+
     // Override execution status with metadata status if more specific
     if (status === 'SUCCESS' && metadataStatus) {
         if (metadataStatus === 'error') {
@@ -76,7 +76,7 @@ const getEffectiveStatus = (execution: ProviderExecution): string => {
             status = 'SKIPPED';
         }
     }
-    
+
     return status;
 };
 
@@ -234,7 +234,7 @@ const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ 
                 style={loadingStyle}
                 aria-label={`Loading ${alt}`}
             >
-                Loading...
+                <MultiRingSpinner size="sm" />
             </div>
         );
     }
@@ -573,7 +573,7 @@ const ActivityDetailPage: React.FC = () => {
                                         .split(' ')
                                         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                                         .join(' ') || 'Unknown';
-                                    
+
                                     return (
                                         <GlowCard
                                             key={idx}

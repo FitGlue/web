@@ -153,6 +153,13 @@
         }
       },
       {
+        "source": "/api/users/me/notification-preferences",
+        "run": {
+          "serviceId": "user-data-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/users/me/**",
         "run": {
           "serviceId": "user-profile-handler",

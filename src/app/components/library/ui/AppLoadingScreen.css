@@ -1,0 +1,179 @@
+/* ==========================================================================
+   AppLoadingScreen - Premium Full-Screen Loading Experience
+   ========================================================================== */
+
+.app-loading-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg, #0A0A0A);
+    z-index: 9999;
+    overflow: hidden;
+}
+
+/* Animated background gradient */
+.loading-bg-gradient {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 20%, rgba(255, 27, 141, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(157, 78, 221, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(76, 201, 240, 0.03) 0%, transparent 70%);
+    animation: loading-bg-pulse 4s ease-in-out infinite;
+}
+
+@keyframes loading-bg-pulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* Content container */
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    animation: loading-fade-in 0.6s ease-out;
+    z-index: 1;
+}
+
+@keyframes loading-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Logo styling */
+.loading-logo {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    display: flex;
+    gap: 0;
+}
+
+.loading-logo-fit {
+    background: linear-gradient(135deg, #FF1B8D 0%, #FF6BB3 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: loading-logo-shimmer 2s ease-in-out infinite;
+}
+
+.loading-logo-glue {
+    background: linear-gradient(135deg, #9D4EDD 0%, #C77DFF 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: loading-logo-shimmer 2s ease-in-out infinite 0.15s;
+}
+
+@keyframes loading-logo-shimmer {
+
+    0%,
+    100% {
+        opacity: 0.9;
+        filter: brightness(1);
+    }
+
+    50% {
+        opacity: 1;
+        filter: brightness(1.2);
+    }
+}
+
+/* Premium multi-ring spinner */
+.loading-spinner-container {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.loading-spinner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.loading-spinner-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--color-primary, #FF1B8D);
+    animation: loading-spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+}
+
+.loading-spinner-ring-2 {
+    inset: 6px;
+    border-top-color: var(--color-secondary, #9D4EDD);
+    animation-duration: 1.8s;
+    animation-direction: reverse;
+}
+
+.loading-spinner-ring-3 {
+    inset: 12px;
+    border-top-color: var(--color-accent, #4CC9F0);
+    animation-duration: 2.4s;
+}
+
+@keyframes loading-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Message styling */
+.loading-message {
+    font-size: 1rem;
+    color: var(--color-text-muted, rgba(255, 255, 255, 0.5));
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    min-height: 1.5em;
+    animation: loading-message-appear 0.4s ease-out;
+}
+
+@keyframes loading-message-appear {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .loading-content {
+        gap: 1.5rem;
+    }
+
+    .loading-spinner-container {
+        width: 50px;
+        height: 50px;
+    }
+
+    .loading-message {
+        font-size: 0.9rem;
+    }
+}

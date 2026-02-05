@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from './Button';
+import { MultiRingSpinner } from './MultiRingSpinner';
 import './ConfirmDialog.css';
 
 interface ConfirmDialogProps {
@@ -54,7 +55,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             onClick={onConfirm}
             disabled={isLoading}
           >
-            {isLoading ? 'Loading...' : confirmLabel}
+            {isLoading ? <MultiRingSpinner size="sm" /> : confirmLabel}
           </Button>
         </div>
       </div>

@@ -51,24 +51,30 @@ export function transformRegistryTask() {
         isTemporarilyUnavailable: !!d.isTemporarilyUnavailable,
       }));
 
-      // Category metadata for grouping plugins
+      // Category metadata for grouping plugins (Output-based taxonomy)
       const ENRICHER_CATEGORIES = [
-        { id: 'ai_content', name: 'AI & Content', emoji: '✨' },
-        { id: 'stats', name: 'Stats', emoji: '📊' },
-        { id: 'detection', name: 'Detection', emoji: '🎯' },
-        { id: 'transformation', name: 'Transformation', emoji: '🔧' },
-        { id: 'location', name: 'Location', emoji: '🗺️' },
-        { id: 'logic', name: 'Logic', emoji: '⚙️' },
-        { id: 'references', name: 'References', emoji: '🔗' },
+        { id: 'ai_images', name: 'AI & Images', emoji: '✨' },
+        { id: 'summaries', name: 'Summaries', emoji: '📝' },
+        { id: 'data', name: 'Data & Stats', emoji: '📊' },
+        { id: 'detection', name: 'Smart Detection', emoji: '🎯' },
+        { id: 'links', name: 'Links & References', emoji: '🔗' },
+        { id: 'workflow', name: 'Workflow', emoji: '⚙️' },
       ];
 
-      // Group boosters by category for marketing templates
+      // Group boosters by category for marketing templates (Pro/Premium first)
       const boostersByCategory = ENRICHER_CATEGORIES
         .map((cat) => ({
           ...cat,
           plugins: boosters
             .filter((/** @type {any} */ b) => b.category === cat.id)
-            .sort((/** @type {any} */ a, /** @type {any} */ b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99)),
+            .sort((/** @type {any} */ a, /** @type {any} */ b) => {
+              // Pro (isPremium) boosters first
+              if (a.isPremium !== b.isPremium) {
+                return a.isPremium ? -1 : 1;
+              }
+              // Then by sortOrder
+              return (a.sortOrder ?? 99) - (b.sortOrder ?? 99);
+            }),
         }))
         .filter((cat) => cat.plugins.length > 0);
 
