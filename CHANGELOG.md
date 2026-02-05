@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.7.0](https://github.com/fitglue/web/compare/v10.6.1...v10.7.0) (2026-02-05)
+
+
+### Features
+
+* reorganise plugin categories, use shiny new loading animation, fix plugin preferences 404 ([c7fabd1](https://github.com/fitglue/web/commit/c7fabd12193ee30e54db3275b4d5226ad0a2c9d0))
+
+
+### Bug Fixes
+
+* lint issues ([cb7a285](https://github.com/fitglue/web/commit/cb7a285fa8f2f5d8e20a23804cf26d804e75e3c1))
+
 ### [10.6.1](https://github.com/fitglue/web/compare/v10.6.0...v10.6.1) (2026-02-05)
 
 
