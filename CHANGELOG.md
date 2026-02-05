@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.7.1](https://github.com/fitglue/web/compare/v10.7.0...v10.7.1) (2026-02-05)
+
+
+### Bug Fixes
+
+* waitlist page prettify ([1efffea](https://github.com/fitglue/web/commit/1efffeae2423588dc4fdbd9bc0e5cc1b4b91c57a))
+
 ## [10.7.0](https://github.com/fitglue/web/compare/v10.6.1...v10.7.0) (2026-02-05)
 
 
