@@ -5,7 +5,6 @@
  */
 
 import {
-  prepareOutputTask,
   bundleCssTask,
   copyStaticTask,
   setGlobalsTask,
@@ -43,15 +42,10 @@ export const tasks = [
   // Transform registry data for landing page templates
   transformRegistryTask(),
 
-  // Clean & create output directory
-  prepareOutputTask({
-    outDir: './static-dist',
-  }),
-
   // Bundle CSS
   bundleCssTask({
     from: './assets/styles',
-    to: './static-dist',
+    to: './dist',
     output: `styles.min.${cacheHash}.css`,
     minify: true,
   }),
@@ -59,11 +53,11 @@ export const tasks = [
   // Copy static assets
   copyStaticTask({
     from: './assets/images',
-    to: './static-dist/images',
+    to: './dist/images',
   }),
   copyStaticTask({
     from: './assets/root',
-    to: './static-dist',
+    to: './dist',
   }),
 
   // Read PUBLIC_CHANGELOG.md and expose as template variable
@@ -88,7 +82,7 @@ export const tasks = [
   generatePagesTask({
     pagesDir: './pages',
     partialsDir: './partials',
-    outDir: './static-dist',
+    outDir: './dist',
     additionalVarsFn: ({ currentPage }) => {
       const pageName = currentPage === 'index' ? 'home' : currentPage;
       const canonicalPath = currentPage === 'index' ? '/' : `/${currentPage}`;
@@ -126,7 +120,7 @@ export const tasks = [
   generatePagesTask({
     pagesDir: './pages/auth',
     partialsDir: './partials',
-    outDir: './static-dist/auth',
+    outDir: './dist/auth',
     additionalVarsFn: ({ currentPage }) => {
       /** @type {Record<string, {pageTitle: string, description: string}>} */
       const authMeta = {
@@ -145,7 +139,7 @@ export const tasks = [
   generatePagesTask({
     pagesDir: './pages/guides',
     partialsDir: './partials',
-    outDir: './static-dist/guides',
+    outDir: './dist/guides',
     additionalVarsFn: ({ currentPage }) => {
       /** @type {Record<string, {pageTitle: string, description: string}>} */
       const guideMeta = {
@@ -191,7 +185,7 @@ export const tasks = [
   generatePagesTask({
     pagesDir: './pages/help',
     partialsDir: './partials',
-    outDir: './static-dist/help',
+    outDir: './dist/help',
     additionalVarsFn: ({ currentPage }) => {
       /** @type {Record<string, {pageTitle: string, description: string}>} */
       const helpMeta = {
@@ -225,7 +219,7 @@ export const tasks = [
   generateItemsTask({
     itemsDir: './content/help-articles',
     partialsDir: './partials',
-    outDir: './static-dist/help/articles',
+    outDir: './dist/help/articles',
     outputVar: 'helpArticles',
     flatStructure: false,
     linkFn: ({ section, itemName }) => `/help/articles/${section ? section + '/' : ''}${itemName}`,
@@ -258,6 +252,6 @@ export const tasks = [
     registryFile: path.join(__dirname, '.cache', 'registry.json'),
     templatesDir: path.join(__dirname, 'templates'),
     partialsDir: path.join(__dirname, 'partials'),
-    outDir: path.join(__dirname, 'static-dist'),
+    outDir: path.join(__dirname, 'dist'),
   }),
 ];

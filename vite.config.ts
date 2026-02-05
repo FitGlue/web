@@ -1,7 +1,40 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, build } from 'vite';
 import react from '@vitejs/plugin-react';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { resolve } from 'path';
+
+// Custom plugin to build service worker as IIFE (service workers don't support ES modules)
+function serviceWorkerBuildPlugin() {
+  return {
+    name: 'service-worker-build',
+    apply: 'build' as const,
+    async closeBundle() {
+      console.log('Building service worker as IIFE...');
+      await build({
+        configFile: false,
+        build: {
+          lib: {
+            entry: resolve(__dirname, 'src/app/firebase-messaging-sw.ts'),
+            formats: ['iife'],
+            name: 'FirebaseMessagingSW',
+            fileName: () => 'firebase-messaging-sw.js',
+          },
+          outDir: 'dist',
+          emptyOutDir: false,
+          sourcemap: true,
+          minify: true,
+          rollupOptions: {
+            output: {
+              inlineDynamicImports: true,
+            },
+          },
+        },
+        logLevel: 'info',
+      });
+      console.log('Service worker build complete.');
+    },
+  };
+}
 
 export default defineConfig(({ mode }) => {
   // Load environment variables based on the mode (development, production, etc.)
@@ -19,6 +52,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
+      // Build service worker separately as IIFE
+      serviceWorkerBuildPlugin(),
       // Upload source maps if Sentry is configured (regardless of mode)
       isSentryEnabled && sentryVitePlugin({
         org: process.env.SENTRY_ORG || env.SENTRY_ORG,
@@ -64,20 +99,14 @@ export default defineConfig(({ mode }) => {
         input: {
           // Static pages are now built by Skier, only React app entry point here
           app: resolve(__dirname, 'public/app/index.html'),
-          // Service worker bundled separately (must be at root for proper scope)
-          'firebase-messaging-sw': resolve(__dirname, 'src/app/firebase-messaging-sw.ts'),
+          // Service worker is now built separately via plugin to ensure IIFE format
         },
         output: {
           sourcemapExcludeSources: false, // Include sources in source maps
-          // Ensure service worker outputs to correct location with correct name
-          entryFileNames: (chunkInfo) => {
-            if (chunkInfo.name === 'firebase-messaging-sw') {
-              return 'firebase-messaging-sw.js';
-            }
-            return 'assets/[name]-[hash].js';
-          },
+          entryFileNames: 'assets/[name]-[hash].js',
         },
       },
     },
   };
 });
+
