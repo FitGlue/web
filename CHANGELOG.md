@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.7.2](https://github.com/fitglue/web/compare/v10.7.1...v10.7.2) (2026-02-05)
+
+
+### Bug Fixes
+
+* use stack for dashboard page contents ([80d5d64](https://github.com/fitglue/web/commit/80d5d645afa7c4b16c11fbddea43422a2675c553))
+
 ### [10.7.1](https://github.com/fitglue/web/compare/v10.7.0...v10.7.1) (2026-02-05)
 
 
