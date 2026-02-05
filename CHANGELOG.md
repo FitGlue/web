@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.6.0](https://github.com/fitglue/web/compare/v10.5.0...v10.6.0) (2026-02-05)
+
+
+### Features
+
+* add notification preferences and improve auth/hook performance ([625eb4c](https://github.com/fitglue/web/commit/625eb4c2dddba4deb4d73fbaf58c1c7a38c33842))
+
+
+### Bug Fixes
+
+* useFCM to use window.location instead of useNavigate ([daa9eda](https://github.com/fitglue/web/commit/daa9edad62df946414dde13ae2a9d8a52f033c68))
+
 ## [10.5.0](https://github.com/fitglue/web/compare/v10.4.1...v10.5.0) (2026-02-04)
 
 
