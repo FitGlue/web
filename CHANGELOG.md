@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.6.1](https://github.com/fitglue/web/compare/v10.6.0...v10.6.1) (2026-02-05)
+
+
+### Bug Fixes
+
+* pwa and service worker misconfigs ([fb2ab47](https://github.com/fitglue/web/commit/fb2ab470f79b3d0ff71f81afa57ea6469fbecbb7))
+
 ## [10.6.0](https://github.com/fitglue/web/compare/v10.5.0...v10.6.0) (2026-02-05)
 
 
