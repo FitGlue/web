@@ -70,17 +70,17 @@ const DashboardPage: React.FC = () => {
 
     return (
         <PageLayout title="Dashboard" loading={isLoading}>
-            {!onboardingComplete && !isLoading && !allOnboardingComplete && (
-                <WelcomeBanner
-                    hasConnections={hasConnections}
-                    hasPipelines={hasPipelines}
-                    hasSyncs={hasSyncs}
-                />
-            )}
-
-            <SubscriptionBanner />
-
             <Stack gap="lg">
+                {!onboardingComplete && !isLoading && !allOnboardingComplete && (
+                    <WelcomeBanner
+                        hasConnections={hasConnections}
+                        hasPipelines={hasPipelines}
+                        hasSyncs={hasSyncs}
+                    />
+                )}
+
+                <SubscriptionBanner />
+
                 <Grid cols={3} gap="md">
                     <ConnectionsSummaryCard />
                     <PipelinesSummaryCard />
