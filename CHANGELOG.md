@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.9.0](https://github.com/fitglue/web/compare/v10.8.0...v10.9.0) (2026-02-06)
+
+
+### Features
+
+* **showcase:** parse enricher sections into individual cards ([c82e5f0](https://github.com/fitglue/web/commit/c82e5f0634ef73e1609ddc5f86e72e4d390745de))
+
 ## [10.8.0](https://github.com/fitglue/web/compare/v10.7.4...v10.8.0) (2026-02-06)
 
 
