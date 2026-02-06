@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.8.0](https://github.com/fitglue/web/compare/v10.7.4...v10.8.0) (2026-02-06)
+
+
+### Features
+
+* add PWA install prompt and fix API double-prefix issue ([fa93077](https://github.com/fitglue/web/commit/fa93077ab4262eb36b39fd89cdd1ca2721e0c8fb))
+
+
+### Bug Fixes
+
+* confirm dialog not displaying correctly, pipeline imports not including config ([817fdcf](https://github.com/fitglue/web/commit/817fdcf9767c9de46ffa13aba7825b5c00689866))
+
 ### [10.7.4](https://github.com/fitglue/web/compare/v10.7.3...v10.7.4) (2026-02-05)
 
 
