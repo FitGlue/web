@@ -19,6 +19,8 @@ export interface StackProps {
   wrap?: boolean;
   /** Take full width */
   fullWidth?: boolean;
+  /** Responsive: horizontal becomes vertical on mobile */
+  responsive?: boolean;
   /** Child content */
   children: ReactNode;
 }
@@ -34,6 +36,7 @@ export const Stack: React.FC<StackProps> = ({
   justify = 'start',
   wrap = false,
   fullWidth = false,
+  responsive = false,
   children,
 }) => {
   const classes = [
@@ -44,6 +47,7 @@ export const Stack: React.FC<StackProps> = ({
     `ui-stack--justify-${justify}`,
     wrap && 'ui-stack--wrap',
     fullWidth && 'ui-stack--full-width',
+    responsive && 'ui-stack--responsive',
   ].filter(Boolean).join(' ');
 
   return <div className={classes}>{children}</div>;

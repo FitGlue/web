@@ -29,7 +29,7 @@ export const SubscriptionBanner: React.FC = () => {
     >
       {user && (
         <Card variant={getEffectiveTier(user) === TIER_ATHLETE ? 'premium' : isAtLimit ? 'elevated' : 'default'}>
-          <Stack direction="horizontal" align="center" justify="between">
+          <Stack direction="horizontal" align="center" justify="between" responsive>
             <Stack direction="horizontal" gap="sm" align="center">
               <Badge variant={getEffectiveTier(user) === TIER_ATHLETE ? 'light' : isAtLimit ? 'warning' : 'default'}>
                 {getEffectiveTier(user) === TIER_ATHLETE ? '✨ ATHLETE' : isAtLimit ? '⚠️ HOBBYIST' : 'HOBBYIST'}
@@ -40,7 +40,7 @@ export const SubscriptionBanner: React.FC = () => {
                 </Paragraph>
               )}
             </Stack>
-            <Stack direction="horizontal" align="center" gap="md">
+            <Stack direction="horizontal" align="center" gap="md" wrap>
               {getEffectiveTier(user) === TIER_ATHLETE ? (
                 <>
                   {user.trialEndsAt && (() => {

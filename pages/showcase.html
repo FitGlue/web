@@ -141,13 +141,8 @@
       </div>
     </div>
 
-    <!-- Description -->
-    <div id="description-section" class="showcase-section glass-card" style="display: none;">
-      <div class="section-header">
-        <h2>📝 Description</h2>
-      </div>
-      <pre id="activity-description" class="activity-description"></pre>
-    </div>
+    <!-- Description Sections (parsed from enricher output) -->
+    <div id="description-sections-container" style="display: none;"></div>
 
     <!-- Muscle Activation Heatmap -->
     <div id="muscle-activation-section" class="showcase-section glass-card" style="display: none;">
@@ -850,6 +845,17 @@
     overflow-x: auto;
     border: 1px solid rgba(255, 255, 255, 0.05);
     margin: 0;
+  }
+
+  /* Description Section Cards (parsed from enricher output) */
+  .description-section-card {
+    animation: fadeInUp 0.5s ease-out backwards;
+  }
+
+  #description-sections-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
   /* ========================================
@@ -1683,10 +1689,9 @@
         muscleSection.style.display = 'block';
       }
 
-      // Description
+      // Description - Parse into sections and render as cards
       if (data.description) {
-        document.getElementById('description-section').style.display = 'block';
-        document.getElementById('activity-description').textContent = data.description;
+        renderDescriptionSections(data.description);
       }
 
       // Tags
@@ -2192,6 +2197,136 @@
           }
         }
       });
+    }
+
+    // --- DESCRIPTION SECTION PARSING ---
+
+    /**
+     * Parse enriched description into sections based on enricher headers.
+     * Headers follow pattern: emoji + text + colon (e.g., "✨ AI Summary:")
+     * Handles multi-line sections by grouping content until next header.
+     */
+    function parseDescriptionSections(text) {
+      if (!text) return [];
+
+      // Branding footer to strip entirely (showcase has plenty of FitGlue branding)
+      const brandingPattern = /\n?\n?Posted via FitGlue\s*💪/g;
+
+      // Strip branding from description before parsing
+      text = text.replace(brandingPattern, '').trim();
+      if (!text) return [];
+
+      // Section headers are lines that END with a colon (nothing after the colon on that line)
+      // This elegantly distinguishes:
+      //   "🏁 Hyrox - Male Single:" (section header - line ends with colon)
+      //   "🏃 Run 1: 5:54 (1.1km)" (NOT a section header - has content after colon)
+      const lines = text.split('\n');
+      const sections = [];
+      let currentSection = null;
+      let preHeaderContent = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmedLine = line.trim();
+        const prevLine = i > 0 ? lines[i - 1].trim() : '';
+
+        // Check if this line is a section header. Two patterns:
+        // 1. Line ends with colon (multi-line sections like "🏁 Hyrox - Male Single:")
+        // 2. Line preceded by blank line AND starts with emoji + colon pattern (single-line like "❤️ Heart Rate: value")
+        const endsWithColon = trimmedLine.endsWith(':') && trimmedLine.length > 1;
+        // Single-line sections must start with an emoji (not dash, bullet, etc.)
+        const startsWithEmoji = /^[\u{1F300}-\u{1FAD6}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{2300}-\u{23FF}]/u.test(trimmedLine);
+        const isSingleLineSection = prevLine === '' && i > 0 && startsWithEmoji && trimmedLine.includes(':');
+
+        if (endsWithColon || isSingleLineSection) {
+          // Save any pre-header content as "Description"
+          if (currentSection === null && preHeaderContent.length > 0) {
+            const content = preHeaderContent.join('\n').trim();
+            if (content) {
+              sections.push({ emoji: '📝', title: 'Description', content: content });
+            }
+            preHeaderContent = [];
+          }
+
+          // Save previous section
+          if (currentSection !== null) {
+            sections.push(currentSection);
+          }
+
+          // Extract emoji and title from header
+          let emoji, title, sectionContent;
+
+          if (endsWithColon) {
+            // Multi-line section: "🏁 Title:" - content is on subsequent lines
+            const headerText = trimmedLine.slice(0, -1).trim();
+            emoji = [...headerText][0] || '📝';
+            title = headerText.slice(emoji.length).trim() || 'Section';
+            sectionContent = '';
+          } else {
+            // Single-line section: "❤️ Heart Rate: value" - content is after the colon
+            const colonIdx = trimmedLine.indexOf(':');
+            const headerText = trimmedLine.slice(0, colonIdx).trim();
+            emoji = [...headerText][0] || '📝';
+            title = headerText.slice(emoji.length).trim() || 'Section';
+            sectionContent = trimmedLine.slice(colonIdx + 1).trim();
+          }
+
+          currentSection = { emoji, title, content: sectionContent };
+        } else if (currentSection === null) {
+          // Content before any section header (user description)
+          preHeaderContent.push(line);
+        } else {
+          // Content within current section
+          currentSection.content += (currentSection.content ? '\n' : '') + line;
+        }
+      }
+
+      // Save final section
+      if (currentSection !== null) {
+        currentSection.content = currentSection.content.trim();
+        sections.push(currentSection);
+      } else if (preHeaderContent.length > 0) {
+        // No sections found - treat all as description
+        const content = preHeaderContent.join('\n').trim();
+        if (content) {
+          sections.push({ emoji: '📝', title: 'Description', content: content });
+        }
+      }
+
+      return sections;
+    }
+
+    /**
+     * Render parsed sections as individual styled cards.
+     */
+    function renderDescriptionSections(text) {
+      const container = document.getElementById('description-sections-container');
+      const sections = parseDescriptionSections(text);
+
+      if (sections.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+
+      container.innerHTML = sections.map((section, idx) => `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header">
+            <h2>${section.emoji} ${section.title}</h2>
+          </div>
+          <pre class="activity-description">${escapeHtml(section.content)}</pre>
+        </div>
+      `).join('');
+
+      container.style.display = 'block';
+    }
+
+    /**
+     * Escape HTML to prevent XSS when inserting user content.
+     */
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
     // --- HELPERS ---

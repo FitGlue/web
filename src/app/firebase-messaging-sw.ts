@@ -64,7 +64,12 @@ async function initializeMessaging() {
 
 // Initialize on service worker activation
 self.addEventListener('activate', (event) => {
-    event.waitUntil(initializeMessaging());
+    event.waitUntil(
+        Promise.all([
+            self.clients.claim(), // Take control of pages immediately
+            initializeMessaging(),
+        ])
+    );
 });
 
 // Also try to initialize on message (in case activate already fired)
@@ -110,6 +115,35 @@ self.addEventListener('notificationclick', (event) => {
             return self.clients.openWindow(targetUrl);
         })
     );
+});
+
+// Native push handler - synchronous fallback that always fires
+// This ensures notifications display even if Firebase messaging hasn't initialized
+self.addEventListener('push', (event) => {
+    const data = event.data?.json();
+    console.log('[firebase-messaging-sw] Push event received:', data);
+
+    // FCM wraps payload in 'notification' and 'data' fields
+    const notification = data?.notification;
+    const customData = data?.data;
+
+    if (notification) {
+        const notificationTitle = notification.title || 'FitGlue';
+        const notificationOptions = {
+            body: notification.body || '',
+            icon: '/app/icons/icon-192.png',
+            badge: '/app/icons/badge-72.png',
+            tag: customData?.type || 'default',
+            renotify: true,
+            data: customData,
+            vibrate: [100, 50, 100],
+            requireInteraction: customData?.type === 'PENDING_INPUT',
+        };
+
+        event.waitUntil(
+            self.registration.showNotification(notificationTitle, notificationOptions)
+        );
+    }
 });
 
 // Log service worker lifecycle events for debugging

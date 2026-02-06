@@ -83,18 +83,18 @@ const ActivitiesListPage: React.FC = () => {
                     </Paragraph>
                 </Stack>
 
-                <Stack direction="horizontal" gap="md">
+                <Stack direction="horizontal" gap="md" responsive>
                     <StatInline
                         value={stats.totalSynced}
                         label="Total Synced"
                         subLabel="All Time"
-                        loading={loading && !initialStats?.totalSynced}
+                        loading={statsLoading}
                     />
                     <StatInline
                         value={stats.activitiesThisMonth}
                         label="Activities"
                         subLabel="This Month"
-                        loading={loading && !initialStats?.monthlySynced}
+                        loading={statsLoading}
                     />
                     <StatInline
                         value={stats.creditsUsedThisMonth}
