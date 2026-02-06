@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.10.0](https://github.com/fitglue/web/compare/v10.9.0...v10.10.0) (2026-02-06)
+
+
+### Features
+
+* even more showcase beautification ([de9e940](https://github.com/fitglue/web/commit/de9e94053a47bfb85b5c9b1458aca62387f54d0c))
+
 ## [10.9.0](https://github.com/fitglue/web/compare/v10.8.0...v10.9.0) (2026-02-06)
 
 
