@@ -8,6 +8,7 @@ import { PluginIcon } from '../components/library/ui/PluginIcon';
 import { useApi } from '../hooks/useApi';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { useConnectionActions } from '../hooks/useConnectionActions';
 import { IntegrationAuthType } from '../types/plugin';
 import '../components/library/ui/CardSkeleton.css';
 
@@ -33,6 +34,14 @@ const ConnectionDetailPage: React.FC = () => {
     const integration = registryIntegrations.find(i => i.id === id);
     const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[id || ''];
     const isConnected = status?.connected ?? false;
+
+    // Connection actions hook
+    const {
+        triggerAction,
+        isActionRunning,
+        isActionCompleted,
+        getActionError,
+    } = useConnectionActions(id || '');
 
     // Format last synced date
     const formatLastSynced = (dateStr?: string) => {
@@ -227,6 +236,63 @@ const ConnectionDetailPage: React.FC = () => {
                                         Activities from {integration.name} are synced through the FitGlue mobile app.
                                     </Paragraph>
                                 </Stack>
+                            </Stack>
+                        </Card>
+                    )}
+
+                    {/* Available Actions */}
+                    {integration.actions && integration.actions.length > 0 && (
+                        <Card variant="default">
+                            <Stack gap="md">
+                                <Heading level={4}>Available Actions</Heading>
+                                {integration.actions.map((action: { id: string; label: string; description: string; icon: string }) => {
+                                    const running = isActionRunning(action.id);
+                                    const completed = isActionCompleted(action.id);
+                                    const error = getActionError(action.id);
+
+                                    return (
+                                        <Stack
+                                            key={action.id}
+                                            direction="horizontal"
+                                            justify="between"
+                                            align="center"
+                                            gap="md"
+                                        >
+                                            <Stack direction="horizontal" gap="md" align="center">
+                                                <span style={{ fontSize: '1.5rem' }}>
+                                                    {action.icon}
+                                                </span>
+                                                <Stack gap="xs">
+                                                    <Paragraph bold>{action.label}</Paragraph>
+                                                    <Paragraph size="sm" muted>
+                                                        {action.description}
+                                                    </Paragraph>
+                                                    {error && (
+                                                        <Badge variant="error">{error}</Badge>
+                                                    )}
+                                                </Stack>
+                                            </Stack>
+                                            <Button
+                                                variant={completed ? 'secondary' : 'primary'}
+                                                size="small"
+                                                disabled={running}
+                                                onClick={async () => {
+                                                    try {
+                                                        await triggerAction(action.id);
+                                                        toast.success(
+                                                            'Action Started',
+                                                            `${action.label} is running in the background. You'll be notified when it completes.`
+                                                        );
+                                                    } catch {
+                                                        toast.error('Failed', 'Could not start the action. Please try again.');
+                                                    }
+                                                }}
+                                            >
+                                                {running ? 'Running...' : completed ? 'Run Again' : 'Run'}
+                                            </Button>
+                                        </Stack>
+                                    );
+                                })}
                             </Stack>
                         </Card>
                     )}

@@ -69,6 +69,13 @@
         }
       },
       {
+        "source": "/api/integrations/*/actions/**",
+        "run": {
+          "serviceId": "connection-actions-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/registry",
         "run": {
           "serviceId": "registry-handler",
