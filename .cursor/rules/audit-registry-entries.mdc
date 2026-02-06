@@ -1,0 +1,198 @@
+---
+description: Audit and improve plugin registry entries for accuracy, consistency, and completeness
+globs: server/src/typescript/shared/src/plugin/registry.ts
+alwaysApply: false
+---
+
+# Audit Plugin Registry Entries
+
+When invoked, perform a comprehensive audit of every plugin registration in the registry. Propose corrections and improvements directly to registry.ts, grouped by issue type.
+
+## Source of Truth
+
+Read **only** from [server/src/typescript/shared/src/plugin/registry.ts](server/src/typescript/shared/src/plugin/registry.ts) for the current registry state.
+
+Cross-reference against:
+
+- **Go enricher providers** in `server/src/go/functions/enricher/providers/` — each subdirectory is a live provider. Every non-mock provider directory **must** have a corresponding `registerEnricher` call.
+- **Proto enum** `EnricherProviderType` in `server/src/proto/user.proto` — every non-UNSPECIFIED value must be registered.
+- **Source handlers** — scan `server/src/` for webhook handlers, polling functions, and ingestion endpoints. Every handler that creates activities should have a corresponding `registerSource` call.
+- **Destination uploaders** — scan `server/src/go/functions/enricher/` and `server/src/typescript/` for uploader implementations. Every destination uploader must have a corresponding `registerDestination` call.
+- **Connection handlers** — scan `server/src/typescript/` for OAuth callback handlers, API key validation endpoints, and connection setup logic. Every live connection handler must have a corresponding `registerIntegration` call.
+- **Integration usage** — `requiredIntegrations` values in sources, boosters, and targets must match a registered integration `id`.
+- **Marketing site** — `web/skier.tasks.mjs` references integrations; verify consistency with registry (noted in registry comments).
+
+## Lexicon Rules (CRITICAL)
+
+FitGlue uses specific terminology site-wide. Every string in the registry **must** follow these rules:
+
+| ✅ Correct Term | ❌ Incorrect Alternatives |
+|---|---|
+| **Source** (plural: Sources) | Input, Ingest, Import source |
+| **Booster** (plural: Boosters) | Enricher, Enhancer, Processor, Plugin |
+| **Target** (plural: Targets) | Destination, Output, Endpoint, Sink |
+| **Connection** (plural: Connections) | Integration, Connector, Link, Service |
+| **Pipeline** | Workflow, Flow, Chain |
+| **Activity** | Event, Record, Entry |
+| **Showcase** | Public page, Share page |
+
+### Third-Party Mentions
+
+- Only mention a third-party service (Strava, Hevy, Fitbit, etc.) when the plugin **directly interacts** with that service.
+- Generic boosters (Workout Summary, Heart Rate Zones, etc.) must **not** reference any specific third party in their marketing copy — they work with all sources.
+- When a plugin requires a specific connection, reference it via `requiredIntegrations` — do not hard-code third-party names into generic descriptions.
+
+## Audit Checklist
+
+For **every** `registerSource`, `registerEnricher`, `registerDestination`, and `registerIntegration` call, verify:
+
+### 1. Completeness
+
+- [ ] Every Go enricher provider directory has a matching `registerEnricher` call
+- [ ] Every `EnricherProviderType` proto enum value (except UNSPECIFIED and MOCK) is registered
+- [ ] Every source handler/webhook endpoint has a matching `registerSource` call
+- [ ] Every destination uploader implementation has a matching `registerDestination` call
+- [ ] Every OAuth/API key connection handler has a matching `registerIntegration` call
+- [ ] Every `requiredIntegrations` value references a valid, registered integration `id`
+- [ ] All required manifest fields are populated (id, type, name, description, icon, enabled, configSchema, marketingDescription, features, transformations, useCases, category, sortOrder, isPremium, popularityScore)
+
+### 2. Emoji Uniqueness (Rule R2)
+
+- [ ] Every plugin across ALL types (sources, boosters, targets, connections) uses a **unique** `icon` emoji
+- [ ] If two plugins currently share an emoji, propose a replacement for the less iconic one
+- [ ] Emojis should be visually representative of the plugin's function
+- [ ] Emojis must render correctly cross-platform (no ZWJ sequences that break on Android/Windows)
+
+### 3. Third-Party Images
+
+- [ ] Plugins that represent or directly interact with a third-party service (Strava, Hevy, Fitbit, Spotify, etc.) **must** define `iconType` and `iconPath`
+- [ ] `iconPath` must point to a valid image file under `web/public/images/icons/`
+- [ ] Verify the referenced image file actually exists on disk
+- [ ] Generic/internal boosters (Workout Summary, Virtual GPS, etc.) should **not** have iconType/iconPath unless they have a distinctive brand asset
+
+### 4. Installation / Setup Steps
+
+- [ ] Source `marketingDescription` includes a "How it works" section explaining the data flow
+- [ ] Target `marketingDescription` includes a "How it works" section explaining what is uploaded and how
+- [ ] Connection `setupInstructions` are step-by-step, numbered, and accurate for the auth type:
+  - **OAuth**: Dashboard → Connections → Connect → sign in → authorize
+  - **API Key**: Where to find the key in the third-party app, any subscription requirements
+  - **App Sync**: Install FitGlue mobile app → grant access → background sync
+  - **Public ID**: Where to find the ID (e.g., Parkrun barcode)
+- [ ] Connection `setupInstructions` mention any prerequisites (e.g., "requires Hevy Pro")
+- [ ] Booster `marketingDescription` includes a "How it works" that explains the data transformation clearly
+
+### 4a. Source-Specific Checks
+
+For every `registerSource` call:
+
+- [ ] `requiredIntegrations` correctly lists the connection(s) needed to use this source
+- [ ] `category` is one of: `apps`, `wearables`, `manual`, `analytics`
+- [ ] Sources that receive data via webhooks explain the real-time sync in their `marketingDescription`
+- [ ] Sources that poll for data explain the polling mechanism
+- [ ] Manual sources (file_upload) clearly explain how data enters the pipeline
+- [ ] `description` accurately reflects the data flow direction ("Import…", "Upload…", "Create…")
+- [ ] Sources backed by a real third-party service have `iconType` and `iconPath` set
+- [ ] `enabled: false` sources (mock, internal) have minimal marketing content
+- [ ] Loop prevention is documented where applicable (e.g., Strava source + Strava target)
+
+### 4b. Target-Specific Checks
+
+For every `registerDestination` call:
+
+- [ ] `destinationType` matches the correct enum value from `DestinationType` proto
+- [ ] `externalUrlTemplate` is correctly formatted with `{id}` placeholder (or empty if dynamically injected)
+- [ ] `requiredIntegrations` correctly lists the connection(s) needed for this target
+- [ ] `category` is one of: `social`, `logging`, `analytics`
+- [ ] `marketingDescription` explains what data is uploaded (description, HR data, GPS, images, etc.)
+- [ ] `marketingDescription` explains any smart mapping or data transformation during upload
+- [ ] `configSchema` entries for targets with user configuration (e.g., Google Sheets) are accurate
+- [ ] `features` reflect actual upload capabilities (not aspirational)
+- [ ] `isTemporarilyUnavailable` is set correctly for targets not yet live
+
+### 4c. Connection-Specific Checks
+
+For every `registerIntegration` call:
+
+- [ ] `authType` matches the actual implementation: `OAUTH`, `API_KEY`, `APP_SYNC`, or `PUBLIC_ID`
+- [ ] `setupInstructions` are written for the **end user**, not a developer
+- [ ] `setupInstructions` include the exact navigation path in the third-party app to find credentials
+- [ ] `apiKeyLabel` is set for API_KEY and PUBLIC_ID auth types (human-friendly label for the credential field)
+- [ ] `apiKeyHelpUrl` links to the correct third-party documentation page
+- [ ] `docsUrl` links to the official third-party developer/user documentation
+- [ ] `marketingDescription` includes two sections: "What is [Service]?" and "What FitGlue Does"
+- [ ] `features` list what the connection enables, not what FitGlue does generically
+- [ ] `isTemporarilyUnavailable` is set correctly for connections not yet live
+- [ ] Connections that are used by both a source AND a target clearly document both use cases
+- [ ] `enabled: true` is only set for connections with fully working handlers deployed to production
+
+### 5. Accuracy of Descriptions
+
+- [ ] `description` (short) is a single line accurately summarizing what the plugin does
+- [ ] `marketingDescription` (long) is factually correct — no invented features or capabilities
+- [ ] `features` list only real, implemented features (not roadmap items)
+- [ ] `transformations` array accurately represents real output with realistic before/after examples
+- [ ] `useCases` are practical, realistic use cases a real user would have
+- [ ] `configSchema` entries have helpful, accurate `description` fields and correct `defaultValue` values
+- [ ] Any `requiredTier` value is accurate (only 'athlete' tier should be gated)
+
+### 6. Transformation Examples
+
+- [ ] Every booster that modifies the activity description **must** have at least one `transformations` entry
+- [ ] `before` and `after` examples should be realistic and representative
+- [ ] If the booster has multiple display modes (e.g., emoji/percentage/text), show the default mode
+- [ ] `visualType` is set correctly: `'hr-graph'`, `'gps-map'`, `'image'`, or `''` for text-only
+- [ ] Workflow boosters (Activity Filter, Logic Gate) that don't modify activity data can have empty transformations
+
+### 7. Category & Sorting
+
+- [ ] `category` is one of the established values: `summaries`, `data`, `detection`, `workflow`, `links`, `ai_images`, `social`, `logging`, `analytics`, `apps`, `wearables`, `manual`
+- [ ] `sortOrder` within each category creates a sensible default ordering
+- [ ] `isPremium` is `true` only for Athlete-tier boosters (those with `requiredTier: 'athlete'`)
+- [ ] `popularityScore` is reasonable relative to other plugins of the same type
+
+### 8. Consistency
+
+- [ ] Naming convention: source/target/connection `id` values use kebab-case or snake_case consistently
+- [ ] `enabled: false` is used only for internal/testing plugins (mock) — not for temporarily unavailable ones
+- [ ] `isTemporarilyUnavailable: true` is used for plugins that are planned but not yet live
+- [ ] No duplicate `id` values within the same plugin type
+- [ ] `allowMultipleInstances: true` is set only for boosters that logically support multiple instances (Type Mapper, Condition Matcher, Activity Filter, Logic Gate, Auto Increment, User Input)
+
+### 9. Config Schema Quality
+
+- [ ] SELECT fields have at least 2 options
+- [ ] BOOLEAN fields have a sensible `defaultValue` ('true' or 'false' as strings)
+- [ ] NUMBER fields with `validation` have reasonable `minValue` and `maxValue`
+- [ ] `dependsOn` correctly references another field in the same configSchema
+- [ ] `dynamicSource` is only used where server-side data fetching is implemented
+
+## Output Format
+
+When reporting findings, group by issue severity:
+
+### 🔴 Errors (must fix)
+- Missing registrations, broken references, factually incorrect descriptions
+
+### 🟡 Warnings (should fix)
+- Lexicon violations, duplicate emojis, missing images, incomplete descriptions
+
+### 🟢 Suggestions (nice to have)
+- Improved marketing copy, better emoji choices, additional use cases
+
+For each finding, provide:
+1. **Plugin**: Type and ID (e.g., "Booster: workout-summary")
+2. **Issue**: What is wrong
+3. **Fix**: The specific change to make
+
+After reporting, apply all 🔴 and 🟡 fixes directly to registry.ts. Present 🟢 suggestions for human review.
+
+## When to Run
+
+Invoke this rule:
+- After adding or modifying any plugin registrations
+- Periodically (weekly/monthly) as a quality sweep
+- Before major releases to ensure registry accuracy
+- After renaming Go enricher providers or proto enum values
+
+Human reviews all changes before commit.

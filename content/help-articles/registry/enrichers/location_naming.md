@@ -16,6 +16,7 @@ The Location Naming booster gives your activities meaningful names based on wher
    - **Mode** — Generate Title or Add to Description
    - **Title Template** — e.g., "{activity_type} in {location}" (for title mode)
    - **Use City Fallback** — Use city name if no park/leisure found (default: true)
+   - **Time of Day Context** — Add sunrise/sunset context (e.g., "Sunrise Run")
 
 ## Config Options
 
@@ -24,6 +25,7 @@ The Location Naming booster gives your activities meaningful names based on wher
 | Mode | title | Generate Title or Add to Description |
 | Title Template | {activity_type} in {location} | Template for title mode |
 | Use City Fallback | true | Fall back to city if no specific location |
+| Time of Day Context | none | Add sunrise/sunset context |
 
 ## Requirements
 
