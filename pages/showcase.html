@@ -57,6 +57,8 @@
         <span id="activity-source" class="activity-source"></span>
         <span id="activity-date" class="activity-date"></span>
       </div>
+      <!-- User-provided description - prominent display -->
+      <div id="user-description" class="user-description" style="display: none;"></div>
     </div>
 
     <!-- Stats Grid - Hero Cards -->
@@ -521,6 +523,53 @@
     justify-content: center;
     gap: 1rem;
     flex-wrap: wrap;
+  }
+
+  /* User-provided description - big, bold, beautiful */
+  .user-description {
+    margin-top: 1.5rem;
+    padding: 0 1rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.25rem;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  .user-description::before {
+    content: '"';
+    font-size: 3rem;
+    font-family: Georgia, serif;
+    position: absolute;
+    left: -0.5rem;
+    top: -0.5rem;
+    opacity: 0.3;
+    color: #9D4EDD;
+  }
+
+  /* Compact sections container - horizontal stacking */
+  .compact-sections-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .compact-sections-row .description-section-card {
+    flex: 1 1 280px;
+    max-width: 400px;
+    min-width: 250px;
+  }
+
+  @media (max-width: 600px) {
+    .compact-sections-row .description-section-card {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
   }
 
   .owner-attribution {
@@ -2298,26 +2347,95 @@
 
     /**
      * Render parsed sections as individual styled cards.
+     * - User description goes to hero section (prominent display)
+     * - Compact sections (single-line) are grouped horizontally
+     * - Normal sections render as full-width cards
      */
     function renderDescriptionSections(text) {
       const container = document.getElementById('description-sections-container');
+      const userDescEl = document.getElementById('user-description');
       const sections = parseDescriptionSections(text);
 
       if (sections.length === 0) {
         container.style.display = 'none';
+        userDescEl.style.display = 'none';
         return;
       }
 
-      container.innerHTML = sections.map((section, idx) => `
+      // Separate user description from enricher sections
+      const userDescSection = sections.find(s => s.title === 'Description');
+      const enricherSections = sections.filter(s => s.title !== 'Description');
+
+      // Render user description in hero
+      if (userDescSection && userDescSection.content) {
+        userDescEl.textContent = userDescSection.content;
+        userDescEl.style.display = 'block';
+      } else {
+        userDescEl.style.display = 'none';
+      }
+
+      // If no enricher sections, hide container
+      if (enricherSections.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+
+      // Detect compact sections (single-line, short content)
+      const isCompact = (section) => {
+        const lines = section.content.split('\n').filter(l => l.trim());
+        return lines.length <= 1 && section.content.length < 100;
+      };
+
+      // Group consecutive compact sections for horizontal layout
+      let html = '';
+      let compactGroup = [];
+      let idx = 0;
+
+      const flushCompactGroup = () => {
+        if (compactGroup.length === 0) return;
+
+        // If single compact section, render normally to avoid orphan
+        if (compactGroup.length === 1) {
+          compactGroup.forEach(section => {
+            html += renderSectionCard(section, idx++);
+          });
+        } else {
+          // Wrap in horizontal row
+          html += '<div class="compact-sections-row">';
+          compactGroup.forEach(section => {
+            html += renderSectionCard(section, idx++);
+          });
+          html += '</div>';
+        }
+        compactGroup = [];
+      };
+
+      enricherSections.forEach((section) => {
+        if (isCompact(section)) {
+          compactGroup.push(section);
+        } else {
+          flushCompactGroup();
+          html += renderSectionCard(section, idx++);
+        }
+      });
+      flushCompactGroup();
+
+      container.innerHTML = html;
+      container.style.display = 'block';
+    }
+
+    /**
+     * Render a single section card.
+     */
+    function renderSectionCard(section, idx) {
+      return `
         <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
           <div class="section-header">
             <h2>${section.emoji} ${section.title}</h2>
           </div>
           <pre class="activity-description">${escapeHtml(section.content)}</pre>
         </div>
-      `).join('');
-
-      container.style.display = 'block';
+      `;
     }
 
     /**
