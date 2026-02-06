@@ -130,7 +130,6 @@ const AccountSettingsPage: React.FC = () => {
 
     const effectiveTier = profile ? getEffectiveTier(profile) : TIER_HOBBYIST;
     const isAthlete = effectiveTier === TIER_ATHLETE;
-    const maxConnections = isAthlete ? '∞' : String(HOBBYIST_TIER_LIMITS.MAX_CONNECTIONS);
     const maxSyncs = isAthlete ? '∞' : String(HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH);
     const syncsUsed = profile?.syncCountThisMonth ?? 0;
 
@@ -257,10 +256,7 @@ const AccountSettingsPage: React.FC = () => {
                             <Card variant="elevated">
                                 <Stack gap="sm">
                                     <Paragraph size="sm" muted>Connections</Paragraph>
-                                    <Stack direction="horizontal" align="end" gap="xs">
-                                        <Heading level={2}>{connectionCount}</Heading>
-                                        <Paragraph inline muted>/ {maxConnections}</Paragraph>
-                                    </Stack>
+                                    <Heading level={2}>{connectionCount}</Heading>
                                 </Stack>
                             </Card>
                         </Grid>

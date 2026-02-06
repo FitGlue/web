@@ -1,9 +1,12 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SynchronizedActivity, ActivitiesService, RepostResponse } from '../services/ActivitiesService';
 import { Destination } from '../../types/pb/events';
 import { formatDestination } from '../../types/pb/enum-formatters';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
+import { useUser } from '../hooks/useUser';
+import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
 import { PluginManifest } from '../types/plugin';
 import { Modal, Button, Card, Heading, Paragraph } from './library/ui';
 import { Stack } from './library/layout';
@@ -70,6 +73,11 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
 
     const { destinations: registryDestinations } = usePluginRegistry();
     const { integrations: userIntegrations } = useRealtimeIntegrations();
+    const { user } = useUser();
+    const navigate = useNavigate();
+
+    // Check if hobbyist is at the monthly sync limit
+    const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE && (user.syncCountThisMonth || 0) >= 25;
 
     const availableDestinations = useMemo(
         () => getAvailableDestinations(
@@ -151,6 +159,22 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
 
     if (!isPro) {
         return null;
+    }
+
+    // Show upgrade prompt if at tier limit
+    if (isAtLimit) {
+        return (
+            <Card>
+                <Stack gap="sm" align="center">
+                    <Paragraph muted>
+                        🔒 Magic actions unavailable - monthly sync limit reached.
+                    </Paragraph>
+                    <Button variant="primary" size="small" onClick={() => navigate('/settings/subscription')}>
+                        Upgrade for Unlimited Actions →
+                    </Button>
+                </Stack>
+            </Card>
+        );
     }
 
     // Inline content - rendered as buttons in a grid/stack

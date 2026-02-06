@@ -15,7 +15,6 @@ export type EffectiveTier = typeof TIER_HOBBYIST | typeof TIER_ATHLETE;
 
 export const HOBBYIST_TIER_LIMITS = {
   SYNCS_PER_MONTH: 25,
-  MAX_CONNECTIONS: 2,
 } as const;
 
 /**

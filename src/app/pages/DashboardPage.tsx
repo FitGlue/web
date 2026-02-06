@@ -17,6 +17,7 @@ import { ConnectionsSummaryCard } from '../components/dashboard/ConnectionsSumma
 import { PipelinesSummaryCard } from '../components/dashboard/PipelinesSummaryCard';
 import { ActionRequiredSummaryCard } from '../components/dashboard/ActionRequiredSummaryCard';
 import { SubscriptionBanner } from '../components/dashboard/SubscriptionBanner';
+import { PWAInstallBanner } from '../components/dashboard/PWAInstallBanner';
 import { IntegrationsSummary } from '../state/integrationsState';
 
 const ONBOARDING_COMPLETE_KEY = 'fitglue_onboarding_complete';
@@ -78,6 +79,9 @@ const DashboardPage: React.FC = () => {
                         hasSyncs={hasSyncs}
                     />
                 )}
+
+                {/* Show PWA install banner only when WelcomeBanner is hidden */}
+                {(onboardingComplete || allOnboardingComplete) && <PWAInstallBanner />}
 
                 <SubscriptionBanner />
 

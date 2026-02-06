@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '../library/ui/Card';
 import { CardHeader } from '../library/ui/CardHeader';
 import { CardSkeleton } from '../library/ui/CardSkeleton';
@@ -11,6 +12,8 @@ import { Stack } from '../library/layout/Stack';
 import { Grid } from '../library/layout/Grid';
 import { useApi } from '../../hooks/useApi';
 import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
+import { useUser } from '../../hooks/useUser';
+import { getEffectiveTier, TIER_ATHLETE } from '../../utils/tier';
 import './FileUploadPanel.css';
 
 /**
@@ -18,7 +21,9 @@ import './FileUploadPanel.css';
  */
 export const FileUploadPanel: React.FC = () => {
   const api = useApi();
+  const navigate = useNavigate();
   const { pipelines, loading: pipelinesLoading } = useRealtimePipelines();
+  const { user } = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
@@ -30,6 +35,9 @@ export const FileUploadPanel: React.FC = () => {
   const hasFileUploadPipeline = pipelines.some((p: { source?: string }) =>
     p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload'
   );
+
+  // Check if hobbyist is at the monthly sync limit
+  const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE && (user.syncCountThisMonth || 0) >= 25;
 
   // Show skeleton while loading pipelines
   if (pipelinesLoading) {
@@ -94,6 +102,25 @@ export const FileUploadPanel: React.FC = () => {
       setUploading(false);
     }
   };
+
+  // Show upgrade prompt if at tier limit
+  if (isAtLimit) {
+    return (
+      <Card>
+        <Stack gap="md">
+          <CardHeader icon="📤" title="Upload FIT File" />
+          <Stack gap="sm" align="center">
+            <Paragraph muted>
+              🔒 You&apos;ve reached your monthly sync limit (25/month).
+            </Paragraph>
+            <Button variant="primary" onClick={() => navigate('/settings/subscription')}>
+              Upgrade for Unlimited Uploads →
+            </Button>
+          </Stack>
+        </Stack>
+      </Card>
+    );
+  }
 
   return (
     <Card>

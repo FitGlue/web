@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePWAInstall } from '../../hooks/usePWAInstall';
 import './WelcomeBanner.css';
 
 interface WelcomeBannerProps {
@@ -60,6 +61,7 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
     onDismiss
 }) => {
     const navigate = useNavigate();
+    const { canInstall, promptInstall } = usePWAInstall();
 
     const stepCompletion = [hasConnections, hasPipelines, hasSyncs];
 
@@ -75,15 +77,30 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
                         <p>Let&apos;s get you set up in 3 easy steps</p>
                     </div>
                 </div>
-                {onDismiss && (
-                    <button
-                        className="dismiss-btn"
-                        onClick={onDismiss}
-                        aria-label="Dismiss"
-                    >
-                        ✕
-                    </button>
-                )}
+                <div className="welcome-header-actions">
+                    {canInstall && (
+                        <button
+                            className="install-app-btn"
+                            onClick={promptInstall}
+                        >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                            Install App
+                        </button>
+                    )}
+                    {onDismiss && (
+                        <button
+                            className="dismiss-btn"
+                            onClick={onDismiss}
+                            aria-label="Dismiss"
+                        >
+                            ✕
+                        </button>
+                    )}
+                </div>
             </div>
 
             <div className="onboarding-steps">

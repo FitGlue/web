@@ -1,11 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, Button, Heading, Paragraph, CardSkeleton, List, ListItem, Badge } from '../components/library/ui';
+import { PageLayout, Stack } from '../components/library/layout';
+import { Card, Button, Heading, Paragraph, CardSkeleton, Badge } from '../components/library/ui';
 import { useApi } from '../hooks/useApi';
 import { useUser } from '../hooks/useUser';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
 import '../components/library/ui/CardSkeleton.css';
+import './SubscriptionPage.css';
+
+// Feature data for Athlete tier (actual benefits)
+const ATHLETE_FEATURES = [
+    { icon: '🔄', title: 'Unlimited Syncs', desc: 'No monthly limits' },
+    { icon: '🚀', title: 'All Boosters', desc: 'AI summaries, image generation' },
+    { icon: '🌟', title: 'Showcase Forever', desc: 'Pages never expire' },
+];
+
+// What users lose when downgrading (actual differences)
+const DOWNGRADE_ITEMS = [
+    { from: 'Unlimited Syncs', to: '25/month' },
+    { from: 'All Boosters', to: 'Basic only' },
+    { from: 'Showcase Forever', to: '30 day retention' },
+];
+
+// Plan comparison features (actual differences only)
+const PLAN_FEATURES = [
+    { name: 'Monthly Syncs', hobbyist: '25', athlete: 'Unlimited', hobbyistIncluded: true },
+    { name: 'Basic Boosters', hobbyist: '✓', athlete: '✓', hobbyistIncluded: true },
+    { name: 'AI Boosters', hobbyist: null, athlete: '✓', hobbyistIncluded: false },
+    { name: 'Image Boosters', hobbyist: null, athlete: '✓', hobbyistIncluded: false },
+    { name: 'Showcase Retention', hobbyist: '30 days', athlete: 'Forever', hobbyistIncluded: true },
+];
 
 const SubscriptionPage: React.FC = () => {
     const api = useApi();
@@ -54,10 +78,8 @@ const SubscriptionPage: React.FC = () => {
         return (
             <PageLayout title="Subscription">
                 <Stack gap="lg">
-                    <Grid cols={2} gap="lg">
-                        <CardSkeleton variant="integration" />
-                        <CardSkeleton variant="integration" />
-                    </Grid>
+                    <CardSkeleton variant="integration" />
+                    <CardSkeleton variant="integration" />
                 </Stack>
             </PageLayout>
         );
@@ -69,7 +91,9 @@ const SubscriptionPage: React.FC = () => {
         : 0;
     const isOnTrial = isAthlete && trialDaysRemaining > 0;
     const trialExpired = user?.trialEndsAt && trialDaysRemaining <= 0 && !(user as { stripeCustomerId?: string })?.stripeCustomerId && !user?.isAdmin;
+    const countdownProgress = Math.max(0, Math.min(100, (trialDaysRemaining / 30) * 100));
 
+    // ATHLETE VIEW - Premium experience for current Athletes
     if (isAthlete) {
         return (
             <PageLayout
@@ -84,70 +108,118 @@ const SubscriptionPage: React.FC = () => {
                         </Card>
                     )}
 
-                    <Card highlighted>
-                        <Stack gap="md">
-                            <Stack direction="horizontal" align="center" justify="between">
-                                <Badge variant="premium">✨ ATHLETE</Badge>
-                                <Stack direction="horizontal" align="end" gap="xs">
-                                    <Heading level={1}>£5</Heading>
-                                    <Paragraph inline muted>/month</Paragraph>
-                                </Stack>
+                    {/* Premium Athlete Card */}
+                    <div className="subscription-athlete-card">
+                        <div className="subscription-athlete-card__header">
+                            <h2>✨ ATHLETE</h2>
+                            {user?.isAdmin ? (
+                                <div className="subscription-admin-badge">
+                                    🛡️ Admin Access
+                                </div>
+                            ) : (
+                                <div className="subscription-athlete-card__price">
+                                    £5<span className="subscription-athlete-card__price-period">/month</span>
+                                </div>
+                            )}
+                        </div>
+                        <div className="subscription-athlete-card__content">
+                            {/* Feature Grid */}
+                            <Stack gap="md">
+                                <Heading level={4}>Your Athlete Benefits</Heading>
+                                <div className="subscription-features-grid">
+                                    {ATHLETE_FEATURES.map((feature) => (
+                                        <div key={feature.title} className="subscription-feature-card">
+                                            <span className="subscription-feature-card__icon">{feature.icon}</span>
+                                            <div className="subscription-feature-card__content">
+                                                <div className="subscription-feature-card__title">{feature.title}</div>
+                                                <div className="subscription-feature-card__desc">{feature.desc}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </Stack>
-                            <Grid cols={2} gap="sm">
-                                <Paragraph size="sm">✓ Unlimited Syncs</Paragraph>
-                                <Paragraph size="sm">✓ Unlimited Connections</Paragraph>
-                                <Paragraph size="sm">✓ Priority Processing</Paragraph>
-                                <Paragraph size="sm">✓ All Advanced Enrichers</Paragraph>
-                            </Grid>
-                        </Stack>
-                    </Card>
+                        </div>
+                    </div>
 
+                    {/* Trial Countdown - Only for trial users */}
                     {isOnTrial && (
-                        <Stack gap="md">
-                            <Heading level={3}>🎉 Trial Period</Heading>
-                            <Stack align="center">
-                                <Paragraph inline>{trialDaysRemaining}</Paragraph>
-                                <Paragraph inline>day{trialDaysRemaining !== 1 ? 's' : ''} remaining</Paragraph>
-                            </Stack>
-                            <Stack gap="sm">
-                                <Paragraph bold>What happens when your trial ends?</Paragraph>
-                                <List>
-                                    <ListItem>Your account reverts to Hobbyist (free)</ListItem>
-                                    <ListItem>Sync limit: 25/month, Connections: 2 max</ListItem>
-                                    <ListItem>Your pipelines and data are preserved</ListItem>
-                                </List>
-                            </Stack>
-                            <Button
-                                variant="primary"
-                                onClick={handleCheckout}
-                                disabled={processing}
-                            >
-                                {processing ? 'Processing...' : 'Subscribe Now - Keep Athlete Features'}
-                            </Button>
-                        </Stack>
-                    )}
-
-                    {trialExpired && (
                         <Card>
-                            <Heading level={3}>⚠️ Trial Expired</Heading>
-                            <Paragraph>Your Athlete trial has ended. Subscribe now to keep your unlimited features!</Paragraph>
-                            <Button
-                                variant="primary"
-                                onClick={handleCheckout}
-                                disabled={processing}
-                            >
-                                {processing ? 'Processing...' : 'Subscribe to Athlete - £5/month'}
-                            </Button>
+                            <div className="subscription-countdown">
+                                <div
+                                    className="subscription-countdown__ring"
+                                    style={{ '--countdown-progress': `${countdownProgress}%` } as React.CSSProperties}
+                                >
+                                    <div className="subscription-countdown__ring-bg" />
+                                    <span className="subscription-countdown__days">{trialDaysRemaining}</span>
+                                </div>
+                                <div className="subscription-countdown__label">
+                                    day{trialDaysRemaining !== 1 ? 's' : ''} remaining in your trial
+                                </div>
+                                {trialDaysRemaining <= 7 && (
+                                    <div className="subscription-countdown__urgency">
+                                        ⚠️ Less than a week left!
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* What You'll Lose Section */}
+                            <div className="subscription-lose-section">
+                                <div className="subscription-lose-section__title">
+                                    ⚠️ What you&apos;ll lose when your trial ends
+                                </div>
+                                {DOWNGRADE_ITEMS.map((item) => (
+                                    <div key={item.from} className="subscription-lose-item">
+                                        <span className="subscription-lose-item__icon">✕</span>
+                                        <span className="subscription-lose-item__from">{item.from}</span>
+                                        <span className="subscription-lose-item__arrow">→</span>
+                                        <span className="subscription-lose-item__to">{item.to}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="subscription-cta-wrapper">
+                                <Button
+                                    variant="primary"
+                                    onClick={handleCheckout}
+                                    disabled={processing}
+                                    className="subscription-cta"
+                                >
+                                    {processing ? 'Processing...' : 'Subscribe Now - Keep Your Athlete Features'}
+                                </Button>
+                            </div>
                         </Card>
                     )}
 
+                    {/* Trial Expired Warning */}
+                    {trialExpired && (
+                        <div className="subscription-lose-section">
+                            <div className="subscription-lose-section__title">
+                                ⚠️ Your Trial Has Ended
+                            </div>
+                            <Paragraph>
+                                Subscribe now to restore your unlimited features and keep your Athlete benefits.
+                            </Paragraph>
+                            <div className="subscription-cta-wrapper">
+                                <Button
+                                    variant="primary"
+                                    onClick={handleCheckout}
+                                    disabled={processing}
+                                    className="subscription-cta"
+                                >
+                                    {processing ? 'Processing...' : 'Subscribe to Athlete - £5/month'}
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Billing Portal for Paid Users */}
                     {(user as { stripeCustomerId?: string })?.stripeCustomerId && (
                         <Card>
-                            <Heading level={3}>Billing Management</Heading>
-                            <Paragraph muted>
-                                Manage your payment method, view invoices, or cancel your subscription through Stripe.
-                            </Paragraph>
-                            <Stack>
+                            <Stack gap="md">
+                                <Heading level={4}>Billing Management</Heading>
+                                <Paragraph muted>
+                                    Manage your payment method, view invoices, or update your subscription through the Stripe portal.
+                                </Paragraph>
                                 <Button
                                     variant="secondary"
                                     onClick={handleOpenPortal}
@@ -163,81 +235,94 @@ const SubscriptionPage: React.FC = () => {
         );
     }
 
+    // HOBBYIST VIEW - Conversion-focused upgrade prompt
     return (
         <PageLayout
             title="Choose Your Plan"
             backTo="/settings/account"
             backLabel="Account"
         >
-            <Stack gap="lg">
+            <Stack gap="xl">
                 {status && (
                     <Card variant="elevated">
                         <Paragraph>{status.type === 'success' ? '✓ ' : status.type === 'error' ? '⚠️ ' : ''}{status.message}</Paragraph>
                     </Card>
                 )}
 
-                <Stack align="center" gap="sm">
-                    <Heading level={2}>Unlock the full power of FitGlue</Heading>
-                    <Paragraph muted>Automate your fitness data with no limits.</Paragraph>
-                </Stack>
+                {/* Hero Section */}
+                <div className="subscription-hero">
+                    <h1 className="subscription-hero__title">Unlock Your Full Potential</h1>
+                    <p className="subscription-hero__subtitle">
+                        Upgrade to Athlete and automate your fitness data without limits.
+                    </p>
+                </div>
 
-                <Grid cols={2} gap="lg">
-                    <Card>
-                        <Badge>Your Current Plan</Badge>
-                        <Heading level={3}>Hobbyist</Heading>
-                        <Paragraph size="lg" bold>£0<Paragraph inline size="sm">/mo</Paragraph></Paragraph>
-                        <List>
-                            <ListItem>
-                                <Paragraph inline>✓</Paragraph> 25 Syncs per month
-                            </ListItem>
-                            <ListItem>
-                                <Paragraph inline>✓</Paragraph> 2 Active connections
-                            </ListItem>
-                            <ListItem>
-                                <Paragraph inline>✓</Paragraph> Basic enrichers
-                            </ListItem>
-                            <ListItem>
-                                <Paragraph inline>○</Paragraph> Priority processing
-                            </ListItem>
-                            <ListItem>
-                                <Paragraph inline>○</Paragraph> Advanced Elastic Match
-                            </ListItem>
-                        </List>
+                {/* Plan Comparison Grid */}
+                <div className="subscription-plans-grid">
+                    {/* Hobbyist Plan */}
+                    <div className="subscription-plan-card subscription-plan-card--current">
+                        <div className="subscription-plan-card__header">
+                            <Badge>Current Plan</Badge>
+                            <div className="subscription-plan-card__name">Hobbyist</div>
+                            <div className="subscription-plan-card__price">
+                                £0<span className="subscription-plan-card__period">/month</span>
+                            </div>
+                        </div>
+                        <ul className="subscription-plan-features">
+                            {PLAN_FEATURES.map((feature) => (
+                                <li key={feature.name} className="subscription-plan-feature">
+                                    <span className={`subscription-plan-feature__icon--${feature.hobbyistIncluded ? 'included' : 'excluded'}`}>
+                                        {feature.hobbyistIncluded ? '✓' : '○'}
+                                    </span>
+                                    <span className={feature.hobbyistIncluded ? '' : 'subscription-plan-feature__text--excluded'}>
+                                        {feature.name}{feature.hobbyist && feature.hobbyistIncluded ? `: ${feature.hobbyist}` : ''}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
                         <Button variant="secondary" disabled>
                             Currently Active
                         </Button>
-                    </Card>
+                    </div>
 
-                    <Card highlighted>
-                        <Heading level={3}>Athlete</Heading>
-                        <Paragraph size="lg" bold>£5<Paragraph inline size="sm">/mo</Paragraph></Paragraph>
-                        <List>
-                            <ListItem>
-                                <Paragraph inline>✓</Paragraph> <strong>Unlimited</strong> Syncs
-                            </ListItem>
-                            <ListItem>
-                                <Paragraph inline>✓</Paragraph> <strong>Unlimited</strong> Connections
-                            </ListItem>
-                            <ListItem>
-                                <Paragraph inline>✓</Paragraph> Priority processing
-                            </ListItem>
-                            <ListItem>
-                                <Paragraph inline>✓</Paragraph> All Advanced Enrichers
-                            </ListItem>
-                            <ListItem>
-                                <Paragraph inline>✓</Paragraph> Custom Sync Scheduling
-                            </ListItem>
-                        </List>
+                    {/* Athlete Plan */}
+                    <div className="subscription-plan-card subscription-plan-card--recommended">
+                        <div className="subscription-plan-card__header">
+                            <Badge variant="premium">✨ ATHLETE</Badge>
+                            <div className="subscription-plan-card__name">Athlete</div>
+                            <div className="subscription-plan-card__price">
+                                £5<span className="subscription-plan-card__period">/month</span>
+                            </div>
+                        </div>
+                        <ul className="subscription-plan-features">
+                            {PLAN_FEATURES.map((feature) => (
+                                <li key={feature.name} className="subscription-plan-feature">
+                                    <span className="subscription-plan-feature__icon--included">✓</span>
+                                    <span>
+                                        {feature.name}{feature.athlete !== '✓' ? `: ${feature.athlete}` : ''}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
                         <Button
                             variant="primary"
-
                             onClick={handleCheckout}
                             disabled={processing}
+                            className="subscription-cta"
                         >
                             {processing ? 'Connecting to Stripe...' : 'Upgrade to Athlete'}
                         </Button>
-                    </Card>
-                </Grid>
+                    </div>
+                </div>
+
+                {/* Value Proposition */}
+                <Card>
+                    <Stack align="center" gap="sm">
+                        <Paragraph muted>
+                            Cancel anytime • Secure payment via Stripe • 30-day trial on signup
+                        </Paragraph>
+                    </Stack>
+                </Card>
             </Stack>
         </PageLayout>
     );

@@ -1,0 +1,440 @@
+/* ==========================================================================
+   Subscription Page - Premium Conversion-Optimized Styling
+   ========================================================================== */
+@import '../components/library/tokens.css';
+
+/* Hero Section - Gradient Background */
+.subscription-hero {
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+}
+
+.subscription-hero__title {
+    font-size: 1.75rem;
+    font-weight: var(--font-weight-bold);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--spacing-sm);
+}
+
+.subscription-hero__subtitle {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Athlete Premium Card Header */
+.subscription-athlete-card {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(157, 78, 221, 0.5);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+        0 0 30px rgba(157, 78, 221, 0.2),
+        0 0 60px rgba(255, 27, 141, 0.1);
+}
+
+.subscription-athlete-card__header {
+    background: linear-gradient(135deg, #9D4EDD 0%, #FF1B8D 50%, #9D4EDD 100%);
+    background-size: 200% 100%;
+    padding: var(--spacing-lg);
+    animation: athlete-shimmer 4s ease-in-out infinite;
+    text-align: center;
+}
+
+@keyframes athlete-shimmer {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.subscription-athlete-card__header h2 {
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-bold);
+}
+
+.subscription-athlete-card__price {
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-bold);
+    margin-top: var(--spacing-xs);
+}
+
+.subscription-athlete-card__price-period {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: var(--font-weight-normal);
+}
+
+/* Admin Access Badge */
+.subscription-admin-badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-semibold);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    margin-top: var(--spacing-sm);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: inline-block;
+}
+
+.subscription-athlete-card__content {
+    padding: var(--spacing-lg);
+}
+
+/* Feature Grid - 2x2 layout */
+.subscription-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+}
+
+.subscription-feature-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    text-align: center;
+    transition: all var(--transition-normal);
+}
+
+.subscription-feature-card:hover {
+    border-color: var(--color-border-hover);
+    background: var(--color-surface-hover);
+}
+
+.subscription-feature-card__icon {
+    font-size: 1.75rem;
+    margin-bottom: var(--spacing-sm);
+    display: block;
+}
+
+.subscription-feature-card__title {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xs);
+    font-size: 0.9rem;
+}
+
+.subscription-feature-card__desc {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+}
+
+/* Trial Countdown Ring */
+.subscription-countdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-xl) 0;
+}
+
+.subscription-countdown__ring {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.subscription-countdown__ring-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(var(--color-primary) var(--countdown-progress, 100%),
+            rgba(255, 255, 255, 0.1) var(--countdown-progress, 100%));
+    mask: radial-gradient(transparent 55%,
+            #000 55%);
+    -webkit-mask: radial-gradient(transparent 55%,
+            #000 55%);
+    animation: ring-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ring-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.85;
+    }
+}
+
+.subscription-countdown__days {
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    z-index: 1;
+}
+
+.subscription-countdown__label {
+    margin-top: var(--spacing-sm);
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.subscription-countdown__urgency {
+    margin-top: var(--spacing-xs);
+    color: var(--color-warning);
+    font-size: 0.8rem;
+    font-weight: var(--font-weight-medium);
+}
+
+/* What You'll Lose Section */
+.subscription-lose-section {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+}
+
+.subscription-lose-section__title {
+    color: var(--color-error);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.subscription-lose-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.subscription-lose-item:last-child {
+    border-bottom: none;
+}
+
+.subscription-lose-item__icon {
+    color: var(--color-error);
+    font-size: 0.875rem;
+}
+
+.subscription-lose-item__from {
+    color: var(--color-text-muted);
+    text-decoration: line-through;
+    font-size: 0.875rem;
+}
+
+.subscription-lose-item__arrow {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+}
+
+.subscription-lose-item__to {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+/* CTA Wrapper for spacing */
+.subscription-cta-wrapper {
+    margin-top: var(--spacing-lg);
+}
+
+/* Premium CTA Button */
+.subscription-cta {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    font-size: 1rem;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-weight: var(--font-weight-semibold);
+}
+
+.subscription-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.25),
+            transparent);
+    animation: cta-shimmer 2.5s ease-in-out infinite;
+}
+
+@keyframes cta-shimmer {
+    0% {
+        left: -100%;
+    }
+
+    50%,
+    100% {
+        left: 100%;
+    }
+}
+
+/* Plan Comparison Cards (Hobbyist View) */
+.subscription-plans-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+.subscription-plan-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-normal);
+}
+
+.subscription-plan-card--current {
+    opacity: 0.85;
+}
+
+.subscription-plan-card--recommended {
+    border-color: rgba(157, 78, 221, 0.5);
+    background: rgba(157, 78, 221, 0.05);
+    box-shadow:
+        0 0 20px rgba(157, 78, 221, 0.15),
+        0 0 40px rgba(255, 27, 141, 0.08);
+    position: relative;
+}
+
+.subscription-plan-card--recommended::before {
+    content: 'RECOMMENDED';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #9D4EDD, #FF1B8D);
+    color: #ffffff;
+    font-size: 0.625rem;
+    font-weight: var(--font-weight-bold);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.05em;
+}
+
+.subscription-plan-card__header {
+    text-align: center;
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border-subtle);
+    margin-bottom: var(--spacing-md);
+}
+
+.subscription-plan-card__name {
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-xs);
+}
+
+.subscription-plan-card__price {
+    font-size: 2rem;
+    font-weight: var(--font-weight-bold);
+}
+
+.subscription-plan-card--recommended .subscription-plan-card__price {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subscription-plan-card__period {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
+/* Feature List in Plan Cards */
+.subscription-plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--spacing-lg);
+}
+
+.subscription-plan-feature {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) 0;
+    font-size: 0.875rem;
+}
+
+.subscription-plan-feature__icon--included {
+    color: var(--color-success);
+}
+
+.subscription-plan-feature__icon--excluded {
+    color: var(--color-text-disabled);
+}
+
+.subscription-plan-feature__text--excluded {
+    color: var(--color-text-muted);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .subscription-features-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+
+    .subscription-plans-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .subscription-plan-card--recommended {
+        order: -1;
+        /* Show recommended first on mobile */
+    }
+
+    .subscription-athlete-card__header {
+        padding: var(--spacing-md);
+    }
+
+    .subscription-athlete-card__price {
+        font-size: 2rem;
+    }
+
+    .subscription-countdown__ring {
+        width: 120px;
+        height: 120px;
+    }
+
+    .subscription-countdown__days {
+        font-size: 2rem;
+    }
+
+    .subscription-feature-card {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        gap: var(--spacing-md);
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .subscription-feature-card__icon {
+        font-size: 1.5rem;
+        margin-bottom: 0;
+    }
+
+    .subscription-feature-card__content {
+        flex: 1;
+    }
+}

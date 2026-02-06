@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { EnricherBadge } from './EnricherBadge';
 import { Pill } from '../library/ui/Pill';
 import { Stack } from '../library/layout/Stack';
@@ -13,6 +14,7 @@ import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 import { PluginManifest } from '../../types/plugin';
 import { BoosterExecution, PipelineRun, PipelineRunStatus } from '../../../types/pb/user';
+import { Button } from '../library/ui/Button';
 
 interface EnrichedActivityCardProps {
     /** PipelineRun from pipeline_runs collection */
@@ -73,6 +75,7 @@ const getStatusInfo = (status?: PipelineRunStatus): {
     badgeVariant: 'default' | 'success' | 'warning' | 'error';
     statusLabel?: string;
     statusIcon?: string;
+    isTierBlocked?: boolean;
 } => {
     switch (status) {
         case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED:
@@ -87,6 +90,8 @@ const getStatusInfo = (status?: PipelineRunStatus): {
             return { cardVariant: 'needs-input', badgeVariant: 'warning', statusLabel: 'Awaiting Input', statusIcon: '⏳' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED:
             return { cardVariant: 'premium', badgeVariant: 'default', statusLabel: 'Skipped', statusIcon: '⏭️' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED:
+            return { cardVariant: 'needs-input', badgeVariant: 'warning', statusLabel: 'Upgrade Required', statusIcon: '🔒', isTierBlocked: true };
         default:
             return { cardVariant: 'default', badgeVariant: 'default' };
     }
@@ -102,6 +107,7 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     pipelineRun,
     onClick,
 }) => {
+    const navigate = useNavigate();
     const { pipelines } = useRealtimePipelines();
     const { sources, destinations: registryDestinations } = usePluginRegistry();
 
@@ -259,8 +265,23 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
                 center={boostersNode}
                 destination={destinationNode}
             />
+            {/* Tier blocked upgrade CTA */}
+            {statusInfo.isTierBlocked && (
+                <Stack gap="sm" align="center">
+                    <Paragraph muted size="sm">
+                        🔒 {pipelineRun.statusMessage || 'Monthly sync limit reached.'}
+                    </Paragraph>
+                    <Button
+                        variant="primary"
+                        size="small"
+                        onClick={(e) => { e.stopPropagation(); navigate('/settings/subscription'); }}
+                    >
+                        Upgrade for Unlimited Syncs →
+                    </Button>
+                </Stack>
+            )}
             {/* Status message - only show for non-terminal states or failures */}
-            {pipelineRun?.statusMessage &&
+            {!statusInfo.isTierBlocked && pipelineRun?.statusMessage &&
                 pipelineRun.status !== PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED && (
                     <Stack gap="xs">
                         <Paragraph muted size="sm">
