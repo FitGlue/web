@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.11.1](https://github.com/fitglue/web/compare/v10.11.0...v10.11.1) (2026-02-07)
+
+
+### Bug Fixes
+
+* user-data-handler for booster data ([e852d00](https://github.com/fitglue/web/commit/e852d000c3f610c518bec812b8ee09da8cbb9121))
+
 ## [10.11.0](https://github.com/fitglue/web/compare/v10.10.0...v10.11.0) (2026-02-07)
 
 
