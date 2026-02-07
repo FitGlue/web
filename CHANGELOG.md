@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.11.0](https://github.com/fitglue/web/compare/v10.10.0...v10.11.0) (2026-02-07)
+
+
+### Features
+
+* **showcase:** add chart expand modals and description parsing ([94f6a53](https://github.com/fitglue/web/commit/94f6a5378c68a20b3589947d1917556932d32dbb))
+
 ## [10.10.0](https://github.com/fitglue/web/compare/v10.9.0...v10.10.0) (2026-02-06)
 
 
