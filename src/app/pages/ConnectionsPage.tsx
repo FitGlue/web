@@ -93,6 +93,11 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
                                 <Paragraph size="sm">{lastSynced}</Paragraph>
                             </Stack>
                         )}
+                        {integration.actions && integration.actions.length > 0 && (
+                            <Paragraph size="sm" muted>
+                                ⚡ {integration.actions.length} {integration.actions.length === 1 ? 'action' : 'actions'} available
+                            </Paragraph>
+                        )}
                     </Stack>
                 )}
 

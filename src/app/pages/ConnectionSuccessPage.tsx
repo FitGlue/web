@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { PageLayout, Stack } from '../components/library/layout';
-import { Button, CardSkeleton, Heading, Paragraph, Code } from '../components/library/ui';
+import { Button, CardSkeleton, Heading, Paragraph, Code, Badge, Card, useToast } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
+import { useConnectionActions } from '../hooks/useConnectionActions';
+import { IntegrationAction } from '../types/plugin';
 
 interface LocationState {
     ingressApiKey?: string;
@@ -33,6 +35,15 @@ const ConnectionSuccessPage: React.FC = () => {
     const { refresh: refreshIntegrations } = useRealtimeIntegrations();
     const [copiedKey, setCopiedKey] = useState(false);
     const [copiedUrl, setCopiedUrl] = useState(false);
+    const toast = useToast();
+
+    // Connection actions
+    const {
+        triggerAction,
+        isActionRunning,
+        isActionCompleted,
+        getActionError,
+    } = useConnectionActions(id || '');
 
     const state = location.state as LocationState | null;
     const ingressApiKey = state?.ingressApiKey;
@@ -179,6 +190,68 @@ const ConnectionSuccessPage: React.FC = () => {
                     <Paragraph muted centered>
                         Your activities will now sync automatically.
                     </Paragraph>
+                )}
+
+                {/* Available Actions */}
+                {integration?.actions && integration.actions.length > 0 && (
+                    <Card variant="elevated">
+                        <Stack gap="md">
+                            <Stack gap="xs">
+                                <Heading level={3}>🚀 Get Started</Heading>
+                                <Paragraph size="sm" muted>
+                                    You can run these now, or find them later in your connection settings.
+                                </Paragraph>
+                            </Stack>
+                            {integration.actions.map((action: IntegrationAction) => {
+                                const running = isActionRunning(action.id);
+                                const completed = isActionCompleted(action.id);
+                                const error = getActionError(action.id);
+
+                                return (
+                                    <Stack
+                                        key={action.id}
+                                        direction="horizontal"
+                                        justify="between"
+                                        align="center"
+                                        gap="md"
+                                    >
+                                        <Stack direction="horizontal" gap="md" align="center">
+                                            <span style={{ fontSize: '1.5rem' }}>
+                                                {action.icon}
+                                            </span>
+                                            <Stack gap="xs">
+                                                <Paragraph bold>{action.label}</Paragraph>
+                                                <Paragraph size="sm" muted>
+                                                    {action.description}
+                                                </Paragraph>
+                                                {error && (
+                                                    <Badge variant="error">{error}</Badge>
+                                                )}
+                                            </Stack>
+                                        </Stack>
+                                        <Button
+                                            variant={completed ? 'secondary' : 'primary'}
+                                            size="small"
+                                            disabled={running}
+                                            onClick={async () => {
+                                                try {
+                                                    await triggerAction(action.id);
+                                                    toast.success(
+                                                        'Action Started',
+                                                        `${action.label} is running in the background. You'll be notified when it completes.`
+                                                    );
+                                                } catch {
+                                                    toast.error('Failed', 'Could not start the action. Please try again.');
+                                                }
+                                            }}
+                                        >
+                                            {running ? 'Running...' : completed ? '✓ Done' : 'Run'}
+                                        </Button>
+                                    </Stack>
+                                );
+                            })}
+                        </Stack>
+                    </Card>
                 )}
 
                 <Stack direction="horizontal" gap="md">
