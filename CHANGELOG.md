@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.11.2](https://github.com/fitglue/web/compare/v10.11.1...v10.11.2) (2026-02-07)
+
+
+### Bug Fixes
+
+* back from boosted data page breadcrumb ([8bc90d7](https://github.com/fitglue/web/commit/8bc90d722a9929a19bdd3a84818fc29fa0923f03))
+
 ### [10.11.1](https://github.com/fitglue/web/compare/v10.11.0...v10.11.1) (2026-02-07)
 
 
