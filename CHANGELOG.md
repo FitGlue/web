@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.12.0](https://github.com/fitglue/web/compare/v10.11.2...v10.12.0) (2026-02-07)
+
+
+### Features
+
+* make connection actions more obvious ([d357cc6](https://github.com/fitglue/web/commit/d357cc61d628beb88e5f4400c11cdfe6a9c8c86d))
+
 ### [10.11.2](https://github.com/fitglue/web/compare/v10.11.1...v10.11.2) (2026-02-07)
 
 
