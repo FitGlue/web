@@ -160,6 +160,20 @@
         }
       },
       {
+        "source": "/api/users/me/booster-data",
+        "run": {
+          "serviceId": "user-data-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/users/me/booster-data/**",
+        "run": {
+          "serviceId": "user-data-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/users/me/notification-preferences",
         "run": {
           "serviceId": "user-data-handler",
