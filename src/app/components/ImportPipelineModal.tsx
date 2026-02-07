@@ -139,7 +139,7 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initi
                                             <Button
                                                 variant="secondary"
                                                 size="small"
-                                                onClick={() => navigate(`/app/connections`)}
+                                                onClick={() => navigate(`/connections`)}
                                             >
                                                 Connect
                                             </Button>
