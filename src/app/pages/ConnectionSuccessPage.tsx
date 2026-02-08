@@ -216,9 +216,9 @@ const ConnectionSuccessPage: React.FC = () => {
                                         gap="md"
                                     >
                                         <Stack direction="horizontal" gap="md" align="center">
-                                            <span style={{ fontSize: '1.5rem' }}>
+                                            <Paragraph size="lg">
                                                 {action.icon}
-                                            </span>
+                                            </Paragraph>
                                             <Stack gap="xs">
                                                 <Paragraph bold>{action.label}</Paragraph>
                                                 <Paragraph size="sm" muted>

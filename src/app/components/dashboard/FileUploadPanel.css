@@ -36,59 +36,7 @@
   color: var(--color-text-muted);
 }
 
-/* Hidden file input */
-.upload-file-input {
-  display: none;
-}
 
-/* Dropzone */
-.upload-dropzone {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-xs);
-  padding: var(--space-lg);
-  border: 2px dashed var(--color-border);
-  border-radius: var(--radius-sm);
-  background: rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex: 1;
-  min-height: 120px;
-}
-
-.upload-dropzone:hover {
-  border-color: var(--color-primary);
-  background: rgba(131, 56, 236, 0.1);
-}
-
-.upload-dropzone.has-file {
-  border-color: var(--color-accent);
-  border-style: solid;
-  background: rgba(0, 255, 136, 0.05);
-}
-
-.dropzone-icon {
-  font-size: 2rem;
-}
-
-.dropzone-text {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-}
-
-.dropzone-filename {
-  font-weight: 600;
-  color: var(--color-text);
-  text-align: center;
-  word-break: break-all;
-}
-
-.dropzone-size {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-}
 
 /* Form fields */
 .upload-fields {

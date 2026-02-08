@@ -23,4 +23,7 @@ export type { CheckboxProps } from './Checkbox';
 export { FormField } from './FormField';
 export type { FormFieldProps } from './FormField';
 
+export { FileInput } from './FileInput';
+export type { FileInputProps } from './FileInput';
+
 export { Form } from './Form';

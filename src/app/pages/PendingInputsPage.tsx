@@ -7,9 +7,10 @@ import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { PageLayout, Stack } from '../components/library/layout';
 import { DataList } from '../components/data/DataList';
 import { Button, Pill, Paragraph, Heading, EmptyState, GlowCard, DashboardSummaryCard, useToast } from '../components/library/ui';
-import { Select, Textarea, Input, FormField } from '../components/library/forms';
+import { Select, Textarea, Input, FormField, FileInput } from '../components/library/forms';
 import { PipelineConfig } from '../state/pipelinesState';
 import { HybridRaceTaggerInput } from '../components/forms/HybridRaceTaggerInput';
+
 
 interface ParsedInputInfo {
     sourceName: string;
@@ -66,6 +67,7 @@ const PendingInputsPage: React.FC = () => {
 
     const [formValues, setFormValues] = useState<Record<string, Record<string, string>>>({});
     const [submittingIds, setSubmittingIds] = useState<Set<string>>(new Set());
+    const [fileNames, setFileNames] = useState<Record<string, { name: string; size: number }>>({});
 
     const handleInputChange = (activityId: string, field: string, value: string) => {
         setFormValues((prev) => ({
@@ -206,39 +208,23 @@ const PendingInputsPage: React.FC = () => {
 
         // File upload field for FIT files
         if (field === 'fit_file_base64') {
-            const hasFile = value && value.length > 0;
+            const fileInfo = fileNames[activityId];
             return (
-                <Stack gap="sm">
-                    <input
-                        type="file"
-                        accept=".fit"
-                        style={{
-                            display: 'block',
-                            padding: 'var(--spacing-sm)',
-                            border: '1px dashed var(--color-border)',
-                            borderRadius: 'var(--radius-md)',
-                            background: 'var(--color-surface-secondary)',
-                            cursor: 'pointer',
-                            width: '100%'
-                        }}
-                        onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                                const reader = new FileReader();
-                                reader.onload = () => {
-                                    const base64 = (reader.result as string).split(',')[1];
-                                    handleInputChange(activityId, field, base64 || '');
-                                };
-                                reader.readAsDataURL(file);
-                            }
-                        }}
-                    />
-                    {hasFile && (
-                        <Paragraph size="sm" muted>
-                            ✓ FIT file loaded ({Math.round(value.length / 1024)}KB)
-                        </Paragraph>
-                    )}
-                </Stack>
+                <FileInput
+                    accept=".fit"
+                    placeholder="Click to select .fit file"
+                    fileName={fileInfo?.name}
+                    fileSize={fileInfo?.size}
+                    onFileSelect={(file) => {
+                        setFileNames(prev => ({ ...prev, [activityId]: { name: file.name, size: file.size } }));
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            const base64 = (reader.result as string).split(',')[1];
+                            handleInputChange(activityId, field, base64 || '');
+                        };
+                        reader.readAsDataURL(file);
+                    }}
+                />
             );
         }
 

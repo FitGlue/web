@@ -1,0 +1,49 @@
+/* FileInput Component Styles */
+
+.form-file-input {
+  position: relative;
+}
+
+.form-file-input__hidden {
+  display: none;
+}
+
+.form-file-input__dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-lg);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 120px;
+}
+
+.form-file-input__dropzone:hover {
+  border-color: var(--color-primary);
+  background: rgba(131, 56, 236, 0.1);
+}
+
+.form-file-input__dropzone--has-file {
+  border-color: var(--color-accent);
+  border-style: solid;
+  background: rgba(0, 255, 136, 0.05);
+}
+
+.form-file-input__dropzone--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-file-input__dropzone--disabled:hover {
+  border-color: var(--color-border);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.form-file-input__dropzone--error {
+  border-color: var(--color-danger);
+}
