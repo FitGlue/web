@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.14.0](https://github.com/fitglue/web/compare/v10.13.0...v10.14.0) (2026-02-09)
+
+
+### Features
+
+* **web:** add platform stats to marketing build, file upload nerd mode, and effort score enum ([5d37a9e](https://github.com/fitglue/web/commit/5d37a9e2aa6b67a71209af679838a70dfe98ed79))
+
 ## [10.13.0](https://github.com/fitglue/web/compare/v10.12.1...v10.13.0) (2026-02-09)
 
 
