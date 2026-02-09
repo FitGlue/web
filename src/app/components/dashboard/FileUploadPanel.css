@@ -136,7 +136,7 @@
 }
 
 /* Nerd Mode Toggle */
-.nerd-mode-toggle {
+[data-action="nerd-mode-toggle"] {
   background: none;
   border: none;
   color: var(--color-text-muted);
@@ -148,18 +148,18 @@
   transition: opacity 0.2s ease, color 0.2s ease;
 }
 
-.nerd-mode-toggle:hover {
+[data-action="nerd-mode-toggle"]:hover {
   opacity: 1;
   color: var(--color-text);
 }
 
-.nerd-mode-toggle:disabled {
+[data-action="nerd-mode-toggle"]:disabled {
   cursor: not-allowed;
   opacity: 0.3;
 }
 
 /* Nerd Mode Panel */
-.nerd-mode-panel {
+[data-panel="nerd-mode"] {
   padding: var(--space-sm) var(--space-md);
   background: rgba(139, 92, 246, 0.06);
   border: 1px solid rgba(139, 92, 246, 0.15);
@@ -167,7 +167,7 @@
   animation: nerdFadeIn 0.2s ease;
 }
 
-.nerd-mode-panel p {
+[data-panel="nerd-mode"] p {
   margin-top: var(--space-xs);
   font-size: var(--font-size-xs);
 }

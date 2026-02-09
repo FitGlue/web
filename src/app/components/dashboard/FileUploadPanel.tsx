@@ -13,6 +13,7 @@ import { Grid } from '../library/layout/Grid';
 import { useApi } from '../../hooks/useApi';
 import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { useUser } from '../../hooks/useUser';
+import { useNerdMode } from '../../state/NerdModeContext';
 import { getEffectiveTier, TIER_ATHLETE } from '../../utils/tier';
 import './FileUploadPanel.css';
 
@@ -32,8 +33,8 @@ export const FileUploadPanel: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // Nerd Mode state
-  const [nerdMode, setNerdMode] = useState(false);
+  // Nerd Mode from shared context
+  const { isNerdMode } = useNerdMode();
   const [selectedPipelineId, setSelectedPipelineId] = useState('');
 
   const hasFileUploadPipeline = pipelines.some((p: { source?: string }) =>
@@ -100,7 +101,7 @@ export const FileUploadPanel: React.FC = () => {
       };
 
       // Nerd Mode: target a specific pipeline
-      if (nerdMode && selectedPipelineId) {
+      if (isNerdMode && selectedPipelineId) {
         payload.pipelineId = selectedPipelineId;
       }
 
@@ -125,13 +126,6 @@ export const FileUploadPanel: React.FC = () => {
     }
   };
 
-  const handleNerdModeToggle = () => {
-    const next = !nerdMode;
-    setNerdMode(next);
-    if (!next) {
-      setSelectedPipelineId('');
-    }
-  };
 
   // Show upgrade prompt if at tier limit
   if (isAtLimit) {
@@ -200,8 +194,8 @@ export const FileUploadPanel: React.FC = () => {
         </Grid>
 
         {/* Nerd Mode: Pipeline Selector */}
-        {nerdMode && (
-          <div className="nerd-mode-panel">
+        {isNerdMode && (
+          <Stack gap="sm" data-panel="nerd-mode">
             <FormField label="Target Pipeline" htmlFor="nerd-pipeline">
               <Select
                 id="nerd-pipeline"
@@ -217,7 +211,7 @@ export const FileUploadPanel: React.FC = () => {
                 ⚡ Activity will be sent only to this pipeline
               </Paragraph>
             )}
-          </div>
+          </Stack>
         )}
 
         {/* Status message */}
@@ -238,16 +232,6 @@ export const FileUploadPanel: React.FC = () => {
         >
           {uploading ? '⏳ Uploading...' : '🚀 Upload & Process'}
         </Button>
-
-        {/* Nerd Mode Toggle */}
-        <button
-          type="button"
-          className="nerd-mode-toggle"
-          onClick={handleNerdModeToggle}
-          disabled={uploading}
-        >
-          {nerdMode ? '🤓 Hide Nerd Mode' : '🤓 Nerd Mode'}
-        </button>
       </Stack>
     </Card>
   );
