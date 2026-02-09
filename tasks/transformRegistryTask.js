@@ -42,14 +42,26 @@ export function transformRegistryTask() {
         isPremium: !!s.isPremium,
         // Preserve temporarily unavailable status for "Coming Soon" banners
         isTemporarilyUnavailable: !!s.isTemporarilyUnavailable,
-      }));
+      })).sort((/** @type {any} */ a, /** @type {any} */ b) => {
+        // Available items before "Coming Soon"
+        if (a.isTemporarilyUnavailable !== b.isTemporarilyUnavailable) {
+          return a.isTemporarilyUnavailable ? 1 : -1;
+        }
+        return (a.sortOrder ?? 99) - (b.sortOrder ?? 99);
+      });
       const destinations = (registry.destinations || []).map((/** @type {any} */ d) => ({
         ...d,
         detailsUrl: `/plugins/targets/${d.id}`,
         isPremium: !!d.isPremium,
         // Preserve temporarily unavailable status for "Coming Soon" banners
         isTemporarilyUnavailable: !!d.isTemporarilyUnavailable,
-      }));
+      })).sort((/** @type {any} */ a, /** @type {any} */ b) => {
+        // Available items before "Coming Soon"
+        if (a.isTemporarilyUnavailable !== b.isTemporarilyUnavailable) {
+          return a.isTemporarilyUnavailable ? 1 : -1;
+        }
+        return (a.sortOrder ?? 99) - (b.sortOrder ?? 99);
+      });
 
       // Category metadata for grouping plugins (Output-based taxonomy)
       const ENRICHER_CATEGORIES = [
@@ -68,6 +80,10 @@ export function transformRegistryTask() {
           plugins: boosters
             .filter((/** @type {any} */ b) => b.category === cat.id)
             .sort((/** @type {any} */ a, /** @type {any} */ b) => {
+              // Available items before "Coming Soon"
+              if (a.isTemporarilyUnavailable !== b.isTemporarilyUnavailable) {
+                return a.isTemporarilyUnavailable ? 1 : -1;
+              }
               // Pro (isPremium) boosters first
               if (a.isPremium !== b.isPremium) {
                 return a.isPremium ? -1 : 1;
