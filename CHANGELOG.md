@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.14.1](https://github.com/fitglue/web/compare/v10.14.0...v10.14.1) (2026-02-09)
+
+
+### Bug Fixes
+
+* upload uses nerdmode ([6a436b5](https://github.com/fitglue/web/commit/6a436b5d2b8522a1312e1d61302c91f0d2c0d422))
+
 ## [10.14.0](https://github.com/fitglue/web/compare/v10.13.0...v10.14.0) (2026-02-09)
 
 
