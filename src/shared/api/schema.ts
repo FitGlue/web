@@ -1140,12 +1140,23 @@ export interface components {
             iconType?: string;
             /** @description Path to icon asset (e.g., /images/icons/strava.svg) */
             iconPath?: string;
+            /** @description When true, marks integration as 'Coming Soon' */
+            isTemporarilyUnavailable?: boolean;
+        };
+        /** @description Platform-wide statistics, returned only when marketingMode=true */
+        PlatformStats: {
+            /** @description Number of users with access enabled */
+            athleteCount: number;
+            /** @description Total synchronized activities across all users */
+            activitiesBoostedCount: number;
         };
         PluginRegistryResponse: {
             sources: components["schemas"]["PluginManifest"][];
             enrichers: components["schemas"]["PluginManifest"][];
             destinations: components["schemas"]["PluginManifest"][];
             integrations: components["schemas"]["IntegrationManifest"][];
+            /** @description Platform stats, only present when marketingMode=true */
+            stats?: components["schemas"]["PlatformStats"];
         };
     };
     responses: never;

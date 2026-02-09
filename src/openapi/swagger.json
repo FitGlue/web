@@ -704,6 +704,10 @@
           "iconPath": {
             "type": "string",
             "description": "Path to icon asset (e.g., /images/icons/strava.svg)"
+          },
+          "isTemporarilyUnavailable": {
+            "type": "boolean",
+            "description": "When true, marks integration as 'Coming Soon'"
           }
         },
         "required": [
@@ -711,6 +715,24 @@
           "name",
           "authType",
           "enabled"
+        ]
+      },
+      "PlatformStats": {
+        "type": "object",
+        "description": "Platform-wide statistics, returned only when marketingMode=true",
+        "properties": {
+          "athleteCount": {
+            "type": "integer",
+            "description": "Number of users with access enabled"
+          },
+          "activitiesBoostedCount": {
+            "type": "integer",
+            "description": "Total synchronized activities across all users"
+          }
+        },
+        "required": [
+          "athleteCount",
+          "activitiesBoostedCount"
         ]
       },
       "PluginRegistryResponse": {
@@ -739,6 +761,10 @@
             "items": {
               "$ref": "#/components/schemas/IntegrationManifest"
             }
+          },
+          "stats": {
+            "$ref": "#/components/schemas/PlatformStats",
+            "description": "Platform stats, only present when marketingMode=true"
           }
         },
         "required": [
