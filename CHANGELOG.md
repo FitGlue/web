@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.13.0](https://github.com/fitglue/web/compare/v10.12.1...v10.13.0) (2026-02-09)
+
+
+### Features
+
+* **server:** add GitHub integration, pipeline sync notifications, and generated enum parsers ([2a74c34](https://github.com/fitglue/web/commit/2a74c344855837b37e44e48773d578edf67ab8de))
+* **web:** add plugin config wizard steps, pipeline duplicate, and booster data UX refresh ([4e64872](https://github.com/fitglue/web/commit/4e64872d957548ccc8af0a836ce5390fe18212cd))
+
+
+### Bug Fixes
+
+* sort available plugins before unavailable ones ([a64c50b](https://github.com/fitglue/web/commit/a64c50b7904f2a108d60e93aac77d0fa68eb2a84))
+
 ### [10.12.1](https://github.com/fitglue/web/compare/v10.12.0...v10.12.1) (2026-02-08)
 
 ## [10.12.0](https://github.com/fitglue/web/compare/v10.11.2...v10.12.0) (2026-02-07)

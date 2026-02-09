@@ -1,6 +1,6 @@
 {
   "name": "fitglue-web",
-  "version": "10.12.1",
+  "version": "10.13.0",
   "description": "FitGlue web frontend and Firebase Hosting configuration",
   "type": "module",
   "engines": {
