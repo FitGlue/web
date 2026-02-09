@@ -1,40 +1,62 @@
 ---
-title: Auto Increment booster — setup and troubleshooting
-excerpt: Appends an incrementing counter number to activity titles
-date: 2026-02-04
+title: Auto Increment booster — configuration and troubleshooting
+excerpt: Automatically number your activities with a running counter.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Auto Increment booster automatically adds incrementing numbers to your activity titles. Define a counter key and optional title filter. Activities matching the filter get an incrementing number appended, like "Leg Day #1", "Leg Day #2", etc. Each counter key maintains its own sequence. Great for tracking workout series.
+The Auto Increment booster adds a sequential number to your activity title or description. For example, "Morning Run" becomes "Morning Run #47". This is useful for tracking how many times you've done a specific activity type, maintaining a running count of workouts, or creating a numbered series.
 
-## Setup
+## Configuration
 
-1. Add the Auto Increment booster to your pipeline.
-2. Configure:
-   - **Counter Key** — Select existing counter or create new one (from /users/me/counters)
-   - **Title Filter** — Only increment if title contains this (optional)
-   - **Initial Value** — Starting number (optional, default: 1)
+### Position (`position`)
 
-## Config Options
+Where to display the counter:
 
-| Field | Description |
-|-------|-------------|
-| Counter Key | Select or create counter |
-| Title Filter | Only apply if title contains this text |
-| Initial Value | Starting number (default: 1) |
+| Option | Example |
+|---|---|
+| **Title suffix** (default) | `Morning Run #47` |
+| **Title prefix** | `#47 Morning Run` |
+| **Description** | Counter appears in the description text |
 
-## Use Cases
+### Counter Scope (`scope`)
 
-- Number workout series (Leg Day #1, #2, #3)
-- Track session counts
-- Create numbered runs
+What the counter tracks:
 
-## Multiple Instances
+| Option | Behavior |
+|---|---|
+| **All activities** (default) | One counter for everything |
+| **Per activity type** | Separate counters per type (Run #23, Ride #15) |
+| **Per pipeline** | Counter scoped to this specific pipeline |
 
-You can add multiple Auto Increment boosters with different counter keys and filters.
+### Start Number (`start_number`)
+
+The starting value for the counter. Default: **1**. Useful if you want to continue an existing numbering system.
+
+## Data Requirements
+
+- Works with any activity from any source
+- Counter state is persisted and incremented per-user
+
+## Tier & Access
+
+Available on the **Hobbyist** (free) tier.
+
+## Common Issues
+
+**Counter seems wrong** — If you added the booster after already processing activities, the counter starts from where you configure it, not from historical activities. Set `start_number` to match your actual count.
+
+**Counter incremented but activity failed** — If a pipeline fails after the counter increments, the counter does not roll back. This may create gaps in numbering.
+
+**Duplicate numbers** — In rare cases with multiple activities processing simultaneously, a race condition could produce duplicate numbers. This is uncommon with normal usage patterns.
+
+## Dependencies
+
+- No integration dependencies
 
 ## Related
 
-- [User Input booster](/help/articles/registry/enrichers/user-input) (manual title editing)
+- [Streak Tracker booster](/help/articles/registry/enrichers/streak-tracker)
+- [Distance Milestones booster](/help/articles/registry/enrichers/distance-milestones)

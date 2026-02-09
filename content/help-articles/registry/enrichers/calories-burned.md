@@ -1,34 +1,61 @@
 ---
-title: Calories Burned booster — setup and options
-excerpt: Estimate calories burned with optional fun food equivalents.
-date: 2026-02-06
+title: Calories Burned booster — configuration and troubleshooting
+excerpt: Estimate calories burned using MET-based calculation for activities without calorie data.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Calories Burned booster estimates your energy expenditure using MET (Metabolic Equivalent) calculations based on activity type, duration, and your weight. Optionally, turn on Fun Mode to see your workout translated into food equivalents.
+The Calories Burned booster estimates the calories you burned during your activity using MET (Metabolic Equivalent of Task) values. It's designed for sources that don't provide calorie data (like Hevy) or when you want a standardized calorie estimate across all your activities regardless of source.
 
 ## Configuration
 
-- **Fun Mode** — Show food equivalents alongside calorie count (e.g. "≈ 1.8 slices of pizza 🍕")
-- **Weight (kg)** — Your body weight for more accurate estimation (default: 70, range 30–200)
+### Body Weight (`weight`)
 
-## Tier
+Your body weight in kilograms. Used in the MET calculation: `calories = MET × weight × duration_hours`. Default: **70 kg**.
 
-Calories Burned is included in **Hobbyist** (free). No Athlete tier required.
+**Important**: This significantly affects accuracy. A 25% error in bodyweight produces a ~25% error in calorie estimates.
 
-## How It Works
+### Show Equivalents (`show_equivalents`)
 
-The booster uses scientifically defined MET values for each activity type — running, cycling, swimming, strength training, etc. — and multiplies by your weight and activity duration to estimate total calories burned.
+When enabled (default: **true**), displays fun food equivalents alongside the calorie number (e.g., "≈ 1.7 slices of pizza 🍕"). This adds personality to your description.
 
-## Best For
+## Data Requirements
 
-- Activities without built-in calorie tracking (e.g. strength workouts from Hevy)
-- Adding a fun social element with food equivalents
-- Quick calorie overview on your activity feed
+- **Activity type and duration** — MET values are looked up based on activity type and intensity.
+- Works with **any source** — doesn't require HR data (but HR-based estimates would be more accurate).
+
+## How Content Appears
+
+### On Strava (description)
+
+```
+🔥 Calories: 485 kcal
+≈ 1.7 slices of pizza 🍕
+≈ 2.4 beers 🍺
+```
+
+## Tier & Access
+
+Available on the **Hobbyist** (free) tier.
+
+## Common Issues
+
+**Calorie estimate seems wrong** — Check your `weight` setting. MET-based estimation is inherently approximate (±20%). It doesn't account for fitness level, muscle mass, or individual metabolism.
+
+**Overrides source calories** — If your source already provides calorie data, this booster may override it. Consider whether you want the source's estimate or the MET-based estimate.
+
+**"Running" and "Trail Running" give different estimates** — Different activity types have different MET values. Trail running has a higher MET than flat running, which increases the calorie estimate.
+
+**Food equivalents seem silly for serious athletes** — Disable `show_equivalents` for a cleaner, data-only output.
+
+## Dependencies
+
+- No integration dependencies
+- Requires body weight to be set
 
 ## Related
 
-- [Training Load booster](/help/articles/registry/enrichers/training-load)
+- [Workout Summary booster](/help/articles/registry/enrichers/workout-summary)
 - [Heart Rate Summary booster](/help/articles/registry/enrichers/heart-rate-summary)

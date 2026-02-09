@@ -51,6 +51,13 @@
         }
       },
       {
+        "source": "/hooks/github",
+        "run": {
+          "serviceId": "github-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/showcase/**",
         "destination": "/showcase.html"
       },
@@ -310,6 +317,13 @@
         "source": "/auth/google/callback",
         "run": {
           "serviceId": "google-oauth-handler",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/auth/github/callback",
+        "run": {
+          "serviceId": "github-oauth-handler",
           "region": "us-central1"
         }
       },

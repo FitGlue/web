@@ -1,43 +1,73 @@
 ---
-title: Personal Records booster — setup and troubleshooting
-excerpt: Detects and celebrates new PRs for cardio and strength activities
-date: 2026-02-04
+title: Personal Records booster — configuration and troubleshooting
+excerpt: Track and display personal records across your activities.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Personal Records booster automatically detects when you've achieved a new personal record and adds a celebration to your activity. Cardio records tracked: Fastest 5K, 10K, Half Marathon; Longest Run/Ride; Highest Elevation Gain. Strength records (per exercise): 1RM (Epley formula), Volume, Max Reps. All records are stored in Firestore and persist across time.
+The Personal Records booster tracks your best performances across activities and highlights when you achieve a new PR. It monitors metrics like fastest 5K, longest run, highest power, heaviest lift, and more — then adds a celebratory note to your activity description when a record is broken.
 
-## Setup
+## Configuration
 
-1. Add the Personal Records booster to your pipeline.
-2. Configure:
-   - **Track Cardio PRs** — 5K, 10K, longest distance, etc. (default: true)
-   - **Track Strength PRs** — 1RM, volume, max reps (default: true)
-   - **Celebrate in Title** — Add 🎉 emoji to activity title when PR achieved (default: false)
+### Track Types (`track_types`)
 
-## Config Options
+Select which record types to track:
 
-| Field | Default | Description |
-|-------|---------|-------------|
-| Track Cardio PRs | true | 5K, 10K, longest run/ride, elevation |
-| Track Strength PRs | true | 1RM, volume, max reps per exercise |
-| Celebrate in Title | false | Add 🎉 to title on PR |
+| Option | Tracks |
+|---|---|
+| **Running PRs** | Fastest 1K, 5K, 10K, half marathon, marathon |
+| **Cycling PRs** | Longest ride, highest avg power, best 20-min power |
+| **Strength PRs** | Heaviest 1RM per exercise (from Hevy) |
+| **General PRs** | Longest activity, highest calorie burn |
 
-## Output Example
+Multiple types can be selected.
+
+### Show Near-Misses (`show_near_misses`)
+
+When enabled, notes when you come within 5% of a PR ("Almost broke your 5K record — missed by 12 seconds!").
+
+## Data Requirements
+
+- Records are tracked per-user and persist across all activities
+- Different record types require different data (e.g., running PRs need distance + time, strength PRs need exercise + weight data)
+
+## How Content Appears
+
+### On Strava (description)
 
 ```
-🏆 NEW PR! Deadlift 1RM: 140kg (previous: 135kg, +3.7%)
+🏆 NEW PERSONAL RECORD!
+Fastest 5K: 22:34 (previous: 23:01)
 ```
 
-## Use Cases
+Or for strength:
+```
+🏆 NEW PR: Bench Press 1RM — 100kg (previous: 95kg)
+```
 
-- Celebrate running PRs automatically
-- Track strength progression over time
-- Share PR achievements on your activity feed
+## Tier & Access
+
+The Personal Records booster requires the **Athlete** (paid) tier.
+
+## Common Issues
+
+**PRs not tracking accurately** — PRs are only tracked from activities processed through FitGlue. Historical activities from before you connected will not establish baseline records. You may want to manually set baseline PRs or allow the first few activities to establish them.
+
+**Strength PR not detected** — The booster calculates estimated 1RM from your sets/reps/weight data. Very high-rep sets (15+ reps) produce less reliable 1RM estimates.
+
+**Strength PRs imported from Hevy** — You can also import historical strength PRs using the [Hevy integration](/help/articles/registry/integrations/hevy) action "Import Strength PRs", which pulls 12 months of data.
+
+**PR broken every session** — If you just started tracking, the first activity sets the baseline, and subsequent similar activities may superficially "break" records. This stabilizes after a few weeks of data.
+
+## Dependencies
+
+- No integration dependencies (but benefits from Hevy for strength PRs)
+- Requires **Athlete tier**
 
 ## Related
 
-- [Workout Summary booster](/help/articles/registry/enrichers/workout-summary) (strength exercise details)
-- [Pace Summary booster](/help/articles/registry/enrichers/pace-summary)
+- [Hevy integration](/help/articles/registry/integrations/hevy) (Import Strength PRs action)
+- [Streak Tracker booster](/help/articles/registry/enrichers/streak-tracker)
+- [Distance Milestones booster](/help/articles/registry/enrichers/distance-milestones)

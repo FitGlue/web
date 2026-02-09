@@ -1,47 +1,57 @@
 ---
-title: Condition Matcher booster — setup and troubleshooting
-excerpt: Applies title/description templates when conditions match
-date: 2026-02-04
+title: Condition Matcher booster — configuration and troubleshooting
+excerpt: Route activities through different pipeline paths based on configurable conditions.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Condition Matcher booster applies custom titles and descriptions based on when, where, and what type of activity you're doing. Define conditions like "Saturday morning run near the park" and specify a title template. When activities match your conditions, the template is applied automatically. Perfect for recurring workouts like "Morning Gym Session" or "Sunday Long Run".
+The Condition Matcher booster evaluates your activity against configurable conditions and tags or routes it accordingly. It's the "if-this-then-that" logic layer in your pipeline — allowing you to apply different boosters or skip sections based on activity type, distance, title keywords, or other properties.
 
-## Setup
+## Configuration
 
-1. Add the Condition Matcher booster to your pipeline.
-2. Configure conditions (all optional; combine as needed):
-   - **Activity Type** — Run, Ride, Weight Training, etc.
-   - **Days of Week** — Mon, Tue, Wed, etc.
-   - **Start Time / End Time** — 24-hour format (e.g., 09:00, 17:00)
-   - **Location** — Latitude, longitude, radius (meters)
-   - **Title Template** — New title when conditions match
-   - **Description Template** — New description when conditions match
+### Conditions (`conditions`)
 
-## Config Options
+A list of condition rules. Each rule has:
 
-| Field | Description |
-|-------|-------------|
-| Activity Type | Match specific type (optional) |
-| Days of Week | Match activities on these days |
-| Start/End Time | Time window (24h format) |
-| Location Lat/Long + Radius | Match activities near a location |
-| Title Template | Template when match |
-| Description Template | Template when match |
+| Field | Description | Example |
+|---|---|---|
+| **Field** | The activity field to test | `type`, `title`, `distance` |
+| **Operator** | Comparison operator | `equals`, `contains`, `greater_than`, `less_than` |
+| **Value** | The value to compare against | `Running`, `parkrun`, `10000` |
+| **Tag** | A tag to apply when the condition matches | `is_run`, `is_race`, `is_long_run` |
 
-## Use Cases
+### Match Mode (`match_mode`)
 
-- Auto-title recurring workouts (e.g., "Morning Gym Session")
-- Name activities by location
-- Set titles by day or time (e.g., "Sunday Long Run")
+| Option | Behavior |
+|---|---|
+| **Any** (default) | At least one condition must match |
+| **All** | All conditions must match |
 
-## Multiple Instances
+## Data Requirements
 
-You can add multiple Condition Matcher boosters for different rule sets.
+- Works with **any activity** — evaluates based on metadata fields
+
+## Tier & Access
+
+Available on the **Hobbyist** (free) tier.
+
+## Common Issues
+
+**Conditions not matching** — Check that the field name exactly matches what your source provides. Different sources may use slightly different field names or formats.
+
+**Wrong match mode** — If using "All" mode, every condition must match. Switch to "Any" if you want OR logic.
+
+**Tags not working downstream** — Ensure downstream boosters are configured to read condition tags. Tags are internal pipeline metadata — they don't appear in the activity description.
+
+## Dependencies
+
+- No integration dependencies
+- Often used with [Logic Gate](/help/articles/registry/enrichers/logic-gate) and [Activity Filter](/help/articles/registry/enrichers/activity-filter)
 
 ## Related
 
+- [Activity Filter booster](/help/articles/registry/enrichers/activity-filter)
+- [Logic Gate booster](/help/articles/registry/enrichers/logic-gate)
 - [Type Mapper booster](/help/articles/registry/enrichers/type-mapper)
-- [Location Naming booster](/help/articles/registry/enrichers/location_naming)

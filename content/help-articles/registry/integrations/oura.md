@@ -1,32 +1,33 @@
 ---
-title: Connecting Oura Ring — setup and troubleshooting
-excerpt: Import workouts from your Oura Ring
-date: 2026-02-04
+title: Connecting Oura — setup and troubleshooting
+excerpt: How to connect your Oura Ring account to FitGlue via OAuth.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-Oura Ring is a smart ring that tracks sleep, readiness, and activity. FitGlue connects to your Oura account via OAuth and imports your tracked workouts. Heart rate data, calories, and workout duration flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava.
+Oura connects to FitGlue via **OAuth**. This allows FitGlue to import activity data and heart rate from your Oura Ring via the Oura Cloud API.
 
-## Temporarily Unavailable
+## Authentication Type
 
-The Oura Ring integration is currently **temporarily unavailable**. FitGlue is working on restoring this connection.
+**OAuth 2.0** — Secure redirect-based authorization.
 
-## Setup (when available)
+## Setup
 
-1. Open the **FitGlue Dashboard**
-2. Navigate to **Connections** and click **Connect** on Oura Ring
-3. Sign in to your **Oura account** when redirected
-4. Review and **Accept Permissions** to allow FitGlue to access your workouts
-5. You're connected!
+1. **Go to FitGlue** — Dashboard → Connections → Oura → Connect.
+2. **Sign in** with your Oura account.
+3. **Grant permissions** for activity and heart rate data access.
+4. **Verify** — Check the connection status.
 
-FitGlue uses secure OAuth — your Oura password is never stored.
+## Common Issues
 
-## Auth Type: OAuth
+**No activities detected** — Oura Ring auto-detects activities. Short or low-intensity activities may not trigger activity detection.
 
-Secure OAuth connection.
+**Token expired** — Reconnect via Dashboard → Connections.
+
+**Data delayed** — Oura data syncs when you open the Oura app. Open the app to trigger a cloud sync.
 
 ## Related
 
-- [Oura Ring source](/help/articles/registry/sources/oura)
+- [Oura as a source](/help/articles/registry/sources/oura)

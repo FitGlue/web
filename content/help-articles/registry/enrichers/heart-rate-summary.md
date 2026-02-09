@@ -1,36 +1,73 @@
 ---
-title: Heart Rate Summary booster — setup and troubleshooting
-excerpt: Adds min/avg/max heart rate stats to the activity description
-date: 2026-02-04
+title: Heart Rate Summary booster — configuration and troubleshooting
+excerpt: Add heart rate statistics to your activity description.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Heart Rate Summary booster automatically calculates and appends heart rate statistics to your activity description. When your activity has heart rate data (from Fitbit, Apple Watch, or any source), this enricher analyzes all data points and adds a clean summary showing minimum, average, and maximum heart rates during the workout.
+The Heart Rate Summary booster adds a formatted section to your activity description with key heart rate statistics — average HR, max HR, minimum HR, and time in each heart rate zone. This turns raw HR data into a readable summary for your followers on Strava or visitors to your Showcase page.
 
-## Setup
+## Configuration
 
-1. Add the Heart Rate Summary booster to your pipeline.
-2. No configuration required — it activates automatically when heart rate data is present.
+### Show Zones (`show_zones`)
 
-## Requirements
+When enabled (default: **true**), includes time spent in each HR zone (Zone 1–5). When disabled, only shows avg/max/min HR.
 
-Activity must have heart rate data. Use [Fitbit Heart Rate](/help/articles/registry/enrichers/fitbit-heart-rate) or [FIT File Heart Rate](/help/articles/registry/enrichers/fit-file-heart-rate) to add HR to activities that lack it.
+### Zone Source (`zone_source`)
 
-## Output Example
+Where heart rate zone thresholds come from:
+
+| Option | Behavior |
+|---|---|
+| **Default** | Standard age-based zones (220 - age) |
+| **Custom** | You define zone thresholds manually |
+
+### Zone Thresholds (`zone_thresholds`)
+
+*Only visible when Zone Source = "Custom"*
+
+Custom BPM boundaries for Zone 1–5. Example: `120, 140, 160, 175` (values represent the upper bound of each zone).
+
+## Data Requirements
+
+- **Heart rate data** must exist on the activity — either from the source (Strava, Garmin, Fitbit) or merged by another booster ([Fitbit Heart Rate](/help/articles/registry/enrichers/fitbit-heart-rate), [FIT File Heart Rate](/help/articles/registry/enrichers/fit-file-heart-rate)).
+- Without HR data, no output is produced.
+
+## How Content Appears
+
+### On Strava (description)
 
 ```
-❤️ Heart Rate: 95 bpm min • 145 bpm avg • 178 bpm max
+❤️ Heart Rate Summary
+Average: 142 bpm | Max: 178 bpm
+Zone 1 (Recovery):  🟦🟦⬜⬜⬜  8 min
+Zone 2 (Aerobic):   🟩🟩🟩⬜⬜  15 min
+Zone 3 (Tempo):     🟨🟨🟨🟨⬜  22 min
+Zone 4 (Threshold): 🟧🟧⬜⬜⬜  7 min
+Zone 5 (Max):       🟥⬜⬜⬜⬜  2 min
 ```
 
-## Use Cases
+## Tier & Access
 
-- Quick HR overview on your activity feed
-- Track training zones summary
-- Share intensity without graphs
+Available on the **Hobbyist** (free) tier.
+
+## Common Issues
+
+**No heart rate summary showing** — The activity has no HR data. Check your source or ensure an HR booster (Fitbit HR, FIT File HR) is placed before this booster in the pipeline.
+
+**Zone calculations seem wrong** — Check your age in your FitGlue profile for correct default zone calculation. If using custom zones, verify the thresholds are in BPM and correctly ordered.
+
+**Zone bars not displaying** — The emoji progress bars require platform support. Most modern platforms render them correctly. If not, consider the percentage display option.
+
+## Dependencies
+
+- Requires HR data on the activity
+- Pairs with [Heart Rate Zones](/help/articles/registry/enrichers/heart-rate-zones)
 
 ## Related
 
+- [Heart Rate Zones booster](/help/articles/registry/enrichers/heart-rate-zones)
 - [Fitbit Heart Rate booster](/help/articles/registry/enrichers/fitbit-heart-rate)
-- [Training Load booster](/help/articles/registry/enrichers/training-load) (TRIMP from HR)
+- [FIT File Heart Rate booster](/help/articles/registry/enrichers/fit-file-heart-rate)

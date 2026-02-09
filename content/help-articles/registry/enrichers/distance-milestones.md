@@ -1,34 +1,62 @@
 ---
-title: Distance Milestones booster — setup and options
-excerpt: Celebrate lifetime distance achievements per sport with milestone callouts.
-date: 2026-02-06
+title: Distance Milestones booster — configuration and troubleshooting
+excerpt: Celebrate cumulative distance milestones across your activities.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Distance Milestones booster tracks your lifetime cumulative distance and celebrates when you cross major thresholds — 100 km, 500 km, 1,000 km, and beyond. You can track all activities together or filter to a specific sport.
+The Distance Milestones booster tracks your cumulative distance across all activities and celebrates when you hit milestones — 100km, 500km, 1000km, and beyond. When a milestone is reached, a celebratory note is added to the activity description.
 
 ## Configuration
 
-- **Sport Filter** — All Activities, Running Only, Cycling Only, or Swimming Only
+### Milestone Intervals (`interval`)
 
-## Tier
+The distance between milestones (in km). Default: **100 km**. Set to a lower value (e.g., 50 or 25) for more frequent celebrations.
 
-Distance Milestones is included in **Hobbyist** (free). No Athlete tier required.
+### Activity Filter (`activity_filter`)
 
-## How It Works
+| Option | Behavior |
+|---|---|
+| **All Activities** (default) | All activities with distance contribute |
+| **Running Only** | Only running activities count |
+| **Cycling Only** | Only cycling activities count |
 
-Each activity with distance data adds to your running total. When you cross a milestone threshold, the booster appends a celebration message to your activity description showing the milestone, your total, and how much this activity contributed.
+## Data Requirements
 
-## Best For
+- Requires **distance data** on activities
+- Cumulative distance is persisted per-user
 
-- Runners chasing their first 1,000 km
-- Cyclists tracking yearly mileage
-- Anyone who enjoys celebrating long-term progress
+## How Content Appears
+
+### On Strava (description)
+
+```
+🎉 MILESTONE: 1,000 km total running distance!
+```
+
+(Only appears when a milestone is actually reached — not on every activity.)
+
+## Tier & Access
+
+The Distance Milestones booster requires the **Athlete** (paid) tier.
+
+## Common Issues
+
+**Wrong cumulative distance** — Distance is only tracked from activities processed through FitGlue. Historical activities from before connection don't count.
+
+**Milestone not appearing** — The booster only adds a note when a milestone threshold is crossed. If the setting is 100km and you're at 850km, nothing shows until you cross 900km.
+
+**Celebrating too infrequently** — Lower the `interval` value (e.g., from 100km to 50km or 25km).
+
+## Dependencies
+
+- Requires **Athlete tier**
+- Requires distance data from source
 
 ## Related
 
-- [Goal Tracker booster](/help/articles/registry/enrichers/goal-tracker)
 - [Streak Tracker booster](/help/articles/registry/enrichers/streak-tracker)
+- [Goal Tracker booster](/help/articles/registry/enrichers/goal-tracker)
 - [Personal Records booster](/help/articles/registry/enrichers/personal-records)

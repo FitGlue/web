@@ -1,29 +1,38 @@
 ---
 title: Connecting Spotify — setup and troubleshooting
-excerpt: Connect your Spotify account to track music during activities
-date: 2026-02-04
+excerpt: How to connect your Spotify account to FitGlue via OAuth.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-Spotify is the world's leading music streaming platform. FitGlue connects to your Spotify account and tracks what music you listened to during your workouts. See your top played tracks, discover your workout playlists, and share your activity soundtrack.
+Spotify connects to FitGlue via **OAuth**. This allows the [Spotify Tracks booster](/help/articles/registry/enrichers/spotify-tracks) to fetch your recently played music during activities, adding a workout playlist to your descriptions.
 
-## Temporarily Unavailable
+## Authentication Type
 
-The Spotify integration is currently **temporarily unavailable**. FitGlue is working on restoring this connection.
+**OAuth 2.0** — Secure redirect-based authorization.
 
-## Setup (when available)
+## Setup
 
-1. **Click Connect** — You'll be redirected to Spotify's authorization page
-2. **Sign in to Spotify** — Use your Spotify account credentials
-3. **Authorize FitGlue** — Grant permission to read your recently played tracks
-4. **Done!** — You'll be redirected back to FitGlue
+1. **Go to FitGlue** — Dashboard → Connections → Spotify → Connect.
+2. **Sign in** with your Spotify account.
+3. **Grant permissions** — Allow FitGlue to read your recently played tracks.
+4. **Verify** — After your next activity, check if tracks appear.
 
-## Auth Type: OAuth
+## Permissions Requested
 
-FitGlue requests permission to read your recently played tracks for the time window of your activities.
+- **Read recently played** — Access to your listening history
+- **User profile** — Basic profile identification
+
+## Common Issues
+
+**"Connection failed"** — Ensure you're signing into the correct Spotify account. If you have both free and premium accounts, use the one you listen with during workouts.
+
+**No tracks found** — Spotify must have been actively playing during the activity's time window. Offline listening history may not sync to the API in time.
+
+**Token expired** — Spotify OAuth tokens expire. FitGlue auto-refreshes, but reconnection may occasionally be needed.
 
 ## Related
 
-- [Spotify Soundtrack booster](/help/articles/registry/enrichers/spotify-tracks)
+- [Spotify Tracks booster](/help/articles/registry/enrichers/spotify-tracks)

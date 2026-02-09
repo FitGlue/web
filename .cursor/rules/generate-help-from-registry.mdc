@@ -8,9 +8,17 @@ alwaysApply: false
 
 When invoked, generate or update help articles for FitGlue plugins based on the registry.
 
+## Golden Rule
+
+Help articles exist for users who are **stuck, confused, or troubleshooting**. They must go far beyond what the registry already shows in the UI. If a section only restates the registry's `description`, `features`, or `marketingDescription`, it is **not adding value** and must be expanded or removed.
+
+Every article should answer: *"What would I need to know if this wasn't working the way I expected?"*
+
 ## Source of Truth
 
 Read **only** from [server/src/typescript/shared/src/plugin/registry.ts](server/src/typescript/shared/src/plugin/registry.ts). Do not use .cache/registry.json.
+
+However, the registry is a **starting point**, not the finish line. Use the registry's `configSchema`, `marketingDescription`, `features`, `transformations`, and `useCases` as raw inputs, then layer on the deep detail described below.
 
 ## Output Location
 
@@ -34,16 +42,151 @@ category: registry
 ---
 ```
 
-## Content Guidelines
+## Content Sections — Required Depth
 
-1. **Overview** — What the plugin does, from marketingDescription
-2. **Setup** — How to connect or configure (from setupInstructions for integrations, configSchema for enrichers)
-3. **Confusion points** — Address these explicitly:
-   - Tier gating (requiredTier, isPremium)
-   - Auth type (OAuth vs API key vs app sync)
-   - Dependencies (requiredIntegrations)
-   - isTemporarilyUnavailable
-4. **Related** — Link to connection article if plugin requires one, or related plugins
+### 1. Overview
+
+- What the plugin does **in practical terms** — not a copy of `marketingDescription`.
+- Who benefits most and which workflows this plugin is central to.
+- What data it interacts with (what it reads from an activity, what it writes/outputs, what it ignores).
+
+---
+
+### 2. Configuration (enrichers with `configSchema`, destinations with config)
+
+For **every** field in `configSchema`, write a dedicated subsection:
+
+- **Field name and label** — exactly as shown in the UI.
+- **What it controls** — describe the practical, visible effect of changing this value. Don't just repeat the `description` string; explain *what changes* in the output.
+- **Default value** — and whether most users should keep it or change it.
+- **Available options** — for SELECT fields, list every option with a concrete example of what the output looks like for each. If the registry has `before`/`after` transformations, embed those as fenced code blocks.
+- **Range and edge cases** — for NUMBER fields, document the min/max and what happens at boundary values.
+- **Interactions** — if one config field changes the behaviour of another (e.g. `bar_length` is only relevant when `style` is `emoji`), call this out explicitly.
+
+> Example of the depth expected for a SELECT field:
+>
+> #### Summary Format (`format`)
+>
+> Controls how individual sets appear in the workout summary.
+>
+> | Option | Example output |
+> |---|---|
+> | **Compact** | `4×10×100kg` |
+> | **Detailed** (default) | `4 x 10 × 100.0kg` |
+> | **Verbose** | `4 sets of 10 reps at 100.0 kilograms` |
+>
+> Compact is best when posting to platforms with character limits. Verbose suits coaching logs where clarity matters more than brevity.
+
+---
+
+### 3. Data Ingested / Data Requirements (sources and enrichers)
+
+**For sources** — describe exactly what data fields FitGlue pulls from the external platform:
+- Activity metadata (title, type, sport, start time, duration, distance, calories)
+- Sensor data (heart rate stream, GPS coordinates, power, cadence, elevation)
+- Source-specific data (e.g. Hevy provides exercise names, sets, reps, weights; Strava provides segment efforts)
+- What is **not** available (e.g. "Fitbit does not provide cadence data" or "Oura does not provide GPS")
+- How frequently the data syncs and through what mechanism (webhook, polling, app push)
+
+**For enrichers** — describe what input data the booster requires to function:
+- Which activity fields it reads (e.g. "requires heart rate stream data, not just average HR")
+- What happens if the required data is missing (does it skip silently? produce a warning? partial output?)
+- Which sources provide the required data and which don't
+
+---
+
+### 4. Output & How Content Appears (enrichers and destinations)
+
+**For enrichers** — describe exactly what gets added to the activity:
+- Which activity fields are modified (description, title, metadata)
+- Show realistic before/after examples using the `transformations` array from the registry. Present these as fenced `text` code blocks.
+- If the booster generates visual assets (images, graphs), describe what they look like, where they appear, and what controls their appearance.
+- If the booster writes to `description`, explain the structured section format (e.g. `📋 Workout Summary:` header) and how it coexists with other boosters' sections.
+
+**For destinations** — describe exactly what gets sent to the target platform:
+- Which activity fields are uploaded (title, description, type, duration, heart rate, GPS, etc.)
+- How enriched content (AI descriptions, muscle heatmaps, booster sections) appears on the target platform — is it plain text? Does the platform render markdown? Are images attached or embedded?
+- Any platform-specific limitations (character limits, unsupported features, field truncation).
+- What the uploaded activity looks like on the destination (conceptually describe the end result).
+
+---
+
+### 5. Provider Configuration (enrichers with external providers)
+
+If the enricher integrates with an external service or provider (e.g. Spotify, AI model, weather API):
+- How to set up the provider connection
+- What credentials or accounts are needed
+- What data flows to/from the external service
+- Rate limits or quotas that might affect operation
+
+---
+
+### 6. Tier & Access
+
+- State the `requiredTier` (Hobbyist or Athlete) and what this means in practice.
+- If `isPremium` — explain the Athlete badge and any sorting implications.
+- If tier-gated, explain what happens when a Hobbyist user tries to add this plugin (the Ghost Run / TIER_BLOCKED pattern if applicable).
+
+---
+
+### 7. Setup
+
+**For sources:**
+- Step-by-step connection process with exact UI navigation paths.
+- Any prerequisites on the external platform (e.g. "Hevy Pro subscription required").
+- What the user should expect to see after successful connection (e.g. "Activities should begin syncing within 5 minutes").
+
+**For enrichers:**
+- How to add the booster to an existing pipeline.
+- Recommended ordering relative to other boosters (e.g. "place HR enrichers before Heart Rate Zones so zone data is available").
+
+**For destinations:**
+- How to add as a target in the pipeline wizard.
+- Any mandatory config (e.g. Google Sheets requires a Spreadsheet ID).
+
+**For integrations:**
+- Full authentication walkthrough (OAuth flow, API key generation, app installation).
+- Exact navigation paths on the external platform to find keys/settings.
+- What permissions FitGlue requests and why.
+
+---
+
+### 8. Common Issues & Troubleshooting
+
+This section must be **substantial**. Include at least 3–5 common issues, each as a bold problem statement followed by the explanation and fix. Think about:
+
+- Connection failures and auth errors
+- Missing or incomplete data (e.g. "Workout has no heart rate data")
+- Config mismatches (e.g. wrong spreadsheet ID format)
+- Sync delays and webhook reliability
+- `isTemporarilyUnavailable` — if the plugin is currently unavailable, explain this prominently so users know it's not their fault
+- Dependencies that aren't met (e.g. trying to use Heart Rate Zones without heart rate data)
+- Platform-specific gotchas (e.g. Strava's character limit for descriptions)
+
+---
+
+### 9. Dependencies
+
+- List `requiredIntegrations` with links to connection articles.
+- Call out other boosters this one works best with or depends on.
+- Note any ordering requirements in the pipeline.
+
+---
+
+### 10. Related
+
+- Link to connection article if the plugin requires one.
+- Link to complementary plugins (e.g. Workout Summary → Muscle Heatmap).
+- Link to relevant guides (e.g. "Hevy to Strava guide").
+
+## Minimum Article Length
+
+- **Source articles**: 80+ lines
+- **Enricher articles**: 100+ lines (more if configSchema is complex)
+- **Destination articles**: 80+ lines
+- **Integration articles**: 60+ lines
+
+If an article is shorter than these minimums, it almost certainly lacks sufficient depth.
 
 ## When to Run
 

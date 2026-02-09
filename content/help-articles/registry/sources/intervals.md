@@ -1,35 +1,61 @@
 ---
 title: Intervals.icu source — setup and troubleshooting
-excerpt: Import activities from Intervals.icu
-date: 2026-02-04
+excerpt: Import structured training activities from Intervals.icu into FitGlue.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Intervals.icu source imports your activities from Intervals.icu into FitGlue. Power data, heart rate, cadence, GPS, and all performance metrics are captured for enhancement and distribution. FitGlue polls your Intervals.icu account for new activities and imports them into your pipeline.
+The Intervals.icu source imports activities from Intervals.icu, a popular free training analysis platform. Intervals.icu aggregates data from multiple sources (Garmin, Strava, TrainingPeaks) and provides detailed analytics. Using it as a FitGlue source gives you access to all activities flowing through your Intervals.icu account.
 
-## Temporarily Unavailable
+## Data Ingested
 
-The Intervals.icu source is currently **temporarily unavailable**. FitGlue is working on restoring this integration.
+| Field | Details |
+|---|---|
+| **Title** | Activity name from Intervals.icu |
+| **Activity type** | Running, cycling, swimming, and other supported types |
+| **Start time & duration** | Full timestamps |
+| **Distance** | Total distance |
+| **Calories** | Estimated calories |
+| **Heart rate** | HR data if available from source device |
+| **GPS data** | Route coordinates if available |
+| **Power** | Power data for cycling (including estimated power) |
+| **Cadence** | Cadence data if recorded |
+| **TSS/Training load** | Intervals.icu's training stress score |
 
-## Setup (when available)
+### What is NOT available
 
-1. **Connect Intervals.icu** — See [Connecting Intervals.icu](/help/articles/registry/integrations/intervals). You'll need your API Key and Athlete ID from Settings → Developer Settings.
-2. **Create a pipeline** — Add Intervals.icu as the source, then add boosters and targets.
-3. **Sync** — FitGlue polls for new activities and imports them when found.
+- **Strength exercise details** — Not provided through the API.
+- **Running dynamics** — Not forwarded by Intervals.icu.
 
-## Auth Type: API Key
+### Sync mechanism
 
-Intervals.icu uses an API key and Athlete ID — no OAuth required. Find both in Intervals.icu → Settings → Developer Settings.
+Intervals.icu uses **API polling** with webhook-like notifications. Activities appear when they're processed by Intervals.icu.
 
-## Data Included
+## Setup
 
-- Full power data
-- Heart rate, cadence, and GPS
-- Performance metrics and training load
+1. **Connect Intervals.icu** — See [Connecting Intervals.icu](/help/articles/registry/integrations/intervals) for setup with your API key.
+2. **Create a pipeline** — Add Intervals.icu as the source.
+
+## Tier
+
+The Intervals.icu source is included in **Hobbyist** (free tier).
+
+## Common Issues
+
+**Activities not syncing** — Intervals.icu must first receive the activity from its own sources (Garmin, Strava, etc.). There's a cascade delay: device → Garmin/Strava → Intervals.icu → FitGlue. Allow up to 30 minutes for the full chain.
+
+**Duplicate activities** — If you have both Strava and Intervals.icu as FitGlue sources, and Intervals.icu receives data from Strava, the same activity will appear twice. Use only one as your FitGlue source to avoid duplicates.
+
+**API key issues** — Ensure your Intervals.icu API key is correct and has not expired. You can find your API key in Intervals.icu Settings → Developer.
+
+## Dependencies
+
+- **Required integration**: [Intervals.icu connection](/help/articles/registry/integrations/intervals) (API key)
 
 ## Related
 
 - [Connecting Intervals.icu](/help/articles/registry/integrations/intervals)
-- [Intervals.icu destination](/help/articles/registry/destinations/intervals)
+- [Intervals.icu as a destination](/help/articles/registry/destinations/intervals)
+- [Training Load booster](/help/articles/registry/enrichers/training-load)

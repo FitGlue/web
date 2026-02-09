@@ -1,37 +1,55 @@
 ---
-title: User Input booster — setup and troubleshooting
-excerpt: Pauses pipeline to wait for user input (title, description, etc.)
-date: 2026-02-04
+title: User Input booster — configuration and troubleshooting
+excerpt: Pause the pipeline to collect custom input from you before continuing.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The User Input booster pauses the pipeline to let you manually add or edit activity details before continuing. When an activity reaches this booster, it's held pending your input. You receive a notification and can update the title, description, or other fields. Once you confirm, the activity continues through the pipeline.
+The User Input booster pauses your pipeline and asks you a question or requests custom text before continuing. This lets you add a personal note, race report, or custom message to your activity description. The pipeline waits for your response via the FitGlue app or web dashboard before proceeding.
 
-## Setup
+## Configuration
 
-1. Add the User Input booster to your pipeline.
-2. Configure **Required Fields** — Which fields you want to provide (default: description). Options: Title, Description.
-3. When an activity hits this booster, you'll get a notification to complete the input.
+### Prompt (`prompt`)
 
-## Config Options
+The question or instruction shown to you when input is requested. Default: "Add a note to this activity".
 
-| Field | Description |
-|-------|-------------|
-| Required Fields | Title, Description (multi-select) |
+Examples:
+- "How did the workout feel?"
+- "Add your race report"
+- "Rate this session (1-10)"
 
-## Use Cases
+### Timeout (`timeout`)
 
-- Add personal notes to activities
-- Review before publishing to destinations
-- Custom titles per workout
+How long (in hours) the pipeline waits before continuing without input. Default: **24 hours**. After the timeout, the pipeline continues with no user input — the description section for this booster will be empty.
 
-## Multiple Instances
+## How It Works
 
-You can add multiple User Input boosters at different points in your pipeline (e.g., one for title, one for description later).
+1. The pipeline reaches the User Input booster and pauses.
+2. You receive a notification (push notification if enabled, or visible on your Dashboard).
+3. You enter your text response in the app or web interface.
+4. The pipeline resumes, and your text is included in the activity description.
+
+## Tier & Access
+
+Available on the **Hobbyist** (free) tier.
+
+## Common Issues
+
+**Pipeline stuck waiting** — Check your Dashboard → Activity History for pending inputs. If you don't want to add input, you can skip it or wait for the timeout.
+
+**Missed the notification** — Enable push notifications in your FitGlue settings to receive timely alerts. Check Dashboard regularly for pending activities.
+
+**Input disappeared / not saved** — Ensure your text was submitted, not just typed. Look for the submit/confirm button in the pending input UI.
+
+**Timeout too short** — If you often miss the input window, increase the `timeout` value. Note that very long timeouts delay the entire pipeline.
+
+## Dependencies
+
+- No integration dependencies
 
 ## Related
 
-- [FIT File Heart Rate booster](/help/articles/registry/enrichers/fit-file-heart-rate) (also uses pending input for file upload)
-- [Condition Matcher booster](/help/articles/registry/enrichers/condition-matcher) (auto-templates)
+- [FIT File Heart Rate booster](/help/articles/registry/enrichers/fit-file-heart-rate) (also uses pending input)
+- [AI Companion booster](/help/articles/registry/enrichers/ai-companion)

@@ -1,32 +1,39 @@
 ---
-title: Hybrid Race Tagger booster — setup and troubleshooting
-excerpt: Tag and merge laps for hybrid races like Hyrox, ATHX, and multi-sport events
-date: 2026-02-04
+title: Hybrid Race Tagger booster — configuration and troubleshooting
+excerpt: Automatically tag multi-sport activities like duathlons and triathlons.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Hybrid Race Tagger booster properly categorizes each segment of your hybrid race. Smartwatches often record multi-sport events (Hyrox, ATHX, etc.) as a single activity type, but each lap is a different exercise. When this enricher is active, your pipeline pauses and asks you to tag each lap with the correct exercise (e.g., "SkiErg", "Sled Push", "Running"). You can also merge adjacent laps that belong together (e.g., a 1km run split across multiple watch laps). Tagged laps can be automatically mapped to exercises in connected strength apps via fuzzy matching.
+The Hybrid Race Tagger booster detects multi-sport or hybrid activities (e.g., brick sessions, duathlons, triathlons) and adds appropriate tags and formatting to the description. It identifies transition points and splits the activity into sport-specific segments with individual stats for each leg.
 
-## Setup
+## Configuration
 
-1. Add the Hybrid Race Tagger booster to your pipeline.
-2. No configuration required — when an activity with multiple laps is processed, you'll be prompted to tag each lap.
-3. Optionally merge adjacent laps into logical segments.
+The Hybrid Race Tagger has no configurable options. It automatically detects sport transitions based on activity type changes, speed patterns, and GPS behavior.
 
-## Use Cases
+## Data Requirements
 
-- Track Hyrox workouts with correct exercise tagging
-- Segment ATHX events into individual stations
-- Create accurate records for multi-sport activities
-- Properly categorize triathlon or duathlon segments
+- Works best with **multi-sport or brick session** data from devices that support sport transitions (Garmin Multisport, Suunto, etc.)
+- Requires activity type and speed/pace data
 
-## Manual Step
+## Tier & Access
 
-This booster requires user input — you'll need to tag laps when the activity is processed. Ensure you complete the tagging for the activity to continue through the pipeline.
+The Hybrid Race Tagger requires the **Athlete** (paid) tier.
+
+## Common Issues
+
+**Not detecting transitions** — The booster uses speed pattern analysis. If transitions are very short or the speed change is gradual, detection may fail. Works best with clear sport transitions (e.g., cycling → running with a stop).
+
+**Tagging a single-sport activity as multi-sport** — Long stops mid-activity may be interpreted as transitions. This is a known edge case.
+
+## Dependencies
+
+- No integration dependencies
+- Requires **Athlete tier**
 
 ## Related
 
-- [User Input booster](/help/articles/registry/enrichers/user-input)
-- [Workout Summary booster](/help/articles/registry/enrichers/workout-summary)
+- [Activity Filter booster](/help/articles/registry/enrichers/activity-filter)
+- [Type Mapper booster](/help/articles/registry/enrichers/type-mapper)

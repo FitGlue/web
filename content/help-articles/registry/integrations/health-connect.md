@@ -1,36 +1,37 @@
 ---
 title: Connecting Health Connect — setup and troubleshooting
-excerpt: Sync workouts and health data from your Android device
-date: 2026-02-04
+excerpt: How to connect Health Connect to FitGlue via the Android app.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-Health Connect is Android's unified health data platform. FitGlue's mobile app reads your workout data from Health Connect and syncs it to the cloud. Workouts from Garmin, Samsung, Fitbit, and other compatible devices flow through your FitGlue pipeline for enhancement and distribution.
+Health Connect connects to FitGlue via the **FitGlue mobile app** on Android. This uses Android's Health Connect API, which is built into Android 14+ and available as a separate app on older versions.
 
-## Auth Type: App Sync
+## Authentication Type
 
-Health Connect data can only be accessed from the FitGlue mobile app on your Android device. There is no web-based OAuth or API key.
+**App Sync** — Health Connect permissions requested within the FitGlue Android app.
 
 ## Setup
 
-1. Download **FitGlue** from the Google Play Store on your Android device
-2. Sign in with your FitGlue account
-3. Grant access to Health Connect when prompted
-4. Your workouts will sync automatically in the background
-
-## Compatible Devices
-
-Works with any Health Connect-compatible device or app: Garmin, Samsung, Fitbit, and many others that write to Health Connect.
+1. **Ensure Health Connect is installed** — On Android 14+, it's built-in. On older versions, install from the Play Store.
+2. **Install the FitGlue app** from the Google Play Store.
+3. **Sign in** to your FitGlue account.
+4. **Grant Health Connect permissions** when prompted.
+5. **Verify** — Recent workouts from connected devices should begin syncing.
 
 ## Common Issues
 
-**Workouts not syncing** — Ensure the FitGlue app has been opened recently. Check that your fitness app is writing to Health Connect.
+**"Health Connect not found"** — Install the Health Connect app from the Play Store (required on Android 13 and below).
 
-**Missing data** — Verify the source workout in Health Connect contains the data you expect.
+**No data appearing** — Ensure your wearable app (Samsung Health, Garmin Connect, etc.) is configured to write data to Health Connect.
+
+**Background sync restricted** — Some Android manufacturers (Xiaomi, Huawei, OnePlus) aggressively kill background apps. Whitelist FitGlue from battery optimization in Settings → Battery → App battery management.
+
+**Permissions denied** — Go to Health Connect app → Permissions → FitGlue and enable all data types.
 
 ## Related
 
-- [Health Connect source](/help/articles/registry/sources/health_connect)
-- [Apple Health](/help/articles/registry/integrations/apple-health) (iOS equivalent)
+- [Health Connect as a source](/help/articles/registry/sources/health_connect)
+- [Apple Health (iOS equivalent)](/help/articles/registry/integrations/apple-health)

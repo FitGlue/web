@@ -1,43 +1,58 @@
 ---
-title: Logic Gate booster — setup and troubleshooting
-excerpt: Evaluate rules to conditionally continue or halt the pipeline
-date: 2026-02-04
+title: Logic Gate booster — configuration and troubleshooting
+excerpt: Control pipeline flow with AND, OR, and NOT logic applied to booster conditions.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Logic Gate booster lets you create powerful rules to filter, route, or halt activities based on any combination of conditions. Define rules using fields like activity type, day of week, time, location, or title/description content. Combine them with AND/ANY/NONE logic and choose whether to continue or halt the pipeline on match or no match.
+The Logic Gate booster combines the output of multiple [Condition Matcher](/help/articles/registry/enrichers/condition-matcher) boosters into complex logical expressions. It evaluates tags set by upstream Condition Matchers and makes routing decisions based on AND, OR, and NOT operations. This is the most advanced pipeline flow control tool in FitGlue.
 
-## Setup
+## Configuration
 
-1. Add the Logic Gate booster to your pipeline.
-2. Configure:
-   - **Match Mode** — All rules must match (AND), Any rule matches (OR), No rules match (NOR)
-   - **Rules** — JSON array of rules: `[{field, op, values, negate}]`
-   - **On Match** — Continue or Halt pipeline
-   - **On No Match** — Continue or Halt pipeline
+### Gate Type (`gate_type`)
 
-## Supported Rule Fields
+| Option | Behavior |
+|---|---|
+| **AND** | All specified tags must be present |
+| **OR** | At least one specified tag must be present |
+| **NOT** | None of the specified tags should be present |
 
-- **activity_type** — Match by activity type (Run, Ride, etc.)
-- **days** — Match by day of week (Mon, Tue, etc.)
-- **time_start / time_end** — Match by time of day (HH:MM)
-- **location** — Match by GPS coordinates within radius
-- **title_contains / description_contains** — Match text content
+### Required Tags (`tags`)
 
-## Use Cases
+The tags to evaluate. These must be tags set by upstream Condition Matcher boosters.
 
-- Filter out test workouts (halt when title contains "test")
-- Only sync activities from specific locations
-- Route morning runs to different destinations (use multiple pipelines)
-- Block activities on certain days
+### Action on Match (`action`)
 
-## Multiple Instances
+| Option | Behavior |
+|---|---|
+| **Continue** (default) | Pipeline continues if the logic gate passes |
+| **Stop** | Pipeline stops if the logic gate passes |
 
-You can add multiple Logic Gates for complex branching logic.
+## Data Requirements
+
+- Requires **Condition Matcher** boosters upstream in the pipeline to set tags
+- Evaluates pipeline metadata, not activity data directly
+
+## Tier & Access
+
+Available on the **Hobbyist** (free) tier.
+
+## Common Issues
+
+**Gate never passes** — Ensure upstream Condition Matchers are correctly setting the tags you're evaluating. Check that tag names match exactly (case-sensitive).
+
+**Pipeline stops unexpectedly** — Check the `action` setting. If set to "Stop" and the gate passes, the pipeline will halt. This may be unintentional.
+
+**Complex logic not behaving as expected** — Break complex expressions into multiple gates. Test each Condition Matcher independently before combining with Logic Gates.
+
+## Dependencies
+
+- Requires [Condition Matcher](/help/articles/registry/enrichers/condition-matcher) booster(s) upstream
+- No integration dependencies
 
 ## Related
 
-- [Activity Filter booster](/help/articles/registry/enrichers/activity-filter) (simpler include/exclude)
-- [Condition Matcher booster](/help/articles/registry/enrichers/condition-matcher) (template application)
+- [Condition Matcher booster](/help/articles/registry/enrichers/condition-matcher)
+- [Activity Filter booster](/help/articles/registry/enrichers/activity-filter)

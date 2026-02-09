@@ -1,39 +1,72 @@
 ---
 title: Google Sheets destination — setup and troubleshooting
-excerpt: Log activities to a Google Spreadsheet
-date: 2026-02-04
+excerpt: Log your activities to a Google Sheets spreadsheet for custom tracking.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Google Sheets destination automatically logs all your activities to a Google Sheet for personal tracking, analysis, and visualization. Once you connect your Google account and provide a Spreadsheet ID, FitGlue appends a new row for each activity. Columns include date, type, title, duration, distance, calories, heart rate, and more. Optionally, muscle heatmaps and route thumbnails can be embedded using IMAGE formulas.
+The Google Sheets destination logs your activity data to a Google Sheets spreadsheet. Each activity becomes a row in your sheet with columns for date, title, type, distance, duration, calories, and booster output. This is ideal for athletes who want to build custom training logs, dashboards, or data analysis in a spreadsheet format.
 
-## Temporarily Unavailable
+## How It Works
 
-The Google Sheets destination is currently **temporarily unavailable**. FitGlue is working on restoring this integration.
+FitGlue can operate in two modes:
 
-## Setup (when available)
+### CREATE mode
 
-1. **Connect Google** — See [Connecting Google](/help/articles/registry/integrations/google).
-2. **Create a pipeline** — Add your source and boosters, then add Google Sheets as a target.
-3. **Configure** — Provide your Spreadsheet ID (from the URL: docs.google.com/spreadsheets/d/{ID}/edit) and optionally:
-   - **Sheet Name** — Which tab to append to (default: "Activities")
-   - **Include Showcase Link** — Add a column with the Showcase URL
-   - **Include Visual Assets** — Add IMAGE formulas for muscle heatmaps and route thumbnails
+A new row is appended to the spreadsheet for each activity. This builds an ongoing activity log.
 
-## Config Fields
+### UPDATE mode
 
-| Field | Description |
-|-------|-------------|
-| Spreadsheet ID | From your Google Sheets URL |
-| Sheet Name | Tab to append to (default: Activities) |
-| Include Showcase Link | Add Showcase URL column |
-| Include Visual Assets | Embed muscle heatmaps and route thumbnails via IMAGE formulas |
+An existing row (matched by activity ID) is updated with the latest data. This is useful for activities that go through multiple processing stages.
+
+## Configuration
+
+### Spreadsheet ID (`spreadsheet_id`)
+
+The ID of your Google Sheet. Found in the sheet's URL: `https://docs.google.com/spreadsheets/d/{spreadsheet_id}/edit`.
+
+### Sheet Name (`sheet_name`)
+
+The name of the specific tab within the spreadsheet. Default: "Sheet1".
+
+### Operation Mode (`mode`)
+
+| Option | Behavior |
+|---|---|
+| **CREATE** (default) | Append new rows |
+| **UPDATE** | Update existing rows by activity ID |
+
+### Column Mapping (`column_mapping`)
+
+Defines which activity fields map to which columns. Default mapping includes the most common fields (date, title, type, distance, duration, calories).
+
+## Data Requirements
+
+- **Google connection** — See [Connecting Google](/help/articles/registry/integrations/google).
+- The spreadsheet must exist and be accessible by the connected Google account.
+
+## Tier & Access
+
+The Google Sheets destination requires the **Athlete** (paid) tier.
+
+## Common Issues
+
+**"Spreadsheet not found"** — Check the `spreadsheet_id` is correct. Also ensure the Google account connected to FitGlue has edit access to the spreadsheet. The sheet must be shared with or owned by the connected account.
+
+**Data appearing in wrong columns** — Check your `column_mapping` configuration. The default mapping assumes a specific column order. If your sheet has custom columns, update the mapping accordingly.
+
+**Duplicate rows** — In CREATE mode, every pipeline run appends a new row. Re-posting an activity creates a duplicate row. Switch to UPDATE mode if you want idempotent writes.
+
+**"Google token expired"** — Reconnect via Dashboard → Connections. Google OAuth tokens expire and need periodic refresh.
+
+**Empty cells** — Some fields may be empty if the source or boosters don't provide that data (e.g., no calories for a Hevy workout without the Calories Burned booster).
 
 ## Dependencies
 
-Requires the **Google** integration (OAuth) to be connected.
+- **Required integration**: [Google connection](/help/articles/registry/integrations/google) (OAuth)
+- Requires **Athlete tier**
 
 ## Related
 

@@ -1,33 +1,42 @@
 ---
 title: Connecting Garmin — setup and troubleshooting
-excerpt: Import activities from Garmin Connect
-date: 2026-02-04
+excerpt: How to connect your Garmin Connect account to FitGlue via OAuth.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-Garmin Connect is the tool for tracking, analyzing and sharing health and fitness activities from your Garmin device. FitGlue connects to your Garmin Connect account via OAuth and imports your activities. Heart rate data, GPS routes, and training metrics flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava.
+Garmin connects to FitGlue via **OAuth** through the Garmin Connect API. This is a popular connection for serious athletes using Garmin watches and bike computers. Once connected, FitGlue receives webhook notifications when you sync activities with Garmin Connect, enabling automatic import of your richly detailed Garmin data.
 
-## Temporarily Unavailable
+## Authentication Type
 
-The Garmin integration is currently **temporarily unavailable**. FitGlue is working on restoring this connection. In the meantime, you can use **File Upload** to manually upload FIT files exported from Garmin Connect.
+**OAuth 2.0** — Secure redirect-based authorization through Garmin Connect.
 
-## Setup (when available)
+## Setup
 
-1. Open the **FitGlue Dashboard**
-2. Navigate to **Connections** and click **Connect** on Garmin
-3. Sign in to your **Garmin account** when redirected
-4. Review and **Accept Permissions** to allow FitGlue to access your activities
-5. You're connected!
+1. **Go to FitGlue** — Dashboard → Connections → Garmin → Connect.
+2. **Sign in** with your Garmin Connect account.
+3. **Grant permissions** — Allow FitGlue to access your activity data.
+4. **Verify** — Sync an activity from your Garmin device and check it appears in FitGlue.
 
-FitGlue uses secure OAuth — your Garmin password is never stored.
+## Permission Scopes
 
-## Auth Type: OAuth
+- **Activity data** — Workouts, runs, rides, and all recorded metrics
+- **Activity summary** — Distance, duration, calories, HR averages
+- **Activity details** — GPS tracks, HR streams, cadence, power, running dynamics
 
-Secure OAuth connection.
+## Common Issues
+
+**Activities not syncing** — Ensure your Garmin device has synced to Garmin Connect first (via Garmin Connect app, Garmin Express, or Wi-Fi sync). FitGlue reads from Garmin's cloud API.
+
+**Slow sync** — Garmin Connect can take 5–15 minutes to process an activity and send the webhook. This is a Garmin-side delay.
+
+**Token expired / "Needs re-authorization"** — Garmin OAuth tokens may expire. Visit Dashboard → Connections → Garmin and reconnect.
+
+**"This application is not authorized"** — This can happen if Garmin temporarily revokes third-party access. Disconnect and reconnect.
 
 ## Related
 
-- [Garmin source](/help/articles/registry/sources/garmin)
-- [File Upload source](/help/articles/registry/sources/file_upload) (manual workaround)
+- [Garmin as a source](/help/articles/registry/sources/garmin)
+- [Running Dynamics booster](/help/articles/registry/enrichers/running-dynamics)

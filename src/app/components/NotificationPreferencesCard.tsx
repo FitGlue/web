@@ -93,7 +93,7 @@ export const NotificationPreferencesCard: React.FC = () => {
 
                     <PreferenceToggle
                         label="Activity Synced"
-                        description="When activities are successfully processed and synced"
+                        description="When activities have finished syncing to all destinations"
                         checked={preferences.notifyPipelineSuccess}
                         disabled={updating === 'notifyPipelineSuccess'}
                         onChange={(checked) => updatePreference('notifyPipelineSuccess', checked)}

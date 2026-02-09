@@ -1,34 +1,39 @@
 ---
 title: TrainingPeaks destination — setup and troubleshooting
-excerpt: Upload activities to TrainingPeaks
-date: 2026-02-04
+excerpt: Upload enhanced activities to TrainingPeaks for structured training analysis.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The TrainingPeaks destination uploads your boosted activities to TrainingPeaks. Duration, distance, heart rate data, and activity type are preserved. Activity types are automatically mapped to TrainingPeaks workout types (Run, Bike, Swim, Strength, Other). Perfect for athletes who use TrainingPeaks for training planning and analysis.
+The TrainingPeaks destination uploads your boosted activities to your TrainingPeaks account. This is useful for athletes using TrainingPeaks for structured training plans who want their activities from other sources (Hevy, Fitbit, etc.) to appear in their TrainingPeaks calendar alongside planned workouts.
 
-## Temporarily Unavailable
+## How It Works
 
-The TrainingPeaks destination is currently **temporarily unavailable**. FitGlue is working on restoring this integration.
+Activities are uploaded to TrainingPeaks with available metrics (distance, duration, HR, power) and booster-enhanced descriptions. TrainingPeaks then calculates its own TSS and training metrics from the uploaded data.
 
-## Setup (when available)
+## Configuration
 
-1. **Connect TrainingPeaks** — See [Connecting TrainingPeaks](/help/articles/registry/integrations/trainingpeaks).
-2. **Create a pipeline** — Add your source and boosters, then add TrainingPeaks as a target.
-3. **Upload** — Activities upload automatically via OAuth.
+No configurable options.
 
-## Auth Type: OAuth
+## Tier & Access
 
-TrainingPeaks uses secure OAuth. Your password is never stored by FitGlue.
+The TrainingPeaks destination is included in **Hobbyist** (free tier).
 
-## Data Preserved
+## Common Issues
 
-- Duration, distance, heart rate
-- Activity type (mapped to TrainingPeaks workout types)
-- AI descriptions and enriched metadata
+**TSS not calculating** — TrainingPeaks needs HR or power data to calculate TSS. Activities without these metrics will appear but won't have a training stress score.
+
+**Activity not matching planned workout** — TrainingPeaks auto-matching depends on activity type, date, and duration. Manual matching may be needed.
+
+**"Authorization expired"** — Reconnect via Dashboard → Connections.
+
+## Dependencies
+
+- **Required integration**: [TrainingPeaks connection](/help/articles/registry/integrations/trainingpeaks) (OAuth)
 
 ## Related
 
 - [Connecting TrainingPeaks](/help/articles/registry/integrations/trainingpeaks)
+- [Training Load booster](/help/articles/registry/enrichers/training-load)

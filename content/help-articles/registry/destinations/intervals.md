@@ -1,33 +1,37 @@
 ---
 title: Intervals.icu destination — setup and troubleshooting
-excerpt: Upload boosted activities to Intervals.icu
-date: 2026-02-04
+excerpt: Upload enhanced activities to Intervals.icu for training analysis.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Intervals.icu destination uploads your boosted activities to Intervals.icu for detailed power analysis, training load tracking, and fitness modeling. FIT files are uploaded with full data fidelity, preserving all power, heart rate, cadence, and GPS data. Your AI descriptions and enriched titles appear on your Intervals calendar.
+The Intervals.icu destination uploads your boosted activities to your Intervals.icu account. Intervals.icu is a popular free training analysis platform that provides detailed performance analytics. FitGlue activities uploaded here benefit from Intervals.icu's advanced charting, fitness/fatigue tracking, and power analysis.
 
-## Temporarily Unavailable
+## How It Works
 
-The Intervals.icu destination is currently **temporarily unavailable**. FitGlue is working on restoring this integration.
+Activities are uploaded with available metrics and booster descriptions. Intervals.icu processes the data and integrates it into your training calendar.
 
-## Setup (when available)
+## Configuration
 
-1. **Connect Intervals.icu** — See [Connecting Intervals.icu](/help/articles/registry/integrations/intervals). You'll need API Key and Athlete ID.
-2. **Create a pipeline** — Add your source and boosters, then add Intervals.icu as a target.
-3. **Upload** — Activities upload automatically. FIT files preserve full data fidelity.
+No configurable options.
 
-## Auth Type: API Key
+## Tier & Access
 
-Intervals.icu uses an API key and Athlete ID — no OAuth required. Simple setup.
+The Intervals.icu destination is included in **Hobbyist** (free tier).
 
-## Complete Data Fidelity
+## Common Issues
 
-Unlike some platforms, Intervals.icu accepts raw FIT files. All your data — power curves, GPS tracks, metrics — is preserved exactly as recorded.
+**Duplicate activities** — If Intervals.icu already receives the same activity from another source (e.g., Garmin Connect), you may see duplicates. Disable the duplicate source or use only FitGlue as the input to Intervals.icu.
+
+**API key issues** — Ensure your API key is valid. Check Intervals.icu → Settings → Developer.
+
+## Dependencies
+
+- **Required integration**: [Intervals.icu connection](/help/articles/registry/integrations/intervals) (API key)
 
 ## Related
 
+- [Intervals.icu as a source](/help/articles/registry/sources/intervals)
 - [Connecting Intervals.icu](/help/articles/registry/integrations/intervals)
-- [Intervals.icu source](/help/articles/registry/sources/intervals)

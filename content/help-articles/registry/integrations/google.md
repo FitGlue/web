@@ -1,28 +1,39 @@
 ---
 title: Connecting Google — setup and troubleshooting
-excerpt: Connect your Google account for Google Sheets logging
-date: 2026-02-04
+excerpt: How to connect your Google account to FitGlue for Google Sheets integration.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-Google Sheets is a powerful, cloud-based spreadsheet application. FitGlue connects to your Google account and automatically logs your activities to a spreadsheet of your choice. Each activity becomes a row with customizable columns including stats, visual assets, and showcase links.
+Google connects to FitGlue via **OAuth**. This enables the [Google Sheets destination](/help/articles/registry/destinations/googlesheets), allowing FitGlue to log activity data to your Google Sheets spreadsheets.
 
-## Temporarily Unavailable
+## Authentication Type
 
-The Google integration is currently **temporarily unavailable**. FitGlue is working on restoring this connection.
+**OAuth 2.0** — Secure redirect-based authorization with Google's consent screen.
 
-## Setup (when available)
+## Setup
 
-1. **Click Connect** — You'll be redirected to Google's authorization page
-2. **Sign in to Google** — Use your Google account credentials
-3. **Authorize FitGlue** — Grant permission to read and write to your spreadsheets
-4. **Done!** — You'll be redirected back to FitGlue
+1. **Go to FitGlue** — Dashboard → Connections → Google → Connect.
+2. **Sign in** with your Google account.
+3. **Grant permissions** — Allow FitGlue to access Google Sheets (read and write).
+4. **Verify** — Check that the connection shows "Connected".
 
-## Auth Type: OAuth
+## Permissions Requested
 
-FitGlue requests permission to read and write to your Google Sheets for the Google Sheets destination.
+- **Google Sheets API** — Read and write access to spreadsheets
+- **Google Drive API (limited)** — Required to locate and access your spreadsheets
+
+## Common Issues
+
+**"Access denied" or scope error** — Google may show a "This app isn't verified" warning. Click "Advanced" → "Go to FitGlue" to proceed.
+
+**Wrong Google account** — If you have multiple Google accounts and the wrong one is selected, sign out of all Google accounts first, then reconnect.
+
+**Spreadsheet not found** — Ensure the target spreadsheet is owned by or shared with the Google account connected to FitGlue.
+
+**Token expired** — Google tokens expire. FitGlue auto-refreshes, but you may need to reconnect occasionally.
 
 ## Related
 

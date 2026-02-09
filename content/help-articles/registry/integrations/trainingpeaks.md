@@ -1,32 +1,32 @@
 ---
 title: Connecting TrainingPeaks — setup and troubleshooting
-excerpt: Upload activities to TrainingPeaks
-date: 2026-02-04
+excerpt: How to connect your TrainingPeaks account to FitGlue via OAuth.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-TrainingPeaks is a professional training platform used by athletes and coaches worldwide. FitGlue connects to your TrainingPeaks account via OAuth and uploads your boosted activities. Activities from your connected sources — enhanced with AI descriptions, muscle heatmaps, and heart rate data — appear in your TrainingPeaks calendar automatically.
+TrainingPeaks connects to FitGlue via **OAuth**. This allows FitGlue to upload enhanced activities to your TrainingPeaks calendar, integrating with your structured training plans.
 
-## Temporarily Unavailable
+## Authentication Type
 
-The TrainingPeaks integration is currently **temporarily unavailable**. FitGlue is working on restoring this connection.
+**OAuth 2.0** — Secure redirect-based authorization.
 
-## Setup (when available)
+## Setup
 
-1. Open the **FitGlue Dashboard**
-2. Navigate to **Connections** and click **Connect** on TrainingPeaks
-3. Sign in to your **TrainingPeaks account** when redirected
-4. Review and **Accept Permissions** to allow FitGlue to upload workouts
-5. You're connected!
+1. **Go to FitGlue** — Dashboard → Connections → TrainingPeaks → Connect.
+2. **Sign in** at the TrainingPeaks authorization page.
+3. **Grant permissions** for FitGlue to upload activities.
+4. **Verify** — Check your connection status.
 
-FitGlue uses secure OAuth — your TrainingPeaks password is never stored.
+## Common Issues
 
-## Auth Type: OAuth
+**OAuth redirect failure** — Try using a different browser or clearing cookies.
 
-Secure OAuth connection. Your password is never stored by FitGlue.
+**Token expired** — TrainingPeaks tokens may expire. Reconnect via Dashboard → Connections.
 
 ## Related
 
-- [TrainingPeaks destination](/help/articles/registry/destinations/trainingpeaks)
+- [TrainingPeaks as a destination](/help/articles/registry/destinations/trainingpeaks)
+- [Training Load booster](/help/articles/registry/enrichers/training-load)

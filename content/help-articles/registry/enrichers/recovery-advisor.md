@@ -1,38 +1,74 @@
 ---
-title: Recovery Advisor booster — setup and options
-excerpt: Calculate training load and receive smart recovery time recommendations.
-date: 2026-02-06
+title: Recovery Advisor booster — configuration and troubleshooting
+excerpt: Get recovery time recommendations based on training load and activity intensity.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Recovery Advisor booster uses TRIMP (Training Impulse) to estimate your session's training load and suggests optimal recovery time. It also monitors your 7-day rolling load to give context-aware recommendations.
+The Recovery Advisor booster analyses your workout intensity (using TRIMP/training load), recent training history, and activity type to recommend optimal recovery time. It adds a recovery estimate to your activity description, helping you plan rest days and avoid overtraining.
 
 ## Configuration
 
-No configuration required. The booster uses the same TRIMP calculation as the Training Load booster.
+### Fitness Level (`fitness_level`)
 
-## Tier
+| Option | Recovery Modifier |
+|---|---|
+| **Beginner** | Longer recovery times |
+| **Intermediate** (default) | Standard recovery |
+| **Advanced** | Shorter recovery times |
 
-Recovery Advisor requires the **Athlete** tier.
+### Show Training Status (`show_status`)
 
-## How It Works
+When enabled, shows your current training status based on recent load:
 
-After each activity, the booster calculates session TRIMP, classifies the intensity, and reviews your accumulated 7-day training stress. Based on all of this, it recommends a recovery window (e.g. "36 hours") to help you plan your next session.
+| Status | Meaning |
+|---|---|
+| **Detraining** | Load is declining — consider training more |
+| **Maintaining** | Load is stable |
+| **Building** | Load is increasing — good progression |
+| **Overreaching** | Load is very high — rest recommended |
 
-## Best For
+## Data Requirements
 
-- Preventing overtraining
-- Balancing hard and easy sessions
-- Athletes managing high training volume
+- **Heart rate stream** — Required for TRIMP calculation
+- **Activity duration** — Used in recovery estimation
+- **Recent activity history** — The advisor considers your last 7–28 days of training
+
+## How Content Appears
+
+### On Strava (description)
+
+```
+💤 Recovery Advisor
+Estimated Recovery: 18–24 hours
+Training Status: Building 📈
+Recommendation: Good to train again tomorrow with moderate intensity.
+```
+
+## Tier & Access
+
+The Recovery Advisor booster requires the **Athlete** (paid) tier.
+
+## Common Issues
+
+**Recovery time seems too long/short** — Adjust your `fitness_level` setting. Also check your max HR and resting HR (used in TRIMP calculation) in the Training Load booster configuration.
+
+**"Insufficient data"** — The advisor needs several activities with HR data to make accurate recommendations. After 1–2 weeks of regular activity, the recommendations stabilize.
+
+**Multiple activities on same day not accumulating** — Each activity is assessed independently. The cumulative daily load accounts for all activities, but the most recently processed one displays the recommendation.
+
+**Training status always shows "Building"** — This can happen if you have consistently increasing training volume. It's a correct assessment in that case.
 
 ## Dependencies
 
-Requires heart rate data on the activity — either from the source device or merged via the Fitbit Heart Rate or FIT File Heart Rate booster.
+- Requires HR stream data for TRIMP calculation
+- Requires **Athlete tier**
+- Benefits from consistent activity history (1–2 weeks minimum)
 
 ## Related
 
 - [Training Load booster](/help/articles/registry/enrichers/training-load)
-- [Heart Rate Summary booster](/help/articles/registry/enrichers/heart-rate-summary)
 - [Heart Rate Zones booster](/help/articles/registry/enrichers/heart-rate-zones)
+- [Streak Tracker booster](/help/articles/registry/enrichers/streak-tracker)

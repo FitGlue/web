@@ -1,32 +1,33 @@
 ---
 title: Connecting Wahoo — setup and troubleshooting
-excerpt: Import workouts from Wahoo Cloud
-date: 2026-02-04
+excerpt: How to connect your Wahoo account to FitGlue via OAuth.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-Wahoo is a leading cycling technology company (ELEMNT bike computers, KICKR trainers, TICKR heart rate monitors). FitGlue connects to your Wahoo account via OAuth and imports your workouts with full FIT file data. Power, heart rate, cadence, and GPS data flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava or TrainingPeaks.
+Wahoo connects to FitGlue via **OAuth**. This enables FitGlue to import cycling and running activities from Wahoo ELEMNT bike computers and TICKR heart rate monitors.
 
-## Temporarily Unavailable
+## Authentication Type
 
-The Wahoo integration is currently **temporarily unavailable**. FitGlue is working on restoring this connection.
+**OAuth 2.0** — Secure redirect-based authorization.
 
-## Setup (when available)
+## Setup
 
-1. Open the **FitGlue Dashboard**
-2. Navigate to **Connections** and click **Connect** on Wahoo
-3. Sign in to your **Wahoo account** when redirected
-4. Review and **Accept Permissions** to allow FitGlue to access your workouts
-5. You're connected!
+1. **Go to FitGlue** — Dashboard → Connections → Wahoo → Connect.
+2. **Sign in** with your Wahoo account.
+3. **Grant permissions** for activity data access.
+4. **Verify** — Complete an activity on your ELEMNT and check it syncs.
 
-FitGlue uses secure OAuth — your Wahoo password is never stored.
+## Common Issues
 
-## Auth Type: OAuth
+**Token expired** — Wahoo OAuth tokens may expire. Reconnect via Dashboard → Connections.
 
-Secure OAuth connection.
+**Activities not syncing** — Ensure your ELEMNT has synced to the Wahoo app first. FitGlue reads from Wahoo's cloud API.
+
+**"Connection failed"** — Try clearing browser cookies and reconnecting. Use an incognito window if issues persist.
 
 ## Related
 
-- [Wahoo source](/help/articles/registry/sources/wahoo)
+- [Wahoo as a source](/help/articles/registry/sources/wahoo)

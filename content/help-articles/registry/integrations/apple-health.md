@@ -1,39 +1,42 @@
 ---
 title: Connecting Apple Health — setup and troubleshooting
-excerpt: Sync workouts and health data from your iOS device
-date: 2026-02-04
+excerpt: How to connect Apple Health to FitGlue via the mobile app.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-Apple Health is the centralized health data repository on iOS. FitGlue's mobile app reads your workout data from Apple Health and syncs it to the cloud. Workouts complete with heart rate data and GPS routes flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava.
+Apple Health connects to FitGlue via the **FitGlue mobile app** on iOS. This uses Apple's HealthKit framework, which only allows health data access from apps installed on the device. There is no web-based connection — you must install the FitGlue app from the App Store.
 
-## Auth Type: App Sync
+## Authentication Type
 
-Apple Health data can only be accessed from the FitGlue mobile app on your iOS device. There is no web-based OAuth or API key.
+**App Sync** — HealthKit permissions requested within the FitGlue iOS app.
 
 ## Setup
 
-1. Download **FitGlue** from the App Store on your iOS device
-2. Sign in with your FitGlue account
-3. Grant access to Apple Health when prompted
-4. Your workouts will sync automatically in the background
+1. **Install the FitGlue app** from the Apple App Store.
+2. **Sign in** to your FitGlue account in the app.
+3. **Grant HealthKit permissions** — The app will prompt you to allow access to workouts, heart rate, and route data. Enable all categories.
+4. **Verify** — Your recent Apple Watch workouts should begin appearing in your FitGlue dashboard.
 
-## Permissions
+## Permissions Requested
 
-When prompted, grant FitGlue access to:
-- Workouts
-- Heart rate data
-- GPS routes (for outdoor activities)
+- **Workouts** — Activity type, duration, distance, calories
+- **Heart Rate** — HR samples during workouts
+- **Workout Routes** — GPS coordinates for outdoor activities
 
 ## Common Issues
 
-**Workouts not syncing** — Ensure the FitGlue app has been opened recently. Background sync may be limited by iOS. Check Settings → Connections that Apple Health is connected.
+**"No HealthKit permissions"** — Go to iPhone Settings → Privacy & Security → Health → FitGlue and enable all categories. You may need to toggle them off and on if they were previously denied.
 
-**Missing data** — Verify the source workout in Apple Health contains the data you expect. Some apps may not write all fields.
+**Background sync not working** — Enable Background App Refresh for FitGlue in iPhone Settings → General → Background App Refresh. iOS aggressively restricts background activity for battery life.
+
+**Old workouts not syncing** — The app syncs workouts incrementally. Very old workouts (before the app was installed) may require opening the app multiple times to trigger a full historical sync.
+
+**No GPS routes** — Routes are only available for outdoor activities recorded with GPS (Apple Watch with GPS or connected phone GPS). Indoor workouts have no routes.
 
 ## Related
 
-- [Apple Health source](/help/articles/registry/sources/apple_health)
-- [Health Connect](/help/articles/registry/integrations/health-connect) (Android equivalent)
+- [Apple Health as a source](/help/articles/registry/sources/apple_health)
+- [Health Connect (Android equivalent)](/help/articles/registry/integrations/health-connect)

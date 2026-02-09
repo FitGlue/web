@@ -1,34 +1,44 @@
 ---
 title: Hevy destination — setup and troubleshooting
-excerpt: Upload boosted activities to Hevy
-date: 2026-02-04
+excerpt: Upload activities to Hevy from other sources via FitGlue.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Hevy destination uploads all your activities to Hevy — from strength training to cardio. Activities pass through your Pipeline and are uploaded via the official API. Strength sets, reps, and weights are preserved. Cardio activities (runs, rides, walks) are mapped to Hevy's distance-based exercise templates. Exercise names are fuzzy-matched to Hevy's library; unknown exercises automatically create custom templates.
+The Hevy destination uploads activities to your Hevy account from other sources. This is useful if you want activities from Strava, Garmin, or other platforms to appear in your Hevy workout log. FitGlue translates the activity data into Hevy's workout format.
 
-## Setup
+## How It Works
 
-1. **Connect Hevy** — You need a Hevy connection first. See [Connecting Hevy](/help/articles/registry/integrations/hevy). Hevy Pro is required for the API.
-2. **Create a pipeline** — Add your source and boosters, then add Hevy as a target.
-3. **Configure** — No additional config required. Activities upload automatically.
+Activities from non-Hevy sources are converted to Hevy workout format and uploaded via the Hevy API. The translation preserves as much data as possible, but Hevy's workout format is focused on strength training — cardio-only activities without exercise data will appear as simple timed workouts.
 
-## Dependencies
+## Loop Prevention
 
-Requires the **Hevy** integration to be connected. Hevy Pro subscription is required for API access.
+If Hevy is configured as both a source _and_ destination, FitGlue prevents loops automatically. Hevy workouts imported as a source are not re-uploaded as a destination.
+
+## Configuration
+
+No configurable options. The destination automatically handles the upload.
+
+## Tier & Access
+
+The Hevy destination is included in **Hobbyist** (free tier).
 
 ## Common Issues
 
-**"Connection failed"** — Ensure your Hevy API key is valid and you have Hevy Pro.
+**"Hevy Pro required"** — The Hevy API requires a Pro subscription for both reading and writing.
 
-**Exercise not found** — Hevy will create custom exercise templates for unknown exercises. Fuzzy matching handles most common variations.
+**Cardio activities appearing empty** — Hevy is primarily a strength training app. Runs and rides uploaded without exercise data will appear as minimal timed entries.
 
-**Cardio mapping** — Cardio activities are mapped to distance-based templates (e.g., Run, Ride). Check Hevy's exercise library for supported types.
+**Exercise names not matching** — FitGlue maps exercise names to Hevy's exercise database using fuzzy matching. Very unusual exercise names may not map correctly.
+
+## Dependencies
+
+- **Required integration**: [Hevy connection](/help/articles/registry/integrations/hevy) (API key)
+- **Hevy Pro subscription**
 
 ## Related
 
+- [Hevy as a source](/help/articles/registry/sources/hevy)
 - [Connecting Hevy](/help/articles/registry/integrations/hevy)
-- [Hevy source](/help/articles/registry/sources/hevy)
-- [Workout Summary booster](/help/articles/registry/enrichers/workout-summary)

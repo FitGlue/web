@@ -1,36 +1,56 @@
 ---
-title: Pace Summary booster — setup and troubleshooting
-excerpt: Adds avg/best pace stats (min/km) to the activity description
-date: 2026-02-04
+title: Pace Summary booster — configuration and troubleshooting
+excerpt: Add pace statistics and split breakdowns to your running activities.
+date: 2026-02-08
 category: registry
 ---
 
 ## Overview
 
-The Pace Summary booster automatically calculates and appends pace statistics to your activity description. When your activity has speed data (from GPS or sensors), this enricher converts speed to pace and adds a clean summary showing average and best pace in min/km format.
+The Pace Summary booster adds detailed pace statistics to your running (or walking/hiking) activities. It calculates average pace, best split pace, negative split analysis, and optional per-kilometer or per-mile splits. This gives followers insight into your pacing strategy on Strava.
 
-## Setup
+## Configuration
 
-1. Add the Pace Summary booster to your pipeline.
-2. No configuration required — it activates automatically when speed data is present.
+### Unit (`unit`)
 
-## Requirements
+| Option | Display |
+|---|---|
+| **min/km** (default) | Pace in minutes per kilometer |
+| **min/mi** | Pace in minutes per mile |
 
-Activity must have speed data (typically from GPS for runs/rides).
+### Show Splits (`show_splits`)
 
-## Output Example
+When enabled (default: **false**), includes per-km or per-mile split times. This can produce long output for long runs.
 
-```
-⚡ Pace: 5:32/km avg • 4:45/km best
-```
+### Negative Split Analysis (`negative_split`)
 
-## Use Cases
+When enabled (default: **true**), notes whether you ran a negative or positive split (second half faster or slower than first half).
 
-- Quick pace overview on your activity feed
-- Track running performance
-- Share pace without complex stats
+## Data Requirements
+
+- **Distance and time data** — Needs total distance and elapsed time at minimum.
+- **GPS stream** — Required for per-split breakdowns (not just total pace).
+- Works best with running activities from Strava, Garmin, or Polar.
+
+## Tier & Access
+
+Available on the **Hobbyist** (free) tier.
+
+## Common Issues
+
+**Pace seems wrong** — Check the unit setting. A 5:30 min/km pace is very different from 5:30 min/mi. Also note that "pace" includes stopped time unless the source provides "moving time" separately.
+
+**No splits showing** — Enable `show_splits` and ensure the activity has GPS data. Without GPS, only total pace can be calculated.
+
+**Pace shows for cycling activities** — This booster may activate for any activity with distance/time data. Use the [Activity Filter](/help/articles/registry/enrichers/activity-filter) booster upstream to restrict it to running activities only.
+
+## Dependencies
+
+- No integration dependencies
+- Requires distance + time data from source
 
 ## Related
 
-- [Speed Summary booster](/help/articles/registry/enrichers/speed-summary) (km/h)
+- [Speed Summary booster](/help/articles/registry/enrichers/speed-summary)
+- [Heart Rate Zones booster](/help/articles/registry/enrichers/heart-rate-zones)
 - [Cadence Summary booster](/help/articles/registry/enrichers/cadence-summary)
