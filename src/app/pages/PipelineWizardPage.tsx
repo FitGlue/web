@@ -13,7 +13,7 @@ import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { useUser } from '../hooks/useUser';
-import { EnricherConfigForm } from '../components/EnricherConfigForm';
+import { EnricherConfigForm, PluginConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
@@ -28,7 +28,7 @@ interface SelectedEnricher {
     config: Record<string, string>;
 }
 
-type WizardStep = 'source' | 'enrichers' | 'enricher-config' | 'destinations' | 'review';
+type WizardStep = 'source' | 'source-config' | 'enrichers' | 'enricher-config' | 'destinations' | 'destination-config' | 'review';
 
 const PipelineWizardPage: React.FC = () => {
     const navigate = useNavigate();
@@ -75,9 +75,12 @@ const PipelineWizardPage: React.FC = () => {
 
     const [step, setStep] = useState<WizardStep>('source');
     const [selectedSource, setSelectedSource] = useState<string | null>(null);
+    const [sourceConfig, setSourceConfig] = useState<Record<string, string>>({});
     const [selectedEnrichers, setSelectedEnrichers] = useState<SelectedEnricher[]>([]);
     const [currentEnricherIndex, setCurrentEnricherIndex] = useState<number>(0);
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
+    const [destinationConfigs, setDestinationConfigs] = useState<Record<string, Record<string, string>>>({});
+    const [currentDestConfigIndex, setCurrentDestConfigIndex] = useState<number>(0);
     const [pipelineName, setPipelineName] = useState('');
     const [creating, setCreating] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -85,23 +88,40 @@ const PipelineWizardPage: React.FC = () => {
     const [enricherSearchQuery, setEnricherSearchQuery] = useState('');
     const [expandAllCategories, setExpandAllCategories] = useState(false);
 
-    const steps: WizardStep[] = ['source', 'enrichers', 'enricher-config', 'destinations', 'review'];
+    const steps: WizardStep[] = ['source', 'source-config', 'enrichers', 'enricher-config', 'destinations', 'destination-config', 'review'];
     const currentStepIndex = steps.indexOf(step);
     const enrichersNeedConfig = selectedEnrichers.some(e => (e.manifest.configSchema?.length ?? 0) > 0);
+    const selectedSourceManifest = sources.find(s => s.id === selectedSource);
+    const sourceNeedsConfig = (selectedSourceManifest?.configSchema?.length ?? 0) > 0;
+    const destinationsWithConfig = selectedDestinations
+        .map(id => destinations.find(d => d.id === id))
+        .filter((d): d is PluginManifest => !!d && (d.configSchema?.length ?? 0) > 0);
+    const destinationsNeedConfig = destinationsWithConfig.length > 0;
 
     const canProceed = () => {
         switch (step) {
             case 'source': return selectedSource !== null;
+            case 'source-config': return true;
             case 'enrichers': return true;
             case 'enricher-config': return true;
             case 'destinations': return selectedDestinations.length > 0;
+            case 'destination-config': return true;
             case 'review': return true;
             default: return false;
         }
     };
 
     const handleNext = () => {
-        if (step === 'enrichers') {
+        if (step === 'source') {
+            // After source selection: if source needs config, show config step; else skip to enrichers
+            if (sourceNeedsConfig) {
+                setStep('source-config');
+            } else {
+                setStep('enrichers');
+            }
+        } else if (step === 'source-config') {
+            setStep('enrichers');
+        } else if (step === 'enrichers') {
             const enrichersWithConfig = selectedEnrichers.filter(e => (e.manifest.configSchema?.length ?? 0) > 0);
             if (selectedEnrichers.length === 0 || enrichersWithConfig.length === 0) {
                 setStep('destinations');
@@ -117,6 +137,21 @@ const PipelineWizardPage: React.FC = () => {
             } else {
                 setStep('destinations');
             }
+        } else if (step === 'destinations') {
+            // After destinations: if any destination needs config, show config step; else skip to review
+            if (destinationsNeedConfig) {
+                setCurrentDestConfigIndex(0);
+                setStep('destination-config');
+            } else {
+                setStep('review');
+            }
+        } else if (step === 'destination-config') {
+            // Move through destination configs one at a time
+            if (currentDestConfigIndex < destinationsWithConfig.length - 1) {
+                setCurrentDestConfigIndex(currentDestConfigIndex + 1);
+            } else {
+                setStep('review');
+            }
         } else {
             const nextIndex = currentStepIndex + 1;
             if (nextIndex < steps.length) setStep(steps[nextIndex]);
@@ -124,7 +159,16 @@ const PipelineWizardPage: React.FC = () => {
     };
 
     const handleBack = () => {
-        if (step === 'enricher-config') {
+        if (step === 'source-config') {
+            setStep('source');
+        } else if (step === 'enrichers') {
+            // Back from enrichers: if source needs config, go to source-config; else go to source
+            if (sourceNeedsConfig) {
+                setStep('source-config');
+            } else {
+                setStep('source');
+            }
+        } else if (step === 'enricher-config') {
             const prevIndex = [...selectedEnrichers].slice(0, currentEnricherIndex).reverse()
                 .findIndex(e => (e.manifest.configSchema?.length ?? 0) > 0);
             if (prevIndex !== -1) {
@@ -142,8 +186,21 @@ const PipelineWizardPage: React.FC = () => {
                 setStep('enrichers');
             }
         } else if (step === 'destinations' && !enrichersNeedConfig) {
-            // Skip enricher-config when no config is needed
             setStep('enrichers');
+        } else if (step === 'destination-config') {
+            if (currentDestConfigIndex > 0) {
+                setCurrentDestConfigIndex(currentDestConfigIndex - 1);
+            } else {
+                setStep('destinations');
+            }
+        } else if (step === 'review') {
+            // Back from review: if destinations need config, go to last dest config; else go to destinations
+            if (destinationsNeedConfig) {
+                setCurrentDestConfigIndex(destinationsWithConfig.length - 1);
+                setStep('destination-config');
+            } else {
+                setStep('destinations');
+            }
         } else {
             const prevIndex = currentStepIndex - 1;
             if (prevIndex >= 0) setStep(steps[prevIndex]);
@@ -165,7 +222,13 @@ const PipelineWizardPage: React.FC = () => {
                 name: pipelineName || undefined,
                 source: selectedSource,
                 enrichers: enricherConfigs,
-                destinations: selectedDestinations
+                destinations: selectedDestinations,
+                sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
+                destinationConfigs: Object.keys(destinationConfigs).length > 0
+                    ? Object.fromEntries(
+                        Object.entries(destinationConfigs).map(([k, v]) => [k, { config: v }])
+                    )
+                    : undefined,
             });
             await refreshPipelines();
             toast.success('Pipeline Created', `"${pipelineName || 'New Pipeline'}" has been created`);
@@ -201,11 +264,25 @@ const PipelineWizardPage: React.FC = () => {
     };
 
     const renderStepIndicator = () => {
-        const displaySteps = enrichersNeedConfig ? steps : steps.filter(s => s !== 'enricher-config');
+        const displaySteps = steps.filter(s => {
+            if (s === 'source-config' && !sourceNeedsConfig) return false;
+            if (s === 'enricher-config' && !enrichersNeedConfig) return false;
+            if (s === 'destination-config' && !destinationsNeedConfig) return false;
+            return true;
+        });
         const displayIndex = displaySteps.indexOf(step);
+        const stepLabels: Record<string, string> = {
+            'source': 'Source',
+            'source-config': 'Source Config',
+            'enrichers': 'Enrichers',
+            'enricher-config': 'Configure',
+            'destinations': 'Destinations',
+            'destination-config': 'Dest Config',
+            'review': 'Review',
+        };
         const stepConfig = displaySteps.map(s => ({
             id: s,
-            label: s === 'enricher-config' ? 'Configure' : s.charAt(0).toUpperCase() + s.slice(1),
+            label: stepLabels[s] || s.charAt(0).toUpperCase() + s.slice(1),
         }));
         return <WizardStepIndicator steps={stepConfig} currentStepIndex={displayIndex} />;
     };
@@ -448,12 +525,51 @@ const PipelineWizardPage: React.FC = () => {
         );
     };
 
+    const renderSourceConfigStep = () => {
+        if (!selectedSourceManifest?.configSchema?.length) return null;
+        return (
+            <Stack>
+                <Heading level={3}>Configure {selectedSourceManifest.name}</Heading>
+                <Paragraph>Set up your source configuration</Paragraph>
+                <Card>
+                    <PluginConfigForm
+                        key={selectedSourceManifest.id}
+                        schema={selectedSourceManifest.configSchema}
+                        initialValues={sourceConfig}
+                        onChange={setSourceConfig}
+                    />
+                </Card>
+            </Stack>
+        );
+    };
+
+    const renderDestinationConfigStep = () => {
+        const destManifest = destinationsWithConfig[currentDestConfigIndex];
+        if (!destManifest) return null;
+        return (
+            <Stack>
+                <Heading level={3}>Configure {destManifest.name}</Heading>
+                <Paragraph>Set up your destination configuration{destinationsWithConfig.length > 1 ? ` (${currentDestConfigIndex + 1} of ${destinationsWithConfig.length})` : ''}</Paragraph>
+                <Card>
+                    <PluginConfigForm
+                        key={destManifest.id}
+                        schema={destManifest.configSchema!}
+                        initialValues={destinationConfigs[destManifest.id] || {}}
+                        onChange={(values) => setDestinationConfigs(prev => ({ ...prev, [destManifest.id]: values }))}
+                    />
+                </Card>
+            </Stack>
+        );
+    };
+
     const renderCurrentStep = () => {
         switch (step) {
             case 'source': return renderSourceStep();
+            case 'source-config': return renderSourceConfigStep();
             case 'enrichers': return renderEnrichersStep();
             case 'enricher-config': return renderEnricherConfigStep();
             case 'destinations': return renderDestinationsStep();
+            case 'destination-config': return renderDestinationConfigStep();
             case 'review': return renderReviewStep();
             default: return null;
         }

@@ -383,3 +383,6 @@ const DynamicSelectField: React.FC<DynamicSelectFieldProps> = ({ field, value, o
 };
 
 export default EnricherConfigForm;
+
+// Alias for use with source/destination config forms — same schema-driven component
+export const PluginConfigForm = EnricherConfigForm;

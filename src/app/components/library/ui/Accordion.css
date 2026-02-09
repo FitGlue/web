@@ -1,0 +1,17 @@
+.accordion-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.accordion-trigger__chevron {
+    display: inline-block;
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+    transform: rotate(0deg);
+}
+
+.accordion-trigger__chevron--expanded {
+    transform: rotate(90deg);
+}

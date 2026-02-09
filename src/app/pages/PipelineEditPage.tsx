@@ -9,6 +9,7 @@ import { Paragraph } from '../components/library/ui/Paragraph';
 import { useToast } from '../components/library/ui/Toast';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
+import { PluginConfigForm } from '../components/EnricherConfigForm';
 import { SharePipelineModal } from '../components/SharePipelineModal';
 import { WizardOptionGrid, WizardExcludedSection } from '../components/wizard';
 import { useApi } from '../hooks/useApi';
@@ -32,6 +33,8 @@ interface PipelineConfig {
     source: string;
     enrichers: EnricherConfig[];
     destinations: (string | number)[];
+    sourceConfig?: Record<string, string>;
+    destinationConfigs?: Record<string, { config: Record<string, string> }>;
 }
 
 interface SelectedEnricher {
@@ -78,6 +81,8 @@ const PipelineEditPage: React.FC = () => {
     const [selectedSource, setSelectedSource] = useState<string>('');
     const [selectedEnrichers, setSelectedEnrichers] = useState<SelectedEnricher[]>([]);
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
+    const [sourceConfig, setSourceConfig] = useState<Record<string, string>>({});
+    const [destinationConfigs, setDestinationConfigs] = useState<Record<string, Record<string, string>>>({});
     const [editingEnrichers, setEditingEnrichers] = useState(false);
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
     const [showShareModal, setShowShareModal] = useState(false);
@@ -100,6 +105,12 @@ const PipelineEditPage: React.FC = () => {
                 };
             }).filter(e => e.manifest);
             setSelectedEnrichers(enricherConfigs);
+            setSourceConfig(pipelineData.sourceConfig || {});
+            setDestinationConfigs(
+                Object.fromEntries(
+                    Object.entries(pipelineData.destinationConfigs || {}).map(([k, v]) => [k, v.config || {}])
+                )
+            );
         } catch (err) {
             setError('Failed to load pipeline');
             console.error(err);
@@ -127,7 +138,13 @@ const PipelineEditPage: React.FC = () => {
                 name: pipelineName || undefined,
                 source: selectedSource,
                 enrichers: enricherConfigs,
-                destinations: selectedDestinations.map(d => isNaN(Number(d)) ? d : Number(d))
+                destinations: selectedDestinations.map(d => isNaN(Number(d)) ? d : Number(d)),
+                sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
+                destinationConfigs: Object.keys(destinationConfigs).length > 0
+                    ? Object.fromEntries(
+                        Object.entries(destinationConfigs).map(([k, v]) => [k, { config: v }])
+                    )
+                    : undefined,
             });
             invalidatePipelines();
             toast.success('Pipeline Saved', `"${pipelineName || 'Pipeline'}" has been updated`);
@@ -228,6 +245,24 @@ const PipelineEditPage: React.FC = () => {
                         />
                     </Card>
 
+                    {/* Source Config Section — shown inline if selected source has configSchema */}
+                    {(() => {
+                        const sourceManifest = sources.find(s => selectedSource.toLowerCase().includes(s.id));
+                        if (!sourceManifest?.configSchema?.length) return null;
+                        return (
+                            <Card>
+                                <Heading level={3}>⚙️ Source Configuration</Heading>
+                                <Paragraph>Configure {sourceManifest.name}</Paragraph>
+                                <PluginConfigForm
+                                    key={sourceManifest.id}
+                                    schema={sourceManifest.configSchema}
+                                    initialValues={sourceConfig}
+                                    onChange={setSourceConfig}
+                                />
+                            </Card>
+                        );
+                    })()}
+
                     {/* Enrichers Section */}
                     <Card>
                         <Stack direction="horizontal" align="center" justify="between">
@@ -292,6 +327,22 @@ const PipelineEditPage: React.FC = () => {
                             getHint={getExcludedHint}
                         />
                     </Card>
+
+                    {/* Destination Config Sections — shown inline for each selected destination with configSchema */}
+                    {selectedDestinations.map(destId => {
+                        const destManifest = destinations.find(d => d.id === destId || d.destinationType === Number(destId));
+                        if (!destManifest?.configSchema?.length) return null;
+                        return (
+                            <Card key={`config-${destManifest.id}`}>
+                                <Heading level={3}>⚙️ {destManifest.name} Configuration</Heading>
+                                <PluginConfigForm
+                                    schema={destManifest.configSchema}
+                                    initialValues={destinationConfigs[destManifest.id] || {}}
+                                    onChange={(values) => setDestinationConfigs(prev => ({ ...prev, [destManifest.id]: values }))}
+                                />
+                            </Card>
+                        );
+                    })}
 
                     {/* Actions */}
                     <Stack direction="horizontal" justify="between">

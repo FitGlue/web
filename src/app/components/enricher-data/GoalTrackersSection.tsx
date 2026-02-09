@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Stack, Grid } from '../library/layout';
-import { Card, Button, Heading, Paragraph, Badge } from '../library/ui';
+import { Card, Button, Heading, Paragraph, Badge, AccordionTrigger } from '../library/ui';
 import { Input, FormField, Select } from '../library/forms';
 import { useApi } from '../../hooks/useApi';
 import { BoosterDataEntry } from './types';
@@ -16,6 +16,7 @@ const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, load
     const api = useApi();
     const [editingBooster, setEditingBooster] = useState<BoosterDataEntry | null>(null);
     const [showNew, setShowNew] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
     const [newPeriod, setNewPeriod] = useState('month');
     const [newMetric, setNewMetric] = useState('distance');
     const [newAccumulated, setNewAccumulated] = useState(0);
@@ -62,126 +63,130 @@ const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, load
         <Card>
             <Stack gap="md">
                 <Stack direction="horizontal" justify="between" align="center">
-                    <Stack direction="horizontal" gap="sm" align="center">
+                    <AccordionTrigger isExpanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
                         <Heading level={3}>🎯 Goal Trackers</Heading>
                         <Badge variant="default">{entries.length}</Badge>
-                    </Stack>
+                    </AccordionTrigger>
                     <Button
                         variant="secondary"
                         size="small"
-                        onClick={() => setShowNew(!showNew)}
+                        onClick={() => { if (!showNew) setIsExpanded(true); setShowNew(!showNew); }}
                     >
                         {showNew ? 'Cancel' : '+ Add Goal'}
                     </Button>
                 </Stack>
 
-                {showNew && (
-                    <Card>
-                        <Stack gap="sm">
-                            <Heading level={4}>New Goal Tracker</Heading>
-                            <Grid cols={3} gap="md">
-                                <FormField label="Period" htmlFor="new-goal-period">
-                                    <Select
-                                        id="new-goal-period"
-                                        value={newPeriod}
-                                        onChange={(e) => setNewPeriod(e.target.value)}
-                                        options={[
-                                            { value: 'week', label: 'Weekly' },
-                                            { value: 'month', label: 'Monthly' },
-                                            { value: 'year', label: 'Yearly' },
-                                        ]}
-                                    />
-                                </FormField>
-                                <FormField label="Metric" htmlFor="new-goal-metric">
-                                    <Select
-                                        id="new-goal-metric"
-                                        value={newMetric}
-                                        onChange={(e) => setNewMetric(e.target.value)}
-                                        options={[
-                                            { value: 'distance', label: 'Distance (km)' },
-                                            { value: 'duration', label: 'Duration (hours)' },
-                                            { value: 'activities', label: 'Activities (count)' },
-                                            { value: 'elevation', label: 'Elevation (m)' },
-                                        ]}
-                                    />
-                                </FormField>
-                                <FormField label="Initial Progress" htmlFor="new-goal-accumulated">
-                                    <Input
-                                        id="new-goal-accumulated"
-                                        type="number"
-                                        step={0.1}
-                                        min={0}
-                                        value={newAccumulated}
-                                        onChange={(e) => setNewAccumulated(parseFloat(e.target.value) || 0)}
-                                    />
-                                </FormField>
-                            </Grid>
-                            <Button variant="primary" onClick={handleCreate}>
-                                Create Goal Tracker
-                            </Button>
-                        </Stack>
-                    </Card>
-                )}
-
-                {loading ? (
-                    <Paragraph muted>Loading goal trackers...</Paragraph>
-                ) : entries.length === 0 ? (
-                    <Paragraph muted>No goal trackers yet. Add the Goal Tracker booster to a pipeline to start tracking.</Paragraph>
-                ) : (
-                    <Stack gap="sm">
-                        {entries.map((entry) => (
-                            <Card key={entry.id} variant="elevated">
-                                {editingBooster?.id === entry.id ? (
-                                    <Stack gap="sm">
-                                        <Paragraph size="sm" muted>
-                                            Editing: <strong>{getBoosterLabel(entry.id)}</strong>
-                                        </Paragraph>
-                                        <FormField label="Accumulated Progress" htmlFor={`edit-${entry.id}-accumulated`}>
+                {isExpanded && (
+                    <>
+                        {showNew && (
+                            <Card>
+                                <Stack gap="sm">
+                                    <Heading level={4}>New Goal Tracker</Heading>
+                                    <Grid cols={3} gap="md">
+                                        <FormField label="Period" htmlFor="new-goal-period">
+                                            <Select
+                                                id="new-goal-period"
+                                                value={newPeriod}
+                                                onChange={(e) => setNewPeriod(e.target.value)}
+                                                options={[
+                                                    { value: 'week', label: 'Weekly' },
+                                                    { value: 'month', label: 'Monthly' },
+                                                    { value: 'year', label: 'Yearly' },
+                                                ]}
+                                            />
+                                        </FormField>
+                                        <FormField label="Metric" htmlFor="new-goal-metric">
+                                            <Select
+                                                id="new-goal-metric"
+                                                value={newMetric}
+                                                onChange={(e) => setNewMetric(e.target.value)}
+                                                options={[
+                                                    { value: 'distance', label: 'Distance (km)' },
+                                                    { value: 'duration', label: 'Duration (hours)' },
+                                                    { value: 'activities', label: 'Activities (count)' },
+                                                    { value: 'elevation', label: 'Elevation (m)' },
+                                                ]}
+                                            />
+                                        </FormField>
+                                        <FormField label="Initial Progress" htmlFor="new-goal-accumulated">
                                             <Input
-                                                id={`edit-${entry.id}-accumulated`}
+                                                id="new-goal-accumulated"
                                                 type="number"
                                                 step={0.1}
                                                 min={0}
-                                                value={(editingBooster.data.accumulated as number) ?? 0}
-                                                onChange={(e) => setEditingBooster({
-                                                    ...editingBooster,
-                                                    data: { ...editingBooster.data, accumulated: parseFloat(e.target.value) || 0 }
-                                                })}
-                                                style={{ maxWidth: '150px' }}
+                                                value={newAccumulated}
+                                                onChange={(e) => setNewAccumulated(parseFloat(e.target.value) || 0)}
                                             />
                                         </FormField>
-                                        <Stack direction="horizontal" gap="sm">
-                                            <Button size="small" variant="primary" onClick={() => handleSave(editingBooster)}>
-                                                Save
-                                            </Button>
-                                            <Button size="small" variant="text" onClick={() => setEditingBooster(null)}>
-                                                Cancel
-                                            </Button>
-                                        </Stack>
-                                    </Stack>
-                                ) : (
-                                    <Stack direction="horizontal" justify="between" align="center">
-                                        <Stack gap="xs">
-                                            <Paragraph><strong>{getBoosterLabel(entry.id)}</strong></Paragraph>
-                                            <Paragraph size="sm" muted>
-                                                Progress: {typeof entry.data.accumulated === 'number' ? entry.data.accumulated.toFixed(1) : '0'}
-                                                {entry.data.period_key ? ` • Period: ${entry.data.period_key}` : ''}
-                                                {entry.data.last_update ? ` • Updated: ${formatDate(entry.data.last_update as string)}` : ''}
-                                            </Paragraph>
-                                        </Stack>
-                                        <Stack direction="horizontal" gap="xs">
-                                            <Button size="small" variant="text" onClick={() => setEditingBooster(entry)}>
-                                                Edit
-                                            </Button>
-                                            <Button size="small" variant="danger" onClick={() => handleDelete(entry.id)}>
-                                                Delete
-                                            </Button>
-                                        </Stack>
-                                    </Stack>
-                                )}
+                                    </Grid>
+                                    <Button variant="primary" onClick={handleCreate}>
+                                        Create Goal Tracker
+                                    </Button>
+                                </Stack>
                             </Card>
-                        ))}
-                    </Stack>
+                        )}
+
+                        {loading ? (
+                            <Paragraph muted>Loading goal trackers...</Paragraph>
+                        ) : entries.length === 0 ? (
+                            <Paragraph muted>No goal trackers yet. Add the Goal Tracker booster to a pipeline to start tracking.</Paragraph>
+                        ) : (
+                            <Stack gap="sm">
+                                {entries.map((entry) => (
+                                    <Card key={entry.id} variant="elevated">
+                                        {editingBooster?.id === entry.id ? (
+                                            <Stack gap="sm">
+                                                <Paragraph size="sm" muted>
+                                                    Editing: <strong>{getBoosterLabel(entry.id)}</strong>
+                                                </Paragraph>
+                                                <FormField label="Accumulated Progress" htmlFor={`edit-${entry.id}-accumulated`}>
+                                                    <Input
+                                                        id={`edit-${entry.id}-accumulated`}
+                                                        type="number"
+                                                        step={0.1}
+                                                        min={0}
+                                                        value={(editingBooster.data.accumulated as number) ?? 0}
+                                                        onChange={(e) => setEditingBooster({
+                                                            ...editingBooster,
+                                                            data: { ...editingBooster.data, accumulated: parseFloat(e.target.value) || 0 }
+                                                        })}
+                                                        style={{ maxWidth: '150px' }}
+                                                    />
+                                                </FormField>
+                                                <Stack direction="horizontal" gap="sm">
+                                                    <Button size="small" variant="primary" onClick={() => handleSave(editingBooster)}>
+                                                        Save
+                                                    </Button>
+                                                    <Button size="small" variant="text" onClick={() => setEditingBooster(null)}>
+                                                        Cancel
+                                                    </Button>
+                                                </Stack>
+                                            </Stack>
+                                        ) : (
+                                            <Stack direction="horizontal" justify="between" align="center">
+                                                <Stack gap="xs">
+                                                    <Paragraph><strong>{getBoosterLabel(entry.id)}</strong></Paragraph>
+                                                    <Paragraph size="sm" muted>
+                                                        Progress: {typeof entry.data.accumulated === 'number' ? entry.data.accumulated.toFixed(1) : '0'}
+                                                        {entry.data.period_key ? ` • Period: ${entry.data.period_key}` : ''}
+                                                        {entry.data.last_update ? ` • Updated: ${formatDate(entry.data.last_update as string)}` : ''}
+                                                    </Paragraph>
+                                                </Stack>
+                                                <Stack direction="horizontal" gap="xs">
+                                                    <Button size="small" variant="text" onClick={() => setEditingBooster(entry)}>
+                                                        Edit
+                                                    </Button>
+                                                    <Button size="small" variant="danger" onClick={() => handleDelete(entry.id)}>
+                                                        Delete
+                                                    </Button>
+                                                </Stack>
+                                            </Stack>
+                                        )}
+                                    </Card>
+                                ))}
+                            </Stack>
+                        )}
+                    </>
                 )}
             </Stack>
         </Card>

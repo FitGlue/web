@@ -31,18 +31,22 @@ interface PipelineCardProps {
     pipeline: PipelineConfig;
     onEdit: () => void;
     onDelete: () => void;
+    onDuplicate: () => void;
     onToggleDisabled: (disabled: boolean) => void;
     deleting: boolean;
     toggling: boolean;
+    duplicating: boolean;
 }
 
 const PipelineCard: React.FC<PipelineCardProps> = ({
     pipeline,
     onEdit,
     onDelete,
+    onDuplicate,
     onToggleDisabled,
     deleting,
     toggling,
+    duplicating,
 }) => {
     const { getSourceIcon, getSourceName, getEnricherIcon, getEnricherName, getDestinationIcon, getDestinationName } = usePluginLookup();
     const { isNerdMode } = useNerdMode();
@@ -134,6 +138,9 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
                 <Button variant="secondary" size="small" onClick={onEdit}>
                     Edit
                 </Button>
+                <Button variant="secondary" size="small" onClick={onDuplicate} disabled={duplicating}>
+                    {duplicating ? 'Duplicating...' : 'Duplicate'}
+                </Button>
                 <Button variant="danger" size="small" onClick={onDelete} disabled={deleting}>
                     {deleting ? 'Deleting...' : 'Delete'}
                 </Button>
@@ -154,6 +161,7 @@ const PipelinesPage: React.FC = () => {
     useRealtimeIntegrations();
     const [deleting, setDeleting] = useState<string | null>(null);
     const [toggling, setToggling] = useState<string | null>(null);
+    const [duplicating, setDuplicating] = useState<string | null>(null);
     const [showImportModal, setShowImportModal] = useState(false);
     const [importCode, setImportCode] = useState<string | undefined>(undefined);
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -203,6 +211,26 @@ const PipelinesPage: React.FC = () => {
             toast.error('Update Failed', 'Failed to update pipeline. Please try again.');
         } finally {
             setToggling(null);
+        }
+    };
+
+    const handleDuplicate = async (pipeline: PipelineConfig) => {
+        setDuplicating(pipeline.id);
+        try {
+            const copyName = `${pipeline.name || 'Unnamed Pipeline'} (Copy)`;
+            await api.post('/users/me/pipelines', {
+                name: copyName,
+                source: pipeline.source,
+                enrichers: pipeline.enrichers ?? [],
+                destinations: pipeline.destinations,
+            });
+            await refreshPipelines();
+            toast.success('Pipeline Duplicated', `"${copyName}" has been created`);
+        } catch (error) {
+            console.error('Failed to duplicate pipeline:', error);
+            toast.error('Duplicate Failed', 'Failed to duplicate pipeline. Please try again.');
+        } finally {
+            setDuplicating(null);
         }
     };
 
@@ -284,9 +312,11 @@ const PipelinesPage: React.FC = () => {
                                     pipeline={pipeline}
                                     onEdit={() => navigate(`/settings/pipelines/${pipeline.id}/edit`)}
                                     onDelete={() => setDeleteConfirm(pipeline.id)}
+                                    onDuplicate={() => handleDuplicate(pipeline)}
                                     onToggleDisabled={(disabled) => handleToggleDisabled(pipeline.id, disabled)}
                                     deleting={deleting === pipeline.id}
                                     toggling={toggling === pipeline.id}
+                                    duplicating={duplicating === pipeline.id}
                                 />
                             ))}
                         </Stack>

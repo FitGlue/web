@@ -143,3 +143,6 @@ export type { FilterBarProps, FilterFieldProps } from './FilterBar';
 // Toast notifications
 export { ToastProvider, useToast } from './Toast';
 export type { Toast, ToastVariant, ToastContextValue } from './Toast';
+
+// Accordion
+export { AccordionTrigger } from './Accordion';
