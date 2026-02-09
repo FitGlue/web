@@ -94,11 +94,26 @@
   }
 
   .hero {
-    min-height: 90vh;
+    min-height: auto;
+    padding-top: 100px;
+    padding-bottom: var(--space-xl);
   }
 
   .hero-tagline {
     font-size: var(--font-size-lg);
+    margin-bottom: var(--space-sm);
+  }
+
+  .data-flow {
+    margin: var(--space-lg) 0;
+  }
+
+  .flow-caption {
+    margin-top: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .hero-subtitle {
     margin-bottom: var(--space-md);
   }
 
@@ -2553,14 +2568,17 @@ h4 {
     transform: none;
     transition: opacity 0.6s ease-out;
   }
+
   .animate-on-scroll.visible {
     transform: none;
   }
-  .stagger-children > * {
+
+  .stagger-children>* {
     transform: none;
     transition: opacity 0.5s ease-out;
   }
-  .stagger-children.visible > * {
+
+  .stagger-children.visible>* {
     transform: none;
   }
 }
@@ -3148,7 +3166,7 @@ h4 {
   font-size: var(--font-size-xl);
 }
 
-.pipeline-import-section > p {
+.pipeline-import-section>p {
   color: var(--color-text-muted);
   margin-bottom: var(--space-lg);
   max-width: 480px;
@@ -4106,6 +4124,25 @@ h4 {
 .platform-card.coming-soon:hover {
   opacity: 1;
   transform: translateY(-3px);
+}
+
+/* Clickable platform card link wrapper */
+.platform-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* Image-based icons inside platform cards */
+.platform-icon-img {
+  height: 2rem;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  background: white;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .platform-icon {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../library/ui/Card';
 import { CardHeader } from '../library/ui/CardHeader';
@@ -7,7 +7,7 @@ import '../library/ui/CardSkeleton.css';
 import { Button } from '../library/ui/Button';
 import { Paragraph } from '../library/ui/Paragraph';
 import { Heading } from '../library/ui/Heading';
-import { Input, Textarea, FormField, FileInput } from '../library/forms';
+import { Input, Textarea, FormField, FileInput, Select } from '../library/forms';
 import { Stack } from '../library/layout/Stack';
 import { Grid } from '../library/layout/Grid';
 import { useApi } from '../../hooks/useApi';
@@ -32,8 +32,29 @@ export const FileUploadPanel: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Nerd Mode state
+  const [nerdMode, setNerdMode] = useState(false);
+  const [selectedPipelineId, setSelectedPipelineId] = useState('');
+
   const hasFileUploadPipeline = pipelines.some((p: { source?: string }) =>
     p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload'
+  );
+
+  // Filter to only file-upload pipelines for the selector
+  const fileUploadPipelines = useMemo(() =>
+    pipelines.filter((p: { source?: string; disabled?: boolean }) =>
+      (p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload') && !p.disabled
+    ),
+    [pipelines]
+  );
+
+  // Build options for the pipeline selector
+  const pipelineOptions = useMemo(() =>
+    fileUploadPipelines.map((p: { id: string; name?: string }) => ({
+      value: p.id,
+      label: p.name || p.id,
+    })),
+    [fileUploadPipelines]
   );
 
   // Check if hobbyist is at the monthly sync limit
@@ -72,11 +93,16 @@ export const FileUploadPanel: React.FC = () => {
       bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
       const base64Data = btoa(binary);
 
-      const payload = {
+      const payload: Record<string, string | undefined> = {
         fitFileBase64: base64Data,
         title: title || undefined,
         description: description || undefined,
       };
+
+      // Nerd Mode: target a specific pipeline
+      if (nerdMode && selectedPipelineId) {
+        payload.pipelineId = selectedPipelineId;
+      }
 
       const data = await api.post('/parse-fit', payload);
 
@@ -96,6 +122,14 @@ export const FileUploadPanel: React.FC = () => {
       });
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleNerdModeToggle = () => {
+    const next = !nerdMode;
+    setNerdMode(next);
+    if (!next) {
+      setSelectedPipelineId('');
     }
   };
 
@@ -165,6 +199,27 @@ export const FileUploadPanel: React.FC = () => {
           </Stack>
         </Grid>
 
+        {/* Nerd Mode: Pipeline Selector */}
+        {nerdMode && (
+          <div className="nerd-mode-panel">
+            <FormField label="Target Pipeline" htmlFor="nerd-pipeline">
+              <Select
+                id="nerd-pipeline"
+                options={pipelineOptions}
+                placeholder="All pipelines (default)"
+                value={selectedPipelineId}
+                onChange={(e) => setSelectedPipelineId(e.target.value)}
+                disabled={uploading}
+              />
+            </FormField>
+            {selectedPipelineId && (
+              <Paragraph muted>
+                ⚡ Activity will be sent only to this pipeline
+              </Paragraph>
+            )}
+          </div>
+        )}
+
         {/* Status message */}
         {message && (
           <Card variant={message.type === 'success' ? 'elevated' : 'default'}>
@@ -183,6 +238,16 @@ export const FileUploadPanel: React.FC = () => {
         >
           {uploading ? '⏳ Uploading...' : '🚀 Upload & Process'}
         </Button>
+
+        {/* Nerd Mode Toggle */}
+        <button
+          type="button"
+          className="nerd-mode-toggle"
+          onClick={handleNerdModeToggle}
+          disabled={uploading}
+        >
+          {nerdMode ? '🤓 Hide Nerd Mode' : '🤓 Nerd Mode'}
+        </button>
       </Stack>
     </Card>
   );

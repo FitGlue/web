@@ -65,11 +65,11 @@
         </div>
         <div class="trust-divider"></div>
         <div class="trust-stat">
-          <span class="trust-stat-value">10+</span>
+          <span class="trust-stat-value">{{athleteCount}}</span>
           <span class="trust-stat-label">Athletes</span>
         </div>
         <div class="trust-stat">
-          <span class="trust-stat-value">100+</span>
+          <span class="trust-stat-value">{{activitiesBoostedCount}}</span>
           <span class="trust-stat-label">Activities Boosted</span>
         </div>
       </div>
@@ -366,76 +366,44 @@
       <p class="text-center text-muted mb-lg animate-on-scroll">FitGlue works with the platforms you already use—and
         we're adding more every month</p>
 
-      <!-- Live Platforms -->
+      <!-- Live Platforms (registry-powered) -->
       <div class="platforms-section">
         <h3 class="platforms-label live">Available Now</h3>
         <div class="platforms-grid stagger-children">
-          <div class="platform-card live">
-            <span class="platform-icon">🏋️</span>
-            <span class="platform-name">Hevy</span>
-          </div>
-          <div class="platform-card live">
-            <span class="platform-icon">⌚</span>
-            <span class="platform-name">Fitbit</span>
-          </div>
-          <div class="platform-card live">
-            <span class="platform-icon">🚴</span>
-            <span class="platform-name">Strava</span>
-          </div>
+          {{#each availableConnections}}
+          <a href="{{detailsUrl}}" class="platform-card-link">
+            <div class="platform-card live">
+              {{#if iconPath}}
+              <img src="{{iconPath}}" alt="" class="platform-icon-img feature-icon-{{iconType}}" />
+              {{else}}
+              <span class="platform-icon">{{icon}}</span>
+              {{/if}}
+              <span class="platform-name">{{name}}</span>
+            </div>
+          </a>
+          {{/each}}
         </div>
       </div>
 
-      <!-- Coming Soon Platforms -->
+      <!-- Coming Soon Platforms (registry-powered) -->
+      {{#if comingSoonConnections.length}}
       <div class="platforms-section mt-lg">
         <h3 class="platforms-label coming-soon">Coming Soon</h3>
         <div class="platforms-grid coming-soon stagger-children">
+          {{#each comingSoonConnections}}
           <div class="platform-card coming-soon">
-            <span class="platform-icon">⌚</span>
-            <span class="platform-name">Garmin</span>
+            {{#if iconPath}}
+            <img src="{{iconPath}}" alt="" class="platform-icon-img feature-icon-{{iconType}}" />
+            {{else}}
+            <span class="platform-icon">{{icon}}</span>
+            {{/if}}
+            <span class="platform-name">{{name}}</span>
             <span class="coming-badge">Soon</span>
           </div>
-          <div class="platform-card coming-soon">
-            <span class="platform-icon">🍎</span>
-            <span class="platform-name">Apple Health</span>
-            <span class="coming-badge">Soon</span>
-          </div>
-          <div class="platform-card coming-soon">
-            <span class="platform-icon">📱</span>
-            <span class="platform-name">Health Connect</span>
-            <span class="coming-badge">Soon</span>
-          </div>
-          <div class="platform-card coming-soon">
-            <span class="platform-icon">💪</span>
-            <span class="platform-name">Strong</span>
-            <span class="coming-badge">Soon</span>
-          </div>
-          <div class="platform-card coming-soon">
-            <span class="platform-icon">🥗</span>
-            <span class="platform-name">MacroFactor</span>
-            <span class="coming-badge">Soon</span>
-          </div>
-          <div class="platform-card coming-soon">
-            <span class="platform-icon">🍽️</span>
-            <span class="platform-name">MyFitnessPal</span>
-            <span class="coming-badge">Soon</span>
-          </div>
-          <div class="platform-card coming-soon">
-            <span class="platform-icon">🏃</span>
-            <span class="platform-name">Runkeeper</span>
-            <span class="coming-badge">Soon</span>
-          </div>
-          <div class="platform-card coming-soon">
-            <span class="platform-icon">🚲</span>
-            <span class="platform-name">Wahoo</span>
-            <span class="coming-badge">Soon</span>
-          </div>
-          <div class="platform-card coming-soon">
-            <span class="platform-icon">⌚</span>
-            <span class="platform-name">Whoop</span>
-            <span class="coming-badge">Soon</span>
-          </div>
+          {{/each}}
         </div>
       </div>
+      {{/if}}
 
       <!-- Universal Vision -->
       <div class="vision-box mt-lg animate-on-scroll">

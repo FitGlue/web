@@ -5,6 +5,21 @@
  */
 
 /**
+ * Format a raw count into a marketing-friendly string.
+ * Rounds down to a "nice" number and appends "+".
+ * - < 100: round to nearest 10
+ * - >= 100: round to nearest 50
+ * @param {number} count
+ * @returns {string}
+ */
+function formatStatCount(count) {
+  if (count <= 0) return '0';
+  const step = count >= 100 ? 50 : 10;
+  const rounded = Math.floor(count / step) * step;
+  return `${rounded}+`;
+}
+
+/**
  * @returns {import('skier').TaskDef}
  */
 export function transformRegistryTask() {
@@ -19,6 +34,7 @@ export function transformRegistryTask() {
       const integrationsWithDetails = (registry.integrations || []).map((/** @type {any} */ i) => ({
         ...i,
         detailsUrl: `/connections/${i.id}`,
+        isTemporarilyUnavailable: !!i.isTemporarilyUnavailable,
       }));
 
       const integrations = {
@@ -26,6 +42,28 @@ export function transformRegistryTask() {
         syncTargets: integrationsWithDetails.filter((/** @type {any} */ i) => i.category === 'destination'),
         all: integrationsWithDetails,
       };
+
+      // Cross-reference sources + destinations to find icons for integrations
+      // (integrations don't natively carry iconPath/iconType)
+      /** @type {Record<string, {iconPath: string, iconType: string}>} */
+      const iconLookup = {};
+      for (const s of registry.sources || []) {
+        if (s.iconPath) iconLookup[s.id] = { iconPath: s.iconPath, iconType: s.iconType };
+      }
+      for (const d of registry.destinations || []) {
+        if (d.iconPath && !iconLookup[d.id]) iconLookup[d.id] = { iconPath: d.iconPath, iconType: d.iconType };
+      }
+
+      // Split integrations into available vs coming-soon for homepage
+      const allConnections = integrationsWithDetails
+        .filter((/** @type {any} */ i) => i.enabled !== false)
+        .map((/** @type {any} */ i) => ({
+          ...i,
+          iconPath: iconLookup[i.id]?.iconPath || i.iconPath,
+          iconType: iconLookup[i.id]?.iconType || i.iconType,
+        }));
+      const availableConnections = allConnections.filter((/** @type {any} */ c) => !c.isTemporarilyUnavailable);
+      const comingSoonConnections = allConnections.filter((/** @type {any} */ c) => c.isTemporarilyUnavailable);
 
       // Plugin lists with detailsUrls
       const boosters = (registry.enrichers || []).map((/** @type {any} */ e) => ({
@@ -151,9 +189,15 @@ export function transformRegistryTask() {
       const totalPlugins = helpArticleByType.sources.length + helpArticleByType.boosters.length +
         helpArticleByType.destinations.length + helpArticleByType.connections.length;
 
-      ctx.logger.info(`Transformed ${integrationsWithDetails.length} integrations, ${boosters.length} boosters, ${totalPlugins} help article plugins`);
+      // Platform stats for marketing homepage (from registry API when marketingMode=true)
+      const stats = registry.stats || {};
+      const athleteCount = formatStatCount(stats.athleteCount || 0);
+      const activitiesBoostedCount = formatStatCount(stats.activitiesBoostedCount || 0);
 
-      return { integrations, boosters, boostersByCategory, sources, destinations, helpArticleByType };
+      ctx.logger.info(`Transformed ${integrationsWithDetails.length} integrations, ${boosters.length} boosters, ${totalPlugins} help article plugins, stats: ${athleteCount} athletes / ${activitiesBoostedCount} boosted`);
+
+      return { integrations, boosters, boostersByCategory, sources, destinations, helpArticleByType, athleteCount, activitiesBoostedCount, availableConnections, comingSoonConnections };
     },
   };
 }
+
