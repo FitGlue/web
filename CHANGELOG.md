@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.14.2](https://github.com/fitglue/web/compare/v10.14.1...v10.14.2) (2026-02-10)
+
+
+### Bug Fixes
+
+* prettier pipeline summary card, stats for marketing site ([482395e](https://github.com/fitglue/web/commit/482395edea58f703f6ae6d2f4069bf20ff4a97f9))
+
 ### [10.14.1](https://github.com/fitglue/web/compare/v10.14.0...v10.14.1) (2026-02-09)
 
 
