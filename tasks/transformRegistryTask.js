@@ -14,8 +14,9 @@
  */
 function formatStatCount(count) {
   if (count <= 0) return '0';
+  if (count < 10) return `${count}`;
   const step = count >= 100 ? 50 : 10;
-  const rounded = Math.floor(count / step) * step;
+  const rounded = Math.ceil(count / step) * step;
   return `${rounded}+`;
 }
 

@@ -7,7 +7,6 @@ import {
   DashboardSummaryCard,
   CardSkeleton,
   EmptyState,
-  SummaryListItem,
   Pill,
   Paragraph,
   SkeletonLoading
@@ -30,14 +29,37 @@ export const PipelinesSummaryCard: React.FC = () => {
     />
   ) : (
     <Stack gap="xs">
-      {pipelines.slice(0, 5).map(pipeline => (
-        <SummaryListItem
-          key={pipeline.id}
-          title={pipeline.name || `${getSourceName(pipeline.source)}→${pipeline.destinations.map((d: string | number) => getDestinationName(d)).join('/')}`}
-          subtitle={pipeline.name ? `${getSourceIcon(pipeline.source)} ${getSourceName(pipeline.source)}→${pipeline.destinations.map((d: string | number) => getDestinationName(d)).join('/')}` : undefined}
-          status={<Pill variant="primary">{pipeline.enrichers?.length ?? 0} booster{(pipeline.enrichers?.length ?? 0) !== 1 ? 's' : ''}</Pill>}
-        />
-      ))}
+      {pipelines.slice(0, 5).map(pipeline => {
+        const enricherCount = pipeline.enrichers?.length ?? 0;
+        const isDisabled = (pipeline as { disabled?: boolean }).disabled;
+        return (
+          <div key={pipeline.id} className="pipeline-summary-item">
+            <div className="pipeline-summary-item__content">
+              <span className="pipeline-summary-item__title">
+                {pipeline.name || 'Unnamed Pipeline'}
+              </span>
+              <div className="pipeline-summary-item__meta">
+                <span className="pipeline-summary-item__source">
+                  {getSourceIcon(pipeline.source)} {getSourceName(pipeline.source)}
+                </span>
+                <Pill variant="primary" size="small">
+                  {enricherCount} booster{enricherCount !== 1 ? 's' : ''}
+                </Pill>
+              </div>
+              <div className="pipeline-summary-item__destinations">
+                {pipeline.destinations.map((dest, i) => (
+                  <span key={i} className="pipeline-summary-item__dest">
+                    {getDestinationName(dest)}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <span className={`pipeline-summary-item__status ${isDisabled ? 'inactive' : 'active'}`}>
+              {isDisabled ? '○' : '✓'}
+            </span>
+          </div>
+        );
+      })}
       {pipelines.length > 5 && (
         <Paragraph muted size="sm">+{pipelines.length - 5} more...</Paragraph>
       )}

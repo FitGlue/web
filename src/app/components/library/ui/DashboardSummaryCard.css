@@ -193,40 +193,82 @@
 }
 
 /* ========================================================================
-   Pipeline Summary Item - Compact horizontal layout
+   Pipeline Summary - Clean 3-row layout
    ======================================================================== */
 
-.pipeline-item {
+
+.pipeline-summary-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.375rem 0;
-  font-size: 0.8125rem;
+  gap: 0.75rem;
+  padding: 0.625rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  width: 100%;
 }
 
-.pipeline-item:last-child {
+.pipeline-summary-item:last-child {
   border-bottom: none;
 }
 
-.pipeline-item__name {
-  font-weight: 500;
-  color: var(--color-text-primary, #ffffff);
-  white-space: nowrap;
+.pipeline-summary-item__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
 }
 
-.pipeline-item__flow {
+.pipeline-summary-item__title {
   flex: 1;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #ffffff);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 
-.pipeline-item__enrichers {
+.pipeline-summary-item__status {
   flex-shrink: 0;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.5));
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.pipeline-summary-item__status.active {
+  color: var(--color-success, #22c55e);
+}
+
+.pipeline-summary-item__status.inactive {
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.4));
+}
+
+.pipeline-summary-item__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.pipeline-summary-item__source {
   font-size: 0.75rem;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.pipeline-summary-item__destinations {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.pipeline-summary-item__dest {
+  font-size: 0.6875rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
 }
 
 /* ========================================================================
@@ -282,9 +324,9 @@
     font-size: 0.75rem;
   }
 
-  /* Pipeline items */
-  .pipeline-item {
-    font-size: 0.75rem;
-    gap: 0.375rem;
+  /* Pipeline summary items */
+  .pipeline-summary-item {
+    gap: 0.25rem;
+    padding: 0.5rem 0;
   }
 }
