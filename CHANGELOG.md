@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.18.0](https://github.com/fitglue/web/compare/v10.17.1...v10.18.0) (2026-02-11)
+
+
+### Features
+
+* improve showcase profiles, plugin defaults UX, and navigation links ([4b0ba37](https://github.com/fitglue/web/commit/4b0ba37fd2cc63b3e6918e8f4264279df9277061))
+
 ### [10.17.1](https://github.com/fitglue/web/compare/v10.17.0...v10.17.1) (2026-02-11)
 
 ## [10.17.0](https://github.com/fitglue/web/compare/v10.16.0...v10.17.0) (2026-02-11)
