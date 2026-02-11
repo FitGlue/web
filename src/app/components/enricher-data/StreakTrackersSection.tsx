@@ -66,7 +66,7 @@ const StreakTrackersSection: React.FC<StreakTrackersSectionProps> = ({ entries, 
                 <Stack direction="horizontal" justify="between" align="center">
                     <AccordionTrigger isExpanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
                         <Heading level={3}>🔥 Streak Trackers</Heading>
-                        <Badge variant="default">{entries.length}</Badge>
+                        <Badge variant="default">{loading ? '...' : entries.length}</Badge>
                     </AccordionTrigger>
                     <Button
                         variant="secondary"

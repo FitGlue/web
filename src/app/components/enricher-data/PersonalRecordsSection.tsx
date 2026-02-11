@@ -129,7 +129,7 @@ const PersonalRecordsSection: React.FC = () => {
                 <Stack direction="horizontal" justify="between" align="center">
                     <AccordionTrigger isExpanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
                         <Heading level={3}>🏆 Personal Records</Heading>
-                        <Badge variant="default">{records.length}</Badge>
+                        <Badge variant="default">{loading ? '...' : records.length}</Badge>
                     </AccordionTrigger>
                     <Button
                         variant="secondary"

@@ -15,6 +15,7 @@ import { WizardOptionGrid, WizardExcludedSection } from '../components/wizard';
 import { PluginCategorySection } from '../components/PluginCategorySection';
 import { Input as FormInput } from '../components/library/forms';
 import { useApi } from '../hooks/useApi';
+import { usePluginDefaults } from '../hooks/usePluginDefaults';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
@@ -52,6 +53,7 @@ const PipelineEditPage: React.FC = () => {
     const { sources, enrichers, destinations, integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { integrations: userIntegrations } = useRealtimeIntegrations();
     const { refresh: invalidatePipelines } = useRealtimePipelines();
+    const { getDefault: getPluginDefault } = usePluginDefaults();
 
     const isPluginAvailable = (plugin: PluginManifest): boolean => {
         if (!plugin.requiredIntegrations?.length) return true;
@@ -267,7 +269,7 @@ const PipelineEditPage: React.FC = () => {
                                 <PluginConfigForm
                                     key={sourceManifest.id}
                                     schema={sourceManifest.configSchema}
-                                    initialValues={sourceConfig}
+                                    initialValues={Object.keys(sourceConfig).length > 0 ? sourceConfig : (getPluginDefault(sourceManifest.id) || {})}
                                     onChange={setSourceConfig}
                                 />
                             </Card>
@@ -366,7 +368,7 @@ const PipelineEditPage: React.FC = () => {
                                 <Heading level={3}>⚙️ {destManifest.name} Configuration</Heading>
                                 <PluginConfigForm
                                     schema={destManifest.configSchema}
-                                    initialValues={destinationConfigs[destManifest.id] || {}}
+                                    initialValues={destinationConfigs[destManifest.id] || getPluginDefault(destManifest.id) || {}}
                                     onChange={(values) => setDestinationConfigs(prev => ({ ...prev, [destManifest.id]: values }))}
                                 />
                             </Card>

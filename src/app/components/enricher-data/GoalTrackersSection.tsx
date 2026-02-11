@@ -65,7 +65,7 @@ const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, load
                 <Stack direction="horizontal" justify="between" align="center">
                     <AccordionTrigger isExpanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
                         <Heading level={3}>🎯 Goal Trackers</Heading>
-                        <Badge variant="default">{entries.length}</Badge>
+                        <Badge variant="default">{loading ? '...' : entries.length}</Badge>
                     </AccordionTrigger>
                     <Button
                         variant="secondary"

@@ -69,7 +69,7 @@ const CountersSection: React.FC = () => {
                 <Stack direction="horizontal" justify="between" align="center">
                     <AccordionTrigger isExpanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
                         <Heading level={3}>🔢 Auto-Increment Counters</Heading>
-                        <Badge variant="default">{counters.length}</Badge>
+                        <Badge variant="default">{loading ? '...' : counters.length}</Badge>
                     </AccordionTrigger>
                     <Button
                         variant="secondary"

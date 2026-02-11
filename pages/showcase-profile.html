@@ -433,7 +433,7 @@
                 ? '<img class="activity-thumbnail" src="' + entry.routeThumbnailUrl + '" alt="Route" />'
                 : '<div class="activity-icon">' + icon + '</div>';
 
-            var showcaseUrl = '/showcase/' + entry.showcaseId;
+            var showcaseUrl = '/u/' + encodeURIComponent(getSlugFromUrl()) + '/' + entry.showcaseId;
 
             return '<a href="' + showcaseUrl + '" class="activity-card" style="animation-delay: ' + (idx * 0.05) + 's">'
                 + thumbnailHtml

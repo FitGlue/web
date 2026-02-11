@@ -8,6 +8,7 @@ import { Heading } from '../components/library/ui/Heading';
 import { Paragraph } from '../components/library/ui/Paragraph';
 import { useToast } from '../components/library/ui/Toast';
 import { useApi } from '../hooks/useApi';
+import { usePluginDefaults } from '../hooks/usePluginDefaults';
 import { FormField, Input as FormInput } from '../components/library/forms';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
@@ -37,6 +38,7 @@ const PipelineWizardPage: React.FC = () => {
     const { sources, enrichers, destinations, integrations: registryIntegrations, loading, error: registryError } = usePluginRegistry();
     const { integrations: userIntegrations } = useRealtimeIntegrations();
     const { user } = useUser();
+    const { getDefault: getPluginDefault } = usePluginDefaults();
 
     const userTier = user ? getEffectiveTier(user) : TIER_HOBBYIST;
 
@@ -535,7 +537,7 @@ const PipelineWizardPage: React.FC = () => {
                     <PluginConfigForm
                         key={selectedSourceManifest.id}
                         schema={selectedSourceManifest.configSchema}
-                        initialValues={sourceConfig}
+                        initialValues={Object.keys(sourceConfig).length > 0 ? sourceConfig : (getPluginDefault(selectedSourceManifest.id) || {})}
                         onChange={setSourceConfig}
                     />
                 </Card>
@@ -554,7 +556,7 @@ const PipelineWizardPage: React.FC = () => {
                     <PluginConfigForm
                         key={destManifest.id}
                         schema={destManifest.configSchema!}
-                        initialValues={destinationConfigs[destManifest.id] || {}}
+                        initialValues={destinationConfigs[destManifest.id] || getPluginDefault(destManifest.id) || {}}
                         onChange={(values) => setDestinationConfigs(prev => ({ ...prev, [destManifest.id]: values }))}
                     />
                 </Card>
