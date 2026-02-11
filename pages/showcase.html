@@ -1593,6 +1593,20 @@
   }
 
   /* ========================================
+     AI SUMMARY PROSE
+     ======================================== */
+  .ai-summary-prose {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #ccc;
+    padding: 0.6rem 0.8rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 3px solid rgba(255, 200, 50, 0.3);
+    font-style: italic;
+  }
+
+  /* ========================================
      PARKRUN RESULTS
      ======================================== */
   .parkrun-results {
@@ -1607,12 +1621,14 @@
     gap: 0.6rem;
     padding: 0.55rem 0.7rem;
     border-radius: 12px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255, 255, 255, 0.03);
     animation: fadeInUp 0.3s ease-out backwards;
     transition: background 0.2s;
   }
 
-  .parkrun-stat-row:hover { background: rgba(255,255,255,0.06); }
+  .parkrun-stat-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
 
   .parkrun-stat-label {
     font-size: 0.82rem;
@@ -1646,21 +1662,21 @@
   }
 
   .parkrun-badge.all-time {
-    background: rgba(255,215,0,0.12);
+    background: rgba(255, 215, 0, 0.12);
     color: #FFD700;
-    border: 1px solid rgba(255,215,0,0.2);
+    border: 1px solid rgba(255, 215, 0, 0.2);
   }
 
   .parkrun-badge.this-year {
-    background: rgba(192,192,192,0.12);
+    background: rgba(192, 192, 192, 0.12);
     color: #C0C0C0;
-    border: 1px solid rgba(192,192,192,0.2);
+    border: 1px solid rgba(192, 192, 192, 0.2);
   }
 
   .parkrun-badge.first-visit {
-    background: rgba(255,255,100,0.12);
+    background: rgba(255, 255, 100, 0.12);
     color: #FFFF64;
-    border: 1px solid rgba(255,255,100,0.2);
+    border: 1px solid rgba(255, 255, 100, 0.2);
   }
 
   /* ========================================
@@ -1693,7 +1709,7 @@
 
   .effort-gauge-ring .gauge-bg {
     fill: none;
-    stroke: rgba(255,255,255,0.08);
+    stroke: rgba(255, 255, 255, 0.08);
     stroke-width: 6;
   }
 
@@ -1725,11 +1741,25 @@
     font-weight: 700;
   }
 
-  .effort-label.easy { color: #4ADE80; }
-  .effort-label.moderate { color: #FBBF24; }
-  .effort-label.hard { color: #FB923C; }
-  .effort-label.very-hard { color: #EF4444; }
-  .effort-label.max { color: #DC2626; }
+  .effort-label.easy {
+    color: #4ADE80;
+  }
+
+  .effort-label.moderate {
+    color: #FBBF24;
+  }
+
+  .effort-label.hard {
+    color: #FB923C;
+  }
+
+  .effort-label.very-hard {
+    color: #EF4444;
+  }
+
+  .effort-label.max {
+    color: #DC2626;
+  }
 
   .effort-factors {
     display: flex;
@@ -1743,13 +1773,15 @@
     gap: 0.5rem;
     padding: 0.35rem 0.6rem;
     border-radius: 8px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255, 255, 255, 0.03);
     font-size: 0.8rem;
     color: #bbb;
     animation: fadeInUp 0.3s ease-out backwards;
   }
 
-  .effort-factor-emoji { flex-shrink: 0; }
+  .effort-factor-emoji {
+    flex-shrink: 0;
+  }
 
   .effort-factor-name {
     flex: 1;
@@ -1795,12 +1827,14 @@
     gap: 0.5rem;
     padding: 0.4rem 0.6rem;
     border-radius: 10px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255, 255, 255, 0.03);
     animation: fadeInUp 0.3s ease-out backwards;
     transition: background 0.2s;
   }
 
-  .workout-exercise-row:hover { background: rgba(255,255,255,0.06); }
+  .workout-exercise-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
 
   .workout-superset-marker {
     font-size: 0.85rem;
@@ -1826,10 +1860,24 @@
   }
 
   @media (max-width: 480px) {
-    .effort-gauge-ring { width: 64px; height: 64px; }
-    .effort-gauge-ring svg { width: 64px; height: 64px; }
-    .effort-gauge-value { font-size: 1rem; }
-    .parkrun-stat-label { min-width: 70px; font-size: 0.75rem; }
+    .effort-gauge-ring {
+      width: 64px;
+      height: 64px;
+    }
+
+    .effort-gauge-ring svg {
+      width: 64px;
+      height: 64px;
+    }
+
+    .effort-gauge-value {
+      font-size: 1rem;
+    }
+
+    .parkrun-stat-label {
+      min-width: 70px;
+      font-size: 0.75rem;
+    }
   }
 
   /* ========================================
@@ -3256,15 +3304,17 @@
           if (endsWithColon) {
             // Multi-line section: "🏁 Title:" - content is on subsequent lines
             const headerText = trimmedLine.slice(0, -1).trim();
-            emoji = [...headerText][0] || '📝';
-            title = headerText.slice(emoji.length).trim() || 'Section';
+            const emojiResult = extractLeadingEmoji(headerText);
+            emoji = emojiResult.emoji;
+            title = emojiResult.rest.trim() || 'Section';
             sectionContent = '';
           } else {
             // Single-line section: "❤️ Heart Rate: value" - content is after the colon
             const colonIdx = trimmedLine.indexOf(':');
             const headerText = trimmedLine.slice(0, colonIdx).trim();
-            emoji = [...headerText][0] || '📝';
-            title = headerText.slice(emoji.length).trim() || 'Section';
+            const emojiResult = extractLeadingEmoji(headerText);
+            emoji = emojiResult.emoji;
+            title = emojiResult.rest.trim() || 'Section';
             sectionContent = trimmedLine.slice(colonIdx + 1).trim();
           }
 
@@ -3390,6 +3440,9 @@
       if (title.startsWith('Effort Score')) return renderEffortScoreSection(section, idx);
       if (title === 'Workout Summary') return renderWorkoutSummarySection(section, idx);
 
+      // AI Summary gets pretty prose styling
+      if (title === 'AI Summary') return renderAISummarySection(section, idx);
+
       // Bullet-list sections get parsed stat rows
       const lines = section.content.split('\n').filter(l => l.trim());
       const bulletLines = lines.filter(l => l.trim().startsWith('•'));
@@ -3400,6 +3453,17 @@
       // Single-line with • separators get stat pills
       if (lines.length <= 1 && section.content.includes(' • ')) {
         return renderCompactStatPills(section, idx);
+      }
+
+      // Single-line compact sections that didn't match above get a clean value display
+      if (lines.length <= 1 && section.content.trim()) {
+        return `
+          <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+            <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+            <div class="compact-stat-pills">
+              <span class="stat-pill"><span class="stat-pill-value">${escapeHtml(section.content.trim())}</span></span>
+            </div>
+          </div>`;
       }
 
       // Generic fallback
@@ -3811,9 +3875,10 @@
         const trimmed = line.trim().replace(/^•\s*/, '');
         const delay = (idx * 0.1) + (i * 0.04);
 
-        // Try to split into label: value
-        const emoji = [...trimmed][0] || '•';
-        let rest = trimmed.slice(emoji.length).trim();
+        // Extract leading emoji properly (handles multi-codepoint emoji)
+        const emojiResult = extractLeadingEmoji(trimmed);
+        const emoji = emojiResult.emoji;
+        let rest = emojiResult.rest.trim();
 
         // Handle progress bar lines (keep as-is but styled)
         if (rest.includes('[') && rest.includes(']')) {
@@ -4060,6 +4125,33 @@
             ${exercisesHtml ? `<div class="workout-exercises">${exercisesHtml}</div>` : ''}
           </div>
         </div>`;
+    }
+
+    /**
+     * Render AI Summary as pretty prose inside a styled card.
+     */
+    function renderAISummarySection(section, idx) {
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="ai-summary-prose">${escapeHtml(section.content)}</div>
+        </div>`;
+    }
+
+    /**
+     * Extract leading emoji from a string, handling multi-codepoint emoji
+     * (variation selectors, ZWJ sequences, keycaps, flags).
+     * Returns { emoji, rest } where rest is the remaining text.
+     */
+    function extractLeadingEmoji(text) {
+      if (!text) return { emoji: '📝', rest: '' };
+      // Match leading emoji: extended pictographic + optional modifiers/ZWJ sequences
+      const emojiMatch = text.match(/^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F)(\u200D(\p{Emoji_Presentation}|\p{Emoji}\uFE0F))*/u);
+      if (emojiMatch) {
+        return { emoji: emojiMatch[0], rest: text.slice(emojiMatch[0].length) };
+      }
+      // No emoji found — return bullet as emoji and full text as rest
+      return { emoji: '•', rest: text };
     }
 
     /**
