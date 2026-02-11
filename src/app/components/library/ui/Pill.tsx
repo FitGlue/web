@@ -5,7 +5,7 @@ export interface PillProps {
   /** Content of the pill */
   children: React.ReactNode;
   /** Visual variant */
-  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'primary' | 'gradient' | 'outlined' | 'muted';
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'primary' | 'pink' | 'gradient' | 'outlined' | 'muted';
   /** Size variant */
   size?: 'small' | 'default' | 'large';
   /** Optional icon */

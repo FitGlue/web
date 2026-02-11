@@ -89,7 +89,7 @@ const PendingInputsPage: React.FC = () => {
 
         const missingFields = input.requiredFields?.filter((f: string) => !values[f] || values[f].trim() === '');
         if (missingFields && missingFields.length > 0) {
-            toast.warning('Missing Fields', `Please fill in: ${missingFields.join(', ')}`);
+            toast.warning('Missing Fields', `Please fill in: ${missingFields.map(formatLabel).join(', ')}`);
             return;
         }
 

@@ -80,6 +80,12 @@
   color: #a78bfa;
 }
 
+/* Pink variant - Complements primary purple */
+.pill--pink {
+  background: rgba(255, 27, 141, 0.2);
+  color: #ff6baa;
+}
+
 /* Gradient variant - Activity type badges */
 .pill--gradient {
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));

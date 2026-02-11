@@ -1619,6 +1619,19 @@ h4 {
   color: var(--color-text-muted);
 }
 
+.see-all-link {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  transition: color var(--transition-fast);
+}
+
+.see-all-link:hover {
+  color: var(--color-secondary);
+}
+
 @media (max-width: 640px) {
   .steps::before {
     left: 24px;

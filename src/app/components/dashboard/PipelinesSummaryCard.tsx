@@ -9,7 +9,8 @@ import {
   EmptyState,
   Pill,
   Paragraph,
-  SkeletonLoading
+  SkeletonLoading,
+  SummaryListItem
 } from '../library/ui';
 
 /**
@@ -33,31 +34,16 @@ export const PipelinesSummaryCard: React.FC = () => {
         const enricherCount = pipeline.enrichers?.length ?? 0;
         const isDisabled = (pipeline as { disabled?: boolean }).disabled;
         return (
-          <div key={pipeline.id} className="pipeline-summary-item">
-            <div className="pipeline-summary-item__content">
-              <span className="pipeline-summary-item__title">
-                {pipeline.name || 'Unnamed Pipeline'}
-              </span>
-              <div className="pipeline-summary-item__meta">
-                <span className="pipeline-summary-item__source">
-                  {getSourceIcon(pipeline.source)} {getSourceName(pipeline.source)}
-                </span>
-                <Pill variant="primary" size="small">
-                  {enricherCount} booster{enricherCount !== 1 ? 's' : ''}
-                </Pill>
-              </div>
-              <div className="pipeline-summary-item__destinations">
-                {pipeline.destinations.map((dest, i) => (
-                  <span key={i} className="pipeline-summary-item__dest">
-                    {getDestinationName(dest)}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <span className={`pipeline-summary-item__status ${isDisabled ? 'inactive' : 'active'}`}>
-              {isDisabled ? '○' : '✓'}
-            </span>
-          </div>
+          <SummaryListItem
+            key={pipeline.id}
+            icon={getSourceIcon(pipeline.source)}
+            title={pipeline.name || 'Unnamed Pipeline'}
+            subtitle={<>{getSourceName(pipeline.source)} · <Pill variant="primary" size="small">{enricherCount} booster{enricherCount !== 1 ? 's' : ''}</Pill> → {pipeline.destinations.map((dest, i) => (
+              <Pill key={i} variant="pink" size="small">{getDestinationName(dest)}</Pill>
+            ))}</>}
+            status={isDisabled ? '○' : '✓'}
+            statusVariant={isDisabled ? 'inactive' : 'active'}
+          />
         );
       })}
       {pipelines.length > 5 && (

@@ -68,12 +68,22 @@
 .summary-list-item__subtitle {
   font-size: 0.75rem;
   color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .summary-list-item__status {
   flex-shrink: 0;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.summary-list-item__status--active {
+  color: var(--color-success);
+}
+
+.summary-list-item__status--inactive {
+  color: var(--color-text-muted);
 }
