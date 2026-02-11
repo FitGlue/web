@@ -1593,6 +1593,246 @@
   }
 
   /* ========================================
+     PARKRUN RESULTS
+     ======================================== */
+  .parkrun-results {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .parkrun-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.03);
+    animation: fadeInUp 0.3s ease-out backwards;
+    transition: background 0.2s;
+  }
+
+  .parkrun-stat-row:hover { background: rgba(255,255,255,0.06); }
+
+  .parkrun-stat-label {
+    font-size: 0.82rem;
+    color: #aaa;
+    min-width: 90px;
+    font-weight: 600;
+  }
+
+  .parkrun-stat-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .parkrun-badges {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+
+  .parkrun-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .parkrun-badge.all-time {
+    background: rgba(255,215,0,0.12);
+    color: #FFD700;
+    border: 1px solid rgba(255,215,0,0.2);
+  }
+
+  .parkrun-badge.this-year {
+    background: rgba(192,192,192,0.12);
+    color: #C0C0C0;
+    border: 1px solid rgba(192,192,192,0.2);
+  }
+
+  .parkrun-badge.first-visit {
+    background: rgba(255,255,100,0.12);
+    color: #FFFF64;
+    border: 1px solid rgba(255,255,100,0.2);
+  }
+
+  /* ========================================
+     EFFORT SCORE GAUGE
+     ======================================== */
+  .effort-score-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .effort-gauge {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .effort-gauge-ring {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+  }
+
+  .effort-gauge-ring svg {
+    transform: rotate(-90deg);
+    width: 80px;
+    height: 80px;
+  }
+
+  .effort-gauge-ring .gauge-bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.08);
+    stroke-width: 6;
+  }
+
+  .effort-gauge-ring .gauge-fill {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease-out;
+  }
+
+  .effort-gauge-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #fff;
+  }
+
+  .effort-gauge-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .effort-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .effort-label.easy { color: #4ADE80; }
+  .effort-label.moderate { color: #FBBF24; }
+  .effort-label.hard { color: #FB923C; }
+  .effort-label.very-hard { color: #EF4444; }
+  .effort-label.max { color: #DC2626; }
+
+  .effort-factors {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .effort-factor {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    font-size: 0.8rem;
+    color: #bbb;
+    animation: fadeInUp 0.3s ease-out backwards;
+  }
+
+  .effort-factor-emoji { flex-shrink: 0; }
+
+  .effort-factor-name {
+    flex: 1;
+    color: #aaa;
+  }
+
+  .effort-factor-value {
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .effort-verdict {
+    font-size: 0.8rem;
+    color: #888;
+    font-style: italic;
+    padding-left: 0.3rem;
+  }
+
+  /* ========================================
+     WORKOUT SUMMARY
+     ======================================== */
+  .workout-summary-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .workout-headline-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .workout-exercises {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .workout-exercise-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    animation: fadeInUp 0.3s ease-out backwards;
+    transition: background 0.2s;
+  }
+
+  .workout-exercise-row:hover { background: rgba(255,255,255,0.06); }
+
+  .workout-superset-marker {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    min-width: 1.4rem;
+    text-align: center;
+  }
+
+  .workout-exercise-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #ddd;
+    flex-shrink: 0;
+    min-width: 0;
+  }
+
+  .workout-exercise-sets {
+    font-size: 0.8rem;
+    color: #aaa;
+    flex: 1;
+    text-align: right;
+    word-break: break-word;
+  }
+
+  @media (max-width: 480px) {
+    .effort-gauge-ring { width: 64px; height: 64px; }
+    .effort-gauge-ring svg { width: 64px; height: 64px; }
+    .effort-gauge-value { font-size: 1rem; }
+    .parkrun-stat-label { min-width: 70px; font-size: 0.75rem; }
+  }
+
+  /* ========================================
      EXERCISES
      ======================================== */
   .exercise-list {
@@ -3146,6 +3386,9 @@
       if (title.includes('Goal Progress')) return renderGoalSection(section, idx);
       if (title === 'Streak Tracker') return renderStreakSection(section, idx);
       if (title.startsWith('Lifetime')) return renderMilestoneSection(section, idx);
+      if (title === 'Parkrun Results') return renderParkrunSection(section, idx);
+      if (title.startsWith('Effort Score')) return renderEffortScoreSection(section, idx);
+      if (title === 'Workout Summary') return renderWorkoutSummarySection(section, idx);
 
       // Bullet-list sections get parsed stat rows
       const lines = section.content.split('\n').filter(l => l.trim());
@@ -3623,6 +3866,199 @@
         <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
           <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
           <div class="compact-stat-pills">${pillsHtml}</div>
+        </div>`;
+    }
+
+    /**
+     * Render Parkrun Results with stat rows and PB trophy badges.
+     */
+    function renderParkrunSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      const rowsHtml = lines.map((line, i) => {
+        const trimmed = line.trim().replace(/^•\s*/, '');
+        const delay = (idx * 0.1) + (i * 0.05);
+
+        // Split on ' · ' to separate value from badges
+        const parts = trimmed.split(' · ');
+        const mainPart = parts[0] || '';
+        const badgeParts = parts.slice(1);
+
+        // Parse label: value
+        let label = '';
+        let value = mainPart;
+        const colonIdx = mainPart.indexOf(':');
+        if (colonIdx > 0) {
+          label = mainPart.substring(0, colonIdx).trim();
+          value = mainPart.substring(colonIdx + 1).trim();
+        }
+
+        // Render badges
+        const badgesHtml = badgeParts.map(b => {
+          const bt = b.trim();
+          let cls = '';
+          if (/all-time/i.test(bt)) cls = 'all-time';
+          else if (/this-year/i.test(bt)) cls = 'this-year';
+          else if (/first time/i.test(bt)) cls = 'first-visit';
+          else cls = 'all-time';
+          return `<span class="parkrun-badge ${cls}">${escapeHtml(bt)}</span>`;
+        }).join('');
+
+        return `<div class="parkrun-stat-row" style="animation-delay:${delay}s">
+          <span class="parkrun-stat-label">${escapeHtml(label)}</span>
+          <span class="parkrun-stat-value">${escapeHtml(value)}</span>
+          ${badgesHtml ? `<div class="parkrun-badges">${badgesHtml}</div>` : ''}
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="parkrun-results">${rowsHtml}</div>
+        </div>`;
+    }
+
+    /**
+     * Render Effort Score with a circular gauge and factor breakdown.
+     */
+    function renderEffortScoreSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      let score = 0;
+      let label = 'Moderate';
+      const factors = [];
+      let verdict = '';
+
+      for (const line of lines) {
+        const trimmed = line.trim().replace(/^•\s*/, '');
+        // Parse score line: "78/100 (Hard)"
+        const scoreMatch = trimmed.match(/(\d+)\/100\s*\(([^)]+)\)/);
+        if (scoreMatch) {
+          score = parseInt(scoreMatch[1]);
+          label = scoreMatch[2];
+          continue;
+        }
+        // Parse factor line: "🏃 Pace: 1.23× avg"
+        const factorMatch = trimmed.match(/^(.+?)\s+(.+?):\s+(.+)$/);
+        if (factorMatch && factorMatch[1].length <= 4) {
+          factors.push({ emoji: factorMatch[1], name: factorMatch[2], value: factorMatch[3] });
+          continue;
+        }
+        // Verdict line: "📈 Harder than usual" / "📉 Easier than usual"
+        if (/harder|easier|typical/i.test(trimmed)) {
+          verdict = trimmed;
+        }
+      }
+
+      // Gauge SVG
+      const circumference = 2 * Math.PI * 34;
+      const dashoffset = circumference * (1 - score / 100);
+      const labelClass = label.toLowerCase().replace(/\s+/g, '-');
+      const strokeColor = getEffortColor(label);
+
+      const gaugeHtml = `
+        <div class="effort-gauge">
+          <div class="effort-gauge-ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="gauge-bg" cx="40" cy="40" r="34"/>
+              <circle class="gauge-fill" cx="40" cy="40" r="34"
+                stroke="${strokeColor}"
+                stroke-dasharray="${circumference}"
+                stroke-dashoffset="${dashoffset}"/>
+            </svg>
+            <span class="effort-gauge-value">${score}</span>
+          </div>
+          <div class="effort-gauge-info">
+            <span class="effort-label ${labelClass}">${escapeHtml(label)}</span>
+            ${verdict ? `<span class="effort-verdict">${escapeHtml(verdict)}</span>` : ''}
+          </div>
+        </div>`;
+
+      const factorsHtml = factors.map((f, i) => {
+        const delay = (idx * 0.1) + ((i + 1) * 0.05);
+        return `<div class="effort-factor" style="animation-delay:${delay}s">
+          <span class="effort-factor-emoji">${f.emoji}</span>
+          <span class="effort-factor-name">${escapeHtml(f.name)}</span>
+          <span class="effort-factor-value">${escapeHtml(f.value)}</span>
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="effort-score-body">
+            ${gaugeHtml}
+            ${factorsHtml ? `<div class="effort-factors">${factorsHtml}</div>` : ''}
+          </div>
+        </div>`;
+    }
+
+    function getEffortColor(label) {
+      const l = label.toLowerCase();
+      if (l === 'easy') return '#4ADE80';
+      if (l === 'moderate') return '#FBBF24';
+      if (l === 'hard') return '#FB923C';
+      if (l.includes('very')) return '#EF4444';
+      if (l === 'max') return '#DC2626';
+      return '#FBBF24';
+    }
+
+    /**
+     * Render Workout Summary with headline stats + grouped exercise list.
+     */
+    function renderWorkoutSummarySection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      let headlineStats = [];
+      const exercises = [];
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        // Headline stats line: "12 sets • 5,000kg volume • 48 reps"
+        if (!trimmed.startsWith('•') && trimmed.includes(' • ')) {
+          headlineStats = trimmed.split(' • ').map(s => s.trim()).filter(Boolean);
+          continue;
+        }
+        // Exercise line: "• Bench Press: 3 × 100.0kg"
+        if (trimmed.startsWith('•')) {
+          const content = trimmed.slice(1).trim();
+          // Check for superset marker emoji (1️⃣, 2️⃣, etc.) or ⬜
+          let superset = '';
+          let exerciseContent = content;
+          const supersetMatch = content.match(/^([1-9]️⃣|🔟|⬜)\s*(.+)$/);
+          if (supersetMatch) {
+            superset = supersetMatch[1];
+            exerciseContent = supersetMatch[2];
+          }
+          // Split name: sets
+          const colonIdx = exerciseContent.indexOf(':');
+          if (colonIdx > 0) {
+            const name = exerciseContent.substring(0, colonIdx).trim();
+            const sets = exerciseContent.substring(colonIdx + 1).trim();
+            exercises.push({ superset, name, sets });
+          } else {
+            exercises.push({ superset, name: exerciseContent, sets: '' });
+          }
+        }
+      }
+
+      const statsHtml = headlineStats.map(s =>
+        `<span class="stat-pill"><span class="stat-pill-value">${escapeHtml(s)}</span></span>`
+      ).join('');
+
+      const exercisesHtml = exercises.map((ex, i) => {
+        const delay = (idx * 0.1) + (i * 0.04);
+        return `<div class="workout-exercise-row" style="animation-delay:${delay}s">
+          ${ex.superset ? `<span class="workout-superset-marker">${ex.superset}</span>` : ''}
+          <span class="workout-exercise-name">${escapeHtml(ex.name)}</span>
+          <span class="workout-exercise-sets">${escapeHtml(ex.sets)}</span>
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="workout-summary-body">
+            ${statsHtml ? `<div class="workout-headline-stats">${statsHtml}</div>` : ''}
+            ${exercisesHtml ? `<div class="workout-exercises">${exercisesHtml}</div>` : ''}
+          </div>
         </div>`;
     }
 
