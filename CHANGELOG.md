@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.15.0](https://github.com/fitglue/web/compare/v10.14.3...v10.15.0) (2026-02-11)
+
+
+### Features
+
+* enhance destination URL building with pipeline-specific config placeholders ([517ab33](https://github.com/fitglue/web/commit/517ab33a58f709f2cc0bca446796d20a99a5c639))
+
+
+### Bug Fixes
+
+* spacing on mobile first hero section ([b6f37cc](https://github.com/fitglue/web/commit/b6f37cc8380e387cd24cf6e91517a7354acab38d))
+
 ### [10.14.3](https://github.com/fitglue/web/compare/v10.14.2...v10.14.3) (2026-02-11)
 
 
