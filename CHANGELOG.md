@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.14.3](https://github.com/fitglue/web/compare/v10.14.2...v10.14.3) (2026-02-11)
+
+
+### Bug Fixes
+
+* plugin categorisation and ordering ([6030722](https://github.com/fitglue/web/commit/6030722c215056e23ef0738da51c2c3f4ff54e48))
+
 ### [10.14.2](https://github.com/fitglue/web/compare/v10.14.1...v10.14.2) (2026-02-10)
 
 
