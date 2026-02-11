@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.17.0](https://github.com/fitglue/web/compare/v10.16.0...v10.17.0) (2026-02-11)
+
+
+### Features
+
+* add intervals enricher support and per-run data export ([a66365e](https://github.com/fitglue/web/commit/a66365eaf133b5e4ad86176ab92d9ed3df252fa5))
+* add plugin defaults support and booster loading indicators ([19e8c23](https://github.com/fitglue/web/commit/19e8c239e3a4784a2850004ff4bb553dc6820fc6))
+* **web:** add product screenshots, display-config-driven inputs, account settings, and showcase types ([a8415cb](https://github.com/fitglue/web/commit/a8415cb051b675ff761b087d3dcfbb1806908c06))
+
 ## [10.16.0](https://github.com/fitglue/web/compare/v10.15.0...v10.16.0) (2026-02-11)
 
 
