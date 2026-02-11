@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.19.0](https://github.com/fitglue/web/compare/v10.18.0...v10.19.0) (2026-02-11)
+
+
+### Features
+
+* even shinier showcase page with extractions for key enrichers ([f95cf12](https://github.com/fitglue/web/commit/f95cf12e78eb885c912fa52208aa9a67dd9a1e4a))
+* mention and link to showcase profile when athlete ([5a636e6](https://github.com/fitglue/web/commit/5a636e69f4735a7f878201bebca009714a3032ab))
+
 ## [10.18.0](https://github.com/fitglue/web/compare/v10.17.1...v10.18.0) (2026-02-11)
 
 
