@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.19.1](https://github.com/fitglue/web/compare/v10.19.0...v10.19.1) (2026-02-11)
+
+
+### Bug Fixes
+
+* download pipeline run as zip ([4eec9cf](https://github.com/fitglue/web/commit/4eec9cf25b84ab87d3ca06931a9d92158c810f84))
+* parsing issues on showcase ([369369c](https://github.com/fitglue/web/commit/369369c91c3903f2241bc6394145ffd9ecea4563))
+
 ## [10.19.0](https://github.com/fitglue/web/compare/v10.18.0...v10.19.0) (2026-02-11)
 
 
