@@ -1,6 +1,28 @@
 # FitGlue Changelog
 
-<!-- LAST_PUBLISHED: server=v12.2.0, web=v10.7.1 -->
+<!-- LAST_PUBLISHED: server=v13.0.0, web=v10.16.0 -->
+
+## Server v13.0.0 / Web v10.16.0 - February 11, 2026
+
+### ⚠ Breaking Changes
+
+- No breaking changes.
+
+### ✨ New Features
+
+- **Connect to more apps!** Google and Google Sheets are now available as connection and destination options.
+- **See more insights about your workouts!** We've added Effort Score tracking, heart rate zone analysis, and muscle group rollups to give you a deeper understanding of your performance.
+- **Enjoy a better experience on the platform!** We've made improvements to the pipeline creation process, added pipeline duplication, improved the look and feel of your showcase profile, and made connection actions more obvious.
+- **Stay in the loop!** Get notified when your pipelines are syncing.
+- **Connect to GitHub!** You can now connect to GitHub.
+
+### 🐛 Bug Fixes
+
+- We've fixed issues with activity streaks, personal records, and other data displays to ensure accuracy.
+- We've resolved several connection issues with Google and GitHub, making it easier to connect your accounts.
+- We've improved the overall stability and performance of the platform, including fixing bugs related to user tiers and analytics.
+- We've polished the look and feel of the user interface, fixing spacing issues and improving plugin categorization.
+
 
 ## Server v12.2.0 / Web v10.7.1 - February 5, 2026
 
