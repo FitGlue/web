@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.16.0](https://github.com/fitglue/web/compare/v10.15.0...v10.16.0) (2026-02-11)
+
+
+### Features
+
+* more links, better pipelines, better pending inputs ([ab14001](https://github.com/fitglue/web/commit/ab14001ad0b1a78fe15e30e87e212e8cc25903d9))
+
 ## [10.15.0](https://github.com/fitglue/web/compare/v10.14.3...v10.15.0) (2026-02-11)
 
 
