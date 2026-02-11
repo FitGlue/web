@@ -246,11 +246,15 @@
 }
 
 /* ---- Hide site header/footer on showcase pages ---- */
-header.header {
+.showcase-page~header.header,
+.showcase-page header.header,
+body:has(.showcase-page)>header.header {
     display: none !important;
 }
 
-footer.footer {
+.showcase-page~footer.footer,
+.showcase-page footer.footer,
+body:has(.showcase-page)>footer.footer {
     display: none !important;
     visibility: hidden !important;
     height: 0 !important;

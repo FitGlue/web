@@ -320,14 +320,14 @@ const AccountSettingsPage: React.FC = () => {
                     <Stack gap="md">
                         <Heading level={3}>Help & Support</Heading>
                         <Grid cols={3} gap="md">
-                            <Link to="/help">
+                            <a href="/help" className="ui-link">
                                 <Card variant="interactive">
                                     <Stack gap="sm" align="center">
                                         <Paragraph size="lg">📚</Paragraph>
                                         <Paragraph size="sm">FAQ & Guides</Paragraph>
                                     </Stack>
                                 </Card>
-                            </Link>
+                            </a>
                             <Link to="mailto:support@fitglue.tech" external>
                                 <Card variant="interactive">
                                     <Stack gap="sm" align="center">
@@ -336,14 +336,14 @@ const AccountSettingsPage: React.FC = () => {
                                     </Stack>
                                 </Card>
                             </Link>
-                            <Link to="/contact">
+                            <a href="/contact" className="ui-link">
                                 <Card variant="interactive">
                                     <Stack gap="sm" align="center">
                                         <Paragraph size="lg">💡</Paragraph>
                                         <Paragraph size="sm">Request a Feature</Paragraph>
                                     </Stack>
                                 </Card>
-                            </Link>
+                            </a>
                         </Grid>
                     </Stack>
                 </GlowCard>

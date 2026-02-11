@@ -29,6 +29,29 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
     return initial;
   });
 
+  // Sync late-arriving initialValues (e.g. async plugin defaults) into form state.
+  // Only update fields that still hold their schema default or are empty,
+  // so we don't overwrite values the user has already edited.
+  useEffect(() => {
+    if (!initialValues || Object.keys(initialValues).length === 0) return;
+    setValues(prev => {
+      let changed = false;
+      const next = { ...prev };
+      schema.forEach(field => {
+        const incoming = initialValues[field.key];
+        if (!incoming) return;
+        const current = prev[field.key] || '';
+        const schemaDefault = field.defaultValue || '';
+        // Only fill in if the field is still at its default/empty value
+        if (current === '' || current === schemaDefault) {
+          next[field.key] = incoming;
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  }, [initialValues, schema]);
+
   useEffect(() => {
     onChange(values);
   }, [values, onChange]);

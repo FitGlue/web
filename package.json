@@ -9,9 +9,9 @@
   "scripts": {
     "dev": "npm run serve",
     "dev:static": "npx skier watch",
-    "build": "npm run _build:app && npm run _flatten && npm run _build:static",
-    "build:dev": "vite build --mode development && npm run _flatten && npm run _build:static",
-    "build:test": "vite build --mode test && npm run _flatten && npm run _build:static",
+    "build": "npm run _build:app && npm run _flatten && BUILD_ENV=prod npm run _build:static",
+    "build:dev": "vite build --mode development && npm run _flatten && BUILD_ENV=dev npm run _build:static",
+    "build:test": "vite build --mode test && npm run _flatten && BUILD_ENV=test npm run _build:static",
     "build:prod": "npm run build",
     "serve": "npm run build:dev && npx firebase serve --only hosting",
     "preview": "vite preview",

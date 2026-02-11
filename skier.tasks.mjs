@@ -25,6 +25,15 @@ const __dirname = path.dirname(__filename);
 // Generate a hash for cache busting
 const cacheHash = Date.now().toString(36);
 
+// Derive registry API URL based on BUILD_ENV (matches server-side getShowcaseBaseUrl pattern)
+function getRegistryApiUrl() {
+  if (process.env.REGISTRY_API_URL) return process.env.REGISTRY_API_URL;
+  const env = process.env.BUILD_ENV || 'dev';
+  if (env === 'prod') return 'https://fitglue.tech/api/registry';
+  if (env === 'test') return 'https://test.fitglue.tech/api/registry';
+  return 'https://dev.fitglue.tech/api/registry';
+}
+
 export const tasks = [
   // Sync version from CHANGELOG
   updateVersionTask({
@@ -35,7 +44,7 @@ export const tasks = [
 
   // Fetch registry data from API (CI) or use existing file (local)
   fetchRegistryTask({
-    apiUrl: (process.env.REGISTRY_API_URL || 'https://dev.fitglue.tech/api/registry') + '?marketingMode=true',
+    apiUrl: getRegistryApiUrl() + '?marketingMode=true',
     registryFile: path.join(__dirname, '.cache', 'registry.json'),
   }),
 

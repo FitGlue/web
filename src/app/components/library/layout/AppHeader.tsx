@@ -101,6 +101,14 @@ export const AppHeader: React.FC = () => {
                                 Admin Console
                             </Link>
                         )}
+                        <a
+                            href="/help"
+                            className="app-header__dropdown-item"
+                            onClick={() => setShowMenu(false)}
+                        >
+                            <span className="app-header__dropdown-icon">📚</span>
+                            Help
+                        </a>
                         <div className="app-header__dropdown-divider" />
                         <a
                             href="/auth/logout"
