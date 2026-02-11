@@ -93,11 +93,7 @@
     padding: var(--space-xl) 0;
   }
 
-  .hero {
-    min-height: auto;
-    padding-top: 100px;
-    padding-bottom: var(--space-xl);
-  }
+
 
   .hero-tagline {
     font-size: var(--font-size-lg);
@@ -626,6 +622,14 @@ h4 {
     width: 4px;
     height: 30px;
     transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+    padding-top: 140px;
+    padding-bottom: var(--space-xl);
   }
 }
 
