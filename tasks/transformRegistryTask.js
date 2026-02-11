@@ -127,8 +127,8 @@ export function transformRegistryTask() {
               if (a.isPremium !== b.isPremium) {
                 return a.isPremium ? -1 : 1;
               }
-              // Then by sortOrder
-              return (a.sortOrder ?? 99) - (b.sortOrder ?? 99);
+              // Then alphabetically A-Z
+              return (a.name || '').localeCompare(b.name || '');
             }),
         }))
         .filter((cat) => cat.plugins.length > 0);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from './library/ui/Card';
 import { PremiumBadge } from './library/ui/PremiumBadge';
 import { Button } from './library/ui/Button';
@@ -33,6 +33,10 @@ export const PluginCategorySection: React.FC<PluginCategorySectionProps> = ({
   defaultExpanded = false, // Changed default to collapsed
 }) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
+
+  useEffect(() => {
+    setExpanded(defaultExpanded);
+  }, [defaultExpanded]);
 
   if (plugins.length === 0) return null;
 

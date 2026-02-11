@@ -72,10 +72,7 @@ export function groupPluginsByCategory(
         if (a.isPremium !== b.isPremium) {
           return a.isPremium ? -1 : 1;
         }
-        // Then by sortOrder
-        const orderDiff = (a.sortOrder ?? 99) - (b.sortOrder ?? 99);
-        if (orderDiff !== 0) return orderDiff;
-        // Then alphabetically
+        // Then alphabetically A-Z
         return a.name.localeCompare(b.name);
       });
     if (matching.length > 0) {

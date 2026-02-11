@@ -69,7 +69,7 @@
     transition: all 0.2s ease;
 }
 
-.plugin-category-item.selected {
+.plugin-category-item.selected>.card {
     border-color: var(--color-primary, #a855f7);
     box-shadow: 0 0 0 1px var(--color-primary, #a855f7), 0 0 12px rgba(168, 85, 247, 0.2);
 }

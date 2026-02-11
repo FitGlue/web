@@ -12,6 +12,8 @@ import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginConfigForm } from '../components/EnricherConfigForm';
 import { SharePipelineModal } from '../components/SharePipelineModal';
 import { WizardOptionGrid, WizardExcludedSection } from '../components/wizard';
+import { PluginCategorySection } from '../components/PluginCategorySection';
+import { Input as FormInput } from '../components/library/forms';
 import { useApi } from '../hooks/useApi';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
@@ -21,6 +23,7 @@ import '../components/library/ui/CardSkeleton.css';
 import { PluginManifest } from '../types/plugin';
 import { Input } from '../components/library/forms';
 import { encodePipeline } from '../../shared/pipeline-sharing';
+import { ENRICHER_CATEGORIES, groupPluginsByCategory } from '../utils/pluginCategories';
 
 interface EnricherConfig {
     providerType: number;
@@ -86,6 +89,8 @@ const PipelineEditPage: React.FC = () => {
     const [editingEnrichers, setEditingEnrichers] = useState(false);
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
     const [showShareModal, setShowShareModal] = useState(false);
+    const [enricherSearchQuery, setEnricherSearchQuery] = useState('');
+    const [expandAllCategories, setExpandAllCategories] = useState(false);
 
     const fetchPipeline = useCallback(async () => {
         if (!pipelineId) return;
@@ -206,6 +211,12 @@ const PipelineEditPage: React.FC = () => {
     const excludedSources = sources.filter(s => s.enabled && !isPluginAvailable(s));
     const availableEnrichers = enrichers.filter(e => e.enabled && isPluginAvailable(e));
     const excludedEnrichers = enrichers.filter(e => e.enabled && !isPluginAvailable(e));
+    const filteredEnrichers = enricherSearchQuery
+        ? availableEnrichers.filter(e =>
+            e.name.toLowerCase().includes(enricherSearchQuery.toLowerCase()) ||
+            (e.description ?? '').toLowerCase().includes(enricherSearchQuery.toLowerCase()))
+        : availableEnrichers;
+    const groupedEnrichers = groupPluginsByCategory(filteredEnrichers, ENRICHER_CATEGORIES);
     const availableDestinations = destinations.filter(d => d.enabled && isPluginAvailable(d));
     const excludedDestinations = destinations.filter(d => d.enabled && !isPluginAvailable(d));
 
@@ -274,22 +285,7 @@ const PipelineEditPage: React.FC = () => {
                                 {editingEnrichers ? 'Done' : 'Edit Enrichers'}
                             </Button>
                         </Stack>
-                        {editingEnrichers ? (
-                            <>
-                                <WizardOptionGrid
-                                    options={availableEnrichers}
-                                    selectedIds={selectedEnrichers.map(e => e.manifest.id)}
-                                    onSelect={(option) => toggleEnricher(option as unknown as PluginManifest)}
-                                />
-                                <WizardExcludedSection
-                                    items={excludedEnrichers}
-                                    getKey={e => e.id}
-                                    getIcon={e => e.icon}
-                                    getName={e => e.name}
-                                    getHint={getExcludedHint}
-                                />
-                            </>
-                        ) : (
+                        {!editingEnrichers && (
                             <>
                                 {selectedEnrichers.length === 0 ? (
                                     <Paragraph>No enrichers selected. Click &quot;Edit Enrichers&quot; to add boosters.</Paragraph>
@@ -305,6 +301,39 @@ const PipelineEditPage: React.FC = () => {
                             </>
                         )}
                     </Card>
+                    {editingEnrichers && (
+                        <>
+                            <Stack direction="horizontal" align="center" justify="between">
+                                <FormInput type="text" placeholder="Search boosters..." value={enricherSearchQuery}
+                                    onChange={(e) => setEnricherSearchQuery(e.target.value)} />
+                                <Button variant="secondary" size="small" onClick={() => setExpandAllCategories(!expandAllCategories)}>
+                                    {expandAllCategories ? 'Collapse All' : 'Expand All'}
+                                </Button>
+                            </Stack>
+                            {Array.from(groupedEnrichers.entries()).map(([category, plugins]) => (
+                                <PluginCategorySection
+                                    key={category.id}
+                                    category={category}
+                                    plugins={plugins}
+                                    selectedIds={selectedEnrichers.map(e => e.manifest.id)}
+                                    onSelect={toggleEnricher}
+                                    onInfoClick={setInfoEnricher}
+                                    disabledPlugins={new Set(excludedEnrichers.map(e => e.id))}
+                                    getDisabledReason={(plugin) => getExcludedHint(plugin)}
+                                    defaultExpanded={!!enricherSearchQuery || expandAllCategories}
+                                />
+                            ))}
+                            {!enricherSearchQuery && (
+                                <WizardExcludedSection
+                                    items={excludedEnrichers}
+                                    getKey={e => e.id}
+                                    getIcon={e => e.icon}
+                                    getName={e => e.name}
+                                    getHint={getExcludedHint}
+                                />
+                            )}
+                        </>
+                    )}
 
                     {/* Destinations Section */}
                     <Card>
