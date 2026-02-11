@@ -869,15 +869,10 @@ const ActivityDetailPage: React.FC = () => {
                                 setExportStatus('loading');
                                 try {
                                     const data = await api.get(`/export/run/${pipelineRun.id}`);
-                                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                                    const url = URL.createObjectURL(blob);
-                                    const a = document.createElement('a');
-                                    a.href = url;
-                                    a.download = `fitglue-run-${pipelineRun.id}.json`;
-                                    a.click();
-                                    URL.revokeObjectURL(url);
+                                    const response = data as { downloadUrl: string; fitFileAvailable: boolean };
+                                    window.open(response.downloadUrl, '_blank');
                                     setExportStatus('done');
-                                    toast.success('Export Downloaded', 'Run data saved as JSON');
+                                    toast.success('Export Ready', `Run data saved as ZIP${response.fitFileAvailable ? ' (includes FIT file)' : ''}`);
                                 } catch {
                                     setExportStatus('error');
                                     toast.error('Export Failed', 'Could not export run data. Try again.');
@@ -893,8 +888,8 @@ const ActivityDetailPage: React.FC = () => {
                 <Paragraph size="sm" muted centered>
                     Synced: {formatDateTime(pipelineRun.updatedAt)}
                 </Paragraph>
-            </Stack>
-        </PageLayout>
+            </Stack >
+        </PageLayout >
     );
 };
 
