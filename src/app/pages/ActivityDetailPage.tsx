@@ -1,15 +1,16 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard, MultiRingSpinner } from '../components/library/ui';
+import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard, MultiRingSpinner, Button, useToast } from '../components/library/ui';
 import { FlowVisualization } from '../components/library/ui/FlowVisualization';
 import { BoosterGrid } from '../components/library/ui/BoosterGrid';
 import '../components/library/ui/CardSkeleton.css';
 import { EnricherBadge } from '../components/dashboard/EnricherBadge';
 import { RepostActionsMenu } from '../components/RepostActionsMenu';
+import { useApi } from '../hooks/useApi';
 import { useNerdMode } from '../state/NerdModeContext';
 import { formatActivityType, formatDestination, formatDestinationStatus } from '../../types/pb/enum-formatters';
 import { buildDestinationUrl } from '../utils/destinationUrls';
@@ -329,6 +330,11 @@ const ActivityDetailPage: React.FC = () => {
     const { pipelines } = useRealtimePipelines();
     const { sources, destinations: registryDestinations, enrichers } = usePluginRegistry();
     const { isNerdMode } = useNerdMode();
+    const api = useApi();
+    const toast = useToast();
+
+    // Per-run export state
+    const [exportStatus, setExportStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
 
     // Get pipeline runs - this is now the PRIMARY data source
     const { pipelineRuns, loading } = useRealtimePipelineRuns(true, 50);
@@ -855,6 +861,31 @@ const ActivityDetailPage: React.FC = () => {
                             isPro={true}
                             inline
                         />
+                        <Button
+                            variant="secondary"
+                            size="small"
+                            disabled={exportStatus === 'loading'}
+                            onClick={async () => {
+                                setExportStatus('loading');
+                                try {
+                                    const data = await api.get(`/export/run/${pipelineRun.id}`);
+                                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                                    const url = URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = `fitglue-run-${pipelineRun.id}.json`;
+                                    a.click();
+                                    URL.revokeObjectURL(url);
+                                    setExportStatus('done');
+                                    toast.success('Export Downloaded', 'Run data saved as JSON');
+                                } catch {
+                                    setExportStatus('error');
+                                    toast.error('Export Failed', 'Could not export run data. Try again.');
+                                }
+                            }}
+                        >
+                            {exportStatus === 'loading' ? '⏳ Exporting...' : '📦 Export Run Data'}
+                        </Button>
                     </Stack>
                 </Card>
 
