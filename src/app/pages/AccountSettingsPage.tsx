@@ -36,6 +36,11 @@ const AccountSettingsPage: React.FC = () => {
 
     const [copied, setCopied] = useState(false);
 
+    // Data export state
+    const [exportStatus, setExportStatus] = useState<'idle' | 'pending' | 'running' | 'completed' | 'failed'>('idle');
+    const [exportDownloadUrl, setExportDownloadUrl] = useState<string | null>(null);
+    const [exportError, setExportError] = useState<string | null>(null);
+
     useEffect(() => {
         if (firebaseUser?.displayName) {
             setEditedName(firebaseUser.displayName);
@@ -119,6 +124,46 @@ const AccountSettingsPage: React.FC = () => {
             setDeleteError('Failed to delete account. Please try again.');
         } finally {
             setDeleting(false);
+        }
+    };
+
+    const handleExportData = async () => {
+        setExportStatus('pending');
+        setExportError(null);
+        setExportDownloadUrl(null);
+
+        try {
+            const response = await api.post('/export/full');
+            const jobId = response.jobId as string;
+
+            // Poll for completion
+            const pollInterval = setInterval(async () => {
+                try {
+                    const status = await api.get(`/export/status/${jobId}`);
+                    if (status.status === 'COMPLETED') {
+                        clearInterval(pollInterval);
+                        setExportStatus('completed');
+                        setExportDownloadUrl(status.downloadUrl as string);
+                        toast.success('Export Ready', 'Your data export is ready to download');
+                    } else if (status.status === 'FAILED') {
+                        clearInterval(pollInterval);
+                        setExportStatus('failed');
+                        setExportError(status.error as string || 'Export failed');
+                        toast.error('Export Failed', 'Your data export could not be completed');
+                    } else {
+                        setExportStatus('running');
+                    }
+                } catch {
+                    clearInterval(pollInterval);
+                    setExportStatus('failed');
+                    setExportError('Failed to check export status');
+                }
+            }, 5000);
+        } catch (err) {
+            console.error('Failed to trigger export:', err);
+            setExportStatus('failed');
+            setExportError('Failed to start data export');
+            toast.error('Export Failed', 'Could not start data export');
         }
     };
 
@@ -306,6 +351,52 @@ const AccountSettingsPage: React.FC = () => {
                 {/* Notification Preferences Card */}
                 <NotificationPreferencesCard />
 
+                {/* Data Rights - Always Visible (GDPR) */}
+                <Card>
+                    <Stack gap="md">
+                        <Heading level={3}>📋 Data Rights</Heading>
+                        <Paragraph size="sm">
+                            Under GDPR you have the right to access, rectify, and delete your personal data.
+                            You can export all your data at any time.
+                        </Paragraph>
+                        {exportStatus === 'idle' && (
+                            <Button variant="secondary" onClick={handleExportData}>
+                                📦 Download My Data
+                            </Button>
+                        )}
+                        {(exportStatus === 'pending' || exportStatus === 'running') && (
+                            <Stack gap="xs">
+                                <Button variant="secondary" disabled>
+                                    {exportStatus === 'pending' ? '⏳ Starting export...' : '⏳ Preparing your data...'}
+                                </Button>
+                                <Paragraph size="sm" muted>
+                                    This may take a few minutes. You will also receive an email when it is ready.
+                                </Paragraph>
+                            </Stack>
+                        )}
+                        {exportStatus === 'completed' && exportDownloadUrl && (
+                            <Stack gap="xs">
+                                <Link to={exportDownloadUrl} external>
+                                    <Button variant="primary">
+                                        ⬇️ Download Export (ZIP)
+                                    </Button>
+                                </Link>
+                                <Paragraph size="sm" muted>
+                                    This link expires in 24 hours. A copy was also sent to your email.
+                                </Paragraph>
+                            </Stack>
+                        )}
+                        {exportStatus === 'failed' && (
+                            <Stack gap="xs">
+                                <Paragraph size="sm">{exportError}</Paragraph>
+                                <Button variant="secondary" onClick={handleExportData}>
+                                    🔄 Try Again
+                                </Button>
+                            </Stack>
+                        )}
+                    </Stack>
+                </Card>
+
                 {isNerdMode && (
                     <Card>
                         <Heading level={3}>🤓 Advanced</Heading>
@@ -319,17 +410,6 @@ const AccountSettingsPage: React.FC = () => {
                                     <Button variant="text" size="small" onClick={handleCopyUserId}>
                                         {copied ? '✓ Copied' : '📋 Copy'}
                                     </Button>
-                                </Stack>
-                            </Stack>
-                            <Stack gap="sm">
-                                <Paragraph size="sm" muted>Data Rights</Paragraph>
-                                <Stack gap="xs">
-                                    <Paragraph size="sm">
-                                        Under GDPR you have the right to access, rectify, and delete your personal data.
-                                    </Paragraph>
-                                    <Link to="mailto:privacy@fitglue.tech" external variant="primary">
-                                        Request data export (Subject Access Request)
-                                    </Link>
                                 </Stack>
                             </Stack>
                         </Stack>

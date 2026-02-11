@@ -76,6 +76,13 @@
         }
       },
       {
+        "source": "/api/export/**",
+        "run": {
+          "serviceId": "data-export-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/integrations/*/actions/**",
         "run": {
           "serviceId": "connection-actions-handler",

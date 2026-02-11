@@ -49,13 +49,15 @@ export const ActionRequiredSummaryCard: React.FC = () => {
     <Stack gap="xs">
       {inputs.slice(0, 3).map(input => {
         const sourceInfo = getInputSourceInfo(input);
-        const formattedFields = input.requiredFields?.map(formatFieldLabel).join(', ') || 'input';
+        const formattedFields = input.displayConfig?.summary
+          || input.requiredFields?.map(f => input.displayConfig?.fieldLabels?.[f] || formatFieldLabel(f)).join(', ')
+          || 'input';
         return (
           <PendingInputItem
             key={input.id}
             icon={sourceInfo.icon}
             title={<Stack direction="horizontal" gap="sm" align="center">{sourceInfo.source}{sourceInfo.isAuto && <Badge variant="warning" size="sm">Awaiting</Badge>}</Stack> as ReactNode}
-            subtitle={sourceInfo.isAuto ? 'Waiting for results...' : `Needs: ${formattedFields}`}
+            subtitle={sourceInfo.isAuto ? 'Waiting for results...' : formattedFields}
             variant={sourceInfo.isAuto ? 'awaiting' : 'needs-input'}
             onClick={() => navigate('/inputs')}
           />

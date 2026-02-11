@@ -5061,6 +5061,211 @@ h4 {
   }
 }
 
+/* ========================================
+   Product Screenshots
+   ======================================== */
+
+/* Browser-frame wrapper for hero product shots */
+.product-screenshot {
+  max-width: 1100px;
+  margin: var(--space-xl) auto var(--space-xl);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 20, 30, 0.6);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(131, 56, 236, 0.08);
+  transition: box-shadow var(--transition-normal);
+  cursor: zoom-in;
+}
+
+.product-screenshot:hover {
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 60px rgba(131, 56, 236, 0.12);
+}
+
+/* Fake browser chrome */
+.product-screenshot__chrome {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.product-screenshot__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.product-screenshot__dot:first-child {
+  background: rgba(255, 69, 58, 0.7);
+}
+
+.product-screenshot__dot:nth-child(2) {
+  background: rgba(255, 214, 10, 0.7);
+}
+
+.product-screenshot__dot:nth-child(3) {
+  background: rgba(40, 205, 65, 0.7);
+}
+
+.product-screenshot__image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Placeholder state when no real image is provided */
+.product-screenshot__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-lg);
+  min-height: 300px;
+  color: var(--color-text-subtle);
+  text-align: center;
+  gap: var(--space-sm);
+  background: linear-gradient(135deg, rgba(131, 56, 236, 0.03) 0%, rgba(255, 0, 110, 0.03) 100%);
+}
+
+.product-screenshot__placeholder-icon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.product-screenshot__placeholder-text {
+  font-size: var(--font-size-sm);
+  max-width: 300px;
+}
+
+/* Before/After screenshot comparison */
+.screenshot-comparison {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--space-md);
+  align-items: start;
+  max-width: 1100px;
+  margin: var(--space-lg) auto;
+}
+
+.screenshot-comparison__side {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 20, 30, 0.6);
+  cursor: zoom-in;
+}
+
+/* Fullscreen lightbox overlay */
+.screenshot-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  animation: lightbox-fade-in 0.2s ease-out;
+  padding: var(--space-lg);
+}
+
+.screenshot-lightbox img {
+  max-width: 95vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+}
+
+.screenshot-lightbox__hint {
+  position: absolute;
+  bottom: var(--space-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@keyframes lightbox-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.screenshot-comparison__label {
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.screenshot-comparison__side--before .screenshot-comparison__label {
+  color: var(--color-text-muted);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.screenshot-comparison__side--after .screenshot-comparison__label {
+  color: var(--color-primary);
+  background: rgba(131, 56, 236, 0.1);
+}
+
+.screenshot-comparison__arrow {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  padding-top: var(--space-xl);
+}
+
+.screenshot-comparison__image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Step screenshot — used on How It Works page */
+.step-screenshot {
+  margin-top: var(--space-md);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.step-screenshot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .screenshot-comparison {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
+  .screenshot-comparison__arrow {
+    justify-content: center;
+    padding-top: 0;
+    transform: rotate(90deg);
+  }
+
+  .product-screenshot__placeholder {
+    min-height: 200px;
+    padding: var(--space-lg) var(--space-md);
+  }
+}
+
 @keyframes shake {
 
   10%,

@@ -8,11 +8,8 @@
  * Example: "heart_rate_zones" -> "Heart Rate Zones"
  */
 export const formatFieldLabel = (field: string): string => {
-  const friendlyLabels: Record<string, string> = {
-    fit_file_base64: 'Heart Rate File',
-    race_selection: 'Race Type',
-  };
-  if (friendlyLabels[field]) return friendlyLabels[field];
+  // Labels are now primarily driven by backend display config (display.field_labels).
+  // This function serves as a fallback for fields without server-provided labels.
   return field
     .split('_')
     .map(w => w.charAt(0).toUpperCase() + w.slice(1))

@@ -89,7 +89,7 @@ const PendingInputsPage: React.FC = () => {
 
         const missingFields = input.requiredFields?.filter((f: string) => !values[f] || values[f].trim() === '');
         if (missingFields && missingFields.length > 0) {
-            toast.warning('Missing Fields', `Please fill in: ${missingFields.map(formatLabel).join(', ')}`);
+            toast.warning('Missing Fields', `Please fill in: ${missingFields.map(f => formatLabel(f, input)).join(', ')}`);
             return;
         }
 
@@ -161,41 +161,13 @@ const PendingInputsPage: React.FC = () => {
 
     const renderField = (activityId: string, field: string) => {
         const value = getFieldValue(activityId, field);
+        const currentInput = inputs.find(i => i.activityId === activityId);
+        const fieldType = currentInput?.displayConfig?.fieldTypes?.[field] || '';
 
-        if (field === 'activity_type') {
-            return (
-                <Select
-                    value={value}
-                    onChange={(e) => handleInputChange(activityId, field, e.target.value)}
-                    options={[
-                        { value: '', label: 'Select Type...' },
-                        { value: 'RUN', label: 'Run' },
-                        { value: 'RIDE', label: 'Ride' },
-                        { value: 'WEIGHT_TRAINING', label: 'Weight Training' },
-                        { value: 'WORKOUT', label: 'Workout' },
-                    ]}
-                />
-            );
-        }
-
-        if (field === 'description') {
-            return (
-                <Textarea
-                    placeholder="Enter description..."
-                    value={value}
-                    onChange={(e) => handleInputChange(activityId, field, e.target.value)}
-                    rows={3}
-                />
-            );
-        }
-
-        // Hybrid race preset selection field
-        if (field === 'race_selection') {
-            // Get the current input to access providerMetadata
-            const currentInput = inputs.find(i => i.activityId === activityId);
+        // Display-config-driven rendering
+        if (fieldType.startsWith('custom:hybrid_race_tagger') || (!fieldType && field === 'race_selection')) {
             const lapsJson = currentInput?.providerMetadata?.laps || '[]';
             const presetsJson = currentInput?.providerMetadata?.presets || '[]';
-
             return (
                 <HybridRaceTaggerInput
                     lapsJson={lapsJson}
@@ -206,13 +178,15 @@ const PendingInputsPage: React.FC = () => {
             );
         }
 
-        // File upload field for FIT files
-        if (field === 'fit_file_base64') {
+        if (fieldType.startsWith('file') || (!fieldType && field === 'fit_file_base64')) {
+            // Parse accept from DSL: "file:accept=.fit"
+            const acceptMatch = fieldType.match(/accept=([^,]+)/);
+            const accept = acceptMatch?.[1] || '.fit';
             const fileInfo = fileNames[activityId];
             return (
                 <FileInput
-                    accept=".fit"
-                    placeholder="Click to select .fit file"
+                    accept={accept}
+                    placeholder={`Click to select ${accept} file`}
                     fileName={fileInfo?.name}
                     fileSize={fileInfo?.size}
                     onFileSelect={(file) => {
@@ -228,25 +202,56 @@ const PendingInputsPage: React.FC = () => {
             );
         }
 
+        if (fieldType.startsWith('select') || (!fieldType && field === 'activity_type')) {
+            return (
+                <Select
+                    value={value}
+                    onChange={(e) => handleInputChange(activityId, field, e.target.value)}
+                    options={[
+                        { value: '', label: 'Select Type...' },
+                        { value: 'RUN', label: 'Run' },
+                        { value: 'RIDE', label: 'Ride' },
+                        { value: 'WEIGHT_TRAINING', label: 'Weight Training' },
+                        { value: 'WORKOUT', label: 'Workout' },
+                    ]}
+                />
+            );
+        }
+
+        if (fieldType.startsWith('textarea') || (!fieldType && field === 'description')) {
+            // Parse rows from DSL: "textarea:rows=3"
+            const rowsMatch = fieldType.match(/rows=(\d+)/);
+            const rows = rowsMatch ? parseInt(rowsMatch[1], 10) : 3;
+            return (
+                <Textarea
+                    placeholder={`Enter ${formatLabel(field, currentInput)}...`}
+                    value={value}
+                    onChange={(e) => handleInputChange(activityId, field, e.target.value)}
+                    rows={rows}
+                />
+            );
+        }
+
+        // Default: text input
+        // Parse placeholder from DSL: "text:placeholder=e.g. 42"
+        const placeholderMatch = fieldType.match(/placeholder=([^,]+)/);
+        const placeholder = placeholderMatch ? placeholderMatch[1] : `Enter ${formatLabel(field, currentInput)}...`;
         return (
             <Input
                 type="text"
-                placeholder={`Enter ${field}...`}
+                placeholder={placeholder}
                 value={value}
                 onChange={(e) => handleInputChange(activityId, field, e.target.value)}
             />
         );
     };
 
-    const formatLabel = (field: string) => {
-        // Special case for FIT file upload
-        if (field === 'fit_file_base64') {
-            return 'Heart Rate FIT File';
-        }
-        // Special case for hybrid race preset selection
-        if (field === 'race_selection') {
-            return 'Select Race Type';
-        }
+    const formatLabel = (field: string, input?: PendingInput) => {
+        // Use server-provided label if available
+        const serverLabel = input?.displayConfig?.fieldLabels?.[field];
+        if (serverLabel) return serverLabel;
+
+        // Fallback: Title Case conversion
         return field
             .split('_')
             .map((w) => w.charAt(0).toUpperCase() + w.slice(1))

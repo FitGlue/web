@@ -6,18 +6,23 @@ import {
     pendingInputsAtom,
     inputsLastUpdatedAtom,
     isLoadingInputsAtom,
-    isInputsLoadedAtom
+    isInputsLoadedAtom,
+    PendingInput,
+    DisplayConfig,
 } from '../state/inputsState';
-import { PendingInput as TBasePendingInput } from '../services/InputsService';
 
-// Define the PendingInput type with all fields
-export interface PendingInput extends Omit<TBasePendingInput, 'providerMetadata'> {
-    providerMetadata?: { [key: string]: string };
-    updatedAt?: string;
-    userId?: string;
-    deadline?: string;
-    autoPopulated?: boolean;
-    providerType?: number;
+export type { PendingInput, DisplayConfig };
+
+/** Parse well-known display.* keys from provider metadata into a structured object */
+function parseDisplayConfig(metadata?: Record<string, string>): DisplayConfig | undefined {
+    if (!metadata) return undefined;
+    const config: DisplayConfig = {};
+    try { if (metadata['display.field_labels']) config.fieldLabels = JSON.parse(metadata['display.field_labels']); } catch { /* ignore */ }
+    try { if (metadata['display.field_types']) config.fieldTypes = JSON.parse(metadata['display.field_types']); } catch { /* ignore */ }
+    config.summary = metadata['display.summary'];
+    config.title = metadata['display.title'];
+    config.help = metadata['display.help'];
+    return (config.fieldLabels || config.fieldTypes || config.summary || config.title || config.help) ? config : undefined;
 }
 
 // Helper to convert Firestore Timestamp to ISO string
@@ -82,6 +87,7 @@ export const useRealtimeInputs = () => {
                 providerType: (data.provider_type || data.providerType) as number | undefined,
                 providerMetadata: (data.provider_metadata || data.providerMetadata || {}) as { [key: string]: string }
             };
+            input.displayConfig = parseDisplayConfig(input.providerMetadata);
             return input;
         });
     }, []);

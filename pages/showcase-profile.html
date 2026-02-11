@@ -1,0 +1,460 @@
+{{>header}}
+<link rel="stylesheet" href="/assets/styles/_showcase-shared.css" />
+
+<section class="showcase-page">
+    <!-- Loading State -->
+    <div id="profile-loading" class="showcase-loading">
+        <div class="loading-bg-gradient"></div>
+        <div class="loading-content">
+            <div class="loading-logo">
+                <span class="loading-logo-fit">Fit</span>
+                <span class="loading-logo-glue">Glue</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div id="profile-error" class="showcase-error">
+        <div class="error-icon">🔍</div>
+        <h2 class="error-title">Profile not found</h2>
+        <p class="error-subtitle">This athlete profile doesn't exist or hasn't been created yet.</p>
+        <a href="/" class="btn btn-primary">Explore FitGlue</a>
+    </div>
+
+    <!-- Profile Content -->
+    <div id="profile-content" class="profile-content" style="display: none;">
+        <div class="profile-container">
+
+            <!-- Hero Header -->
+            <div class="profile-hero">
+                <h1 id="profile-name" class="profile-display-name"></h1>
+                <p class="profile-subtitle">FitGlue Athlete</p>
+            </div>
+
+            <!-- Headline Stats -->
+            <div id="profile-stats" class="profile-stats"></div>
+
+            <!-- Activity List -->
+            <div id="profile-activities" class="profile-activities">
+                <h2 class="section-title">Showcased Activities</h2>
+                <div id="activity-list" class="activity-list"></div>
+            </div>
+
+            <!-- CTA banner -->
+            <div class="showcase-cta glass-card">
+                <div class="cta-content">
+                    <h3>Want to enhance your own activities?</h3>
+                    <p>FitGlue automatically enriches your workouts with muscle heatmaps, heart rate analysis, and
+                        beautiful shareable summaries.</p>
+                    <a href="/" class="btn-gradient">Try FitGlue Free →</a>
+                </div>
+            </div>
+
+            <!-- Footer Attribution -->
+            <div class="showcase-attribution">
+                <span>Powered by</span>
+                <a href="/" class="fitglue-logo">
+                    <span class="fit">Fit</span><span class="glue">Glue</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+
+<style>
+    /* ========================================
+     PROFILE PAGE - SPECIFIC STYLES
+     ======================================== */
+
+    .profile-content {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .profile-container {
+        padding-top: 2rem;
+    }
+
+    /* Hero */
+    .profile-hero {
+        text-align: center;
+        padding: 3rem 0 2rem;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .profile-display-name {
+        font-size: clamp(2rem, 6vw, 3.5rem);
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #FF1B8D 0%, #9D4EDD 50%, #4CC9F0 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-subtitle {
+        color: #999;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        font-weight: 600;
+    }
+
+    /* Stats Grid */
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.6s ease-out 0.1s backwards;
+    }
+
+    .stat-card {
+        background: rgba(30, 30, 40, 0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 1.25rem 1rem;
+        text-align: center;
+        transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(255, 27, 141, 0.3);
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        color: #fff;
+        line-height: 1.2;
+    }
+
+    .stat-value.gradient-pink {
+        background: linear-gradient(135deg, #FF1B8D, #FF6BB3);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-value.gradient-purple {
+        background: linear-gradient(135deg, #9D4EDD, #C77DFF);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-value.gradient-blue {
+        background: linear-gradient(135deg, #4CC9F0, #80DAFF);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-value.gradient-green {
+        background: linear-gradient(135deg, #06FFA5, #4ADE80);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-value.gradient-orange {
+        background: linear-gradient(135deg, #FF9F43, #FFD93D);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-top: 0.25rem;
+        font-weight: 600;
+    }
+
+    /* Activity List */
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #fff;
+        animation: fadeInUp 0.6s ease-out 0.2s backwards;
+    }
+
+    .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .activity-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(30, 30, 40, 0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 1rem 1.25rem;
+        text-decoration: none;
+        color: #fff;
+        transition: all 0.2s ease;
+        animation: fadeInUp 0.4s ease-out backwards;
+        cursor: pointer;
+    }
+
+    .activity-card:hover {
+        border-color: rgba(255, 27, 141, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .activity-thumbnail {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        object-fit: cover;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .activity-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .activity-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .activity-title {
+        font-size: 1rem;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        font-size: 0.8rem;
+        color: #999;
+    }
+
+    .activity-meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .activity-arrow {
+        color: #555;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+        .profile-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .activity-thumbnail,
+        .activity-icon {
+            width: 48px;
+            height: 48px;
+            font-size: 1.25rem;
+        }
+    }
+</style>
+
+<script>
+    // ========================================
+    //  SHOWCASE PROFILE - VANILLA JS
+    // ========================================
+
+    const ACTIVITY_TYPE_ICONS = {
+        1: '🏃', 2: '🚴', 3: '🏊', 4: '🚶', 5: '🧗', 7: '🏋️',
+        10: '🧘', 12: '⛷️', 14: '🏄', 17: '🚣', 46: '🏋️',
+    };
+
+    function getActivityIcon(type) {
+        return ACTIVITY_TYPE_ICONS[type] || '🏅';
+    }
+
+    function formatDistance(meters) {
+        if (!meters || meters <= 0) return null;
+        if (meters >= 1000) return (meters / 1000).toFixed(1) + ' km';
+        return Math.round(meters) + ' m';
+    }
+
+    function formatDuration(seconds) {
+        if (!seconds || seconds <= 0) return null;
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        if (h > 0) return h + 'h ' + m + 'm';
+        return m + 'm';
+    }
+
+    function formatDurationLong(seconds) {
+        if (!seconds || seconds <= 0) return null;
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        if (h > 0) return h + 'h ' + m + 'm';
+        return m + ' min';
+    }
+
+    function formatWeight(kg) {
+        if (!kg || kg <= 0) return null;
+        if (kg >= 1000) return (kg / 1000).toFixed(1) + 't';
+        return Math.round(kg).toLocaleString() + ' kg';
+    }
+
+    function formatNumber(n) {
+        if (!n || n <= 0) return null;
+        return n.toLocaleString();
+    }
+
+    function formatDate(isoStr) {
+        if (!isoStr) return '';
+        const d = new Date(isoStr);
+        return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function getSlugFromUrl() {
+        // Support /u/:slug or ?slug=xxx
+        const path = window.location.pathname;
+        const uMatch = path.match(/\/u\/([^/]+)/);
+        if (uMatch) return uMatch[1];
+        const params = new URLSearchParams(window.location.search);
+        return params.get('slug') || params.get('u');
+    }
+
+    async function loadProfile() {
+        const slug = getSlugFromUrl();
+        if (!slug) {
+            showError();
+            return;
+        }
+
+        try {
+            const apiBase = window.location.hostname === 'localhost'
+                ? 'http://localhost:8080'
+                : '';
+
+            const resp = await fetch(apiBase + '/api/showcase/profile/' + encodeURIComponent(slug));
+            if (!resp.ok) {
+                showError();
+                return;
+            }
+
+            const profile = await resp.json();
+            renderProfile(profile);
+        } catch (err) {
+            console.error('Failed to load profile:', err);
+            showError();
+        }
+    }
+
+    function renderProfile(profile) {
+        // Set display name
+        document.getElementById('profile-name').textContent = profile.displayName;
+        document.title = profile.displayName + ' — FitGlue';
+
+        // Build stat cards (only show non-zero)
+        const statsContainer = document.getElementById('profile-stats');
+        const stats = [];
+
+        stats.push({ value: profile.totalActivities, label: 'Activities', gradient: 'pink' });
+
+        const dist = formatDistance(profile.totalDistanceMeters);
+        if (dist) stats.push({ value: dist, label: 'Distance', gradient: 'purple' });
+
+        const dur = formatDurationLong(profile.totalDurationSeconds);
+        if (dur) stats.push({ value: dur, label: 'Active Time', gradient: 'blue' });
+
+        const sets = formatNumber(profile.totalSets);
+        if (sets) stats.push({ value: sets, label: 'Sets', gradient: 'orange' });
+
+        const reps = formatNumber(profile.totalReps);
+        if (reps) stats.push({ value: reps, label: 'Reps', gradient: 'green' });
+
+        const weight = formatWeight(profile.totalWeightKg);
+        if (weight) stats.push({ value: weight, label: 'Volume Lifted', gradient: 'orange' });
+
+        statsContainer.innerHTML = stats.map(function (s) {
+            return '<div class="stat-card">'
+                + '<div class="stat-value gradient-' + s.gradient + '">' + s.value + '</div>'
+                + '<div class="stat-label">' + s.label + '</div>'
+                + '</div>';
+        }).join('');
+
+        // Build activity list (sorted newest first)
+        const entries = (profile.entries || []).slice().sort(function (a, b) {
+            return new Date(b.startTime || 0) - new Date(a.startTime || 0);
+        });
+
+        const listContainer = document.getElementById('activity-list');
+        listContainer.innerHTML = entries.map(function (entry, idx) {
+            var icon = getActivityIcon(entry.activityType);
+            var metaParts = [];
+            var dateStr = formatDate(entry.startTime);
+            if (dateStr) metaParts.push('<span class="activity-meta-item">📅 ' + dateStr + '</span>');
+            var distStr = formatDistance(entry.distanceMeters);
+            if (distStr) metaParts.push('<span class="activity-meta-item">📏 ' + distStr + '</span>');
+            var durStr = formatDuration(entry.durationSeconds);
+            if (durStr) metaParts.push('<span class="activity-meta-item">⏱️ ' + durStr + '</span>');
+            if (entry.totalSets > 0) metaParts.push('<span class="activity-meta-item">🏋️ ' + entry.totalSets + ' sets</span>');
+
+            var thumbnailHtml = entry.routeThumbnailUrl
+                ? '<img class="activity-thumbnail" src="' + entry.routeThumbnailUrl + '" alt="Route" />'
+                : '<div class="activity-icon">' + icon + '</div>';
+
+            var showcaseUrl = '/showcase/' + entry.showcaseId;
+
+            return '<a href="' + showcaseUrl + '" class="activity-card" style="animation-delay: ' + (idx * 0.05) + 's">'
+                + thumbnailHtml
+                + '<div class="activity-info">'
+                + '<div class="activity-title">' + entry.title + '</div>'
+                + '<div class="activity-meta">' + metaParts.join('') + '</div>'
+                + '</div>'
+                + '<span class="activity-arrow">›</span>'
+                + '</a>';
+        }).join('');
+
+        // Show content, hide loading
+        document.getElementById('profile-loading').style.display = 'none';
+        document.getElementById('profile-content').style.display = '';
+    }
+
+    function showError() {
+        document.getElementById('profile-loading').style.display = 'none';
+        document.getElementById('profile-error').style.display = 'block';
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', loadProfile);
+</script>

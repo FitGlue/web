@@ -37,6 +37,16 @@
         Data flows from a Source, gets boosted by our Boosters, then synced to your Target. Mix and match to create
         your perfect pipeline.
       </p>
+
+      <!-- Dashboard Screenshot -->
+      <div class="product-screenshot mt-lg animate-on-scroll" style="max-width: 700px;">
+        <div class="product-screenshot__chrome">
+          <span class="product-screenshot__dot"></span>
+          <span class="product-screenshot__dot"></span>
+          <span class="product-screenshot__dot"></span>
+        </div>
+        <img src="/images/screenshots/hero-dashboard.png" alt="FitGlue dashboard" class="product-screenshot__image" />
+      </div>
     </div>
   </section>
 
@@ -71,22 +81,22 @@
 
       <div class="feature-grid mt-lg stagger-children">
         {{#each sources}}
-          <a href="{{detailsUrl}}" class="feature-card-link">
-            <div
-              class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
-              <div class="feature-card-header">
-                {{#if iconPath}}
-                  <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
-                {{else}}
-                  <span class="feature-icon">{{icon}}</span>
-                {{/if}}
-                {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
-                {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
-              </div>
-              <h3>{{name}}</h3>
-              <p>{{description}}</p>
+        <a href="{{detailsUrl}}" class="feature-card-link">
+          <div
+            class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
+            <div class="feature-card-header">
+              {{#if iconPath}}
+              <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
+              {{else}}
+              <span class="feature-icon">{{icon}}</span>
+              {{/if}}
+              {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
+              {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
             </div>
-          </a>
+            <h3>{{name}}</h3>
+            <p>{{description}}</p>
+          </div>
+        </a>
         {{/each}}
       </div>
     </div>
@@ -101,32 +111,32 @@
       </div>
 
       {{#each boostersByCategory}}
-        <div class="booster-category animate-on-scroll">
-          <h3 class="category-title">
-            <span class="category-emoji">{{emoji}}</span>
-            {{name}}
-          </h3>
-          <div class="feature-grid stagger-children">
-            {{#each plugins}}
-              <a href="{{detailsUrl}}" class="feature-card-link">
-                <div
-                  class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
-                  <div class="feature-card-header">
-                    {{#if iconPath}}
-                      <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
-                    {{else}}
-                      <span class="feature-icon">{{icon}}</span>
-                    {{/if}}
-                    {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
-                    {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
-                  </div>
-                  <h3>{{name}}</h3>
-                  <p>{{description}}</p>
-                </div>
-              </a>
-            {{/each}}
-          </div>
+      <div class="booster-category animate-on-scroll">
+        <h3 class="category-title">
+          <span class="category-emoji">{{emoji}}</span>
+          {{name}}
+        </h3>
+        <div class="feature-grid stagger-children">
+          {{#each plugins}}
+          <a href="{{detailsUrl}}" class="feature-card-link">
+            <div
+              class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
+              <div class="feature-card-header">
+                {{#if iconPath}}
+                <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
+                {{else}}
+                <span class="feature-icon">{{icon}}</span>
+                {{/if}}
+                {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
+                {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
+              </div>
+              <h3>{{name}}</h3>
+              <p>{{description}}</p>
+            </div>
+          </a>
+          {{/each}}
         </div>
+      </div>
       {{/each}}
 
       <div class="text-center mt-lg animate-on-scroll">
@@ -166,22 +176,22 @@
 
       <div class="feature-grid mt-lg stagger-children">
         {{#each destinations}}
-          <a href="{{detailsUrl}}" class="feature-card-link">
-            <div
-              class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
-              <div class="feature-card-header">
-                {{#if iconPath}}
-                  <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
-                {{else}}
-                  <span class="feature-icon">{{icon}}</span>
-                {{/if}}
-                {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
-                {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
-              </div>
-              <h3>{{name}}</h3>
-              <p>{{description}}</p>
+        <a href="{{detailsUrl}}" class="feature-card-link">
+          <div
+            class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
+            <div class="feature-card-header">
+              {{#if iconPath}}
+              <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
+              {{else}}
+              <span class="feature-icon">{{icon}}</span>
+              {{/if}}
+              {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
+              {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
             </div>
-          </a>
+            <h3>{{name}}</h3>
+            <p>{{description}}</p>
+          </div>
+        </a>
         {{/each}}
       </div>
     </div>

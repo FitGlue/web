@@ -229,6 +229,27 @@
       });
     }
 
+    // Screenshot lightbox — click to enlarge
+    document.querySelectorAll('.product-screenshot__image, .screenshot-comparison__image').forEach(img => {
+      img.addEventListener('click', function () {
+        const overlay = document.createElement('div');
+        overlay.className = 'screenshot-lightbox';
+        const fullImg = document.createElement('img');
+        fullImg.src = this.src;
+        fullImg.alt = this.alt;
+        overlay.appendChild(fullImg);
+        const hint = document.createElement('div');
+        hint.className = 'screenshot-lightbox__hint';
+        hint.textContent = 'Click anywhere to close';
+        overlay.appendChild(hint);
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', () => overlay.remove());
+        document.addEventListener('keydown', function handler(e) {
+          if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', handler); }
+        });
+      });
+    });
+
     initCarousels();
   });
 </script>
