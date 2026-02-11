@@ -59,7 +59,10 @@
       },
       {
         "source": "/showcase/**",
-        "destination": "/showcase.html"
+        "run": {
+          "serviceId": "showcase-handler",
+          "region": "us-central1"
+        }
       },
       {
         "source": "/api/showcase/**",
