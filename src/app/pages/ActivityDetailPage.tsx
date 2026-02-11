@@ -631,7 +631,10 @@ const ActivityDetailPage: React.FC = () => {
                                     <Grid cols={2} gap="md">
                                         {successDestinations.map(dest => {
                                             const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
-                                            const externalUrl = buildDestinationUrl(registryDestinations, dest.name.toLowerCase(), dest.externalId);
+                                            // Look up destination config from pipeline for template substitution
+                                            const pipeline = pipelineRun.pipelineId ? pipelines.find(p => p.id === pipelineRun.pipelineId) : undefined;
+                                            const destConfig = pipeline?.destinationConfigs?.[dest.name.toLowerCase()]?.config;
+                                            const externalUrl = buildDestinationUrl(registryDestinations, dest.name.toLowerCase(), dest.externalId, destConfig);
 
                                             const cardHeader = (
                                                 <Stack direction="horizontal" align="center" gap="sm">

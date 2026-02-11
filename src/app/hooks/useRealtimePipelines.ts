@@ -47,7 +47,8 @@ export const useRealtimePipelines = () => {
                     providerType: (e.provider_type || e.providerType) as number,
                     typedConfig: (e.typed_config || e.typedConfig || {}) as Record<string, string>
                 })),
-                disabled: data.disabled || false
+                disabled: data.disabled || false,
+                destinationConfigs: (data.destination_configs || data.destinationConfigs || undefined) as PipelineConfig['destinationConfigs'],
             };
         });
     }, []);

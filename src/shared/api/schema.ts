@@ -1017,6 +1017,12 @@ export interface components {
             source: string;
             enrichers?: components["schemas"]["EnricherConfig"][];
             destinations: string[];
+            /** @description Destination plugin configurations, keyed by destination ID */
+            destinationConfigs?: {
+                [key: string]: {
+                    config: { [key: string]: string };
+                };
+            };
         };
         EnricherConfig: {
             /** @description EnricherProviderType enum value */
