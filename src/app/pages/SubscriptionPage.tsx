@@ -29,6 +29,7 @@ const PLAN_FEATURES = [
     { name: 'AI Boosters', hobbyist: null, athlete: '✓', hobbyistIncluded: false },
     { name: 'Image Boosters', hobbyist: null, athlete: '✓', hobbyistIncluded: false },
     { name: 'Showcase Retention', hobbyist: '30 days', athlete: 'Forever', hobbyistIncluded: true },
+    { name: 'Showcase Profile', hobbyist: null, athlete: '✓ Public Profile', hobbyistIncluded: false },
 ];
 
 const SubscriptionPage: React.FC = () => {

@@ -1049,6 +1049,550 @@
   }
 
   /* ========================================
+     PERSONAL RECORDS CARDS
+     ======================================== */
+  .pr-records-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .pr-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    transition: all 0.25s ease;
+    animation: fadeInUp 0.4s ease-out backwards;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pr-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--pr-accent, rgba(255, 27, 141, 0.08)), transparent 60%);
+    pointer-events: none;
+  }
+
+  .pr-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--pr-accent, rgba(255, 27, 141, 0.3));
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), 0 0 20px var(--pr-accent, rgba(255, 27, 141, 0.1));
+  }
+
+  .pr-card.pr-type-1rm {
+    --pr-accent: rgba(255, 27, 141, 0.15);
+  }
+
+  .pr-card.pr-type-volume {
+    --pr-accent: rgba(157, 78, 221, 0.15);
+  }
+
+  .pr-card.pr-type-reps {
+    --pr-accent: rgba(76, 201, 240, 0.15);
+  }
+
+  .pr-card.pr-type-time {
+    --pr-accent: rgba(6, 255, 165, 0.15);
+  }
+
+  .pr-card.pr-type-distance {
+    --pr-accent: rgba(255, 159, 67, 0.15);
+  }
+
+  .pr-card-top {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .pr-emoji {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
+    flex-shrink: 0;
+  }
+
+  .pr-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .pr-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pr-value.gradient-1rm {
+    background: linear-gradient(135deg, #FF1B8D, #FF6BB3);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pr-value.gradient-volume {
+    background: linear-gradient(135deg, #9D4EDD, #C77DFF);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pr-value.gradient-reps {
+    background: linear-gradient(135deg, #4CC9F0, #80DAFF);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pr-value.gradient-time {
+    background: linear-gradient(135deg, #06FFA5, #4ADE80);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pr-value.gradient-distance {
+    background: linear-gradient(135deg, #FF9F43, #FFD93D);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pr-type-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888;
+    font-weight: 600;
+  }
+
+  .pr-improvement {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 20px;
+    width: fit-content;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pr-improvement.positive {
+    background: rgba(6, 255, 165, 0.12);
+    color: #4ADE80;
+    border: 1px solid rgba(6, 255, 165, 0.2);
+  }
+
+  .pr-improvement.negative {
+    background: rgba(255, 100, 100, 0.12);
+    color: #FF6B6B;
+    border: 1px solid rgba(255, 100, 100, 0.2);
+  }
+
+  @media (max-width: 480px) {
+    .pr-records-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .pr-value {
+      font-size: 1.2rem;
+    }
+
+    .pr-emoji {
+      font-size: 1.2rem;
+    }
+
+    .pr-name {
+      font-size: 0.75rem;
+    }
+  }
+
+  /* ========================================
+     INTERVALS TIMELINE
+     ======================================== */
+  .intervals-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .interval-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid var(--interval-accent, rgba(255, 255, 255, 0.15));
+    animation: fadeInUp 0.3s ease-out backwards;
+    transition: background 0.2s;
+  }
+
+  .interval-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .interval-row.warmup {
+    --interval-accent: #4ADE80;
+  }
+
+  .interval-row.cooldown {
+    --interval-accent: #60A5FA;
+  }
+
+  .interval-row.sprint {
+    --interval-accent: #FF6BB3;
+  }
+
+  .interval-row.group-header {
+    --interval-accent: #C77DFF;
+    background: rgba(157, 78, 221, 0.06);
+  }
+
+  .interval-row.summary {
+    --interval-accent: rgba(255, 255, 255, 0.2);
+    border-left-style: dashed;
+  }
+
+  .interval-emoji {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .interval-label {
+    flex: 1;
+    font-size: 0.82rem;
+    color: #ccc;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .interval-stats {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .interval-stat {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #ddd;
+    white-space: nowrap;
+  }
+
+  .interval-stat.pace {
+    color: #FF6BB3;
+  }
+
+  .interval-stat.hr {
+    color: #FF6B6B;
+  }
+
+  .interval-stat.dist {
+    color: #4CC9F0;
+  }
+
+  .interval-stat.time {
+    color: #FFD93D;
+  }
+
+  /* ========================================
+     HR ZONE BARS
+     ======================================== */
+  .hr-zones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .hr-zone-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    animation: fadeInUp 0.3s ease-out backwards;
+  }
+
+  .hr-zone-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #aaa;
+    min-width: 110px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .hr-zone-bar {
+    flex: 1;
+    height: 22px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hr-zone-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.8s ease-out;
+    min-width: 2px;
+  }
+
+  .hr-zone-fill.zone-0 {
+    background: linear-gradient(90deg, #6B7280, #9CA3AF);
+  }
+
+  .hr-zone-fill.zone-1 {
+    background: linear-gradient(90deg, #60A5FA, #93C5FD);
+  }
+
+  .hr-zone-fill.zone-2 {
+    background: linear-gradient(90deg, #4ADE80, #86EFAC);
+  }
+
+  .hr-zone-fill.zone-3 {
+    background: linear-gradient(90deg, #FBBF24, #FCD34D);
+  }
+
+  .hr-zone-fill.zone-4 {
+    background: linear-gradient(90deg, #FB923C, #FDBA74);
+  }
+
+  .hr-zone-fill.zone-5 {
+    background: linear-gradient(90deg, #EF4444, #FCA5A5);
+  }
+
+  .hr-zone-duration {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #ddd;
+    min-width: 45px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ========================================
+     GOAL / STREAK / MILESTONE PROGRESS
+     ======================================== */
+  .progress-section-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .progress-bar-container {
+    width: 100%;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 14px;
+    background: linear-gradient(90deg, #FF1B8D, #9D4EDD);
+    transition: width 1s ease-out;
+    position: relative;
+    min-width: 4px;
+  }
+
+  .progress-bar-fill.milestone {
+    background: linear-gradient(90deg, #4CC9F0, #9D4EDD);
+  }
+
+  .progress-bar-fill.streak {
+    background: linear-gradient(90deg, #FB923C, #EF4444);
+  }
+
+  .progress-bar-label {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  .progress-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .progress-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: #bbb;
+  }
+
+  .progress-detail-row .detail-emoji {
+    flex-shrink: 0;
+  }
+
+  .streak-number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #FB923C, #EF4444);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+
+  .streak-label {
+    font-size: 0.85rem;
+    color: #aaa;
+    font-weight: 600;
+  }
+
+  .streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    background: rgba(251, 146, 60, 0.12);
+    color: #FB923C;
+    border: 1px solid rgba(251, 146, 60, 0.2);
+    width: fit-content;
+  }
+
+  /* ========================================
+     STAT ROWS (bullet-list sections)
+     ======================================== */
+  .stat-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    animation: fadeInUp 0.3s ease-out backwards;
+    transition: background 0.2s;
+  }
+
+  .stat-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .stat-row-emoji {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .stat-row-label {
+    flex: 1;
+    font-size: 0.82rem;
+    color: #aaa;
+    min-width: 0;
+  }
+
+  .stat-row-value {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ========================================
+     COMPACT STAT PILLS (single-line •-separated)
+     ======================================== */
+  .compact-stat-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ddd;
+    transition: all 0.2s;
+  }
+
+  .stat-pill:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .stat-pill-label {
+    color: #888;
+    font-weight: 500;
+  }
+
+  .stat-pill-value {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  @media (max-width: 480px) {
+    .hr-zone-label {
+      min-width: 80px;
+      font-size: 0.65rem;
+    }
+
+    .interval-stats {
+      gap: 0.25rem;
+    }
+
+    .interval-stat {
+      font-size: 0.65rem;
+      padding: 0.1rem 0.35rem;
+    }
+
+    .streak-number {
+      font-size: 2rem;
+    }
+  }
+
+  /* ========================================
      EXERCISES
      ======================================== */
   .exercise-list {
@@ -2590,8 +3134,32 @@
 
     /**
      * Render a single section card.
+     * Delegates to specialised renderers for known enricher sections.
      */
     function renderSectionCard(section, idx) {
+      const title = section.title;
+
+      // Route to specialised renderers based on section title
+      if (title === 'Personal Records') return renderPRSection(section, idx);
+      if (title.startsWith('Intervals')) return renderIntervalsSection(section, idx);
+      if (title === 'Heart Rate Zones') return renderHRZonesSection(section, idx);
+      if (title.includes('Goal Progress')) return renderGoalSection(section, idx);
+      if (title === 'Streak Tracker') return renderStreakSection(section, idx);
+      if (title.startsWith('Lifetime')) return renderMilestoneSection(section, idx);
+
+      // Bullet-list sections get parsed stat rows
+      const lines = section.content.split('\n').filter(l => l.trim());
+      const bulletLines = lines.filter(l => l.trim().startsWith('•'));
+      if (bulletLines.length > 0 && bulletLines.length === lines.length) {
+        return renderBulletListSection(section, idx);
+      }
+
+      // Single-line with • separators get stat pills
+      if (lines.length <= 1 && section.content.includes(' • ')) {
+        return renderCompactStatPills(section, idx);
+      }
+
+      // Generic fallback
       return `
         <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
           <div class="section-header">
@@ -2600,6 +3168,462 @@
           <pre class="activity-description">${escapeHtml(section.content)}</pre>
         </div>
       `;
+    }
+
+    /**
+     * Parse a single PR bullet line into structured data.
+     * Input:  "🏆 Bench Press (barbell) 1RM: 53.3kg"
+     * Input:  "💪 Bench Press (barbell) Volume: 1280kg (previous: 1200kg, +6.7%)"
+     */
+    function parsePRLine(line) {
+      // Strip leading bullet
+      line = line.replace(/^•\s*/, '').trim();
+      if (!line) return null;
+
+      // Extract emoji (first character cluster)
+      const chars = [...line];
+      const emoji = chars[0] || '🏆';
+      let rest = line.slice(emoji.length).trim();
+
+      // Split on the LAST colon that precedes the value
+      // Pattern: "Name Type: value (previous: ...)"
+      // We need the last TYPE keyword before the colon
+      const typePatterns = ['1RM', 'Volume', 'Max Reps', 'Total Time',
+        'Fastest 5K', 'Fastest 10K', 'Fastest Half Marathon',
+        'Longest Run', 'Longest Ride', 'Highest Elevation Gain'];
+
+      let name = '', recordType = '', value = '', previous = '', improvement = '';
+
+      // Try to match known type suffixes
+      let matched = false;
+      for (const tp of typePatterns) {
+        const idx = rest.lastIndexOf(tp + ':');
+        if (idx >= 0) {
+          name = rest.substring(0, idx).trim();
+          const afterType = rest.substring(idx + tp.length + 1).trim();
+          recordType = tp;
+
+          // Extract improvement in parentheses
+          const parenMatch = afterType.match(/^(.+?)\s*\(previous:\s*(.+?),\s*([+-]?[\d.]+%)\)$/);
+          if (parenMatch) {
+            value = parenMatch[1].trim();
+            previous = parenMatch[2].trim();
+            improvement = parenMatch[3].trim();
+          } else {
+            value = afterType;
+          }
+          matched = true;
+          break;
+        }
+      }
+
+      // Fallback: split on first colon
+      if (!matched) {
+        const colonIdx = rest.indexOf(':');
+        if (colonIdx < 0) return null;
+        const beforeColon = rest.substring(0, colonIdx).trim();
+        const afterColon = rest.substring(colonIdx + 1).trim();
+
+        // Try to separate name from type (last word before colon)
+        const words = beforeColon.split(/\s+/);
+        if (words.length > 1) {
+          recordType = words.pop();
+          name = words.join(' ');
+        } else {
+          name = beforeColon;
+          recordType = '';
+        }
+
+        const parenMatch = afterColon.match(/^(.+?)\s*\(previous:\s*(.+?),\s*([+-]?[\d.]+%)\)$/);
+        if (parenMatch) {
+          value = parenMatch[1].trim();
+          previous = parenMatch[2].trim();
+          improvement = parenMatch[3].trim();
+        } else {
+          value = afterColon;
+        }
+      }
+
+      // Determine CSS type class
+      const lowerType = recordType.toLowerCase();
+      let typeClass = 'time'; // default
+      if (lowerType === '1rm') typeClass = '1rm';
+      else if (lowerType === 'volume') typeClass = 'volume';
+      else if (lowerType.includes('reps')) typeClass = 'reps';
+      else if (lowerType.includes('fastest') || lowerType.includes('time')) typeClass = 'time';
+      else if (lowerType.includes('longest') || lowerType.includes('distance') || lowerType.includes('elevation')) typeClass = 'distance';
+
+      return { emoji, name, recordType, value, previous, improvement, typeClass };
+    }
+
+    /**
+     * Render Personal Records as a rich grid of individual PR cards.
+     */
+    function renderPRSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      const records = lines.map(parsePRLine).filter(Boolean);
+
+      if (records.length === 0) {
+        // Fallback to generic card
+        return `
+          <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+            <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+            <pre class="activity-description">${escapeHtml(section.content)}</pre>
+          </div>`;
+      }
+
+      let cardsHtml = records.map((pr, i) => {
+        const delay = (idx * 0.1) + (i * 0.05);
+        let improvementHtml = '';
+        if (pr.improvement) {
+          const isPositive = !pr.improvement.startsWith('-');
+          const cls = isPositive ? 'positive' : 'negative';
+          const arrow = isPositive ? '▲' : '▼';
+          improvementHtml = `<span class="pr-improvement ${cls}">${arrow} ${pr.improvement}</span>`;
+        }
+
+        const typeLabel = pr.recordType || 'Record';
+
+        return `
+          <div class="pr-card pr-type-${pr.typeClass}" style="animation-delay: ${delay}s;">
+            <div class="pr-card-top">
+              <span class="pr-emoji">${pr.emoji}</span>
+              <span class="pr-name">${escapeHtml(pr.name)}</span>
+            </div>
+            <div class="pr-value gradient-${pr.typeClass}">${escapeHtml(pr.value)}</div>
+            <span class="pr-type-label">${escapeHtml(typeLabel)}</span>
+            ${improvementHtml}
+          </div>`;
+      }).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header">
+            <h2>${section.emoji} ${section.title}</h2>
+          </div>
+          <div class="pr-records-grid">${cardsHtml}</div>
+        </div>`;
+    }
+
+    /**
+     * Render Intervals as a structured timeline.
+     */
+    function renderIntervalsSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      let rowsHtml = lines.map((line, i) => {
+        const delay = (idx * 0.1) + (i * 0.03);
+        const trimmed = line.trim();
+
+        // Classify the row
+        let rowClass = 'sprint';
+        let emoji = '💨';
+        if (/^🔥/.test(trimmed) || /warmup/i.test(trimmed)) { rowClass = 'warmup'; emoji = '🔥'; }
+        else if (/^❄️/.test(trimmed) || /cooldown/i.test(trimmed)) { rowClass = 'cooldown'; emoji = '❄️'; }
+        else if (/^📊|^📈/.test(trimmed)) { rowClass = 'summary'; emoji = [...trimmed][0]; }
+        else if (/^💨.*sprints:/.test(trimmed)) { rowClass = 'group-header'; }
+        else { const e = [...trimmed][0]; if (e) emoji = e; }
+
+        // Extract stats from • separated values or parenthetical HR
+        const statsHtml = extractIntervalStats(trimmed);
+        // Get the label (text before first stat indicator)
+        const label = cleanIntervalLabel(trimmed);
+
+        return `<div class="interval-row ${rowClass}" style="animation-delay:${delay}s">
+          <span class="interval-emoji">${emoji}</span>
+          <span class="interval-label">${escapeHtml(label)}</span>
+          ${statsHtml}
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="intervals-timeline">${rowsHtml}</div>
+        </div>`;
+    }
+
+    function cleanIntervalLabel(text) {
+      // Strip leading emoji
+      const chars = [...text];
+      let rest = text.slice(chars[0].length).trim();
+      // For lines like "Run 1: 0:40 • 3:27/km • 193m (149bpm)", keep just "Run 1"
+      // For summary lines, keep full text
+      if (/sprints:|Warmup|Cooldown/i.test(rest)) {
+        return rest;
+      }
+      const colonIdx = rest.indexOf(':');
+      if (colonIdx > 0 && colonIdx < 20) {
+        return rest.substring(0, colonIdx);
+      }
+      return rest;
+    }
+
+    function extractIntervalStats(text) {
+      const stats = [];
+      // Time patterns like 0:40, 5:00
+      const timeMatch = text.match(/:\s*(\d+:\d{2})\s*(?:•|$)/);
+      if (timeMatch) stats.push(`<span class="interval-stat time">${timeMatch[1]}</span>`);
+      // Pace patterns like 3:27/km, 5:47/km
+      const paceMatches = text.match(/\d+:\d{2}\/km/g);
+      if (paceMatches) {
+        // Take the most relevant pace (last one or avg)
+        const paceLabel = text.includes('avg') ? paceMatches[0] : paceMatches[paceMatches.length - 1];
+        stats.push(`<span class="interval-stat pace">${paceLabel}</span>`);
+      }
+      // Distance patterns like 193m, 862m, 1.1km
+      const distMatch = text.match(/(\d+(?:\.\d+)?\s*(?:km|m))(?:\s|\(|$)/i);
+      if (distMatch) stats.push(`<span class="interval-stat dist">${distMatch[1]}</span>`);
+      // HR patterns like (149bpm), peak 170bpm
+      const hrMatch = text.match(/(\d+)\s*bpm/i);
+      if (hrMatch) stats.push(`<span class="interval-stat hr">${hrMatch[1]}bpm</span>`);
+      if (stats.length === 0) return '';
+      return `<div class="interval-stats">${stats.join('')}</div>`;
+    }
+
+    /**
+     * Render HR Zones as coloured progress bars.
+     */
+    function renderHRZonesSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      // Find max duration for scaling bars
+      const zones = lines.map(l => parseHRZoneLine(l.trim())).filter(Boolean);
+      const maxMin = Math.max(...zones.map(z => z.minutes), 1);
+
+      const rowsHtml = zones.map((z, i) => {
+        const pct = Math.max((z.minutes / maxMin) * 100, 2);
+        const delay = (idx * 0.1) + (i * 0.05);
+        return `<div class="hr-zone-row" style="animation-delay:${delay}s">
+          <span class="hr-zone-label">${escapeHtml(z.label)}</span>
+          <div class="hr-zone-bar">
+            <div class="hr-zone-fill zone-${z.zone}" style="width:${pct}%"></div>
+          </div>
+          <span class="hr-zone-duration">${z.minutes} min</span>
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="hr-zones-list">${rowsHtml}</div>
+        </div>`;
+    }
+
+    function parseHRZoneLine(line) {
+      // "Zone 4 (Threshold): 🟧🟧🟧🟧⬜ 9 min"
+      const match = line.match(/^Zone\s+(\d)\s*\(([^)]+)\).*?(\d+)\s*min/i);
+      if (!match) return null;
+      return {
+        zone: parseInt(match[1]),
+        label: `Z${match[1]} ${match[2]}`,
+        minutes: parseInt(match[3])
+      };
+    }
+
+    /**
+     * Render Goal Progress with a real progress bar.
+     */
+    function renderGoalSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      let percentage = 0;
+      let progressText = '';
+      const detailRows = [];
+
+      for (const line of lines) {
+        const trimmed = line.trim().replace(/^•\s*/, '');
+        // Parse progress bar line: [██░░░░░░░░] 24% 3.5/15 km
+        const barMatch = trimmed.match(/\[.*?\]\s*(\d+)%\s*(.+)/);
+        if (barMatch) {
+          percentage = parseInt(barMatch[1]);
+          progressText = barMatch[2];
+          continue;
+        }
+        // Percentage without bar
+        const pctMatch = trimmed.match(/(\d+)%/);
+        if (pctMatch && !percentage) percentage = parseInt(pctMatch[1]);
+        // Collect detail lines
+        const emoji = [...trimmed][0] || '•';
+        const rest = trimmed.slice(emoji.length).trim();
+        detailRows.push({ emoji, text: rest || trimmed });
+      }
+
+      const detailsHtml = detailRows.map(d =>
+        `<div class="progress-detail-row"><span class="detail-emoji">${d.emoji}</span>${escapeHtml(d.text)}</div>`
+      ).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="progress-section-body">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width:${Math.min(percentage, 100)}%">
+                <span class="progress-bar-label">${percentage}%${progressText ? ' — ' + escapeHtml(progressText) : ''}</span>
+              </div>
+            </div>
+            <div class="progress-details">${detailsHtml}</div>
+          </div>
+        </div>`;
+    }
+
+    /**
+     * Render Streak Tracker with a prominent streak number.
+     */
+    function renderStreakSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      let streakNumber = null;
+      const badges = [];
+      const details = [];
+
+      for (const line of lines) {
+        const trimmed = line.trim().replace(/^•\s*/, '');
+        // Extract streak number: "🏆🔥 81-day activity streak!"
+        const streakMatch = trimmed.match(/(\d+)[- ]day/i);
+        if (streakMatch && streakNumber === null) {
+          streakNumber = parseInt(streakMatch[1]);
+        }
+        // Detect achievement badges
+        if (/personal best|new.*record/i.test(trimmed)) {
+          badges.push(trimmed);
+        } else {
+          details.push(trimmed);
+        }
+      }
+
+      const badgesHtml = badges.map(b =>
+        `<span class="streak-badge">🏆 ${escapeHtml(b)}</span>`
+      ).join('');
+
+      const detailsHtml = details.filter(d => !/\d+[- ]day/i.test(d) || !streakNumber).map(d => {
+        const emoji = [...d][0] || '•';
+        const rest = d.slice(emoji.length).trim();
+        return `<div class="progress-detail-row"><span class="detail-emoji">${emoji}</span>${escapeHtml(rest || d)}</div>`;
+      }).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="progress-section-body">
+            ${streakNumber !== null ? `<div><span class="streak-number">${streakNumber}</span> <span class="streak-label">day streak 🔥</span></div>` : ''}
+            ${badgesHtml}
+            ${detailsHtml ? `<div class="progress-details">${detailsHtml}</div>` : ''}
+          </div>
+        </div>`;
+    }
+
+    /**
+     * Render Lifetime Milestone with progress bar toward next milestone.
+     */
+    function renderMilestoneSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      let total = null;
+      let milestone = null;
+      let remaining = null;
+      const details = [];
+
+      for (const line of lines) {
+        const trimmed = line.trim().replace(/^•\s*/, '');
+        // "475.4 km total"
+        const totalMatch = trimmed.match(/([\d,.]+)\s*(km|mi|m)\s*total/i);
+        if (totalMatch) total = { value: parseFloat(totalMatch[1].replace(',', '')), unit: totalMatch[2] };
+        // "Next milestone: 500 km (24.6 km to go)"
+        const mileMatch = trimmed.match(/milestone.*?([\d,.]+)\s*(km|mi|m)/i);
+        if (mileMatch) milestone = { value: parseFloat(mileMatch[1].replace(',', '')), unit: mileMatch[2] };
+        const remainMatch = trimmed.match(/([\d,.]+)\s*(km|mi|m)\s*to go/i);
+        if (remainMatch) remaining = parseFloat(remainMatch[1].replace(',', ''));
+        const emoji = [...trimmed][0] || '📊';
+        const rest = trimmed.slice(emoji.length).trim();
+        details.push({ emoji, text: rest || trimmed });
+      }
+
+      let progressHtml = '';
+      if (total && milestone) {
+        const pct = Math.min((total.value / milestone.value) * 100, 100);
+        progressHtml = `
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill milestone" style="width:${pct}%">
+              <span class="progress-bar-label">${total.value} / ${milestone.value} ${total.unit}</span>
+            </div>
+          </div>`;
+      }
+
+      const detailsHtml = details.map(d =>
+        `<div class="progress-detail-row"><span class="detail-emoji">${d.emoji}</span>${escapeHtml(d.text)}</div>`
+      ).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="progress-section-body">
+            ${progressHtml}
+            <div class="progress-details">${detailsHtml}</div>
+          </div>
+        </div>`;
+    }
+
+    /**
+     * Render bullet-list sections as structured stat rows.
+     */
+    function renderBulletListSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      const rowsHtml = lines.map((line, i) => {
+        const trimmed = line.trim().replace(/^•\s*/, '');
+        const delay = (idx * 0.1) + (i * 0.04);
+
+        // Try to split into label: value
+        const emoji = [...trimmed][0] || '•';
+        let rest = trimmed.slice(emoji.length).trim();
+
+        // Handle progress bar lines (keep as-is but styled)
+        if (rest.includes('[') && rest.includes(']')) {
+          return `<div class="stat-row" style="animation-delay:${delay}s">
+            <span class="stat-row-emoji">${emoji}</span>
+            <span class="stat-row-value" style="flex:1">${escapeHtml(rest)}</span>
+          </div>`;
+        }
+
+        const colonIdx = rest.indexOf(':');
+        if (colonIdx > 0 && colonIdx < rest.length - 1) {
+          const label = rest.substring(0, colonIdx).trim();
+          const value = rest.substring(colonIdx + 1).trim();
+          return `<div class="stat-row" style="animation-delay:${delay}s">
+            <span class="stat-row-emoji">${emoji}</span>
+            <span class="stat-row-label">${escapeHtml(label)}</span>
+            <span class="stat-row-value">${escapeHtml(value)}</span>
+          </div>`;
+        }
+
+        return `<div class="stat-row" style="animation-delay:${delay}s">
+          <span class="stat-row-emoji">${emoji}</span>
+          <span class="stat-row-label">${escapeHtml(rest)}</span>
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="stat-rows">${rowsHtml}</div>
+        </div>`;
+    }
+
+    /**
+     * Render single-line sections with • separators as stat pills.
+     */
+    function renderCompactStatPills(section, idx) {
+      const parts = section.content.split(' • ').map(p => p.trim()).filter(Boolean);
+      const pillsHtml = parts.map(part => {
+        // Try to split "label value" or just display as value
+        // Common patterns: "295W avg", "557W max", "5:26/km avg"
+        const labelMatch = part.match(/^(.+?)\s+(avg|max|min|best|total|gain|loss)$/i);
+        if (labelMatch) {
+          return `<span class="stat-pill"><span class="stat-pill-value">${escapeHtml(labelMatch[1])}</span> <span class="stat-pill-label">${escapeHtml(labelMatch[2])}</span></span>`;
+        }
+        return `<span class="stat-pill"><span class="stat-pill-value">${escapeHtml(part)}</span></span>`;
+      }).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="compact-stat-pills">${pillsHtml}</div>
+        </div>`;
     }
 
     /**

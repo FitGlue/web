@@ -28,6 +28,16 @@ Each boosted activity gets a unique Showcase URL featuring:
 
 Each Showcase page has a unique URL you can share anywhere. The OG meta tags ensure a rich preview with image, title, and description when pasted into social media or messaging apps.
 
+### Showcase Profile (Athlete Only)
+
+Athlete-tier users get a **public Showcase profile page** at `/u/{your-name}` that aggregates all their showcased activities into a single shareable page. The profile includes:
+
+- **Display name and stats** — Total activities, distance, active time, and strength volume
+- **Activity list** — All showcased activities grouped by date, with thumbnails and key metrics
+- **Direct links** — Each activity card links to its full Showcase page
+
+Your profile URL is derived from your display name (e.g., "Jane Smith" becomes `/u/jane-smith`). You can find the link under **My Showcase** in the app header dropdown.
+
 ## Configuration
 
 The Showcase destination has no configurable options. All activities sent here are automatically published.
@@ -38,7 +48,7 @@ Showcase pages are retained according to your account tier. Pages older than the
 
 ## Tier & Access
 
-The Showcase destination is included in **Hobbyist** (free tier).
+The Showcase destination is included in **Hobbyist** (free tier) — individual activity pages are available to all users. The **Showcase Profile page** (aggregated view at `/u/{your-name}`) is exclusive to **Athlete** tier.
 
 ## Common Issues
 

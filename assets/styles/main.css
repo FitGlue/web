@@ -493,7 +493,7 @@ h4 {
   background: var(--gradient-hero);
   position: relative;
   overflow: hidden;
-  padding-top: 80px;
+  padding-top: 120px;
 }
 
 .hero::before {
