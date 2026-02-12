@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { PageLayout, Stack } from '../components/library/layout';
-import { Button, Paragraph, Card, Heading, Badge, Link, CardSkeleton } from '../components/library/ui';
+import { Button, Paragraph, Card, Heading, Link, CardSkeleton } from '../components/library/ui';
 import { FormField, Input, Textarea, Toggle } from '../components/library/forms';
 import { useApi } from '../hooks/useApi';
+import { useToast } from '../components/library/ui/Toast/Toast';
+import { ImageCropModal } from '../components/ImageCropModal';
 import './ShowcaseManagementPage.css';
 
 interface ShowcaseActivity {
@@ -25,10 +27,11 @@ interface ShowcaseProfile {
     entries: Array<{ showcaseId: string }>;
 }
 
-type ToastData = { message: string; type: 'success' | 'error' } | null;
+
 
 const ShowcaseManagementPage: React.FC = () => {
     const api = useApi();
+    const { success: showSuccess, error: showError } = useToast();
 
     // Profile state
     const [profile, setProfile] = useState<ShowcaseProfile | null>(null);
@@ -48,13 +51,7 @@ const ShowcaseManagementPage: React.FC = () => {
     const [profileVisible, setProfileVisible] = useState(true);
     const [loadingPrefs, setLoadingPrefs] = useState(true);
 
-    // Toast
-    const [toast, setToast] = useState<ToastData>(null);
 
-    const showToast = useCallback((message: string, type: 'success' | 'error' = 'success') => {
-        setToast({ message, type });
-        setTimeout(() => setToast(null), 3000);
-    }, []);
 
     // Fetch profile data
     const fetchProfile = useCallback(async () => {
@@ -74,11 +71,11 @@ const ShowcaseManagementPage: React.FC = () => {
             }
         } catch (err) {
             console.error('Failed to load showcase profile:', err);
-            showToast('Failed to load profile', 'error');
+            showError('Failed to load profile');
         } finally {
             setLoading(false);
         }
-    }, [api, showToast]);
+    }, [api, showError]);
 
     // Fetch preferences
     const fetchPreferences = useCallback(async () => {
@@ -104,10 +101,10 @@ const ShowcaseManagementPage: React.FC = () => {
         setSaving(true);
         try {
             await api.patch('/showcase-management/profile', { subtitle, bio });
-            showToast('Profile updated');
+            showSuccess('Profile updated');
         } catch (err) {
             console.error('Failed to save profile:', err);
-            showToast('Failed to save profile', 'error');
+            showError('Failed to save profile');
         } finally {
             setSaving(false);
         }
@@ -121,7 +118,7 @@ const ShowcaseManagementPage: React.FC = () => {
         try {
             const result = await api.patch('/showcase-management/profile/slug', { slug }) as { slug: string };
             setSlug(result.slug || slug);
-            showToast('Slug updated');
+            showSuccess('Slug updated');
             // Refresh profile to get updated data
             fetchProfile();
         } catch (err) {
@@ -144,12 +141,12 @@ const ShowcaseManagementPage: React.FC = () => {
             await api.patch('/showcase-management/preferences', {
                 defaultDestination: newVal,
             });
-            showToast(newVal ? 'Showcase will be added to new pipelines' : 'Default destination disabled');
+            showSuccess(newVal ? 'Showcase will be added to new pipelines' : 'Default destination disabled');
         } catch (err) {
             // Revert on failure
             setDefaultDestination(!newVal);
             console.error('Failed to update preference:', err);
-            showToast('Failed to update preference', 'error');
+            showError('Failed to update preference');
         }
     };
 
@@ -159,11 +156,11 @@ const ShowcaseManagementPage: React.FC = () => {
         setProfileVisible(newVal);
         try {
             await api.patch('/showcase-management/profile', { visible: newVal });
-            showToast(newVal ? 'Profile is now publicly visible' : 'Profile is now hidden');
+            showSuccess(newVal ? 'Profile is now publicly visible' : 'Profile is now hidden');
         } catch (err) {
             setProfileVisible(!newVal);
             console.error('Failed to update visibility:', err);
-            showToast('Failed to update visibility', 'error');
+            showError('Failed to update visibility');
         }
     };
 
@@ -171,11 +168,11 @@ const ShowcaseManagementPage: React.FC = () => {
     const handleRemoveEntry = async (showcaseId: string) => {
         try {
             await api.delete(`/showcase-management/profile/entries/${showcaseId}`);
-            showToast('Entry removed');
+            showSuccess('Entry removed');
             fetchProfile();
         } catch (err) {
             console.error('Failed to remove entry:', err);
-            showToast('Failed to remove entry', 'error');
+            showError('Failed to remove entry');
         }
     };
 
@@ -183,53 +180,70 @@ const ShowcaseManagementPage: React.FC = () => {
     const handleAddEntry = async (showcaseId: string) => {
         try {
             await api.post(`/showcase-management/profile/entries/${showcaseId}`);
-            showToast('Entry added');
+            showSuccess('Entry added');
             fetchProfile();
         } catch (err) {
             console.error('Failed to add entry:', err);
-            showToast('Failed to add entry', 'error');
+            showError('Failed to add entry');
         }
     };
 
-    // Picture upload — pick file first, then request signed URL with actual content type
+    // Picture crop state
+    const [cropImage, setCropImage] = useState<string | null>(null);
+
+    // Picture upload — pick file first, then show crop modal
     const handlePictureUpload = () => {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
-        input.onchange = async () => {
+        input.onchange = () => {
             const file = input.files?.[0];
             if (!file) return;
-
-            try {
-                // Request signed URL with the file's actual MIME type
-                const data = await api.post('/showcase-management/profile/picture', {
-                    contentType: file.type || 'image/webp',
-                }) as {
-                    uploadUrl: string;
-                    publicUrl: string;
-                    contentType: string;
-                };
-
-                // Upload to GCS via signed URL
-                await fetch(data.uploadUrl, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': data.contentType },
-                    body: file,
-                });
-
-                // Update profile with the new URL
-                await api.patch('/showcase-management/profile', {
-                    profilePictureUrl: data.publicUrl,
-                });
-
-                showToast('Profile picture updated');
-                fetchProfile();
-            } catch (err) {
-                console.error('Failed to upload picture:', err);
-                showToast('Failed to upload picture', 'error');
-            }
+            const objectUrl = URL.createObjectURL(file);
+            setCropImage(objectUrl);
         };
         input.click();
+    };
+
+    // After cropping, upload the cropped blob
+    const handleCropComplete = async (croppedBlob: Blob) => {
+        // Close the crop modal
+        if (cropImage) URL.revokeObjectURL(cropImage);
+        setCropImage(null);
+
+        try {
+            // Cropped output is always WebP from canvas
+            const data = await api.post('/showcase-management/profile/picture', {
+                contentType: 'image/webp',
+            }) as {
+                uploadUrl: string;
+                publicUrl: string;
+                contentType: string;
+            };
+
+            // Upload to GCS via signed URL
+            await fetch(data.uploadUrl, {
+                method: 'PUT',
+                headers: { 'Content-Type': data.contentType },
+                body: croppedBlob,
+            });
+
+            // Update profile with the new URL
+            await api.patch('/showcase-management/profile', {
+                profilePictureUrl: data.publicUrl,
+            });
+
+            showSuccess('Profile picture updated');
+            fetchProfile();
+        } catch (err) {
+            console.error('Failed to upload picture:', err);
+            showError('Failed to upload picture');
+        }
+    };
+
+    const handleCropCancel = () => {
+        if (cropImage) URL.revokeObjectURL(cropImage);
+        setCropImage(null);
     };
 
     if (loading) {
@@ -261,12 +275,7 @@ const ShowcaseManagementPage: React.FC = () => {
     return (
         <PageLayout title="Manage Showcase" backTo="/" backLabel="Dashboard">
             <Stack gap="lg">
-                {/* Toast notification */}
-                {toast && (
-                    <Badge className={`showcase-mgmt__toast showcase-mgmt__toast--${toast.type}`}>
-                        {toast.type === 'success' ? '✅' : '❌'} {toast.message}
-                    </Badge>
-                )}
+
 
                 {/* Profile Picture & Basic Info */}
                 <Card className="showcase-mgmt__section">
@@ -439,6 +448,15 @@ const ShowcaseManagementPage: React.FC = () => {
                         />
                     </Stack>
                 </Card>
+
+                {/* Image Crop Modal */}
+                {cropImage && (
+                    <ImageCropModal
+                        imageSrc={cropImage}
+                        onCropComplete={handleCropComplete}
+                        onClose={handleCropCancel}
+                    />
+                )}
             </Stack>
         </PageLayout>
     );

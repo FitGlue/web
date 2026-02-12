@@ -30,3 +30,6 @@ export { Form } from './Form';
 
 export { Toggle } from './Toggle';
 export type { ToggleProps } from './Toggle';
+
+export { RangeSlider } from './RangeSlider';
+export type { RangeSliderProps } from './RangeSlider';

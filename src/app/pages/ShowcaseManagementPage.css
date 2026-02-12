@@ -333,38 +333,7 @@
     justify-content: flex-end;
 }
 
-/* Toast/notification inline */
-.showcase-mgmt__toast {
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-md);
-    font-size: 0.85rem;
-    font-weight: var(--font-weight-medium);
-    animation: toast-slide-in 0.3s ease;
-}
 
-.showcase-mgmt__toast--success {
-    background: rgba(34, 197, 94, 0.15);
-    color: var(--color-success);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-}
-
-.showcase-mgmt__toast--error {
-    background: rgba(239, 68, 68, 0.15);
-    color: var(--color-error);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-@keyframes toast-slide-in {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
