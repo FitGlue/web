@@ -191,21 +191,24 @@ const ShowcaseManagementPage: React.FC = () => {
         }
     };
 
-    // Picture upload
-    const handlePictureUpload = async () => {
-        try {
-            const data = await api.post('/showcase-management/profile/picture') as {
-                uploadUrl: string;
-                publicUrl: string;
-                contentType: string;
-            };
+    // Picture upload — pick file first, then request signed URL with actual content type
+    const handlePictureUpload = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async () => {
+            const file = input.files?.[0];
+            if (!file) return;
 
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = async () => {
-                const file = input.files?.[0];
-                if (!file) return;
+            try {
+                // Request signed URL with the file's actual MIME type
+                const data = await api.post('/showcase-management/profile/picture', {
+                    contentType: file.type || 'image/webp',
+                }) as {
+                    uploadUrl: string;
+                    publicUrl: string;
+                    contentType: string;
+                };
 
                 // Upload to GCS via signed URL
                 await fetch(data.uploadUrl, {
@@ -221,12 +224,12 @@ const ShowcaseManagementPage: React.FC = () => {
 
                 showToast('Profile picture updated');
                 fetchProfile();
-            };
-            input.click();
-        } catch (err) {
-            console.error('Failed to upload picture:', err);
-            showToast('Failed to upload picture', 'error');
-        }
+            } catch (err) {
+                console.error('Failed to upload picture:', err);
+                showToast('Failed to upload picture', 'error');
+            }
+        };
+        input.click();
     };
 
     if (loading) {

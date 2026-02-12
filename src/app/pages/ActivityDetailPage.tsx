@@ -747,7 +747,12 @@ const ActivityDetailPage: React.FC = () => {
                                 try {
                                     const data = await api.get(`/export/run/${pipelineRun.id}`);
                                     const response = data as { downloadUrl: string; fitFileAvailable: boolean };
-                                    window.open(response.downloadUrl, '_blank');
+                                    const link = document.createElement('a');
+                                    link.href = response.downloadUrl;
+                                    link.download = `run-${pipelineRun.id}.zip`;
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
                                     setExportStatus('done');
                                     toast.success('Export Ready', `Run data saved as ZIP${response.fitFileAvailable ? ' (includes FIT file)' : ''}`);
                                 } catch {
