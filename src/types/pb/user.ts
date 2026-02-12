@@ -612,6 +612,8 @@ export interface ShowcaseProfile {
   bio: string;
   /** URL to profile picture in GCS */
   profilePictureUrl: string;
+  /** Whether the profile is publicly visible (default true) */
+  visible: boolean;
 }
 
 /**
