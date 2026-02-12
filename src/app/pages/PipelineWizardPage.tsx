@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout/PageLayout';
 import { Stack } from '../components/library/layout/Stack';
@@ -20,6 +20,7 @@ import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginCategorySection } from '../components/PluginCategorySection';
 import { WizardOptionGrid, WizardExcludedSection, WizardStepIndicator, PipelineReviewFlow } from '../components/wizard';
+import { useShowcasePreferences } from '../hooks/useShowcasePreferences';
 import { PluginManifest, ConfigFieldType } from '../types/plugin';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST } from '../utils/tier';
 import { ENRICHER_CATEGORIES, groupPluginsByCategory, getRecommendedPlugins } from '../utils/pluginCategories';
@@ -89,6 +90,14 @@ const PipelineWizardPage: React.FC = () => {
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
     const [enricherSearchQuery, setEnricherSearchQuery] = useState('');
     const [expandAllCategories, setExpandAllCategories] = useState(false);
+
+    // Pre-select showcase destination if user has default preference enabled
+    const { preferences: showcasePrefs } = useShowcasePreferences();
+    useEffect(() => {
+        if (showcasePrefs.defaultDestination && !selectedDestinations.includes('showcase')) {
+            setSelectedDestinations(prev => prev.includes('showcase') ? prev : [...prev, 'showcase']);
+        }
+    }, [showcasePrefs.defaultDestination]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const steps: WizardStep[] = ['source', 'source-config', 'enrichers', 'enricher-config', 'destinations', 'destination-config', 'review'];
     const currentStepIndex = steps.indexOf(step);

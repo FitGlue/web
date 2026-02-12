@@ -603,7 +603,15 @@ export interface ShowcaseProfile {
   totalWeightKg: number;
   /** Lifecycle */
   createdAt?: Date | undefined;
-  updatedAt?: Date | undefined;
+  updatedAt?:
+    | Date
+    | undefined;
+  /** User-editable profile fields */
+  subtitle: string;
+  /** Free-text bio */
+  bio: string;
+  /** URL to profile picture in GCS */
+  profilePictureUrl: string;
 }
 
 /**

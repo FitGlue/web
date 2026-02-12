@@ -27,8 +27,10 @@
 
             <!-- Hero Header -->
             <div class="profile-hero">
+                <div id="profile-avatar" class="profile-avatar" style="display: none;"></div>
                 <h1 id="profile-name" class="profile-display-name"></h1>
-                <p class="profile-subtitle">FitGlue Athlete</p>
+                <p id="profile-subtitle" class="profile-subtitle">FitGlue Athlete</p>
+                <p id="profile-bio" class="profile-bio" style="display: none;"></p>
             </div>
 
             <!-- Headline Stats -->
@@ -101,6 +103,40 @@
         text-transform: uppercase;
         letter-spacing: 0.15em;
         font-weight: 600;
+    }
+
+    /* Profile Avatar */
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin: 0 auto 1.25rem;
+        border: 3px solid rgba(255, 27, 141, 0.4);
+        overflow: hidden;
+        background: linear-gradient(135deg, rgba(157, 78, 221, 0.3), rgba(255, 27, 141, 0.3));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: rgba(255, 255, 255, 0.9);
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    .profile-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Profile Bio */
+    .profile-bio {
+        max-width: 600px;
+        margin: 0.75rem auto 0;
+        color: #bbb;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        text-align: center;
     }
 
     /* Stats Grid */
@@ -592,6 +628,28 @@
         // Set display name
         document.getElementById('profile-name').textContent = profile.displayName;
         document.title = profile.displayName + ' — FitGlue';
+
+        // Set profile avatar
+        var avatarEl = document.getElementById('profile-avatar');
+        if (profile.profilePictureUrl) {
+            avatarEl.innerHTML = '<img src="' + profile.profilePictureUrl + '" alt="' + profile.displayName + '" />';
+            avatarEl.style.display = '';
+        } else if (profile.displayName) {
+            avatarEl.textContent = profile.displayName.charAt(0).toUpperCase();
+            avatarEl.style.display = 'flex';
+        }
+
+        // Set subtitle
+        if (profile.subtitle) {
+            document.getElementById('profile-subtitle').textContent = profile.subtitle;
+        }
+
+        // Set bio
+        if (profile.bio) {
+            var bioEl = document.getElementById('profile-bio');
+            bioEl.textContent = profile.bio;
+            bioEl.style.display = '';
+        }
 
         // Build stat cards (only show non-zero)
         const statsContainer = document.getElementById('profile-stats');

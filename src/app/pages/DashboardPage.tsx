@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useRealtimeInputs } from '../hooks/useRealtimeInputs';
@@ -19,6 +19,9 @@ import { ActionRequiredSummaryCard } from '../components/dashboard/ActionRequire
 import { SubscriptionBanner } from '../components/dashboard/SubscriptionBanner';
 import { PWAInstallBanner } from '../components/dashboard/PWAInstallBanner';
 import { IntegrationsSummary } from '../state/integrationsState';
+import { useUser } from '../hooks/useUser';
+import { useApi } from '../hooks/useApi';
+import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
 
 const ONBOARDING_COMPLETE_KEY = 'fitglue_onboarding_complete';
 
@@ -40,6 +43,30 @@ const DashboardPage: React.FC = () => {
     // Read pipelineRuns from atom - PipelineRunsList component manages the listener
     const [pipelineRuns] = useAtom(pipelineRunsAtom);
 
+    // User tier and showcase profile
+    const { user } = useUser();
+    const api = useApi();
+    const isAthlete = user ? getEffectiveTier(user) === TIER_ATHLETE : false;
+    const [hasShowcaseProfile, setHasShowcaseProfile] = useState(false);
+
+    const fetchShowcaseStatus = useCallback(async () => {
+        if (!isAthlete) return;
+        try {
+            const data = await api.get('/showcase-management/profile') as {
+                profile: { subtitle?: string; bio?: string } | null;
+            };
+            // Consider profile 'set up' when subtitle or bio is filled in
+            const p = data.profile;
+            setHasShowcaseProfile(!!(p && (p.subtitle || p.bio)));
+        } catch {
+            // Silently ignore — showcase check is non-critical
+        }
+    }, [api, isAthlete]);
+
+    useEffect(() => {
+        fetchShowcaseStatus();
+    }, [fetchShowcaseStatus]);
+
     // Real-time stats listener
     useRealtimeStats(true);
 
@@ -60,7 +87,8 @@ const DashboardPage: React.FC = () => {
     const hasConnections = connectedCount > 0;
     const hasPipelines = pipelines.length > 0;
     const hasSyncs = pipelineRuns.length > 0;
-    const allOnboardingComplete = hasConnections && hasPipelines && hasSyncs;
+    const allOnboardingComplete = hasConnections && hasPipelines && hasSyncs
+        && (!isAthlete || hasShowcaseProfile);
 
     useEffect(() => {
         if (!isLoading && allOnboardingComplete && !onboardingComplete) {
@@ -77,6 +105,8 @@ const DashboardPage: React.FC = () => {
                         hasConnections={hasConnections}
                         hasPipelines={hasPipelines}
                         hasSyncs={hasSyncs}
+                        isAthlete={isAthlete}
+                        hasShowcaseProfile={hasShowcaseProfile}
                     />
                 )}
 

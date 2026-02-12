@@ -75,6 +75,9 @@
       <div id="user-description" class="user-description" style="display: none;"></div>
     </div>
 
+    <!-- AI Summary - promoted to appear right after user description -->
+    <div id="ai-summary-container" style="display: none;"></div>
+
     <!-- Stats Grid - Hero Cards -->
     <div id="stats-section" class="stats-grid" style="display: none;"></div>
 
@@ -114,6 +117,7 @@
         <h2>⛰️ Elevation</h2>
         <button class="expand-chart-btn" onclick="openChartModal('elevation', '⛰️ Elevation')" title="Expand">⛶</button>
       </div>
+      <div class="graph-summary" id="elevation-summary"></div>
       <div class="chart-container">
         <canvas id="elevation-chart"></canvas>
       </div>
@@ -125,6 +129,7 @@
         <h2>⚡ Pace</h2>
         <button class="expand-chart-btn" onclick="openChartModal('pace', '⚡ Pace')" title="Expand">⛶</button>
       </div>
+      <div class="graph-summary" id="pace-summary"></div>
       <div class="chart-container">
         <canvas id="pace-chart"></canvas>
       </div>
@@ -136,6 +141,7 @@
         <h2>⚡ Power</h2>
         <button class="expand-chart-btn" onclick="openChartModal('power', '⚡ Power')" title="Expand">⛶</button>
       </div>
+      <div class="graph-summary" id="power-summary"></div>
       <div class="chart-container">
         <canvas id="power-chart"></canvas>
       </div>
@@ -147,6 +153,7 @@
         <h2>🦶 Cadence</h2>
         <button class="expand-chart-btn" onclick="openChartModal('cadence', '🦶 Cadence')" title="Expand">⛶</button>
       </div>
+      <div class="graph-summary" id="cadence-summary"></div>
       <div class="chart-container">
         <canvas id="cadence-chart"></canvas>
       </div>
@@ -158,6 +165,7 @@
         <h2>🚀 Speed</h2>
         <button class="expand-chart-btn" onclick="openChartModal('speed', '🚀 Speed')" title="Expand">⛶</button>
       </div>
+      <div class="graph-summary" id="speed-summary"></div>
       <div class="chart-container">
         <canvas id="speed-chart"></canvas>
       </div>
@@ -1232,14 +1240,15 @@
   .intervals-timeline {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.5rem;
   }
 
+  /* --- Standalone rows (warmup / cooldown) --- */
   .interval-row {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.5rem 0.7rem;
+    padding: 0.55rem 0.75rem;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.03);
     border-left: 3px solid var(--interval-accent, rgba(255, 255, 255, 0.15));
@@ -1259,20 +1268,943 @@
     --interval-accent: #60A5FA;
   }
 
-  .interval-row.sprint {
-    --interval-accent: #FF6BB3;
+  /* --- Group card (header + sub-rows) --- */
+  .interval-group-card {
+    border-radius: 14px;
+    border: 1px solid rgba(157, 78, 221, 0.2);
+    background: rgba(157, 78, 221, 0.04);
+    overflow: hidden;
+    animation: fadeInUp 0.3s ease-out backwards;
   }
 
-  .interval-row.group-header {
-    --interval-accent: #C77DFF;
-    background: rgba(157, 78, 221, 0.06);
+  .interval-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 0.85rem;
+    background: rgba(157, 78, 221, 0.08);
+    border-left: 4px solid #C77DFF;
   }
 
-  .interval-row.summary {
-    --interval-accent: rgba(255, 255, 255, 0.2);
+  .interval-group-header .interval-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #e0d0f0;
+  }
+
+  .interval-sub-rows {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .interval-sub-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem 0.4rem 1.8rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    transition: background 0.2s;
+  }
+
+  .interval-sub-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .interval-sub-row .interval-label {
+    font-size: 0.78rem;
+    color: #aaa;
+  }
+
+  /* --- Insight rows (Active vs Recovery, Getting faster, etc.) --- */
+  .interval-row.insight {
+    --interval-accent: rgba(255, 255, 255, 0.15);
     border-left-style: dashed;
+    background: rgba(255, 255, 255, 0.02);
+    gap: 0.5rem;
   }
 
+  .interval-row.insight .interval-label {
+    font-size: 0.8rem;
+    color: #bbb;
+  }
+
+  .interval-insight-metrics {
+    display: flex;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .interval-insight-metric {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.12rem 0.45rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #ccc;
+    white-space: nowrap;
+  }
+
+  /* --- Insight cards: Active vs Recovery & Pace Trend --- */
+  .interval-insight-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    margin-top: 0.4rem;
+  }
+
+  .insight-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.55rem;
+    font-size: 0.82rem;
+    color: #bbb;
+    font-weight: 500;
+  }
+
+  /* Active vs Recovery comparison */
+  .insight-comparison {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .insight-comparison-value {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+  }
+
+  .insight-comparison-value .value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .insight-comparison-value .label {
+    font-size: 0.65rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .hr-drift-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.3rem;
+  }
+
+  .hr-drift-badge.warning {
+    background: rgba(251, 146, 60, 0.15);
+    color: #fb923c;
+    border: 1px solid rgba(251, 146, 60, 0.25);
+  }
+
+  .hr-drift-badge.normal {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.25);
+  }
+
+  /* --- Graph summary bars (shared across all chart sections) --- */
+  .graph-summary {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .graph-summary:empty {
+    display: none;
+  }
+
+  .graph-stat-mini {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .graph-value-mini {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .graph-label-mini {
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  /* Color coding for graph summary values */
+  .graph-value-mini.pace {
+    color: #fbbf24;
+  }
+
+  .graph-value-mini.power {
+    color: #c084fc;
+  }
+
+  .graph-value-mini.cadence {
+    color: #34d399;
+  }
+
+  .graph-value-mini.speed {
+    color: #60a5fa;
+  }
+
+  .graph-value-mini.elevation-gain {
+    color: #4ade80;
+  }
+
+  .graph-value-mini.elevation-loss {
+    color: #f87171;
+  }
+
+  .graph-value-mini.elevation-max {
+    color: #fbbf24;
+  }
+
+  /* --- Heart Rate dashboard (when no graph) --- */
+  .hr-dashboard {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    flex-wrap: wrap;
+  }
+
+  .hr-dashboard-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+  }
+
+  .hr-dashboard-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+  }
+
+  .hr-dashboard-value.min {
+    color: #60a5fa;
+  }
+
+  .hr-dashboard-value.avg {
+    color: #fff;
+  }
+
+  .hr-dashboard-value.max {
+    color: #f87171;
+  }
+
+  .hr-dashboard-label {
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .hr-dashboard-unit {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 400;
+  }
+
+  /* --- Recovery Advisor card --- */
+  .recovery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .recovery-stat-block {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    padding: 0.5rem 0.6rem;
+    text-align: center;
+  }
+
+  .recovery-stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .recovery-stat-label {
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+    margin-top: 0.15rem;
+  }
+
+  .recovery-stat-tag {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    margin-left: 0.3rem;
+    font-weight: 600;
+  }
+
+  .recovery-stat-tag.easy {
+    background: rgba(74, 222, 128, 0.2);
+    color: #4ade80;
+  }
+
+  .recovery-stat-tag.moderate {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+  }
+
+  .recovery-stat-tag.hard {
+    background: rgba(251, 146, 60, 0.2);
+    color: #fb923c;
+  }
+
+  .recovery-suggestion {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(96, 165, 250, 0.08);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    border-radius: 8px;
+    padding: 0.5rem 0.7rem;
+    color: #94a3b8;
+    font-size: 0.82rem;
+  }
+
+  .recovery-suggestion .icon {
+    font-size: 1.1rem;
+  }
+
+  .recovery-suggestion .value {
+    color: #60a5fa;
+    font-weight: 700;
+  }
+
+  /* --- Calories section --- */
+  .calories-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .calories-value-block {
+    text-align: center;
+  }
+
+  .calories-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #fbbf24;
+  }
+
+  .calories-unit {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+  }
+
+  .calories-food-callout {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 10px;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.85rem;
+    color: #fbbf24;
+    font-weight: 500;
+  }
+
+  /* --- Training Load gauge --- */
+  .training-load-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .training-load-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .training-load-badge {
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+  }
+
+  .training-load-badge.easy {
+    background: rgba(74, 222, 128, 0.2);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+  }
+
+  .training-load-badge.moderate {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+
+  .training-load-badge.hard {
+    background: rgba(251, 146, 60, 0.2);
+    color: #fb923c;
+    border: 1px solid rgba(251, 146, 60, 0.3);
+  }
+
+  .training-load-badge.extreme {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .training-load-badge.recovery {
+    background: rgba(103, 232, 249, 0.2);
+    color: #67e8f9;
+    border: 1px solid rgba(103, 232, 249, 0.3);
+  }
+
+  /* ========================================
+     MUSCLE HEATMAP
+     ======================================== */
+  .muscle-heatmap-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .muscle-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .muscle-bar-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ccc;
+    min-width: 7rem;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .muscle-bar-track {
+    flex: 1;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 7px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .muscle-bar-fill {
+    height: 100%;
+    border-radius: 7px;
+    background: linear-gradient(90deg, #a855f7, #7c3aed);
+    transition: width 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+  }
+
+  .muscle-bar-level {
+    font-size: 0.7rem;
+    color: #aaa;
+    min-width: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  /* ========================================
+     GROUPED PR CARDS
+     ======================================== */
+  .pr-grouped-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 0.8rem 1rem;
+    animation: fadeInUp 0.3s ease-out backwards;
+  }
+
+  .pr-grouped-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .pr-grouped-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .pr-grouped-records {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pr-record-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 10px;
+    flex: 1;
+    min-width: 5rem;
+  }
+
+  .pr-record-chip.chip-1rm {
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+
+  .pr-record-chip.chip-volume {
+    background: rgba(96, 165, 250, 0.12);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+  }
+
+  .pr-record-chip.chip-reps {
+    background: rgba(74, 222, 128, 0.12);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+  }
+
+  .pr-record-chip.chip-time {
+    background: rgba(251, 146, 60, 0.12);
+    border: 1px solid rgba(251, 146, 60, 0.2);
+  }
+
+  .pr-record-chip.chip-distance {
+    background: rgba(168, 85, 247, 0.12);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+  }
+
+  .pr-record-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .pr-record-type {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #999;
+    letter-spacing: 0.04em;
+  }
+
+  .pr-record-improvement {
+    font-size: 0.65rem;
+    font-weight: 600;
+  }
+
+  .pr-record-improvement.positive {
+    color: #4ade80;
+  }
+
+  .pr-record-improvement.negative {
+    color: #ef4444;
+  }
+
+  /* ========================================
+     ENHANCED WORKOUT SUMMARY
+     ======================================== */
+  .workout-headline-callout {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.1));
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 10px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fbbf24;
+    margin-bottom: 0.3rem;
+  }
+
+  .workout-exercise-card {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.8rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid transparent;
+    animation: fadeInUp 0.3s ease-out backwards;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .workout-exercise-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(2px);
+  }
+
+  .workout-exercise-card.cat-weighted {
+    border-left-color: #a855f7;
+  }
+
+  .workout-exercise-card.cat-bodyweight {
+    border-left-color: #4ade80;
+  }
+
+  .workout-exercise-card.cat-timed {
+    border-left-color: #60a5fa;
+  }
+
+  .workout-exercise-card.cat-stretch {
+    border-left-color: #818cf8;
+  }
+
+  .workout-ex-icon {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    width: 1.4rem;
+    text-align: center;
+  }
+
+  .workout-ex-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #eee;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .workout-ex-detail {
+    font-size: 0.75rem;
+    color: #aaa;
+    flex-shrink: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .training-load-scale {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    margin-top: 0.6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .training-load-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s ease;
+  }
+
+  /* --- Running Dynamics three-column --- */
+  .dynamics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 500px) {
+    .dynamics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .dynamics-stat {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    padding: 0.6rem 0.5rem;
+    text-align: center;
+  }
+
+  .dynamics-icon {
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .dynamics-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .dynamics-label {
+    font-size: 0.6rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.1rem;
+  }
+
+  /* --- Elevation section (no graph) --- */
+  .elevation-stats-grid {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .elevation-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .elevation-stat-arrow {
+    font-size: 1rem;
+  }
+
+  .elevation-stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .elevation-stat-label {
+    font-size: 0.6rem;
+    color: #888;
+    text-transform: uppercase;
+  }
+
+  .elevation-sparkline {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    padding: 0.3rem 0.5rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+    text-align: center;
+    color: #94a3b8;
+  }
+
+  /* --- Location & Weather combined --- */
+  .conditions-row {
+    display: flex;
+    gap: 0.6rem;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .conditions-item {
+    flex: 1;
+    min-width: 120px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    padding: 0.5rem 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .conditions-icon {
+    font-size: 1.2rem;
+  }
+
+  .conditions-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+  }
+
+  .conditions-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .conditions-label {
+    font-size: 0.6rem;
+    color: #888;
+    text-transform: uppercase;
+  }
+
+  /* --- Enhanced compact stat pills --- */
+  .enhanced-stat-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 0.5rem 0.7rem;
+    min-width: 80px;
+  }
+
+  .enhanced-stat-pill .pill-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .enhanced-stat-pill .pill-label {
+    font-size: 0.6rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .enhanced-pills-row {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .insight-comparison-value.active .value {
+    color: #4ade80;
+  }
+
+  .insight-comparison-value.recovery .value {
+    color: #60a5fa;
+  }
+
+  .insight-vs-divider {
+    font-size: 0.7rem;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .insight-ratio-badge {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(139, 92, 246, 0.15));
+    color: #c084fc;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+  }
+
+  /* Pace trend mini chart */
+  .insight-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .insight-trend-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 36px;
+  }
+
+  .insight-trend-bar {
+    width: 22px;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.6s ease;
+    position: relative;
+  }
+
+  .insight-trend-bar.faster {
+    background: linear-gradient(to top, rgba(74, 222, 128, 0.4), rgba(74, 222, 128, 0.8));
+  }
+
+  .insight-trend-bar.slower {
+    background: linear-gradient(to top, rgba(251, 146, 60, 0.4), rgba(251, 146, 60, 0.8));
+  }
+
+  .insight-trend-bar.neutral {
+    background: linear-gradient(to top, rgba(148, 163, 184, 0.3), rgba(148, 163, 184, 0.6));
+  }
+
+  .insight-trend-bar .bar-label {
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.55rem;
+    color: #888;
+    white-space: nowrap;
+  }
+
+  .insight-trend-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+  }
+
+  .insight-trend-arrow .arrow {
+    font-size: 1.3rem;
+  }
+
+  .insight-trend-arrow .arrow.faster {
+    color: #4ade80;
+  }
+
+  .insight-trend-arrow .arrow.slower {
+    color: #fb923c;
+  }
+
+  .insight-trend-pct {
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+  }
+
+  .insight-trend-pct.faster {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+  }
+
+  .insight-trend-pct.slower {
+    background: rgba(251, 146, 60, 0.15);
+    color: #fb923c;
+  }
+
+  .insight-trend-values {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: #ccc;
+  }
+
+  .insight-trend-values .from {
+    color: #999;
+  }
+
+  .insight-trend-values .to {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .insight-trend-values .arrow-text {
+    color: #666;
+  }
+
+  .intervals-subtitle {
+    font-size: 0.85rem;
+    color: #999;
+    font-weight: 400;
+    margin-left: 0.4rem;
+  }
+
+  /* --- Shared elements --- */
   .interval-emoji {
     font-size: 1.1rem;
     flex-shrink: 0;
@@ -1292,6 +2224,8 @@
     display: flex;
     gap: 0.5rem;
     flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .interval-stat {
@@ -1408,7 +2342,7 @@
     height: 28px;
     background: rgba(255, 255, 255, 0.06);
     border-radius: 14px;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
   }
 
@@ -1419,6 +2353,7 @@
     transition: width 1s ease-out;
     position: relative;
     min-width: 4px;
+    overflow: hidden;
   }
 
   .progress-bar-fill.milestone {
@@ -1438,6 +2373,14 @@
     font-weight: 800;
     color: #fff;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+  }
+
+  .progress-bar-label.outside {
+    right: auto;
+    left: calc(100% + 8px);
+    color: #ccc;
+    text-shadow: none;
   }
 
   .progress-details {
@@ -1593,17 +2536,133 @@
   }
 
   /* ========================================
-     AI SUMMARY PROSE
+     AI SUMMARY PROSE — ✨ Magic Shimmer
      ======================================== */
+  .ai-summary-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg,
+        rgba(255, 200, 50, 0.04) 0%,
+        rgba(157, 78, 221, 0.06) 50%,
+        rgba(76, 201, 240, 0.04) 100%) !important;
+    border: 1px solid transparent;
+    background-clip: padding-box !important;
+  }
+
+  /* Animated gradient border */
+  .ai-summary-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg,
+        rgba(255, 200, 50, 0.5),
+        rgba(157, 78, 221, 0.5),
+        rgba(76, 201, 240, 0.5),
+        rgba(255, 200, 50, 0.5));
+    background-size: 300% 300%;
+    animation: aiGradientShift 6s ease-in-out infinite;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Subtle glow */
+  .ai-summary-card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    box-shadow:
+      0 0 20px rgba(255, 200, 50, 0.08),
+      0 0 40px rgba(157, 78, 221, 0.06);
+    animation: aiGlow 4s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
+
   .ai-summary-prose {
+    position: relative;
+    z-index: 2;
     font-size: 0.9rem;
-    line-height: 1.7;
-    color: #ccc;
-    padding: 0.6rem 0.8rem;
-    border-radius: 12px;
+    line-height: 1.75;
+    color: #d4d0dc;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
     background: rgba(255, 255, 255, 0.02);
-    border-left: 3px solid rgba(255, 200, 50, 0.3);
     font-style: italic;
+    overflow: hidden;
+  }
+
+  /* Shimmer sweep across text */
+  .ai-summary-prose::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.04) 40%,
+        rgba(255, 200, 50, 0.06) 50%,
+        rgba(255, 255, 255, 0.04) 60%,
+        transparent 100%);
+    animation: aiShimmerSweep 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .ai-summary-header h2 {
+    background: linear-gradient(135deg, #FFC832, #C77DFF, #4CC9F0);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: aiGradientShift 6s ease-in-out infinite;
+  }
+
+  @keyframes aiGradientShift {
+
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes aiShimmerSweep {
+
+    0%,
+    20% {
+      left: -100%;
+    }
+
+    60%,
+    100% {
+      left: 150%;
+    }
+  }
+
+  @keyframes aiGlow {
+    0% {
+      box-shadow:
+        0 0 15px rgba(255, 200, 50, 0.06),
+        0 0 30px rgba(157, 78, 221, 0.04);
+    }
+
+    100% {
+      box-shadow:
+        0 0 25px rgba(255, 200, 50, 0.1),
+        0 0 50px rgba(157, 78, 221, 0.08);
+    }
   }
 
   /* ========================================
@@ -2232,6 +3291,7 @@
     'Activating beast mode...',
   ];
 
+
   // Start rotating messages
   let messageIndex = Math.floor(Math.random() * LOADING_MESSAGES.length);
   const loadingMessageEl = document.getElementById('loading-message');
@@ -2253,6 +3313,14 @@
   }
   const messageInterval = setInterval(rotateMessage, 2000);
 
+  // Store chart configurations for re-rendering in modal
+  const chartConfigs = {};
+  let modalChart = null;
+
+  function storeChartConfig(key, config) {
+    chartConfigs[key] = config;
+  }
+
   (async function () {
     // Extract ID from URL path: /showcase/{id}
     const pathParts = window.location.pathname.split('/').filter(Boolean);
@@ -2272,6 +3340,21 @@
     }
 
     try {
+      // Demo mode: fetch local fixture data from /demo-showcase.json
+      // To use real data, copy/paste the JSON response from /api/showcase/{id} into that file.
+      if (showcaseId.startsWith('demo') && window.location.hostname === 'localhost') {
+        const demoResponse = await fetch('/' + showcaseId + '.json');
+        if (!demoResponse.ok) {
+          throw new Error('Failed to load demo fixture data');
+        }
+        const data = await demoResponse.json();
+        renderShowcase(data);
+        clearInterval(messageInterval);
+        loadingEl.style.display = 'none';
+        contentEl.style.display = 'block';
+        return;
+      }
+
       const response = await fetch(`/api/showcase/${showcaseId}`);
 
       if (!response.ok) {
@@ -2438,6 +3521,9 @@
           }
         }
 
+        // Note: timeMarkers is on the activity level, not session level
+        const timeMarkers = activity.timeMarkers || [];
+
         // --- HEART RATE GRAPH ---
         if (hrValues.length > 10) {
           const hrSection = document.getElementById('hr-graph-section');
@@ -2486,7 +3572,13 @@
         }
 
         // --- EXERCISES ---
-        if (session.strengthSets && session.strengthSets.length > 0) {
+        // Suppress when Workout Summary or Hybrid Race Breakdown already covers exercises
+        const hasWorkoutSummary = (data.description || '').includes('📋 Workout Summary:');
+        const _actName = (data.activityData?.name || '').toLowerCase();
+        const _actTags = (data.activityData?.tags || []).map(t => t.toLowerCase());
+        const isHybridRaceExercise = _actName.includes('hyrox') || _actName.includes('athx') ||
+          _actTags.some(t => t.includes('hyrox')) || _actTags.some(t => t.includes('athx'));
+        if (session.strengthSets && session.strengthSets.length > 0 && !hasWorkoutSummary && !isHybridRaceExercise) {
           const exercisesSection = document.getElementById('exercises-section');
           const exerciseList = document.getElementById('exercise-list');
 
@@ -2554,8 +3646,6 @@
         }
 
         // --- HYBRID RACE BAR CHART ---
-        // Note: timeMarkers is on the activity level, not session level
-        const timeMarkers = activity.timeMarkers || [];
         const activityName = data.activityData?.name || '';
         const activityTags = data.activityData?.tags || [];
 
@@ -3362,7 +4452,8 @@
 
       // Separate user description from enricher sections
       const userDescSection = sections.find(s => s.title === 'Description');
-      const enricherSections = sections.filter(s => s.title !== 'Description');
+      const aiSummarySection = sections.find(s => s.title === 'AI Summary');
+      const enricherSections = sections.filter(s => s.title !== 'Description' && s.title !== 'AI Summary');
 
       // Render user description in hero
       if (userDescSection && userDescSection.content) {
@@ -3372,14 +4463,88 @@
         userDescEl.style.display = 'none';
       }
 
+      // Promote AI Summary to appear right after user description
+      const aiContainer = document.getElementById('ai-summary-container');
+      if (aiSummarySection && aiSummarySection.content) {
+        aiContainer.innerHTML = renderAISummarySection(aiSummarySection, 0);
+        aiContainer.style.display = 'block';
+      } else {
+        aiContainer.style.display = 'none';
+      }
+
       // If no enricher sections, hide container
       if (enricherSections.length === 0) {
         container.style.display = 'none';
         return;
       }
 
+      // --- Suppress sections whose graph is already visible ---
+      const graphSectionMap = {
+        'Heart Rate': 'hr-graph-section',
+        'Pace': 'pace-section',
+        'Power': 'power-section',
+        'Cadence': 'cadence-section',
+        'Speed': 'speed-section',
+        'Elevation': 'elevation-section',
+      };
+      const graphSummaryMap = {
+        'Pace': 'pace-summary',
+        'Power': 'power-summary',
+        'Cadence': 'cadence-summary',
+        'Speed': 'speed-summary',
+        'Elevation': 'elevation-summary',
+      };
+
+      // Store suppressed section data for graph summary migration
+      window._showcaseGraphStats = {};
+
+      const filteredSections = enricherSections.filter(section => {
+        const graphId = graphSectionMap[section.title];
+        if (graphId) {
+          const graphEl = document.getElementById(graphId);
+          if (graphEl && graphEl.style.display !== 'none') {
+            // Graph is visible — suppress this description section
+            window._showcaseGraphStats[section.title] = section;
+            return false;
+          }
+        }
+        // Suppress Hyrox/ATHX race text section when Race Breakdown is visible
+        {
+          const hybridEl = document.getElementById('hybrid-race-section');
+          if (hybridEl && hybridEl.style.display !== 'none') {
+            const t = section.title.toLowerCase();
+            if (t.startsWith('hyrox') || t.startsWith('athx')) return false;
+          }
+        }
+        return true;
+      });
+
+      // --- Populate graph summary bars from suppressed sections ---
+      populateGraphSummaries();
+
+      // --- Merge Location + Weather into a single conditions section ---
+      const locationSection = filteredSections.find(s => s.title === 'Location');
+      const weatherSection = filteredSections.find(s => s.title === 'Weather');
+      const mergedSections = filteredSections.filter(s => s.title !== 'Location' && s.title !== 'Weather');
+      if (locationSection || weatherSection) {
+        mergedSections.push({
+          title: 'Conditions',
+          emoji: '🌍',
+          content: '',
+          _location: locationSection,
+          _weather: weatherSection,
+          _merged: true,
+        });
+      }
+
+      if (mergedSections.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+
       // Detect compact sections (single-line, short content)
       const isCompact = (section) => {
+        if (section._merged) return false;
         const lines = section.content.split('\n').filter(l => l.trim());
         return lines.length <= 1 && section.content.length < 100;
       };
@@ -3408,7 +4573,7 @@
         compactGroup = [];
       };
 
-      enricherSections.forEach((section) => {
+      mergedSections.forEach((section) => {
         if (isCompact(section)) {
           compactGroup.push(section);
         } else {
@@ -3420,6 +4585,105 @@
 
       container.innerHTML = html;
       container.style.display = 'block';
+    }
+
+    /**
+     * Populate graph summary bars from suppressed description sections.
+     */
+    function populateGraphSummaries() {
+      const stats = window._showcaseGraphStats || {};
+
+      // HR drift badge (HR section always has graph data via hr-summary)
+      const hrSection = stats['Heart Rate'];
+      if (hrSection) {
+        const driftMatch = hrSection.content.match(/Drift:\s*([+-]?\d+)\s*bpm\s*\(([^)]+)\)/i);
+        if (driftMatch) {
+          const driftVal = parseInt(driftMatch[1]);
+          const driftNote = driftMatch[2];
+          const badgeClass = Math.abs(driftVal) > 15 ? 'warning' : 'normal';
+          const summaryEl = document.getElementById('hr-summary');
+          if (summaryEl) {
+            summaryEl.innerHTML += `
+              <div class="hr-stat-mini">
+                <span class="hr-value-mini" style="color:${badgeClass === 'warning' ? '#fb923c' : '#4ade80'}">${driftVal > 0 ? '+' : ''}${driftVal}</span>
+                <span class="hr-label-mini">Drift</span>
+                <span class="hr-drift-badge ${badgeClass}">${escapeHtml(driftNote)}</span>
+              </div>`;
+          }
+        }
+      }
+
+      // Parse compact stat pills format: "value1 label1 • value2 label2"
+      const parseCompactPills = (content) => {
+        return content.split(' • ').map(p => p.trim()).filter(Boolean).map(part => {
+          const m = part.match(/^(.+?)\s+(avg|max|min|best|total|gain|loss)$/i);
+          return m ? { value: m[1], label: m[2] } : { value: part, label: '' };
+        });
+      };
+
+      // Populate Pace summary
+      const paceSec = stats['Pace'];
+      if (paceSec) {
+        const el = document.getElementById('pace-summary');
+        if (el) {
+          const pills = parseCompactPills(paceSec.content);
+          el.innerHTML = pills.map(p =>
+            `<div class="graph-stat-mini"><span class="graph-value-mini pace">${escapeHtml(p.value)}</span><span class="graph-label-mini">${escapeHtml(p.label)}</span></div>`
+          ).join('');
+        }
+      }
+
+      // Populate Power summary
+      const powerSec = stats['Power'];
+      if (powerSec) {
+        const el = document.getElementById('power-summary');
+        if (el) {
+          const pills = parseCompactPills(powerSec.content);
+          el.innerHTML = pills.map(p =>
+            `<div class="graph-stat-mini"><span class="graph-value-mini power">${escapeHtml(p.value)}</span><span class="graph-label-mini">${escapeHtml(p.label)}</span></div>`
+          ).join('');
+        }
+      }
+
+      // Populate Cadence summary
+      const cadenceSec = stats['Cadence'];
+      if (cadenceSec) {
+        const el = document.getElementById('cadence-summary');
+        if (el) {
+          const pills = parseCompactPills(cadenceSec.content);
+          el.innerHTML = pills.map(p =>
+            `<div class="graph-stat-mini"><span class="graph-value-mini cadence">${escapeHtml(p.value)}</span><span class="graph-label-mini">${escapeHtml(p.label)}</span></div>`
+          ).join('');
+        }
+      }
+
+      // Populate Speed summary
+      const speedSec = stats['Speed'];
+      if (speedSec) {
+        const el = document.getElementById('speed-summary');
+        if (el) {
+          const pills = parseCompactPills(speedSec.content);
+          el.innerHTML = pills.map(p =>
+            `<div class="graph-stat-mini"><span class="graph-value-mini speed">${escapeHtml(p.value)}</span><span class="graph-label-mini">${escapeHtml(p.label)}</span></div>`
+          ).join('');
+        }
+      }
+
+      // Populate Elevation summary
+      const elevSec = stats['Elevation'];
+      if (elevSec) {
+        const el = document.getElementById('elevation-summary');
+        if (el) {
+          // First line is stats, skip sparkline
+          const firstLine = elevSec.content.split('\n')[0] || '';
+          const pills = parseCompactPills(firstLine);
+          const colorMap = { gain: 'elevation-gain', loss: 'elevation-loss', max: 'elevation-max' };
+          el.innerHTML = pills.map(p => {
+            const colorClass = colorMap[p.label.toLowerCase()] || '';
+            return `<div class="graph-stat-mini"><span class="graph-value-mini ${colorClass}">${escapeHtml(p.value)}</span><span class="graph-label-mini">${escapeHtml(p.label)}</span></div>`;
+          }).join('');
+        }
+      }
     }
 
     /**
@@ -3443,6 +4707,16 @@
       // AI Summary gets pretty prose styling
       if (title === 'AI Summary') return renderAISummarySection(section, idx);
 
+      // New specialized renderers
+      if (title === 'Heart Rate') return renderHeartRateSection(section, idx);
+      if (title === 'Recovery Advisor') return renderRecoverySection(section, idx);
+      if (title === 'Calories') return renderCaloriesSection(section, idx);
+      if (title === 'Training Load') return renderTrainingLoadSection(section, idx);
+      if (title === 'Muscle Heatmap') return renderMuscleHeatmapSection(section, idx);
+      if (title === 'Elevation') return renderElevationSection(section, idx);
+      if (title === 'Running Dynamics') return renderRunningDynamicsSection(section, idx);
+      if (title === 'Conditions' && section._merged) return renderConditionsSection(section, idx);
+
       // Bullet-list sections get parsed stat rows
       const lines = section.content.split('\n').filter(l => l.trim());
       const bulletLines = lines.filter(l => l.trim().startsWith('•'));
@@ -3450,20 +4724,14 @@
         return renderBulletListSection(section, idx);
       }
 
-      // Single-line with • separators get stat pills
+      // Single-line with • separators get enhanced stat pills
       if (lines.length <= 1 && section.content.includes(' • ')) {
-        return renderCompactStatPills(section, idx);
+        return renderEnhancedCompactPills(section, idx);
       }
 
-      // Single-line compact sections that didn't match above get a clean value display
+      // Single-line compact sections get enhanced value display
       if (lines.length <= 1 && section.content.trim()) {
-        return `
-          <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
-            <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
-            <div class="compact-stat-pills">
-              <span class="stat-pill"><span class="stat-pill-value">${escapeHtml(section.content.trim())}</span></span>
-            </div>
-          </div>`;
+        return renderEnhancedCompactPills(section, idx);
       }
 
       // Generic fallback
@@ -3475,6 +4743,283 @@
           <pre class="activity-description">${escapeHtml(section.content)}</pre>
         </div>
       `;
+    }
+
+    /**
+     * Heart Rate section — color-coded min/avg/max dashboard with drift badge.
+     */
+    function renderHeartRateSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      let min = '', avg = '', max = '', driftText = '', driftNote = '';
+
+      lines.forEach(line => {
+        const clean = line.replace(/^•\s*/, '').trim();
+        const minM = clean.match(/(\d+)\s*bpm\s*min/i);
+        const avgM = clean.match(/(\d+)\s*bpm\s*avg/i);
+        const maxM = clean.match(/(\d+)\s*bpm\s*max/i);
+        const driftM = clean.match(/Drift:\s*([+-]?\d+\s*bpm)\s*\(([^)]+)\)/i);
+        if (minM) min = minM[1];
+        if (avgM) avg = avgM[1];
+        if (maxM) max = maxM[1];
+        if (driftM) { driftText = driftM[1]; driftNote = driftM[2]; }
+      });
+
+      const driftVal = parseInt(driftText);
+      const badgeClass = Math.abs(driftVal) > 15 ? 'warning' : 'normal';
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="hr-dashboard">
+            ${min ? `<div class="hr-dashboard-stat"><span class="hr-dashboard-value min">${min}</span><span class="hr-dashboard-label">Min</span><span class="hr-dashboard-unit">bpm</span></div>` : ''}
+            ${avg ? `<div class="hr-dashboard-stat"><span class="hr-dashboard-value avg">${avg}</span><span class="hr-dashboard-label">Avg</span><span class="hr-dashboard-unit">bpm</span></div>` : ''}
+            ${max ? `<div class="hr-dashboard-stat"><span class="hr-dashboard-value max">${max}</span><span class="hr-dashboard-label">Max</span><span class="hr-dashboard-unit">bpm</span></div>` : ''}
+            ${driftText ? `<div class="hr-dashboard-stat"><span class="hr-dashboard-value" style="color:${badgeClass === 'warning' ? '#fb923c' : '#4ade80'}">${escapeHtml(driftText.replace(/\s*bpm/, ''))}</span><span class="hr-dashboard-label">Drift</span><span class="hr-drift-badge ${badgeClass}">${escapeHtml(driftNote)}</span></div>` : ''}
+          </div>
+        </div>`;
+    }
+
+    /**
+     * Recovery Advisor — structured grid with session/7-day loads and recovery callout.
+     */
+    function renderRecoverySection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      let sessionVal = '', sessionTag = '', weekVal = '', suggestion = '';
+
+      lines.forEach(line => {
+        const clean = line.replace(/^•\s*/, '').trim();
+        const sessionM = clean.match(/Session\s*load:\s*([\d.]+\s*TRIMP)\s*\((\w+)\)/i);
+        const weekM = clean.match(/7-day\s*load:\s*([\d.]+\s*TRIMP)/i);
+        const sugM = clean.match(/Suggested\s*recovery:\s*(.+)/i);
+        if (sessionM) { sessionVal = sessionM[1]; sessionTag = sessionM[2]; }
+        if (weekM) weekVal = weekM[1];
+        if (sugM) suggestion = sugM[1].replace(/^💡\s*/, '');
+      });
+
+      const tagClass = sessionTag.toLowerCase() === 'easy' ? 'easy' : sessionTag.toLowerCase() === 'moderate' ? 'moderate' : 'hard';
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="recovery-grid">
+            <div class="recovery-stat-block">
+              <div class="recovery-stat-value">${escapeHtml(sessionVal)}${sessionTag ? `<span class="recovery-stat-tag ${tagClass}">${escapeHtml(sessionTag)}</span>` : ''}</div>
+              <div class="recovery-stat-label">Session Load</div>
+            </div>
+            <div class="recovery-stat-block">
+              <div class="recovery-stat-value">${escapeHtml(weekVal)}</div>
+              <div class="recovery-stat-label">7-Day Load</div>
+            </div>
+          </div>
+          ${suggestion ? `<div class="recovery-suggestion"><span class="icon">🕐</span><span>Suggested recovery: <span class="value">${escapeHtml(suggestion)}</span></span></div>` : ''}
+        </div>`;
+    }
+
+    /**
+     * Calories — large value with food comparison callout.
+     */
+    function renderCaloriesSection(section, idx) {
+      const text = section.content.trim();
+      // Parse "223 kcal ≈ 0.8 slice of pizza 🍕"
+      const m = text.match(/^([\d.]+)\s*kcal\s*≈?\s*(.+)$/);
+      if (!m) return renderEnhancedCompactPills(section, idx);
+
+      const kcal = m[1];
+      const comparison = m[2].trim();
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="calories-display">
+            <div class="calories-value-block">
+              <span class="calories-number">${escapeHtml(kcal)}</span>
+              <div class="calories-unit">kcal</div>
+            </div>
+            <div class="calories-food-callout">≈ ${escapeHtml(comparison)}</div>
+          </div>
+        </div>`;
+    }
+
+    /**
+     * Training Load — gauge-style with intensity badge and scale bar.
+     */
+    function renderTrainingLoadSection(section, idx) {
+      const text = section.content.trim();
+      // Parse "38 (Easy)"
+      const m = text.match(/^([\d.]+)\s*\((\w+)\)$/);
+      if (!m) return renderEnhancedCompactPills(section, idx);
+
+      const value = parseFloat(m[1]);
+      const intensity = m[2];
+      const intLower = intensity.toLowerCase();
+      const badgeClass = intLower === 'recovery' ? 'recovery' : intLower === 'easy' ? 'easy' : intLower === 'moderate' ? 'moderate' : intLower === 'hard' ? 'hard' : 'extreme';
+
+      // Scale: 0-200 range for training load
+      const fillPct = Math.min((value / 200) * 100, 100);
+      const gradientColors = {
+        recovery: 'linear-gradient(90deg, #67e8f9, #06b6d4)',
+        easy: 'linear-gradient(90deg, #4ade80, #22c55e)',
+        moderate: 'linear-gradient(90deg, #fbbf24, #f59e0b)',
+        hard: 'linear-gradient(90deg, #fb923c, #f97316)',
+        extreme: 'linear-gradient(90deg, #ef4444, #dc2626)',
+      };
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="training-load-display">
+            <span class="training-load-value">${escapeHtml(m[1])}</span>
+            <span class="training-load-badge ${badgeClass}">${escapeHtml(intensity)}</span>
+          </div>
+          <div class="training-load-scale">
+            <div class="training-load-fill" style="width:${fillPct}%;background:${gradientColors[badgeClass]}"></div>
+          </div>
+        </div>`;
+    }
+
+    /**
+     * Elevation section (when no graph) — columnar stats + sparkline.
+     */
+    function renderElevationSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+      const firstLine = lines[0] || '';
+      const sparkline = lines.length > 1 ? lines[1].replace(/^📈\s*/, '') : '';
+
+      // Parse "+36m gain • -36m loss • 28m max"
+      const parts = firstLine.split(' • ').map(p => p.trim()).filter(Boolean);
+      const stats = parts.map(part => {
+        const m = part.match(/^([+-]?[\d.]+\w*)\s+(.+)$/);
+        if (m) {
+          const label = m[2].toLowerCase();
+          const arrow = label.includes('gain') ? '↑' : label.includes('loss') ? '↓' : '▲';
+          const cssClass = label.includes('gain') ? 'elevation-gain' : label.includes('loss') ? 'elevation-loss' : 'elevation-max';
+          return { value: m[1], label: m[2], arrow, cssClass };
+        }
+        return { value: part, label: '', arrow: '', cssClass: '' };
+      });
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="elevation-stats-grid">
+            ${stats.map(s => `
+              <div class="elevation-stat">
+                <span class="elevation-stat-arrow">${s.arrow}</span>
+                <span class="elevation-stat-value" style="color:var(--${s.cssClass}, #fff)">${escapeHtml(s.value)}</span>
+                <span class="elevation-stat-label">${escapeHtml(s.label)}</span>
+              </div>
+            `).join('')}
+          </div>
+          ${sparkline ? `<div class="elevation-sparkline">${escapeHtml(sparkline)}</div>` : ''}
+        </div>`;
+    }
+
+    /**
+     * Running Dynamics — three stat cards: GCT, Stride, Vertical Oscillation.
+     */
+    function renderRunningDynamicsSection(section, idx) {
+      const text = section.content.trim();
+      // Parse "⏱️ GCT: 253 ms • 📏 Stride: 10.73 m • ↕️ Vert: 8.3 cm"
+      const parts = text.split(' • ').map(p => p.trim()).filter(Boolean);
+
+      const stats = parts.map(part => {
+        const emojiResult = extractLeadingEmoji(part);
+        const rest = emojiResult.rest.trim();
+        const colonIdx = rest.indexOf(':');
+        if (colonIdx > 0) {
+          return {
+            icon: emojiResult.emoji,
+            label: rest.substring(0, colonIdx).trim(),
+            value: rest.substring(colonIdx + 1).trim(),
+          };
+        }
+        return { icon: emojiResult.emoji, label: '', value: rest };
+      });
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="dynamics-grid">
+            ${stats.map(s => `
+              <div class="dynamics-stat">
+                <div class="dynamics-icon">${s.icon}</div>
+                <div class="dynamics-value">${escapeHtml(s.value)}</div>
+                <div class="dynamics-label">${escapeHtml(s.label)}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+    }
+
+    /**
+     * Conditions — merged Location + Weather row.
+     */
+    function renderConditionsSection(section, idx) {
+      const locSection = section._location;
+      const wxSection = section._weather;
+
+      let items = [];
+
+      if (locSection) {
+        const locText = locSection.content.trim();
+        // Parse "Long Bennington, South Kesteven (☀️ Afternoon)"
+        const locMatch = locText.match(/^(.+?)\s*\((.+)\)$/);
+        if (locMatch) {
+          items.push({ icon: '📍', value: locMatch[1], label: locMatch[2] });
+        } else {
+          items.push({ icon: '📍', value: locText, label: 'Location' });
+        }
+      }
+
+      if (wxSection) {
+        const wxText = wxSection.content.trim();
+        // Parse "10°C, Rain • Wind: 17 km/h SW"
+        const wxParts = wxText.split(' • ').map(p => p.trim());
+        wxParts.forEach(p => {
+          const colonIdx = p.indexOf(':');
+          if (colonIdx > 0) {
+            items.push({ icon: '💨', value: p.substring(colonIdx + 1).trim(), label: p.substring(0, colonIdx).trim() });
+          } else {
+            items.push({ icon: '🌡️', value: p, label: 'Weather' });
+          }
+        });
+      }
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="conditions-row">
+            ${items.map(item => `
+              <div class="conditions-item">
+                <span class="conditions-icon">${item.icon}</span>
+                <div class="conditions-text">
+                  <span class="conditions-value">${escapeHtml(item.value)}</span>
+                  <span class="conditions-label">${escapeHtml(item.label)}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+    }
+
+    /**
+     * Enhanced compact stat pills — stacked value + label layout.
+     */
+    function renderEnhancedCompactPills(section, idx) {
+      const parts = section.content.split(' • ').map(p => p.trim()).filter(Boolean);
+      const pillsHtml = parts.map(part => {
+        const labelMatch = part.match(/^(.+?)\s+(avg|max|min|best|total|gain|loss)$/i);
+        if (labelMatch) {
+          return `<div class="enhanced-stat-pill"><span class="pill-value">${escapeHtml(labelMatch[1])}</span><span class="pill-label">${escapeHtml(labelMatch[2])}</span></div>`;
+        }
+        return `<div class="enhanced-stat-pill"><span class="pill-value">${escapeHtml(part)}</span></div>`;
+      }).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="enhanced-pills-row">${pillsHtml}</div>
+        </div>`;
     }
 
     /**
@@ -3564,14 +5109,14 @@
     }
 
     /**
-     * Render Personal Records as a rich grid of individual PR cards.
+     * Render Personal Records grouped by exercise.
+     * Each exercise gets a single card with chips for each record type.
      */
     function renderPRSection(section, idx) {
       const lines = section.content.split('\n').filter(l => l.trim());
       const records = lines.map(parsePRLine).filter(Boolean);
 
       if (records.length === 0) {
-        // Fallback to generic card
         return `
           <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
             <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
@@ -3579,27 +5124,45 @@
           </div>`;
       }
 
-      let cardsHtml = records.map((pr, i) => {
-        const delay = (idx * 0.1) + (i * 0.05);
-        let improvementHtml = '';
-        if (pr.improvement) {
-          const isPositive = !pr.improvement.startsWith('-');
-          const cls = isPositive ? 'positive' : 'negative';
-          const arrow = isPositive ? '▲' : '▼';
-          improvementHtml = `<span class="pr-improvement ${cls}">${arrow} ${pr.improvement}</span>`;
+      // Group records by exercise name
+      const grouped = {};
+      const groupOrder = [];
+      for (const pr of records) {
+        if (!grouped[pr.name]) {
+          grouped[pr.name] = { name: pr.name, emoji: pr.emoji, records: [] };
+          groupOrder.push(pr.name);
         }
+        grouped[pr.name].records.push(pr);
+        // Prefer trophy emoji over muscle emoji for the group
+        if (pr.emoji === '🏆') grouped[pr.name].emoji = '🏆';
+      }
 
-        const typeLabel = pr.recordType || 'Record';
+      const cardsHtml = groupOrder.map((name, i) => {
+        const group = grouped[name];
+        const delay = (idx * 0.1) + (i * 0.06);
+
+        const chipsHtml = group.records.map(pr => {
+          let improvementHtml = '';
+          if (pr.improvement) {
+            const isPositive = !pr.improvement.startsWith('-');
+            const cls = isPositive ? 'positive' : 'negative';
+            const arrow = isPositive ? '▲' : '▼';
+            improvementHtml = `<span class="pr-record-improvement ${cls}">${arrow} ${pr.improvement}</span>`;
+          }
+          return `<div class="pr-record-chip chip-${pr.typeClass}">
+            <span class="pr-record-value">${escapeHtml(pr.value)}</span>
+            <span class="pr-record-type">${escapeHtml(pr.recordType || 'Record')}</span>
+            ${improvementHtml}
+          </div>`;
+        }).join('');
 
         return `
-          <div class="pr-card pr-type-${pr.typeClass}" style="animation-delay: ${delay}s;">
-            <div class="pr-card-top">
-              <span class="pr-emoji">${pr.emoji}</span>
-              <span class="pr-name">${escapeHtml(pr.name)}</span>
+          <div class="pr-grouped-card" style="animation-delay: ${delay}s;">
+            <div class="pr-grouped-header">
+              <span class="pr-emoji">${group.emoji}</span>
+              <span class="pr-grouped-name">${escapeHtml(group.name)}</span>
             </div>
-            <div class="pr-value gradient-${pr.typeClass}">${escapeHtml(pr.value)}</div>
-            <span class="pr-type-label">${escapeHtml(typeLabel)}</span>
-            ${improvementHtml}
+            <div class="pr-grouped-records">${chipsHtml}</div>
           </div>`;
       }).join('');
 
@@ -3613,78 +5176,414 @@
     }
 
     /**
-     * Render Intervals as a structured timeline.
+     * Render Muscle Heatmap with styled activation bars.
+     * Parses lines like: "Abdominals: 🟪🟪🟪🟪🟪"
      */
-    function renderIntervalsSection(section, idx) {
+    function renderMuscleHeatmapSection(section, idx) {
       const lines = section.content.split('\n').filter(l => l.trim());
-      let rowsHtml = lines.map((line, i) => {
-        const delay = (idx * 0.1) + (i * 0.03);
-        const trimmed = line.trim();
 
-        // Classify the row
-        let rowClass = 'sprint';
-        let emoji = '💨';
-        if (/^🔥/.test(trimmed) || /warmup/i.test(trimmed)) { rowClass = 'warmup'; emoji = '🔥'; }
-        else if (/^❄️/.test(trimmed) || /cooldown/i.test(trimmed)) { rowClass = 'cooldown'; emoji = '❄️'; }
-        else if (/^📊|^📈/.test(trimmed)) { rowClass = 'summary'; emoji = [...trimmed][0]; }
-        else if (/^💨.*sprints:/.test(trimmed)) { rowClass = 'group-header'; }
-        else { const e = [...trimmed][0]; if (e) emoji = e; }
+      const muscles = lines.map(line => {
+        const colonIdx = line.indexOf(':');
+        if (colonIdx < 0) return null;
+        const name = line.substring(0, colonIdx).trim();
+        const squares = line.substring(colonIdx + 1).trim();
+        // Count filled squares (🟪) out of total squares
+        const filled = ([...squares].filter(c => c === '🟪')).length;
+        const total = ([...squares].filter(c => c === '🟪' || c === '⬜')).length || 5;
+        return { name, filled, total };
+      }).filter(Boolean);
 
-        // Extract stats from • separated values or parenthetical HR
-        const statsHtml = extractIntervalStats(trimmed);
-        // Get the label (text before first stat indicator)
-        const label = cleanIntervalLabel(trimmed);
+      if (muscles.length === 0) return renderEnhancedCompactPills(section, idx);
 
-        return `<div class="interval-row ${rowClass}" style="animation-delay:${delay}s">
-          <span class="interval-emoji">${emoji}</span>
-          <span class="interval-label">${escapeHtml(label)}</span>
-          ${statsHtml}
+      const barsHtml = muscles.map((m, i) => {
+        const pct = (m.filled / m.total) * 100;
+        const delay = (idx * 0.1) + (i * 0.04);
+        return `<div class="muscle-bar-row" style="animation-delay:${delay}s">
+          <span class="muscle-bar-label">${escapeHtml(m.name)}</span>
+          <div class="muscle-bar-track">
+            <div class="muscle-bar-fill" style="width:${pct}%"></div>
+          </div>
+          <span class="muscle-bar-level">${m.filled}/${m.total}</span>
         </div>`;
       }).join('');
 
       return `
         <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
           <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
-          <div class="intervals-timeline">${rowsHtml}</div>
+          <div class="muscle-heatmap-grid">${barsHtml}</div>
         </div>`;
     }
 
-    function cleanIntervalLabel(text) {
-      // Strip leading emoji
-      const chars = [...text];
-      let rest = text.slice(chars[0].length).trim();
-      // For lines like "Run 1: 0:40 • 3:27/km • 193m (149bpm)", keep just "Run 1"
-      // For summary lines, keep full text
-      if (/sprints:|Warmup|Cooldown/i.test(rest)) {
-        return rest;
+
+    /**
+     * Render Intervals as structured timeline with grouped sprint cards.
+     * Classifies each line by its emoji prefix:
+     *   🔥 = warmup, ❄️ = cooldown, 💨 + × = group header,
+     *   leading whitespace = sub-row, 📊/📈/📉 = insight
+     */
+    function renderIntervalsSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+
+      // First pass: classify each line
+      const classified = lines.map(line => {
+        const trimmed = line.trim();
+        const isIndented = line.startsWith('  ') || line.startsWith('\t');
+
+        if (/^🔥/.test(trimmed)) return { type: 'warmup', text: trimmed };
+        if (/^❄️/.test(trimmed)) return { type: 'cooldown', text: trimmed };
+        if (/^📊/.test(trimmed)) return { type: 'insight-comparison', text: trimmed };
+        if (/^📈/.test(trimmed)) return { type: 'insight-trend', text: trimmed };
+        if (/^📉/.test(trimmed)) return { type: 'insight-trend', text: trimmed };
+        if (/^💨/.test(trimmed) && /×/.test(trimmed) && /sprints/i.test(trimmed)) {
+          return { type: 'group-header', text: trimmed };
+        }
+        if (isIndented || (/^💨/.test(trimmed) && /Run \d/i.test(trimmed))) {
+          return { type: 'sub-row', text: trimmed };
+        }
+        // Fallback: treat as a generic row
+        return { type: 'generic', text: trimmed };
+      });
+
+      // Extract workout name: first generic line (e.g. "20min Sprints") becomes a subtitle
+      let workoutSubtitle = '';
+      if (classified.length > 0 && classified[0].type === 'generic') {
+        workoutSubtitle = classified[0].text;
+        classified.shift();
       }
-      const colonIdx = rest.indexOf(':');
-      if (colonIdx > 0 && colonIdx < 20) {
-        return rest.substring(0, colonIdx);
+
+      // Second pass: group consecutive group-header + sub-rows into cards
+      let html = '';
+      let cardIdx = 0;
+      let i = 0;
+
+      while (i < classified.length) {
+        const item = classified[i];
+
+        if (item.type === 'group-header') {
+          // Start a group card: header + all following sub-rows
+          const delay = (idx * 0.1) + (cardIdx * 0.08);
+          const headerHtml = renderIntervalGroupHeader(item.text, delay);
+          const subRows = [];
+          let j = i + 1;
+          while (j < classified.length && classified[j].type === 'sub-row') {
+            subRows.push(classified[j].text);
+            j++;
+          }
+
+          const subRowsHtml = subRows.map((text, si) => {
+            const subDelay = delay + ((si + 1) * 0.04);
+            return renderIntervalSubRow(text, subDelay);
+          }).join('');
+
+          html += `<div class="interval-group-card" style="animation-delay:${delay}s">
+            ${headerHtml}
+            ${subRows.length > 0 ? `<div class="interval-sub-rows">${subRowsHtml}</div>` : ''}
+          </div>`;
+          cardIdx++;
+          i = j;
+          continue;
+        }
+
+        if (item.type === 'warmup' || item.type === 'cooldown') {
+          html += renderIntervalStandaloneRow(item.text, item.type, (idx * 0.1) + (cardIdx * 0.08));
+          cardIdx++;
+          i++;
+          continue;
+        }
+
+        if (item.type === 'insight-comparison') {
+          html += renderIntervalComparisonCard(item.text, (idx * 0.1) + (cardIdx * 0.08));
+          cardIdx++;
+          i++;
+          continue;
+        }
+
+        if (item.type === 'insight-trend') {
+          html += renderIntervalTrendCard(item.text, (idx * 0.1) + (cardIdx * 0.08));
+          cardIdx++;
+          i++;
+          continue;
+        }
+
+        // Generic fallback row
+        html += renderIntervalGenericRow(item.text, (idx * 0.1) + (cardIdx * 0.08));
+        cardIdx++;
+        i++;
       }
-      return rest;
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}${workoutSubtitle ? `<span class="intervals-subtitle">— ${escapeHtml(workoutSubtitle)}</span>` : ''}</h2></div>
+          <div class="intervals-timeline">${html}</div>
+        </div>`;
     }
 
-    function extractIntervalStats(text) {
-      const stats = [];
-      // Time patterns like 0:40, 5:00
-      const timeMatch = text.match(/:\s*(\d+:\d{2})\s*(?:•|$)/);
-      if (timeMatch) stats.push(`<span class="interval-stat time">${timeMatch[1]}</span>`);
-      // Pace patterns like 3:27/km, 5:47/km
-      const paceMatches = text.match(/\d+:\d{2}\/km/g);
-      if (paceMatches) {
-        // Take the most relevant pace (last one or avg)
-        const paceLabel = text.includes('avg') ? paceMatches[0] : paceMatches[paceMatches.length - 1];
-        stats.push(`<span class="interval-stat pace">${paceLabel}</span>`);
+    /**
+     * Render a warmup or cooldown as a standalone row.
+     * Input: "🔥 Warmup: 5:00 • 5:47/km • 862m (124bpm)"
+     * Renders: emoji + clean label + stat pills (no duplication)
+     */
+    function renderIntervalStandaloneRow(text, type, delay) {
+      const emojiResult = extractLeadingEmoji(text);
+      const rest = emojiResult.rest.trim();
+
+      // Split on colon to get label and stats part
+      const colonIdx = rest.indexOf(':');
+      let label = type === 'warmup' ? 'Warmup' : 'Cooldown';
+      let statsText = rest;
+      if (colonIdx > 0) {
+        label = rest.substring(0, colonIdx).trim();
+        statsText = rest.substring(colonIdx + 1).trim();
       }
-      // Distance patterns like 193m, 862m, 1.1km
-      const distMatch = text.match(/(\d+(?:\.\d+)?\s*(?:km|m))(?:\s|\(|$)/i);
-      if (distMatch) stats.push(`<span class="interval-stat dist">${distMatch[1]}</span>`);
-      // HR patterns like (149bpm), peak 170bpm
-      const hrMatch = text.match(/(\d+)\s*bpm/i);
-      if (hrMatch) stats.push(`<span class="interval-stat hr">${hrMatch[1]}bpm</span>`);
-      if (stats.length === 0) return '';
-      return `<div class="interval-stats">${stats.join('')}</div>`;
+
+      // Parse stats from • separated values
+      const statsHtml = parseIntervalStatPills(statsText);
+
+      return `<div class="interval-row ${type}" style="animation-delay:${delay}s">
+        <span class="interval-emoji">${emojiResult.emoji}</span>
+        <span class="interval-label">${escapeHtml(label)}</span>
+        ${statsHtml}
+      </div>`;
+    }
+
+    /**
+     * Render a group header (goes inside .interval-group-card).
+     * Input: "💨 3×0:40 sprints: avg 3:43/km, peak 170bpm"
+     * Renders: emoji + bold label + muted stat badges
+     */
+    function renderIntervalGroupHeader(text, delay) {
+      const emojiResult = extractLeadingEmoji(text);
+      const rest = emojiResult.rest.trim();
+
+      // Split at "sprints:" to get the group label vs stats
+      const sprintsIdx = rest.search(/sprints?:/i);
+      let label, statsText;
+      if (sprintsIdx >= 0) {
+        const colonAfterSprints = rest.indexOf(':', sprintsIdx);
+        label = rest.substring(0, colonAfterSprints + 1).trim();
+        statsText = rest.substring(colonAfterSprints + 1).trim();
+      } else {
+        // Fallback: split at first colon
+        const colonIdx = rest.indexOf(':');
+        if (colonIdx > 0) {
+          label = rest.substring(0, colonIdx).trim();
+          statsText = rest.substring(colonIdx + 1).trim();
+        } else {
+          label = rest;
+          statsText = '';
+        }
+      }
+
+      const statsHtml = statsText ? parseIntervalStatPills(statsText) : '';
+
+      return `<div class="interval-group-header">
+        <span class="interval-emoji">${emojiResult.emoji}</span>
+        <span class="interval-label">${escapeHtml(label)}</span>
+        ${statsHtml}
+      </div>`;
+    }
+
+    /**
+     * Render a sub-row (individual run inside a group card).
+     * Input: "💨 Run 1: 0:40 • 3:27/km • 193m (149bpm)"
+     * Renders: clean label (Run 1) + stat pills
+     */
+    function renderIntervalSubRow(text, delay) {
+      const emojiResult = extractLeadingEmoji(text);
+      const rest = emojiResult.rest.trim();
+
+      // Label is "Run N", stats are after the colon
+      const colonIdx = rest.indexOf(':');
+      let label = rest;
+      let statsText = '';
+      if (colonIdx > 0 && colonIdx < 20) {
+        label = rest.substring(0, colonIdx).trim();
+        statsText = rest.substring(colonIdx + 1).trim();
+      }
+
+      const statsHtml = statsText ? parseIntervalStatPills(statsText) : '';
+
+      return `<div class="interval-sub-row" style="animation-delay:${delay}s">
+        <span class="interval-label">${escapeHtml(label)}</span>
+        ${statsHtml}
+      </div>`;
+    }
+
+    /**
+     * Render Active vs Recovery comparison card.
+     * Input: "📊 Active vs Recovery: 4.42 m/s vs 2.23 m/s (1.98× ratio)"
+     * Renders: structured comparison with labeled values and ratio badge
+     */
+    function renderIntervalComparisonCard(text, delay) {
+      const emojiResult = extractLeadingEmoji(text);
+      const rest = emojiResult.rest.trim();
+
+      const colonIdx = rest.indexOf(':');
+      let label = rest;
+      let metricsText = '';
+      if (colonIdx > 0) {
+        label = rest.substring(0, colonIdx).trim();
+        metricsText = rest.substring(colonIdx + 1).trim();
+      }
+
+      // Try to parse "X m/s vs Y m/s (Z× ratio)" format
+      const vsMatch = metricsText.match(/([\d.]+)\s*(\S+)\s+vs\s+([\d.]+)\s*(\S+)\s*\(([\d.]+)×\s*ratio\)/);
+
+      if (vsMatch) {
+        const [, activeVal, activeUnit, recoveryVal, recoveryUnit, ratio] = vsMatch;
+        return `<div class="interval-insight-card" style="animation-delay:${delay}s">
+          <div class="insight-card-header">
+            <span class="interval-emoji">${emojiResult.emoji}</span>
+            <span>${escapeHtml(label)}</span>
+          </div>
+          <div class="insight-comparison">
+            <div class="insight-comparison-value active">
+              <span class="value">${escapeHtml(activeVal)} ${escapeHtml(activeUnit)}</span>
+              <span class="label">Active</span>
+            </div>
+            <span class="insight-vs-divider">vs</span>
+            <div class="insight-comparison-value recovery">
+              <span class="value">${escapeHtml(recoveryVal)} ${escapeHtml(recoveryUnit)}</span>
+              <span class="label">Recovery</span>
+            </div>
+            <span class="insight-ratio-badge">${escapeHtml(ratio)}× ratio</span>
+          </div>
+        </div>`;
+      }
+
+      // Fallback: render as generic insight with pills
+      return renderIntervalInsightFallback(emojiResult.emoji, label, metricsText, delay);
+    }
+
+    /**
+     * Render Getting faster/slower trend card.
+     * Input: "📈 Getting faster: 3:43 → 3:26/km (-7%)"
+     * Renders: pace values with arrow, percentage badge, and mini bar chart
+     */
+    function renderIntervalTrendCard(text, delay) {
+      const emojiResult = extractLeadingEmoji(text);
+      const rest = emojiResult.rest.trim();
+
+      const colonIdx = rest.indexOf(':');
+      let label = rest;
+      let metricsText = '';
+      if (colonIdx > 0) {
+        label = rest.substring(0, colonIdx).trim();
+        metricsText = rest.substring(colonIdx + 1).trim();
+      }
+
+      // Parse "3:43 → 3:26/km (-7%)" format
+      const trendMatch = metricsText.match(/([\d:]+)\s*→\s*([\d:]+)\s*(\/\w+)?\s*\(([+-]?[\d.]+)%\)/);
+      const isFaster = /faster/i.test(label);
+      const trendClass = isFaster ? 'faster' : 'slower';
+
+      if (trendMatch) {
+        const [, fromPace, toPace, unit, pctStr] = trendMatch;
+        const pct = parseFloat(pctStr);
+        const displayUnit = unit || '';
+
+        // Convert paces to seconds for bar chart proportions
+        const paceToSecs = (p) => {
+          const parts = p.split(':');
+          return parseInt(parts[0]) * 60 + parseInt(parts[1] || 0);
+        };
+        const fromSecs = paceToSecs(fromPace);
+        const toSecs = paceToSecs(toPace);
+        const maxSecs = Math.max(fromSecs, toSecs);
+        const fromPct = maxSecs > 0 ? (fromSecs / maxSecs) * 100 : 50;
+        const toPct = maxSecs > 0 ? (toSecs / maxSecs) * 100 : 50;
+
+        const arrowIcon = isFaster ? '↗' : '↘';
+
+        return `<div class="interval-insight-card" style="animation-delay:${delay}s">
+          <div class="insight-card-header">
+            <span class="interval-emoji">${emojiResult.emoji}</span>
+            <span>${escapeHtml(label)}</span>
+          </div>
+          <div class="insight-trend">
+            <div class="insight-trend-chart">
+              <div class="insight-trend-bar ${isFaster ? 'slower' : 'neutral'}" style="height:${fromPct}%">
+                <span class="bar-label">${escapeHtml(fromPace)}</span>
+              </div>
+              <div class="insight-trend-bar ${trendClass}" style="height:${toPct}%">
+                <span class="bar-label">${escapeHtml(toPace)}</span>
+              </div>
+            </div>
+            <div class="insight-trend-arrow">
+              <span class="arrow ${trendClass}">${arrowIcon}</span>
+            </div>
+            <span class="insight-trend-pct ${trendClass}">${pct > 0 ? '+' : ''}${pct}%</span>
+            <div class="insight-trend-values">
+              <span class="from">${escapeHtml(fromPace)}</span>
+              <span class="arrow-text">→</span>
+              <span class="to">${escapeHtml(toPace)}${escapeHtml(displayUnit)}</span>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      // Fallback: render as generic insight with pills
+      return renderIntervalInsightFallback(emojiResult.emoji, label, metricsText, delay);
+    }
+
+    /**
+     * Fallback insight renderer for unrecognized formats.
+     */
+    function renderIntervalInsightFallback(emoji, label, metricsText, delay) {
+      let metricsHtml = '';
+      if (metricsText) {
+        const parts = metricsText.split('•').map(p => p.trim()).filter(Boolean);
+        metricsHtml = `<div class="interval-insight-metrics">
+          ${parts.map(p => `<span class="interval-insight-metric">${escapeHtml(p)}</span>`).join('')}
+        </div>`;
+      }
+
+      return `<div class="interval-row insight" style="animation-delay:${delay}s">
+        <span class="interval-emoji">${emoji}</span>
+        <span class="interval-label">${escapeHtml(label)}</span>
+        ${metricsHtml}
+      </div>`;
+    }
+
+    /**
+     * Render a generic interval row (fallback).
+     */
+    function renderIntervalGenericRow(text, delay) {
+      const emojiResult = extractLeadingEmoji(text);
+      const rest = emojiResult.rest.trim();
+
+      return `<div class="interval-row" style="animation-delay:${delay}s">
+        <span class="interval-emoji">${emojiResult.emoji}</span>
+        <span class="interval-label">${escapeHtml(rest)}</span>
+      </div>`;
+    }
+
+    /**
+     * Parse stats from a • separated or comma-separated string into pill HTML.
+     * Handles patterns like "5:00 • 5:47/km • 862m (124bpm)" and "avg 3:43/km, peak 170bpm"
+     */
+    function parseIntervalStatPills(text) {
+      // Split on • first, then try comma for "avg X, peak Y" style
+      let parts = text.split('•').map(p => p.trim()).filter(Boolean);
+      if (parts.length <= 1 && text.includes(',')) {
+        parts = text.split(',').map(p => p.trim()).filter(Boolean);
+      }
+
+      const pills = parts.map(part => {
+        // Classify the stat for coloring
+        let cls = '';
+        if (/\/km/.test(part)) cls = 'pace';
+        else if (/bpm/i.test(part)) cls = 'hr';
+        else if (/\d+\s*m\b/.test(part) || /\d+\.\d+\s*km/.test(part)) cls = 'dist';
+        else if (/^\d+:\d{2}$/.test(part.trim())) cls = 'time';
+
+        // Clean up: strip parentheses around HR values like "(124bpm)"
+        let display = part.replace(/^\(/, '').replace(/\)$/, '').trim();
+
+        return `<span class="interval-stat ${cls}">${escapeHtml(display)}</span>`;
+      }).join('');
+
+      return pills ? `<div class="interval-stats">${pills}</div>` : '';
     }
 
     /**
@@ -3763,8 +5662,9 @@
           <div class="progress-section-body">
             <div class="progress-bar-container">
               <div class="progress-bar-fill" style="width:${Math.min(percentage, 100)}%">
-                <span class="progress-bar-label">${percentage}%${progressText ? ' — ' + escapeHtml(progressText) : ''}</span>
+                ${percentage >= 50 ? `<span class="progress-bar-label">${percentage}%${progressText ? ' — ' + escapeHtml(progressText) : ''}</span>` : ''}
               </div>
+              ${percentage < 50 ? `<span class="progress-bar-label outside" style="left:${Math.min(percentage, 100)}%;margin-left:8px">${percentage}%${progressText ? ' — ' + escapeHtml(progressText) : ''}</span>` : ''}
             </div>
             <div class="progress-details">${detailsHtml}</div>
           </div>
@@ -3836,8 +5736,9 @@
         if (mileMatch) milestone = { value: parseFloat(mileMatch[1].replace(',', '')), unit: mileMatch[2] };
         const remainMatch = trimmed.match(/([\d,.]+)\s*(km|mi|m)\s*to go/i);
         if (remainMatch) remaining = parseFloat(remainMatch[1].replace(',', ''));
-        const emoji = [...trimmed][0] || '📊';
-        const rest = trimmed.slice(emoji.length).trim();
+        const emojiResult = extractLeadingEmoji(trimmed);
+        const emoji = emojiResult.emoji || '📊';
+        const rest = emojiResult.rest.trim();
         details.push({ emoji, text: rest || trimmed });
       }
 
@@ -3847,8 +5748,9 @@
         progressHtml = `
           <div class="progress-bar-container">
             <div class="progress-bar-fill milestone" style="width:${pct}%">
-              <span class="progress-bar-label">${total.value} / ${milestone.value} ${total.unit}</span>
+              ${pct >= 50 ? `<span class="progress-bar-label">${total.value} / ${milestone.value} ${total.unit}</span>` : ''}
             </div>
+            ${pct < 50 ? `<span class="progress-bar-label outside" style="left:${pct}%;margin-left:8px">${total.value} / ${milestone.value} ${total.unit}</span>` : ''}
           </div>`;
       }
 
@@ -4067,12 +5969,16 @@
     }
 
     /**
-     * Render Workout Summary with headline stats + grouped exercise list.
+     * Render Workout Summary with headline stats + categorised exercise cards.
      */
     function renderWorkoutSummarySection(section, idx) {
       const lines = section.content.split('\n').filter(l => l.trim());
       let headlineStats = [];
+      let heaviestLine = '';
       const exercises = [];
+
+      const stretchNames = ['stretch', 'pigeon', 'yoga', 'foam roll', 'shoulder blade',
+        'cool down', 'cooldown', 'warm up', 'hip opener', 'child\'s pose'];
 
       for (const line of lines) {
         const trimmed = line.trim();
@@ -4081,10 +5987,14 @@
           headlineStats = trimmed.split(' • ').map(s => s.trim()).filter(Boolean);
           continue;
         }
+        // Heaviest line: "Heaviest: 10kg (Tall Kneeling Curls)"
+        if (trimmed.startsWith('Heaviest:') || trimmed.startsWith('• Heaviest:')) {
+          heaviestLine = trimmed.replace(/^•\s*/, '');
+          continue;
+        }
         // Exercise line: "• Bench Press: 3 × 100.0kg"
         if (trimmed.startsWith('•')) {
           const content = trimmed.slice(1).trim();
-          // Check for superset marker emoji (1️⃣, 2️⃣, etc.) or ⬜
           let superset = '';
           let exerciseContent = content;
           const supersetMatch = content.match(/^([1-9]️⃣|🔟|⬜)\s*(.+)$/);
@@ -4092,7 +6002,6 @@
             superset = supersetMatch[1];
             exerciseContent = supersetMatch[2];
           }
-          // Split name: sets
           const colonIdx = exerciseContent.indexOf(':');
           if (colonIdx > 0) {
             const name = exerciseContent.substring(0, colonIdx).trim();
@@ -4104,16 +6013,44 @@
         }
       }
 
+      // Categorise exercises
+      function categorise(ex) {
+        const lower = ex.name.toLowerCase();
+        const sets = ex.sets.toLowerCase();
+        // Check for stretches/warm-up by name first
+        if (stretchNames.some(s => lower.includes(s))) return 'stretch';
+        // Weighted: has ×kg or xkg
+        if (/×\s*[\d.]+\s*kg/i.test(sets) || /x\s*[\d.]+\s*kg/i.test(sets)) return 'weighted';
+        // Timed: has m:ss pattern like 0:47 or 2:00
+        if (/^\d+:\d{2}/.test(sets) || /\d+:\d{2}/.test(ex.sets)) return 'timed';
+        // Bodyweight reps
+        if (/\d+\s*reps/i.test(sets) || /^\d+$/.test(sets.trim())) return 'bodyweight';
+        return 'bodyweight';
+      }
+
+      const catIcons = {
+        weighted: '🏋️',
+        bodyweight: '💪',
+        timed: '⏱️',
+        stretch: '🧘'
+      };
+
       const statsHtml = headlineStats.map(s =>
         `<span class="stat-pill"><span class="stat-pill-value">${escapeHtml(s)}</span></span>`
       ).join('');
 
+      const heaviestHtml = heaviestLine
+        ? `<div class="workout-headline-callout">🏅 ${escapeHtml(heaviestLine)}</div>`
+        : '';
+
       const exercisesHtml = exercises.map((ex, i) => {
+        const cat = categorise(ex);
+        const icon = catIcons[cat];
         const delay = (idx * 0.1) + (i * 0.04);
-        return `<div class="workout-exercise-row" style="animation-delay:${delay}s">
-          ${ex.superset ? `<span class="workout-superset-marker">${ex.superset}</span>` : ''}
-          <span class="workout-exercise-name">${escapeHtml(ex.name)}</span>
-          <span class="workout-exercise-sets">${escapeHtml(ex.sets)}</span>
+        return `<div class="workout-exercise-card cat-${cat}" style="animation-delay:${delay}s">
+          <span class="workout-ex-icon">${icon}</span>
+          <span class="workout-ex-name">${escapeHtml(ex.name)}</span>
+          <span class="workout-ex-detail">${escapeHtml(ex.sets)}</span>
         </div>`;
       }).join('');
 
@@ -4122,18 +6059,20 @@
           <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
           <div class="workout-summary-body">
             ${statsHtml ? `<div class="workout-headline-stats">${statsHtml}</div>` : ''}
+            ${heaviestHtml}
             ${exercisesHtml ? `<div class="workout-exercises">${exercisesHtml}</div>` : ''}
           </div>
         </div>`;
     }
 
+
     /**
-     * Render AI Summary as pretty prose inside a styled card.
+     * Render AI Summary as pretty prose inside a magical shimmer card.
      */
     function renderAISummarySection(section, idx) {
       return `
-        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
-          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+        <div class="showcase-section glass-card description-section-card ai-summary-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header ai-summary-header"><h2>${section.emoji} ${section.title}</h2></div>
           <div class="ai-summary-prose">${escapeHtml(section.content)}</div>
         </div>`;
     }
@@ -4145,6 +6084,11 @@
      */
     function extractLeadingEmoji(text) {
       if (!text) return { emoji: '📝', rest: '' };
+      // Skip if first char is basic ASCII (digits, letters, punctuation) — not an emoji
+      const firstChar = text.charCodeAt(0);
+      if (firstChar < 0x200) {
+        return { emoji: '•', rest: text };
+      }
       // Match leading emoji: extended pictographic + optional modifiers/ZWJ sequences
       const emojiMatch = text.match(/^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F)(\u200D(\p{Emoji_Presentation}|\p{Emoji}\uFE0F))*/u);
       if (emojiMatch) {
@@ -4164,14 +6108,6 @@
     }
 
     // --- CHART MODAL ---
-
-    // Store chart configurations for re-rendering in modal
-    const chartConfigs = {};
-    let modalChart = null;
-
-    function storeChartConfig(key, config) {
-      chartConfigs[key] = config;
-    }
 
     function openChartModal(chartKey, title) {
       const modal = document.getElementById('chart-modal');

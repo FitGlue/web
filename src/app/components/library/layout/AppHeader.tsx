@@ -6,14 +6,6 @@ import { userAtom } from '../../../state/authState';
 import { getEffectiveTier, TIER_ATHLETE } from '../../../utils/tier';
 import './AppHeader.css';
 
-/** Convert a display name to a URL-safe slug (mirrors server-side slugify) */
-function slugify(s: string): string {
-    return s
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/[\s-]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-}
 
 export const AppHeader: React.FC = () => {
     const { user: profile, loading } = useUser();
@@ -56,7 +48,7 @@ export const AppHeader: React.FC = () => {
     };
 
     const isAthlete = profile && getEffectiveTier(profile) === TIER_ATHLETE;
-    const showcaseSlug = firebaseUser?.displayName ? slugify(firebaseUser.displayName) : '';
+
 
     return (
         <header className="app-header">
@@ -103,15 +95,15 @@ export const AppHeader: React.FC = () => {
                             <span className="app-header__dropdown-icon">📊</span>
                             Booster Data
                         </Link>
-                        {isAthlete && showcaseSlug && (
-                            <a
-                                href={`/u/${encodeURIComponent(showcaseSlug)}`}
+                        {isAthlete && (
+                            <Link
+                                to="/settings/showcase"
                                 className="app-header__dropdown-item"
                                 onClick={() => setShowMenu(false)}
                             >
-                                <span className="app-header__dropdown-icon">🔗</span>
-                                My Showcase
-                            </a>
+                                <span className="app-header__dropdown-icon">🌟</span>
+                                Manage Showcase
+                            </Link>
                         )}
                         {profile?.isAdmin && (
                             <Link

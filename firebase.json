@@ -65,6 +65,13 @@
         }
       },
       {
+        "source": "/api/showcase-management/**",
+        "run": {
+          "serviceId": "showcase-management-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/showcase/**",
         "run": {
           "serviceId": "showcase-handler",

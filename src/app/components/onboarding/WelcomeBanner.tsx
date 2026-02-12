@@ -7,6 +7,8 @@ interface WelcomeBannerProps {
     hasConnections?: boolean;
     hasPipelines?: boolean;
     hasSyncs?: boolean;
+    isAthlete?: boolean;
+    hasShowcaseProfile?: boolean;
     onDismiss?: () => void;
 }
 
@@ -58,12 +60,31 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
     hasConnections = false,
     hasPipelines = false,
     hasSyncs = false,
+    isAthlete = false,
+    hasShowcaseProfile = false,
     onDismiss
 }) => {
     const navigate = useNavigate();
     const { canInstall, promptInstall } = usePWAInstall();
 
+    const allSteps: StepConfig[] = [...STEPS];
     const stepCompletion = [hasConnections, hasPipelines, hasSyncs];
+
+    if (isAthlete) {
+        allSteps.push({
+            number: 4,
+            title: 'Set up your Showcase',
+            completedTitle: 'Showcase profile ready',
+            description: 'Personalise your public athlete profile',
+            completedDescription: 'Your showcase profile is set up',
+            buttonText: 'Manage',
+            icon: '🏆',
+            route: '/settings/showcase',
+        });
+        stepCompletion.push(hasShowcaseProfile);
+    }
+
+    const stepCount = allSteps.length;
 
     return (
         <div className="welcome-banner">
@@ -74,7 +95,7 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
                         <h2>
                             Welcome to <span className="brand"><span className="fit">Fit</span><span className="glue">Glue</span></span>!
                         </h2>
-                        <p>Let&apos;s get you set up in 3 easy steps</p>
+                        <p>Let&apos;s get you set up in {stepCount} easy steps</p>
                     </div>
                 </div>
                 <div className="welcome-header-actions">
@@ -104,7 +125,7 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
             </div>
 
             <div className="onboarding-steps">
-                {STEPS.map((step, index) => {
+                {allSteps.map((step, index) => {
                     const isCompleted = stepCompletion[index];
                     return (
                         <button
