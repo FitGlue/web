@@ -1,0 +1,74 @@
+@import '../../tokens.css';
+
+/* Toggle switch container */
+.toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+}
+
+.toggle__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.toggle__label {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+}
+
+.toggle__description {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+/* Switch track */
+.toggle__switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.toggle__switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle__track {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-normal);
+}
+
+.toggle__track::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--color-text-primary);
+    border-radius: 50%;
+    transition: all var(--transition-normal);
+}
+
+.toggle__switch input:checked+.toggle__track {
+    background: var(--color-primary);
+}
+
+.toggle__switch input:checked+.toggle__track::before {
+    transform: translateX(20px);
+}
+
+.toggle__switch input:disabled+.toggle__track {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

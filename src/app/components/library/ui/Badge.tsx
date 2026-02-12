@@ -11,6 +11,8 @@ export interface BadgeProps {
   size?: BadgeSize;
   /** Optional icon before text */
   icon?: ReactNode;
+  /** Additional CSS class names */
+  className?: string;
   /** Badge content */
   children: ReactNode;
 }
@@ -23,12 +25,14 @@ export const Badge: React.FC<BadgeProps> = ({
   variant = 'default',
   size = 'md',
   icon,
+  className,
   children,
 }) => {
   const classes = [
     'ui-badge',
     `ui-badge--${variant}`,
     `ui-badge--${size}`,
+    className,
   ].filter(Boolean).join(' ');
 
   return (

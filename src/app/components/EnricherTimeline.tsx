@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { PluginManifest } from '../types/plugin';
 import { Stack } from './library/layout/Stack';
 import { Card } from './library/ui/Card';
+import { Badge } from './library/ui/Badge';
 import { Button } from './library/ui/Button';
 import { Paragraph } from './library/ui/Paragraph';
 import { PluginIcon } from './library/ui/PluginIcon';
@@ -27,16 +28,16 @@ interface Props {
  * Drag handle component with grip dots pattern
  */
 const DragHandle: React.FC = () => (
-    <div className="timeline-drag-handle" title="Drag to reorder">
-        <div className="timeline-drag-handle__dots">
-            <span className="timeline-drag-handle__dot" />
-            <span className="timeline-drag-handle__dot" />
-            <span className="timeline-drag-handle__dot" />
-            <span className="timeline-drag-handle__dot" />
-            <span className="timeline-drag-handle__dot" />
-            <span className="timeline-drag-handle__dot" />
-        </div>
-    </div>
+    <Stack className="timeline-drag-handle" title="Drag to reorder">
+        <Stack className="timeline-drag-handle__dots" direction="horizontal" gap="xs">
+            <Paragraph inline className="timeline-drag-handle__dot" />
+            <Paragraph inline className="timeline-drag-handle__dot" />
+            <Paragraph inline className="timeline-drag-handle__dot" />
+            <Paragraph inline className="timeline-drag-handle__dot" />
+            <Paragraph inline className="timeline-drag-handle__dot" />
+            <Paragraph inline className="timeline-drag-handle__dot" />
+        </Stack>
+    </Stack>
 );
 
 export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemove, onInfoClick, onConfigChange }) => {
@@ -122,13 +123,12 @@ export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemo
     return (
         <Card>
             <Stack gap="md">
-                <div className="enricher-timeline__header">
+                <Stack direction="horizontal" className="enricher-timeline__header" gap="xs" align="center">
                     <Paragraph inline>⚡</Paragraph>
-                    <span className="enricher-timeline__title">Pipeline Order</span>
-                    <span className="enricher-timeline__hint">Drag handle to reorder</span>
-                </div>
-                {/* Using div wrapper for touch events - Stack doesn't support event handlers */}
-                <div onTouchMove={handleTouchMove}>
+                    <Paragraph inline className="enricher-timeline__title">Pipeline Order</Paragraph>
+                    <Paragraph inline className="enricher-timeline__hint">Drag handle to reorder</Paragraph>
+                </Stack>
+                <Stack gap="none" onTouchMove={handleTouchMove}>
                     <Stack gap="xs">
                         {enrichers.map((e, i) => {
                             const nodeClasses = [
@@ -155,19 +155,19 @@ export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemo
                                     onTouchEnd={handleTouchEnd}
                                 >
                                     <Card variant={dragIndex === i || isExpanded ? 'elevated' : 'default'}>
-                                        <div className="timeline-node__content">
+                                        <Stack direction="horizontal" className="timeline-node__content" align="center" gap="sm">
                                             <DragHandle />
-                                            <div className="timeline-order-badge">{i + 1}</div>
-                                            <div className="timeline-plugin-info">
+                                            <Badge className="timeline-order-badge">{i + 1}</Badge>
+                                            <Stack direction="horizontal" className="timeline-plugin-info" align="center" gap="xs">
                                                 <PluginIcon
                                                     icon={e.manifest.icon}
                                                     iconType={e.manifest.iconType}
                                                     iconPath={e.manifest.iconPath}
                                                     size="small"
                                                 />
-                                                <span className="timeline-plugin-name">{e.manifest.name}</span>
-                                            </div>
-                                            <div className="timeline-actions">
+                                                <Paragraph inline className="timeline-plugin-name">{e.manifest.name}</Paragraph>
+                                            </Stack>
+                                            <Stack direction="horizontal" className="timeline-actions" gap="xs">
                                                 {showConfigButton && (
                                                     <Button
                                                         variant="text"
@@ -201,11 +201,11 @@ export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemo
                                                 >
                                                     ✕
                                                 </Button>
-                                            </div>
-                                        </div>
+                                            </Stack>
+                                        </Stack>
                                         {/* Expanded config form */}
                                         {isExpanded && onConfigChange && (
-                                            <div className="timeline-config-panel">
+                                            <Stack className="timeline-config-panel" gap="sm">
                                                 {e.manifest.id === 'logic-gate' ? (
                                                     <LogicGateConfigForm
                                                         initialValues={e.config}
@@ -218,14 +218,14 @@ export const EnricherTimeline: React.FC<Props> = ({ enrichers, onReorder, onRemo
                                                         onChange={(config) => onConfigChange(i, config)}
                                                     />
                                                 )}
-                                            </div>
+                                            </Stack>
                                         )}
                                     </Card>
                                 </div>
                             );
                         })}
                     </Stack>
-                </div>
+                </Stack>
             </Stack>
         </Card>
     );

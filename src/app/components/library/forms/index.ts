@@ -27,3 +27,6 @@ export { FileInput } from './FileInput';
 export type { FileInputProps } from './FileInput';
 
 export { Form } from './Form';
+
+export { Toggle } from './Toggle';
+export type { ToggleProps } from './Toggle';

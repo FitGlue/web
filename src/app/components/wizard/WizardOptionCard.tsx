@@ -1,6 +1,7 @@
 import React from 'react';
 import { Heading } from '../library/ui/Heading';
 import { Paragraph } from '../library/ui/Paragraph';
+import { Badge } from '../library/ui/Badge';
 import { Stack } from '../library/layout/Stack';
 import { Card } from '../library/ui/Card';
 import { PremiumBadge } from '../library/ui/PremiumBadge';
@@ -43,34 +44,34 @@ export const WizardOptionCard: React.FC<WizardOptionCardProps> = ({
     ].filter(Boolean).join(' ');
 
     return (
-        <div className={wrapperClasses} onClick={disabled ? undefined : onClick}>
-            <Card
-                variant={selected ? 'elevated' : 'default'}
-                highlighted={selected}
-            >
-                {/* Selection indicator in top-right corner */}
-                <div className={`wizard-selection-indicator ${indicatorClass} ${selected ? 'selected' : ''}`}>
-                    {selected && selectionMode === 'multi' && '✓'}
-                </div>
+        <Card
+            className={wrapperClasses}
+            onClick={disabled ? undefined : onClick}
+            variant={selected ? 'elevated' : 'default'}
+            highlighted={selected}
+        >
+            {/* Selection indicator in top-right corner */}
+            <Badge className={`wizard-selection-indicator ${indicatorClass} ${selected ? 'selected' : ''}`}>
+                {selected && selectionMode === 'multi' && '✓'}
+            </Badge>
 
-                <Stack gap="sm">
-                    {/* Icon row with badges */}
-                    <Stack direction="horizontal" align="center" gap="xs">
-                        <PluginIcon
-                            icon={icon}
-                            iconType={iconType}
-                            iconPath={iconPath}
-                            size="medium"
-                        />
-                        {isPremium && <PremiumBadge />}
-                        {hasConfig && <span className="wizard-config-badge">⚙️</span>}
-                    </Stack>
-
-                    {/* Title and description */}
-                    <Heading level={4}>{title}</Heading>
-                    {description && <Paragraph size="sm" muted>{description}</Paragraph>}
+            <Stack gap="sm">
+                {/* Icon row with badges */}
+                <Stack direction="horizontal" align="center" gap="xs">
+                    <PluginIcon
+                        icon={icon}
+                        iconType={iconType}
+                        iconPath={iconPath}
+                        size="medium"
+                    />
+                    {isPremium && <PremiumBadge />}
+                    {hasConfig && <Paragraph inline className="wizard-config-badge">⚙️</Paragraph>}
                 </Stack>
-            </Card>
-        </div>
+
+                {/* Title and description */}
+                <Heading level={4}>{title}</Heading>
+                {description && <Paragraph size="sm" muted>{description}</Paragraph>}
+            </Stack>
+        </Card>
     );
 };

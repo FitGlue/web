@@ -99,6 +99,10 @@ export { FlowVisualization } from './FlowVisualization';
 export { GlowCard } from './GlowCard';
 export { BoosterGrid } from './BoosterGrid';
 
+// SVG asset renderer
+export { SvgAsset } from './SvgAsset';
+export type { SvgAssetProps } from './SvgAsset';
+
 // Action cards
 export { ActionCard } from './ActionCard';
 
@@ -146,3 +150,7 @@ export type { Toast, ToastVariant, ToastContextValue } from './Toast';
 
 // Accordion
 export { AccordionTrigger } from './Accordion';
+
+// Link
+export { Link } from './Link';
+export type { LinkProps } from './Link';

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Stack } from '../library/layout/Stack';
 import { Paragraph } from '../library/ui/Paragraph';
+import { Button } from '../library/ui/Button';
 import { PluginIcon } from '../library/ui/PluginIcon';
 import './EnricherConfigTabs.css';
 
@@ -27,14 +28,16 @@ export const EnricherConfigTabs: React.FC<EnricherConfigTabsProps> = ({
     onTabClick,
 }) => {
     return (
-        <div className="enricher-config-tabs">
+        <Stack direction="horizontal" className="enricher-config-tabs">
             {tabs.map((tab) => {
                 const isActive = tab.id === activeTabId;
                 return (
-                    <button
+                    <Button
                         key={tab.id}
                         className={`enricher-config-tabs__tab ${isActive ? 'enricher-config-tabs__tab--active' : ''}`}
                         onClick={() => onTabClick(tab.id)}
+                        variant="text"
+                        size="small"
                     >
                         <Stack direction="horizontal" gap="xs" align="center">
                             <PluginIcon
@@ -45,9 +48,9 @@ export const EnricherConfigTabs: React.FC<EnricherConfigTabsProps> = ({
                             />
                             <Paragraph inline size="sm">{tab.name}</Paragraph>
                         </Stack>
-                    </button>
+                    </Button>
                 );
             })}
-        </div>
+        </Stack>
     );
 };

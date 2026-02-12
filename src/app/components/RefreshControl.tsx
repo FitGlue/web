@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Button } from './library/ui/Button';
+import { Paragraph } from './library/ui/Paragraph';
 import './RefreshControl.css';
 
 interface RefreshControlProps {
@@ -47,11 +49,13 @@ export const RefreshControl: React.FC<RefreshControlProps> = ({ onRefresh, lastU
   }, [lastUpdated]);
 
   return (
-    <button
+    <Button
       className={`refresh-control ${loading ? 'refresh-control--loading' : ''}`}
       onClick={!loading ? onRefresh : undefined}
       disabled={loading}
       title="Click to refresh"
+      variant="text"
+      size="small"
     >
       <svg
         className="refresh-control__icon"
@@ -69,9 +73,9 @@ export const RefreshControl: React.FC<RefreshControlProps> = ({ onRefresh, lastU
         <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
         <path d="M21 21v-5h-5" />
       </svg>
-      <span className="refresh-control__text">
+      <Paragraph inline className="refresh-control__text">
         {loading ? 'Updating...' : (lastUpdated ? `Updated ${timeAgo}` : 'Update Now')}
-      </span>
-    </button>
+      </Paragraph>
+    </Button>
   );
 };

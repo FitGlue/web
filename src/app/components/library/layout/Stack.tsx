@@ -3,7 +3,7 @@ import './Stack.css';
 
 export type StackDirection = 'vertical' | 'horizontal';
 export type StackGap = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type StackAlign = 'start' | 'center' | 'end' | 'stretch';
+export type StackAlign = 'start' | 'center' | 'end' | 'stretch' | 'baseline';
 export type StackJustify = 'start' | 'center' | 'end' | 'between' | 'around';
 
 export interface StackProps {
@@ -21,8 +21,20 @@ export interface StackProps {
   fullWidth?: boolean;
   /** Responsive: horizontal becomes vertical on mobile */
   responsive?: boolean;
+  /** Additional CSS class names */
+  className?: string;
+  /** Inline style overrides */
+  style?: React.CSSProperties;
+  /** Title attribute */
+  title?: string;
+  /** ARIA role */
+  role?: string;
+  /** ARIA label */
+  'aria-label'?: string;
+  /** Touch move handler (for drag interactions) */
+  onTouchMove?: (e: React.TouchEvent<HTMLDivElement>) => void;
   /** Child content */
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 /**
@@ -37,6 +49,12 @@ export const Stack: React.FC<StackProps> = ({
   wrap = false,
   fullWidth = false,
   responsive = false,
+  className,
+  style,
+  title,
+  role,
+  'aria-label': ariaLabel,
+  onTouchMove,
   children,
 }) => {
   const classes = [
@@ -48,7 +66,8 @@ export const Stack: React.FC<StackProps> = ({
     wrap && 'ui-stack--wrap',
     fullWidth && 'ui-stack--full-width',
     responsive && 'ui-stack--responsive',
+    className,
   ].filter(Boolean).join(' ');
 
-  return <div className={classes}>{children}</div>;
+  return <div className={classes} style={style} title={title} role={role} aria-label={ariaLabel} onTouchMove={onTouchMove}>{children}</div>;
 };

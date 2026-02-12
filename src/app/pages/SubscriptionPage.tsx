@@ -110,75 +110,78 @@ const SubscriptionPage: React.FC = () => {
                     )}
 
                     {/* Premium Athlete Card */}
-                    <div className="subscription-athlete-card">
-                        <div className="subscription-athlete-card__header">
-                            <h2>✨ ATHLETE</h2>
+                    <Card className="subscription-athlete-card">
+                        <Stack className="subscription-athlete-card__header" direction="horizontal" align="center" justify="between">
+                            <Heading level={2}>✨ ATHLETE</Heading>
                             {user?.isAdmin ? (
-                                <div className="subscription-admin-badge">
+                                <Badge className="subscription-admin-badge">
                                     🛡️ Admin Access
-                                </div>
+                                </Badge>
                             ) : (
-                                <div className="subscription-athlete-card__price">
-                                    £5<span className="subscription-athlete-card__price-period">/month</span>
-                                </div>
+                                <Stack className="subscription-athlete-card__price" direction="horizontal" align="baseline">
+                                    <Paragraph inline>£5</Paragraph>
+                                    <Paragraph inline className="subscription-athlete-card__price-period">/month</Paragraph>
+                                </Stack>
                             )}
-                        </div>
-                        <div className="subscription-athlete-card__content">
+                        </Stack>
+                        <Stack className="subscription-athlete-card__content" gap="md">
                             {/* Feature Grid */}
-                            <Stack gap="md">
-                                <Heading level={4}>Your Athlete Benefits</Heading>
-                                <div className="subscription-features-grid">
-                                    {ATHLETE_FEATURES.map((feature) => (
-                                        <div key={feature.title} className="subscription-feature-card">
-                                            <span className="subscription-feature-card__icon">{feature.icon}</span>
-                                            <div className="subscription-feature-card__content">
-                                                <div className="subscription-feature-card__title">{feature.title}</div>
-                                                <div className="subscription-feature-card__desc">{feature.desc}</div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                            <Heading level={4}>Your Athlete Benefits</Heading>
+                            <Stack className="subscription-features-grid" gap="sm">
+                                {ATHLETE_FEATURES.map((feature) => (
+                                    <Card key={feature.title} className="subscription-feature-card">
+                                        <Stack direction="horizontal" gap="sm" align="center">
+                                            <Paragraph inline className="subscription-feature-card__icon">{feature.icon}</Paragraph>
+                                            <Stack className="subscription-feature-card__content" gap="xs">
+                                                <Paragraph className="subscription-feature-card__title">{feature.title}</Paragraph>
+                                                <Paragraph className="subscription-feature-card__desc" muted size="sm">{feature.desc}</Paragraph>
+                                            </Stack>
+                                        </Stack>
+                                    </Card>
+                                ))}
                             </Stack>
-                        </div>
-                    </div>
+                        </Stack>
+                    </Card>
 
                     {/* Trial Countdown - Only for trial users */}
                     {isOnTrial && (
                         <Card>
-                            <div className="subscription-countdown">
-                                <div
+                            <Stack className="subscription-countdown" align="center" gap="md">
+                                <Stack
                                     className="subscription-countdown__ring"
                                     style={{ '--countdown-progress': `${countdownProgress}%` } as React.CSSProperties}
+                                    align="center"
+                                    justify="center"
                                 >
-                                    <div className="subscription-countdown__ring-bg" />
-                                    <span className="subscription-countdown__days">{trialDaysRemaining}</span>
-                                </div>
-                                <div className="subscription-countdown__label">
+                                    <Stack className="subscription-countdown__ring-bg" />
+                                    <Paragraph inline className="subscription-countdown__days">{trialDaysRemaining}</Paragraph>
+                                </Stack>
+                                <Paragraph className="subscription-countdown__label">
                                     day{trialDaysRemaining !== 1 ? 's' : ''} remaining in your trial
-                                </div>
+                                </Paragraph>
                                 {trialDaysRemaining <= 7 && (
-                                    <div className="subscription-countdown__urgency">
+                                    <Paragraph className="subscription-countdown__urgency">
                                         ⚠️ Less than a week left!
-                                    </div>
+                                    </Paragraph>
                                 )}
-                            </div>
+                            </Stack>
 
                             {/* What You'll Lose Section */}
-                            <div className="subscription-lose-section">
-                                <div className="subscription-lose-section__title">
+                            <Stack className="subscription-lose-section" gap="sm">
+                                <Paragraph className="subscription-lose-section__title">
                                     ⚠️ What you&apos;ll lose when your trial ends
-                                </div>
+                                </Paragraph>
                                 {DOWNGRADE_ITEMS.map((item) => (
-                                    <div key={item.from} className="subscription-lose-item">
-                                        <span className="subscription-lose-item__icon">✕</span>
-                                        <span className="subscription-lose-item__from">{item.from}</span>
-                                        <span className="subscription-lose-item__arrow">→</span>
-                                        <span className="subscription-lose-item__to">{item.to}</span>
-                                    </div>
+                                    <Stack key={item.from} className="subscription-lose-item" direction="horizontal" gap="sm" align="center">
+                                        <Paragraph inline className="subscription-lose-item__icon">✕</Paragraph>
+                                        <Paragraph inline className="subscription-lose-item__from">{item.from}</Paragraph>
+                                        <Paragraph inline className="subscription-lose-item__arrow">→</Paragraph>
+                                        <Paragraph inline className="subscription-lose-item__to">{item.to}</Paragraph>
+                                    </Stack>
                                 ))}
-                            </div>
+                            </Stack>
 
-                            <div className="subscription-cta-wrapper">
+                            <Stack className="subscription-cta-wrapper" align="center">
                                 <Button
                                     variant="primary"
                                     onClick={handleCheckout}
@@ -187,20 +190,20 @@ const SubscriptionPage: React.FC = () => {
                                 >
                                     {processing ? 'Processing...' : 'Subscribe Now - Keep Your Athlete Features'}
                                 </Button>
-                            </div>
+                            </Stack>
                         </Card>
                     )}
 
                     {/* Trial Expired Warning */}
                     {trialExpired && (
-                        <div className="subscription-lose-section">
-                            <div className="subscription-lose-section__title">
+                        <Stack className="subscription-lose-section" gap="md">
+                            <Paragraph className="subscription-lose-section__title">
                                 ⚠️ Your Trial Has Ended
-                            </div>
+                            </Paragraph>
                             <Paragraph>
                                 Subscribe now to restore your unlimited features and keep your Athlete benefits.
                             </Paragraph>
-                            <div className="subscription-cta-wrapper">
+                            <Stack className="subscription-cta-wrapper" align="center">
                                 <Button
                                     variant="primary"
                                     onClick={handleCheckout}
@@ -209,8 +212,8 @@ const SubscriptionPage: React.FC = () => {
                                 >
                                     {processing ? 'Processing...' : 'Subscribe to Athlete - £5/month'}
                                 </Button>
-                            </div>
-                        </div>
+                            </Stack>
+                        </Stack>
                     )}
 
                     {/* Billing Portal for Paid Users */}
@@ -251,60 +254,62 @@ const SubscriptionPage: React.FC = () => {
                 )}
 
                 {/* Hero Section */}
-                <div className="subscription-hero">
-                    <h1 className="subscription-hero__title">Unlock Your Full Potential</h1>
-                    <p className="subscription-hero__subtitle">
+                <Stack className="subscription-hero" align="center" gap="sm">
+                    <Heading level={1} className="subscription-hero__title">Unlock Your Full Potential</Heading>
+                    <Paragraph className="subscription-hero__subtitle">
                         Upgrade to Athlete and automate your fitness data without limits.
-                    </p>
-                </div>
+                    </Paragraph>
+                </Stack>
 
                 {/* Plan Comparison Grid */}
-                <div className="subscription-plans-grid">
+                <Stack className="subscription-plans-grid" direction="horizontal" gap="lg">
                     {/* Hobbyist Plan */}
-                    <div className="subscription-plan-card subscription-plan-card--current">
-                        <div className="subscription-plan-card__header">
+                    <Card className="subscription-plan-card subscription-plan-card--current">
+                        <Stack className="subscription-plan-card__header" gap="sm" align="center">
                             <Badge>Current Plan</Badge>
-                            <div className="subscription-plan-card__name">Hobbyist</div>
-                            <div className="subscription-plan-card__price">
-                                £0<span className="subscription-plan-card__period">/month</span>
-                            </div>
-                        </div>
-                        <ul className="subscription-plan-features">
+                            <Paragraph className="subscription-plan-card__name">Hobbyist</Paragraph>
+                            <Stack className="subscription-plan-card__price" direction="horizontal" align="baseline">
+                                <Paragraph inline>£0</Paragraph>
+                                <Paragraph inline className="subscription-plan-card__period">/month</Paragraph>
+                            </Stack>
+                        </Stack>
+                        <Stack className="subscription-plan-features" gap="sm">
                             {PLAN_FEATURES.map((feature) => (
-                                <li key={feature.name} className="subscription-plan-feature">
-                                    <span className={`subscription-plan-feature__icon--${feature.hobbyistIncluded ? 'included' : 'excluded'}`}>
+                                <Stack key={feature.name} className="subscription-plan-feature" direction="horizontal" gap="sm" align="center">
+                                    <Paragraph inline className={`subscription-plan-feature__icon--${feature.hobbyistIncluded ? 'included' : 'excluded'}`}>
                                         {feature.hobbyistIncluded ? '✓' : '○'}
-                                    </span>
-                                    <span className={feature.hobbyistIncluded ? '' : 'subscription-plan-feature__text--excluded'}>
+                                    </Paragraph>
+                                    <Paragraph inline className={feature.hobbyistIncluded ? '' : 'subscription-plan-feature__text--excluded'}>
                                         {feature.name}{feature.hobbyist && feature.hobbyistIncluded ? `: ${feature.hobbyist}` : ''}
-                                    </span>
-                                </li>
+                                    </Paragraph>
+                                </Stack>
                             ))}
-                        </ul>
+                        </Stack>
                         <Button variant="secondary" disabled>
                             Currently Active
                         </Button>
-                    </div>
+                    </Card>
 
                     {/* Athlete Plan */}
-                    <div className="subscription-plan-card subscription-plan-card--recommended">
-                        <div className="subscription-plan-card__header">
+                    <Card className="subscription-plan-card subscription-plan-card--recommended">
+                        <Stack className="subscription-plan-card__header" gap="sm" align="center">
                             <Badge variant="premium">✨ ATHLETE</Badge>
-                            <div className="subscription-plan-card__name">Athlete</div>
-                            <div className="subscription-plan-card__price">
-                                £5<span className="subscription-plan-card__period">/month</span>
-                            </div>
-                        </div>
-                        <ul className="subscription-plan-features">
+                            <Paragraph className="subscription-plan-card__name">Athlete</Paragraph>
+                            <Stack className="subscription-plan-card__price" direction="horizontal" align="baseline">
+                                <Paragraph inline>£5</Paragraph>
+                                <Paragraph inline className="subscription-plan-card__period">/month</Paragraph>
+                            </Stack>
+                        </Stack>
+                        <Stack className="subscription-plan-features" gap="sm">
                             {PLAN_FEATURES.map((feature) => (
-                                <li key={feature.name} className="subscription-plan-feature">
-                                    <span className="subscription-plan-feature__icon--included">✓</span>
-                                    <span>
+                                <Stack key={feature.name} className="subscription-plan-feature" direction="horizontal" gap="sm" align="center">
+                                    <Paragraph inline className="subscription-plan-feature__icon--included">✓</Paragraph>
+                                    <Paragraph inline>
                                         {feature.name}{feature.athlete !== '✓' ? `: ${feature.athlete}` : ''}
-                                    </span>
-                                </li>
+                                    </Paragraph>
+                                </Stack>
                             ))}
-                        </ul>
+                        </Stack>
                         <Button
                             variant="primary"
                             onClick={handleCheckout}
@@ -313,8 +318,8 @@ const SubscriptionPage: React.FC = () => {
                         >
                             {processing ? 'Connecting to Stripe...' : 'Upgrade to Athlete'}
                         </Button>
-                    </div>
-                </div>
+                    </Card>
+                </Stack>
 
                 {/* Value Proposition */}
                 <Card>

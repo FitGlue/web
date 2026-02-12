@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Stack } from '../library/layout';
+import { Card, Heading, Paragraph, Button, Badge } from '../library/ui';
 import { usePWAInstall } from '../../hooks/usePWAInstall';
 import './WelcomeBanner.css';
 
@@ -87,21 +89,23 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
     const stepCount = allSteps.length;
 
     return (
-        <div className="welcome-banner">
-            <div className="welcome-header">
-                <div className="welcome-header-content">
-                    <span className="welcome-icon">👋</span>
-                    <div className="welcome-text">
-                        <h2>
-                            Welcome to <span className="brand"><span className="fit">Fit</span><span className="glue">Glue</span></span>!
-                        </h2>
-                        <p>Let&apos;s get you set up in {stepCount} easy steps</p>
-                    </div>
-                </div>
-                <div className="welcome-header-actions">
+        <Card className="welcome-banner">
+            <Stack className="welcome-header" direction="horizontal" align="center" justify="between">
+                <Stack className="welcome-header-content" direction="horizontal" align="center" gap="sm">
+                    <Paragraph inline className="welcome-icon">👋</Paragraph>
+                    <Stack className="welcome-text" gap="xs">
+                        <Heading level={2}>
+                            Welcome to <Paragraph inline className="brand"><Paragraph inline className="fit">Fit</Paragraph><Paragraph inline className="glue">Glue</Paragraph></Paragraph>!
+                        </Heading>
+                        <Paragraph>Let&apos;s get you set up in {stepCount} easy steps</Paragraph>
+                    </Stack>
+                </Stack>
+                <Stack className="welcome-header-actions" direction="horizontal" gap="xs">
                     {canInstall && (
-                        <button
+                        <Button
                             className="install-app-btn"
+                            variant="secondary"
+                            size="small"
                             onClick={promptInstall}
                         >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -110,57 +114,60 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
                                 <line x1="12" y1="15" x2="12" y2="3" />
                             </svg>
                             Install App
-                        </button>
+                        </Button>
                     )}
                     {onDismiss && (
-                        <button
+                        <Button
                             className="dismiss-btn"
+                            variant="text"
+                            size="small"
                             onClick={onDismiss}
                             aria-label="Dismiss"
                         >
                             ✕
-                        </button>
+                        </Button>
                     )}
-                </div>
-            </div>
+                </Stack>
+            </Stack>
 
-            <div className="onboarding-steps">
+            <Stack className="onboarding-steps" gap="sm">
                 {allSteps.map((step, index) => {
                     const isCompleted = stepCompletion[index];
                     return (
-                        <button
+                        <Button
                             key={step.number}
                             className={`step-card ${isCompleted ? 'completed' : ''}`}
                             style={{ '--step-index': index } as React.CSSProperties}
                             onClick={!isCompleted ? () => navigate(step.route) : undefined}
                             disabled={isCompleted}
+                            variant="text"
                         >
-                            <div className={`step-number ${isCompleted ? 'completed' : ''}`}>
+                            <Badge className={`step-number ${isCompleted ? 'completed' : ''}`}>
                                 {isCompleted ? '✓' : step.number}
-                            </div>
-                            <div className="step-content">
-                                <span className="step-icon">{step.icon}</span>
-                                <div className="step-info">
-                                    <h4>{isCompleted ? step.completedTitle : step.title}</h4>
-                                    <p>{isCompleted ? step.completedDescription : step.description}</p>
-                                </div>
-                            </div>
-                            <div className="step-action">
+                            </Badge>
+                            <Stack className="step-content" direction="horizontal" gap="sm" align="center">
+                                <Paragraph inline className="step-icon">{step.icon}</Paragraph>
+                                <Stack className="step-info" gap="xs">
+                                    <Heading level={4}>{isCompleted ? step.completedTitle : step.title}</Heading>
+                                    <Paragraph>{isCompleted ? step.completedDescription : step.description}</Paragraph>
+                                </Stack>
+                            </Stack>
+                            <Stack className="step-action">
                                 {isCompleted ? (
-                                    <span className="step-complete-badge">Done</span>
+                                    <Badge className="step-complete-badge">Done</Badge>
                                 ) : (
-                                    <span className="step-cta">
+                                    <Paragraph inline className="step-cta">
                                         {step.buttonText}
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M5 12h14M12 5l7 7-7 7" />
                                         </svg>
-                                    </span>
+                                    </Paragraph>
                                 )}
-                            </div>
-                        </button>
+                            </Stack>
+                        </Button>
                     );
                 })}
-            </div>
-        </div>
+            </Stack>
+        </Card>
     );
 };

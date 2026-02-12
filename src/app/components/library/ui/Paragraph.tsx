@@ -16,8 +16,12 @@ export interface ParagraphProps {
   inline?: boolean;
   /** Prevent text from wrapping */
   nowrap?: boolean;
+  /** Additional CSS class names */
+  className?: string;
+  /** Inline style overrides */
+  style?: React.CSSProperties;
   /** Child content */
-  children: ReactNode;
+  children?: React.ReactNode;
 }
 
 /**
@@ -31,6 +35,8 @@ export const Paragraph: React.FC<ParagraphProps> = ({
   bold = false,
   inline = false,
   nowrap = false,
+  className,
+  style,
   children,
 }) => {
   const Tag = inline ? 'span' : 'p';
@@ -42,9 +48,10 @@ export const Paragraph: React.FC<ParagraphProps> = ({
     centered && 'ui-paragraph--centered',
     bold && 'ui-paragraph--bold',
     nowrap && 'ui-paragraph--nowrap',
+    className,
   ].filter(Boolean).join(' ');
 
-  return <Tag className={classes}>{children}</Tag>;
+  return <Tag className={classes} style={style}>{children}</Tag>;
 };
 
 // Convenience alias for inline text

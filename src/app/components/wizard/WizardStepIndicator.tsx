@@ -1,4 +1,7 @@
 import React from 'react';
+import { Stack } from '../library/layout/Stack';
+import { Badge } from '../library/ui/Badge';
+import { Paragraph } from '../library/ui/Paragraph';
 import './WizardStepIndicator.css';
 
 export interface WizardStep {
@@ -20,7 +23,7 @@ export const WizardStepIndicator: React.FC<WizardStepIndicatorProps> = ({
     currentStepIndex,
 }) => {
     return (
-        <div className="wizard-step-indicator" role="navigation" aria-label="Wizard progress">
+        <Stack direction="horizontal" className="wizard-step-indicator" role="navigation" aria-label="Wizard progress">
             {steps.map((step, index) => {
                 const isCompleted = index < currentStepIndex;
                 const isCurrent = index === currentStepIndex;
@@ -28,19 +31,21 @@ export const WizardStepIndicator: React.FC<WizardStepIndicatorProps> = ({
                 const status = isCompleted ? 'completed' : isCurrent ? 'current' : 'upcoming';
 
                 return (
-                    <div
+                    <Stack
                         key={step.id}
                         className={`wizard-step ${status}`}
                         aria-current={isCurrent ? 'step' : undefined}
+                        align="center"
+                        gap="xs"
                     >
-                        <div className="wizard-step__circle">
+                        <Badge className="wizard-step__circle">
                             {isCompleted ? '✓' : index + 1}
-                        </div>
-                        <span className="wizard-step__label">{step.label}</span>
-                    </div>
+                        </Badge>
+                        <Paragraph inline className="wizard-step__label">{step.label}</Paragraph>
+                    </Stack>
                 );
             })}
-        </div>
+        </Stack>
     );
 };
 

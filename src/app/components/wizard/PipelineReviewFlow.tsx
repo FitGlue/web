@@ -3,6 +3,7 @@ import { Stack } from '../library/layout/Stack';
 import { Card } from '../library/ui/Card';
 import { Heading } from '../library/ui/Heading';
 import { Paragraph } from '../library/ui/Paragraph';
+import { Badge } from '../library/ui/Badge';
 import { PluginIcon } from '../library/ui/PluginIcon';
 import './PipelineReviewFlow.css';
 
@@ -47,11 +48,11 @@ export const PipelineReviewFlow: React.FC<PipelineReviewFlowProps> = ({
     destinations,
 }) => {
     return (
-        <div className="pipeline-review-flow">
+        <Stack className="pipeline-review-flow" gap="sm">
             {/* Source Card */}
             <Card>
                 <Stack direction="horizontal" align="center" gap="sm">
-                    <div className="pipeline-review-flow__step-badge">1</div>
+                    <Badge className="pipeline-review-flow__step-badge">1</Badge>
                     <Stack gap="xs">
                         <Paragraph muted size="sm">Source</Paragraph>
                         <Stack direction="horizontal" align="center" gap="xs">
@@ -70,75 +71,71 @@ export const PipelineReviewFlow: React.FC<PipelineReviewFlowProps> = ({
             </Card>
 
             {/* Arrow */}
-            <div className="pipeline-review-flow__arrow">↓</div>
+            <Paragraph inline className="pipeline-review-flow__arrow">↓</Paragraph>
 
             {/* Boosters Card */}
             {enrichers.length > 0 ? (
                 <Card>
                     <Stack direction="horizontal" align="start" gap="sm">
-                        <div className="pipeline-review-flow__step-badge">2</div>
-                        <div className="pipeline-review-flow__content">
-                            <Stack gap="sm">
-                                <Paragraph muted size="sm">Boosters ({enrichers.length})</Paragraph>
-                                {enrichers.map((e, index) => (
-                                    <div key={e.id} className="pipeline-review-flow__item">
-                                        <Stack direction="horizontal" align="center" gap="xs">
-                                            <span className="pipeline-review-flow__item-number">{index + 1}.</span>
-                                            <PluginIcon
-                                                icon={e.icon}
-                                                iconType={e.iconType}
-                                                iconPath={e.iconPath}
-                                                size="small"
-                                            />
-                                            <Paragraph inline>{e.name}</Paragraph>
+                        <Badge className="pipeline-review-flow__step-badge">2</Badge>
+                        <Stack className="pipeline-review-flow__content" gap="sm">
+                            <Paragraph muted size="sm">Boosters ({enrichers.length})</Paragraph>
+                            {enrichers.map((e, index) => (
+                                <Stack key={e.id} className="pipeline-review-flow__item" gap="xs">
+                                    <Stack direction="horizontal" align="center" gap="xs">
+                                        <Paragraph inline className="pipeline-review-flow__item-number">{index + 1}.</Paragraph>
+                                        <PluginIcon
+                                            icon={e.icon}
+                                            iconType={e.iconType}
+                                            iconPath={e.iconPath}
+                                            size="small"
+                                        />
+                                        <Paragraph inline>{e.name}</Paragraph>
+                                    </Stack>
+                                    {e.configSummary && e.configSummary.length > 0 && (
+                                        <Stack className="pipeline-review-flow__item-config" gap="xs">
+                                            {e.configSummary.map((summary, i) => (
+                                                <Paragraph key={i} size="sm" muted>{summary}</Paragraph>
+                                            ))}
                                         </Stack>
-                                        {e.configSummary && e.configSummary.length > 0 && (
-                                            <div className="pipeline-review-flow__item-config">
-                                                {e.configSummary.map((summary, i) => (
-                                                    <Paragraph key={i} size="sm" muted>{summary}</Paragraph>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </Stack>
-                        </div>
+                                    )}
+                                </Stack>
+                            ))}
+                        </Stack>
                     </Stack>
                 </Card>
             ) : (
                 <Card>
                     <Stack direction="horizontal" align="center" gap="sm">
-                        <div className="pipeline-review-flow__step-badge pipeline-review-flow__step-badge--muted">2</div>
+                        <Badge className="pipeline-review-flow__step-badge pipeline-review-flow__step-badge--muted">2</Badge>
                         <Paragraph muted>No boosters selected</Paragraph>
                     </Stack>
                 </Card>
             )}
 
             {/* Arrow */}
-            <div className="pipeline-review-flow__arrow">↓</div>
+            <Paragraph inline className="pipeline-review-flow__arrow">↓</Paragraph>
 
             {/* Destinations Card */}
             <Card>
                 <Stack direction="horizontal" align="start" gap="sm">
-                    <div className="pipeline-review-flow__step-badge">3</div>
-                    <div className="pipeline-review-flow__content">
-                        <Stack gap="sm">
-                            <Paragraph muted size="sm">Destinations ({destinations.length})</Paragraph>
-                            {destinations.map(d => (
-                                <Stack key={d.id} direction="horizontal" align="center" gap="xs">
-                                    <PluginIcon
-                                        icon={d.icon}
-                                        iconType={d.iconType}
-                                        iconPath={d.iconPath}
-                                        size="small"
-                                    />
-                                    <Paragraph inline>{d.name}</Paragraph>
-                                </Stack>
-                            ))}
-                        </Stack>
-                    </div>
+                    <Badge className="pipeline-review-flow__step-badge">3</Badge>
+                    <Stack className="pipeline-review-flow__content" gap="sm">
+                        <Paragraph muted size="sm">Destinations ({destinations.length})</Paragraph>
+                        {destinations.map(d => (
+                            <Stack key={d.id} direction="horizontal" align="center" gap="xs">
+                                <PluginIcon
+                                    icon={d.icon}
+                                    iconType={d.iconType}
+                                    iconPath={d.iconPath}
+                                    size="small"
+                                />
+                                <Paragraph inline>{d.name}</Paragraph>
+                            </Stack>
+                        ))}
+                    </Stack>
                 </Stack>
             </Card>
-        </div>
+        </Stack>
     );
 };

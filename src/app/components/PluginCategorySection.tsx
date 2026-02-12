@@ -43,81 +43,77 @@ export const PluginCategorySection: React.FC<PluginCategorySectionProps> = ({
   const boosterLabel = plugins.length === 1 ? 'booster' : 'boosters';
 
   return (
-    <div className="plugin-category-section">
+    <Stack className="plugin-category-section" gap="sm">
       {/* Enhanced category header */}
-      <button
+      <Button
         className="plugin-category-header"
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
-        type="button"
+        variant="text"
+        size="small"
       >
-        <span className="plugin-category-header__emoji">{category.emoji}</span>
-        <span className="plugin-category-header__name">{category.name}</span>
-        <span className="plugin-category-header__count">{plugins.length} {boosterLabel}</span>
-        <span className={`plugin-category-header__chevron ${expanded ? 'expanded' : ''}`}>
+        <Paragraph inline className="plugin-category-header__emoji">{category.emoji}</Paragraph>
+        <Paragraph inline className="plugin-category-header__name">{category.name}</Paragraph>
+        <Paragraph inline className="plugin-category-header__count">{plugins.length} {boosterLabel}</Paragraph>
+        <Paragraph inline className={`plugin-category-header__chevron ${expanded ? 'expanded' : ''}`}>
           ▼
-        </span>
-      </button>
+        </Paragraph>
+      </Button>
 
       {expanded && (
-        <div className="plugin-category-list">
-          <Stack gap="sm">
-            {plugins.map((plugin) => {
-              const isSelected = selectedIds.includes(plugin.id);
-              const isDisabled = disabledPlugins.has(plugin.id);
-              const disabledReason = getDisabledReason?.(plugin);
+        <Stack className="plugin-category-list" gap="sm">
+          {plugins.map((plugin) => {
+            const isSelected = selectedIds.includes(plugin.id);
+            const isDisabled = disabledPlugins.has(plugin.id);
+            const disabledReason = getDisabledReason?.(plugin);
 
-              return (
-                <div
-                  key={plugin.id}
-                  className={`plugin-category-item ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}`}
-                >
-                  <Card
-                    onClick={() => !isDisabled && onSelect(plugin)}
-                    variant={isSelected ? 'elevated' : 'default'}
-                  >
-                    <Stack gap="sm">
-                      <Stack direction="horizontal" gap="sm" align="center" justify="between">
-                        <Stack direction="horizontal" gap="sm" align="center">
-                          <PluginIcon
-                            icon={plugin.icon}
-                            iconType={plugin.iconType}
-                            iconPath={plugin.iconPath}
-                            size="medium"
-                          />
-                          {plugin.isPremium && <PremiumBadge />}
-                        </Stack>
-                        <Stack direction="horizontal" gap="sm" align="center">
-                          {isSelected && <Badge variant="success" size="sm">✓</Badge>}
-                          {onInfoClick && (
-                            <Button
-                              variant="text"
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onInfoClick(plugin);
-                              }}
-                              aria-label={`More info about ${plugin.name}`}
-                              type="button"
-                            >
-                              ⓘ
-                            </Button>
-                          )}
-                        </Stack>
-                      </Stack>
-                      <Heading level={4}>{plugin.name}</Heading>
-                      <Paragraph size="sm">{plugin.description}</Paragraph>
-                      {isDisabled && disabledReason && (
-                        <Paragraph size="sm" muted>{disabledReason}</Paragraph>
+            return (
+              <Card
+                key={plugin.id}
+                className={`plugin-category-item ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}`}
+                onClick={() => !isDisabled && onSelect(plugin)}
+                variant={isSelected ? 'elevated' : 'default'}
+              >
+                <Stack gap="sm">
+                  <Stack direction="horizontal" gap="sm" align="center" justify="between">
+                    <Stack direction="horizontal" gap="sm" align="center">
+                      <PluginIcon
+                        icon={plugin.icon}
+                        iconType={plugin.iconType}
+                        iconPath={plugin.iconPath}
+                        size="medium"
+                      />
+                      {plugin.isPremium && <PremiumBadge />}
+                    </Stack>
+                    <Stack direction="horizontal" gap="sm" align="center">
+                      {isSelected && <Badge variant="success" size="sm">✓</Badge>}
+                      {onInfoClick && (
+                        <Button
+                          variant="text"
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onInfoClick(plugin);
+                          }}
+                          aria-label={`More info about ${plugin.name}`}
+                          type="button"
+                        >
+                          ⓘ
+                        </Button>
                       )}
                     </Stack>
-                  </Card>
-                </div>
-              );
-            })}
-          </Stack>
-        </div>
+                  </Stack>
+                  <Heading level={4}>{plugin.name}</Heading>
+                  <Paragraph size="sm">{plugin.description}</Paragraph>
+                  {isDisabled && disabledReason && (
+                    <Paragraph size="sm" muted>{disabledReason}</Paragraph>
+                  )}
+                </Stack>
+              </Card>
+            );
+          })}
+        </Stack>
       )}
-    </div>
+    </Stack>
   );
 };

@@ -4,7 +4,7 @@ import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard, MultiRingSpinner, Button, useToast } from '../components/library/ui';
+import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard, MultiRingSpinner, Button, SvgAsset, useToast } from '../components/library/ui';
 import { FlowVisualization } from '../components/library/ui/FlowVisualization';
 import { BoosterGrid } from '../components/library/ui/BoosterGrid';
 import '../components/library/ui/CardSkeleton.css';
@@ -140,119 +140,7 @@ const formatAssetType = (type: string): string => {
     return typeMap[type] || type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 };
 
-const isSvgUrl = (url: string): boolean => {
-    try {
-        const urlObj = new URL(url);
-        const pathname = urlObj.pathname.toLowerCase();
-        return pathname.endsWith('.svg') || pathname.includes('.svg');
-    } catch {
-        return url.toLowerCase().includes('.svg');
-    }
-};
-
-const SvgAsset: React.FC<{ url: string; alt: string; className?: string }> = ({ url, alt, className }) => {
-    const [svgContent, setSvgContent] = React.useState<string | null>(null);
-    const [error, setError] = React.useState(false);
-    const [loading, setLoading] = React.useState(true);
-    const isThumbnail = className?.includes('asset-thumbnail');
-
-    React.useEffect(() => {
-        let cancelled = false;
-        setLoading(true);
-        setError(false);
-        setSvgContent(null);
-
-        fetch(url)
-            .then(res => {
-                if (!res.ok) throw new Error('Failed to fetch SVG');
-                return res.text();
-            })
-            .then(text => {
-                if (cancelled) return;
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(text, 'image/svg+xml');
-                const svgElement = doc.querySelector('svg');
-                if (svgElement) {
-                    // Set responsive dimensions
-                    svgElement.setAttribute('width', '100%');
-                    svgElement.setAttribute('height', '100%');
-                    svgElement.style.display = 'block';
-                    svgElement.setAttribute('aria-label', alt);
-                    svgElement.setAttribute('role', 'img');
-                    if (className) {
-                        svgElement.classList.add(...className.split(' '));
-                    }
-                    setSvgContent(svgElement.outerHTML);
-                } else {
-                    setError(true);
-                }
-            })
-            .catch(() => {
-                if (!cancelled) setError(true);
-            })
-            .finally(() => {
-                if (!cancelled) setLoading(false);
-            });
-
-        return () => { cancelled = true; };
-    }, [url, alt, className]);
-
-    // On error, fall back to img tag (works better with CORS)
-    if (error) {
-        const imgStyle = isThumbnail
-            ? { width: '100%', height: '100%', objectFit: 'cover' as const }
-            : { maxWidth: '100%', height: 'auto' };
-        return <img src={url} alt={alt} className={className} style={imgStyle} />;
-    }
-
-    // Show loading placeholder with visible dimensions
-    if (loading || !svgContent) {
-        const loadingStyle = isThumbnail
-            ? {
-                width: '100%',
-                height: '100%',
-                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'rgba(255, 255, 255, 0.5)',
-                fontSize: '12px'
-            }
-            : {
-                minWidth: '150px',
-                minHeight: '150px',
-                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%)',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'rgba(255, 255, 255, 0.5)',
-                fontSize: '12px'
-            };
-        return (
-            <div
-                className={className}
-                style={loadingStyle}
-                aria-label={`Loading ${alt}`}
-            >
-                <MultiRingSpinner size="sm" />
-            </div>
-        );
-    }
-
-    const renderStyle = isThumbnail
-        ? { width: '100%', height: '100%' }
-        : { width: '100%', maxWidth: '300px', height: 'auto', aspectRatio: '500 / 600' };
-
-    // eslint-disable-next-line react/no-danger
-    return (
-        <div
-            dangerouslySetInnerHTML={{ __html: svgContent }}
-            style={renderStyle}
-            className={className}
-        />
-    );
-};
+// SvgAsset is now imported from '../components/library/ui'
 
 // Remove unused getDestinationActivityType - we now get type directly from PipelineRun
 
@@ -463,14 +351,14 @@ const ActivityDetailPage: React.FC = () => {
             {pendingDestinations.map(dest => {
                 const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
                 return (
-                    <span key={dest.name} style={{ opacity: 0.5 }}>
+                    <Paragraph key={dest.name} inline style={{ opacity: 0.5 }}>
                         <Badge variant="default" size="sm">
                             <Stack direction="horizontal" gap="xs" align="center">
                                 <Paragraph inline>⏳</Paragraph>
                                 <Paragraph inline size="sm">{destInfo.name}</Paragraph>
                             </Stack>
                         </Badge>
-                    </span>
+                    </Paragraph>
                 );
             })}
             {/* FAILED destinations - error styling */}
@@ -543,7 +431,7 @@ const ActivityDetailPage: React.FC = () => {
                     <Stack gap="md">
                         {/* Description */}
                         {pipelineRun.description && (
-                            <Paragraph><span style={{ whiteSpace: 'pre-line' }}>{pipelineRun.description}</span></Paragraph>
+                            <Paragraph style={{ whiteSpace: 'pre-line' }}>{pipelineRun.description}</Paragraph>
                         )}
 
                         {/* Flow Visualization */}
@@ -644,7 +532,7 @@ const ActivityDetailPage: React.FC = () => {
 
                                             const cardHeader = (
                                                 <Stack direction="horizontal" align="center" gap="sm">
-                                                    <span style={{ fontSize: '1.5rem' }}>{destInfo.icon}</span>
+                                                    <Paragraph inline style={{ fontSize: '1.5rem' }}>{destInfo.icon}</Paragraph>
                                                     <Heading level={4}>{destInfo.name}</Heading>
                                                 </Stack>
                                             );
@@ -693,7 +581,7 @@ const ActivityDetailPage: React.FC = () => {
 
                                             const cardHeader = (
                                                 <Stack direction="horizontal" align="center" gap="sm">
-                                                    <span style={{ fontSize: '1.5rem', opacity: 0.6 }}>{destInfo.icon}</span>
+                                                    <Paragraph inline style={{ fontSize: '1.5rem', opacity: 0.6 }}>{destInfo.icon}</Paragraph>
                                                     <Heading level={4}>{destInfo.name}</Heading>
                                                 </Stack>
                                             );
@@ -729,7 +617,7 @@ const ActivityDetailPage: React.FC = () => {
 
                                             const cardHeader = (
                                                 <Stack direction="horizontal" align="center" gap="sm">
-                                                    <span style={{ fontSize: '1.5rem' }}>{destInfo.icon}</span>
+                                                    <Paragraph inline style={{ fontSize: '1.5rem' }}>{destInfo.icon}</Paragraph>
                                                     <Heading level={4}>{destInfo.name}</Heading>
                                                 </Stack>
                                             );
@@ -767,31 +655,20 @@ const ActivityDetailPage: React.FC = () => {
                             {generatedAssets.map((asset, idx) => (
                                 <Link key={idx} to={asset.url} external style={{ display: 'block' }}>
                                     <Stack gap="xs">
-                                        <div style={{
+                                        <Card style={{
                                             width: '100%',
                                             aspectRatio: '4 / 3',
                                             borderRadius: 'var(--radius-lg)',
                                             overflow: 'hidden',
                                             backgroundColor: 'var(--color-surface-elevated)',
+                                            padding: 0,
                                         }}>
-                                            {isSvgUrl(asset.url) ? (
-                                                <SvgAsset
-                                                    url={asset.url}
-                                                    alt={formatAssetType(asset.type)}
-                                                    className="asset-thumbnail"
-                                                />
-                                            ) : (
-                                                <img
-                                                    src={asset.url}
-                                                    alt={formatAssetType(asset.type)}
-                                                    style={{
-                                                        width: '100%',
-                                                        height: '100%',
-                                                        objectFit: 'cover',
-                                                    }}
-                                                />
-                                            )}
-                                        </div>
+                                            <SvgAsset
+                                                url={asset.url}
+                                                alt={formatAssetType(asset.type)}
+                                                className="asset-thumbnail"
+                                            />
+                                        </Card>
                                         <Paragraph size="sm" centered muted>
                                             {formatAssetType(asset.type)}
                                         </Paragraph>

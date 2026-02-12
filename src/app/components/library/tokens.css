@@ -40,13 +40,13 @@
      COLORS - Semantic
      ======================================== */
    --color-success: #10b981;
-   --color-success-bg: rgba(16, 185, 129, 0.15);
+   --color-success-bg: rgb(12, 40, 32);
    --color-warning: #f59e0b;
-   --color-warning-bg: rgba(245, 158, 11, 0.15);
+   --color-warning-bg: rgb(42, 32, 12);
    --color-error: #ef4444;
-   --color-error-bg: rgba(239, 68, 68, 0.15);
+   --color-error-bg: rgb(42, 16, 16);
    --color-info: #3b82f6;
-   --color-info-bg: rgba(59, 130, 246, 0.15);
+   --color-info-bg: rgb(14, 24, 42);
 
    /* ========================================
      SPACING SCALE

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout, Stack } from '../components/library/layout';
 import {
-    Button, Heading, Paragraph, CardSkeleton, Card, Badge, ConfirmDialog, useToast
+    Button, Heading, Paragraph, CardSkeleton, Card, Badge, Code, ConfirmDialog, useToast
 } from '../components/library/ui';
 import { PluginIcon } from '../components/library/ui/PluginIcon';
 import { useApi } from '../hooks/useApi';
@@ -195,7 +195,7 @@ const ConnectionDetailPage: React.FC = () => {
                                             {integration.apiKeyLabel || 'ID'}
                                         </Paragraph>
                                         <Paragraph>
-                                            <code>{status.externalUserId}</code>
+                                            <Code>{status.externalUserId}</Code>
                                         </Paragraph>
                                     </Stack>
                                     <Button
@@ -212,7 +212,7 @@ const ConnectionDetailPage: React.FC = () => {
                             {status?.additionalDetails && Object.entries(status.additionalDetails).map(([label, value]) => (
                                 <Stack gap="xs" key={label}>
                                     <Paragraph size="sm" muted>{label}</Paragraph>
-                                    <Paragraph><code>{value}</code></Paragraph>
+                                    <Paragraph><Code>{value}</Code></Paragraph>
                                 </Stack>
                             ))}
 
@@ -259,9 +259,9 @@ const ConnectionDetailPage: React.FC = () => {
                                             gap="md"
                                         >
                                             <Stack direction="horizontal" gap="md" align="center">
-                                                <span style={{ fontSize: '1.5rem' }}>
+                                                <Paragraph inline style={{ fontSize: '1.5rem' }}>
                                                     {action.icon}
-                                                </span>
+                                                </Paragraph>
                                                 <Stack gap="xs">
                                                     <Paragraph bold>{action.label}</Paragraph>
                                                     <Paragraph size="sm" muted>

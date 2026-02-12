@@ -58,6 +58,10 @@
   align-items: stretch;
 }
 
+.ui-stack--align-baseline {
+  align-items: baseline;
+}
+
 /* Justify (main-axis) */
 .ui-stack--justify-start {
   justify-content: flex-start;

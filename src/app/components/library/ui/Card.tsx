@@ -10,6 +10,10 @@ interface CardProps {
     highlighted?: boolean;
     /** Click handler - makes card interactive */
     onClick?: () => void;
+    /** Additional CSS class names */
+    className?: string;
+    /** Inline style overrides */
+    style?: React.CSSProperties;
     /** Card content */
     children: ReactNode;
     /** Optional footer content - renders with separator */
@@ -23,6 +27,8 @@ export const Card: React.FC<CardProps> = ({
     variant = 'default',
     highlighted = false,
     onClick,
+    className,
+    style,
     children,
     footer,
 }) => {
@@ -32,11 +38,13 @@ export const Card: React.FC<CardProps> = ({
         variant === 'premium' && 'card-premium',
         onClick && 'clickable',
         highlighted && 'card-highlighted',
+        className,
     ].filter(Boolean).join(' ');
 
     return (
         <div
             className={classes}
+            style={style}
             onClick={onClick}
             role={onClick ? 'button' : undefined}
             tabIndex={onClick ? 0 : undefined}

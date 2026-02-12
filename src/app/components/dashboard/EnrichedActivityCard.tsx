@@ -207,14 +207,14 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
             {pendingDestinations.map(dest => {
                 const destInfo = getDestinationInfo(dest.toLowerCase(), registryDestinations, dest);
                 return (
-                    <span key={dest} style={{ opacity: 0.5 }}>
+                    <Paragraph key={dest} inline style={{ opacity: 0.5 }}>
                         <Badge variant="default" size="sm">
                             <Stack direction="horizontal" gap="xs" align="center">
                                 <Paragraph inline>⏳</Paragraph>
                                 <Paragraph inline size="sm">{destInfo.name}</Paragraph>
                             </Stack>
                         </Badge>
-                    </span>
+                    </Paragraph>
                 );
             })}
             {/* FAILED destinations - error styling */}

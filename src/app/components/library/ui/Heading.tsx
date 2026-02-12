@@ -15,6 +15,8 @@ export interface HeadingProps {
   centered?: boolean;
   /** Gradient text (pink/purple brand) */
   gradient?: boolean;
+  /** Additional CSS class names */
+  className?: string;
   /** Child content */
   children: ReactNode;
 }
@@ -29,14 +31,15 @@ export const Heading: React.FC<HeadingProps> = ({
   muted = false,
   centered = false,
   gradient = false,
+  className,
   children,
 }) => {
   const effectiveSize = size || (
     level === 1 ? '2xl' :
-    level === 2 ? 'xl' :
-    level === 3 ? 'lg' :
-    level === 4 ? 'md' :
-    level === 5 ? 'sm' : 'xs'
+      level === 2 ? 'xl' :
+        level === 3 ? 'lg' :
+          level === 4 ? 'md' :
+            level === 5 ? 'sm' : 'xs'
   );
 
   const classes = [
@@ -45,6 +48,7 @@ export const Heading: React.FC<HeadingProps> = ({
     muted && 'ui-heading--muted',
     centered && 'ui-heading--centered',
     gradient && 'ui-heading--gradient',
+    className,
   ].filter(Boolean).join(' ');
 
   // Use explicit element rendering to avoid JSX type issues
