@@ -93,7 +93,7 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
 
     // Destination node(s) for FlowVisualization
     const destinationNode = pipeline.destinations.length > 0 ? (
-        <Stack direction="horizontal" gap="xs">
+        <Stack direction="horizontal" gap="xs" wrap>
             {pipeline.destinations.map((dest, i) => (
                 <Badge key={i} variant="destination" size="sm">
                     <Stack direction="horizontal" gap="xs" align="center">
