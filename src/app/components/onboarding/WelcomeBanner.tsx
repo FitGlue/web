@@ -95,7 +95,7 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
                     <Paragraph inline className="welcome-icon">👋</Paragraph>
                     <Stack className="welcome-text" gap="xs">
                         <Heading level={2}>
-                            Welcome to <Paragraph inline className="brand"><Paragraph inline className="fit">Fit</Paragraph><Paragraph inline className="glue">Glue</Paragraph></Paragraph>!
+                            Welcome to FitGlue!
                         </Heading>
                         <Paragraph>Let&apos;s get you set up in {stepCount} easy steps</Paragraph>
                     </Stack>

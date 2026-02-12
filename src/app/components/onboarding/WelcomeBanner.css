@@ -115,23 +115,7 @@
   color: var(--color-text);
 }
 
-.welcome-text h2 .brand {
-  display: inline-flex;
-  font-size: 2.5rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  position: relative;
-}
 
-.welcome-text h2 .fit {
-  color: #ff006e;
-  text-shadow: 0 0 30px rgba(255, 0, 110, 0.5);
-}
-
-.welcome-text h2 .glue {
-  color: #8338ec;
-  text-shadow: 0 0 30px rgba(131, 56, 236, 0.5);
-}
 
 .welcome-text p {
   margin: 0;
@@ -386,9 +370,6 @@
     font-size: 1.25rem;
   }
 
-  .welcome-text h2 .brand {
-    font-size: 1.75rem;
-  }
 
   .welcome-text p {
     font-size: 0.9rem;
