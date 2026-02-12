@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.20.0](https://github.com/fitglue/web/compare/v10.19.1...v10.20.0) (2026-02-12)
+
+
+### Features
+
+* **showcase:** add profile management, editable profiles, and enhanced showcase UI ([db160e5](https://github.com/fitglue/web/commit/db160e5fde43dacba188a126df6d307f20f1e716))
+
+
+### Bug Fixes
+
+* bare html ([bacf94f](https://github.com/fitglue/web/commit/bacf94fd24308e89d9dff41887eb7f26f7519f7b))
+* bare HTML violations ([202475d](https://github.com/fitglue/web/commit/202475dea5a612795f2a5264ab447f7835732e5d))
+* build lint etc ([c05cf29](https://github.com/fitglue/web/commit/c05cf292fd885af74bcd261ae37ab578e274bb47))
+* linting ([3c01b17](https://github.com/fitglue/web/commit/3c01b17fd2caccad589a49911229a4a010fe6a32))
+* targets overflowing pipeline card ([d41ea9a](https://github.com/fitglue/web/commit/d41ea9a42cd0cf51f4a5ea58c4a97bec357142a4))
+* welcome banner fitglue small size ([22f3000](https://github.com/fitglue/web/commit/22f3000afd2efffea8fa0a490d99adf086739215))
+
 ### [10.19.1](https://github.com/fitglue/web/compare/v10.19.0...v10.19.1) (2026-02-11)
 
 
