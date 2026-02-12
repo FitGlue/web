@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import './Paragraph.css';
 
 export type ParagraphSize = 'sm' | 'md' | 'lg';
