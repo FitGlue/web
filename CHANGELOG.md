@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.24.0](https://github.com/fitglue/web/compare/v10.23.0...v10.24.0) (2026-02-13)
+
+
+### Features
+
+* improved tours and guides ([6a433bf](https://github.com/fitglue/web/commit/6a433bfd7afd3ac21df571d892ee31f618b74e35))
+
 ## [10.23.0](https://github.com/fitglue/web/compare/v10.22.2...v10.23.0) (2026-02-13)
 
 
