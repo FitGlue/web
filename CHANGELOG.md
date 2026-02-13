@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.22.2](https://github.com/fitglue/web/compare/v10.22.1...v10.22.2) (2026-02-13)
+
+
+### Bug Fixes
+
+* gcs content length ([d2de31a](https://github.com/fitglue/web/commit/d2de31abb566bd761733c7f8674b47b5d7b27443))
+
 ### [10.22.1](https://github.com/fitglue/web/compare/v10.22.0...v10.22.1) (2026-02-13)
 
 
