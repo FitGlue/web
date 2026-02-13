@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.21.0](https://github.com/fitglue/web/compare/v10.20.0...v10.21.0) (2026-02-13)
+
+
+### Features
+
+* **showcase:** same-source uploader overwrite, image crop, and cache tuning ([4f47c6f](https://github.com/fitglue/web/commit/4f47c6f7cc51a687346010a3cbbdd23662987467))
+
+
+### Bug Fixes
+
+* bio line breaks, zip download for pipeline run, profile photo upload ([f600d31](https://github.com/fitglue/web/commit/f600d315c1b6244059bf8313d70ca3ab71e7815b))
+
 ## [10.20.0](https://github.com/fitglue/web/compare/v10.19.1...v10.20.0) (2026-02-12)
 
 
