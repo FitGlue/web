@@ -723,7 +723,8 @@
             avatarEl.innerHTML = '<img src="' + profile.profilePictureUrl + '" alt="' + profile.displayName + '" />';
             avatarEl.style.display = '';
             avatarEl.classList.add('profile-avatar--clickable');
-            avatarEl.addEventListener('click', function () {
+            avatarEl.addEventListener('click', function (e) {
+                e.stopPropagation();
                 openLightbox(profile.profilePictureUrl, profile.displayName);
             });
         } else if (profile.displayName) {

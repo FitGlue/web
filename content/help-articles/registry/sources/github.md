@@ -97,18 +97,9 @@ The `isPremium` flag is `false`, so this source has no Athlete badge or premium 
 
 2. **Create a pipeline** — Go to **Dashboard → Pipelines → New Pipeline**. Select **GitHub** as the source. Enter your repository name (e.g. `your-username/fitness-log`) and optionally change the folder path from the default `workouts/`.
 
-3. **Add a webhook to your repository** — This step is **required** for the source to work. In your GitHub repository:
-   - Go to **Settings → Webhooks → Add webhook**
-   - **Payload URL**: `https://api.fitglue.com/hooks/github`
-   - **Content type**: `application/json`
-   - **Secret**: Copy the shared webhook secret from your FitGlue dashboard (shown on the pipeline configuration page)
-   - **Events**: Select **Just the push event**
-   - Click **Add webhook**
-   - GitHub will send a test ping — a green tick ✅ in Recent Deliveries confirms it's working.
+3. **Add boosters and a destination** — Add any enrichment boosters you want (Workout Summary, Heart Rate Zones, etc.) and choose where enriched activities should go.
 
-4. **Add boosters and a destination** — Add any enrichment boosters you want (Workout Summary, Heart Rate Zones, etc.) and choose where enriched activities should go.
-
-5. **Push your first activity** — Create a `.md` file in your configured folder, commit and push. Your pipeline should trigger within seconds.
+4. **Push your first activity** — Create a `.md` file in your configured folder, commit and push. Your pipeline should trigger within seconds.
 
 ### Example activity file
 

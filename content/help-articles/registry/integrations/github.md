@@ -36,27 +36,6 @@ Once connected, use GitHub as a source, destination, or both:
 - **As a destination**: Enter the repository name and folder where enriched activities should be committed.
 - **Bidirectional**: Configure one pipeline with GitHub as source and another pipeline (or the same one) with GitHub as destination. Loop prevention is automatic.
 
-### Step 3: Webhook setup (source only)
-
-If you're using GitHub as a **source**, you must add a webhook to your repository so GitHub notifies FitGlue when new activity files are pushed. This step is not needed for destination-only use.
-
-1. Go to your repository on GitHub
-2. Navigate to **Settings → Webhooks → Add webhook**
-3. Fill in the configuration:
-
-| Field | Value |
-|---|---|
-| **Payload URL** | `https://api.fitglue.com/hooks/github` |
-| **Content type** | `application/json` |
-| **Secret** | The shared webhook secret from your FitGlue dashboard |
-| **Events** | Select **Just the push event** |
-| **Active** | ✅ Checked |
-
-4. Click **Add webhook**
-5. GitHub sends a test ping — check the **Recent Deliveries** tab for a green tick ✅
-
-The webhook secret provides HMAC-SHA256 signature verification. Every incoming payload is verified against this secret before processing. If the signature doesn't match, the payload is rejected with an HTTP 401.
-
 ## Permissions
 
 FitGlue requests the `repo` OAuth scope. This is the most granular scope GitHub offers that allows reading and writing individual files.
