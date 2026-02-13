@@ -1,0 +1,108 @@
+/* ============================================================
+   SmartNudge — contextual tip banner
+   ============================================================ */
+
+.smart-nudge {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md, 1rem);
+    padding: var(--spacing-md, 1rem) var(--spacing-lg, 1.5rem);
+    border-radius: var(--radius-lg, 12px);
+    background: linear-gradient(135deg,
+            rgba(76, 201, 240, 0.08) 0%,
+            rgba(139, 92, 246, 0.08) 100%);
+    border: 1px solid rgba(76, 201, 240, 0.15);
+    animation: nudge-slide-in 0.3s ease-out;
+}
+
+@keyframes nudge-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.smart-nudge__icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.smart-nudge__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.smart-nudge__title {
+    font-size: var(--font-size-sm, 0.875rem);
+    font-weight: 600;
+    color: var(--color-text, #fff);
+    margin: 0 0 2px 0;
+}
+
+.smart-nudge__description {
+    font-size: var(--font-size-xs, 0.75rem);
+    color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
+    margin: 0;
+    line-height: 1.4;
+}
+
+.smart-nudge__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm, 0.5rem);
+    flex-shrink: 0;
+}
+
+.smart-nudge__cta {
+    font-size: var(--font-size-xs, 0.75rem);
+    font-weight: 600;
+    color: var(--color-accent, #4CC9F0);
+    background: rgba(76, 201, 240, 0.12);
+    border: 1px solid rgba(76, 201, 240, 0.2);
+    border-radius: var(--radius-sm, 6px);
+    padding: 6px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.smart-nudge__cta:hover {
+    background: rgba(76, 201, 240, 0.2);
+    color: #fff;
+}
+
+.smart-nudge__dismiss {
+    background: none;
+    border: none;
+    color: var(--color-text-muted, rgba(255, 255, 255, 0.4));
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    border-radius: 4px;
+    transition: color 0.15s ease;
+}
+
+.smart-nudge__dismiss:hover {
+    color: var(--color-text, #fff);
+}
+
+/* Mobile: stack vertically */
+@media (max-width: 640px) {
+    .smart-nudge {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm, 0.5rem);
+    }
+
+    .smart-nudge__actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

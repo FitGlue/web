@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
+import { SmartNudge } from '../components/SmartNudge';
 import { Button, PluginIcon, CardSkeleton, Badge, Heading, Paragraph, Card, GlowCard } from '../components/library/ui';
 
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
@@ -192,6 +193,8 @@ const ConnectionsPage: React.FC = () => {
                             </Badge>
                         )}
                     </Stack>
+
+                    <SmartNudge page="connections" />
 
                     {/* Connection cards grid */}
                     <Grid>

@@ -18,20 +18,24 @@ import { PipelinesSummaryCard } from '../components/dashboard/PipelinesSummaryCa
 import { ActionRequiredSummaryCard } from '../components/dashboard/ActionRequiredSummaryCard';
 import { SubscriptionBanner } from '../components/dashboard/SubscriptionBanner';
 import { PWAInstallBanner } from '../components/dashboard/PWAInstallBanner';
+import { SmartNudge } from '../components/SmartNudge';
 import { IntegrationsSummary } from '../state/integrationsState';
 import { useUser } from '../hooks/useUser';
 import { useApi } from '../hooks/useApi';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
+import { GuidedTour } from '../components/onboarding/GuidedTour';
+import { GuidedTourProvider, useGuidedTour } from '../hooks/useGuidedTour';
 
 const ONBOARDING_COMPLETE_KEY = 'fitglue_onboarding_complete';
 
-const DashboardPage: React.FC = () => {
+const DashboardPageInner: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const { info } = useToast();
     const [onboardingComplete, setOnboardingComplete] = useState(() => {
         return localStorage.getItem(ONBOARDING_COMPLETE_KEY) === 'true';
     });
+    const { startTour } = useGuidedTour();
 
     // Plugin registry (still REST for now - global static data)
     const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
@@ -107,6 +111,7 @@ const DashboardPage: React.FC = () => {
                         hasSyncs={hasSyncs}
                         isAthlete={isAthlete}
                         hasShowcaseProfile={hasShowcaseProfile}
+                        onStartTour={startTour}
                     />
                 )}
 
@@ -114,6 +119,8 @@ const DashboardPage: React.FC = () => {
                 {(onboardingComplete || allOnboardingComplete) && <PWAInstallBanner />}
 
                 <SubscriptionBanner />
+
+                <SmartNudge page="dashboard" />
 
                 <Grid cols={3} gap="md">
                     <ConnectionsSummaryCard />
@@ -131,8 +138,16 @@ const DashboardPage: React.FC = () => {
                     onRunClick={(run) => run.activityId && navigate(`/activities/${run.activityId}`)}
                 />
             </Stack>
+
+            <GuidedTour />
         </PageLayout>
     );
 };
+
+const DashboardPage: React.FC = () => (
+    <GuidedTourProvider>
+        <DashboardPageInner />
+    </GuidedTourProvider>
+);
 
 export default DashboardPage;

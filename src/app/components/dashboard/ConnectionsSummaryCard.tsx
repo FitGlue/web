@@ -9,6 +9,7 @@ import {
   SkeletonLoading
 } from '../library/ui';
 import { IntegrationsSummary } from '../../state/integrationsState';
+import { TourTarget } from '../onboarding/TourTarget';
 
 /**
  * ConnectionsSummaryCard - Dashboard summary card showing integration connection status
@@ -22,34 +23,36 @@ export const ConnectionsSummaryCard: React.FC = () => {
   ).length;
 
   return (
-    <DashboardSummaryCard
-      title="Connections"
-      icon="🔗"
-      linkTo="/settings/integrations"
-      linkLabel="Manage →"
-      footerText={<><strong>{connectedCount}</strong> of {registryIntegrations.length} connected</>}
-    >
-      <SkeletonLoading
-        loading={loading}
-        skeleton={<CardSkeleton variant="connections" itemCount={4} />}
+    <TourTarget id="summary-connections">
+      <DashboardSummaryCard
+        title="Connections"
+        icon="🔗"
+        linkTo="/settings/integrations"
+        linkLabel="Manage →"
+        footerText={<><strong>{connectedCount}</strong> of {registryIntegrations.length} connected</>}
       >
-        <Stack gap="xs">
-          {registryIntegrations.map(integration => {
-            const status = integrations?.[integration.id as keyof IntegrationsSummary];
-            return (
-              <ConnectionStatusItem
-                key={integration.id}
-                name={integration.name}
-                connected={status?.connected ?? false}
-                icon={integration.icon}
-                iconType={integration.iconType}
-                iconPath={integration.iconPath}
-              />
-            );
-          })}
-        </Stack>
-      </SkeletonLoading>
-    </DashboardSummaryCard>
+        <SkeletonLoading
+          loading={loading}
+          skeleton={<CardSkeleton variant="connections" itemCount={4} />}
+        >
+          <Stack gap="xs">
+            {registryIntegrations.map(integration => {
+              const status = integrations?.[integration.id as keyof IntegrationsSummary];
+              return (
+                <ConnectionStatusItem
+                  key={integration.id}
+                  name={integration.name}
+                  connected={status?.connected ?? false}
+                  icon={integration.icon}
+                  iconType={integration.iconType}
+                  iconPath={integration.iconPath}
+                />
+              );
+            })}
+          </Stack>
+        </SkeletonLoading>
+      </DashboardSummaryCard>
+    </TourTarget>
   );
 };
 

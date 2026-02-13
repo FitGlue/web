@@ -61,6 +61,12 @@
             </div>
         </div>
     </div>
+
+    <!-- Lightbox Overlay -->
+    <div id="profile-lightbox" class="profile-lightbox" style="display: none;">
+        <button class="lightbox-close" aria-label="Close">✕</button>
+        <img id="lightbox-image" class="lightbox-image" src="" alt="" />
+    </div>
 </section>
 </main>
 
@@ -123,10 +129,91 @@
         animation: fadeInUp 0.5s ease-out;
     }
 
+    .profile-avatar--clickable {
+        cursor: pointer;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .profile-avatar--clickable:hover {
+        transform: scale(1.08);
+        border-color: rgba(255, 27, 141, 0.7);
+    }
+
     .profile-avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+
+    /* Lightbox */
+    .profile-lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: lightboxFadeIn 0.25s ease-out;
+        cursor: pointer;
+    }
+
+    .lightbox-image {
+        max-width: min(90vw, 600px);
+        max-height: 85vh;
+        border-radius: 16px;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+        object-fit: contain;
+        cursor: default;
+        animation: lightboxScaleIn 0.3s ease-out;
+    }
+
+    .lightbox-close {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #fff;
+        font-size: 1.25rem;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s, transform 0.2s;
+        z-index: 10000;
+    }
+
+    .lightbox-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+    }
+
+    @keyframes lightboxFadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes lightboxScaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.85);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 
     /* Profile Bio */
@@ -635,6 +722,10 @@
         if (profile.profilePictureUrl) {
             avatarEl.innerHTML = '<img src="' + profile.profilePictureUrl + '" alt="' + profile.displayName + '" />';
             avatarEl.style.display = '';
+            avatarEl.classList.add('profile-avatar--clickable');
+            avatarEl.addEventListener('click', function () {
+                openLightbox(profile.profilePictureUrl, profile.displayName);
+            });
         } else if (profile.displayName) {
             avatarEl.textContent = profile.displayName.charAt(0).toUpperCase();
             avatarEl.style.display = 'flex';
@@ -743,6 +834,33 @@
         document.getElementById('profile-loading').style.display = 'none';
         document.getElementById('profile-error').style.display = 'block';
     }
+
+    // Lightbox
+    function openLightbox(src, alt) {
+        var lightbox = document.getElementById('profile-lightbox');
+        var img = document.getElementById('lightbox-image');
+        img.src = src;
+        img.alt = alt || '';
+        lightbox.style.display = '';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        var lightbox = document.getElementById('profile-lightbox');
+        lightbox.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('click', function (e) {
+        var lightbox = document.getElementById('profile-lightbox');
+        if (lightbox.style.display !== 'none' && !document.getElementById('lightbox-image').contains(e.target)) {
+            closeLightbox();
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeLightbox();
+    });
 
     // Init
     document.addEventListener('DOMContentLoaded', loadProfile);

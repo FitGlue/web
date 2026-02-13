@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Stack } from '../library/layout';
 import { Card, Heading, Paragraph, Button, Badge } from '../library/ui';
 import { usePWAInstall } from '../../hooks/usePWAInstall';
+import { TourTarget } from './TourTarget';
 import './WelcomeBanner.css';
 
 interface WelcomeBannerProps {
@@ -12,6 +13,7 @@ interface WelcomeBannerProps {
     isAthlete?: boolean;
     hasShowcaseProfile?: boolean;
     onDismiss?: () => void;
+    onStartTour?: () => void;
 }
 
 interface StepConfig {
@@ -23,6 +25,7 @@ interface StepConfig {
     buttonText: string;
     icon: string;
     route: string;
+    tourId: string;
 }
 
 const STEPS: StepConfig[] = [
@@ -35,6 +38,7 @@ const STEPS: StepConfig[] = [
         buttonText: 'Connect',
         icon: '🔗',
         route: '/settings/integrations',
+        tourId: 'step-connections',
     },
     {
         number: 2,
@@ -45,6 +49,7 @@ const STEPS: StepConfig[] = [
         buttonText: 'Create',
         icon: '⚡',
         route: '/settings/pipelines/new',
+        tourId: 'step-pipeline',
     },
     {
         number: 3,
@@ -55,6 +60,7 @@ const STEPS: StepConfig[] = [
         buttonText: 'Activities',
         icon: '✨',
         route: '/activities',
+        tourId: 'step-magic',
     },
 ];
 
@@ -64,7 +70,8 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
     hasSyncs = false,
     isAthlete = false,
     hasShowcaseProfile = false,
-    onDismiss
+    onDismiss,
+    onStartTour,
 }) => {
     const navigate = useNavigate();
     const { canInstall, promptInstall } = usePWAInstall();
@@ -82,6 +89,7 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
             buttonText: 'Manage',
             icon: '🏆',
             route: '/settings/showcase',
+            tourId: 'step-showcase',
         });
         stepCompletion.push(hasShowcaseProfile);
     }
@@ -101,6 +109,16 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
                     </Stack>
                 </Stack>
                 <Stack className="welcome-header-actions" direction="horizontal" gap="xs">
+                    {onStartTour && (
+                        <Button
+                            className="tour-btn"
+                            variant="secondary"
+                            size="small"
+                            onClick={onStartTour}
+                        >
+                            🗺️ Take a Tour
+                        </Button>
+                    )}
                     {canInstall && (
                         <Button
                             className="install-app-btn"
@@ -134,37 +152,38 @@ export const WelcomeBanner: React.FC<WelcomeBannerProps> = ({
                 {allSteps.map((step, index) => {
                     const isCompleted = stepCompletion[index];
                     return (
-                        <Button
-                            key={step.number}
-                            className={`step-card ${isCompleted ? 'completed' : ''}`}
-                            style={{ '--step-index': index } as React.CSSProperties}
-                            onClick={!isCompleted ? () => navigate(step.route) : undefined}
-                            disabled={isCompleted}
-                            variant="text"
-                        >
-                            <Badge className={`step-number ${isCompleted ? 'completed' : ''}`}>
-                                {isCompleted ? '✓' : step.number}
-                            </Badge>
-                            <Stack className="step-content" direction="horizontal" gap="sm" align="center">
-                                <Paragraph inline className="step-icon">{step.icon}</Paragraph>
-                                <Stack className="step-info" gap="xs">
-                                    <Heading level={4}>{isCompleted ? step.completedTitle : step.title}</Heading>
-                                    <Paragraph>{isCompleted ? step.completedDescription : step.description}</Paragraph>
+                        <TourTarget key={step.number} id={step.tourId}>
+                            <Button
+                                className={`step-card ${isCompleted ? 'completed' : ''}`}
+                                style={{ '--step-index': index } as React.CSSProperties}
+                                onClick={!isCompleted ? () => navigate(step.route) : undefined}
+                                disabled={isCompleted}
+                                variant="text"
+                            >
+                                <Badge className={`step-number ${isCompleted ? 'completed' : ''}`}>
+                                    {isCompleted ? '✓' : step.number}
+                                </Badge>
+                                <Stack className="step-content" direction="horizontal" gap="sm" align="center">
+                                    <Paragraph inline className="step-icon">{step.icon}</Paragraph>
+                                    <Stack className="step-info" gap="xs">
+                                        <Heading level={4}>{isCompleted ? step.completedTitle : step.title}</Heading>
+                                        <Paragraph>{isCompleted ? step.completedDescription : step.description}</Paragraph>
+                                    </Stack>
                                 </Stack>
-                            </Stack>
-                            <Stack className="step-action">
-                                {isCompleted ? (
-                                    <Badge className="step-complete-badge">Done</Badge>
-                                ) : (
-                                    <Paragraph inline className="step-cta">
-                                        {step.buttonText}
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M5 12h14M12 5l7 7-7 7" />
-                                        </svg>
-                                    </Paragraph>
-                                )}
-                            </Stack>
-                        </Button>
+                                <Stack className="step-action">
+                                    {isCompleted ? (
+                                        <Badge className="step-complete-badge">Done</Badge>
+                                    ) : (
+                                        <Paragraph inline className="step-cta">
+                                            {step.buttonText}
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M5 12h14M12 5l7 7-7 7" />
+                                            </svg>
+                                        </Paragraph>
+                                    )}
+                                </Stack>
+                            </Button>
+                        </TourTarget>
                     );
                 })}
             </Stack>

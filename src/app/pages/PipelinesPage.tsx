@@ -5,6 +5,7 @@ import { Card, Button, Heading, Paragraph, CardSkeleton, ConfirmDialog, IdBadge,
 
 import { useApi } from '../hooks/useApi';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
+import { SmartNudge } from '../components/SmartNudge';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { usePluginLookup } from '../hooks/usePluginLookup';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
@@ -293,6 +294,8 @@ const PipelinesPage: React.FC = () => {
                             </Button>
                         </Stack>
                     </Stack>
+
+                    <SmartNudge page="pipelines" />
 
                     {/* Pipeline list */}
                     {pipelines.length === 0 ? (
