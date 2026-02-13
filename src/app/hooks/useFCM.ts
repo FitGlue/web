@@ -96,11 +96,13 @@ export function useFCM() {
             notification.close();
             window.focus();
 
-            if (notificationType && activityId) {
+            if (notificationType) {
               const urlMap: Record<string, string> = {
-                'PENDING_INPUT': `/pending/${activityId}`,
+                'PENDING_INPUT': '/inputs',
                 'PIPELINE_SUCCESS': `/activities/${activityId}`,
                 'PIPELINE_FAILED': `/activities/${activityId}`,
+                'CONNECTION_ACTION': '/',
+                'CONNECTION_ACTION_FAILED': '/',
               };
               const targetPath = urlMap[notificationType];
               if (targetPath) {

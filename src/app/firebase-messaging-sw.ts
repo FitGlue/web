@@ -91,11 +91,13 @@ self.addEventListener('notificationclick', (event) => {
     // Build the target URL based on notification type
     let targetUrl = '/app/';
 
-    if (notificationType && activityId) {
+    if (notificationType) {
         const urlMap: Record<string, string> = {
-            'PENDING_INPUT': `/app/pending/${activityId}`,
+            'PENDING_INPUT': '/app/inputs',
             'PIPELINE_SUCCESS': `/app/activities/${activityId}`,
             'PIPELINE_FAILED': `/app/activities/${activityId}`,
+            'CONNECTION_ACTION': '/app/',
+            'CONNECTION_ACTION_FAILED': '/app/',
         };
         targetUrl = urlMap[notificationType] || '/app/';
     }
