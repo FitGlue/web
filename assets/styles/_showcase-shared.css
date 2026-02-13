@@ -10,6 +10,22 @@
     padding: 0;
     color: #fff;
     font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Particle constellation canvas */
+.showcase-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Ensure content sits above particles */
+.showcase-page>*:not(.showcase-particles) {
+    position: relative;
+    z-index: 1;
 }
 
 /* ---- Glass Card ---- */

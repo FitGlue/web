@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="/assets/styles/_showcase-shared.css" />
 
 <section class="showcase-page">
+    <canvas class="showcase-particles" id="showcase-particles"></canvas>
     <!-- Loading State -->
     <div id="profile-loading" class="showcase-loading">
         <div class="loading-bg-gradient"></div>
@@ -866,3 +867,6 @@
     // Init
     document.addEventListener('DOMContentLoaded', loadProfile);
 </script>
+
+<script src="/assets/js/particles.js"></script>
+<script>initParticles('showcase-particles');</script>

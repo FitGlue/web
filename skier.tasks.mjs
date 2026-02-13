@@ -65,6 +65,10 @@ export const tasks = [
     to: './dist/images',
   }),
   copyStaticTask({
+    from: './assets/js',
+    to: './dist/assets/js',
+  }),
+  copyStaticTask({
     from: './assets/root',
     to: './dist',
   }),

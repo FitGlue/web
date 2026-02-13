@@ -3,6 +3,7 @@
 <main>
   <!-- Hero Section -->
   <section class="hero">
+    <canvas class="hero-particles" id="hero-particles"></canvas>
     <div class="hero-content">
       <h1 class="hero-title">
         <span class="fit">Fit</span><span class="glue">Glue</span>
@@ -405,5 +406,8 @@
     </div>
   </section>
 </main>
+
+<script src="/assets/js/particles.js"></script>
+<script>initParticles('hero-particles');</script>
 
 {{> footer}}
