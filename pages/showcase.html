@@ -3404,7 +3404,7 @@
       // Owner attribution
       if (data.ownerDisplayName) {
         const attrEl = document.getElementById('owner-attribution');
-        const slug = data.ownerDisplayName.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const slug = data.ownerProfileSlug || data.ownerDisplayName.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
         let avatarHtml = '';
         if (data.ownerProfilePictureUrl) {
           avatarHtml = `<span class="owner-avatar"><img src="${data.ownerProfilePictureUrl}" alt="${data.ownerDisplayName}" /></span>`;

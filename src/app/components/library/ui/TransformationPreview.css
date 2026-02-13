@@ -1,0 +1,89 @@
+/* ============================================================
+   TransformationPreview — before/after comparison panel
+   ============================================================ */
+
+.transformation-preview {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    align-items: stretch;
+    border-radius: var(--radius-md, 8px);
+    overflow: hidden;
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+}
+
+.transformation-preview__panel {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+/* Before panel — plain, muted */
+.transformation-preview__panel--before {
+    background: var(--color-surface-alt, rgba(255, 255, 255, 0.02));
+}
+
+/* After panel — highlighted with gradient */
+.transformation-preview__panel--after {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(59, 130, 246, 0.06));
+}
+
+/* Labels */
+.transformation-preview__label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-xs);
+}
+
+.transformation-preview__panel--after .transformation-preview__label {
+    color: var(--color-primary, #8b5cf6);
+}
+
+/* Text content */
+.transformation-preview__text {
+    font-size: var(--font-size-sm, 0.875rem) !important;
+    line-height: 1.6 !important;
+    white-space: pre-wrap;
+    margin: 0 !important;
+}
+
+.transformation-preview__panel--before .transformation-preview__text {
+    color: var(--color-text-muted);
+}
+
+/* Center arrow separator */
+.transformation-preview__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+    background: rgba(255, 255, 255, 0.02);
+    opacity: 0.5;
+}
+
+/* Mobile: stack vertically */
+@media (max-width: 640px) {
+    .transformation-preview {
+        grid-template-columns: 1fr;
+    }
+
+    .transformation-preview__panel {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .transformation-preview__arrow {
+        width: auto;
+        height: 1.5rem;
+    }
+
+    .transformation-preview__arrow span {
+        transform: rotate(90deg);
+    }
+}

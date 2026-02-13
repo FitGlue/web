@@ -1,0 +1,57 @@
+/* ============================================================
+   RecipesPage — Layout and filters for the recipe catalog
+   ============================================================ */
+
+.recipes-page__intro {
+    text-align: center;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.recipes-page__subtitle {
+    font-size: var(--font-size-lg, 1.25rem) !important;
+    margin: 0 0 var(--space-xs) !important;
+}
+
+.recipes-page__description {
+    color: var(--color-text-muted);
+    margin: 0 !important;
+}
+
+/* Category filter tabs */
+.recipes-page__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    justify-content: center;
+}
+
+/* Recipe list */
+.recipes-page__list {
+    max-width: 720px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Empty state */
+.recipes-page__empty {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: var(--space-xl) 0;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    .recipes-page__filters {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: var(--space-xs);
+    }
+
+    .recipes-page__filters::-webkit-scrollbar {
+        display: none;
+    }
+}

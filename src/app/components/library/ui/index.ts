@@ -151,6 +151,12 @@ export type { Toast, ToastVariant, ToastContextValue } from './Toast';
 // Accordion
 export { AccordionTrigger } from './Accordion';
 
+// Expandable cards
+export { ExpandableCard } from './ExpandableCard';
+
+// Transformation preview
+export { TransformationPreview } from './TransformationPreview';
+
 // Link
 export { Link } from './Link';
 export type { LinkProps } from './Link';

@@ -1,0 +1,68 @@
+/* ============================================================
+   RecipeCard
+   ============================================================ */
+
+.recipe-card__header-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.recipe-card__icon {
+    font-size: 2rem !important;
+    line-height: 1 !important;
+    flex-shrink: 0;
+    margin: 0 !important;
+}
+
+.recipe-card__titles {
+    flex: 1;
+    min-width: 0;
+}
+
+.recipe-card__title {
+    font-size: var(--font-size-md, 1rem) !important;
+    margin: 0 !important;
+    line-height: 1.3;
+}
+
+.recipe-card__tagline {
+    font-size: var(--font-size-sm, 0.875rem) !important;
+    color: var(--color-text-muted);
+    margin: 0 !important;
+    line-height: 1.4;
+}
+
+/* Footer: connections + CTA */
+.recipe-card__footer {
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.06));
+}
+
+.recipe-card__athlete-badge {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.15)) !important;
+    color: var(--color-primary, #8b5cf6) !important;
+    font-size: var(--font-size-xs, 0.75rem) !important;
+}
+
+/* Guide link */
+.recipe-card__guide-link {
+    display: inline-block;
+    font-size: var(--font-size-sm, 0.875rem);
+    color: var(--color-accent, #4CC9F0);
+    text-decoration: none;
+    transition: color 0.15s ease, opacity 0.15s ease;
+    opacity: 0.8;
+}
+
+.recipe-card__guide-link:hover {
+    color: var(--color-primary, #FF1B8D);
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    .recipe-card__icon {
+        font-size: 1.5rem !important;
+    }
+}

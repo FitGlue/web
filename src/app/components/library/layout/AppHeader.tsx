@@ -119,6 +119,14 @@ export const AppHeader: React.FC = () => {
                             <span className="app-header__dropdown-icon">📊</span>
                             Booster Data
                         </Link>
+                        <Link
+                            to="/recipes"
+                            className="app-header__dropdown-item"
+                            onClick={() => setShowMenu(false)}
+                        >
+                            <span className="app-header__dropdown-icon">🧪</span>
+                            Recipes
+                        </Link>
                         {isAthlete && (
                             <Link
                                 to="/settings/showcase"

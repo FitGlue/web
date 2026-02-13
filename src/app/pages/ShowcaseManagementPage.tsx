@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { PageLayout, Stack } from '../components/library/layout';
-import { Button, Paragraph, Card, Heading, Link, CardSkeleton } from '../components/library/ui';
+import { Button, Paragraph, Card, Heading, Link, CardSkeleton, Avatar } from '../components/library/ui';
 import { FormField, Input, Textarea, Toggle } from '../components/library/forms';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../components/library/ui/Toast/Toast';
@@ -309,9 +309,11 @@ const ShowcaseManagementPage: React.FC = () => {
                             👤 Profile
                         </Heading>
                         <Stack direction="horizontal" className="showcase-mgmt__avatar-section" gap="md" align="center">
-                            <Paragraph inline className="showcase-mgmt__avatar-preview">
-                                {profile.profilePictureUrl ? '📸' : '🏃'}
-                            </Paragraph>
+                            <Avatar
+                                initial={profile.displayName?.charAt(0) || '?'}
+                                src={profile.profilePictureUrl || undefined}
+                                size="lg"
+                            />
                             <Stack className="showcase-mgmt__avatar-actions" gap="xs">
                                 <Button variant="secondary" size="small" onClick={handlePictureUpload} disabled={uploading}>
                                     {uploading ? '⏳ Uploading…' : 'Upload Photo'}
