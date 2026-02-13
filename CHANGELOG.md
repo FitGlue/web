@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.26.1](https://github.com/fitglue/web/compare/v10.26.0...v10.26.1) (2026-02-13)
+
+
+### Bug Fixes
+
+* lightbox (again) ([45cf27e](https://github.com/fitglue/web/commit/45cf27eb8484abc4fa5a93467170d439980ed279))
+
 ## [10.26.0](https://github.com/fitglue/web/compare/v10.25.0...v10.26.0) (2026-02-13)
 
 
