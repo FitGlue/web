@@ -61,6 +61,13 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* Avatar with profile picture */
+.app-header__avatar--has-image {
+  background-size: cover;
+  background-position: center;
+  border: 2px solid rgba(255, 27, 141, 0.4);
+}
+
 /* ATHLETE Badge */
 .app-header__tier-badge {
   position: absolute;

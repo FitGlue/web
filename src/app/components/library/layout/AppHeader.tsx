@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useUser } from '../../../hooks/useUser';
+import { useApi } from '../../../hooks/useApi';
 import { userAtom } from '../../../state/authState';
 import { getEffectiveTier, TIER_ATHLETE } from '../../../utils/tier';
 import './AppHeader.css';
@@ -9,10 +10,33 @@ import './AppHeader.css';
 
 export const AppHeader: React.FC = () => {
     const { user: profile, loading } = useUser();
+    const api = useApi();
     const [firebaseUser] = useAtom(userAtom);
     const [showMenu, setShowMenu] = useState(false);
+    const [profilePictureUrl, setProfilePictureUrl] = useState<string | undefined>();
 
     const menuRef = useRef<HTMLDivElement>(null);
+
+    const isAthlete = profile && getEffectiveTier(profile) === TIER_ATHLETE;
+
+    // Fetch profile picture for Athlete users
+    useEffect(() => {
+        if (!isAthlete) return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const data = await api.get('/showcase-management/profile') as {
+                    profile: { profilePictureUrl?: string } | null;
+                };
+                if (!cancelled && data.profile?.profilePictureUrl) {
+                    setProfilePictureUrl(data.profile.profilePictureUrl);
+                }
+            } catch {
+                // Non-critical — silently ignore
+            }
+        })();
+        return () => { cancelled = true; };
+    }, [api, isAthlete]);
 
     // Close menu when clicking outside
     useEffect(() => {
@@ -47,8 +71,6 @@ export const AppHeader: React.FC = () => {
         return '?';
     };
 
-    const isAthlete = profile && getEffectiveTier(profile) === TIER_ATHLETE;
-
 
     return (
         <header className="app-header">
@@ -60,16 +82,18 @@ export const AppHeader: React.FC = () => {
             </Link>
             <div ref={menuRef} className="app-header__user-menu">
                 <button
-                    className="app-header__avatar"
+                    className={`app-header__avatar${profilePictureUrl ? ' app-header__avatar--has-image' : ''}`}
                     onClick={() => setShowMenu(!showMenu)}
                     aria-label="User menu"
                     aria-expanded={showMenu}
+                    style={profilePictureUrl ? { backgroundImage: `url(${profilePictureUrl})` } : undefined}
                 >
-                    {getInitial()}
+                    {!profilePictureUrl && getInitial()}
                     {isAthlete && (
                         <span className="app-header__tier-badge">ATHLETE</span>
                     )}
                 </button>
+
 
                 {showMenu && (
                     <div className="app-header__dropdown">

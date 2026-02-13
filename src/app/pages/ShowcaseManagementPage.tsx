@@ -46,6 +46,10 @@ const ShowcaseManagementPage: React.FC = () => {
     const [saving, setSaving] = useState(false);
     const [savingSlug, setSavingSlug] = useState(false);
 
+    // Picture upload status
+    const [uploading, setUploading] = useState(false);
+    const [uploadStatus, setUploadStatus] = useState('');
+
     // Default destination
     const [defaultDestination, setDefaultDestination] = useState(false);
     const [profileVisible, setProfileVisible] = useState(true);
@@ -211,6 +215,9 @@ const ShowcaseManagementPage: React.FC = () => {
         if (cropImage) URL.revokeObjectURL(cropImage);
         setCropImage(null);
 
+        setUploading(true);
+        setUploadStatus('Preparing upload…');
+
         try {
             // Cropped output is always WebP from canvas
             const data = await api.post('/showcase-management/profile/picture', {
@@ -221,12 +228,19 @@ const ShowcaseManagementPage: React.FC = () => {
                 contentType: string;
             };
 
+            setUploadStatus('Uploading photo…');
+
             // Upload to GCS via signed URL
-            await fetch(data.uploadUrl, {
+            const uploadResponse = await fetch(data.uploadUrl, {
                 method: 'PUT',
                 headers: { 'Content-Type': data.contentType },
                 body: croppedBlob,
             });
+            if (!uploadResponse.ok) {
+                throw new Error(`GCS upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
+            }
+
+            setUploadStatus('Saving…');
 
             // Update profile with the new URL
             await api.patch('/showcase-management/profile', {
@@ -237,7 +251,13 @@ const ShowcaseManagementPage: React.FC = () => {
             fetchProfile();
         } catch (err) {
             console.error('Failed to upload picture:', err);
-            showError('Failed to upload picture');
+            const msg = err instanceof Error && err.message.startsWith('GCS upload')
+                ? 'Failed to upload photo — please try again'
+                : 'Failed to update profile picture';
+            showError(msg);
+        } finally {
+            setUploading(false);
+            setUploadStatus('');
         }
     };
 
@@ -288,11 +308,11 @@ const ShowcaseManagementPage: React.FC = () => {
                                 {profile.profilePictureUrl ? '📸' : '🏃'}
                             </Paragraph>
                             <Stack className="showcase-mgmt__avatar-actions" gap="xs">
-                                <Button variant="secondary" size="small" onClick={handlePictureUpload}>
-                                    Upload Photo
+                                <Button variant="secondary" size="small" onClick={handlePictureUpload} disabled={uploading}>
+                                    {uploading ? '⏳ Uploading…' : 'Upload Photo'}
                                 </Button>
                                 <Paragraph size="sm" muted className="showcase-mgmt__avatar-hint">
-                                    WebP recommended • Max 5MB
+                                    {uploadStatus || 'WebP recommended • Max 5MB'}
                                 </Paragraph>
                             </Stack>
                         </Stack>
@@ -434,8 +454,8 @@ const ShowcaseManagementPage: React.FC = () => {
                         <Toggle
                             label="Profile visibility"
                             description={profileVisible
-                                ? 'Your profile is publicly visible'
-                                : 'Your profile is hidden — visitors will see a 404'}
+                                ? 'Your profile is publicly visible. Changes may take up to 5 minutes to reflect.'
+                                : 'Your profile is hidden — visitors will see a 404. Changes may take up to 5 minutes to reflect.'}
                             checked={profileVisible}
                             onChange={handleToggleVisibility}
                         />

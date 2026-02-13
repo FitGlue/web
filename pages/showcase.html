@@ -610,6 +610,21 @@
     gap: 0.5rem;
   }
 
+  .owner-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 27, 141, 0.4);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .owner-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
   .owner-name {
     font-weight: 700;
     color: #fff;
@@ -3390,7 +3405,11 @@
       if (data.ownerDisplayName) {
         const attrEl = document.getElementById('owner-attribution');
         const slug = data.ownerDisplayName.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-        attrEl.innerHTML = `by <a href="/u/${slug}" class="owner-name owner-link">${data.ownerDisplayName}</a>`;
+        let avatarHtml = '';
+        if (data.ownerProfilePictureUrl) {
+          avatarHtml = `<span class="owner-avatar"><img src="${data.ownerProfilePictureUrl}" alt="${data.ownerDisplayName}" /></span>`;
+        }
+        attrEl.innerHTML = `${avatarHtml}by <a href="/u/${slug}" class="owner-name owner-link">${data.ownerDisplayName}</a>`;
         attrEl.style.display = 'flex';
       }
 
