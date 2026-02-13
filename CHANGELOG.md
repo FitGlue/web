@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.23.0](https://github.com/fitglue/web/compare/v10.22.2...v10.23.0) (2026-02-13)
+
+
+### Features
+
+* recipe page and importing ([bdfe773](https://github.com/fitglue/web/commit/bdfe7738ab3cf8da8019a79121e0ceee11eba4c7))
+
 ### [10.22.2](https://github.com/fitglue/web/compare/v10.22.1...v10.22.2) (2026-02-13)
 
 
