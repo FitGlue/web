@@ -63,11 +63,6 @@
         </div>
     </div>
 
-    <!-- Lightbox Overlay -->
-    <div id="profile-lightbox" class="profile-lightbox" style="display: none;">
-        <button class="lightbox-close" aria-label="Close">✕</button>
-        <img id="lightbox-image" class="lightbox-image" src="" alt="" />
-    </div>
 </section>
 </main>
 
@@ -837,28 +832,41 @@
         document.getElementById('profile-error').style.display = 'block';
     }
 
-    // Lightbox
+    // Lightbox – created on body so it escapes .showcase-page overflow:hidden
+    var _lightbox = null;
+    function ensureLightbox() {
+        if (_lightbox) return _lightbox;
+        _lightbox = document.createElement('div');
+        _lightbox.className = 'profile-lightbox';
+        _lightbox.style.display = 'none';
+        _lightbox.innerHTML = '<button class="lightbox-close" aria-label="Close">✕</button>'
+            + '<img class="lightbox-image" src="" alt="" />';
+        document.body.appendChild(_lightbox);
+
+        // Close on backdrop / close button click
+        _lightbox.addEventListener('click', function (e) {
+            if (!_lightbox.querySelector('.lightbox-image').contains(e.target)) {
+                closeLightbox();
+            }
+        });
+        return _lightbox;
+    }
+
     function openLightbox(src, alt) {
-        var lightbox = document.getElementById('profile-lightbox');
-        var img = document.getElementById('lightbox-image');
+        var lb = ensureLightbox();
+        var img = lb.querySelector('.lightbox-image');
         img.src = src;
         img.alt = alt || '';
-        lightbox.style.display = '';
+        lb.style.display = '';
         document.body.style.overflow = 'hidden';
     }
 
     function closeLightbox() {
-        var lightbox = document.getElementById('profile-lightbox');
-        lightbox.style.display = 'none';
-        document.body.style.overflow = '';
-    }
-
-    document.addEventListener('click', function (e) {
-        var lightbox = document.getElementById('profile-lightbox');
-        if (lightbox.style.display !== 'none' && !document.getElementById('lightbox-image').contains(e.target)) {
-            closeLightbox();
+        if (_lightbox) {
+            _lightbox.style.display = 'none';
+            document.body.style.overflow = '';
         }
-    });
+    }
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeLightbox();
