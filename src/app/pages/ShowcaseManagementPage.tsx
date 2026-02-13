@@ -226,14 +226,19 @@ const ShowcaseManagementPage: React.FC = () => {
                 uploadUrl: string;
                 publicUrl: string;
                 contentType: string;
+                maxSizeBytes: number;
             };
 
             setUploadStatus('Uploading photo…');
 
             // Upload to GCS via signed URL
+            // x-goog-content-length-range must match the extensionHeaders used during signing
             const uploadResponse = await fetch(data.uploadUrl, {
                 method: 'PUT',
-                headers: { 'Content-Type': data.contentType },
+                headers: {
+                    'Content-Type': data.contentType,
+                    'x-goog-content-length-range': `0,${data.maxSizeBytes}`,
+                },
                 body: croppedBlob,
             });
             if (!uploadResponse.ok) {
