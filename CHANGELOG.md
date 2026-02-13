@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.22.1](https://github.com/fitglue/web/compare/v10.22.0...v10.22.1) (2026-02-13)
+
+
+### Bug Fixes
+
+* notification links, avatar profile photo upload CORS ([1b35d66](https://github.com/fitglue/web/commit/1b35d66cdd85c793d7a773ad2e72a84b3ae1c7fe))
+
 ## [10.22.0](https://github.com/fitglue/web/compare/v10.21.0...v10.22.0) (2026-02-13)
 
 
