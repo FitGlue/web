@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.25.0](https://github.com/fitglue/web/compare/v10.24.0...v10.25.0) (2026-02-13)
+
+
+### Features
+
+* see the magic section updated with showcase, github installation instructions, showcase profile image lightbox ([1bf5ad3](https://github.com/fitglue/web/commit/1bf5ad38f94b2ff60ed9918e6cffb941609c4422))
+
 ## [10.24.0](https://github.com/fitglue/web/compare/v10.23.0...v10.24.0) (2026-02-13)
 
 
