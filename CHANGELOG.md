@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.22.0](https://github.com/fitglue/web/compare/v10.21.0...v10.22.0) (2026-02-13)
+
+
+### Features
+
+* **showcase:** owner avatar in OG/API, same-source fallback, and upload UX ([2144a0c](https://github.com/fitglue/web/commit/2144a0c1a02af58589f7a12afebff664d52e8c7e))
+
 ## [10.21.0](https://github.com/fitglue/web/compare/v10.20.0...v10.21.0) (2026-02-13)
 
 
