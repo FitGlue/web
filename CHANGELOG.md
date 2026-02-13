@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.26.0](https://github.com/fitglue/web/compare/v10.25.0...v10.26.0) (2026-02-13)
+
+
+### Features
+
+* particle background ([b9722b1](https://github.com/fitglue/web/commit/b9722b16b7a5de66879bb530303460c597b60f3a))
+
 ## [10.25.0](https://github.com/fitglue/web/compare/v10.24.0...v10.25.0) (2026-02-13)
 
 
