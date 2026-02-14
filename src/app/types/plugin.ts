@@ -9,8 +9,7 @@ import { components } from '../../shared/api/schema';
 export type ConfigFieldOption = components['schemas']['ConfigFieldOption'];
 export type ConfigFieldValidation = components['schemas']['ConfigFieldValidation'];
 export type ConfigFieldDependency = components['schemas']['ConfigFieldDependency'];
-// Extended ConfigFieldSchema to include dynamicSource (exists in protobuf but not OpenAPI spec)
-export type ConfigFieldSchema = components['schemas']['ConfigFieldSchema'] & { dynamicSource?: string };
+export type ConfigFieldSchema = components['schemas']['ConfigFieldSchema'];
 export type Transformation = components['schemas']['Transformation'];
 // PluginManifest now has all fields in OpenAPI spec
 export type PluginManifest = components['schemas']['PluginManifest'];

@@ -889,6 +889,144 @@ export interface paths {
         };
         trace?: never;
     };
+    "/users/me/plugin-defaults": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List plugin defaults
+         * @description Returns all user-level plugin default configurations
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Plugin defaults */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            defaults?: components["schemas"]["PluginDefault"][];
+                        };
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/plugin-defaults/{pluginId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set plugin default
+         * @description Create or update a plugin default configuration
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    pluginId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        config: {
+                            [key: string]: string;
+                        };
+                    };
+                };
+            };
+            responses: {
+                /** @description Plugin default saved */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PluginDefault"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /**
+         * Delete plugin default
+         * @description Remove a plugin default configuration
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    pluginId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Plugin default deleted */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success?: boolean;
+                        };
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1020,7 +1158,9 @@ export interface components {
             /** @description Destination plugin configurations, keyed by destination ID */
             destinationConfigs?: {
                 [key: string]: {
-                    config: { [key: string]: string };
+                    config?: {
+                        [key: string]: string;
+                    };
                 };
             };
         };
@@ -1077,6 +1217,8 @@ export interface components {
             valueOptions?: components["schemas"]["ConfigFieldOption"][];
             /** @description Key for dynamic data source (e.g., 'hevy_routines') */
             dynamicSource?: string;
+            /** @description Key for dynamic data source for the value side of KEY_VALUE_MAP (e.g., 'counters') */
+            valueDynamicSource?: string;
         };
         ConfigFieldDependency: {
             /** @description Key of the field this depends on */
@@ -1163,6 +1305,18 @@ export interface components {
             integrations: components["schemas"]["IntegrationManifest"][];
             /** @description Platform stats, only present when marketingMode=true */
             stats?: components["schemas"]["PlatformStats"];
+        };
+        PluginDefault: {
+            /** @description Registry ID of the plugin (e.g., 'googlesheets', 'github') */
+            pluginId: string;
+            /** @description Default configuration key-value pairs */
+            config: {
+                [key: string]: string;
+            };
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
         };
     };
     responses: never;

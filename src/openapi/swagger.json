@@ -326,6 +326,21 @@
             "items": {
               "type": "string"
             }
+          },
+          "destinationConfigs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "config": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "description": "Destination plugin configurations, keyed by destination ID"
           }
         },
         "required": [
@@ -502,6 +517,10 @@
           "dynamicSource": {
             "type": "string",
             "description": "Key for dynamic data source (e.g., 'hevy_routines')"
+          },
+          "valueDynamicSource": {
+            "type": "string",
+            "description": "Key for dynamic data source for the value side of KEY_VALUE_MAP (e.g., 'counters')"
           }
         },
         "required": [
