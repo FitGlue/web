@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.27.0](https://github.com/fitglue/web/compare/v10.26.1...v10.27.0) (2026-02-14)
+
+
+### Features
+
+* enricher upgrades, sliding-window PRs, ACWR recovery, hero carousel, and splits renderer ([d6c03d4](https://github.com/fitglue/web/commit/d6c03d4bc3d432975290fa7a7c385d3c10bae8f7))
+
 ### [10.26.1](https://github.com/fitglue/web/compare/v10.26.0...v10.26.1) (2026-02-13)
 
 
