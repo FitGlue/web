@@ -4,57 +4,26 @@
   <!-- Hero Section -->
   <section class="hero">
     <canvas class="hero-particles" id="hero-particles"></canvas>
-    <div class="hero-content">
-      <h1 class="hero-title">
-        <span class="fit">Fit</span><span class="glue">Glue</span>
-      </h1>
-      <p class="hero-tagline">Watch your activity become extraordinary ✨</p>
-      <p class="hero-subtitle">Your gym session deserves more than "Weight Training – 45 min". FitGlue
-        transforms every activity into a story worth sharing—with AI descriptions, heart rate data, and muscle heatmaps.
-      </p>
-
-      <!-- Animated Data Flow -->
-      <div class="data-flow data-flow-animated">
-        <div class="data-flow-node source" id="flow-source">
-          <span class="flow-icon">🏋️</span>
-          <span class="flow-label">Hevy</span>
-        </div>
-        <div class="data-flow-arrow">
-          <div class="arrow-particles"></div>
-        </div>
-        <div class="data-flow-node center" id="flow-center">
-          <div class="center-label">FitGlue</div>
-          <div class="center-boosters" id="booster-display">
-            <span class="booster-icon" title="AI Summary">🤖</span>
-            <span class="booster-icon" title="Muscle Map">💪</span>
-            <span class="booster-icon" title="Heart Rate">❤️</span>
-            <span class="booster-icon" title="GPS Routes">🗺️</span>
-          </div>
-        </div>
-        <div class="data-flow-arrow">
-          <div class="arrow-particles"></div>
-        </div>
-        <div class="data-flow-node destination" id="flow-destination">
-          <span class="flow-icon">🚴</span>
-          <span class="flow-label">Strava</span>
+    <div class="hero-split">
+      <!-- Left: Text + CTAs -->
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="fit">Fit</span><span class="glue">Glue</span>
+        </h1>
+        <p class="hero-tagline">Watch your activity become <span class="hero-highlight">extraordinary</span> ✨</p>
+        <p class="hero-subtitle">Your gym session deserves more than "Weight Training – 45 min". FitGlue
+          transforms every activity into a story worth sharing—with <span class="hero-highlight">AI descriptions</span>,
+          <span class="hero-highlight">heart rate data</span>, and <span class="hero-highlight">muscle heatmaps</span>.
+        </p>
+        <div class="hero-cta">
+          <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg">Get Started Free</a>
+          <a href="/how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
         </div>
       </div>
-      <p class="flow-caption flow-caption-magic">✨ Connect everywhere, enhance everything ✨</p>
 
-      <div class="hero-cta">
-        <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg">Get Started Free</a>
-        <a href="/how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
-      </div>
-
-      <!-- Hero Product Screenshot -->
-      <div class="product-screenshot animate-on-scroll">
-        <div class="product-screenshot__chrome">
-          <span class="product-screenshot__dot"></span>
-          <span class="product-screenshot__dot"></span>
-          <span class="product-screenshot__dot"></span>
-        </div>
-        <img src="/images/screenshots/hero-dashboard.png" alt="FitGlue dashboard showing boosted activities"
-          class="product-screenshot__image" />
+      <!-- Right: Rotating Showcase Carousel -->
+      <div class="hero-visual">
+        <div class="hero-carousel" id="hero-carousel"></div>
       </div>
     </div>
   </section>
@@ -115,7 +84,8 @@
             <h3 class="destination-card__title">🌟 Your Public Fitness Portfolio</h3>
             <p class="destination-card__description">Your profile, your activities, your story — all in one shareable
               page with interactive charts and telemetry data.</p>
-            <a href="#" class="btn btn-primary btn-sm destination-card__cta" target="_blank" rel="noopener">See the
+            <a href="https://fitglue.tech/u/james" class="btn btn-primary btn-sm destination-card__cta" target="_blank"
+              rel="noopener">See the
               real thing →</a>
           </div>
         </div>
@@ -135,7 +105,8 @@
             <h3 class="destination-card__title">🏆 Museum-Grade Activity Pages</h3>
             <p class="destination-card__description">Heart rate zones, muscle heatmaps, route maps, elevation profiles —
               every detail of your workout, beautifully presented.</p>
-            <a href="#" class="btn btn-primary btn-sm destination-card__cta" target="_blank" rel="noopener">See the
+            <a href="https://fitglue.tech/showcase/lower-body-pt-2026-02-12"
+              class="btn btn-primary btn-sm destination-card__cta" target="_blank" rel="noopener">See the
               real thing →</a>
           </div>
         </div>
@@ -155,7 +126,8 @@
             <h3 class="destination-card__title">🚴 Your Strava, Supercharged</h3>
             <p class="destination-card__description">Full workout summaries, heart rate data, and muscle heatmaps —
               posted to your Strava automatically.</p>
-            <a href="#" class="btn btn-primary btn-sm destination-card__cta" target="_blank" rel="noopener">See the
+            <a href="https://www.strava.com/activities/17375485085" class="btn btn-primary btn-sm destination-card__cta"
+              target="_blank" rel="noopener">See the
               real thing →</a>
           </div>
         </div>
@@ -409,5 +381,6 @@
 
 <script src="/assets/js/particles.js"></script>
 <script>initParticles('hero-particles');</script>
+<script src="/assets/js/hero-carousel.js"></script>
 
 {{> footer}}

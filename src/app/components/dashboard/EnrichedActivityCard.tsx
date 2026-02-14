@@ -188,6 +188,7 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
         destinationStatuses[dest] === 'Pending' || !destinationStatuses[dest]
     );
     const failedDestinations = destinations.filter(dest => destinationStatuses[dest] === 'Failed');
+    const skippedDestinations = destinations.filter(dest => destinationStatuses[dest] === 'Skipped');
 
     const destinationNode = destinations.length > 0 ? (
         <Stack direction="horizontal" gap="xs">
@@ -224,6 +225,18 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
                     <Badge key={dest} variant="error" size="sm">
                         <Stack direction="horizontal" gap="xs" align="center">
                             <Paragraph inline>❌</Paragraph>
+                            <Paragraph inline size="sm">{destInfo.name}</Paragraph>
+                        </Stack>
+                    </Badge>
+                );
+            })}
+            {/* SKIPPED destinations - warning styling */}
+            {skippedDestinations.map(dest => {
+                const destInfo = getDestinationInfo(dest.toLowerCase(), registryDestinations, dest);
+                return (
+                    <Badge key={dest} variant="warning" size="sm">
+                        <Stack direction="horizontal" gap="xs" align="center">
+                            <Paragraph inline>⏭️</Paragraph>
                             <Paragraph inline size="sm">{destInfo.name}</Paragraph>
                         </Stack>
                     </Badge>

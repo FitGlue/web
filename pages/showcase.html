@@ -1548,6 +1548,16 @@
     margin-bottom: 0.5rem;
   }
 
+  .recovery-grid.has-acwr {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  @media (max-width: 480px) {
+    .recovery-grid.has-acwr {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
   .recovery-stat-block {
     background: rgba(255, 255, 255, 0.04);
     border-radius: 8px;
@@ -1559,6 +1569,12 @@
     font-size: 1.2rem;
     font-weight: 700;
     color: #fff;
+  }
+
+  .recovery-stat-sub {
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-top: 0.1rem;
   }
 
   .recovery-stat-label {
@@ -1576,19 +1592,45 @@
     font-weight: 600;
   }
 
-  .recovery-stat-tag.easy {
+  .recovery-stat-tag.easy,
+  .recovery-stat-tag.recovery {
     background: rgba(74, 222, 128, 0.2);
     color: #4ade80;
   }
 
-  .recovery-stat-tag.moderate {
+  .recovery-stat-tag.moderate,
+  .recovery-stat-tag.optimal {
     background: rgba(251, 191, 36, 0.2);
     color: #fbbf24;
   }
 
-  .recovery-stat-tag.hard {
+  .recovery-stat-tag.hard,
+  .recovery-stat-tag.building {
     background: rgba(251, 146, 60, 0.2);
     color: #fb923c;
+  }
+
+  .recovery-stat-tag.overreaching {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+  }
+
+  .recovery-stat-tag.detraining {
+    background: rgba(103, 232, 249, 0.2);
+    color: #67e8f9;
+  }
+
+  .recovery-fatigue-warning {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(251, 146, 60, 0.08);
+    border: 1px solid rgba(251, 146, 60, 0.25);
+    border-radius: 8px;
+    padding: 0.4rem 0.7rem;
+    color: #fb923c;
+    font-size: 0.78rem;
+    margin-bottom: 0.4rem;
   }
 
   .recovery-suggestion {
@@ -1971,6 +2013,92 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 0.1rem;
+  }
+
+  /* --- Splits (pace per km) --- */
+  .splits-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .split-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 56px;
+    align-items: center;
+    gap: 0.5rem;
+    animation: fadeInUp 0.35s ease-out backwards;
+  }
+
+  .split-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #ccc;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .split-bar-track {
+    height: 22px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .split-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(157, 78, 221, 0.7), rgba(76, 201, 240, 0.7));
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 8px;
+  }
+
+  .split-bar-fill.fastest {
+    background: linear-gradient(90deg, rgba(74, 222, 128, 0.8), rgba(52, 211, 153, 0.9));
+  }
+
+  .split-bar-fill.slowest {
+    background: linear-gradient(90deg, rgba(251, 146, 60, 0.7), rgba(239, 68, 68, 0.6));
+  }
+
+  .split-value {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: left;
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .split-badge {
+    font-size: 0.7rem;
+    line-height: 1;
+  }
+
+  .split-insight {
+    margin-top: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    border-left: 3px solid rgba(157, 78, 221, 0.6);
+    font-size: 0.82rem;
+    color: #ccc;
+    animation: fadeInUp 0.4s ease-out backwards;
+  }
+
+  .split-insight .insight-emoji {
+    margin-right: 0.3rem;
+  }
+
+  .split-insight .highlight {
+    font-weight: 700;
+    background: linear-gradient(135deg, #FF1B8D, #9D4EDD);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   /* --- Elevation section (no graph) --- */
@@ -3399,6 +3527,7 @@
     function renderShowcase(data) {
       // Title & Meta
       document.getElementById('activity-title').textContent = data.title || 'Activity';
+      document.title = (data.title || 'Activity') + ' | FitGlue';
       document.getElementById('activity-type').textContent = formatActivityType(data.activityType);
       document.getElementById('activity-source').textContent = 'from ' + formatSource(data.source);
 
@@ -4735,6 +4864,7 @@
       if (title === 'Muscle Heatmap') return renderMuscleHeatmapSection(section, idx);
       if (title === 'Elevation') return renderElevationSection(section, idx);
       if (title === 'Running Dynamics') return renderRunningDynamicsSection(section, idx);
+      if (title === 'Splits') return renderSplitsSection(section, idx);
       if (title === 'Conditions' && section._merged) return renderConditionsSection(section, idx);
 
       // Bullet-list sections get parsed stat rows
@@ -4800,37 +4930,51 @@
     }
 
     /**
-     * Recovery Advisor — structured grid with session/7-day loads and recovery callout.
+     * Recovery Advisor — structured grid with session load, 7-day/28-day loads, ACWR, and recovery callout.
      */
     function renderRecoverySection(section, idx) {
       const lines = section.content.split('\n').filter(l => l.trim());
-      let sessionVal = '', sessionTag = '', weekVal = '', suggestion = '';
+      let sessionVal = '', sessionTag = '', weekVal = '', chronicVal = '', acwrVal = '', acwrLabel = '', suggestion = '', fatigueWarning = '';
 
       lines.forEach(line => {
         const clean = line.replace(/^•\s*/, '').trim();
-        const sessionM = clean.match(/Session\s*load:\s*([\d.]+\s*TRIMP)\s*\((\w+)\)/i);
-        const weekM = clean.match(/7-day\s*load:\s*([\d.]+\s*TRIMP)/i);
+        const sessionM = clean.match(/Session\s*load:\s*([\d.]+\s*TRIMP)\s*\(([\w\s]+)\)/i);
+        const loadM = clean.match(/7-day\s*load:\s*([\d.]+\s*TRIMP)\s*•\s*28-day\s*avg:\s*([\d.]+\s*TRIMP)/i);
+        const weekOnlyM = !loadM && clean.match(/7-day\s*load:\s*([\d.]+\s*TRIMP)/i);
+        const acwrM = clean.match(/ACWR:\s*([\d.]+)\s*\(([^)⚠️]+)/i);
         const sugM = clean.match(/Suggested\s*recovery:\s*(.+)/i);
-        if (sessionM) { sessionVal = sessionM[1]; sessionTag = sessionM[2]; }
-        if (weekM) weekVal = weekM[1];
+        const fatigueM = clean.match(/(\d+)\s*consecutive\s*hard\s*days/i);
+        if (sessionM) { sessionVal = sessionM[1]; sessionTag = sessionM[2].trim(); }
+        if (loadM) { weekVal = loadM[1]; chronicVal = loadM[2]; }
+        if (weekOnlyM) weekVal = weekOnlyM[1];
+        if (acwrM) { acwrVal = acwrM[1]; acwrLabel = acwrM[2].trim(); }
         if (sugM) suggestion = sugM[1].replace(/^💡\s*/, '');
+        if (fatigueM) fatigueWarning = clean.replace(/^⚠️\s*/, '');
       });
 
-      const tagClass = sessionTag.toLowerCase() === 'easy' ? 'easy' : sessionTag.toLowerCase() === 'moderate' ? 'moderate' : 'hard';
+      const intensityClass = sessionTag.toLowerCase() === 'easy' || sessionTag.toLowerCase() === 'recovery' ? 'easy' : sessionTag.toLowerCase() === 'moderate' ? 'moderate' : 'hard';
+      const acwrClass = acwrLabel.toLowerCase();
+      const hasACWR = acwrVal !== '';
 
       return `
         <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
           <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
-          <div class="recovery-grid">
+          <div class="recovery-grid${hasACWR ? ' has-acwr' : ''}">
             <div class="recovery-stat-block">
-              <div class="recovery-stat-value">${escapeHtml(sessionVal)}${sessionTag ? `<span class="recovery-stat-tag ${tagClass}">${escapeHtml(sessionTag)}</span>` : ''}</div>
+              <div class="recovery-stat-value">${escapeHtml(sessionVal)}${sessionTag ? `<span class="recovery-stat-tag ${intensityClass}">${escapeHtml(sessionTag)}</span>` : ''}</div>
               <div class="recovery-stat-label">Session Load</div>
             </div>
             <div class="recovery-stat-block">
               <div class="recovery-stat-value">${escapeHtml(weekVal)}</div>
+              ${chronicVal ? `<div class="recovery-stat-sub">28d: ${escapeHtml(chronicVal)}</div>` : ''}
               <div class="recovery-stat-label">7-Day Load</div>
             </div>
+            ${hasACWR ? `<div class="recovery-stat-block">
+              <div class="recovery-stat-value">${escapeHtml(acwrVal)}${acwrLabel ? `<span class="recovery-stat-tag ${acwrClass}">${escapeHtml(acwrLabel)}</span>` : ''}</div>
+              <div class="recovery-stat-label">ACWR</div>
+            </div>` : ''}
           </div>
+          ${fatigueWarning ? `<div class="recovery-fatigue-warning"><span>⚠️</span><span>${escapeHtml(fatigueWarning)}</span></div>` : ''}
           ${suggestion ? `<div class="recovery-suggestion"><span class="icon">🕐</span><span>Suggested recovery: <span class="value">${escapeHtml(suggestion)}</span></span></div>` : ''}
         </div>`;
     }
@@ -4968,6 +5112,82 @@
               </div>
             `).join('')}
           </div>
+        </div>`;
+    }
+
+    /**
+     * Splits — visual pace bars for each km with fastest/slowest highlights.
+     * Parses lines like: "• Km 1: 5:12 🏆"
+     */
+    function renderSplitsSection(section, idx) {
+      const lines = section.content.split('\n').filter(l => l.trim());
+
+      // Separate split bullet lines from insight lines
+      const splitLines = [];
+      const insightLines = [];
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('•')) {
+          splitLines.push(trimmed);
+        } else if (trimmed) {
+          insightLines.push(trimmed);
+        }
+      });
+
+      if (splitLines.length === 0) return renderBulletListSection(section, idx);
+
+      // Parse each split line
+      const splits = splitLines.map(line => {
+        const clean = line.replace(/^•\s*/, '').trim();
+        // Match "Km N: M:SS" with optional badge emoji(s)
+        const m = clean.match(/^(Km\s*\d+|Mile\s*\d+):\s*(\d+:\d{2})(.*)$/i);
+        if (!m) return null;
+        const label = m[1];
+        const pace = m[2];
+        const rest = m[3].trim();
+        const isFastest = rest.includes('🏆');
+        const isSlowest = rest.includes('🐢');
+        // Convert M:SS to total seconds for bar sizing
+        const [min, sec] = pace.split(':').map(Number);
+        const totalSec = min * 60 + sec;
+        return { label, pace, totalSec, isFastest, isSlowest, badge: isFastest ? '🏆' : isSlowest ? '🐢' : '' };
+      }).filter(Boolean);
+
+      if (splits.length === 0) return renderBulletListSection(section, idx);
+
+      // Find min/max for scaling bars (lower pace = faster = longer bar)
+      const fastestSec = Math.min(...splits.map(s => s.totalSec));
+      const slowestSec = Math.max(...splits.map(s => s.totalSec));
+      const range = slowestSec - fastestSec || 1;
+
+      const barsHtml = splits.map((s, i) => {
+        // Scale: fastest gets 100%, slowest gets ~40%, linear interpolation
+        const pct = 100 - ((s.totalSec - fastestSec) / range) * 60;
+        const fillClass = s.isFastest ? 'fastest' : s.isSlowest ? 'slowest' : '';
+        const delay = (idx * 0.1) + (i * 0.03);
+        return `<div class="split-row" style="animation-delay:${delay}s">
+          <span class="split-label">${escapeHtml(s.label)}</span>
+          <div class="split-bar-track">
+            <div class="split-bar-fill ${fillClass}" style="width:${pct}%"></div>
+          </div>
+          <span class="split-value">${escapeHtml(s.pace)}${s.badge ? `<span class="split-badge">${s.badge}</span>` : ''}</span>
+        </div>`;
+      }).join('');
+
+      // Render insight lines (🔥 Negative Split, 😓 Fatigue, 💪 Strong Finish)
+      const insightsHtml = insightLines.map((line, i) => {
+        const emojiResult = extractLeadingEmoji(line);
+        return `<div class="split-insight" style="animation-delay:${(idx * 0.1) + (splits.length * 0.03) + (i * 0.08)}s">
+          <span class="insight-emoji">${emojiResult.emoji}</span>
+          <span class="highlight">${escapeHtml(emojiResult.rest.trim())}</span>
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="showcase-section glass-card description-section-card" style="animation-delay: ${idx * 0.1}s;">
+          <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+          <div class="splits-grid">${barsHtml}</div>
+          ${insightsHtml}
         </div>`;
     }
 
@@ -5164,7 +5384,10 @@
         const chipsHtml = group.records.map(pr => {
           let improvementHtml = '';
           if (pr.improvement) {
-            const isPositive = !pr.improvement.startsWith('-');
+            // For time-based records (fastest X), negative improvement = faster = good
+            const isTimeRecord = pr.typeClass === 'time';
+            const startsWithMinus = pr.improvement.startsWith('-');
+            const isPositive = isTimeRecord ? startsWithMinus : !startsWithMinus;
             const cls = isPositive ? 'positive' : 'negative';
             const arrow = isPositive ? '▲' : '▼';
             improvementHtml = `<span class="pr-record-improvement ${cls}">${arrow} ${pr.improvement}</span>`;

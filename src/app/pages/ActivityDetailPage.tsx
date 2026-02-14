@@ -329,6 +329,7 @@ const ActivityDetailPage: React.FC = () => {
     const successDestinations = destinations.filter(d => d.status === 'Success');
     const pendingDestinations = destinations.filter(d => d.status === 'Pending' || d.status === 'Unknown');
     const failedDestinations = destinations.filter(d => d.status === 'Failed');
+    const skippedDestinations = destinations.filter(d => d.status === 'Skipped');
 
     // Calculate sync credits used (1 credit per successful destination)
     const creditsUsed = successDestinations.length;
@@ -368,6 +369,18 @@ const ActivityDetailPage: React.FC = () => {
                     <Badge key={dest.name} variant="error" size="sm">
                         <Stack direction="horizontal" gap="xs" align="center">
                             <Paragraph inline>❌</Paragraph>
+                            <Paragraph inline size="sm">{destInfo.name}</Paragraph>
+                        </Stack>
+                    </Badge>
+                );
+            })}
+            {/* SKIPPED destinations - warning styling */}
+            {skippedDestinations.map(dest => {
+                const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                return (
+                    <Badge key={dest.name} variant="warning" size="sm">
+                        <Stack direction="horizontal" gap="xs" align="center">
+                            <Paragraph inline>⏭️</Paragraph>
                             <Paragraph inline size="sm">{destInfo.name}</Paragraph>
                         </Stack>
                     </Badge>
@@ -627,6 +640,46 @@ const ActivityDetailPage: React.FC = () => {
                                                     <Stack gap="xs">
                                                         <Paragraph size="sm" muted>
                                                             ❌ Sync failed
+                                                        </Paragraph>
+                                                        {destOutcome?.error && (
+                                                            <Code>{destOutcome.error}</Code>
+                                                        )}
+                                                    </Stack>
+                                                </GlowCard>
+                                            );
+                                        })}
+                                    </Grid>
+                                </Stack>
+                            )}
+
+                            {/* Skipped Destinations - Show skip reason */}
+                            {skippedDestinations.length > 0 && (
+                                <Stack gap="sm">
+                                    <Heading level={5}>
+                                        <Stack direction="horizontal" gap="xs" align="center">
+                                            <Paragraph inline>⏭️</Paragraph>
+                                            Skipped
+                                        </Stack>
+                                    </Heading>
+                                    <Grid cols={2} gap="md">
+                                        {skippedDestinations.map(dest => {
+                                            const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                                            const destOutcome = pipelineRun.destinations?.find(
+                                                d => formatDestination(d.destination) === dest.name
+                                            );
+
+                                            const cardHeader = (
+                                                <Stack direction="horizontal" align="center" gap="sm">
+                                                    <Paragraph inline style={{ fontSize: '1.5rem' }}>{destInfo.icon}</Paragraph>
+                                                    <Heading level={4}>{destInfo.name}</Heading>
+                                                </Stack>
+                                            );
+
+                                            return (
+                                                <GlowCard key={dest.name} variant="premium" header={cardHeader}>
+                                                    <Stack gap="xs">
+                                                        <Paragraph size="sm" muted>
+                                                            ⏭️ Skipped
                                                         </Paragraph>
                                                         {destOutcome?.error && (
                                                             <Code>{destOutcome.error}</Code>

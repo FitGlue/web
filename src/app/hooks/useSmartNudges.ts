@@ -16,6 +16,7 @@ import {
     SmartNudgeDefinition,
 } from '../data/smartNudges';
 import { IntegrationsSummary } from '../state/integrationsState';
+import { formatDestination } from '../../types/pb/enum-formatters';
 
 // ── Types ────────────────────────────────────────────────────────
 
@@ -94,9 +95,13 @@ function evaluateCondition(
         case 'missing_destination': {
             if (pipelines.length === 0) return false;
             const { destinationId } = condition;
+            const target = destinationId?.toLowerCase();
             // Fire if NO pipeline sends to this destination
+            // Destinations are stored as numeric protobuf enums, so resolve via formatDestination
             return !pipelines.some(p =>
-                p.destinations.some(d => String(d) === destinationId),
+                p.destinations.some(d =>
+                    formatDestination(d).toLowerCase() === target,
+                ),
             );
         }
 

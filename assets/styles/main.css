@@ -100,15 +100,6 @@
     margin-bottom: var(--space-sm);
   }
 
-  .data-flow {
-    margin: var(--space-lg) 0;
-  }
-
-  .flow-caption {
-    margin-top: var(--space-sm);
-    margin-bottom: var(--space-md);
-  }
-
   .hero-subtitle {
     margin-bottom: var(--space-md);
   }
@@ -524,11 +515,10 @@ h4 {
   pointer-events: none;
 }
 
-.hero-content {
+.hero-content,
+.hero-text {
   position: relative;
   z-index: 1;
-  max-width: 900px;
-  padding: 0 var(--space-md);
 }
 
 .hero-title {
@@ -558,86 +548,600 @@ h4 {
 .hero-cta {
   display: flex;
   gap: var(--space-sm);
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
   animation: fade-in-up 0.8s ease-out 0.4s both;
 }
 
-/* Data Flow Animation */
-.data-flow {
+/* ---- Hero Split Layout ---- */
+.hero-split {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: center;
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 var(--space-lg);
+}
+
+.hero-text {
+  text-align: left;
+  animation: fade-in-up 0.8s ease-out;
+}
+
+.hero-text .hero-title {
+  text-align: left;
+}
+
+.hero-text .hero-tagline {
+  text-align: left;
+}
+
+.hero-text .hero-subtitle {
+  text-align: left;
+}
+
+.hero-highlight {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ---- Hero Carousel ---- */
+.hero-visual {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
-  margin: var(--space-xl) 0;
   animation: fade-in-up 0.8s ease-out 0.3s both;
 }
 
-.data-flow-node {
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  backdrop-filter: blur(10px);
-  font-weight: 600;
-  transition: all var(--transition-normal);
-}
-
-.data-flow-node:hover {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-glow-pink);
-}
-
-.data-flow-node.source {
-  border-color: rgba(255, 0, 110, 0.3);
-}
-
-.data-flow-node.center {
-  background: var(--gradient-primary);
-  border: none;
-  font-weight: 800;
-}
-
-.data-flow-node.destination {
-  border-color: rgba(131, 56, 236, 0.3);
-}
-
-.data-flow-arrow {
-  width: 40px;
-  height: 4px;
-  background: var(--gradient-primary);
-  border-radius: 2px;
+.hero-carousel {
   position: relative;
-  animation: pulse-width 2s ease-in-out infinite;
+  width: 100%;
+  max-width: 420px;
+  min-height: 280px;
 }
 
-.data-flow-arrow::after {
-  content: '';
+/* Slide transitions */
+.hc-card {
   position: absolute;
-  right: -6px;
-  top: 50%;
-  transform: translateY(-50%);
-  border: 6px solid transparent;
-  border-left-color: var(--color-secondary);
+  inset: 0;
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: none;
 }
 
-@media (max-width: 640px) {
-  .data-flow {
-    flex-direction: column;
-  }
+.hc-card.hc-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  position: relative;
+}
 
-  .data-flow-arrow {
-    width: 4px;
-    height: 30px;
-    transform: rotate(90deg);
-  }
+.hc-card.hc-entering {
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
+}
+
+.hc-card.hc-exiting {
+  opacity: 0;
+  transform: translateY(-12px) scale(0.97);
+  position: absolute;
+}
+
+/* ---- Card Base ---- */
+.hc-card {
+  background: rgba(30, 30, 40, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 1.25rem;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.hc-card-header h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hc-card-body {
+  font-size: 0.85rem;
+}
+
+/* ---- Heart Rate ---- */
+.hc-hr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.hc-hr-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.hc-hr-val {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.hc-hr-avg .hc-hr-val {
+  color: #FF1B8D;
+}
+
+.hc-hr-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.hc-hr-drift {
+  margin-top: 0.75rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+}
+
+/* ---- HR Zones ---- */
+.hc-zones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.hc-zone-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 80px;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.hc-zone-label {
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.hc-zone-bar {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.hc-zone-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.8s ease;
+}
+
+.hc-zone-name {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: right;
+}
+
+/* ---- Personal Records ---- */
+.hc-pr-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.hc-pr-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 0.6rem;
+  text-align: center;
+}
+
+.hc-pr-val {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.hc-pr-name {
+  display: block;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.15rem;
+}
+
+.hc-pr-imp {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  margin-top: 0.2rem;
+}
+
+.hc-pr-imp.pos {
+  color: #22C55E;
+}
+
+.hc-pr-imp.neg {
+  color: #EF4444;
+}
+
+/* ---- Muscle Heatmap ---- */
+.hc-muscles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.hc-muscle-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.hc-muscle-name {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.hc-muscle-bar {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.hc-muscle-fill {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #9D4EDD, #FF1B8D);
+}
+
+/* ---- Goal Progress ---- */
+.hc-goal {
+  text-align: center;
+}
+
+.hc-goal-bar {
+  height: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 7px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.hc-goal-fill {
+  height: 100%;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #FF1B8D, #9D4EDD);
+}
+
+.hc-goal-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.hc-goal-pct {
+  font-weight: 800;
+  color: #FF1B8D;
+}
+
+.hc-goal-label {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ---- Streak ---- */
+.hc-streak {
+  text-align: center;
+}
+
+.hc-streak-num {
+  font-size: 3rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #FF1B8D, #9D4EDD);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+
+.hc-streak-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.25rem;
+}
+
+.hc-streak-pb {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #EAB308;
+}
+
+/* ---- Effort Score ---- */
+.hc-effort {
+  text-align: center;
+}
+
+.hc-effort-gauge {
+  width: 140px;
+  height: 80px;
+  display: block;
+  margin: 0 auto;
+}
+
+.hc-effort-val {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  margin-top: -0.5rem;
+}
+
+.hc-effort-val span {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.hc-effort-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.25rem;
+}
+
+/* ---- Elevation ---- */
+.hc-elev-stats {
+  display: flex;
+  justify-content: space-around;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.hc-elev-profile {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 0.5rem;
+  letter-spacing: 2px;
+}
+
+/* ---- Calories ---- */
+.hc-cal {
+  text-align: center;
+}
+
+.hc-cal-val {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.hc-cal-val span {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-left: 0.2rem;
+}
+
+.hc-cal-eq {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.5rem;
+}
+
+/* ---- Training Load, Recovery ---- */
+.hc-load,
+.hc-recovery {
+  text-align: center;
+}
+
+.hc-load-val,
+.hc-recovery-val {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.hc-recovery-val span {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.hc-load-label,
+.hc-recovery-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.3rem;
+}
+
+/* ---- Intervals ---- */
+.hc-intervals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.hc-int-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+}
+
+.hc-int-set {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.hc-int-pace {
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #4CC9F0;
+}
+
+/* ---- Parkrun ---- */
+.hc-parkrun {
+  text-align: center;
+}
+
+.hc-parkrun-time {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.hc-parkrun-pb {
+  color: #EAB308;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+}
+
+.hc-parkrun-pos {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+/* ---- Milestones ---- */
+.hc-miles {
+  text-align: center;
+}
+
+.hc-miles-val {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.hc-miles-val span {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-left: 0.15rem;
+}
+
+.hc-miles-next {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.5rem;
+}
+
+/* ---- Running Dynamics ---- */
+.hc-dynamics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.hc-dyn-val {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.hc-dyn-label {
+  display: block;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.15rem;
+}
+
+/* ---- Workout Summary ---- */
+.hc-ws-headline {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.5rem;
+}
+
+.hc-ws-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.hc-ws-ex {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.35rem 0.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+}
+
+/* ---- Conditions ---- */
+.hc-conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.hc-cond-line {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ---- Text Fallback ---- */
+.hc-text {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 @media (max-width: 768px) {
   .hero {
     min-height: auto;
-    padding-top: 140px;
+    padding-top: 120px;
     padding-bottom: var(--space-xl);
+  }
+
+  .hero-split {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .hero-text {
+    text-align: center;
+  }
+
+  .hero-text .hero-title,
+  .hero-text .hero-tagline,
+  .hero-text .hero-subtitle {
+    text-align: center;
+  }
+
+  .hero-cta {
+    justify-content: center;
+  }
+
+  .hero-carousel {
+    max-width: 340px;
+    margin: 0 auto;
   }
 }
 
