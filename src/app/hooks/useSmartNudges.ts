@@ -7,8 +7,10 @@
  */
 
 import { useMemo, useCallback, useState } from 'react';
+import { useAtom } from 'jotai';
 import { useRealtimePipelines } from './useRealtimePipelines';
 import { useRealtimeIntegrations } from './useRealtimeIntegrations';
+import { isPipelinesLoadedAtom } from '../state/pipelinesState';
 import {
     SMART_NUDGES,
     NudgeCondition,
@@ -127,8 +129,13 @@ export function useSmartNudges(page: NudgePage): ActiveNudge | null {
 
     const { pipelines } = useRealtimePipelines();
     const { integrations } = useRealtimeIntegrations();
+    const [pipelinesLoaded] = useAtom(isPipelinesLoadedAtom);
 
     const activeNudge = useMemo(() => {
+        // Don't evaluate nudges until pipelines have loaded — prevents false
+        // positives during the initial fetch when the array is still empty.
+        if (!pipelinesLoaded) return null;
+
         // Filter nudges for this page, not dismissed, and matching condition
         const candidates = SMART_NUDGES
             .filter(n => n.pages.includes(page))
@@ -141,7 +148,7 @@ export function useSmartNudges(page: NudgePage): ActiveNudge | null {
             .sort((a, b) => b.priority - a.priority);
 
         return candidates[0] ?? null;
-    }, [page, pipelines, integrations]);
+    }, [page, pipelines, integrations, pipelinesLoaded]);
 
     const dismiss = useCallback(() => {
         if (activeNudge) {
