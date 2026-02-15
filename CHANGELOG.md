@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.29.1](https://github.com/fitglue/web/compare/v10.29.0...v10.29.1) (2026-02-15)
+
+
+### Bug Fixes
+
+* smart nudge dismiss ([e7656a5](https://github.com/fitglue/web/commit/e7656a58a235817726c143e4a9ad6ba6a845d166))
+* smart nudges, changelog ([970e7c9](https://github.com/fitglue/web/commit/970e7c9e30a81c491139f97648666a1293c10980))
+
 ## [10.29.0](https://github.com/fitglue/web/compare/v10.28.0...v10.29.0) (2026-02-15)
 
 
