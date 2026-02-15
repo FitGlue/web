@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.29.0](https://github.com/fitglue/web/compare/v10.28.0...v10.29.0) (2026-02-15)
+
+
+### Features
+
+* add account security features, showcase pagination, and UI refinements ([cd36764](https://github.com/fitglue/web/commit/cd3676491167087d3afe3882d659fbe50dd7c8e5))
+
+
+### Bug Fixes
+
+* don't use firebase email sending for auth emails ([8df0776](https://github.com/fitglue/web/commit/8df0776e8122200d433929f366881bd6039539b9))
+
 ## [10.28.0](https://github.com/fitglue/web/compare/v10.27.0...v10.28.0) (2026-02-15)
 
 
