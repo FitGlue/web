@@ -62,7 +62,7 @@ function isNudgeDismissed(nudgeId: string): boolean {
 
 // ── Condition evaluators ─────────────────────────────────────────
 
-function evaluateCondition(
+export function evaluateCondition(
     condition: NudgeCondition,
     pipelines: PipelineConfig[],
     integrations: IntegrationsSummary | null,
@@ -112,8 +112,14 @@ function evaluateCondition(
             if (!integrationId || !integrations) return false;
             const integration = integrations[integrationId as keyof IntegrationsSummary];
             if (!integration?.connected) return false;
-            // Connected but no pipeline uses it as a source
-            return !pipelines.some(p => p.source === integrationId);
+            // Connected but no pipeline uses it as a source or destination
+            const usedAsSource = pipelines.some(p => p.source === integrationId);
+            const usedAsDestination = pipelines.some(p =>
+                p.destinations.some(d =>
+                    formatDestination(d).toLowerCase() === integrationId,
+                ),
+            );
+            return !usedAsSource && !usedAsDestination;
         }
 
         default:

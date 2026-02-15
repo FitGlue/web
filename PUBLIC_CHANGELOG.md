@@ -1,6 +1,29 @@
 # FitGlue Changelog
 
-<!-- LAST_PUBLISHED: server=v13.0.0, web=v10.16.0 -->
+<!-- LAST_PUBLISHED: server=v14.8.1, web=v10.28.0 -->
+
+## Server v14.8.1 / Web v10.28.0 - February 15, 2026
+
+### ⚠ Breaking Changes
+
+- *None - We've made backend improvements, but nothing that will interrupt your FitGlue experience.*
+
+### ✨ New Features
+
+- **Get more insights from your workouts!** We're now automatically detecting and displaying interval data (like sprints!) within your synced activities.
+- **Personalize your FitGlue profile!** You can now create and edit your profile to showcase your fitness achievements.
+- **Easily share your fitness journey!** We've enhanced the way your workout data is displayed when you share links, making them look even better.
+- **Explore new workout recipes!** We've added a dedicated page to discover and import new workout routines.
+- **Enjoy a smoother, more informative experience!** We've made improvements to tours, guides, and the overall look and feel of the FitGlue platform.
+
+### 🐛 Bug Fixes
+
+- **We've squashed some bugs related to:**
+- - Profile picture uploads
+- - Email notifications
+- - Downloading workout data
+- - Display issues on the showcase page
+
 
 ## Server v13.0.0 / Web v10.16.0 - February 11, 2026
 
