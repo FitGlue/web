@@ -1,0 +1,123 @@
+{{> auth-head}}
+
+<div class="auth-container">
+    <h1 class="title">
+        <a href="/" class="logo-link">
+            <span class="fit">Fit</span><span class="glue">Glue</span>
+        </a>
+    </h1>
+    <h2>Confirm Email Change</h2>
+
+    <div class="auth-box">
+        <div id="auth-error" class="auth-message error" style="display: none;"></div>
+        <div id="auth-success" class="auth-message success" style="display: none;"></div>
+
+        <div id="processing" class="verification-content">
+            <p class="auth-description">Confirming your new email address...</p>
+            <div class="spinner-container">
+                <span class="spinner"></span>
+            </div>
+        </div>
+
+        <div id="success-view" style="display: none;">
+            <p class="auth-description">Your email address has been updated successfully. Please log in with your new
+                email.</p>
+            <a href="/auth/login" class="btn primary" style="display:inline-block;text-align:center;">Go to Login</a>
+        </div>
+
+        <div id="invalid-link" style="display: none;">
+            <p class="auth-description">This email change link is invalid or has expired.</p>
+            <a href="/app/settings" class="btn primary" style="display:inline-block;text-align:center;">Go to
+                Settings</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .spinner-container {
+        text-align: center;
+        padding: 24px 0;
+    }
+
+    .spinner {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        border: 3px solid rgba(255, 27, 141, 0.2);
+        border-top-color: #FF1B8D;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, applyActionCode } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+    const errorEl = document.getElementById('auth-error');
+    const processing = document.getElementById('processing');
+    const successView = document.getElementById('success-view');
+    const invalidLink = document.getElementById('invalid-link');
+
+    function showError(message) {
+        processing.style.display = 'none';
+        errorEl.textContent = message;
+        errorEl.style.display = 'block';
+    }
+
+    async function getFirebaseConfig() {
+        try {
+            const response = await fetch('/__/firebase/init.json');
+            if (response.ok) {
+                return await response.json();
+            }
+        } catch (e) {
+            console.warn('Could not load Firebase config:', e);
+        }
+        return null;
+    }
+
+    async function init() {
+        const firebaseConfig = await getFirebaseConfig();
+        if (!firebaseConfig) {
+            showError('Could not initialize. Please try again later.');
+            return;
+        }
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Extract oobCode from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const oobCode = urlParams.get('oobCode');
+
+        if (!oobCode) {
+            processing.style.display = 'none';
+            invalidLink.style.display = 'block';
+            return;
+        }
+
+        try {
+            await applyActionCode(auth, oobCode);
+            processing.style.display = 'none';
+            successView.style.display = 'block';
+        } catch (error) {
+            processing.style.display = 'none';
+            if (error.code === 'auth/expired-action-code' || error.code === 'auth/invalid-action-code') {
+                invalidLink.style.display = 'block';
+            } else {
+                showError(error.message);
+            }
+        }
+    }
+
+    init();
+</script>
+
+{{> auth-footer}}

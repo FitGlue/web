@@ -333,6 +333,11 @@
     justify-content: flex-end;
 }
 
+/* Pagination */
+.showcase-mgmt__pagination {
+    margin-top: var(--spacing-md);
+}
+
 
 
 /* Mobile responsiveness */

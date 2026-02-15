@@ -6,12 +6,14 @@ import { Card, Button, Heading, Paragraph, Badge, Code, List, ListItem, GlowCard
 import { Link } from '../components/library/navigation';
 import { useApi } from '../hooks/useApi';
 import { useUser } from '../hooks/useUser';
+import { useAuth } from '../hooks/useAuth';
 import { userAtom } from '../state/authState';
 import { useNerdMode } from '../state/NerdModeContext';
 import { initFirebase } from '../../shared/firebase';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST, HOBBYIST_TIER_LIMITS } from '../utils/tier';
 import { Input, FormField } from '../components/library/forms';
 import { NotificationPreferencesCard } from '../components/NotificationPreferencesCard';
+import { ReauthModal } from '../components/ReauthModal';
 
 const AccountSettingsPage: React.FC = () => {
     const [firebaseUser] = useAtom(userAtom);
@@ -19,6 +21,7 @@ const AccountSettingsPage: React.FC = () => {
     const api = useApi();
     const toast = useToast();
     const { isNerdMode } = useNerdMode();
+    const { changePassword } = useAuth();
 
     // Name editing - always visible, dirty state detection
     const [editedName, setEditedName] = useState('');
@@ -35,6 +38,17 @@ const AccountSettingsPage: React.FC = () => {
     const [deleteError, setDeleteError] = useState<string | null>(null);
 
     const [copied, setCopied] = useState(false);
+
+    // Password change state
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [changingPassword, setChangingPassword] = useState(false);
+    const [passwordError, setPasswordError] = useState('');
+    const [passwordSuccess, setPasswordSuccess] = useState('');
+
+    // Reauth modal state (for email change on stale sessions)
+    const [showReauthModal, setShowReauthModal] = useState(false);
 
     // Data export state
     const [exportStatus, setExportStatus] = useState<'idle' | 'pending' | 'running' | 'completed' | 'failed'>('idle');
@@ -85,6 +99,12 @@ const AccountSettingsPage: React.FC = () => {
             setEmailSent(true);
             toast.info('Verification Sent', `Check ${editedEmail} for the verification link`);
         } catch (err: unknown) {
+            const firebaseError = err as { code?: string };
+            if (firebaseError.code === 'auth/requires-recent-login') {
+                setSavingEmail(false);
+                setShowReauthModal(true);
+                return;
+            }
             console.error('Failed to send email change verification:', err);
             const errorMsg = err instanceof Error ? err.message : 'Failed to send verification email';
             setEmailError(errorMsg);
@@ -93,6 +113,49 @@ const AccountSettingsPage: React.FC = () => {
             setSavingEmail(false);
         }
     };
+
+    const handleReauthSuccess = () => {
+        setShowReauthModal(false);
+        // Retry the email change after successful re-authentication
+        handleSaveEmail();
+    };
+
+    const handleChangePassword = async () => {
+        setPasswordError('');
+        setPasswordSuccess('');
+
+        if (!currentPassword) {
+            setPasswordError('Current password is required');
+            return;
+        }
+        if (newPassword.length < 6) {
+            setPasswordError('New password must be at least 6 characters');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            setPasswordError('Passwords do not match');
+            return;
+        }
+
+        setChangingPassword(true);
+        const success = await changePassword(currentPassword, newPassword);
+        setChangingPassword(false);
+
+        if (success) {
+            setPasswordSuccess('Password updated successfully!');
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmPassword('');
+            toast.success('Password Changed', 'Your password has been updated');
+        } else {
+            setPasswordError('Failed to change password. Check your current password and try again.');
+        }
+    };
+
+    // Check if user has an email/password provider (vs Google/Facebook only)
+    const hasPasswordProvider = firebaseUser?.providerData?.some(
+        (p) => p.providerId === 'password'
+    ) ?? false;
 
     const handleCopyUserId = async () => {
         if (!firebaseUser?.uid) return;
@@ -268,6 +331,61 @@ const AccountSettingsPage: React.FC = () => {
                         </Stack>
                     </Stack>
                 </Card>
+
+                {/* Security Card - Change Password */}
+                {hasPasswordProvider && (
+                    <Card>
+                        <Stack gap="md">
+                            <Stack direction="horizontal" gap="sm" align="center">
+                                <Paragraph inline>🔒</Paragraph>
+                                <Heading level={3}>Security</Heading>
+                            </Stack>
+
+                            <Heading level={4}>Change Password</Heading>
+                            <Stack gap="sm">
+                                <FormField label="Current Password" htmlFor="current-password">
+                                    <Input
+                                        id="current-password"
+                                        type="password"
+                                        value={currentPassword}
+                                        onChange={(e) => { setCurrentPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
+                                        placeholder="Enter current password"
+                                        disabled={changingPassword}
+                                    />
+                                </FormField>
+                                <FormField label="New Password" htmlFor="new-password">
+                                    <Input
+                                        id="new-password"
+                                        type="password"
+                                        value={newPassword}
+                                        onChange={(e) => { setNewPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
+                                        placeholder="Enter new password (min 6 characters)"
+                                        disabled={changingPassword}
+                                    />
+                                </FormField>
+                                <FormField label="Confirm New Password" htmlFor="confirm-password">
+                                    <Input
+                                        id="confirm-password"
+                                        type="password"
+                                        value={confirmPassword}
+                                        onChange={(e) => { setConfirmPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
+                                        placeholder="Re-enter new password"
+                                        disabled={changingPassword}
+                                    />
+                                </FormField>
+                                {passwordError && <Paragraph size="sm">{passwordError}</Paragraph>}
+                                {passwordSuccess && <Paragraph size="sm">{passwordSuccess}</Paragraph>}
+                                <Button
+                                    variant="primary"
+                                    onClick={handleChangePassword}
+                                    disabled={changingPassword || !currentPassword || !newPassword || !confirmPassword}
+                                >
+                                    {changingPassword ? 'Changing Password...' : 'Change Password'}
+                                </Button>
+                            </Stack>
+                        </Stack>
+                    </Card>
+                )}
 
                 {/* Subscription Card - Premium Styling */}
                 <Card highlighted={isAthlete}>
@@ -464,6 +582,17 @@ const AccountSettingsPage: React.FC = () => {
                     </Stack>
                 </Card>
             </Stack>
+
+            {/* Re-authentication Modal */}
+            {firebaseUser && hasPasswordProvider && (
+                <ReauthModal
+                    user={firebaseUser}
+                    isOpen={showReauthModal}
+                    onSuccess={handleReauthSuccess}
+                    onCancel={() => setShowReauthModal(false)}
+                    description="Your session has expired. Please enter your password to continue changing your email."
+                />
+            )}
         </PageLayout>
     );
 };

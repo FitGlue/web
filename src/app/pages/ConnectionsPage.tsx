@@ -94,6 +94,16 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
                                 <Paragraph size="sm">{lastSynced}</Paragraph>
                             </Stack>
                         )}
+                        {isNerdMode && status?.additionalDetails && Object.keys(status.additionalDetails).length > 0 && (
+                            <>
+                                {Object.entries(status.additionalDetails).map(([key, value]) => (
+                                    <Stack key={key} direction="horizontal" gap="xs" align="center">
+                                        <Paragraph size="sm" muted>{key}:</Paragraph>
+                                        <Paragraph size="sm">{value}</Paragraph>
+                                    </Stack>
+                                ))}
+                            </>
+                        )}
                         {integration.actions && integration.actions.length > 0 && (
                             <Paragraph size="sm" muted>
                                 ⚡ {integration.actions.length} {integration.actions.length === 1 ? 'action' : 'actions'} available

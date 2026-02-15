@@ -41,6 +41,15 @@
             <div id="profile-activities" class="profile-activities">
                 <h2 class="section-title">Showcased Activities</h2>
                 <div id="activity-list" class="activity-list"></div>
+                <div id="load-more-container" class="load-more-container" style="display: none;">
+                    <button id="load-more-btn" class="load-more-btn" onclick="loadMoreActivities()">
+                        Load More Activities
+                    </button>
+                </div>
+                <div id="all-loaded" class="all-loaded" style="display: none;">
+                    <span class="all-loaded-icon">✨</span>
+                    <span>That's all the activities!</span>
+                </div>
             </div>
 
             <!-- CTA banner -->
@@ -514,6 +523,56 @@
         transform: translateX(3px);
     }
 
+    /* Load More */
+    .load-more-container {
+        text-align: center;
+        padding: 1.5rem 0 0.5rem;
+    }
+
+    .load-more-btn {
+        background: linear-gradient(135deg, rgba(255, 27, 141, 0.15), rgba(157, 78, 221, 0.15));
+        border: 1px solid rgba(255, 27, 141, 0.3);
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 700;
+        padding: 0.85rem 2.5rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        letter-spacing: 0.02em;
+    }
+
+    .load-more-btn:hover {
+        background: linear-gradient(135deg, rgba(255, 27, 141, 0.25), rgba(157, 78, 221, 0.25));
+        border-color: rgba(255, 27, 141, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(255, 27, 141, 0.15);
+    }
+
+    .load-more-btn:active {
+        transform: translateY(0);
+    }
+
+    .load-more-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .all-loaded {
+        text-align: center;
+        padding: 1.25rem 0;
+        color: #888;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        animation: fadeInUp 0.4s ease-out;
+    }
+
+    .all-loaded-icon {
+        margin-right: 0.4rem;
+    }
+
     /* Responsive */
     @media (max-width: 480px) {
         .profile-stats {
@@ -682,6 +741,13 @@
         return params.get('slug') || params.get('u');
     }
 
+    // ---- Pagination State ----
+    var _currentPage = 0;
+    var _hasMore = true;
+    var _isLoading = false;
+    var _totalCardIdx = 0;
+    var _apiBase = '';
+
     async function loadProfile() {
         const slug = getSlugFromUrl();
         if (!slug) {
@@ -689,26 +755,80 @@
             return;
         }
 
-        try {
-            const apiBase = window.location.hostname === 'localhost'
-                ? 'http://localhost:8080'
-                : '';
+        _apiBase = window.location.hostname === 'localhost'
+            ? 'http://localhost:8080'
+            : '';
 
-            const resp = await fetch(apiBase + '/api/showcase/profile/' + encodeURIComponent(slug));
+        try {
+            const resp = await fetch(_apiBase + '/api/showcase/profile/' + encodeURIComponent(slug));
             if (!resp.ok) {
                 showError();
                 return;
             }
 
             const profile = await resp.json();
-            renderProfile(profile);
+            renderProfileHeader(profile);
+            appendEntries(profile.entries || []);
+            _currentPage = 1;
+            _hasMore = profile.pagination ? profile.pagination.hasMore : false;
+            updateLoadMoreState();
+
+            // Show content, hide loading
+            document.getElementById('profile-loading').style.display = 'none';
+            document.getElementById('profile-content').style.display = '';
         } catch (err) {
             console.error('Failed to load profile:', err);
             showError();
         }
     }
 
-    function renderProfile(profile) {
+    async function loadMoreActivities() {
+        if (_isLoading || !_hasMore) return;
+        _isLoading = true;
+
+        var btn = document.getElementById('load-more-btn');
+        btn.disabled = true;
+        btn.textContent = 'Loading...';
+
+        try {
+            var slug = getSlugFromUrl();
+            var nextPage = _currentPage + 1;
+            var resp = await fetch(_apiBase + '/api/showcase/profile/' + encodeURIComponent(slug) + '?page=' + nextPage);
+            if (!resp.ok) {
+                btn.textContent = 'Load More Activities';
+                btn.disabled = false;
+                _isLoading = false;
+                return;
+            }
+            var data = await resp.json();
+            appendEntries(data.entries || []);
+            _currentPage = nextPage;
+            _hasMore = data.pagination ? data.pagination.hasMore : false;
+            updateLoadMoreState();
+        } catch (err) {
+            console.error('Failed to load more activities:', err);
+        }
+
+        btn.textContent = 'Load More Activities';
+        btn.disabled = false;
+        _isLoading = false;
+    }
+
+    function updateLoadMoreState() {
+        var loadMoreContainer = document.getElementById('load-more-container');
+        var allLoaded = document.getElementById('all-loaded');
+
+        if (_hasMore) {
+            loadMoreContainer.style.display = '';
+            allLoaded.style.display = 'none';
+        } else {
+            loadMoreContainer.style.display = 'none';
+            // Only show "all loaded" if there are entries
+            allLoaded.style.display = _totalCardIdx > 0 ? '' : 'none';
+        }
+    }
+
+    function renderProfileHeader(profile) {
         // Set display name
         document.getElementById('profile-name').textContent = profile.displayName;
         document.title = profile.displayName + ' — FitGlue';
@@ -767,64 +887,68 @@
                 + '<div class="stat-label">' + s.label + '</div>'
                 + '</div>';
         }).join('');
+    }
 
-        // Build activity list (sorted newest first, grouped by date)
-        const entries = (profile.entries || []).slice().sort(function (a, b) {
-            return new Date(b.startTime || 0) - new Date(a.startTime || 0);
-        });
+    function appendEntries(entries) {
+        // Entries are already sorted newest-first by the server
+        var listContainer = document.getElementById('activity-list');
 
-        // Group by date
-        var dateGroups = [];
-        var currentKey = null;
+        // Find the last date group already rendered (if any) to merge into
+        var existingGroups = listContainer.querySelectorAll('.activity-date-group');
+        var lastGroupKey = '';
+        var lastGroupCardsContainer = null;
+        if (existingGroups.length > 0) {
+            var lastGroup = existingGroups[existingGroups.length - 1];
+            lastGroupKey = lastGroup.getAttribute('data-date-key') || '';
+            lastGroupCardsContainer = lastGroup.querySelector('.activity-date-cards');
+        }
+
         entries.forEach(function (entry) {
             var key = getDateKey(entry.startTime);
-            if (key !== currentKey) {
-                dateGroups.push({ key: key, header: formatDateGroupHeader(entry.startTime), entries: [] });
-                currentKey = key;
+
+            // If this entry belongs to a different date group, create a new one
+            if (key !== lastGroupKey) {
+                var groupEl = document.createElement('div');
+                groupEl.className = 'activity-date-group';
+                groupEl.setAttribute('data-date-key', key);
+                groupEl.innerHTML = '<div class="activity-date-header">' + formatDateGroupHeader(entry.startTime) + '</div>'
+                    + '<div class="activity-date-cards"></div>';
+                listContainer.appendChild(groupEl);
+                lastGroupKey = key;
+                lastGroupCardsContainer = groupEl.querySelector('.activity-date-cards');
             }
-            dateGroups[dateGroups.length - 1].entries.push(entry);
+
+            // Build the card
+            var icon = getActivityIcon(entry.activityType);
+            var cat = ACTIVITY_CATEGORY[entry.activityType] || 'general';
+            var metaParts = [];
+            var distStr = formatDistance(entry.distanceMeters);
+            if (distStr) metaParts.push('<span class="activity-meta-item">📏 ' + distStr + '</span>');
+            var durStr = formatDuration(entry.durationSeconds);
+            if (durStr) metaParts.push('<span class="activity-meta-item">⏱ ' + durStr + '</span>');
+            if (entry.totalSets > 0) metaParts.push('<span class="activity-meta-item">🏋️ ' + entry.totalSets + ' sets</span>');
+
+            var thumbnailHtml = entry.routeThumbnailUrl
+                ? '<img class="activity-thumbnail" src="' + entry.routeThumbnailUrl + '" alt="Route" />'
+                : '<div class="activity-icon">' + icon + '</div>';
+
+            var showcaseUrl = '/u/' + encodeURIComponent(getSlugFromUrl()) + '/' + entry.showcaseId;
+            var delay = (_totalCardIdx % 20) * 0.06; // Reset animation delay per page
+            _totalCardIdx++;
+
+            var cardEl = document.createElement('a');
+            cardEl.href = showcaseUrl;
+            cardEl.className = 'activity-card cat-' + cat;
+            cardEl.style.animationDelay = delay + 's';
+            cardEl.innerHTML = thumbnailHtml
+                + '<div class="activity-info">'
+                + '<div class="activity-title">' + entry.title + '</div>'
+                + '<div class="activity-meta">' + metaParts.join('') + '</div>'
+                + '</div>'
+                + '<span class="activity-arrow">›</span>';
+
+            lastGroupCardsContainer.appendChild(cardEl);
         });
-
-        var totalIdx = 0;
-        const listContainer = document.getElementById('activity-list');
-        listContainer.innerHTML = dateGroups.map(function (group) {
-            var cardsHtml = group.entries.map(function (entry) {
-                var icon = getActivityIcon(entry.activityType);
-                var cat = ACTIVITY_CATEGORY[entry.activityType] || 'general';
-                var metaParts = [];
-                var distStr = formatDistance(entry.distanceMeters);
-                if (distStr) metaParts.push('<span class="activity-meta-item">📏 ' + distStr + '</span>');
-                var durStr = formatDuration(entry.durationSeconds);
-                if (durStr) metaParts.push('<span class="activity-meta-item">⏱ ' + durStr + '</span>');
-                if (entry.totalSets > 0) metaParts.push('<span class="activity-meta-item">🏋️ ' + entry.totalSets + ' sets</span>');
-
-                var thumbnailHtml = entry.routeThumbnailUrl
-                    ? '<img class="activity-thumbnail" src="' + entry.routeThumbnailUrl + '" alt="Route" />'
-                    : '<div class="activity-icon">' + icon + '</div>';
-
-                var showcaseUrl = '/u/' + encodeURIComponent(getSlugFromUrl()) + '/' + entry.showcaseId;
-                var delay = totalIdx * 0.06;
-                totalIdx++;
-
-                return '<a href="' + showcaseUrl + '" class="activity-card cat-' + cat + '" style="animation-delay: ' + delay + 's">'
-                    + thumbnailHtml
-                    + '<div class="activity-info">'
-                    + '<div class="activity-title">' + entry.title + '</div>'
-                    + '<div class="activity-meta">' + metaParts.join('') + '</div>'
-                    + '</div>'
-                    + '<span class="activity-arrow">›</span>'
-                    + '</a>';
-            }).join('');
-
-            return '<div class="activity-date-group">'
-                + '<div class="activity-date-header">' + group.header + '</div>'
-                + '<div class="activity-date-cards">' + cardsHtml + '</div>'
-                + '</div>';
-        }).join('');
-
-        // Show content, hide loading
-        document.getElementById('profile-loading').style.display = 'none';
-        document.getElementById('profile-content').style.display = '';
     }
 
     function showError() {

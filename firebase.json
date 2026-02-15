@@ -93,6 +93,13 @@
         }
       },
       {
+        "source": "/api/auth-email/**",
+        "run": {
+          "serviceId": "auth-email-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/export/**",
         "run": {
           "serviceId": "data-export-handler",

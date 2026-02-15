@@ -4,7 +4,7 @@ import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard, Button, SvgAsset, useToast } from '../components/library/ui';
+import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard, Button, SvgAsset, useToast, IdBadge, ProgressBar } from '../components/library/ui';
 import { FlowVisualization } from '../components/library/ui/FlowVisualization';
 import { BoosterGrid } from '../components/library/ui/BoosterGrid';
 import '../components/library/ui/CardSkeleton.css';
@@ -456,6 +456,67 @@ const ActivityDetailPage: React.FC = () => {
                     </Stack>
                 </GlowCard>
 
+                {/* Nerd Mode: Status Message */}
+                {isNerdMode && pipelineRun.statusMessage && (
+                    <Card>
+                        <Stack gap="xs">
+                            <Heading level={4}>
+                                <Stack direction="horizontal" gap="xs" align="center">
+                                    <Paragraph inline>💬</Paragraph>
+                                    Status Message
+                                </Stack>
+                            </Heading>
+                            <Code>{pipelineRun.statusMessage}</Code>
+                        </Stack>
+                    </Card>
+                )}
+
+                {/* Nerd Mode: Raw IDs & URIs */}
+                {isNerdMode && (
+                    <Card>
+                        <Stack gap="md">
+                            <Heading level={4}>
+                                <Stack direction="horizontal" gap="xs" align="center">
+                                    <Paragraph inline>🔑</Paragraph>
+                                    Identifiers & References
+                                </Stack>
+                            </Heading>
+                            <Stack gap="sm">
+                                <Stack direction="horizontal" gap="sm" align="center" wrap>
+                                    <Paragraph size="sm" muted>Activity ID</Paragraph>
+                                    <IdBadge id={pipelineRun.activityId} showChars={12} copyable />
+                                </Stack>
+                                <Stack direction="horizontal" gap="sm" align="center" wrap>
+                                    <Paragraph size="sm" muted>Execution ID</Paragraph>
+                                    <IdBadge id={pipelineRun.id} showChars={12} copyable />
+                                </Stack>
+                                <Stack direction="horizontal" gap="sm" align="center" wrap>
+                                    <Paragraph size="sm" muted>Pipeline ID</Paragraph>
+                                    <IdBadge id={pipelineRun.pipelineId} stripPrefix="pipe_" showChars={8} copyable />
+                                </Stack>
+                                {pipelineRun.sourceActivityId && (
+                                    <Stack direction="horizontal" gap="sm" align="center" wrap>
+                                        <Paragraph size="sm" muted>Source Activity ID</Paragraph>
+                                        <IdBadge id={pipelineRun.sourceActivityId} showChars={12} copyable />
+                                    </Stack>
+                                )}
+                                {pipelineRun.originalPayloadUri && (
+                                    <Stack direction="horizontal" gap="sm" align="center" wrap>
+                                        <Paragraph size="sm" muted>Payload URI</Paragraph>
+                                        <Code>{pipelineRun.originalPayloadUri}</Code>
+                                    </Stack>
+                                )}
+                                {pipelineRun.enrichedEventUri && (
+                                    <Stack direction="horizontal" gap="sm" align="center" wrap>
+                                        <Paragraph size="sm" muted>Enriched URI</Paragraph>
+                                        <Code>{pipelineRun.enrichedEventUri}</Code>
+                                    </Stack>
+                                )}
+                            </Stack>
+                        </Stack>
+                    </Card>
+                )}
+
                 {/* Booster Details - Expanded Metadata */}
                 {providerExecutions.length > 0 && (
                     <Card>
@@ -496,7 +557,7 @@ const ActivityDetailPage: React.FC = () => {
                                                 <Stack gap="xs">
                                                     {Object.entries(enricher.Metadata)
                                                         .filter(([key]) => !key.startsWith('asset_'))
-                                                        .slice(0, 6)
+                                                        .slice(0, isNerdMode ? undefined : 6)
                                                         .map(([key, value]) => (
                                                             <Stack key={key} direction="horizontal" justify="between">
                                                                 <Paragraph size="sm" muted>{formatMetadataKey(key)}</Paragraph>
@@ -732,38 +793,91 @@ const ActivityDetailPage: React.FC = () => {
                     </Stack>
                 )}
 
-                {/* Nerd mode booster execution details - using PipelineRun boosters */}
-                {isNerdMode && pipelineRun.boosters && pipelineRun.boosters.length > 0 && (
-                    <Card>
-                        <Stack gap="md">
-                            <Heading level={4}>
-                                <Stack direction="horizontal" gap="xs" align="center">
-                                    <Paragraph inline>🔧</Paragraph>
-                                    Booster Execution Details
-                                    <Badge variant="default" size="sm">
-                                        {pipelineRun.boosters.length} boosters
-                                    </Badge>
+                {/* Nerd mode booster execution details with timing breakdown */}
+                {isNerdMode && pipelineRun.boosters && pipelineRun.boosters.length > 0 && (() => {
+                    const totalBoosterMs = pipelineRun.boosters.reduce((sum, b) => sum + (b.durationMs || 0), 0);
+                    const maxBoosterMs = Math.max(...pipelineRun.boosters.map(b => b.durationMs || 0));
+                    const pipelineDurationMs = pipelineRun.createdAt && pipelineRun.updatedAt
+                        ? new Date(pipelineRun.updatedAt as unknown as string).getTime() - new Date(pipelineRun.createdAt as unknown as string).getTime()
+                        : null;
+                    return (
+                        <Card>
+                            <Stack gap="md">
+                                <Heading level={4}>
+                                    <Stack direction="horizontal" gap="xs" align="center">
+                                        <Paragraph inline>⏱️</Paragraph>
+                                        Booster Timing Breakdown
+                                        <Badge variant="default" size="sm">
+                                            {pipelineRun.boosters.length} boosters
+                                        </Badge>
+                                        {totalBoosterMs > 0 && (
+                                            <Badge variant="default" size="sm">
+                                                {totalBoosterMs}ms total
+                                            </Badge>
+                                        )}
+                                        {pipelineDurationMs !== null && pipelineDurationMs > 0 && (
+                                            <Badge variant="default" size="sm">
+                                                {pipelineDurationMs < 1000
+                                                    ? `${pipelineDurationMs}ms pipeline`
+                                                    : `${(pipelineDurationMs / 1000).toFixed(1)}s pipeline`
+                                                }
+                                            </Badge>
+                                        )}
+                                    </Stack>
+                                </Heading>
+                                <Stack gap="sm">
+                                    {pipelineRun.boosters
+                                        .slice()
+                                        .sort((a, b) => (b.durationMs || 0) - (a.durationMs || 0))
+                                        .map((booster, idx) => {
+                                            const pct = maxBoosterMs > 0 ? Math.max(5, Math.round(((booster.durationMs || 0) / maxBoosterMs) * 100)) : 0;
+                                            return (
+                                                <Card key={idx}>
+                                                    <Stack gap="xs">
+                                                        <Stack direction="horizontal" justify="between" align="center">
+                                                            <Paragraph size="sm"><strong>{booster.providerName}</strong></Paragraph>
+                                                            <Stack direction="horizontal" gap="sm" align="center">
+                                                                <Badge variant={booster.status === 'SUCCESS' ? 'success' : booster.status === 'FAILED' ? 'error' : 'default'} size="sm">
+                                                                    {booster.status}
+                                                                </Badge>
+                                                                <Paragraph size="sm" muted>
+                                                                    {booster.durationMs > 0 ? `${booster.durationMs}ms` : '—'}
+                                                                </Paragraph>
+                                                            </Stack>
+                                                        </Stack>
+                                                        {booster.durationMs > 0 && (
+                                                            <ProgressBar
+                                                                value={pct}
+                                                                max={100}
+                                                                size="sm"
+                                                                variant={booster.status === 'SUCCESS' ? 'success' : booster.status === 'FAILED' ? 'error' : booster.status === 'SKIPPED' ? 'default' : 'warning'}
+                                                            />
+                                                        )}
+                                                        {booster.error && (
+                                                            <Code>{booster.error}</Code>
+                                                        )}
+                                                        {booster.metadata && Object.keys(booster.metadata).length > 0 && (
+                                                            <details>
+                                                                <summary style={{ cursor: 'pointer', fontSize: '0.75rem', color: 'var(--color-text-muted, #9ca3af)' }}>Metadata ({Object.keys(booster.metadata).length} entries)</summary>
+                                                                <Stack gap="xs" style={{ marginTop: '4px' }}>
+                                                                    {Object.entries(booster.metadata).map(([key, value]) => (
+                                                                        <Stack key={key} direction="horizontal" justify="between">
+                                                                            <Paragraph size="sm" muted>{formatMetadataKey(key)}</Paragraph>
+                                                                            <Paragraph size="sm">{formatMetadataValue(value)}</Paragraph>
+                                                                        </Stack>
+                                                                    ))}
+                                                                </Stack>
+                                                            </details>
+                                                        )}
+                                                    </Stack>
+                                                </Card>
+                                            );
+                                        })}
                                 </Stack>
-                            </Heading>
-                            <Stack gap="sm">
-                                {pipelineRun.boosters.map((booster, idx) => (
-                                    <Card key={idx}>
-                                        <Stack gap="xs">
-                                            <Paragraph size="sm"><strong>{booster.providerName}</strong></Paragraph>
-                                            <Paragraph size="sm" muted>Status: {booster.status}</Paragraph>
-                                            {booster.durationMs > 0 && (
-                                                <Paragraph size="sm" muted>Duration: {booster.durationMs}ms</Paragraph>
-                                            )}
-                                            {booster.error && (
-                                                <Code>{booster.error}</Code>
-                                            )}
-                                        </Stack>
-                                    </Card>
-                                ))}
                             </Stack>
-                        </Stack>
-                    </Card>
-                )}
+                        </Card>
+                    );
+                })()}
 
                 {/* Magic Actions Section */}
                 <Card>

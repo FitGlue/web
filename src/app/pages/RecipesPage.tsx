@@ -1,30 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { PageLayout, Stack } from '../components/library/layout';
-import { Heading, Paragraph, TabbedCard, EmptyState } from '../components/library/ui';
+import { Heading, Paragraph, Card, CardHeader } from '../components/library/ui';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { RecipeCard } from '../components/recipes/RecipeCard';
-import { RECIPES, RECIPE_CATEGORIES, type RecipeCategory } from '../data/recipes';
+import { RECIPES } from '../data/recipes';
 import './RecipesPage.css';
 
-const ALL_TAB = { id: 'all', icon: '📋', label: 'All' };
-
-const TABS = [
-    ALL_TAB,
-    ...RECIPE_CATEGORIES.map(cat => ({
-        id: cat.id,
-        icon: cat.icon,
-        label: cat.label,
-        count: RECIPES.filter(r => r.category === cat.id).length,
-    })),
-];
-
 const RecipesPage: React.FC = () => {
-    const [activeCategory, setActiveCategory] = useState<RecipeCategory | 'all'>('all');
     const { integrations } = useRealtimeIntegrations();
-
-    const filteredRecipes = activeCategory === 'all'
-        ? RECIPES
-        : RECIPES.filter(r => r.category === activeCategory);
 
     return (
         <PageLayout title="Recipes">
@@ -38,30 +21,18 @@ const RecipesPage: React.FC = () => {
                     </Paragraph>
                 </Stack>
 
-                <TabbedCard
-                    tabs={TABS}
-                    activeTab={activeCategory}
-                    onTabChange={(id) => setActiveCategory(id as RecipeCategory | 'all')}
-                    footerText={<>{filteredRecipes.length} recipe{filteredRecipes.length !== 1 ? 's' : ''}</>}
-                >
+                <Card>
+                    <CardHeader icon="📋" title="Recipes" showLink={false} />
                     <Stack gap="md" className="recipes-page__list">
-                        {filteredRecipes.map(recipe => (
+                        {RECIPES.map(recipe => (
                             <RecipeCard
                                 key={recipe.id}
                                 recipe={recipe}
                                 integrations={integrations}
                             />
                         ))}
-
-                        {filteredRecipes.length === 0 && (
-                            <EmptyState
-                                icon="🧪"
-                                title="No recipes yet"
-                                description="More recipes in this category coming soon!"
-                            />
-                        )}
                     </Stack>
-                </TabbedCard>
+                </Card>
             </Stack>
         </PageLayout>
     );

@@ -26,7 +26,7 @@
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getAuth, onAuthStateChanged, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
   const errorEl = document.getElementById('auth-error');
   const successEl = document.getElementById('auth-success');
@@ -83,8 +83,21 @@
       const user = auth.currentUser;
       if (user) {
         try {
-          await sendEmailVerification(user);
-          showSuccess('Verification email sent!');
+          const idToken = await user.getIdToken();
+          const response = await fetch('/api/auth-email/send-verification', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${idToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.error || 'Failed to send verification email');
+          }
+
+          showSuccess('Verification email sent! Check your inbox.');
         } catch (error) {
           showError(error.message);
         }

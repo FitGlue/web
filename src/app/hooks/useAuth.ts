@@ -5,6 +5,9 @@ import {
   signOut,
   sendEmailVerification,
   sendPasswordResetEmail,
+  reauthenticateWithCredential,
+  updatePassword,
+  EmailAuthProvider,
   User
 } from 'firebase/auth';
 import { initFirebase } from '../../shared/firebase';
@@ -93,6 +96,34 @@ export function useAuth() {
     }
   }, [clearMessages]);
 
+  const changePassword = useCallback(async (currentPassword: string, newPassword: string) => {
+    clearMessages();
+    setLoading(true);
+    try {
+      const auth = await getAuth();
+      const user = auth.currentUser;
+      if (!user || !user.email) throw new Error('No authenticated user');
+
+      const credential = EmailAuthProvider.credential(user.email, currentPassword);
+      await reauthenticateWithCredential(user, credential);
+      await updatePassword(user, newPassword);
+      setSuccess('Password updated successfully!');
+      return true;
+    } catch (e: unknown) {
+      const firebaseError = e as { code?: string };
+      if (firebaseError.code === 'auth/wrong-password' || firebaseError.code === 'auth/invalid-credential') {
+        setError({ message: 'Current password is incorrect', code: firebaseError.code });
+      } else if (firebaseError.code === 'auth/weak-password') {
+        setError({ message: 'New password is too weak. Use at least 6 characters.', code: firebaseError.code });
+      } else {
+        setError({ message: e instanceof Error ? e.message : 'Failed to change password' });
+      }
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, [clearMessages]);
+
   const logout = useCallback(async () => {
     clearMessages();
     setLoading(true);
@@ -117,6 +148,7 @@ export function useAuth() {
     registerWithEmail,
     sendPasswordReset,
     resendVerificationEmail,
+    changePassword,
     logout,
   };
 }

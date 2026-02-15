@@ -164,8 +164,16 @@ export const useRealtimeIntegrations = () => {
                         return;
                     }
 
-                    // Skip created_at fields (not useful to display)
-                    if (CREATED_FIELDS.has(fieldKey)) return;
+                    // Store created_at in additionalDetails (useful for nerd mode)
+                    if (CREATED_FIELDS.has(fieldKey)) {
+                        const isoDate = toISOString(value);
+                        if (isoDate) {
+                            additionalDetails['Connected Since'] = new Date(isoDate).toLocaleDateString(undefined, {
+                                year: 'numeric', month: 'short', day: 'numeric',
+                            });
+                        }
+                        return;
+                    }
 
                     // Check for external user ID
                     if (isExternalIdField(fieldKey)) {

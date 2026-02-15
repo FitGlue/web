@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { PageLayout, Stack } from '../components/library/layout';
-import { Button, Paragraph, Card, Heading, Link, CardSkeleton, Avatar } from '../components/library/ui';
+import { Button, Paragraph, Card, Heading, Link, CardSkeleton, Avatar, Pagination } from '../components/library/ui';
 import { FormField, Input, Textarea, Toggle } from '../components/library/forms';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../components/library/ui/Toast/Toast';
 import { ImageCropModal } from '../components/ImageCropModal';
+import { formatActivityType, formatActivitySource } from '../../types/pb/enum-formatters';
 import './ShowcaseManagementPage.css';
 
 interface ShowcaseActivity {
@@ -37,6 +38,10 @@ const ShowcaseManagementPage: React.FC = () => {
     const [profile, setProfile] = useState<ShowcaseProfile | null>(null);
     const [activities, setActivities] = useState<ShowcaseActivity[]>([]);
     const [loading, setLoading] = useState(true);
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
 
     // Editable fields
     const [subtitle, setSubtitle] = useState('');
@@ -168,29 +173,57 @@ const ShowcaseManagementPage: React.FC = () => {
         }
     };
 
-    // Remove activity from profile
+    // Remove activity from profile (optimistic)
     const handleRemoveEntry = async (showcaseId: string) => {
+        // Optimistic update
+        setActivities(prev => prev.map(a =>
+            a.showcaseId === showcaseId ? { ...a, inProfile: false } : a
+        ));
         try {
             await api.delete(`/showcase-management/profile/entries/${showcaseId}`);
             showSuccess('Entry removed');
-            fetchProfile();
         } catch (err) {
+            // Revert on failure
+            setActivities(prev => prev.map(a =>
+                a.showcaseId === showcaseId ? { ...a, inProfile: true } : a
+            ));
             console.error('Failed to remove entry:', err);
             showError('Failed to remove entry');
         }
     };
 
-    // Add activity to profile
+    // Add activity to profile (optimistic)
     const handleAddEntry = async (showcaseId: string) => {
+        // Optimistic update
+        setActivities(prev => prev.map(a =>
+            a.showcaseId === showcaseId ? { ...a, inProfile: true } : a
+        ));
         try {
             await api.post(`/showcase-management/profile/entries/${showcaseId}`);
             showSuccess('Entry added');
-            fetchProfile();
         } catch (err) {
+            // Revert on failure
+            setActivities(prev => prev.map(a =>
+                a.showcaseId === showcaseId ? { ...a, inProfile: false } : a
+            ));
             console.error('Failed to add entry:', err);
             showError('Failed to add entry');
         }
     };
+
+    // Pagination derived values
+    const totalPages = useMemo(() => Math.max(1, Math.ceil(activities.length / pageSize)), [activities.length, pageSize]);
+    const paginatedActivities = useMemo(() => {
+        const start = (currentPage - 1) * pageSize;
+        return activities.slice(start, start + pageSize);
+    }, [activities, currentPage, pageSize]);
+
+    // Reset to page 1 if current page is out of bounds
+    useEffect(() => {
+        if (currentPage > totalPages) {
+            setCurrentPage(1);
+        }
+    }, [currentPage, totalPages]);
 
     // Picture crop state
     const [cropImage, setCropImage] = useState<string | null>(null);
@@ -412,42 +445,59 @@ const ShowcaseManagementPage: React.FC = () => {
                                 </Paragraph>
                             </Stack>
                         ) : (
-                            <Stack className="showcase-mgmt__activity-list" gap="sm">
-                                {activities.map(activity => (
-                                    <Card key={activity.showcaseId} className="showcase-mgmt__activity-item">
-                                        <Stack direction="horizontal" align="center" justify="between">
-                                            <Stack className="showcase-mgmt__activity-info" gap="xs">
-                                                <Paragraph className="showcase-mgmt__activity-title">
-                                                    {activity.title || 'Untitled Activity'}
-                                                </Paragraph>
-                                                <Paragraph size="sm" muted className="showcase-mgmt__activity-meta">
-                                                    {activity.activityType} • {activity.source}
-                                                    {activity.startTime && ` • ${new Date(activity.startTime).toLocaleDateString()}`}
-                                                </Paragraph>
+                            <>
+                                <Stack className="showcase-mgmt__activity-list" gap="sm">
+                                    {paginatedActivities.map(activity => (
+                                        <Card key={activity.showcaseId} className="showcase-mgmt__activity-item">
+                                            <Stack direction="horizontal" align="center" justify="between">
+                                                <Stack className="showcase-mgmt__activity-info" gap="xs">
+                                                    <Paragraph className="showcase-mgmt__activity-title">
+                                                        {activity.title || 'Untitled Activity'}
+                                                    </Paragraph>
+                                                    <Paragraph size="sm" muted className="showcase-mgmt__activity-meta">
+                                                        {formatActivityType(activity.activityType)} • {formatActivitySource(activity.source)}
+                                                        {activity.startTime && ` • ${new Date(activity.startTime).toLocaleDateString()}`}
+                                                    </Paragraph>
+                                                </Stack>
+                                                <Stack className="showcase-mgmt__activity-actions">
+                                                    {activity.inProfile ? (
+                                                        <Button
+                                                            variant="danger"
+                                                            size="small"
+                                                            onClick={() => handleRemoveEntry(activity.showcaseId)}
+                                                        >
+                                                            Remove
+                                                        </Button>
+                                                    ) : (
+                                                        <Button
+                                                            variant="secondary"
+                                                            size="small"
+                                                            onClick={() => handleAddEntry(activity.showcaseId)}
+                                                        >
+                                                            Add to Profile
+                                                        </Button>
+                                                    )}
+                                                </Stack>
                                             </Stack>
-                                            <Stack className="showcase-mgmt__activity-actions">
-                                                {activity.inProfile ? (
-                                                    <Button
-                                                        variant="danger"
-                                                        size="small"
-                                                        onClick={() => handleRemoveEntry(activity.showcaseId)}
-                                                    >
-                                                        Remove
-                                                    </Button>
-                                                ) : (
-                                                    <Button
-                                                        variant="secondary"
-                                                        size="small"
-                                                        onClick={() => handleAddEntry(activity.showcaseId)}
-                                                    >
-                                                        Add to Profile
-                                                    </Button>
-                                                )}
-                                            </Stack>
-                                        </Stack>
-                                    </Card>
-                                ))}
-                            </Stack>
+                                        </Card>
+                                    ))}
+                                </Stack>
+                                {totalPages > 1 && (
+                                    <Stack className="showcase-mgmt__pagination">
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            totalItems={activities.length}
+                                            pageSize={pageSize}
+                                            onPageChange={setCurrentPage}
+                                            onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
+                                            showPageSize
+                                            pageSizeOptions={[10, 25, 50]}
+                                            compact
+                                        />
+                                    </Stack>
+                                )}
+                            </>
                         )}
                     </Stack>
                 </Card>

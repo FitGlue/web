@@ -1793,6 +1793,67 @@
   }
 
   /* ========================================
+     DISTANCE PR GRID (Fastest X records)
+     ======================================== */
+  .pr-distance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .pr-distance-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.6rem 0.4rem;
+    border-radius: 12px;
+    background: rgba(251, 146, 60, 0.1);
+    border: 1px solid rgba(251, 146, 60, 0.18);
+    animation: fadeInUp 0.3s ease-out backwards;
+    transition: all 0.2s ease;
+  }
+
+  .pr-distance-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(251, 146, 60, 0.35);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  }
+
+  .pr-distance-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #fb923c, #fbbf24);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pr-distance-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #999;
+  }
+
+  .pr-distance-improvement {
+    font-size: 0.55rem;
+    font-weight: 600;
+    margin-top: 0.1rem;
+  }
+
+  .pr-distance-improvement.positive {
+    color: #4ade80;
+  }
+
+  .pr-distance-improvement.negative {
+    color: #ef4444;
+  }
+
+  /* ========================================
      GROUPED PR CARDS
      ======================================== */
   .pr-grouped-card {
@@ -5281,31 +5342,50 @@
       // Pattern: "Name Type: value (previous: ...)"
       // We need the last TYPE keyword before the colon
       const typePatterns = ['1RM', 'Volume', 'Max Reps', 'Total Time',
-        'Fastest 5K', 'Fastest 10K', 'Fastest Half Marathon',
         'Longest Run', 'Longest Ride', 'Highest Elevation Gain'];
 
       let name = '', recordType = '', value = '', previous = '', improvement = '';
 
       // Try to match known type suffixes
       let matched = false;
-      for (const tp of typePatterns) {
-        const idx = rest.lastIndexOf(tp + ':');
-        if (idx >= 0) {
-          name = rest.substring(0, idx).trim();
-          const afterType = rest.substring(idx + tp.length + 1).trim();
-          recordType = tp;
 
-          // Extract improvement in parentheses
-          const parenMatch = afterType.match(/^(.+?)\s*\(previous:\s*(.+?),\s*([+-]?[\d.]+%)\)$/);
-          if (parenMatch) {
-            value = parenMatch[1].trim();
-            previous = parenMatch[2].trim();
-            improvement = parenMatch[3].trim();
-          } else {
-            value = afterType;
+      // Dynamic match for "Fastest X:" patterns (covers all 23+ distance thresholds)
+      const fastestMatch = rest.match(/^(Fastest\s+[^:]+?):\s*(.+)$/);
+      if (fastestMatch) {
+        name = '';
+        recordType = fastestMatch[1].trim();
+        const afterType = fastestMatch[2].trim();
+        const parenMatch = afterType.match(/^(.+?)\s*\(previous:\s*(.+?),\s*([+-]?[\d.]+%)\)$/);
+        if (parenMatch) {
+          value = parenMatch[1].trim();
+          previous = parenMatch[2].trim();
+          improvement = parenMatch[3].trim();
+        } else {
+          value = afterType;
+        }
+        matched = true;
+      }
+
+      if (!matched) {
+        for (const tp of typePatterns) {
+          const idx = rest.lastIndexOf(tp + ':');
+          if (idx >= 0) {
+            name = rest.substring(0, idx).trim();
+            const afterType = rest.substring(idx + tp.length + 1).trim();
+            recordType = tp;
+
+            // Extract improvement in parentheses
+            const parenMatch = afterType.match(/^(.+?)\s*\(previous:\s*(.+?),\s*([+-]?[\d.]+%)\)$/);
+            if (parenMatch) {
+              value = parenMatch[1].trim();
+              previous = parenMatch[2].trim();
+              improvement = parenMatch[3].trim();
+            } else {
+              value = afterType;
+            }
+            matched = true;
+            break;
           }
-          matched = true;
-          break;
         }
       }
 
@@ -5377,9 +5457,39 @@
         if (pr.emoji === '🏆') grouped[pr.name].emoji = '🏆';
       }
 
-      const cardsHtml = groupOrder.map((name, i) => {
+      // Separate distance PRs (empty name) from exercise PRs
+      const distanceRecords = grouped[''] ? grouped[''].records : [];
+      const exerciseGroups = groupOrder.filter(n => n !== '');
+
+      // Render distance PRs as a flat grid of standalone cards
+      let distanceHtml = '';
+      if (distanceRecords.length > 0) {
+        const distCards = distanceRecords.map((pr, i) => {
+          const delay = (idx * 0.1) + (i * 0.04);
+          let improvementHtml = '';
+          if (pr.improvement) {
+            const isTimeRecord = pr.typeClass === 'time';
+            const startsWithMinus = pr.improvement.startsWith('-');
+            const isPositive = isTimeRecord ? startsWithMinus : !startsWithMinus;
+            const cls = isPositive ? 'positive' : 'negative';
+            const arrow = isPositive ? '▲' : '▼';
+            improvementHtml = `<span class="pr-distance-improvement ${cls}">${arrow} ${pr.improvement}</span>`;
+          }
+          // Extract the distance label from recordType (e.g. "Fastest 100m" -> "100m")
+          const distLabel = pr.recordType.replace(/^Fastest\s+/i, '');
+          return `<div class="pr-distance-card" style="animation-delay:${delay}s">
+            <span class="pr-distance-value">${escapeHtml(pr.value)}</span>
+            <span class="pr-distance-label">${escapeHtml(distLabel)}</span>
+            ${improvementHtml}
+          </div>`;
+        }).join('');
+        distanceHtml = `<div class="pr-distance-grid">${distCards}</div>`;
+      }
+
+      // Render exercise PRs as grouped cards with chips (existing logic)
+      const cardsHtml = exerciseGroups.map((name, i) => {
         const group = grouped[name];
-        const delay = (idx * 0.1) + (i * 0.06);
+        const delay = (idx * 0.1) + ((distanceRecords.length > 0 ? 1 : 0) + i) * 0.06;
 
         const chipsHtml = group.records.map(pr => {
           let improvementHtml = '';
@@ -5414,7 +5524,8 @@
           <div class="section-header">
             <h2>${section.emoji} ${section.title}</h2>
           </div>
-          <div class="pr-records-grid">${cardsHtml}</div>
+          ${distanceHtml}
+          ${cardsHtml ? `<div class="pr-records-grid">${cardsHtml}</div>` : ''}
         </div>`;
     }
 
@@ -5477,7 +5588,7 @@
         if (/^📊/.test(trimmed)) return { type: 'insight-comparison', text: trimmed };
         if (/^📈/.test(trimmed)) return { type: 'insight-trend', text: trimmed };
         if (/^📉/.test(trimmed)) return { type: 'insight-trend', text: trimmed };
-        if (/^💨/.test(trimmed) && /×/.test(trimmed) && /sprints/i.test(trimmed)) {
+        if (/^💨/.test(trimmed) && /×/.test(trimmed) && /intervals/i.test(trimmed)) {
           return { type: 'group-header', text: trimmed };
         }
         if (isIndented || (/^💨/.test(trimmed) && /Run \d/i.test(trimmed))) {
