@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { updateProfile, verifyBeforeUpdateEmail } from 'firebase/auth';
+import { updateProfile } from 'firebase/auth';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
 import { Card, Button, Heading, Paragraph, Badge, Code, List, ListItem, GlowCard, Avatar, ProgressBar, useToast } from '../components/library/ui';
 import { Link } from '../components/library/navigation';
@@ -9,7 +9,6 @@ import { useUser } from '../hooks/useUser';
 import { useAuth } from '../hooks/useAuth';
 import { userAtom } from '../state/authState';
 import { useNerdMode } from '../state/NerdModeContext';
-import { initFirebase } from '../../shared/firebase';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST, HOBBYIST_TIER_LIMITS } from '../utils/tier';
 import { Input, FormField } from '../components/library/forms';
 import { NotificationPreferencesCard } from '../components/NotificationPreferencesCard';
@@ -92,19 +91,10 @@ const AccountSettingsPage: React.FC = () => {
         setEmailSent(false);
 
         try {
-            const fb = await initFirebase();
-            if (!fb) throw new Error('Firebase not initialized');
-
-            await verifyBeforeUpdateEmail(firebaseUser, editedEmail.trim());
+            await api.post('/auth-email/send-email-change', { newEmail: editedEmail.trim() });
             setEmailSent(true);
             toast.info('Verification Sent', `Check ${editedEmail} for the verification link`);
         } catch (err: unknown) {
-            const firebaseError = err as { code?: string };
-            if (firebaseError.code === 'auth/requires-recent-login') {
-                setSavingEmail(false);
-                setShowReauthModal(true);
-                return;
-            }
             console.error('Failed to send email change verification:', err);
             const errorMsg = err instanceof Error ? err.message : 'Failed to send verification email';
             setEmailError(errorMsg);

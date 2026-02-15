@@ -3,13 +3,11 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  sendEmailVerification,
-  sendPasswordResetEmail,
   reauthenticateWithCredential,
   updatePassword,
   EmailAuthProvider,
-  User
 } from 'firebase/auth';
+import { useApi } from './useApi';
 import { initFirebase } from '../../shared/firebase';
 
 interface AuthError {
@@ -21,6 +19,7 @@ export function useAuth() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<AuthError | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const api = useApi();
 
   const clearMessages = useCallback(() => {
     setError(null);
@@ -53,8 +52,8 @@ export function useAuth() {
     setLoading(true);
     try {
       const auth = await getAuth();
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await sendEmailVerification(userCredential.user);
+      await createUserWithEmailAndPassword(auth, email, password);
+      await api.post('/auth-email/send-verification');
       return true;
     } catch (e) {
       setError({ message: e instanceof Error ? e.message : 'Registration failed' });
@@ -62,15 +61,14 @@ export function useAuth() {
     } finally {
       setLoading(false);
     }
-  }, [clearMessages]);
+  }, [clearMessages, api]);
 
 
   const sendPasswordReset = useCallback(async (email: string) => {
     clearMessages();
     setLoading(true);
     try {
-      const auth = await getAuth();
-      await sendPasswordResetEmail(auth, email);
+      await api.post('/auth-email/send-password-reset', { email });
       setSuccess('Password reset email sent! Check your inbox.');
       return true;
     } catch (e) {
@@ -79,13 +77,13 @@ export function useAuth() {
     } finally {
       setLoading(false);
     }
-  }, [clearMessages]);
+  }, [clearMessages, api]);
 
-  const resendVerificationEmail = useCallback(async (user: User) => {
+  const resendVerificationEmail = useCallback(async () => {
     clearMessages();
     setLoading(true);
     try {
-      await sendEmailVerification(user);
+      await api.post('/auth-email/send-verification');
       setSuccess('Verification email sent! Check your inbox.');
       return true;
     } catch (e) {
@@ -94,7 +92,7 @@ export function useAuth() {
     } finally {
       setLoading(false);
     }
-  }, [clearMessages]);
+  }, [clearMessages, api]);
 
   const changePassword = useCallback(async (currentPassword: string, newPassword: string) => {
     clearMessages();
