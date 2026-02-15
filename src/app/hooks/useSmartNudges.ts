@@ -131,7 +131,7 @@ export function evaluateCondition(
 
 export function useSmartNudges(page: NudgePage): ActiveNudge | null {
     // Force re-render when a nudge is dismissed
-    const [, setDismissVersion] = useState(0);
+    const [dismissVersion, setDismissVersion] = useState(0);
 
     const { pipelines } = useRealtimePipelines();
     const { integrations } = useRealtimeIntegrations();
@@ -154,7 +154,8 @@ export function useSmartNudges(page: NudgePage): ActiveNudge | null {
             .sort((a, b) => b.priority - a.priority);
 
         return candidates[0] ?? null;
-    }, [page, pipelines, integrations, pipelinesLoaded]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, pipelines, integrations, pipelinesLoaded, dismissVersion]);
 
     const dismiss = useCallback(() => {
         if (activeNudge) {
