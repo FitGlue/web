@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.28.0](https://github.com/fitglue/web/compare/v10.27.0...v10.28.0) (2026-02-15)
+
+
+### Features
+
+* **auto-increment:** add dynamic counter selection with valueDynamicSource ([9c579fc](https://github.com/fitglue/web/commit/9c579fc0d7e384047d3195b0f1e62ffe788d3e2a))
+
+
+### Bug Fixes
+
+* linting ([42ded73](https://github.com/fitglue/web/commit/42ded73c27eb0d152cab780002428efa3312a147))
+
 ## [10.27.0](https://github.com/fitglue/web/compare/v10.26.1...v10.27.0) (2026-02-14)
 
 
