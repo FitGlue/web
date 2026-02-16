@@ -12,7 +12,8 @@
         </h1>
         <p class="hero-tagline">Your fitness apps, <span class="hero-highlight">finally connected</span> ✨</p>
         <p class="hero-subtitle">FitGlue bridges the gaps between your fitness apps so your workouts look
-          amazing <span class="hero-highlight">everywhere</span>—with <span class="hero-highlight">rich descriptions</span>,
+          amazing <span class="hero-highlight">everywhere</span>—with <span class="hero-highlight">rich
+            descriptions</span>,
           <span class="hero-highlight">heart rate data</span>, and <span class="hero-highlight">muscle heatmaps</span>
           synced automatically to Strava, Showcase, and more.
         </p>
@@ -219,20 +220,23 @@
         <div class="feature-card">
           <span class="feature-icon">🔗</span>
           <h3>1. Connect</h3>
-          <p>Link the apps you already use—Hevy, Fitbit, Strava, Garmin, and more. Connect once and everything flows automatically.</p>
+          <p>Link the apps you already use—Hevy, Fitbit, Strava, Garmin, and more. Connect once and everything flows
+            automatically.</p>
         </div>
 
         <div class="feature-card">
           <span class="feature-icon">🚀</span>
           <h3>2. Enhance</h3>
-          <p>Choose how your data should look: AI descriptions, heart rate overlays, muscle heatmaps. Mix and match to make every activity shine.
+          <p>Choose how your data should look: AI descriptions, heart rate overlays, muscle heatmaps. Mix and match to
+            make every activity shine.
           </p>
         </div>
 
         <div class="feature-card">
           <span class="feature-icon">🎯</span>
           <h3>3. Share</h3>
-          <p>Your enhanced activity arrives at its destination automatically—Strava, Showcase, Google Sheets, wherever you want it. Complete, beautiful, ready to share.</p>
+          <p>Your enhanced activity arrives at its destination automatically—Strava, Showcase, Google Sheets, wherever
+            you want it. Complete, beautiful, ready to share.</p>
         </div>
       </div>
 
@@ -289,49 +293,31 @@
       <p class="text-center text-muted mb-lg animate-on-scroll">FitGlue works with the platforms you already use—and
         we're adding more every month</p>
 
-      <!-- Live Platforms (registry-powered) -->
-      <div class="platforms-section">
-        <h3 class="platforms-label live">Available Now</h3>
-        <div class="platforms-grid stagger-children">
-          {{#each availableConnections}}
-          <a href="{{detailsUrl}}" class="platform-card-link">
-            <div class="platform-card live">
+      <div class="connect-grid stagger-children">
+        {{#each connectionsPreview}}
+        <a href="{{detailsUrl}}" class="connect-card-link animate-on-scroll">
+          <div class="connect-card{{#if isTemporarilyUnavailable}} coming-soon{{/if}}">
+            <div class="connect-card-icon">
               {{#if iconPath}}
-              <img src="{{iconPath}}" alt="" class="platform-icon-img feature-icon-{{iconType}}" />
+              <img src="{{iconPath}}" alt="" class="connect-icon-img feature-icon-{{iconType}}" />
               {{else}}
-              <span class="platform-icon">{{icon}}</span>
+              <span class="connect-icon-emoji">{{icon}}</span>
               {{/if}}
-              <span class="platform-name">{{name}}</span>
             </div>
-          </a>
-          {{/each}}
-        </div>
-      </div>
-
-      <!-- Coming Soon Platforms (registry-powered) -->
-      {{#if comingSoonConnections.length}}
-      <div class="platforms-section mt-lg">
-        <h3 class="platforms-label coming-soon">Coming Soon</h3>
-        <div class="platforms-grid coming-soon stagger-children">
-          {{#each comingSoonConnections}}
-          <div class="platform-card coming-soon">
-            {{#if iconPath}}
-            <img src="{{iconPath}}" alt="" class="platform-icon-img feature-icon-{{iconType}}" />
-            {{else}}
-            <span class="platform-icon">{{icon}}</span>
+            <span class="connect-card-name">{{name}}</span>
+            {{#if isTemporarilyUnavailable}}
+            <span class="connect-card-badge">Coming Soon</span>
             {{/if}}
-            <span class="platform-name">{{name}}</span>
-            <span class="coming-badge">Soon</span>
           </div>
-          {{/each}}
-        </div>
+        </a>
+        {{/each}}
       </div>
-      {{/if}}
 
       <!-- Universal Vision -->
       <div class="vision-box mt-lg animate-on-scroll">
         <h4>🌍 The Universal Fitness Hub</h4>
-        <p>Whether you lift weights in Hevy, track runs with Garmin, or log meals in MyFitnessPal—FitGlue connects them all
+        <p>Whether you lift weights in Hevy, track runs with Garmin, or log meals in MyFitnessPal—FitGlue connects them
+          all
           and makes sure your data looks its best wherever it goes. One hub. Every app. Beautifully synced.</p>
       </div>
 

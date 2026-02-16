@@ -16,20 +16,24 @@
     <div class="container text-center">
       <h2 class="mb-md animate-on-scroll">How the <span class="text-gradient">Magic</span> Works</h2>
       <div class="animate-on-scroll">
-        <div class="data-flow" style="justify-content: center; flex-wrap: wrap; gap: 1rem;">
-          <div class="data-flow-node source">
-            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📥</div>
-            Your Workout
+        <div class="pipeline-flow">
+          <div class="pipeline-node source">
+            <span class="pipeline-icon">📥</span>
+            <span class="pipeline-label">Your Workout</span>
           </div>
-          <div class="data-flow-arrow"></div>
-          <div class="data-flow-node">
-            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">✨</div>
-            The Magic
+          <div class="pipeline-connector">
+            <div class="connector-line"></div>
           </div>
-          <div class="data-flow-arrow"></div>
-          <div class="data-flow-node destination">
-            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📤</div>
-            Your Story
+          <div class="pipeline-node magic">
+            <span class="pipeline-icon">✨</span>
+            <span class="pipeline-label">FitGlue Magic</span>
+          </div>
+          <div class="pipeline-connector">
+            <div class="connector-line"></div>
+          </div>
+          <div class="pipeline-node destination">
+            <span class="pipeline-icon">📤</span>
+            <span class="pipeline-label">Your Story</span>
           </div>
         </div>
       </div>

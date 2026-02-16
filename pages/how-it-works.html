@@ -22,30 +22,20 @@
             <p>Link your fitness platforms in seconds. We support Hevy, Fitbit, and more coming soon. Just click,
               authorize, and you're connected.</p>
 
-            <div class="step-cards mt-md" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-              <div class="integration-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">🏋️</span>
-                <div class="integration-name" style="font-size: 0.8rem;">Hevy</div>
-              </div>
-              <div class="integration-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">⌚</span>
-                <div class="integration-name" style="font-size: 0.8rem;">Fitbit</div>
-              </div>
-              <div class="integration-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">⌚</span>
-                <div class="integration-name" style="font-size: 0.8rem;">Garmin</div>
+            <div class="step-cards mt-md">
+              {{#each connectionsPreview}}
+              <div class="feature-card{{#if isTemporarilyUnavailable}} coming-soon{{/if}}">
+                {{#if iconPath}}
+                <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
+                {{else}}
+                <span style="font-size: 1.25rem;">{{icon}}</span>
+                {{/if}}
+                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">{{name}}</h4>
+                {{#if isTemporarilyUnavailable}}
                 <div class="text-muted" style="font-size: 0.65rem;">Coming Soon</div>
+                {{/if}}
               </div>
-              <div class="integration-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">🍎</span>
-                <div class="integration-name" style="font-size: 0.8rem;">Apple Health</div>
-                <div class="text-muted" style="font-size: 0.65rem;">Coming Soon</div>
-              </div>
-              <div class="integration-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">💚</span>
-                <div class="integration-name" style="font-size: 0.8rem;">Whoop</div>
-                <div class="text-muted" style="font-size: 0.65rem;">Coming Soon</div>
-              </div>
+              {{/each}}
             </div>
           </div>
         </div>
@@ -57,25 +47,22 @@
             <p>Pick where your workout data comes from. Create pipelines that pull from the apps you actually
               use—whether that's your weightlifting tracker or your smartwatch.</p>
 
-            <div class="step-cards mt-md" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">🏋️</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">Hevy Workouts</h4>
+            <div class="step-cards mt-md">
+              {{#each sourcesPreview}}
+              <div class="feature-card{{#if isTemporarilyUnavailable}} coming-soon{{/if}}">
+                {{#if iconPath}}
+                <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
+                {{else}}
+                <span style="font-size: 1.25rem;">{{icon}}</span>
+                {{/if}}
+                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">{{name}}</h4>
+                {{#if isTemporarilyUnavailable}}
+                <div class="text-muted" style="font-size: 0.65rem;">Coming Soon</div>
+                {{/if}}
               </div>
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">❤️</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">Fitbit Activities</h4>
-              </div>
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">📲</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">Webhooks</h4>
-              </div>
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">📁</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">FIT Files</h4>
-              </div>
+              {{/each}}
             </div>
-            <a href="/features#sources" class="see-all-link">See all Sources →</a>
+            <a href="/features#sources" class="see-all-link">See all {{sourcesTotal}} Sources →</a>
           </div>
         </div>
 
@@ -86,41 +73,22 @@
             <p>Choose which enhancements to apply to your activities. AI descriptions? Heart rate data from Fitbit?
               Muscle heatmaps? Mix and match to your liking.</p>
 
-            <div class="step-cards mt-md" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">📝</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">Workout Summary</h4>
+            <div class="step-cards mt-md">
+              {{#each boostersPreview}}
+              <div class="feature-card{{#if isTemporarilyUnavailable}} coming-soon{{/if}}">
+                {{#if iconPath}}
+                <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
+                {{else}}
+                <span style="font-size: 1.25rem;">{{icon}}</span>
+                {{/if}}
+                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">{{name}}</h4>
+                {{#if isTemporarilyUnavailable}}
+                <div class="text-muted" style="font-size: 0.65rem;">Coming Soon</div>
+                {{/if}}
               </div>
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">🔥</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">Muscle Heatmap</h4>
-              </div>
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">❤️</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">Heart Rate</h4>
-              </div>
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">🗺️</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">Virtual GPS</h4>
-              </div>
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">🔗</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">Source Link</h4>
-              </div>
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">🏃</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">parkrun</h4>
-              </div>
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">🎯</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">Activity Filter</h4>
-              </div>
-              <div class="feature-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">🔄</span>
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">Type Mapper</h4>
-              </div>
+              {{/each}}
             </div>
-            <a href="/features#boosters" class="see-all-link">See all Boosters →</a>
+            <a href="/features#boosters" class="see-all-link">See all {{boostersTotal}} Boosters →</a>
           </div>
         </div>
 
@@ -131,23 +99,22 @@
             <p>Set your destination and forget about it. Every activity you complete is automatically boosted and synced
               to Strava—or wherever you want it to go.</p>
 
-            <div class="step-cards mt-md" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-              <div class="integration-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">🚴</span>
-                <div class="integration-name" style="font-size: 0.8rem;">Strava</div>
-              </div>
-              <div class="integration-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">📊</span>
-                <div class="integration-name" style="font-size: 0.8rem;">TrainingPeaks</div>
+            <div class="step-cards mt-md">
+              {{#each destinationsPreview}}
+              <div class="feature-card{{#if isTemporarilyUnavailable}} coming-soon{{/if}}">
+                {{#if iconPath}}
+                <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
+                {{else}}
+                <span style="font-size: 1.25rem;">{{icon}}</span>
+                {{/if}}
+                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">{{name}}</h4>
+                {{#if isTemporarilyUnavailable}}
                 <div class="text-muted" style="font-size: 0.65rem;">Coming Soon</div>
+                {{/if}}
               </div>
-              <div class="integration-card" style="padding: 0.75rem 1rem; text-align: center; flex: 0 0 auto;">
-                <span style="font-size: 1.25rem;">📈</span>
-                <div class="integration-name" style="font-size: 0.8rem;">Intervals.icu</div>
-                <div class="text-muted" style="font-size: 0.65rem;">Coming Soon</div>
-              </div>
+              {{/each}}
             </div>
-            <a href="/features#targets" class="see-all-link">See all Targets →</a>
+            <a href="/features#targets" class="see-all-link">See all {{destinationsTotal}} Targets →</a>
           </div>
         </div>
       </div>
@@ -160,20 +127,24 @@
       <h2 class="text-center mb-lg animate-on-scroll">The <span class="text-gradient">Pipeline</span> in Action</h2>
 
       <div class="animate-on-scroll">
-        <div class="data-flow" style="justify-content: center; flex-wrap: wrap; gap: 1rem;">
-          <div class="data-flow-node source">
-            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🏋️</div>
-            Your Workout
+        <div class="pipeline-flow">
+          <div class="pipeline-node source">
+            <span class="pipeline-icon">🏋️</span>
+            <span class="pipeline-label">Your Workout</span>
           </div>
-          <div class="data-flow-arrow"></div>
-          <div class="data-flow-node">
-            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">✨</div>
-            The Magic
+          <div class="pipeline-connector">
+            <div class="connector-line"></div>
           </div>
-          <div class="data-flow-arrow"></div>
-          <div class="data-flow-node destination">
-            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🎯</div>
-            Your Story
+          <div class="pipeline-node magic">
+            <span class="pipeline-icon">✨</span>
+            <span class="pipeline-label">FitGlue Magic</span>
+          </div>
+          <div class="pipeline-connector">
+            <div class="connector-line"></div>
+          </div>
+          <div class="pipeline-node destination">
+            <span class="pipeline-icon">🎯</span>
+            <span class="pipeline-label">Your Story</span>
           </div>
         </div>
       </div>

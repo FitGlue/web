@@ -197,7 +197,19 @@ export function transformRegistryTask() {
 
       ctx.logger.info(`Transformed ${integrationsWithDetails.length} integrations, ${boosters.length} boosters, ${totalPlugins} help article plugins, stats: ${athleteCount} athletes / ${activitiesBoostedCount} boosted`);
 
-      return { integrations, boosters, boostersByCategory, sources, destinations, helpArticleByType, athleteCount, activitiesBoostedCount, availableConnections, comingSoonConnections };
+      // Preview arrays for how-it-works page (limited to 10 items with total counts)
+      const PREVIEW_LIMIT = 10;
+      const allConnectionsSorted = [...availableConnections, ...comingSoonConnections];
+      const connectionsPreview = allConnectionsSorted.slice(0, PREVIEW_LIMIT);
+      const connectionsTotal = allConnectionsSorted.length;
+      const sourcesPreview = sources.slice(0, PREVIEW_LIMIT);
+      const sourcesTotal = sources.length;
+      const boostersPreview = boosters.slice(0, PREVIEW_LIMIT);
+      const boostersTotal = boosters.length;
+      const destinationsPreview = destinations.slice(0, PREVIEW_LIMIT);
+      const destinationsTotal = destinations.length;
+
+      return { integrations, boosters, boostersByCategory, sources, destinations, helpArticleByType, athleteCount, activitiesBoostedCount, availableConnections, comingSoonConnections, connectionsPreview, connectionsTotal, sourcesPreview, sourcesTotal, boostersPreview, boostersTotal, destinationsPreview, destinationsTotal };
     },
   };
 }
