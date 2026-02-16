@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.30.2](https://github.com/fitglue/web/compare/v10.30.1...v10.30.2) (2026-02-16)
+
+
+### Bug Fixes
+
+* update marketing wording to focus more on connection ([352b3ca](https://github.com/fitglue/web/commit/352b3cabff5c2eca255d6e074efe5983d6b46e0c))
+
 ### [10.30.1](https://github.com/fitglue/web/compare/v10.30.0...v10.30.1) (2026-02-16)
 
 
