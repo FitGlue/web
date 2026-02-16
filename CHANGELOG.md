@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.30.1](https://github.com/fitglue/web/compare/v10.30.0...v10.30.1) (2026-02-16)
+
+
+### Bug Fixes
+
+* time marker rendering ([e8c3888](https://github.com/fitglue/web/commit/e8c3888ad45e386293f572d77b1e469e22f24a31))
+
 ## [10.30.0](https://github.com/fitglue/web/compare/v10.29.2...v10.30.0) (2026-02-16)
 
 
