@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.31.0](https://github.com/fitglue/web/compare/v10.30.2...v10.31.0) (2026-02-16)
+
+
+### Features
+
+* add Apple Health and Health Connect integration types ([9bb936c](https://github.com/fitglue/web/commit/9bb936c278aae9b20cede74370f145a6cefd38f4))
+
 ### [10.30.2](https://github.com/fitglue/web/compare/v10.30.1...v10.30.2) (2026-02-16)
 
 
