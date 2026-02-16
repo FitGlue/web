@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.32.0](https://github.com/fitglue/web/compare/v10.31.0...v10.32.0) (2026-02-16)
+
+
+### Features
+
+* introduce a new pipeline flow visualization and dynamic integration cards, supported by registry preview data ([32de521](https://github.com/fitglue/web/commit/32de521fe0bf1938904427859289755f5df8ac62))
+
 ## [10.31.0](https://github.com/fitglue/web/compare/v10.30.2...v10.31.0) (2026-02-16)
 
 
