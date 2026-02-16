@@ -46,19 +46,6 @@
     <a href="/" class="btn btn-primary">Explore FitGlue</a>
   </div>
 
-  <!-- Fullscreen Chart Modal -->
-  <div id="chart-modal" class="chart-modal" style="display: none;">
-    <div class="chart-modal-backdrop"></div>
-    <div class="chart-modal-content glass-card">
-      <div class="chart-modal-header">
-        <h2 id="chart-modal-title"></h2>
-        <button class="chart-modal-close" onclick="closeChartModal()">✕</button>
-      </div>
-      <div class="chart-modal-body">
-        <canvas id="chart-modal-canvas"></canvas>
-      </div>
-    </div>
-  </div>
 
   <!-- Success State -->
   <div id="showcase-content" class="showcase-content" style="display: none;">
@@ -230,6 +217,20 @@
   </div>
 </section>
 </main>
+
+<!-- Fullscreen Chart Modal (outside showcase-page to avoid overflow:hidden clipping on mobile) -->
+<div id="chart-modal" class="chart-modal" style="display: none;">
+  <div class="chart-modal-backdrop"></div>
+  <div class="chart-modal-content glass-card">
+    <div class="chart-modal-header">
+      <h2 id="chart-modal-title"></h2>
+      <button class="chart-modal-close" onclick="closeChartModal()">✕</button>
+    </div>
+    <div class="chart-modal-body">
+      <canvas id="chart-modal-canvas"></canvas>
+    </div>
+  </div>
+</div>
 
 <!-- External Dependencies -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
@@ -818,10 +819,12 @@
     position: relative;
     width: calc(100vw - 2rem);
     height: calc(100vh - 2rem);
+    height: calc(100dvh - 2rem);
     max-width: none;
     max-height: none;
     padding: 1.5rem;
     animation: modalSlideIn 0.3s ease;
+    overflow: hidden;
   }
 
   @keyframes modalSlideIn {
@@ -870,8 +873,8 @@
   }
 
   .chart-modal-body {
-    height: calc(90vh - 120px);
-    min-height: 400px;
+    height: calc(100% - 4rem);
+    overflow: auto;
   }
 
   .chart-modal-body canvas {

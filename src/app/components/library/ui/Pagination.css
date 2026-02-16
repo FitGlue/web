@@ -6,6 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: var(--spacing-md);
   padding: var(--spacing-sm) 0;
 }
@@ -67,4 +68,29 @@
 .ui-pagination--compact .ui-pagination__info,
 .ui-pagination--compact .ui-pagination__page-info {
   font-size: 0.8125rem;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .ui-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+
+  .ui-pagination__info {
+    text-align: center;
+  }
+
+  .ui-pagination__page-size {
+    justify-content: center;
+  }
+
+  .ui-pagination__controls {
+    justify-content: center;
+  }
+
+  .ui-pagination__page-info {
+    min-width: auto;
+  }
 }

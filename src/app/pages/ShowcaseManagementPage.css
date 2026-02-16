@@ -336,6 +336,7 @@
 /* Pagination */
 .showcase-mgmt__pagination {
     margin-top: var(--spacing-md);
+    overflow-x: hidden;
 }
 
 
