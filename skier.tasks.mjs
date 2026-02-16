@@ -83,7 +83,7 @@ export const tasks = [
     values: {
       siteName: 'FitGlue',
       siteUrl: 'https://fitglue.com/',
-      tagline: 'Your fitness data, unified.',
+      tagline: 'Your fitness apps, connected.',
       year: new Date().getFullYear(),
       cacheHash,
       appUrl: '/app',
@@ -101,12 +101,12 @@ export const tasks = [
       const canonicalPath = currentPage === 'index' ? '/' : `/${currentPage}`;
       /** @type {Record<string, string>} */
       const descriptions = {
-        index: 'Watch your workout become extraordinary. FitGlue transforms every session into a story worth sharing—with AI descriptions, heart rate data, and muscle heatmaps.',
-        features: 'Connect everywhere, enhance everything. Discover how FitGlue magically transforms your workouts with AI summaries, heart rate overlays, and muscle heatmaps.',
-        'how-it-works': 'Three simple steps to extraordinary workouts. Connect your apps, choose your boosters, and watch the magic happen automatically.',
+        index: 'FitGlue connects your fitness apps and makes your data look amazing everywhere. AI descriptions, heart rate data, muscle heatmaps—synced automatically to Strava, Showcase, and more.',
+        features: 'Connect your fitness apps, enhance your data, and share it beautifully. Discover all the ways FitGlue makes your workouts look incredible on every platform.',
+        'how-it-works': 'Connect your fitness apps in minutes. Choose how your data should look. FitGlue handles the rest—automatically syncing enhanced workouts to Strava, Showcase, and more.',
         'the-magic': 'Explore the magic layer. See how FitGlue takes your raw workout data and transforms it into something extraordinary.',
         pricing: 'Simple, honest pricing. Start free, upgrade when you need more. Or self-host—it\'s open source.',
-        about: 'We believe your fitness data should work for you, not against you. FitGlue transforms disconnected data into unified fitness stories.',
+        about: 'We believe your fitness apps should work together. FitGlue connects them and makes sure your data looks its best wherever it goes.',
         contact: 'Have a question or suggestion? We\'d love to hear from you.',
         privacy: 'Your data is yours. Read our commitment to privacy and security.',
         terms: 'FitGlue Terms of Service and usage guidelines.',
@@ -124,7 +124,7 @@ export const tasks = [
         isPrivacy: currentPage === 'privacy',
         isTerms: currentPage === 'terms',
         canonicalPath,
-        description: descriptions[currentPage] || 'Watch your workout become extraordinary. Connect everywhere, enhance everything.',
+        description: descriptions[currentPage] || 'FitGlue connects your fitness apps and makes your data shine everywhere.',
       };
     },
   }),
