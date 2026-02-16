@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.30.0](https://github.com/fitglue/web/compare/v10.29.2...v10.30.0) (2026-02-16)
+
+
+### Features
+
+* expand workout exercise cards with per-set rows and add best set volume PR suffix ([17a3cdf](https://github.com/fitglue/web/commit/17a3cdf07c53f6681824c286068d13ac018ed80e))
+
 ### [10.29.2](https://github.com/fitglue/web/compare/v10.29.1...v10.29.2) (2026-02-16)
 
 
