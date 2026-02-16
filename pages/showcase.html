@@ -4144,23 +4144,23 @@
         // Map to chart index (0 to records.length - 1)
         const chartIndex = Math.round(proportion * (records.length - 1));
 
-        // Skip if marker is outside the data range
-        if (chartIndex < 0 || chartIndex >= records.length) return;
+        // Clamp to valid chart range (first marker often falls at/before first record)
+        const clampedIndex = Math.max(0, Math.min(chartIndex, records.length - 1));
 
-        // Short label for readability
+        // Multi-line label: each word on its own line for full context
         const fullLabel = marker.label || `M${idx + 1}`;
-        const shortLabel = fullLabel.split(' ')[0].substring(0, 10);
+        const labelLines = fullLabel.split(' ');
 
         annotations['marker' + idx] = {
           type: 'line',
-          xMin: chartIndex,
-          xMax: chartIndex,
+          xMin: clampedIndex,
+          xMax: clampedIndex,
           borderColor: colors[idx % colors.length],
           borderWidth: 1,
           borderDash: [4, 4],
           label: {
             display: true,
-            content: shortLabel,
+            content: labelLines,
             position: 'start',
             yAdjust: -5,
             backgroundColor: 'transparent',
