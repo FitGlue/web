@@ -1970,19 +1970,17 @@
 
   .workout-exercise-card {
     display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.55rem 0.8rem;
+    flex-direction: column;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.03);
     border-left: 3px solid transparent;
+    overflow: hidden;
     animation: fadeInUp 0.3s ease-out backwards;
-    transition: background 0.2s, transform 0.15s;
+    transition: background 0.2s;
   }
 
   .workout-exercise-card:hover {
     background: rgba(255, 255, 255, 0.06);
-    transform: translateX(2px);
   }
 
   .workout-exercise-card.cat-weighted {
@@ -2001,6 +1999,13 @@
     border-left-color: #818cf8;
   }
 
+  .workout-ex-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+  }
+
   .workout-ex-icon {
     font-size: 0.85rem;
     flex-shrink: 0;
@@ -2016,12 +2021,22 @@
     min-width: 0;
   }
 
-  .workout-ex-detail {
+  .workout-ex-set-rows {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .workout-ex-set-row {
     font-size: 0.75rem;
     color: #aaa;
-    flex-shrink: 0;
-    text-align: right;
+    padding: 0.3rem 0.75rem 0.3rem 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
     font-variant-numeric: tabular-nums;
+    animation: fadeInUp 0.25s ease-out backwards;
+  }
+
+  .workout-ex-set-row:hover {
+    background: rgba(255, 255, 255, 0.03);
   }
 
   .training-load-scale {
@@ -6404,10 +6419,18 @@
         const cat = categorise(ex);
         const icon = catIcons[cat];
         const delay = (idx * 0.1) + (i * 0.04);
+        // Split comma-separated sets into individual sub-rows
+        const setItems = ex.sets ? ex.sets.split(',').map(s => s.trim()).filter(Boolean) : [];
+        const setRowsHtml = setItems.map((s, si) => {
+          const setDelay = delay + ((si + 1) * 0.03);
+          return `<div class="workout-ex-set-row" style="animation-delay:${setDelay}s">${escapeHtml(s)}</div>`;
+        }).join('');
         return `<div class="workout-exercise-card cat-${cat}" style="animation-delay:${delay}s">
-          <span class="workout-ex-icon">${icon}</span>
-          <span class="workout-ex-name">${escapeHtml(ex.name)}</span>
-          <span class="workout-ex-detail">${escapeHtml(ex.sets)}</span>
+          <div class="workout-ex-header">
+            <span class="workout-ex-icon">${icon}</span>
+            <span class="workout-ex-name">${escapeHtml(ex.name)}</span>
+          </div>
+          ${setRowsHtml ? `<div class="workout-ex-set-rows">${setRowsHtml}</div>` : ''}
         </div>`;
       }).join('');
 

@@ -26,7 +26,8 @@ export interface StrengthRecordSuffix {
 
 export const STRENGTH_SUFFIXES: StrengthRecordSuffix[] = [
     { value: '_1rm', label: '1 Rep Max', unit: 'kg' },
-    { value: '_volume', label: 'Session Volume', unit: 'kg' },
+    { value: '_set_volume', label: 'Best Set Volume', unit: 'kg' },
+    { value: '_volume', label: 'Total Volume', unit: 'kg' },
     { value: '_reps', label: 'Max Reps', unit: 'reps' },
 ];
 
