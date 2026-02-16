@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.29.2](https://github.com/fitglue/web/compare/v10.29.1...v10.29.2) (2026-02-16)
+
+
+### Bug Fixes
+
+* chart modal mobile clipping, pagination wrapping, and content updates ([8ebb45c](https://github.com/fitglue/web/commit/8ebb45c3943b4ac871a7e1beaa5703e02c596824))
+
 ### [10.29.1](https://github.com/fitglue/web/compare/v10.29.0...v10.29.1) (2026-02-15)
 
 
