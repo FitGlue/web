@@ -87,6 +87,7 @@ self.addEventListener('notificationclick', (event) => {
     const data = event.notification.data as Record<string, string> | undefined;
     const notificationType = data?.type;
     const activityId = data?.activity_id;
+    const sourceId = data?.sourceId;
 
     // Build the target URL based on notification type
     let targetUrl = '/app/';
@@ -96,8 +97,8 @@ self.addEventListener('notificationclick', (event) => {
             'PENDING_INPUT': '/app/inputs',
             'PIPELINE_SUCCESS': `/app/activities/${activityId}`,
             'PIPELINE_FAILED': `/app/activities/${activityId}`,
-            'CONNECTION_ACTION': '/app/',
-            'CONNECTION_ACTION_FAILED': '/app/',
+            'CONNECTION_ACTION': `/app/connections/${sourceId}`,
+            'CONNECTION_ACTION_FAILED': `/app/connections/${sourceId}`,
         };
         targetUrl = urlMap[notificationType] || '/app/';
     }

@@ -61,7 +61,7 @@ const DashboardPageInner: React.FC = () => {
             };
             // Consider profile 'set up' when subtitle or bio is filled in
             const p = data.profile;
-            setHasShowcaseProfile(!!(p && (p.subtitle || p.bio)));
+            setHasShowcaseProfile(!!(p));
         } catch {
             // Silently ignore — showcase check is non-critical
         }

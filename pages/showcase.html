@@ -1587,6 +1587,14 @@
     margin-top: 0.15rem;
   }
 
+  .recovery-stat-hint {
+    font-size: 0.62rem;
+    color: #64748b;
+    margin-top: 0.15rem;
+    font-style: italic;
+    line-height: 1.3;
+  }
+
   .recovery-stat-tag {
     font-size: 0.6rem;
     padding: 0.1rem 0.35rem;
@@ -2581,6 +2589,73 @@
 
   .progress-bar-fill.milestone {
     background: linear-gradient(90deg, #4CC9F0, #9D4EDD);
+  }
+
+  .progress-bar-fill.milestone.celebration {
+    background: linear-gradient(90deg, #FFD700, #FFA500, #FF6B6B);
+    animation: celebration-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes celebration-pulse {
+
+    0%,
+    100% {
+      filter: brightness(1);
+    }
+
+    50% {
+      filter: brightness(1.3);
+    }
+  }
+
+  .milestone-celebration {
+    border: 1px solid rgba(255, 215, 0, 0.3) !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+  }
+
+  .milestone-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1rem 0;
+  }
+
+  .milestone-confetti {
+    font-size: 1.8rem;
+    animation: confetti-bounce 1s ease-in-out infinite alternate;
+  }
+
+  .milestone-confetti:last-child {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes confetti-bounce {
+    from {
+      transform: translateY(0) rotate(-5deg);
+    }
+
+    to {
+      transform: translateY(-6px) rotate(5deg);
+    }
+  }
+
+  .milestone-value {
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+  }
+
+  .milestone-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #FFD700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .progress-bar-fill.streak {
@@ -5042,15 +5117,18 @@
             <div class="recovery-stat-block">
               <div class="recovery-stat-value">${escapeHtml(sessionVal)}${sessionTag ? `<span class="recovery-stat-tag ${intensityClass}">${escapeHtml(sessionTag)}</span>` : ''}</div>
               <div class="recovery-stat-label">Session Load</div>
+              <div class="recovery-stat-hint">How hard this session was</div>
             </div>
             <div class="recovery-stat-block">
               <div class="recovery-stat-value">${escapeHtml(weekVal)}</div>
               ${chronicVal ? `<div class="recovery-stat-sub">28d: ${escapeHtml(chronicVal)}</div>` : ''}
               <div class="recovery-stat-label">7-Day Load</div>
+              <div class="recovery-stat-hint">Cumulative training this week</div>
             </div>
             ${hasACWR ? `<div class="recovery-stat-block">
               <div class="recovery-stat-value">${escapeHtml(acwrVal)}${acwrLabel ? `<span class="recovery-stat-tag ${acwrClass}">${escapeHtml(acwrLabel)}</span>` : ''}</div>
-              <div class="recovery-stat-label">ACWR</div>
+              <div class="recovery-stat-label">Workload Ratio</div>
+              <div class="recovery-stat-hint">Recent vs long-term training balance</div>
             </div>` : ''}
           </div>
           ${fatigueWarning ? `<div class="recovery-fatigue-warning"><span>⚠️</span><span>${escapeHtml(fatigueWarning)}</span></div>` : ''}
@@ -5359,7 +5437,7 @@
       // Split on the LAST colon that precedes the value
       // Pattern: "Name Type: value (previous: ...)"
       // We need the last TYPE keyword before the colon
-      const typePatterns = ['1RM', 'Volume', 'Max Reps', 'Total Time',
+      const typePatterns = ['1RM', 'Best Set Volume', 'Total Volume', 'Volume', 'Max Reps', 'Total Time',
         'Longest Run', 'Longest Ride', 'Highest Elevation Gain'];
 
       let name = '', recordType = '', value = '', previous = '', improvement = '';
@@ -5438,7 +5516,7 @@
       const lowerType = recordType.toLowerCase();
       let typeClass = 'time'; // default
       if (lowerType === '1rm') typeClass = '1rm';
-      else if (lowerType === 'volume') typeClass = 'volume';
+      else if (lowerType.includes('volume')) typeClass = 'volume';
       else if (lowerType.includes('reps')) typeClass = 'reps';
       else if (lowerType.includes('fastest') || lowerType.includes('time')) typeClass = 'time';
       else if (lowerType.includes('longest') || lowerType.includes('distance') || lowerType.includes('elevation')) typeClass = 'distance';
@@ -6093,6 +6171,45 @@
      */
     function renderMilestoneSection(section, idx) {
       const lines = section.content.split('\n').filter(l => l.trim());
+
+      // Detect milestone-reached mode: content contains "MILESTONE: Xkm reached!"
+      const milestoneReachedLine = lines.find(l => /MILESTONE:.*reached/i.test(l));
+
+      if (milestoneReachedLine) {
+        // === CELEBRATION MODE ===
+        const milestoneMatch = milestoneReachedLine.match(/MILESTONE:\s*([\d,.]+)\s*(km|mi|m)/i);
+        const milestoneVal = milestoneMatch ? milestoneMatch[1].replace(',', '') : '?';
+        const milestoneUnit = milestoneMatch ? milestoneMatch[2] : 'km';
+
+        // Parse detail bullets
+        const detailLines = lines.filter(l => l.trim().startsWith('•'));
+        const detailsHtml = detailLines.map(line => {
+          const trimmed = line.trim().replace(/^•\s*/, '');
+          const emojiResult = extractLeadingEmoji(trimmed);
+          const emoji = emojiResult.emoji || '✨';
+          const rest = emojiResult.rest.trim();
+          return `<div class="progress-detail-row"><span class="detail-emoji">${emoji}</span>${escapeHtml(rest || trimmed)}</div>`;
+        }).join('');
+
+        return `
+          <div class="showcase-section glass-card description-section-card milestone-celebration" style="animation-delay: ${idx * 0.1}s;">
+            <div class="section-header"><h2>${section.emoji} ${section.title}</h2></div>
+            <div class="milestone-banner">
+              <div class="milestone-confetti">🎉</div>
+              <div class="milestone-value">${escapeHtml(milestoneVal)} ${escapeHtml(milestoneUnit)}</div>
+              <div class="milestone-label">Milestone Reached!</div>
+              <div class="milestone-confetti">🎉</div>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill milestone celebration" style="width:100%">
+                <span class="progress-bar-label">${escapeHtml(milestoneVal)} ${escapeHtml(milestoneUnit)} ✓</span>
+              </div>
+            </div>
+            <div class="progress-details">${detailsHtml}</div>
+          </div>`;
+      }
+
+      // === PROGRESS MODE (unchanged) ===
       let total = null;
       let milestone = null;
       let remaining = null;

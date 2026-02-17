@@ -80,6 +80,7 @@ export function useFCM() {
         if (payload.notification) {
           const notificationType = payload.data?.type;
           const activityId = payload.data?.activity_id;
+          const sourceId = payload.data?.sourceId;
 
           // Create notification with enhanced options
           const notification = new Notification(payload.notification.title || 'FitGlue', {
@@ -101,8 +102,8 @@ export function useFCM() {
                 'PENDING_INPUT': '/inputs',
                 'PIPELINE_SUCCESS': `/activities/${activityId}`,
                 'PIPELINE_FAILED': `/activities/${activityId}`,
-                'CONNECTION_ACTION': '/',
-                'CONNECTION_ACTION_FAILED': '/',
+                'CONNECTION_ACTION': `/connections/${sourceId}`,
+                'CONNECTION_ACTION_FAILED': `/connections/${sourceId}`,
               };
               const targetPath = urlMap[notificationType];
               if (targetPath) {
