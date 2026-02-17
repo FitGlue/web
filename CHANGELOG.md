@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.33.1](https://github.com/fitglue/web/compare/v10.33.0...v10.33.1) (2026-02-17)
+
+
+### Bug Fixes
+
+* app integration mappings ([38b6e0a](https://github.com/fitglue/web/commit/38b6e0ac96ed6678be5858a359ab274673a845d9))
+
 ## [10.33.0](https://github.com/fitglue/web/compare/v10.32.0...v10.33.0) (2026-02-17)
 
 
