@@ -3,61 +3,124 @@
 <main class="legal-page">
   <div class="container legal-content">
     <h1>Privacy Policy</h1>
-    <p class="legal-last-updated">Last updated: January 2026</p>
+    <p class="legal-last-updated">Last updated: February 2026</p>
 
     <p>This Privacy Policy describes how FitGlue ("we", "us", or "our") collects, uses, and protects information about
-      you when you use our website and services. We are committed to protecting your privacy and being transparent
-      about our data practices.</p>
+      you when you use our website, web application, mobile application, and related services (collectively, the
+      "Service"). We are committed to protecting your privacy and being transparent about our data practices.</p>
 
     <h2>Our Commitment to You</h2>
-    <p><strong>We will never sell, rent, or trade your personal data to anyone.</strong> Your fitness data belongs to
-      you, and we only access it with your explicit permission to provide the services you have requested.</p>
+    <p><strong>We will never sell, rent, or trade your personal data to anyone.</strong> Your fitness and health data
+      belongs to you, and we only access it with your explicit permission to provide the services you have requested.
+    </p>
 
     <h2>Information We Collect</h2>
     <p>We collect information you provide directly to us, such as when you create an account, connect a fitness
-      platform, or contact us for support.</p>
+      platform, upload a file, or contact us for support. We collect only the minimum data necessary to provide the
+      Service.</p>
+
+    <h3>Account Information</h3>
+    <p>Email address and authentication credentials, managed securely through Firebase Authentication.</p>
+
+    <h3>Fitness &amp; Workout Data</h3>
+    <p>Workout data from connected platforms (such as Hevy, Strava, Fitbit, Garmin, TrainingPeaks, Intervals.icu, and
+      others) that you explicitly authorise us to access. This may include exercise type, duration, sets, reps, weights,
+      and performance metrics.</p>
+
+    <h3>Health &amp; Biometric Data</h3>
+    <p>When you connect a wearable device or health platform, we may access health data including heart rate, training
+      zones, and calorie estimates. This data may originate from:</p>
     <ul>
-      <li><strong>Account Information:</strong> Email address and authentication credentials</li>
-      <li><strong>Fitness Data:</strong> Workout data from connected platforms (Hevy, Fitbit, Strava, etc.) that you
-        explicitly authorize us to access</li>
-      <li><strong>Usage Data:</strong> Basic information about how you use our service to help us improve</li>
+      <li>Apple HealthKit (via our iOS app)</li>
+      <li>Google Health Connect (via our Android app)</li>
+      <li>Fitbit (via API connection)</li>
+      <li>FIT file uploads (from Garmin and other devices)</li>
     </ul>
+    <p>We access this data solely to enrich your activities with training insights. We never use health data for
+      advertising, data mining, or any purpose beyond providing the Service.</p>
+
+    <h3>GPS &amp; Location Data</h3>
+    <p>Route, elevation, and coordinate data from activities (via connected platforms, FIT file uploads, or mobile
+      health sync). This data is used to provide location context, elevation profiles, and weather enrichment for your
+      activities.</p>
+
+    <h3>Uploaded Files</h3>
+    <p>Files you upload to the Service, such as FIT files from fitness devices. These are processed to extract activity
+      data and are stored securely in our infrastructure.</p>
+
+    <h3>Subscription &amp; Billing Data</h3>
+    <p>If you subscribe to a paid plan, billing is handled by <a href="https://stripe.com/privacy"
+        style="color: var(--color-primary);" target="_blank" rel="noopener">Stripe</a>. We do not store your credit card
+      details. We receive only basic subscription status information (plan type, billing period, subscription state)
+      from
+      Stripe.</p>
+
+    <h3>Push Notification Tokens</h3>
+    <p>If you enable push notifications, we collect a device token via Firebase Cloud Messaging (FCM) to deliver
+      notifications about your activity processing. These tokens contain no personal information.</p>
+
+    <h3>Usage Data</h3>
+    <p>Basic information about how you use our Service, and error reporting data via
+      <a href="https://sentry.io/privacy/" style="color: var(--color-primary);" target="_blank"
+        rel="noopener">Sentry</a> to help us identify and fix issues.
+    </p>
 
     <h2>How We Use Your Information</h2>
     <p>We use the information we collect solely to:</p>
     <ul>
       <li>Provide, maintain, and improve our services</li>
       <li>Process and sync your fitness data between the platforms you connect</li>
+      <li>Enhance your activities with additional insights (boosters) such as heart rate zones, weather context,
+        personal
+        records, and AI-generated descriptions</li>
+      <li>Generate Showcase pages when you choose to share an activity publicly</li>
+      <li>Send you push notifications about activity processing status</li>
       <li>Send you essential technical notices and support messages</li>
       <li>Respond to your comments and questions</li>
     </ul>
-    <p>We do not use your data for advertising, profiling, or any purpose beyond providing the service.</p>
+    <p>We do not use your data for advertising, profiling, or any purpose beyond providing the Service.</p>
+
+    <h2>Showcase &amp; Publicly Shared Content</h2>
+    <p>When you create a Showcase page for an activity, the enriched activity data for that specific activity is made
+      publicly accessible via a unique URL. This may include workout details, heart rate data, maps, and other
+      enrichments. You control which activities are shared, and you can remove a Showcase page at any time.</p>
 
     <h2>Data Sharing &amp; Third Parties</h2>
-    <p>We share your fitness data <strong>only</strong> with the platforms you explicitly connect and authorize through
+    <p>We share your fitness data <strong>only</strong> with the platforms you explicitly connect and authorise through
       FitGlue. We do not:</p>
     <ul>
       <li>Sell your personal information to anyone, ever</li>
       <li>Share your data with advertisers</li>
       <li>Use your data for marketing purposes without consent</li>
-      <li>Access your data beyond what is necessary to provide the service</li>
+      <li>Access your data beyond what is necessary to provide the Service</li>
     </ul>
+
+    <h3>Sub-processors</h3>
+    <p>We use the following third-party services to operate FitGlue:</p>
+    <ul>
+      <li><strong>Google Cloud Platform:</strong> Infrastructure hosting, data storage (Firestore, Cloud Storage),
+        and serverless compute</li>
+      <li><strong>Firebase:</strong> Authentication and push notifications</li>
+      <li><strong>Stripe:</strong> Subscription billing and payment processing</li>
+      <li><strong>Sentry:</strong> Error monitoring and performance tracking</li>
+    </ul>
+    <p>Each sub-processor is bound by their own privacy policies and data protection commitments.</p>
 
     <h2>Data Security</h2>
-    <p>We implement appropriate technical and organizational measures to protect your data:</p>
-    <ul>
-      <li>All data is encrypted in transit using TLS/SSL</li>
-      <li>All data is encrypted at rest</li>
-      <li>We use secure authentication through Firebase Authentication</li>
-      <li>Access to systems is strictly controlled and monitored</li>
-    </ul>
+    <p>We implement robust technical and organisational measures to protect your data, including encryption in transit
+      and at rest, hashed API keys, and strict access controls. For full details, see our
+      <a href="/security" style="color: var(--color-primary);">Data Security</a> page.
+    </p>
 
     <h2>Data Retention</h2>
-    <p>We retain your data only for as long as necessary to provide our services. When you disconnect an integration or
-      delete your account, we remove the associated data from our systems within 30 days.</p>
+    <p>We retain your data only for as long as necessary to provide our services. When you disconnect an integration,
+      all associated connection data (tokens, credentials, and metadata) is immediately and permanently deleted. When
+      you
+      delete your account, we remove all associated data from our systems within 30 days.</p>
 
     <h2>Your Rights (GDPR &amp; Data Protection)</h2>
-    <p>If you are in the European Economic Area (EEA) or United Kingdom, you have specific rights under GDPR:</p>
+    <p>If you are in the European Economic Area (EEA) or United Kingdom, you have specific rights under GDPR and the
+      UK Data Protection Act 2018:</p>
     <ul>
       <li><strong>Right of Access:</strong> You can request a copy of all personal data we hold about you (Subject
         Access Request)</li>
@@ -76,10 +139,24 @@
     <p>You can disconnect any integration and delete your account at any time from within the application. Upon account
       deletion:</p>
     <ul>
-      <li>All associated fitness data is permanently deleted</li>
-      <li>All integration tokens are revoked</li>
+      <li>All associated fitness and health data is permanently deleted</li>
+      <li>All integration credentials are deleted from our systems</li>
+      <li>All API keys are destroyed</li>
       <li>Your account information is removed from our systems</li>
     </ul>
+
+    <h2>Health Data</h2>
+    <p>FitGlue accesses health data from Apple HealthKit and Google Health Connect. In accordance with the requirements
+      of both platforms:</p>
+    <ul>
+      <li>Health data is never used for advertising or data mining</li>
+      <li>Health data is not stored in iCloud</li>
+      <li>Health data is accessed only with your explicit permission</li>
+      <li>We never write false or inaccurate data to HealthKit or Health Connect</li>
+      <li>Push notifications never contain sensitive health information</li>
+    </ul>
+    <p>For more detail on our health data handling, see our <a href="/security"
+        style="color: var(--color-primary);">Data Security</a> page.</p>
 
     <h2>Children's Privacy</h2>
     <p>FitGlue is not intended for children under 16 years of age. We do not knowingly collect personal information from

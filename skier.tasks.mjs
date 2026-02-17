@@ -110,6 +110,7 @@ export const tasks = [
         contact: 'Have a question or suggestion? We\'d love to hear from you.',
         privacy: 'Your data is yours. Read our commitment to privacy and security.',
         terms: 'FitGlue Terms of Service and usage guidelines.',
+        security: 'How FitGlue protects your health and fitness data. Encryption, access controls, and platform compliance with Apple HealthKit and Google Health Connect.',
         '404': 'Oops! This page went for a run and didn\'t come back.',
       };
       return {
@@ -123,6 +124,7 @@ export const tasks = [
         isContact: currentPage === 'contact',
         isPrivacy: currentPage === 'privacy',
         isTerms: currentPage === 'terms',
+        isSecurity: currentPage === 'security',
         canonicalPath,
         description: descriptions[currentPage] || 'FitGlue connects your fitness apps and makes your data shine everywhere.',
       };
