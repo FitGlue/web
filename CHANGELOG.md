@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.33.0](https://github.com/fitglue/web/compare/v10.32.0...v10.33.0) (2026-02-17)
+
+
+### Features
+
+* improve notification deep linking and showcase profile detection ([c178e12](https://github.com/fitglue/web/commit/c178e122dd2998f1b0b42f1816c35f23c82caf32))
+
 ## [10.32.0](https://github.com/fitglue/web/compare/v10.31.0...v10.32.0) (2026-02-16)
 
 
