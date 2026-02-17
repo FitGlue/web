@@ -74,15 +74,14 @@ const LAST_USED_FIELDS = new Set(['last_used_at', 'lastUsedAt', 'last_synced_at'
 // Fields that indicate creation timestamp (not useful to display)
 const CREATED_FIELDS = new Set(['created_at', 'createdAt']);
 
-// Firestore integration fields use camelCase (from TypeScript protobuf types),
-// but the plugin registry uses kebab-case IDs. Normalize so the ConnectionsPage
-// lookup by registry ID finds the correct status.
-const FIRESTORE_KEY_TO_REGISTRY_ID: Record<string, string> = {
-    healthConnect: 'health-connect',
-    health_connect: 'health-connect',
-    appleHealth: 'apple-health',
-    apple_health: 'apple-health',
-};
+// Convert a Firestore integration key (snake_case or legacy camelCase) to a kebab-case registry ID.
+// e.g. 'health_connect' -> 'health-connect', 'appleHealth' -> 'apple-health', 'strava' -> 'strava'
+const toRegistryId = (key: string): string =>
+    key
+        // camelCase -> snake_case (e.g. 'appleHealth' -> 'apple_health')
+        .replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
+        // snake_case -> kebab-case (e.g. 'apple_health' -> 'apple-health')
+        .replace(/_/g, '-');
 
 // Check if a field name looks like an external user ID
 const isExternalIdField = (key: string): boolean => {
@@ -206,8 +205,8 @@ export const useRealtimeIntegrations = () => {
                     lastUsedAt,
                     additionalDetails: Object.keys(additionalDetails).length > 0 ? additionalDetails : undefined
                 };
-                // Normalize Firestore camelCase keys to kebab-case registry IDs
-                const registryId = FIRESTORE_KEY_TO_REGISTRY_ID[integrationKey] ?? integrationKey;
+                // Normalize Firestore key to kebab-case registry ID
+                const registryId = toRegistryId(integrationKey);
                 integrationsSummary[registryId as keyof IntegrationsSummary] = status;
             });
         }

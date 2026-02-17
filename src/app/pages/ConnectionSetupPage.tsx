@@ -234,7 +234,7 @@ const ConnectionSetupPage: React.FC = () => {
     const renderAppSyncSetup = () => {
         const isApple = integration.id === 'apple-health';
         const storeName = isApple ? 'App Store' : 'Google Play Store';
-        const healthName = isApple ? 'Apple Health' : 'Health Connect';
+        const healthName = isApple ? 'Apple HealthKit' : 'Health Connect';
 
         return (
             <Card variant="elevated">
