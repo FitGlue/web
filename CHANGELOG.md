@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.35.0](https://github.com/fitglue/web/compare/v10.34.0...v10.35.0) (2026-02-17)
+
+
+### Features
+
+* add health data security page and expand legal policies ([a63c73a](https://github.com/fitglue/web/commit/a63c73a4194da1faf826c20a361bf305569e5b3f))
+
 ## [10.34.0](https://github.com/fitglue/web/compare/v10.33.1...v10.34.0) (2026-02-17)
 
 
