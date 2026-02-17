@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.34.0](https://github.com/fitglue/web/compare/v10.33.1...v10.34.0) (2026-02-17)
+
+
+### Features
+
+* health kit/connect renaming ([bcd5471](https://github.com/fitglue/web/commit/bcd5471b26add18caf65c749c99879f51fe71e01))
+
 ### [10.33.1](https://github.com/fitglue/web/compare/v10.33.0...v10.33.1) (2026-02-17)
 
 
