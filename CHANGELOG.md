@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.36.0](https://github.com/fitglue/web/compare/v10.35.0...v10.36.0) (2026-02-18)
+
+
+### Features
+
+* add DestinationBadge component and refactor ActivityDetailPage layout ([9bd476d](https://github.com/fitglue/web/commit/9bd476da0773db5cd2067d84e81cfbb0ae19aadd))
+* add per-destination booster exclusion UI in pipeline editor ([9099257](https://github.com/fitglue/web/commit/9099257aa175db1c0be79fed38e4ecad5ae533d0))
+
 ## [10.35.0](https://github.com/fitglue/web/compare/v10.34.0...v10.35.0) (2026-02-17)
 
 
