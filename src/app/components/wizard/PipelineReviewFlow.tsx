@@ -30,6 +30,8 @@ export interface ReviewDestination {
     iconType?: string;
     iconPath?: string;
     name: string;
+    /** Names of excluded enrichers for this destination (NerdMode only) */
+    excludedEnricherNames?: string[];
 }
 
 export interface PipelineReviewFlowProps {
@@ -123,14 +125,21 @@ export const PipelineReviewFlow: React.FC<PipelineReviewFlowProps> = ({
                     <Stack className="pipeline-review-flow__content" gap="sm">
                         <Paragraph muted size="sm">Destinations ({destinations.length})</Paragraph>
                         {destinations.map(d => (
-                            <Stack key={d.id} direction="horizontal" align="center" gap="xs">
-                                <PluginIcon
-                                    icon={d.icon}
-                                    iconType={d.iconType}
-                                    iconPath={d.iconPath}
-                                    size="small"
-                                />
-                                <Paragraph inline>{d.name}</Paragraph>
+                            <Stack key={d.id} gap="xs">
+                                <Stack direction="horizontal" align="center" gap="xs">
+                                    <PluginIcon
+                                        icon={d.icon}
+                                        iconType={d.iconType}
+                                        iconPath={d.iconPath}
+                                        size="small"
+                                    />
+                                    <Paragraph inline>{d.name}</Paragraph>
+                                </Stack>
+                                {d.excludedEnricherNames && d.excludedEnricherNames.length > 0 && (
+                                    <Paragraph size="sm" muted>
+                                        🔇 Skipping: {d.excludedEnricherNames.join(', ')}
+                                    </Paragraph>
+                                )}
                             </Stack>
                         ))}
                     </Stack>

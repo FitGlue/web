@@ -255,6 +255,11 @@ export interface PipelineConfig_DestinationConfigsEntry {
 /** Configuration for a single destination plugin */
 export interface DestinationConfig {
   config: { [key: string]: string };
+  /**
+   * Enricher provider types to exclude from this destination's description output
+   * e.g., ["ENRICHER_PROVIDER_PERSONAL_RECORDS", "ENRICHER_PROVIDER_PARKRUN"]
+   */
+  excludedEnrichers: string[];
 }
 
 export interface DestinationConfig_ConfigEntry {

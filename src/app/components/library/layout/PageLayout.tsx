@@ -6,8 +6,8 @@ import { Footer } from './Footer';
 import './PageLayout.css';
 
 interface PageLayoutProps {
-    /** Page title displayed in PageHeader */
-    title: string | ReactNode;
+    /** Page title displayed in PageHeader. Omit if the page content provides its own heading. */
+    title?: string | ReactNode;
     /** Optional back navigation path */
     backTo?: string;
     /** Optional back navigation label */
@@ -54,7 +54,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
                     title={title}
                     backTo={backTo}
                     backLabel={backLabel}
-                    actions={
+                    actions={(title || onRefresh || headerActions) ? (
                         <>
                             {onRefresh && (
                                 <RefreshControl
@@ -65,7 +65,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
                             )}
                             {headerActions}
                         </>
-                    }
+                    ) : undefined}
                 />
                 <main>
                     {children}

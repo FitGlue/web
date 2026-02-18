@@ -19,8 +19,11 @@ import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginCategorySection } from '../components/PluginCategorySection';
+import { BoosterExclusionPills } from '../components/BoosterExclusionPills';
 import { WizardOptionGrid, WizardExcludedSection, WizardStepIndicator, PipelineReviewFlow } from '../components/wizard';
 import { useShowcasePreferences } from '../hooks/useShowcasePreferences';
+import { useNerdMode } from '../state/NerdModeContext';
+import { EnricherProviderType } from '../../types/pb/user';
 import { PluginManifest, ConfigFieldType } from '../types/plugin';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST } from '../utils/tier';
 import { ENRICHER_CATEGORIES, groupPluginsByCategory, getRecommendedPlugins } from '../utils/pluginCategories';
@@ -40,6 +43,7 @@ const PipelineWizardPage: React.FC = () => {
     const { integrations: userIntegrations } = useRealtimeIntegrations();
     const { user } = useUser();
     const { getDefault: getPluginDefault } = usePluginDefaults();
+    const { isNerdMode } = useNerdMode();
 
     const userTier = user ? getEffectiveTier(user) : TIER_HOBBYIST;
 
@@ -83,6 +87,7 @@ const PipelineWizardPage: React.FC = () => {
     const [currentEnricherIndex, setCurrentEnricherIndex] = useState<number>(0);
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
     const [destinationConfigs, setDestinationConfigs] = useState<Record<string, Record<string, string>>>({});
+    const [excludedEnrichersByDest, setExcludedEnrichersByDest] = useState<Record<string, string[]>>({});
     const [currentDestConfigIndex, setCurrentDestConfigIndex] = useState<number>(0);
     const [pipelineName, setPipelineName] = useState('');
     const [creating, setCreating] = useState(false);
@@ -229,17 +234,22 @@ const PipelineWizardPage: React.FC = () => {
                 providerType: e.manifest.enricherProviderType,
                 typedConfig: e.config
             }));
+            // Merge config + excludedEnrichers into destination configs
+            const mergedDestConfigs: Record<string, { config: Record<string, string>; excludedEnrichers?: string[] }> = {};
+            const allDestKeys = new Set([...Object.keys(destinationConfigs), ...Object.keys(excludedEnrichersByDest)]);
+            for (const k of allDestKeys) {
+                mergedDestConfigs[k] = {
+                    config: destinationConfigs[k] || {},
+                    ...(excludedEnrichersByDest[k]?.length ? { excludedEnrichers: excludedEnrichersByDest[k] } : {}),
+                };
+            }
             await api.post('/users/me/pipelines', {
                 name: pipelineName || undefined,
                 source: selectedSource,
                 enrichers: enricherConfigs,
                 destinations: selectedDestinations,
                 sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
-                destinationConfigs: Object.keys(destinationConfigs).length > 0
-                    ? Object.fromEntries(
-                        Object.entries(destinationConfigs).map(([k, v]) => [k, { config: v }])
-                    )
-                    : undefined,
+                destinationConfigs: Object.keys(mergedDestConfigs).length > 0 ? mergedDestConfigs : undefined,
             });
             await refreshPipelines();
             toast.success('Pipeline Created', `"${pipelineName || 'New Pipeline'}" has been created`);
@@ -461,6 +471,32 @@ const PipelineWizardPage: React.FC = () => {
                             getName={d => d.name}
                             getHint={getExcludedHint}
                         />
+                        {/* NerdMode: Per-destination enricher exclusions */}
+                        {isNerdMode && selectedEnrichers.length > 0 && selectedDestinations.map(destId => {
+                            const destManifest = destinations.find(d => d.id === destId);
+                            if (!destManifest) return null;
+                            const enricherInfos = selectedEnrichers.map(e => ({
+                                id: e.manifest.id,
+                                name: e.manifest.name,
+                                providerType: EnricherProviderType[e.manifest.enricherProviderType as number] || String(e.manifest.enricherProviderType),
+                                icon: e.manifest.icon,
+                                iconType: e.manifest.iconType,
+                                iconPath: e.manifest.iconPath,
+                            }));
+                            return (
+                                <BoosterExclusionPills
+                                    key={`excl-${destManifest.id}`}
+                                    destinationId={destManifest.id}
+                                    destinationName={destManifest.name}
+                                    enrichers={enricherInfos}
+                                    excludedProviderTypes={excludedEnrichersByDest[destManifest.id] || []}
+                                    onChange={(destId, excluded) => setExcludedEnrichersByDest(prev => ({
+                                        ...prev,
+                                        [destId]: excluded,
+                                    }))}
+                                />
+                            );
+                        })}
                     </>
                 )}
             </Stack>
@@ -500,13 +536,23 @@ const PipelineWizardPage: React.FC = () => {
         }));
 
         // Convert destinations to ReviewDestination format
-        const reviewDests = dests.map(d => ({
-            id: d.id,
-            icon: d.icon,
-            iconType: d.iconType,
-            iconPath: d.iconPath,
-            name: d.name,
-        }));
+        const reviewDests = dests.map(d => {
+            const excluded = excludedEnrichersByDest[d.id] || [];
+            const excludedNames = excluded.map(provType => {
+                const enricher = selectedEnrichers.find(e =>
+                    (EnricherProviderType[e.manifest.enricherProviderType as number] || String(e.manifest.enricherProviderType)) === provType
+                );
+                return enricher?.manifest.name || provType;
+            });
+            return {
+                id: d.id,
+                icon: d.icon,
+                iconType: d.iconType,
+                iconPath: d.iconPath,
+                name: d.name,
+                ...(excludedNames.length > 0 ? { excludedEnricherNames: excludedNames } : {}),
+            };
+        });
 
         return (
             <Stack>

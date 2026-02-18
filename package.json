@@ -14,6 +14,8 @@
     "build:test": "vite build --mode test && npm run _flatten && BUILD_ENV=test npm run _build:static",
     "build:prod": "npm run build",
     "serve": "npm run build:dev && npx firebase serve --only hosting",
+    "serve:test": "npm run build:test && npx firebase serve --only hosting -P test",
+    "serve:prod": "npm run build:prod && npx firebase serve --only hosting -P prod",
     "preview": "vite preview",
     "_build:static": "npx skier build",
     "_build:app": "tsc --noEmit && vite build",

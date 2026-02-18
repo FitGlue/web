@@ -13,7 +13,10 @@ import { PluginConfigForm } from '../components/EnricherConfigForm';
 import { SharePipelineModal } from '../components/SharePipelineModal';
 import { WizardOptionGrid, WizardExcludedSection } from '../components/wizard';
 import { PluginCategorySection } from '../components/PluginCategorySection';
+import { BoosterExclusionPills } from '../components/BoosterExclusionPills';
 import { Input as FormInput } from '../components/library/forms';
+import { useNerdMode } from '../state/NerdModeContext';
+import { EnricherProviderType } from '../../types/pb/user';
 import { useApi } from '../hooks/useApi';
 import { usePluginDefaults } from '../hooks/usePluginDefaults';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
@@ -38,7 +41,7 @@ interface PipelineConfig {
     enrichers: EnricherConfig[];
     destinations: (string | number)[];
     sourceConfig?: Record<string, string>;
-    destinationConfigs?: Record<string, { config: Record<string, string> }>;
+    destinationConfigs?: Record<string, { config: Record<string, string>; excludedEnrichers?: string[] }>;
 }
 
 interface SelectedEnricher {
@@ -54,6 +57,7 @@ const PipelineEditPage: React.FC = () => {
     const { integrations: userIntegrations } = useRealtimeIntegrations();
     const { refresh: invalidatePipelines } = useRealtimePipelines();
     const { getDefault: getPluginDefault } = usePluginDefaults();
+    const { isNerdMode } = useNerdMode();
 
     const isPluginAvailable = (plugin: PluginManifest): boolean => {
         if (!plugin.requiredIntegrations?.length) return true;
@@ -88,6 +92,7 @@ const PipelineEditPage: React.FC = () => {
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
     const [sourceConfig, setSourceConfig] = useState<Record<string, string>>({});
     const [destinationConfigs, setDestinationConfigs] = useState<Record<string, Record<string, string>>>({});
+    const [excludedEnrichersByDest, setExcludedEnrichersByDest] = useState<Record<string, string[]>>({});
     const [editingEnrichers, setEditingEnrichers] = useState(false);
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
     const [showShareModal, setShowShareModal] = useState(false);
@@ -118,6 +123,13 @@ const PipelineEditPage: React.FC = () => {
                     Object.entries(pipelineData.destinationConfigs || {}).map(([k, v]) => [k, v.config || {}])
                 )
             );
+            setExcludedEnrichersByDest(
+                Object.fromEntries(
+                    Object.entries(pipelineData.destinationConfigs || {})
+                        .filter(([, v]) => v.excludedEnrichers && v.excludedEnrichers.length > 0)
+                        .map(([k, v]) => [k, v.excludedEnrichers!])
+                )
+            );
         } catch (err) {
             setError('Failed to load pipeline');
             console.error(err);
@@ -141,17 +153,22 @@ const PipelineEditPage: React.FC = () => {
                 providerType: e.manifest.enricherProviderType,
                 typedConfig: e.config
             }));
+            // Merge config + excludedEnrichers into destination configs
+            const mergedDestConfigs: Record<string, { config: Record<string, string>; excludedEnrichers?: string[] }> = {};
+            const allDestKeys = new Set([...Object.keys(destinationConfigs), ...Object.keys(excludedEnrichersByDest)]);
+            for (const k of allDestKeys) {
+                mergedDestConfigs[k] = {
+                    config: destinationConfigs[k] || {},
+                    ...(excludedEnrichersByDest[k]?.length ? { excludedEnrichers: excludedEnrichersByDest[k] } : {}),
+                };
+            }
             await api.patch(`/users/me/pipelines/${pipelineId}`, {
                 name: pipelineName || undefined,
                 source: selectedSource,
                 enrichers: enricherConfigs,
                 destinations: selectedDestinations.map(d => isNaN(Number(d)) ? d : Number(d)),
                 sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
-                destinationConfigs: Object.keys(destinationConfigs).length > 0
-                    ? Object.fromEntries(
-                        Object.entries(destinationConfigs).map(([k, v]) => [k, { config: v }])
-                    )
-                    : undefined,
+                destinationConfigs: Object.keys(mergedDestConfigs).length > 0 ? mergedDestConfigs : undefined,
             });
             invalidatePipelines();
             toast.success('Pipeline Saved', `"${pipelineName || 'Pipeline'}" has been updated`);
@@ -357,6 +374,32 @@ const PipelineEditPage: React.FC = () => {
                             getName={d => d.name}
                             getHint={getExcludedHint}
                         />
+                        {/* NerdMode: Per-destination enricher exclusions */}
+                        {isNerdMode && selectedEnrichers.length > 0 && selectedDestinations.map(destId => {
+                            const destManifest = destinations.find(d => d.id === destId || d.destinationType === Number(destId));
+                            if (!destManifest) return null;
+                            const enricherInfos = selectedEnrichers.map(e => ({
+                                id: e.manifest.id,
+                                name: e.manifest.name,
+                                providerType: EnricherProviderType[e.manifest.enricherProviderType as number] || String(e.manifest.enricherProviderType),
+                                icon: e.manifest.icon,
+                                iconType: e.manifest.iconType,
+                                iconPath: e.manifest.iconPath,
+                            }));
+                            return (
+                                <BoosterExclusionPills
+                                    key={`excl-${destManifest.id}`}
+                                    destinationId={destManifest.id}
+                                    destinationName={destManifest.name}
+                                    enrichers={enricherInfos}
+                                    excludedProviderTypes={excludedEnrichersByDest[destManifest.id] || []}
+                                    onChange={(destId, excluded) => setExcludedEnrichersByDest(prev => ({
+                                        ...prev,
+                                        [destId]: excluded,
+                                    }))}
+                                />
+                            );
+                        })}
                     </Card>
 
                     {/* Destination Config Sections — shown inline for each selected destination with configSchema */}

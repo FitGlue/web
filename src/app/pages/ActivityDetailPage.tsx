@@ -433,7 +433,6 @@ const ActivityDetailPage: React.FC = () => {
 
     return (
         <PageLayout
-            title={pipelineRun.title || 'Activity Details'}
             backTo="/activities"
             backLabel="Activities"
             loading={loading}

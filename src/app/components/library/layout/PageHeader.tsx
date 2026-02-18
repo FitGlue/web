@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './PageHeader.css';
 
 interface PageHeaderProps {
-    title: string | ReactNode;
+    title?: string | ReactNode;
     actions?: ReactNode;
     backTo?: string;
     backLabel?: string;
