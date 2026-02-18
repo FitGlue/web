@@ -4,7 +4,7 @@ import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard, Button, SvgAsset, useToast, IdBadge, ProgressBar } from '../components/library/ui';
+import { Card, CardSkeleton, Pill, Heading, Paragraph, Code, Badge, GlowCard, Button, SvgAsset, useToast, IdBadge, ProgressBar, ExpandableCard, DestinationBadge } from '../components/library/ui';
 import { FlowVisualization } from '../components/library/ui/FlowVisualization';
 import { BoosterGrid } from '../components/library/ui/BoosterGrid';
 import '../components/library/ui/CardSkeleton.css';
@@ -148,7 +148,7 @@ const formatPlatformName = (
     platform: string,
     sources: PluginManifest[],
     destinations: PluginManifest[]
-): { name: string; icon: string } => {
+): { name: string; icon: string; iconType?: string; iconPath?: string } => {
     const key = platform.toLowerCase();
 
     const allPlugins = [...sources, ...destinations];
@@ -157,7 +157,7 @@ const formatPlatformName = (
     const name = plugin?.name || platform.charAt(0).toUpperCase() + platform.slice(1).toLowerCase();
     const icon = plugin?.icon || '📱';
 
-    return { name, icon };
+    return { name, icon, iconType: plugin?.iconType, iconPath: plugin?.iconPath };
 };
 
 const formatDateTime = (dateStr?: string | Date): string => {
@@ -517,243 +517,207 @@ const ActivityDetailPage: React.FC = () => {
                     </Card>
                 )}
 
-                {/* Booster Details - Expanded Metadata */}
-                {providerExecutions.length > 0 && (
-                    <Card>
-                        <Stack gap="md">
-                            <Heading level={4}>
-                                <Stack direction="horizontal" gap="xs" align="center">
-                                    <Paragraph inline>✨</Paragraph>
-                                    Boosters Applied
-                                </Stack>
-                            </Heading>
-                            <Grid cols={2} gap="md">
-                                {providerExecutions.map((enricher, idx) => {
-                                    const effectiveStatus = getEffectiveStatus(enricher);
-                                    const cardVariant = getBoosterCardVariant(effectiveStatus);
-                                    // Look up enricher info from registry
-                                    const enricherPlugin = enrichers.find(
-                                        e => e.id === enricher.ProviderName || e.id === enricher.ProviderName?.replace(/_/g, '-')
-                                    );
-                                    const icon = enricherPlugin?.icon || '✨';
-                                    const displayName = enricherPlugin?.name || enricher.ProviderName
-                                        ?.replace(/[_-]/g, ' ')
-                                        .split(' ')
-                                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                                        .join(' ') || 'Unknown';
+                {/* Destinations - First-class section */}
+                {destinations.length > 0 && (
+                    <Stack gap="md">
+                        {/* Synced Destinations - Compact badges */}
+                        {successDestinations.length > 0 && (
+                            <Stack gap="sm">
+                                <Stack direction="horizontal" gap="md" style={{ flexWrap: 'wrap' }}>
+                                    {successDestinations.map(dest => {
+                                        const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                                        const pipeline = pipelineRun.pipelineId ? pipelines.find(p => p.id === pipelineRun.pipelineId) : undefined;
+                                        const destConfig = pipeline?.destinationConfigs?.[dest.name.toLowerCase()]?.config;
+                                        const externalUrl = buildDestinationUrl(registryDestinations, dest.name.toLowerCase(), dest.externalId, destConfig);
 
-                                    return (
-                                        <GlowCard
-                                            key={idx}
-                                            variant={cardVariant}
-                                            header={
-                                                <Stack direction="horizontal" gap="xs" align="center">
-                                                    <Paragraph inline>{icon}</Paragraph>
-                                                    <Paragraph inline>{displayName}</Paragraph>
-                                                </Stack>
-                                            }
-                                        >
-                                            {enricher.Metadata && Object.keys(enricher.Metadata).length > 0 ? (
+                                        return (
+                                            <DestinationBadge
+                                                key={dest.name}
+                                                name={destInfo.name}
+                                                icon={destInfo.icon}
+                                                iconType={destInfo.iconType}
+                                                iconPath={destInfo.iconPath}
+                                                onClick={externalUrl ? () => window.open(externalUrl, '_blank') : undefined}
+                                            />
+                                        );
+                                    })}
+                                </Stack>
+                            </Stack>
+                        )}
+
+                        {/* Not Synced Destinations */}
+                        {pendingDestinations.length > 0 && (
+                            <Stack gap="sm">
+                                <Heading level={5}>
+                                    <Stack direction="horizontal" gap="xs" align="center">
+                                        <Paragraph inline>⏳</Paragraph>
+                                        Not Synced
+                                    </Stack>
+                                </Heading>
+                                <Paragraph size="sm" muted>
+                                    These destinations were configured but the pipeline did not complete successfully.
+                                </Paragraph>
+                                <Grid cols={2} gap="md">
+                                    {pendingDestinations.map(dest => {
+                                        const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+
+                                        const cardHeader = (
+                                            <Stack direction="horizontal" align="center" gap="sm">
+                                                <Paragraph inline style={{ fontSize: '1.5rem', opacity: 0.6 }}>{destInfo.icon}</Paragraph>
+                                                <Heading level={4}>{destInfo.name}</Heading>
+                                            </Stack>
+                                        );
+
+                                        return (
+                                            <GlowCard key={dest.name} variant="awaiting" header={cardHeader}>
+                                                <Paragraph size="sm" muted>
+                                                    ⏳ Pending - not synced
+                                                </Paragraph>
+                                            </GlowCard>
+                                        );
+                                    })}
+                                </Grid>
+                            </Stack>
+                        )}
+
+                        {/* Failed Destinations */}
+                        {failedDestinations.length > 0 && (
+                            <Stack gap="sm">
+                                <Heading level={5}>
+                                    <Stack direction="horizontal" gap="xs" align="center">
+                                        <Paragraph inline>❌</Paragraph>
+                                        Failed
+                                    </Stack>
+                                </Heading>
+                                <Grid cols={2} gap="md">
+                                    {failedDestinations.map(dest => {
+                                        const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                                        const destOutcome = pipelineRun.destinations?.find(
+                                            d => formatDestination(d.destination) === dest.name
+                                        );
+
+                                        const cardHeader = (
+                                            <Stack direction="horizontal" align="center" gap="sm">
+                                                <Paragraph inline style={{ fontSize: '1.5rem' }}>{destInfo.icon}</Paragraph>
+                                                <Heading level={4}>{destInfo.name}</Heading>
+                                            </Stack>
+                                        );
+
+                                        return (
+                                            <GlowCard key={dest.name} variant="default" header={cardHeader}>
                                                 <Stack gap="xs">
-                                                    {Object.entries(enricher.Metadata)
-                                                        .filter(([key]) => !key.startsWith('asset_'))
-                                                        .slice(0, isNerdMode ? undefined : 6)
-                                                        .map(([key, value]) => (
-                                                            <Stack key={key} direction="horizontal" justify="between">
-                                                                <Paragraph size="sm" muted>{formatMetadataKey(key)}</Paragraph>
-                                                                <Paragraph size="sm">{formatMetadataValue(value)}</Paragraph>
-                                                            </Stack>
-                                                        ))}
+                                                    <Paragraph size="sm" muted>
+                                                        ❌ Sync failed
+                                                    </Paragraph>
+                                                    {destOutcome?.error && (
+                                                        <Code>{destOutcome.error}</Code>
+                                                    )}
                                                 </Stack>
-                                            ) : (
-                                                <Paragraph size="sm" muted>No metadata</Paragraph>
-                                            )}
-                                        </GlowCard>
-                                    );
-                                })}
-                            </Grid>
-                        </Stack>
-                    </Card>
+                                            </GlowCard>
+                                        );
+                                    })}
+                                </Grid>
+                            </Stack>
+                        )}
+
+                        {/* Skipped Destinations */}
+                        {skippedDestinations.length > 0 && (
+                            <Stack gap="sm">
+                                <Heading level={5}>
+                                    <Stack direction="horizontal" gap="xs" align="center">
+                                        <Paragraph inline>⏭️</Paragraph>
+                                        Skipped
+                                    </Stack>
+                                </Heading>
+                                <Grid cols={2} gap="md">
+                                    {skippedDestinations.map(dest => {
+                                        const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
+                                        const destOutcome = pipelineRun.destinations?.find(
+                                            d => formatDestination(d.destination) === dest.name
+                                        );
+
+                                        const cardHeader = (
+                                            <Stack direction="horizontal" align="center" gap="sm">
+                                                <Paragraph inline style={{ fontSize: '1.5rem' }}>{destInfo.icon}</Paragraph>
+                                                <Heading level={4}>{destInfo.name}</Heading>
+                                            </Stack>
+                                        );
+
+                                        return (
+                                            <GlowCard key={dest.name} variant="premium" header={cardHeader}>
+                                                <Stack gap="xs">
+                                                    <Paragraph size="sm" muted>
+                                                        ⏭️ Skipped
+                                                    </Paragraph>
+                                                    {destOutcome?.error && (
+                                                        <Code>{destOutcome.error}</Code>
+                                                    )}
+                                                </Stack>
+                                            </GlowCard>
+                                        );
+                                    })}
+                                </Grid>
+                            </Stack>
+                        )}
+                    </Stack>
                 )}
 
-                {/* Destinations Card - Contains all destination sections */}
-                {destinations.length > 0 && (
-                    <Card>
-                        <Stack gap="lg">
-                            <Heading level={4}>
-                                <Stack direction="horizontal" gap="xs" align="center">
-                                    <Paragraph inline>🚀</Paragraph>
-                                    Destinations
-                                </Stack>
-                            </Heading>
+                {/* Booster Details - Accordion */}
+                {providerExecutions.length > 0 && (
+                    <ExpandableCard
+                        header={
+                            <Stack direction="horizontal" gap="sm" align="center">
+                                <Paragraph inline>✨</Paragraph>
+                                <Heading level={4}>Boosters Applied</Heading>
+                                <Badge variant="default" size="sm">{providerExecutions.length}</Badge>
+                            </Stack>
+                        }
+                    >
+                        <Grid cols={2} gap="md">
+                            {providerExecutions.map((enricher, idx) => {
+                                const effectiveStatus = getEffectiveStatus(enricher);
+                                const cardVariant = getBoosterCardVariant(effectiveStatus);
+                                const enricherPlugin = enrichers.find(
+                                    e => e.id === enricher.ProviderName || e.id === enricher.ProviderName?.replace(/_/g, '-')
+                                );
+                                const icon = enricherPlugin?.icon || '✨';
+                                const displayName = enricherPlugin?.name || enricher.ProviderName
+                                    ?.replace(/[_-]/g, ' ')
+                                    .split(' ')
+                                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                    .join(' ') || 'Unknown';
 
-                            {/* Synced Destinations */}
-                            {successDestinations.length > 0 && (
-                                <Stack gap="sm">
-                                    <Heading level={5}>
-                                        <Stack direction="horizontal" gap="xs" align="center">
-                                            <Paragraph inline>✓</Paragraph>
-                                            Synced
-                                        </Stack>
-                                    </Heading>
-                                    <Grid cols={2} gap="md">
-                                        {successDestinations.map(dest => {
-                                            const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
-                                            // Look up destination config from pipeline for template substitution
-                                            const pipeline = pipelineRun.pipelineId ? pipelines.find(p => p.id === pipelineRun.pipelineId) : undefined;
-                                            const destConfig = pipeline?.destinationConfigs?.[dest.name.toLowerCase()]?.config;
-                                            const externalUrl = buildDestinationUrl(registryDestinations, dest.name.toLowerCase(), dest.externalId, destConfig);
-
-                                            const cardHeader = (
-                                                <Stack direction="horizontal" align="center" gap="sm">
-                                                    <Paragraph inline style={{ fontSize: '1.5rem' }}>{destInfo.icon}</Paragraph>
-                                                    <Heading level={4}>{destInfo.name}</Heading>
-                                                </Stack>
-                                            );
-
-                                            return (
-                                                <GlowCard
-                                                    key={dest.name}
-                                                    variant="success"
-                                                    header={cardHeader}
-                                                    onClick={externalUrl ? () => window.open(externalUrl, '_blank') : undefined}
-                                                >
-                                                    <Stack gap="xs">
-                                                        {externalUrl ? (
-                                                            <Link to={externalUrl} external>
-                                                                View on {destInfo.name} ↗
-                                                            </Link>
-                                                        ) : (
-                                                            <Code>{dest.externalId}</Code>
-                                                        )}
-                                                        <Paragraph size="sm" muted>
-                                                            ✓ Synced successfully
-                                                        </Paragraph>
-                                                    </Stack>
-                                                </GlowCard>
-                                            );
-                                        })}
-                                    </Grid>
-                                </Stack>
-                            )}
-
-                            {/* Not Synced Destinations - When pipeline failed at enricher stage */}
-                            {pendingDestinations.length > 0 && (
-                                <Stack gap="sm">
-                                    <Heading level={5}>
-                                        <Stack direction="horizontal" gap="xs" align="center">
-                                            <Paragraph inline>⏳</Paragraph>
-                                            Not Synced
-                                        </Stack>
-                                    </Heading>
-                                    <Paragraph size="sm" muted>
-                                        These destinations were configured but the pipeline did not complete successfully.
-                                    </Paragraph>
-                                    <Grid cols={2} gap="md">
-                                        {pendingDestinations.map(dest => {
-                                            const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
-
-                                            const cardHeader = (
-                                                <Stack direction="horizontal" align="center" gap="sm">
-                                                    <Paragraph inline style={{ fontSize: '1.5rem', opacity: 0.6 }}>{destInfo.icon}</Paragraph>
-                                                    <Heading level={4}>{destInfo.name}</Heading>
-                                                </Stack>
-                                            );
-
-                                            return (
-                                                <GlowCard key={dest.name} variant="awaiting" header={cardHeader}>
-                                                    <Paragraph size="sm" muted>
-                                                        ⏳ Pending - not synced
-                                                    </Paragraph>
-                                                </GlowCard>
-                                            );
-                                        })}
-                                    </Grid>
-                                </Stack>
-                            )}
-
-                            {/* Failed Destinations - Show error information */}
-                            {failedDestinations.length > 0 && (
-                                <Stack gap="sm">
-                                    <Heading level={5}>
-                                        <Stack direction="horizontal" gap="xs" align="center">
-                                            <Paragraph inline>❌</Paragraph>
-                                            Failed
-                                        </Stack>
-                                    </Heading>
-                                    <Grid cols={2} gap="md">
-                                        {failedDestinations.map(dest => {
-                                            const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
-                                            // Find the destination outcome from pipelineRun to get error message
-                                            const destOutcome = pipelineRun.destinations?.find(
-                                                d => formatDestination(d.destination) === dest.name
-                                            );
-
-                                            const cardHeader = (
-                                                <Stack direction="horizontal" align="center" gap="sm">
-                                                    <Paragraph inline style={{ fontSize: '1.5rem' }}>{destInfo.icon}</Paragraph>
-                                                    <Heading level={4}>{destInfo.name}</Heading>
-                                                </Stack>
-                                            );
-
-                                            return (
-                                                <GlowCard key={dest.name} variant="default" header={cardHeader}>
-                                                    <Stack gap="xs">
-                                                        <Paragraph size="sm" muted>
-                                                            ❌ Sync failed
-                                                        </Paragraph>
-                                                        {destOutcome?.error && (
-                                                            <Code>{destOutcome.error}</Code>
-                                                        )}
-                                                    </Stack>
-                                                </GlowCard>
-                                            );
-                                        })}
-                                    </Grid>
-                                </Stack>
-                            )}
-
-                            {/* Skipped Destinations - Show skip reason */}
-                            {skippedDestinations.length > 0 && (
-                                <Stack gap="sm">
-                                    <Heading level={5}>
-                                        <Stack direction="horizontal" gap="xs" align="center">
-                                            <Paragraph inline>⏭️</Paragraph>
-                                            Skipped
-                                        </Stack>
-                                    </Heading>
-                                    <Grid cols={2} gap="md">
-                                        {skippedDestinations.map(dest => {
-                                            const destInfo = formatPlatformName(dest.name.toLowerCase(), sources, registryDestinations);
-                                            const destOutcome = pipelineRun.destinations?.find(
-                                                d => formatDestination(d.destination) === dest.name
-                                            );
-
-                                            const cardHeader = (
-                                                <Stack direction="horizontal" align="center" gap="sm">
-                                                    <Paragraph inline style={{ fontSize: '1.5rem' }}>{destInfo.icon}</Paragraph>
-                                                    <Heading level={4}>{destInfo.name}</Heading>
-                                                </Stack>
-                                            );
-
-                                            return (
-                                                <GlowCard key={dest.name} variant="premium" header={cardHeader}>
-                                                    <Stack gap="xs">
-                                                        <Paragraph size="sm" muted>
-                                                            ⏭️ Skipped
-                                                        </Paragraph>
-                                                        {destOutcome?.error && (
-                                                            <Code>{destOutcome.error}</Code>
-                                                        )}
-                                                    </Stack>
-                                                </GlowCard>
-                                            );
-                                        })}
-                                    </Grid>
-                                </Stack>
-                            )}
-                        </Stack>
-                    </Card>
+                                return (
+                                    <GlowCard
+                                        key={idx}
+                                        variant={cardVariant}
+                                        header={
+                                            <Stack direction="horizontal" gap="xs" align="center">
+                                                <Paragraph inline>{icon}</Paragraph>
+                                                <Paragraph inline>{displayName}</Paragraph>
+                                            </Stack>
+                                        }
+                                    >
+                                        {enricher.Metadata && Object.keys(enricher.Metadata).length > 0 ? (
+                                            <Stack gap="xs">
+                                                {Object.entries(enricher.Metadata)
+                                                    .filter(([key]) => !key.startsWith('asset_'))
+                                                    .slice(0, isNerdMode ? undefined : 6)
+                                                    .map(([key, value]) => (
+                                                        <Stack key={key} direction="horizontal" justify="between">
+                                                            <Paragraph size="sm" muted>{formatMetadataKey(key)}</Paragraph>
+                                                            <Paragraph size="sm">{formatMetadataValue(value)}</Paragraph>
+                                                        </Stack>
+                                                    ))}
+                                            </Stack>
+                                        ) : (
+                                            <Paragraph size="sm" muted>No metadata</Paragraph>
+                                        )}
+                                    </GlowCard>
+                                );
+                            })}
+                        </Grid>
+                    </ExpandableCard>
                 )}
 
                 {/* Generated Assets */}

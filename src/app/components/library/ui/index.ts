@@ -154,6 +154,9 @@ export { AccordionTrigger } from './Accordion';
 // Expandable cards
 export { ExpandableCard } from './ExpandableCard';
 
+// Destination badge
+export { DestinationBadge } from './DestinationBadge';
+
 // Transformation preview
 export { TransformationPreview } from './TransformationPreview';
 

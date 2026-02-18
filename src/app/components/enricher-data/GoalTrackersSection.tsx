@@ -171,6 +171,11 @@ const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, load
                                                         {entry.data.period_key ? ` • Period: ${entry.data.period_key}` : ''}
                                                         {entry.data.last_update ? ` • Updated: ${formatDate(entry.data.last_update as string)}` : ''}
                                                     </Paragraph>
+                                                    {typeof entry.data.last_external_id === 'string' && entry.data.last_external_id && (
+                                                        <Paragraph size="sm" muted>
+                                                            Last source activity: {entry.data.last_external_id}
+                                                        </Paragraph>
+                                                    )}
                                                 </Stack>
                                                 <Stack direction="horizontal" gap="xs">
                                                     <Button size="small" variant="text" onClick={() => setEditingBooster(entry)}>
@@ -189,7 +194,7 @@ const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, load
                     </>
                 )}
             </Stack>
-        </Card>
+        </Card >
     );
 };
 
