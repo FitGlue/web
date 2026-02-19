@@ -435,7 +435,6 @@ const ActivityDetailPage: React.FC = () => {
         <PageLayout
             backTo="/activities"
             backLabel="Activities"
-            loading={loading}
         >
             <Stack gap="lg">
                 {/* Hero Card with Flow Visualization */}

@@ -18,6 +18,13 @@ interface ShowcaseActivity {
     inProfile: boolean;
 }
 
+interface ShowcaseTheme {
+    themeId: string;
+    customAccentColor: string;
+    animationId: string;
+    cardStyle: string;
+}
+
 interface ShowcaseProfile {
     slug: string;
     displayName: string;
@@ -26,7 +33,34 @@ interface ShowcaseProfile {
     profilePictureUrl: string;
     visible: boolean;
     entries: Array<{ showcaseId: string }>;
+    theme?: ShowcaseTheme;
 }
+
+const THEME_PRESETS = [
+    { id: 'default', name: 'FitGlue Classic', accent: '#FF1B8D', gradient: 'linear-gradient(135deg, #0a0a0a, #1a0a20, #0a0a0a)' },
+    { id: 'midnight', name: 'Midnight Blue', accent: '#4CC9F0', gradient: 'linear-gradient(135deg, #0a0a1a, #0d1b3e, #0a0a1a)' },
+    { id: 'ember', name: 'Ember', accent: '#FF6B35', gradient: 'linear-gradient(135deg, #0a0a0a, #2a0a0a, #0a0a0a)' },
+    { id: 'forest', name: 'Forest', accent: '#4ADE80', gradient: 'linear-gradient(135deg, #0a0a0a, #0a1a0d, #0a0a0a)' },
+    { id: 'neon', name: 'Neon Night', accent: '#E040FB', gradient: 'linear-gradient(135deg, #0a0a0a, #1a0a2a, #0a0a0a)' },
+    { id: 'arctic', name: 'Arctic', accent: '#7DD3FC', gradient: 'linear-gradient(135deg, #0a0a0a, #0a1a2a, #0a0a0a)' },
+    { id: 'golden', name: 'Golden Hour', accent: '#FBBF24', gradient: 'linear-gradient(135deg, #0a0a0a, #1a1a0a, #0a0a0a)' },
+    { id: 'stealth', name: 'Stealth', accent: '#9CA3AF', gradient: 'linear-gradient(135deg, #050505, #111111, #050505)' },
+];
+
+const ANIMATION_OPTIONS = [
+    { id: 'particles', name: 'Constellation', icon: '✨' },
+    { id: 'pulse', name: 'Pulse Waves', icon: '🔵' },
+    { id: 'aurora', name: 'Aurora', icon: '🌌' },
+    { id: 'rain', name: 'Digital Rain', icon: '🌧️' },
+    { id: 'none', name: 'None', icon: '⬛' },
+];
+
+const CARD_STYLE_OPTIONS = [
+    { id: 'glass', name: 'Glass', desc: 'Frosted glass with backdrop blur' },
+    { id: 'solid', name: 'Solid', desc: 'Opaque dark with subtle border' },
+    { id: 'outline', name: 'Outline', desc: 'Transparent with accent border' },
+    { id: 'minimal', name: 'Minimal', desc: 'No border, subtle tint' },
+];
 
 
 
@@ -60,6 +94,12 @@ const ShowcaseManagementPage: React.FC = () => {
     const [profileVisible, setProfileVisible] = useState(true);
     const [loadingPrefs, setLoadingPrefs] = useState(true);
 
+    // Theme state
+    const [themeId, setThemeId] = useState('default');
+    const [customAccentColor, setCustomAccentColor] = useState('');
+    const [animationId, setAnimationId] = useState('particles');
+    const [cardStyle, setCardStyle] = useState('glass');
+    const [savingTheme, setSavingTheme] = useState(false);
 
 
     // Fetch profile data
@@ -77,6 +117,13 @@ const ShowcaseManagementPage: React.FC = () => {
                 setBio(data.profile.bio || '');
                 setSlug(data.profile.slug || '');
                 setProfileVisible(data.profile.visible !== false);
+                // Theme
+                if (data.profile.theme) {
+                    setThemeId(data.profile.theme.themeId || 'default');
+                    setCustomAccentColor(data.profile.theme.customAccentColor || '');
+                    setAnimationId(data.profile.theme.animationId || 'particles');
+                    setCardStyle(data.profile.theme.cardStyle || 'glass');
+                }
             }
         } catch (err) {
             console.error('Failed to load showcase profile:', err);
@@ -139,6 +186,22 @@ const ShowcaseManagementPage: React.FC = () => {
             }
         } finally {
             setSavingSlug(false);
+        }
+    };
+
+    // Save theme
+    const handleSaveTheme = async () => {
+        setSavingTheme(true);
+        try {
+            await api.patch('/showcase-management/profile', {
+                theme: { themeId, customAccentColor, animationId, cardStyle },
+            });
+            showSuccess('Theme updated');
+        } catch (err) {
+            console.error('Failed to save theme:', err);
+            showError('Failed to save theme');
+        } finally {
+            setSavingTheme(false);
         }
     };
 
@@ -428,6 +491,103 @@ const ShowcaseManagementPage: React.FC = () => {
                                 🔒 Profile is hidden — enable visibility in Preferences to share
                             </Paragraph>
                         )}
+                    </Stack>
+                </Card>
+
+                {/* Appearance / Theme */}
+                <Card className="showcase-mgmt__section">
+                    <Stack gap="md">
+                        <Heading level={3} className="showcase-mgmt__section-title">
+                            🎨 Appearance
+                        </Heading>
+
+                        {/* Theme Presets */}
+                        <FormField label="Theme">
+                            <div className="showcase-mgmt__theme-grid">
+                                {THEME_PRESETS.map(t => (
+                                    <button
+                                        key={t.id}
+                                        className={`showcase-mgmt__theme-swatch ${themeId === t.id ? 'showcase-mgmt__theme-swatch--active' : ''}`}
+                                        onClick={() => setThemeId(t.id)}
+                                        type="button"
+                                    >
+                                        <div
+                                            className="showcase-mgmt__theme-swatch-preview"
+                                            style={{ background: t.gradient }}
+                                        >
+                                            <div
+                                                className="showcase-mgmt__theme-swatch-accent"
+                                                style={{ background: t.accent }}
+                                            />
+                                        </div>
+                                        <span className="showcase-mgmt__theme-swatch-name">{t.name}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </FormField>
+
+                        {/* Custom Accent Colour */}
+                        <FormField label="Custom accent colour">
+                            <Stack direction="horizontal" gap="sm" align="center">
+                                <input
+                                    type="color"
+                                    value={customAccentColor || THEME_PRESETS.find(t => t.id === themeId)?.accent || '#FF1B8D'}
+                                    onChange={(e) => setCustomAccentColor(e.target.value)}
+                                    className="showcase-mgmt__color-picker"
+                                />
+                                <Input
+                                    value={customAccentColor}
+                                    onChange={(e) => setCustomAccentColor(e.target.value)}
+                                    placeholder="Leave empty for theme default"
+                                    maxLength={7}
+                                />
+                                {customAccentColor && (
+                                    <Button variant="text" size="small" onClick={() => setCustomAccentColor('')}>
+                                        Reset
+                                    </Button>
+                                )}
+                            </Stack>
+                        </FormField>
+
+                        {/* Background Animation */}
+                        <FormField label="Background animation">
+                            <div className="showcase-mgmt__option-grid">
+                                {ANIMATION_OPTIONS.map(opt => (
+                                    <button
+                                        key={opt.id}
+                                        className={`showcase-mgmt__option-btn ${animationId === opt.id ? 'showcase-mgmt__option-btn--active' : ''}`}
+                                        onClick={() => setAnimationId(opt.id)}
+                                        type="button"
+                                    >
+                                        <span className="showcase-mgmt__option-icon">{opt.icon}</span>
+                                        <span className="showcase-mgmt__option-name">{opt.name}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </FormField>
+
+                        {/* Card Style */}
+                        <FormField label="Card style">
+                            <div className="showcase-mgmt__option-grid">
+                                {CARD_STYLE_OPTIONS.map(opt => (
+                                    <button
+                                        key={opt.id}
+                                        className={`showcase-mgmt__option-btn ${cardStyle === opt.id ? 'showcase-mgmt__option-btn--active' : ''}`}
+                                        onClick={() => setCardStyle(opt.id)}
+                                        type="button"
+                                    >
+                                        <span className="showcase-mgmt__option-name">{opt.name}</span>
+                                        <Paragraph size="sm" muted>{opt.desc}</Paragraph>
+                                    </button>
+                                ))}
+                            </div>
+                        </FormField>
+
+                        <Stack className="showcase-mgmt__actions">
+                            <Button variant="primary" size="small" onClick={handleSaveTheme} disabled={savingTheme}>
+                                {savingTheme ? 'Saving…' : 'Save Theme'}
+                            </Button>
+                        </Stack>
                     </Stack>
                 </Card>
 

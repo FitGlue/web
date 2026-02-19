@@ -32,7 +32,8 @@
 }
 
 .flow-visualization__destination {
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 /* Responsive: stack vertically on small screens */

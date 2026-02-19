@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../hooks/useUser';
-import { getEffectiveTier, TIER_ATHLETE } from '../../utils/tier';
+import { getEffectiveTier, TIER_ATHLETE, HOBBYIST_TIER_LIMITS } from '../../utils/tier';
 import { Stack } from '../library/layout';
 import {
   Card,
@@ -20,7 +20,7 @@ export const SubscriptionBanner: React.FC = () => {
   const { user, loading } = useUser();
 
   // Check if hobbyist is at or over the monthly sync limit
-  const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE && (user.syncCountThisMonth || 0) >= 25;
+  const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE && (user.syncCountThisMonth || 0) >= HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH;
 
   return (
     <SkeletonLoading
@@ -54,7 +54,7 @@ export const SubscriptionBanner: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <Paragraph inline>{user.syncCountThisMonth || 0}/25 syncs</Paragraph>
+                  <Paragraph inline>{user.syncCountThisMonth || 0}/{HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH} syncs</Paragraph>
                   <Button size="small" variant="primary" onClick={() => navigate('/settings/subscription')}>
                     {isAtLimit ? 'Upgrade Now →' : 'Upgrade →'}
                   </Button>

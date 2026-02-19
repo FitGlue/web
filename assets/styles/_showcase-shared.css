@@ -3,10 +3,64 @@
    Common styles for all public showcase pages.
    ======================================== */
 
+/* ---- Theme Custom Properties ---- */
+.showcase-page {
+    /* Default theme (FitGlue Classic) */
+    --sc-bg: linear-gradient(180deg, #0a0a0a 0%, #1a0a20 50%, #0a0a0a 100%);
+    --sc-accent: #FF1B8D;
+    --sc-accent-alt: #9D4EDD;
+    --sc-card-bg: rgba(30, 30, 40, 0.6);
+    --sc-card-border: rgba(255, 255, 255, 0.1);
+    --sc-card-blur: blur(20px);
+}
+
+/* Theme variants (applied via data-theme attribute) */
+.showcase-page[data-theme="midnight"] {
+    --sc-bg: linear-gradient(180deg, #0a0a1a 0%, #0d1b3e 50%, #0a0a1a 100%);
+    --sc-accent: #4CC9F0;
+    --sc-accent-alt: #7DD3FC;
+}
+
+.showcase-page[data-theme="ember"] {
+    --sc-bg: linear-gradient(180deg, #0a0a0a 0%, #2a0a0a 50%, #0a0a0a 100%);
+    --sc-accent: #FF6B35;
+    --sc-accent-alt: #FF9F6B;
+}
+
+.showcase-page[data-theme="forest"] {
+    --sc-bg: linear-gradient(180deg, #0a0a0a 0%, #0a1a0d 50%, #0a0a0a 100%);
+    --sc-accent: #4ADE80;
+    --sc-accent-alt: #86EFAC;
+}
+
+.showcase-page[data-theme="neon"] {
+    --sc-bg: linear-gradient(180deg, #0a0a0a 0%, #1a0a2a 50%, #0a0a0a 100%);
+    --sc-accent: #E040FB;
+    --sc-accent-alt: #EA80FC;
+}
+
+.showcase-page[data-theme="arctic"] {
+    --sc-bg: linear-gradient(180deg, #0a0a0a 0%, #0a1a2a 50%, #0a0a0a 100%);
+    --sc-accent: #7DD3FC;
+    --sc-accent-alt: #BAE6FD;
+}
+
+.showcase-page[data-theme="golden"] {
+    --sc-bg: linear-gradient(180deg, #0a0a0a 0%, #1a1a0a 50%, #0a0a0a 100%);
+    --sc-accent: #FBBF24;
+    --sc-accent-alt: #FCD34D;
+}
+
+.showcase-page[data-theme="stealth"] {
+    --sc-bg: linear-gradient(180deg, #050505 0%, #111111 50%, #050505 100%);
+    --sc-accent: #9CA3AF;
+    --sc-accent-alt: #D1D5DB;
+}
+
 /* ---- Base / Dark Theme ---- */
 .showcase-page {
     min-height: 100vh;
-    background: linear-gradient(180deg, #0a0a0a 0%, #1a0a20 50%, #0a0a0a 100%);
+    background: var(--sc-bg);
     padding: 0;
     color: #fff;
     font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -28,16 +82,38 @@
     z-index: 1;
 }
 
-/* ---- Glass Card ---- */
+/* ---- Glass Card (default card style) ---- */
 .glass-card {
-    background: rgba(30, 30, 40, 0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--sc-card-bg);
+    backdrop-filter: var(--sc-card-blur);
+    -webkit-backdrop-filter: var(--sc-card-blur);
+    border: 1px solid var(--sc-card-border);
     border-radius: 24px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     animation: fadeInUp 0.6s ease-out backwards;
+}
+
+/* Card style variants (applied via data-card-style attribute) */
+.showcase-page[data-card-style="solid"] .glass-card {
+    background: rgba(20, 20, 25, 0.95);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.showcase-page[data-card-style="outline"] .glass-card {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid var(--sc-accent);
+}
+
+.showcase-page[data-card-style="minimal"] .glass-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
 }
 
 @keyframes fadeInUp {

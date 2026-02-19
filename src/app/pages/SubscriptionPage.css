@@ -26,45 +26,7 @@
     margin: 0 auto;
 }
 
-/* Athlete Premium Card Header */
-.subscription-athlete-card {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(157, 78, 221, 0.5);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow:
-        0 0 30px rgba(157, 78, 221, 0.2),
-        0 0 60px rgba(255, 27, 141, 0.1);
-}
-
-.subscription-athlete-card__header {
-    background: linear-gradient(135deg, #9D4EDD 0%, #FF1B8D 50%, #9D4EDD 100%);
-    background-size: 200% 100%;
-    padding: var(--spacing-lg);
-    animation: athlete-shimmer 4s ease-in-out infinite;
-    text-align: center;
-}
-
-@keyframes athlete-shimmer {
-
-    0%,
-    100% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-}
-
-.subscription-athlete-card__header h2 {
-    color: #ffffff;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: var(--font-weight-bold);
-}
-
+/* Athlete Price in Header */
 .subscription-athlete-card__price {
     color: #ffffff;
     font-size: 2.5rem;
@@ -92,47 +54,18 @@
     display: inline-block;
 }
 
-.subscription-athlete-card__content {
-    padding: var(--spacing-lg);
-}
-
-/* Feature Grid - 2x2 layout */
-.subscription-features-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-md);
-}
-
+/* Feature Card (inside Grid) */
 .subscription-feature-card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     padding: var(--spacing-md);
-    text-align: center;
     transition: all var(--transition-normal);
 }
 
 .subscription-feature-card:hover {
     border-color: var(--color-border-hover);
     background: var(--color-surface-hover);
-}
-
-.subscription-feature-card__icon {
-    font-size: 1.75rem;
-    margin-bottom: var(--spacing-sm);
-    display: block;
-}
-
-.subscription-feature-card__title {
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-xs);
-    font-size: 0.9rem;
-}
-
-.subscription-feature-card__desc {
-    color: var(--color-text-muted);
-    font-size: 0.75rem;
 }
 
 /* Trial Countdown Ring */
@@ -389,11 +322,6 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-    .subscription-features-grid {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-sm);
-    }
-
     .subscription-plans-grid {
         grid-template-columns: 1fr;
         gap: var(--spacing-lg);
@@ -402,10 +330,6 @@
     .subscription-plan-card--recommended {
         order: -1;
         /* Show recommended first on mobile */
-    }
-
-    .subscription-athlete-card__header {
-        padding: var(--spacing-md);
     }
 
     .subscription-athlete-card__price {
@@ -419,22 +343,5 @@
 
     .subscription-countdown__days {
         font-size: 2rem;
-    }
-
-    .subscription-feature-card {
-        display: flex;
-        align-items: center;
-        text-align: left;
-        gap: var(--spacing-md);
-        padding: var(--spacing-sm) var(--spacing-md);
-    }
-
-    .subscription-feature-card__icon {
-        font-size: 1.5rem;
-        margin-bottom: 0;
-    }
-
-    .subscription-feature-card__content {
-        flex: 1;
     }
 }

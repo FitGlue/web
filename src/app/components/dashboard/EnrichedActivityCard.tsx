@@ -191,7 +191,7 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
     const skippedDestinations = destinations.filter(dest => destinationStatuses[dest] === 'Skipped');
 
     const destinationNode = destinations.length > 0 ? (
-        <Stack direction="horizontal" gap="xs">
+        <Stack direction="horizontal" gap="xs" wrap>
             {/* SUCCESS destinations - normal destination styling */}
             {successDestinations.map(dest => {
                 const destInfo = getDestinationInfo(dest.toLowerCase(), registryDestinations, dest);

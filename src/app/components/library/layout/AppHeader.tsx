@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useUser } from '../../../hooks/useUser';
@@ -16,20 +16,24 @@ export const AppHeader: React.FC = () => {
     const [profilePictureUrl, setProfilePictureUrl] = useState<string | undefined>();
 
     const menuRef = useRef<HTMLDivElement>(null);
+    const profilePicFetchedRef = useRef(false);
 
     const isAthlete = profile && getEffectiveTier(profile) === TIER_ATHLETE;
 
-    // Fetch profile picture for Athlete users
+    // Fetch profile picture for Athlete users — only once
     useEffect(() => {
-        if (!isAthlete) return;
+        if (!isAthlete || profilePicFetchedRef.current) return;
         let cancelled = false;
         (async () => {
             try {
                 const data = await api.get('/showcase-management/profile') as {
                     profile: { profilePictureUrl?: string } | null;
                 };
-                if (!cancelled && data.profile?.profilePictureUrl) {
-                    setProfilePictureUrl(data.profile.profilePictureUrl);
+                if (!cancelled) {
+                    profilePicFetchedRef.current = true;
+                    if (data.profile?.profilePictureUrl) {
+                        setProfilePictureUrl(data.profile.profilePictureUrl);
+                    }
                 }
             } catch {
                 // Non-critical — silently ignore
@@ -72,6 +76,12 @@ export const AppHeader: React.FC = () => {
     };
 
 
+    // Memoize avatar style to prevent re-applying backgroundImage on every render
+    const avatarStyle = useMemo(
+        () => profilePictureUrl ? { backgroundImage: `url(${profilePictureUrl})` } : undefined,
+        [profilePictureUrl]
+    );
+
     return (
         <header className="app-header">
             <Link to="/" className="app-header__logo-link">
@@ -86,7 +96,7 @@ export const AppHeader: React.FC = () => {
                     onClick={() => setShowMenu(!showMenu)}
                     aria-label="User menu"
                     aria-expanded={showMenu}
-                    style={profilePictureUrl ? { backgroundImage: `url(${profilePictureUrl})` } : undefined}
+                    style={avatarStyle}
                 >
                     {!profilePictureUrl && getInitial()}
                     {isAthlete && (

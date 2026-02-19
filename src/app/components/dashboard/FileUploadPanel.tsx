@@ -14,7 +14,7 @@ import { useApi } from '../../hooks/useApi';
 import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { useUser } from '../../hooks/useUser';
 import { useNerdMode } from '../../state/NerdModeContext';
-import { getEffectiveTier, TIER_ATHLETE } from '../../utils/tier';
+import { getEffectiveTier, TIER_ATHLETE, HOBBYIST_TIER_LIMITS } from '../../utils/tier';
 import './FileUploadPanel.css';
 
 /**
@@ -59,7 +59,7 @@ export const FileUploadPanel: React.FC = () => {
   );
 
   // Check if hobbyist is at the monthly sync limit
-  const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE && (user.syncCountThisMonth || 0) >= 25;
+  const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE && (user.syncCountThisMonth || 0) >= HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH;
 
   // Show skeleton while loading pipelines
   if (pipelinesLoading) {
@@ -135,7 +135,7 @@ export const FileUploadPanel: React.FC = () => {
           <CardHeader icon="📤" title="Upload FIT File" />
           <Stack gap="sm" align="center">
             <Paragraph muted>
-              🔒 You&apos;ve reached your monthly sync limit (25/month).
+              🔒 You&apos;ve reached your monthly sync limit ({HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH}/month).
             </Paragraph>
             <Button variant="primary" onClick={() => navigate('/settings/subscription')}>
               Upgrade for Unlimited Uploads →

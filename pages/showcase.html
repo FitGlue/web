@@ -3646,6 +3646,7 @@
           throw new Error('Failed to load demo fixture data');
         }
         const data = await demoResponse.json();
+        applyTheme(data.theme);
         renderShowcase(data);
         clearInterval(messageInterval);
         loadingEl.style.display = 'none';
@@ -3665,6 +3666,7 @@
       }
 
       const data = await response.json();
+      applyTheme(data.theme);
       renderShowcase(data);
       clearInterval(messageInterval);
       loadingEl.style.display = 'none';
@@ -3676,6 +3678,92 @@
       loadingEl.style.display = 'none';
       errorEl.style.display = 'block';
       errorMsgEl.textContent = 'An error occurred while loading.';
+    }
+
+    function applyTheme(theme) {
+      if (!theme) theme = {};
+      var page = document.querySelector('.showcase-page');
+      if (!page) return;
+
+      // Localhost-only: query string overrides for testing
+      if (window.location.hostname === 'localhost') {
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('theme')) theme.themeId = params.get('theme');
+        if (params.get('accent')) theme.customAccentColor = params.get('accent');
+        if (params.get('animation')) theme.animationId = params.get('animation');
+        if (params.get('cardStyle')) theme.cardStyle = params.get('cardStyle');
+      }
+
+      if (theme.themeId && theme.themeId !== 'default') {
+        page.setAttribute('data-theme', theme.themeId);
+      }
+      if (theme.cardStyle && theme.cardStyle !== 'glass') {
+        page.setAttribute('data-card-style', theme.cardStyle);
+      }
+      if (theme.customAccentColor) {
+        page.style.setProperty('--sc-accent', theme.customAccentColor);
+      }
+      if (theme.animationId) {
+        window._showcaseAnimation = theme.animationId;
+        if (typeof window.setShowcaseAnimation === 'function') {
+          window.setShowcaseAnimation(theme.animationId);
+        }
+      }
+
+      // Inject dynamic CSS overrides that replace all hard-coded brand colours
+      // with CSS variable references. This avoids editing 50+ inline style rules.
+      var existing = document.getElementById('theme-overrides');
+      if (existing) existing.remove();
+
+      var style = document.createElement('style');
+      style.id = 'theme-overrides';
+      style.textContent = [
+        // Title shimmer gradient
+        '.showcase-title { background: linear-gradient(90deg, var(--sc-accent) 0%, var(--sc-accent-alt) 25%, #fff 50%, var(--sc-accent-alt) 75%, var(--sc-accent) 100%) !important; background-size: 200% auto !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+        '.showcase-title { text-shadow: 0 0 60px color-mix(in srgb, var(--sc-accent) 30%, transparent) !important; }',
+        // Error heading
+        '.showcase-error h1 { background: linear-gradient(135deg, var(--sc-accent), var(--sc-accent-alt)) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+        // Owner attribution
+        '.owner-name { background: linear-gradient(135deg, var(--sc-accent), var(--sc-accent-alt)) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+        '.owner-avatar { border-color: color-mix(in srgb, var(--sc-accent) 40%, transparent) !important; }',
+        // Stat values
+        '.stat-value { background: linear-gradient(135deg, var(--sc-accent), var(--sc-accent-alt)) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+        '.stat-card:hover { border-color: color-mix(in srgb, var(--sc-accent) 40%, transparent) !important; box-shadow: 0 10px 40px color-mix(in srgb, var(--sc-accent) 20%, transparent) !important; }',
+        // Description quote marks
+        '.description-section-card::before { color: var(--sc-accent-alt) !important; }',
+        // Map & route thumbnail
+        '.expand-map-btn { background: linear-gradient(135deg, color-mix(in srgb, var(--sc-accent-alt) 20%, transparent), color-mix(in srgb, var(--sc-accent) 20%, transparent)) !important; border-color: color-mix(in srgb, var(--sc-accent-alt) 40%, transparent) !important; }',
+        '.expand-map-btn:hover { border-color: color-mix(in srgb, var(--sc-accent) 60%, transparent) !important; background: linear-gradient(135deg, color-mix(in srgb, var(--sc-accent-alt) 30%, transparent), color-mix(in srgb, var(--sc-accent) 30%, transparent)) !important; }',
+        '.route-thumbnail-image { box-shadow: 0 4px 20px color-mix(in srgb, var(--sc-accent) 20%, transparent) !important; }',
+        '.route-thumbnail-image:hover { box-shadow: 0 8px 30px color-mix(in srgb, var(--sc-accent) 40%, transparent) !important; }',
+        // Tag badges
+        '.activity-tag { border-color: color-mix(in srgb, var(--sc-accent-alt) 40%, transparent) !important; background: color-mix(in srgb, var(--sc-accent-alt) 15%, transparent) !important; }',
+        // Booster applied badges
+        '.enrichment-badge { border-color: color-mix(in srgb, var(--sc-accent-alt) 20%, transparent) !important; background: color-mix(in srgb, var(--sc-accent-alt) 4%, transparent) !important; }',
+        '.enrichment-badge:hover { background: color-mix(in srgb, var(--sc-accent-alt) 8%, transparent) !important; border-color: color-mix(in srgb, var(--sc-accent) 30%, transparent) !important; }',
+        // Booster content blocks
+        '.enrichment-output-block { border-left-color: var(--sc-accent-alt) !important; }',
+        // Loading spinner
+        '.loading-logo-fit { background: linear-gradient(135deg, var(--sc-accent) 0%, color-mix(in srgb, var(--sc-accent) 70%, white) 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+        '.loading-logo-glue { background: linear-gradient(135deg, var(--sc-accent-alt) 0%, color-mix(in srgb, var(--sc-accent-alt) 70%, white) 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+        // FitGlue footer logo
+        '.fitglue-logo .fit { background: linear-gradient(135deg, var(--sc-accent) 0%, color-mix(in srgb, var(--sc-accent) 70%, white) 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+        '.fitglue-logo .glue { background: linear-gradient(135deg, var(--sc-accent-alt) 0%, color-mix(in srgb, var(--sc-accent-alt) 70%, white) 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+        // CTA banner
+        '.showcase-cta::before { background: linear-gradient(135deg, color-mix(in srgb, var(--sc-accent) 30%, transparent), color-mix(in srgb, var(--sc-accent-alt) 30%, transparent)) !important; }',
+        '.btn-gradient { background: linear-gradient(135deg, var(--sc-accent) 0%, var(--sc-accent-alt) 100%) !important; }',
+        '.btn-gradient:hover { box-shadow: 0 8px 20px color-mix(in srgb, var(--sc-accent-alt) 40%, transparent) !important; }',
+        // Chart/metric bars
+        '.metric-bar-fill { background: linear-gradient(90deg, var(--sc-accent), var(--sc-accent-alt)) !important; }',
+        '.metric-bar-segment { background: linear-gradient(90deg, var(--sc-accent), var(--sc-accent-alt)) !important; }',
+        // Personal record cards
+        '.pr-card { --pr-accent: color-mix(in srgb, var(--sc-accent) 15%, transparent) !important; }',
+        '.pr-card:nth-child(even) { --pr-accent: color-mix(in srgb, var(--sc-accent-alt) 15%, transparent) !important; }',
+        // Photo gallery glow
+        '.photo-thumbnail img { filter: none !important; }',
+        '.photo-thumbnail:hover img { box-shadow: 0 0 20px color-mix(in srgb, var(--sc-accent) 30%, transparent) !important; }',
+      ].join('\n');
+      document.head.appendChild(style);
     }
 
     function renderShowcase(data) {

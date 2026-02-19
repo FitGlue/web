@@ -6,7 +6,7 @@ import { formatDestination } from '../../types/pb/enum-formatters';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { useUser } from '../hooks/useUser';
-import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
+import { getEffectiveTier, TIER_ATHLETE, HOBBYIST_TIER_LIMITS } from '../utils/tier';
 import { PluginManifest } from '../types/plugin';
 import { Modal, Button, Card, Heading, Paragraph } from './library/ui';
 import { Stack } from './library/layout';
@@ -77,7 +77,7 @@ export const RepostActionsMenu: React.FC<RepostActionsMenuProps> = ({
     const navigate = useNavigate();
 
     // Check if hobbyist is at the monthly sync limit
-    const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE && (user.syncCountThisMonth || 0) >= 25;
+    const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE && (user.syncCountThisMonth || 0) >= HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH;
 
     const availableDestinations = useMemo(
         () => getAvailableDestinations(

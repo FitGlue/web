@@ -541,11 +541,11 @@ const AccountSettingsPage: React.FC = () => {
                                 </Paragraph>
                             </Stack>
                             <List>
-                                <ListItem>All your connected integrations (Strava, Fitbit, Hevy)</ListItem>
-                                <ListItem>All configured pipelines</ListItem>
-                                <ListItem>All synchronized and raw activities</ListItem>
-                                <ListItem>All pending inputs</ListItem>
-                                <ListItem>All API keys</ListItem>
+                                <ListItem>Your profile and account information</ListItem>
+                                <ListItem>All connected integrations and credentials</ListItem>
+                                <ListItem>All pipelines, activities, and processing history</ListItem>
+                                <ListItem>All personal records, booster data, and preferences</ListItem>
+                                <ListItem>All API keys and uploaded files</ListItem>
                             </List>
                             <Stack gap="sm">
                                 <FormField label="Type DELETE to confirm:" htmlFor="delete-confirm">

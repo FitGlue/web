@@ -767,6 +767,7 @@
             }
 
             const profile = await resp.json();
+            applyTheme(profile.theme);
             renderProfileHeader(profile);
             appendEntries(profile.entries || []);
             _currentPage = 1;
@@ -826,6 +827,70 @@
             // Only show "all loaded" if there are entries
             allLoaded.style.display = _totalCardIdx > 0 ? '' : 'none';
         }
+    }
+
+    function applyTheme(theme) {
+        if (!theme) theme = {};
+        var page = document.querySelector('.showcase-page');
+        if (!page) return;
+
+        // Localhost-only: query string overrides for testing
+        // e.g. ?theme=midnight&accent=%23FF0000&animation=aurora&cardStyle=outline
+        if (window.location.hostname === 'localhost') {
+            var params = new URLSearchParams(window.location.search);
+            if (params.get('theme')) theme.themeId = params.get('theme');
+            if (params.get('accent')) theme.customAccentColor = params.get('accent');
+            if (params.get('animation')) theme.animationId = params.get('animation');
+            if (params.get('cardStyle')) theme.cardStyle = params.get('cardStyle');
+        }
+
+        if (theme.themeId && theme.themeId !== 'default') {
+            page.setAttribute('data-theme', theme.themeId);
+        }
+        if (theme.cardStyle && theme.cardStyle !== 'glass') {
+            page.setAttribute('data-card-style', theme.cardStyle);
+        }
+        if (theme.customAccentColor) {
+            page.style.setProperty('--sc-accent', theme.customAccentColor);
+        }
+        if (theme.animationId) {
+            window._showcaseAnimation = theme.animationId;
+            if (typeof window.setShowcaseAnimation === 'function') {
+                window.setShowcaseAnimation(theme.animationId);
+            }
+        }
+
+        // Inject dynamic CSS overrides for all branded elements
+        var existing = document.getElementById('theme-overrides');
+        if (existing) existing.remove();
+
+        var style = document.createElement('style');
+        style.id = 'theme-overrides';
+        style.textContent = [
+            // Profile name gradient
+            '.profile-name { background: linear-gradient(135deg, var(--sc-accent) 0%, var(--sc-accent-alt) 50%, color-mix(in srgb, var(--sc-accent-alt) 70%, white) 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+            // Avatar ring
+            '.profile-avatar-wrapper { border-color: color-mix(in srgb, var(--sc-accent) 40%, transparent) !important; background: linear-gradient(135deg, color-mix(in srgb, var(--sc-accent-alt) 30%, transparent), color-mix(in srgb, var(--sc-accent) 30%, transparent)) !important; }',
+            '.profile-avatar-wrapper:hover { border-color: color-mix(in srgb, var(--sc-accent) 70%, transparent) !important; }',
+            // Stat highlight labels (FitGlue branding)
+            '.loading-logo-fit { background: linear-gradient(135deg, var(--sc-accent) 0%, color-mix(in srgb, var(--sc-accent) 70%, white) 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+            '.loading-logo-glue { background: linear-gradient(135deg, var(--sc-accent-alt) 0%, color-mix(in srgb, var(--sc-accent-alt) 70%, white) 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+            // Footer logo
+            '.fitglue-logo .fit { background: linear-gradient(135deg, var(--sc-accent) 0%, color-mix(in srgb, var(--sc-accent) 70%, white) 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+            '.fitglue-logo .glue { background: linear-gradient(135deg, var(--sc-accent-alt) 0%, color-mix(in srgb, var(--sc-accent-alt) 70%, white) 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; }',
+            // Activity entry cards hover
+            '.activity-entry:hover { border-color: color-mix(in srgb, var(--sc-accent) 30%, transparent) !important; }',
+            // Load more button
+            '.load-more-btn { background: linear-gradient(135deg, color-mix(in srgb, var(--sc-accent) 15%, transparent), color-mix(in srgb, var(--sc-accent-alt) 15%, transparent)) !important; border-color: color-mix(in srgb, var(--sc-accent) 30%, transparent) !important; }',
+            '.load-more-btn:hover { background: linear-gradient(135deg, color-mix(in srgb, var(--sc-accent) 25%, transparent), color-mix(in srgb, var(--sc-accent-alt) 25%, transparent)) !important; border-color: color-mix(in srgb, var(--sc-accent) 50%, transparent) !important; box-shadow: 0 8px 24px color-mix(in srgb, var(--sc-accent) 15%, transparent) !important; }',
+            // CTA banner
+            '.showcase-cta::before { background: linear-gradient(135deg, color-mix(in srgb, var(--sc-accent) 30%, transparent), color-mix(in srgb, var(--sc-accent-alt) 30%, transparent)) !important; }',
+            '.btn-gradient { background: linear-gradient(135deg, var(--sc-accent) 0%, var(--sc-accent-alt) 100%) !important; }',
+            '.btn-gradient:hover { box-shadow: 0 8px 20px color-mix(in srgb, var(--sc-accent-alt) 40%, transparent) !important; }',
+            // Activity type category colours
+            '.activity-entry[data-category] { --cat-color: var(--sc-accent) !important; --cat-color-alpha: color-mix(in srgb, var(--sc-accent) 12%, transparent) !important; }',
+        ].join('\n');
+        document.head.appendChild(style);
     }
 
     function renderProfileHeader(profile) {

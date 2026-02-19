@@ -1,36 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { PageLayout, Stack } from '../components/library/layout';
-import { Card, Button, Heading, Paragraph, CardSkeleton, Badge } from '../components/library/ui';
+import { PageLayout, Stack, Grid, FeatureItem } from '../components/library/layout';
+import { Card, Button, Heading, Paragraph, CardSkeleton, Badge, GlowCard } from '../components/library/ui';
 import { useApi } from '../hooks/useApi';
 import { useUser } from '../hooks/useUser';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
+import { ATHLETE_BENEFITS, PLAN_FEATURES, DOWNGRADE_ITEMS } from '../utils/tierBenefits';
 import '../components/library/ui/CardSkeleton.css';
 import './SubscriptionPage.css';
-
-// Feature data for Athlete tier (actual benefits)
-const ATHLETE_FEATURES = [
-    { icon: '🔄', title: 'Unlimited Syncs', desc: 'No monthly limits' },
-    { icon: '🚀', title: 'All Boosters', desc: 'AI summaries, image generation' },
-    { icon: '🌟', title: 'Showcase Forever', desc: 'Pages never expire' },
-];
-
-// What users lose when downgrading (actual differences)
-const DOWNGRADE_ITEMS = [
-    { from: 'Unlimited Syncs', to: '25/month' },
-    { from: 'All Boosters', to: 'Basic only' },
-    { from: 'Showcase Forever', to: '30 day retention' },
-];
-
-// Plan comparison features (actual differences only)
-const PLAN_FEATURES = [
-    { name: 'Monthly Syncs', hobbyist: '25', athlete: 'Unlimited', hobbyistIncluded: true },
-    { name: 'Basic Boosters', hobbyist: '✓', athlete: '✓', hobbyistIncluded: true },
-    { name: 'AI Boosters', hobbyist: null, athlete: '✓', hobbyistIncluded: false },
-    { name: 'Image Boosters', hobbyist: null, athlete: '✓', hobbyistIncluded: false },
-    { name: 'Showcase Retention', hobbyist: '30 days', athlete: 'Forever', hobbyistIncluded: true },
-    { name: 'Showcase Profile', hobbyist: null, athlete: '✓ Public Profile', hobbyistIncluded: false },
-];
 
 const SubscriptionPage: React.FC = () => {
     const api = useApi();
@@ -110,38 +87,37 @@ const SubscriptionPage: React.FC = () => {
                     )}
 
                     {/* Premium Athlete Card */}
-                    <Card className="subscription-athlete-card">
-                        <Stack className="subscription-athlete-card__header" direction="horizontal" align="center" justify="between">
-                            <Heading level={2}>✨ ATHLETE</Heading>
-                            {user?.isAdmin ? (
-                                <Badge className="subscription-admin-badge">
-                                    🛡️ Admin Access
-                                </Badge>
-                            ) : (
-                                <Stack className="subscription-athlete-card__price" direction="horizontal" align="baseline">
-                                    <Paragraph inline>£5</Paragraph>
-                                    <Paragraph inline className="subscription-athlete-card__price-period">/month</Paragraph>
-                                </Stack>
-                            )}
-                        </Stack>
-                        <Stack className="subscription-athlete-card__content" gap="md">
-                            {/* Feature Grid */}
-                            <Heading level={4}>Your Athlete Benefits</Heading>
-                            <Stack className="subscription-features-grid" gap="sm">
-                                {ATHLETE_FEATURES.map((feature) => (
-                                    <Card key={feature.title} className="subscription-feature-card">
-                                        <Stack direction="horizontal" gap="sm" align="center">
-                                            <Paragraph inline className="subscription-feature-card__icon">{feature.icon}</Paragraph>
-                                            <Stack className="subscription-feature-card__content" gap="xs">
-                                                <Paragraph className="subscription-feature-card__title">{feature.title}</Paragraph>
-                                                <Paragraph className="subscription-feature-card__desc" muted size="sm">{feature.desc}</Paragraph>
-                                            </Stack>
-                                        </Stack>
-                                    </Card>
-                                ))}
+                    <GlowCard
+                        variant="success"
+                        header={
+                            <Stack direction="horizontal" align="center" justify="between">
+                                <Heading level={2}>✨ ATHLETE</Heading>
+                                {user?.isAdmin ? (
+                                    <Badge className="subscription-admin-badge">
+                                        🛡️ Admin Access
+                                    </Badge>
+                                ) : (
+                                    <Stack className="subscription-athlete-card__price" direction="horizontal" align="baseline">
+                                        <Paragraph inline>£5</Paragraph>
+                                        <Paragraph inline className="subscription-athlete-card__price-period">/month</Paragraph>
+                                    </Stack>
+                                )}
                             </Stack>
-                        </Stack>
-                    </Card>
+                        }
+                    >
+                        <Heading level={4}>Your Athlete Benefits</Heading>
+                        <Grid cols={2} gap="md">
+                            {ATHLETE_BENEFITS.map((feature) => (
+                                <Card key={feature.title} className="subscription-feature-card">
+                                    <FeatureItem
+                                        icon={feature.icon}
+                                        title={feature.title}
+                                        description={feature.desc}
+                                    />
+                                </Card>
+                            ))}
+                        </Grid>
+                    </GlowCard>
 
                     {/* Trial Countdown - Only for trial users */}
                     {isOnTrial && (

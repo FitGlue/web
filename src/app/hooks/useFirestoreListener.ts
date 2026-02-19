@@ -160,7 +160,12 @@ export function useFirestoreListener<TData>(
 
         // No existing listener - create new one
         console.log(`[useFirestoreListener] Creating new listener for ${baseKey}`);
-        setLoading(true);
+        // Only show loading on the very first connection (no cached data yet).
+        // On reconnections after network drops, keep showing stale data instead
+        // of flashing a skeleton/loading state.
+        if (data === null) {
+            setLoading(true);
+        }
 
         try {
             const queryOrRef = queryFactory(firestore, userId);
