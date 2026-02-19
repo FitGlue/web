@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.37.0](https://github.com/fitglue/web/compare/v10.36.0...v10.37.0) (2026-02-19)
+
+
+### Features
+
+* add showcase theme customisation and UI improvements ([4b558b4](https://github.com/fitglue/web/commit/4b558b408799cdcea24250785d3190a185f33355))
+
+
+### Bug Fixes
+
+* W15 bare html ([e81eba6](https://github.com/fitglue/web/commit/e81eba6cf3ac6e4d0e745f2ccf663e577921f6c7))
+
 ## [10.36.0](https://github.com/fitglue/web/compare/v10.35.0...v10.36.0) (2026-02-18)
 
 
