@@ -503,7 +503,7 @@ const ShowcaseManagementPage: React.FC = () => {
 
                         {/* Theme Presets */}
                         <FormField label="Theme">
-                            <div className="showcase-mgmt__theme-grid">
+                            <Stack className="showcase-mgmt__theme-grid">
                                 {THEME_PRESETS.map(t => (
                                     <button
                                         key={t.id}
@@ -511,19 +511,19 @@ const ShowcaseManagementPage: React.FC = () => {
                                         onClick={() => setThemeId(t.id)}
                                         type="button"
                                     >
-                                        <div
+                                        <Stack
                                             className="showcase-mgmt__theme-swatch-preview"
                                             style={{ background: t.gradient }}
                                         >
-                                            <div
+                                            <Stack
                                                 className="showcase-mgmt__theme-swatch-accent"
                                                 style={{ background: t.accent }}
                                             />
-                                        </div>
-                                        <span className="showcase-mgmt__theme-swatch-name">{t.name}</span>
+                                        </Stack>
+                                        <Paragraph inline className="showcase-mgmt__theme-swatch-name">{t.name}</Paragraph>
                                     </button>
                                 ))}
-                            </div>
+                            </Stack>
                         </FormField>
 
                         {/* Custom Accent Colour */}
@@ -551,7 +551,7 @@ const ShowcaseManagementPage: React.FC = () => {
 
                         {/* Background Animation */}
                         <FormField label="Background animation">
-                            <div className="showcase-mgmt__option-grid">
+                            <Stack className="showcase-mgmt__option-grid">
                                 {ANIMATION_OPTIONS.map(opt => (
                                     <button
                                         key={opt.id}
@@ -559,16 +559,16 @@ const ShowcaseManagementPage: React.FC = () => {
                                         onClick={() => setAnimationId(opt.id)}
                                         type="button"
                                     >
-                                        <span className="showcase-mgmt__option-icon">{opt.icon}</span>
-                                        <span className="showcase-mgmt__option-name">{opt.name}</span>
+                                        <Paragraph inline className="showcase-mgmt__option-icon">{opt.icon}</Paragraph>
+                                        <Paragraph inline className="showcase-mgmt__option-name">{opt.name}</Paragraph>
                                     </button>
                                 ))}
-                            </div>
+                            </Stack>
                         </FormField>
 
                         {/* Card Style */}
                         <FormField label="Card style">
-                            <div className="showcase-mgmt__option-grid">
+                            <Stack className="showcase-mgmt__option-grid">
                                 {CARD_STYLE_OPTIONS.map(opt => (
                                     <button
                                         key={opt.id}
@@ -576,11 +576,11 @@ const ShowcaseManagementPage: React.FC = () => {
                                         onClick={() => setCardStyle(opt.id)}
                                         type="button"
                                     >
-                                        <span className="showcase-mgmt__option-name">{opt.name}</span>
+                                        <Paragraph inline className="showcase-mgmt__option-name">{opt.name}</Paragraph>
                                         <Paragraph size="sm" muted>{opt.desc}</Paragraph>
                                     </button>
                                 ))}
-                            </div>
+                            </Stack>
                         </FormField>
 
                         <Stack className="showcase-mgmt__actions">
