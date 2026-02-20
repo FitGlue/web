@@ -373,6 +373,13 @@
         }
       },
       {
+        "source": "/api/mobile/activities",
+        "run": {
+          "serviceId": "mobile-sync-handler",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/parse-fit",
         "run": {
           "serviceId": "fit-parser-handler",

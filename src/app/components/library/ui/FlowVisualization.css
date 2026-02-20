@@ -1,70 +1,45 @@
 /* ==========================================================================
    FlowVisualization - Source → Center → Destination Flow Layout
+   Always vertical: stacks source, boosters, and destinations in a column.
    ========================================================================== */
 @import '../tokens.css';
 
 .flow-visualization {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.375rem;
   padding: 0.75rem 0;
 }
 
 .flow-visualization__source {
   flex-shrink: 0;
+  text-align: center;
 }
 
 .flow-visualization__arrow {
   flex-shrink: 0;
   color: var(--color-primary, #ff1b8d);
   font-weight: 600;
-  font-size: 1.125rem;
-  opacity: 0.8;
+  font-size: 1rem;
+  opacity: 0.6;
+  margin: 0.125rem 0;
 }
 
 .flow-visualization__center {
-  flex: 1;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.5rem;
   min-width: 0;
+  width: 100%;
 }
 
 .flow-visualization__destination {
-  flex-shrink: 1;
-  min-width: 0;
-}
-
-/* Responsive: stack vertically on small screens */
-@media (max-width: 640px) {
-  .flow-visualization {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.5rem 0;
-  }
-
-  .flow-visualization__arrow {
-    transform: rotate(90deg);
-    font-size: 1rem;
-    margin: 0.125rem 0;
-  }
-
-  .flow-visualization__source,
-  .flow-visualization__destination {
-    text-align: center;
-    max-width: 100%;
-  }
-
-  .flow-visualization__center {
-    justify-content: center;
-  }
-
-  .flow-visualization__destination {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.375rem;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.375rem;
+  text-align: center;
+  max-width: 100%;
 }

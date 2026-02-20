@@ -23,6 +23,7 @@ export const AppHeader: React.FC = () => {
     // Fetch profile picture for Athlete users — only once
     useEffect(() => {
         if (!isAthlete || profilePicFetchedRef.current) return;
+        profilePicFetchedRef.current = true;
         let cancelled = false;
         (async () => {
             try {
@@ -30,13 +31,13 @@ export const AppHeader: React.FC = () => {
                     profile: { profilePictureUrl?: string } | null;
                 };
                 if (!cancelled) {
-                    profilePicFetchedRef.current = true;
                     if (data.profile?.profilePictureUrl) {
                         setProfilePictureUrl(data.profile.profilePictureUrl);
                     }
                 }
             } catch {
-                // Non-critical — silently ignore
+                // Non-critical — reset flag so next render retries
+                profilePicFetchedRef.current = false;
             }
         })();
         return () => { cancelled = true; };

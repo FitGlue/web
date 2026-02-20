@@ -24,10 +24,10 @@ export const FeatureItem: React.FC<FeatureItemProps> = ({
 }) => {
     return (
         <div className={`feature-item feature-item--${size}`}>
-            <span>{icon}</span>
-            <div>
-                <span>{title}</span>
-                {description && <span>{description}</span>}
+            <span className="feature-item__icon">{icon}</span>
+            <div className="feature-item__content">
+                <span className="feature-item__title">{title}</span>
+                {description && <span className="feature-item__description">{description}</span>}
             </div>
         </div>
     );

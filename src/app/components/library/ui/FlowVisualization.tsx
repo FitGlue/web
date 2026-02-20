@@ -25,11 +25,11 @@ export const FlowVisualization: React.FC<FlowVisualizationProps> = ({
       <div className="flow-visualization__source">
         {source}
       </div>
-      <div className="flow-visualization__arrow">→</div>
+      <div className="flow-visualization__arrow">↓</div>
       <div className="flow-visualization__center">
         {center}
       </div>
-      <div className="flow-visualization__arrow">→</div>
+      <div className="flow-visualization__arrow">↓</div>
       <div className="flow-visualization__destination">
         {destination}
       </div>

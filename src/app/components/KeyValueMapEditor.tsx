@@ -142,12 +142,13 @@ export const KeyValueMapEditor: React.FC<KeyValueMapEditorProps> = ({
         if (effectiveValueOptions) {
             if (mode === 'custom') {
                 return (
-                    <Stack direction="horizontal" gap="xs" align="center" style={{ flex: 1 }}>
+                    <Stack direction="horizontal" gap="xs" align="center" style={{ flex: 1, minWidth: 0 }}>
                         <Input
                             type="text"
                             value={entry.value}
                             onChange={e => handleEntryChange(i, 'value', e.target.value)}
                             placeholder="New counter name"
+                            style={{ flex: 1, minWidth: 0 }}
                         />
                         {effectiveValueOptions.length > 0 && (
                             <Button type="button" variant="secondary" size="small" onClick={() => switchToSelect(i)} title="Select existing">
@@ -189,26 +190,30 @@ export const KeyValueMapEditor: React.FC<KeyValueMapEditorProps> = ({
         <Stack gap="sm">
             {entries.map((entry, i) => (
                 <Stack key={i} direction="horizontal" gap="sm" align="center">
-                    {keyOptions ? (
-                        <Select
-                            value={entry.key}
-                            onChange={e => handleEntryChange(i, 'key', e.target.value)}
-                            options={keyOptions.map(opt => ({
-                                value: opt.value,
-                                label: opt.label,
-                            }))}
-                            placeholder="Select..."
-                        />
-                    ) : (
-                        <Input
-                            type="text"
-                            value={entry.key}
-                            onChange={e => handleEntryChange(i, 'key', e.target.value)}
-                            placeholder={keyPlaceholder}
-                        />
-                    )}
+                    <Stack gap="none" style={{ flex: 1, minWidth: 0 }}>
+                        {keyOptions ? (
+                            <Select
+                                value={entry.key}
+                                onChange={e => handleEntryChange(i, 'key', e.target.value)}
+                                options={keyOptions.map(opt => ({
+                                    value: opt.value,
+                                    label: opt.label,
+                                }))}
+                                placeholder="Select..."
+                            />
+                        ) : (
+                            <Input
+                                type="text"
+                                value={entry.key}
+                                onChange={e => handleEntryChange(i, 'key', e.target.value)}
+                                placeholder={keyPlaceholder}
+                            />
+                        )}
+                    </Stack>
                     <Text>→</Text>
-                    {renderValueCell(entry, i)}
+                    <Stack gap="none" style={{ flex: 1, minWidth: 0 }}>
+                        {renderValueCell(entry, i)}
+                    </Stack>
                     <Button type="button" variant="danger" size="small" onClick={() => removeEntry(i)} title="Remove">
                         ×
                     </Button>
