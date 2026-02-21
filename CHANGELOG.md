@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.37.1](https://github.com/fitglue/web/compare/v10.37.0...v10.37.1) (2026-02-21)
+
+
+### Bug Fixes
+
+* profile pic fetch race, flow layout, and UI component refinements ([356dd8c](https://github.com/fitglue/web/commit/356dd8c8ac4e2ebf2f6abaad775a14714e3d4832))
+
 ## [10.37.0](https://github.com/fitglue/web/compare/v10.36.0...v10.37.0) (2026-02-19)
 
 
