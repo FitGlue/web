@@ -10,7 +10,7 @@
 
 import { HOBBYIST_TIER_LIMITS } from './tier';
 
-// --- Athlete benefit cards (SubscriptionPage athlete view) ---
+// --- Plan features & derived athlete benefit cards ---
 
 export interface TierBenefit {
     icon: string;
@@ -18,29 +18,28 @@ export interface TierBenefit {
     desc: string;
 }
 
-export const ATHLETE_BENEFITS: TierBenefit[] = [
-    { icon: '🔄', title: 'Unlimited Syncs', desc: 'No monthly limits' },
-    { icon: '🚀', title: 'All Boosters', desc: 'AI summaries, image generation' },
-    { icon: '🌟', title: 'Showcase Forever', desc: 'Pages never expire' },
-];
-
-// --- Plan comparison table (SubscriptionPage hobbyist view) ---
-
 export interface PlanFeature {
     name: string;
     hobbyist: string | null;
     athlete: string;
     hobbyistIncluded: boolean;
+    /** When set, this feature appears as an Athlete benefit card. */
+    benefit?: TierBenefit;
 }
 
 export const PLAN_FEATURES: PlanFeature[] = [
-    { name: 'Monthly Syncs', hobbyist: String(HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH), athlete: 'Unlimited', hobbyistIncluded: true },
+    { name: 'Monthly Syncs', hobbyist: String(HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH), athlete: 'Unlimited', hobbyistIncluded: true, benefit: { icon: '🔄', title: 'Unlimited Syncs', desc: 'No monthly limits' } },
     { name: 'Basic Boosters', hobbyist: '✓', athlete: '✓', hobbyistIncluded: true },
-    { name: 'AI Boosters', hobbyist: null, athlete: '✓', hobbyistIncluded: false },
+    { name: 'AI Boosters', hobbyist: null, athlete: '✓', hobbyistIncluded: false, benefit: { icon: '🚀', title: 'All Boosters', desc: 'AI summaries, image generation' } },
     { name: 'Image Boosters', hobbyist: null, athlete: '✓', hobbyistIncluded: false },
-    { name: 'Showcase Retention', hobbyist: '30 days', athlete: 'Forever', hobbyistIncluded: true },
-    { name: 'Showcase Profile', hobbyist: null, athlete: '✓ Public Profile', hobbyistIncluded: false },
+    { name: 'Showcase Retention', hobbyist: '30 days', athlete: 'Forever', hobbyistIncluded: true, benefit: { icon: '🌟', title: 'Showcase Forever', desc: 'Pages never expire' } },
+    { name: 'Showcase Profile', hobbyist: null, athlete: '✓ Public Profile', hobbyistIncluded: false, benefit: { icon: '👤', title: 'Showcase Profile', desc: 'Public profile page' } },
 ];
+
+/** Derived from PLAN_FEATURES – no separate list to keep in sync. */
+export const ATHLETE_BENEFITS: TierBenefit[] = PLAN_FEATURES
+    .filter((f): f is PlanFeature & { benefit: TierBenefit } => !!f.benefit)
+    .map((f) => f.benefit);
 
 // --- Downgrade warnings (SubscriptionPage trial countdown) ---
 

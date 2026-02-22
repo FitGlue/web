@@ -9,3 +9,6 @@ export type UserProfile = components['schemas']['UserProfile'];
 export const userProfileAtom = atom<UserProfile | null>(null);
 export const profileLoadingAtom = atom<boolean>(false);
 export const profileErrorAtom = atom<string | null>(null);
+
+/** Profile picture URL — global so it survives AppHeader remounts on navigation */
+export const profilePictureUrlAtom = atom<string | undefined>(undefined);

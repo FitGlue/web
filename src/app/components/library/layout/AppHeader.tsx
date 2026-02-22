@@ -4,26 +4,28 @@ import { useAtom } from 'jotai';
 import { useUser } from '../../../hooks/useUser';
 import { useApi } from '../../../hooks/useApi';
 import { userAtom } from '../../../state/authState';
+import { profilePictureUrlAtom } from '../../../state/userState';
 import { getEffectiveTier, TIER_ATHLETE } from '../../../utils/tier';
 import './AppHeader.css';
 
+// Module-level flag — survives component remounts (page navigation)
+let profilePicFetched = false;
 
 export const AppHeader: React.FC = () => {
     const { user: profile, loading } = useUser();
     const api = useApi();
     const [firebaseUser] = useAtom(userAtom);
     const [showMenu, setShowMenu] = useState(false);
-    const [profilePictureUrl, setProfilePictureUrl] = useState<string | undefined>();
+    const [profilePictureUrl, setProfilePictureUrl] = useAtom(profilePictureUrlAtom);
 
     const menuRef = useRef<HTMLDivElement>(null);
-    const profilePicFetchedRef = useRef(false);
 
     const isAthlete = profile && getEffectiveTier(profile) === TIER_ATHLETE;
 
-    // Fetch profile picture for Athlete users — only once
+    // Fetch profile picture for Athlete users — only once across all mounts
     useEffect(() => {
-        if (!isAthlete || profilePicFetchedRef.current) return;
-        profilePicFetchedRef.current = true;
+        if (!isAthlete || profilePicFetched) return;
+        profilePicFetched = true;
         let cancelled = false;
         (async () => {
             try {
@@ -37,11 +39,11 @@ export const AppHeader: React.FC = () => {
                 }
             } catch {
                 // Non-critical — reset flag so next render retries
-                profilePicFetchedRef.current = false;
+                profilePicFetched = false;
             }
         })();
         return () => { cancelled = true; };
-    }, [api, isAthlete]);
+    }, [api, isAthlete, setProfilePictureUrl]);
 
     // Close menu when clicking outside
     useEffect(() => {
