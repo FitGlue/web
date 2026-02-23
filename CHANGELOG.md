@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.38.0](https://github.com/fitglue/web/compare/v10.37.1...v10.38.0) (2026-02-23)
+
+
+### Features
+
+* Improve hybrid race detection in showcase, persist profile picture URL in the header, and refactor athlete benefit derivation. ([2153006](https://github.com/fitglue/web/commit/215300644a64c5e89793ed82ca92c6da0158f051))
+
 ### [10.37.1](https://github.com/fitglue/web/compare/v10.37.0...v10.37.1) (2026-02-21)
 
 
