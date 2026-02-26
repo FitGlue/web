@@ -5,9 +5,13 @@
 // source: services/registry/registry.proto
 
 /* eslint-disable */
-import type { PluginManifest } from "../../models/plugin/manifest";
+import type { PluginManifest, PluginRegistryResponse } from "../../models/plugin/manifest";
 
 export const protobufPackage = "fitglue.services.registry";
+
+export interface GetPluginRegistryRequest {
+  marketingMode: boolean;
+}
 
 export interface ListPluginsRequest {
   category: string;
@@ -57,5 +61,6 @@ export interface RegistryService {
   ListCategories(request: ListCategoriesRequest): Promise<ListCategoriesResponse>;
   GetPluginIcon(request: GetPluginIconRequest): Promise<GetPluginIconResponse>;
   ListSources(request: ListSourcesRequest): Promise<ListSourcesResponse>;
+  GetPluginRegistry(request: GetPluginRegistryRequest): Promise<PluginRegistryResponse>;
   ListDestinations(request: ListDestinationsRequest): Promise<ListDestinationsResponse>;
 }
