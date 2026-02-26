@@ -90,7 +90,7 @@ const PersonalRecordsSection: React.FC = () => {
 
     const handleSave = async (record: PersonalRecord) => {
         try {
-            await api.post('/users/me/personal-records', record);
+            await api.put(`/users/me/personal-records/${encodeURIComponent(record.recordType)}`, record);
             setEditingRecord(null);
             fetchRecords();
         } catch (err) {
@@ -101,7 +101,7 @@ const PersonalRecordsSection: React.FC = () => {
     const handleCreate = async () => {
         if (!newRecordType || !newRecordUnit) return;
         try {
-            await api.post('/users/me/personal-records', {
+            await api.put(`/users/me/personal-records/${encodeURIComponent(newRecordType)}`, {
                 recordType: newRecordType,
                 value: newRecordValue,
                 unit: newRecordUnit,

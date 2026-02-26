@@ -33,7 +33,7 @@ const CountersSection: React.FC = () => {
 
     const handleSave = async (counter: Counter) => {
         try {
-            await api.post('/users/me/counters', { id: counter.id, count: counter.count });
+            await api.put(`/users/me/counters/${encodeURIComponent(counter.id)}`, { count: counter.count });
             setEditingCounter(null);
             fetchCounters();
         } catch (err) {
@@ -44,7 +44,7 @@ const CountersSection: React.FC = () => {
     const handleCreate = async () => {
         if (!newCounter.id.trim()) return;
         try {
-            await api.post('/users/me/counters', newCounter);
+            await api.put(`/users/me/counters/${encodeURIComponent(newCounter.id)}`, { count: newCounter.count });
             setNewCounter({ id: '', count: 0 });
             setShowNew(false);
             fetchCounters();

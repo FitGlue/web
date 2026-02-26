@@ -23,366 +23,51 @@
     ],
     "rewrites": [
       {
-        "source": "/hooks/hevy",
+        "source": "/hooks/**",
         "run": {
-          "serviceId": "hevy-handler",
+          "serviceId": "api-webhook",
           "region": "us-central1"
         }
       },
       {
-        "source": "/hooks/fitbit",
+        "source": "/api/mobile/**",
         "run": {
-          "serviceId": "fitbit-handler",
+          "serviceId": "api-webhook",
           "region": "us-central1"
         }
       },
       {
-        "source": "/hooks/strava",
+        "source": "/api/v2/**",
         "run": {
-          "serviceId": "strava-handler",
+          "serviceId": "api-client",
           "region": "us-central1"
         }
       },
       {
-        "source": "/hooks/test",
+        "source": "/auth/**",
         "run": {
-          "serviceId": "mock-source-handler",
+          "serviceId": "api-client",
           "region": "us-central1"
         }
       },
       {
-        "source": "/hooks/github",
+        "source": "/api/public/**",
         "run": {
-          "serviceId": "github-handler",
+          "serviceId": "api-public",
           "region": "us-central1"
         }
       },
       {
         "source": "/showcase/**",
         "run": {
-          "serviceId": "showcase-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/showcase-management/**",
-        "run": {
-          "serviceId": "showcase-management-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/showcase/**",
-        "run": {
-          "serviceId": "showcase-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/u/**",
-        "run": {
-          "serviceId": "showcase-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/integrations/request",
-        "run": {
-          "serviceId": "integration-request-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/auth-email/**",
-        "run": {
-          "serviceId": "auth-email-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/export/**",
-        "run": {
-          "serviceId": "data-export-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/integrations/*/actions/**",
-        "run": {
-          "serviceId": "connection-actions-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/registry",
-        "run": {
-          "serviceId": "registry-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/inputs/fcm-token",
-        "run": {
-          "serviceId": "inputs-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/inputs",
-        "run": {
-          "serviceId": "inputs-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/inputs/**",
-        "run": {
-          "serviceId": "inputs-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/integrations",
-        "run": {
-          "serviceId": "user-integrations-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/integrations/**",
-        "run": {
-          "serviceId": "user-integrations-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/pipelines",
-        "run": {
-          "serviceId": "user-pipelines-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/pipelines/**",
-        "run": {
-          "serviceId": "user-pipelines-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/counters",
-        "run": {
-          "serviceId": "user-data-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/counters/**",
-        "run": {
-          "serviceId": "user-data-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/personal-records",
-        "run": {
-          "serviceId": "user-data-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/personal-records/**",
-        "run": {
-          "serviceId": "user-data-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/booster-data",
-        "run": {
-          "serviceId": "user-data-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/booster-data/**",
-        "run": {
-          "serviceId": "user-data-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/notification-preferences",
-        "run": {
-          "serviceId": "user-data-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me/**",
-        "run": {
-          "serviceId": "user-profile-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/users/me",
-        "run": {
-          "serviceId": "user-profile-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/billing/**",
-        "run": {
-          "serviceId": "billing-handler",
+          "serviceId": "api-public",
           "region": "us-central1"
         }
       },
       {
         "source": "/api/admin/**",
         "run": {
-          "serviceId": "admin-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/activities/stats",
-        "run": {
-          "serviceId": "activities-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/activities",
-        "run": {
-          "serviceId": "activities-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/activities/**",
-        "run": {
-          "serviceId": "activities-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/repost/**",
-        "run": {
-          "serviceId": "repost-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/auth/strava/callback",
-        "run": {
-          "serviceId": "strava-oauth-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/auth/fitbit/callback",
-        "run": {
-          "serviceId": "fitbit-oauth-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/auth/spotify/callback",
-        "run": {
-          "serviceId": "spotify-oauth-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/auth/trainingpeaks/callback",
-        "run": {
-          "serviceId": "trainingpeaks-oauth-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/auth/oura/callback",
-        "run": {
-          "serviceId": "oura-oauth-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/hooks/oura",
-        "run": {
-          "serviceId": "oura-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/auth/wahoo/callback",
-        "run": {
-          "serviceId": "wahoo-oauth-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/hooks/wahoo",
-        "run": {
-          "serviceId": "wahoo-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/auth/polar/callback",
-        "run": {
-          "serviceId": "polar-oauth-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/hooks/polar",
-        "run": {
-          "serviceId": "polar-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/auth/google/callback",
-        "run": {
-          "serviceId": "google-oauth-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/auth/github/callback",
-        "run": {
-          "serviceId": "github-oauth-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/mobile/sync",
-        "run": {
-          "serviceId": "mobile-sync-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/mobile/connect/*",
-        "run": {
-          "serviceId": "mobile-sync-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/mobile/activities",
-        "run": {
-          "serviceId": "mobile-sync-handler",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/api/parse-fit",
-        "run": {
-          "serviceId": "fit-parser-handler",
+          "serviceId": "api-admin",
           "region": "us-central1"
         }
       },

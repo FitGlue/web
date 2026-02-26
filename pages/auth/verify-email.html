@@ -84,7 +84,7 @@
       if (user) {
         try {
           const idToken = await user.getIdToken();
-          const response = await fetch('/api/auth-email/send-verification', {
+          const response = await fetch('/api/v2/users/me/auth-email/send-verification', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

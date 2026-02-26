@@ -23,7 +23,7 @@ const StreakTrackersSection: React.FC<StreakTrackersSectionProps> = ({ entries, 
 
     const handleSave = async (entry: BoosterDataEntry) => {
         try {
-            await api.post(`/users/me/booster-data/${encodeURIComponent(entry.id)}`, entry.data);
+            await api.put(`/users/me/booster-data/${encodeURIComponent(entry.id)}`, entry.data);
             setEditingBooster(null);
             onRefresh();
         } catch (err) {
@@ -44,7 +44,7 @@ const StreakTrackersSection: React.FC<StreakTrackersSectionProps> = ({ entries, 
     const handleCreate = async () => {
         const id = `streak_tracker_${newActivityTypes}`;
         try {
-            await api.post(`/users/me/booster-data/${encodeURIComponent(id)}`, {
+            await api.put(`/users/me/booster-data/${encodeURIComponent(id)}`, {
                 current_streak: newCurrent,
                 longest_streak: newLongest,
                 last_activity_date: '',

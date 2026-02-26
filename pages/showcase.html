@@ -3654,7 +3654,7 @@
         return;
       }
 
-      const response = await fetch(`/api/showcase/${showcaseId}`);
+      const response = await fetch(`/api/public/showcase/${showcaseId}`);
 
       if (!response.ok) {
         clearInterval(messageInterval);

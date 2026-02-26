@@ -115,7 +115,7 @@ export const ActivitiesService: IActivitiesService = {
   // Re-post: Send activity to a new destination
   async repostToMissedDestination(activityId: string, destination: string): Promise<RepostResponse> {
     const headers = await getAuthHeader();
-    const response = await fetch('/api/repost/missed-destination', {
+    const response = await fetch('/api/v2/repost/missed-destination', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ export const ActivitiesService: IActivitiesService = {
   // Re-post: Retry an existing destination
   async retryDestination(activityId: string, destination: string): Promise<RepostResponse> {
     const headers = await getAuthHeader();
-    const response = await fetch('/api/repost/retry-destination', {
+    const response = await fetch('/api/v2/repost/retry-destination', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export const ActivitiesService: IActivitiesService = {
   // Re-post: Full pipeline re-execution
   async fullPipelineRerun(activityId: string): Promise<RepostResponse> {
     const headers = await getAuthHeader();
-    const response = await fetch('/api/repost/full-pipeline', {
+    const response = await fetch('/api/v2/repost/full-pipeline', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

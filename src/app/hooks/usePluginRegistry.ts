@@ -34,7 +34,7 @@ export const usePluginRegistry = () => {
     setLoading(true);
     try {
       // No auth required for the plugins endpoint
-      const response = await fetch('/api/registry');
+      const response = await fetch('/api/v2/registry/plugins');
       if (!response.ok) {
         throw new Error(`Failed to fetch plugin registry: ${response.statusText}`);
       }

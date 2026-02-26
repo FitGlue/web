@@ -22,7 +22,7 @@ const DistanceMilestonesSection: React.FC<DistanceMilestonesSectionProps> = ({ e
 
     const handleSave = async (entry: BoosterDataEntry) => {
         try {
-            await api.post(`/users/me/booster-data/${encodeURIComponent(entry.id)}`, entry.data);
+            await api.put(`/users/me/booster-data/${encodeURIComponent(entry.id)}`, entry.data);
             setEditingBooster(null);
             onRefresh();
         } catch (err) {
@@ -43,7 +43,7 @@ const DistanceMilestonesSection: React.FC<DistanceMilestonesSectionProps> = ({ e
     const handleCreate = async () => {
         const id = `distance_milestones_${newSport}`;
         try {
-            await api.post(`/users/me/booster-data/${encodeURIComponent(id)}`, {
+            await api.put(`/users/me/booster-data/${encodeURIComponent(id)}`, {
                 lifetime_distance: newDistance,
                 last_update: new Date().toISOString(),
             });

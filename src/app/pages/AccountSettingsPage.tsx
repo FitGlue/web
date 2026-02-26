@@ -91,7 +91,7 @@ const AccountSettingsPage: React.FC = () => {
         setEmailSent(false);
 
         try {
-            await api.post('/auth-email/send-email-change', { newEmail: editedEmail.trim() });
+            await api.post('/users/me/auth-email/send-email-change', { newEmail: editedEmail.trim() });
             setEmailSent(true);
             toast.info('Verification Sent', `Check ${editedEmail} for the verification link`);
         } catch (err: unknown) {
@@ -186,7 +186,7 @@ const AccountSettingsPage: React.FC = () => {
         setExportDownloadUrl(null);
 
         try {
-            const response = await api.post('/export/full');
+            const response = await api.post('/users/me/export');
             const jobId = response.jobId as string;
 
             // Poll for completion

@@ -53,7 +53,7 @@ export function useAuth() {
     try {
       const auth = await getAuth();
       await createUserWithEmailAndPassword(auth, email, password);
-      await api.post('/auth-email/send-verification');
+      await api.post('/users/me/auth-email/send-verification');
       return true;
     } catch (e) {
       setError({ message: e instanceof Error ? e.message : 'Registration failed' });
@@ -83,7 +83,7 @@ export function useAuth() {
     clearMessages();
     setLoading(true);
     try {
-      await api.post('/auth-email/send-verification');
+      await api.post('/users/me/auth-email/send-verification');
       setSuccess('Verification email sent! Check your inbox.');
       return true;
     } catch (e) {

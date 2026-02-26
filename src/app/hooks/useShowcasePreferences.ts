@@ -16,7 +16,7 @@ export const useShowcasePreferences = () => {
 
     const fetchPreferences = useCallback(async () => {
         try {
-            const data = await api.get('/showcase-management/preferences') as ShowcasePreferences;
+            const data = await api.get('/users/me/showcase-management/preferences') as ShowcasePreferences;
             setPreferences(data);
         } catch {
             // Non-critical — default to false

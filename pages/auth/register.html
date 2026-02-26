@@ -144,7 +144,7 @@
   async function getRecaptchaSiteKey() {
     try {
       // Fetch reCAPTCHA site key from our config endpoint
-      const response = await fetch('/api/config/recaptcha');
+      const response = await fetch('/api/v2/config/recaptcha');
       if (response.ok) {
         const data = await response.json();
         return data.siteKey;
@@ -222,7 +222,7 @@
         // Send verification email via our custom branded handler
         try {
           const idToken = await userCredential.user.getIdToken();
-          await fetch('/api/auth-email/send-verification', {
+          await fetch('/api/v2/users/me/auth-email/send-verification', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

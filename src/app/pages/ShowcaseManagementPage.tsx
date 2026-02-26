@@ -106,7 +106,7 @@ const ShowcaseManagementPage: React.FC = () => {
     const fetchProfile = useCallback(async () => {
         try {
             setLoading(true);
-            const data = await api.get('/showcase-management/profile') as {
+            const data = await api.get('/users/me/showcase-management/profile') as {
                 profile: ShowcaseProfile | null;
                 activities: ShowcaseActivity[];
             };
@@ -136,7 +136,7 @@ const ShowcaseManagementPage: React.FC = () => {
     // Fetch preferences
     const fetchPreferences = useCallback(async () => {
         try {
-            const data = await api.get('/showcase-management/preferences') as {
+            const data = await api.get('/users/me/showcase-management/preferences') as {
                 defaultDestination: boolean;
             };
             setDefaultDestination(data.defaultDestination);
@@ -156,7 +156,7 @@ const ShowcaseManagementPage: React.FC = () => {
     const handleSaveProfile = async () => {
         setSaving(true);
         try {
-            await api.patch('/showcase-management/profile', { subtitle, bio });
+            await api.put('/users/me/showcase-management/profile', { subtitle, bio });
             showSuccess('Profile updated');
         } catch (err) {
             console.error('Failed to save profile:', err);
@@ -172,7 +172,7 @@ const ShowcaseManagementPage: React.FC = () => {
         setSavingSlug(true);
         setSlugError('');
         try {
-            const result = await api.patch('/showcase-management/profile/slug', { slug }) as { slug: string };
+            const result = await api.put('/users/me/showcase-management/profile/slug', { slug }) as { slug: string };
             setSlug(result.slug || slug);
             showSuccess('Slug updated');
             // Refresh profile to get updated data
@@ -193,7 +193,7 @@ const ShowcaseManagementPage: React.FC = () => {
     const handleSaveTheme = async () => {
         setSavingTheme(true);
         try {
-            await api.patch('/showcase-management/profile', {
+            await api.put('/users/me/showcase-management/profile', {
                 theme: { themeId, customAccentColor, animationId, cardStyle },
             });
             showSuccess('Theme updated');
@@ -210,7 +210,7 @@ const ShowcaseManagementPage: React.FC = () => {
         const newVal = !defaultDestination;
         setDefaultDestination(newVal);
         try {
-            await api.patch('/showcase-management/preferences', {
+            await api.put('/users/me/showcase-management/preferences', {
                 defaultDestination: newVal,
             });
             showSuccess(newVal ? 'Showcase will be added to new pipelines' : 'Default destination disabled');
@@ -227,7 +227,7 @@ const ShowcaseManagementPage: React.FC = () => {
         const newVal = !profileVisible;
         setProfileVisible(newVal);
         try {
-            await api.patch('/showcase-management/profile', { visible: newVal });
+            await api.put('/users/me/showcase-management/profile', { visible: newVal });
             showSuccess(newVal ? 'Profile is now publicly visible' : 'Profile is now hidden');
         } catch (err) {
             setProfileVisible(!newVal);
@@ -243,7 +243,7 @@ const ShowcaseManagementPage: React.FC = () => {
             a.showcaseId === showcaseId ? { ...a, inProfile: false } : a
         ));
         try {
-            await api.delete(`/showcase-management/profile/entries/${showcaseId}`);
+            await api.delete(`/users/me/showcase-management/profile/entries/${showcaseId}`);
             showSuccess('Entry removed');
         } catch (err) {
             // Revert on failure
@@ -262,7 +262,7 @@ const ShowcaseManagementPage: React.FC = () => {
             a.showcaseId === showcaseId ? { ...a, inProfile: true } : a
         ));
         try {
-            await api.post(`/showcase-management/profile/entries/${showcaseId}`);
+            await api.post(`/users/me/showcase-management/profile/entries/${showcaseId}`);
             showSuccess('Entry added');
         } catch (err) {
             // Revert on failure
@@ -316,7 +316,7 @@ const ShowcaseManagementPage: React.FC = () => {
 
         try {
             // Cropped output is always WebP from canvas
-            const data = await api.post('/showcase-management/profile/picture', {
+            const data = await api.post('/users/me/showcase-management/profile/picture', {
                 contentType: 'image/webp',
             }) as {
                 uploadUrl: string;
@@ -344,7 +344,7 @@ const ShowcaseManagementPage: React.FC = () => {
             setUploadStatus('Saving…');
 
             // Update profile with the new URL
-            await api.patch('/showcase-management/profile', {
+            await api.put('/users/me/showcase-management/profile', {
                 profilePictureUrl: data.publicUrl,
             });
 

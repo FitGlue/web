@@ -29,9 +29,9 @@ const cacheHash = Date.now().toString(36);
 function getRegistryApiUrl() {
   if (process.env.REGISTRY_API_URL) return process.env.REGISTRY_API_URL;
   const env = process.env.BUILD_ENV || 'dev';
-  if (env === 'prod') return 'https://fitglue.tech/api/registry';
-  if (env === 'test') return 'https://test.fitglue.tech/api/registry';
-  return 'https://dev.fitglue.tech/api/registry';
+  if (env === 'prod') return 'https://fitglue.tech/api/v2/registry';
+  if (env === 'test') return 'https://test.fitglue.tech/api/v2/registry';
+  return 'https://dev.fitglue.tech/api/v2/registry';
 }
 
 export const tasks = [

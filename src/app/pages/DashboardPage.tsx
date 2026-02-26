@@ -56,7 +56,7 @@ const DashboardPageInner: React.FC = () => {
     const fetchShowcaseStatus = useCallback(async () => {
         if (!isAthlete) return;
         try {
-            const data = await api.get('/showcase-management/profile') as {
+            const data = await api.get('/users/me/showcase-management/profile') as {
                 profile: { subtitle?: string; bio?: string } | null;
             };
             // Consider profile 'set up' when subtitle or bio is filled in

@@ -162,7 +162,7 @@ const PipelineEditPage: React.FC = () => {
                     ...(excludedEnrichersByDest[k]?.length ? { excludedEnrichers: excludedEnrichersByDest[k] } : {}),
                 };
             }
-            await api.patch(`/users/me/pipelines/${pipelineId}`, {
+            await api.put(`/users/me/pipelines/${pipelineId}`, {
                 name: pipelineName || undefined,
                 source: selectedSource,
                 enrichers: enricherConfigs,

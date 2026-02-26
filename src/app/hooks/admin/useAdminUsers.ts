@@ -82,7 +82,7 @@ export function useAdminUsers(): UseAdminUsersResult {
 
   const updateUser = useCallback(async (userId: string, updates: Partial<AdminUser>) => {
     try {
-      await api.patch(`/admin/users/${userId}`, updates);
+      await api.put(`/admin/users/${userId}`, updates);
       // Refresh the users list
       await fetchUsers(pagination?.page || 1);
       // Refresh selected user if it's the same one

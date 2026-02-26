@@ -760,7 +760,7 @@
             : '';
 
         try {
-            const resp = await fetch(_apiBase + '/api/showcase/profile/' + encodeURIComponent(slug));
+            const resp = await fetch(_apiBase + '/api/public/showcase/profile/' + encodeURIComponent(slug));
             if (!resp.ok) {
                 showError();
                 return;
@@ -794,7 +794,7 @@
         try {
             var slug = getSlugFromUrl();
             var nextPage = _currentPage + 1;
-            var resp = await fetch(_apiBase + '/api/showcase/profile/' + encodeURIComponent(slug) + '?page=' + nextPage);
+            var resp = await fetch(_apiBase + '/api/public/showcase/profile/' + encodeURIComponent(slug) + '?page=' + nextPage);
             if (!resp.ok) {
                 btn.textContent = 'Load More Activities';
                 btn.disabled = false;

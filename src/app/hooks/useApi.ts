@@ -27,6 +27,10 @@ const captureApiError = (method: string, path: string, status: number, statusTex
  * If the path already starts with /api, strip it since we add it automatically
  */
 const normalizePath = (path: string): string => {
+  if (path.startsWith('/api/v2/')) {
+    console.warn(`useApi: Path "${path}" already includes /api/v2 prefix - stripping it automatically`);
+    return path.slice(7); // Remove '/api/v2' prefix
+  }
   if (path.startsWith('/api/')) {
     console.warn(`useApi: Path "${path}" already includes /api prefix - stripping it automatically`);
     return path.slice(4); // Remove '/api' prefix
@@ -85,7 +89,7 @@ export const useApi = () => {
   const get = useCallback(async (path: string) => {
     const headers = await getAuthHeader();
     const normalizedPath = normalizePath(path);
-    const response = await fetch(`/api${normalizedPath}`, {
+    const response = await fetch(`/api/v2${normalizedPath}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -103,7 +107,7 @@ export const useApi = () => {
   const post = useCallback(async (path: string, body?: unknown) => {
     const headers = await getAuthHeader();
     const normalizedPath = normalizePath(path);
-    const response = await fetch(`/api${normalizedPath}`, {
+    const response = await fetch(`/api/v2${normalizedPath}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -122,7 +126,7 @@ export const useApi = () => {
   const patch = useCallback(async (path: string, body?: unknown) => {
     const headers = await getAuthHeader();
     const normalizedPath = normalizePath(path);
-    const response = await fetch(`/api${normalizedPath}`, {
+    const response = await fetch(`/api/v2${normalizedPath}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -141,7 +145,7 @@ export const useApi = () => {
   const put = useCallback(async (path: string, body?: unknown) => {
     const headers = await getAuthHeader();
     const normalizedPath = normalizePath(path);
-    const response = await fetch(`/api${normalizedPath}`, {
+    const response = await fetch(`/api/v2${normalizedPath}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -160,7 +164,7 @@ export const useApi = () => {
   const del = useCallback(async (path: string) => {
     const headers = await getAuthHeader();
     const normalizedPath = normalizePath(path);
-    const response = await fetch(`/api${normalizedPath}`, {
+    const response = await fetch(`/api/v2${normalizedPath}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

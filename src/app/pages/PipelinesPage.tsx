@@ -201,7 +201,7 @@ const PipelinesPage: React.FC = () => {
         setToggling(pipelineId);
         const pipeline = pipelines.find(p => p.id === pipelineId);
         try {
-            await api.patch(`/users/me/pipelines/${pipelineId}`, { disabled });
+            await api.put(`/users/me/pipelines/${pipelineId}`, { disabled });
             await refreshPipelines();
             toast.success(
                 disabled ? 'Pipeline Disabled' : 'Pipeline Enabled',

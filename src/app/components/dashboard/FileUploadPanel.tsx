@@ -105,7 +105,7 @@ export const FileUploadPanel: React.FC = () => {
         payload.pipelineId = selectedPipelineId;
       }
 
-      const data = await api.post('/parse-fit', payload);
+      const data = await api.post('/users/me/parse-fit', payload);
 
       setMessage({
         type: 'success',

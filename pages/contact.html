@@ -26,8 +26,7 @@
           <span class="feature-icon">💬</span>
           <h3>Community</h3>
           <p class="text-muted mb-md">Join our Discord for updates and discussion</p>
-          <a href="https://discord.gg/fitglue" target="_blank" rel="noopener"
-            class="btn btn-secondary">Join Discord</a>
+          <a href="https://discord.gg/fitglue" target="_blank" rel="noopener" class="btn btn-secondary">Join Discord</a>
         </div>
       </div>
     </div>
@@ -94,7 +93,7 @@
     errorEl.style.display = 'none';
 
     try {
-      const response = await fetch('/api/integrations/request', {
+      const response = await fetch('/api/v2/integrations/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

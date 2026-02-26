@@ -23,7 +23,7 @@ const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, load
 
     const handleSave = async (entry: BoosterDataEntry) => {
         try {
-            await api.post(`/users/me/booster-data/${encodeURIComponent(entry.id)}`, entry.data);
+            await api.put(`/users/me/booster-data/${encodeURIComponent(entry.id)}`, entry.data);
             setEditingBooster(null);
             onRefresh();
         } catch (err) {
@@ -44,7 +44,7 @@ const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, load
     const handleCreate = async () => {
         const id = `goal_tracker_${newPeriod}_${newMetric}`;
         try {
-            await api.post(`/users/me/booster-data/${encodeURIComponent(id)}`, {
+            await api.put(`/users/me/booster-data/${encodeURIComponent(id)}`, {
                 accumulated: newAccumulated,
                 period_key: '',
                 last_update: new Date().toISOString(),
