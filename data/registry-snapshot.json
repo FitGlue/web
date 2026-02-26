@@ -1,0 +1,3015 @@
+{
+  "sources": [
+    {
+      "id": "hevy",
+      "type": 1,
+      "name": "Hevy",
+      "description": "Import strength training workouts from Hevy",
+      "icon": "🏋️",
+      "enabled": true,
+      "requiredIntegrations": [
+        "hevy"
+      ],
+      "configSchema": [],
+      "marketingDescription": "\n### Strength Training Source\nImport your weight training workouts from Hevy into FitGlue for enhancement and distribution. Every exercise, set, rep, and weight is captured with full fidelity.\n\n### How it works\nWhen you complete a workout in Hevy, FitGlue receives a webhook notification and imports the full workout data. The activity enters your FitGlue pipeline where it can be enriched with AI descriptions, muscle heatmaps, and more.\n  ",
+      "features": [
+        "✅ Import strength workouts with full exercise details",
+        "✅ Capture sets, reps, weights, and rest periods",
+        "✅ Real-time sync via webhooks",
+        "✅ Works seamlessly with all FitGlue boosters"
+      ],
+      "transformations": [],
+      "useCases": [],
+      "category": "apps",
+      "sortOrder": 2,
+      "isPremium": false,
+      "popularityScore": 80,
+      "iconType": "svg",
+      "iconPath": "/images/icons/hevy.svg"
+    },
+    {
+      "id": "fitbit",
+      "type": 1,
+      "name": "Fitbit",
+      "description": "Import activities from Fitbit",
+      "icon": "⌚",
+      "enabled": true,
+      "requiredIntegrations": [
+        "fitbit"
+      ],
+      "configSchema": [],
+      "marketingDescription": "\n### Wearable Activity Source\nImport activities tracked by your Fitbit device into FitGlue. Runs, walks, bike rides, and workouts with heart rate and calorie data are all supported.\n\n### How it works\nFitGlue connects to the Fitbit API and receives notifications when you complete activities. The full activity data, including heart rate zones and GPS tracks (if available), is imported into your pipeline.\n  ",
+      "features": [
+        "✅ Import all Fitbit-tracked activities",
+        "✅ Heart rate data included automatically",
+        "✅ GPS tracks for outdoor activities",
+        "✅ Automatic sync when activities complete"
+      ],
+      "transformations": [],
+      "useCases": [],
+      "category": "wearables",
+      "sortOrder": 2,
+      "isPremium": false,
+      "popularityScore": 85,
+      "iconType": "svg",
+      "iconPath": "/images/icons/fitbit.svg"
+    },
+    {
+      "id": "apple_health",
+      "type": 1,
+      "name": "Apple Health",
+      "description": "Import workouts and health data from iOS devices",
+      "icon": "🍎",
+      "enabled": true,
+      "requiredIntegrations": [
+        "apple-health"
+      ],
+      "configSchema": [],
+      "marketingDescription": "\n### iOS Health Data Source\nImport workouts, heart rate data, and GPS routes directly from Apple Health on your iPhone or Apple Watch. FitGlue's mobile app syncs your health data seamlessly.\n\n### How it works\nInstall the FitGlue mobile app on your iOS device and grant access to Apple Health. Workouts are automatically synced in the background and flow through your FitGlue pipeline.\n  ",
+      "features": [
+        "✅ Import workouts from Apple Watch and iPhone",
+        "✅ Heart rate data included automatically",
+        "✅ GPS routes for outdoor activities",
+        "✅ Background sync when app is installed"
+      ],
+      "transformations": [],
+      "useCases": [],
+      "category": "wearables",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 90
+    },
+    {
+      "id": "health_connect",
+      "type": 1,
+      "name": "Health Connect",
+      "description": "Import workouts and health data from Android devices",
+      "icon": "🤖",
+      "enabled": true,
+      "requiredIntegrations": [
+        "health-connect"
+      ],
+      "configSchema": [],
+      "marketingDescription": "\n### Android Health Data Source\nImport workouts, heart rate data, and GPS routes from Android Health Connect. FitGlue's mobile app syncs your health data from any compatible fitness tracker or app.\n\n### How it works\nInstall the FitGlue mobile app on your Android device and grant access to Health Connect. Workouts are automatically synced in the background and flow through your FitGlue pipeline.\n  ",
+      "features": [
+        "✅ Import workouts from any Health Connect-compatible device",
+        "✅ Heart rate data included automatically",
+        "✅ GPS routes for outdoor activities",
+        "✅ Background sync when app is installed"
+      ],
+      "transformations": [],
+      "useCases": [],
+      "category": "wearables",
+      "sortOrder": 4,
+      "isPremium": false,
+      "popularityScore": 75
+    },
+    {
+      "id": "file_upload",
+      "type": 1,
+      "name": "File Upload",
+      "description": "Upload FIT files directly from your device",
+      "icon": "📤",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [],
+      "marketingDescription": "\n### Direct FIT File Upload\nUpload activity files directly from your device. Perfect for importing data from fitness devices or recovering workouts not captured by connected services.\n\n### How it works\nSelect a FIT file, optionally add title/description, then upload. The activity enters your pipeline for enrichment and distribution.\n  ",
+      "features": [
+        "✅ Upload FIT files from any device",
+        "✅ Set custom title and description",
+        "✅ Works with all FitGlue boosters",
+        "✅ No external service connection required"
+      ],
+      "transformations": [],
+      "useCases": [
+        "Import workouts from Garmin or other standalone GPS devices",
+        "Bring in activities from platforms FitGlue doesn't integrate with yet",
+        "Recover activities from device backups"
+      ],
+      "category": "manual",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 60
+    },
+    {
+      "id": "strava",
+      "type": 1,
+      "name": "Strava",
+      "description": "Import activities from Strava via real-time webhooks",
+      "icon": "🚴",
+      "enabled": true,
+      "requiredIntegrations": [
+        "strava"
+      ],
+      "configSchema": [],
+      "marketingDescription": "\n### The World's Leading Fitness Platform\nImport your runs, rides, swims, and workouts from Strava into FitGlue. Activities are synced in real-time via webhooks the moment they're uploaded to Strava.\n\n### How it works\nConnect your Strava account to FitGlue via OAuth. When you complete an activity on Strava (or sync from your device), FitGlue receives a webhook notification and imports the full activity data. Your activity then flows through your pipeline for enrichment and distribution.\n\n### Seamless Loop Prevention\nFitGlue's intelligent loop prevention ensures that activities uploaded TO Strava aren't re-imported FROM Strava. No duplicates, no infinite loops.\n  ",
+      "features": [
+        "✅ Real-time sync via Strava webhooks",
+        "✅ Import all activity types (runs, rides, swims, workouts)",
+        "✅ Heart rate, GPS, and power data included",
+        "✅ Automatic sync when activities are uploaded",
+        "✅ Smart loop prevention prevents duplicates"
+      ],
+      "transformations": [],
+      "useCases": [
+        "Enhance Strava activities with AI descriptions and muscle heatmaps",
+        "Cross-post Strava activities to other platforms like Hevy",
+        "Generate public Showcase links for your Strava activities"
+      ],
+      "category": "apps",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 95,
+      "iconType": "svg",
+      "iconPath": "/images/icons/strava.svg"
+    },
+    {
+      "id": "garmin",
+      "type": 1,
+      "name": "Garmin",
+      "description": "Import activities from Garmin Connect",
+      "icon": "⌚",
+      "enabled": true,
+      "requiredIntegrations": [
+        "garmin"
+      ],
+      "configSchema": [],
+      "marketingDescription": "\n### Garmin Connect Source\nStandard Garmin Connect integration for importing activities.\n  ",
+      "features": [
+        "✅ Import activities from Garmin devices"
+      ],
+      "transformations": [],
+      "useCases": [],
+      "category": "wearables",
+      "sortOrder": 3,
+      "isPremium": false,
+      "popularityScore": 88,
+      "iconType": "svg",
+      "iconPath": "/images/icons/garmin.svg"
+    },
+    {
+      "id": "wahoo",
+      "type": 1,
+      "name": "Wahoo",
+      "description": "Import workouts from Wahoo Cloud with full FIT file support",
+      "icon": "📱",
+      "enabled": true,
+      "requiredIntegrations": [
+        "wahoo"
+      ],
+      "configSchema": [],
+      "marketingDescription": "\n### Wahoo Cloud Source\nImport workouts from your Wahoo ELEMNT bike computers, KICKR trainers, and other Wahoo devices. Activities are synced in real-time via webhooks with full FIT file data.\n\n### How it works\nConnect your Wahoo account to FitGlue via OAuth. When you complete a workout on your Wahoo device, FitGlue receives a webhook notification, downloads the full FIT file, and imports your activity with all sensor data.\n\n### Full Sensor Data\nPower meters, heart rate monitors, cadence sensors, and GPS data — all captured in the FIT file and available for your enrichment pipeline.\n  ",
+      "features": [
+        "✅ Real-time sync via Wahoo Cloud webhooks",
+        "✅ Full FIT file download with complete sensor data",
+        "✅ Power, HR, cadence, and GPS data included",
+        "✅ Works with ELEMNT, KICKR, and all Wahoo devices",
+        "✅ Automatic sync when workouts complete"
+      ],
+      "isTemporarilyUnavailable": true,
+      "transformations": [],
+      "useCases": [
+        "Enhance Wahoo rides with AI descriptions and stats summaries",
+        "Cross-post Wahoo activities to Strava or TrainingPeaks",
+        "Generate Showcase links for your cycling workouts"
+      ],
+      "category": "wearables",
+      "sortOrder": 2,
+      "isPremium": false,
+      "popularityScore": 82
+    },
+    {
+      "id": "oura",
+      "type": 1,
+      "name": "Oura Ring",
+      "description": "Import workouts from Oura Ring",
+      "icon": "💍",
+      "enabled": true,
+      "requiredIntegrations": [
+        "oura"
+      ],
+      "configSchema": [],
+      "marketingDescription": "\n### Smart Ring Workout Source\nImport workouts tracked by your Oura Ring into FitGlue. Heart rate data, calories, and workout metrics are captured for enhancement and distribution.\n\n### How it works\nWhen you complete a workout tracked by your Oura Ring, FitGlue receives a webhook notification and imports the workout data. The activity enters your FitGlue pipeline where it can be enriched with AI descriptions and more.\n  ",
+      "features": [
+        "✅ Import workouts from Oura Ring",
+        "✅ Heart rate data (average and max)",
+        "✅ Calories and duration tracking",
+        "✅ Real-time sync via webhooks",
+        "✅ Works seamlessly with all FitGlue boosters"
+      ],
+      "isTemporarilyUnavailable": true,
+      "transformations": [],
+      "useCases": [
+        "Track workouts without GPS for indoor activities",
+        "Combine sleep/readiness context with workout data",
+        "Enhance Oura workouts with AI descriptions"
+      ],
+      "category": "wearables",
+      "sortOrder": 5,
+      "isPremium": false,
+      "popularityScore": 70
+    },
+    {
+      "id": "polar",
+      "type": 1,
+      "name": "Polar Flow",
+      "description": "Import activities from Polar wearables",
+      "icon": "❄️",
+      "enabled": true,
+      "requiredIntegrations": [
+        "polar"
+      ],
+      "configSchema": [],
+      "marketingDescription": "\n### Polar Wearable Source\nImport your runs, rides, swims, and workouts from Polar devices. Activities are synced via webhooks when you complete them on your Polar watch or sync with Polar Flow.\n\n### How it works\nConnect your Polar Flow account to FitGlue via OAuth. When you complete an activity, FitGlue receives a webhook notification and imports the full activity data including heart rate, GPS tracks, and training load metrics.\n\n### Transaction-Based Sync\nPolar uses a unique transaction-based API that ensures reliable data delivery. FitGlue handles all the complexity automatically.\n  ",
+      "features": [
+        "✅ Import all Polar-tracked activities",
+        "✅ Heart rate data with zones",
+        "✅ GPS routes for outdoor activities",
+        "✅ Training load metrics included",
+        "✅ Real-time sync via webhooks"
+      ],
+      "isTemporarilyUnavailable": true,
+      "transformations": [],
+      "useCases": [
+        "Enhance Polar activities with AI descriptions",
+        "Cross-post Polar activities to Strava or Hevy",
+        "Generate public Showcase links for your Polar activities"
+      ],
+      "category": "wearables",
+      "sortOrder": 6,
+      "isPremium": false,
+      "popularityScore": 75,
+      "iconType": "svg",
+      "iconPath": "/images/icons/polar.svg"
+    },
+    {
+      "id": "intervals",
+      "type": 1,
+      "name": "Intervals.icu",
+      "description": "Import activities from Intervals.icu",
+      "icon": "📊",
+      "enabled": true,
+      "requiredIntegrations": [
+        "intervals"
+      ],
+      "configSchema": [],
+      "marketingDescription": "\n### Advanced Training Analytics Source\nImport your activities from Intervals.icu into FitGlue. Power data, heart rate, cadence, GPS, and all performance metrics are captured for enhancement and distribution.\n\n### How it works\nFitGlue polls your Intervals.icu account for new activities. When new activities are found, they're imported into your pipeline where they can be enriched with AI descriptions, training load calculations, and more.\n  ",
+      "features": [
+        "✅ Import activities with full power data",
+        "✅ Heart rate, cadence, and GPS included",
+        "✅ Performance metrics and training load",
+        "✅ Works seamlessly with all FitGlue boosters"
+      ],
+      "isTemporarilyUnavailable": true,
+      "transformations": [],
+      "useCases": [
+        "Enhance Intervals.icu activities with AI descriptions",
+        "Cross-post to Strava with enriched metadata",
+        "Generate public Showcase links for sharing"
+      ],
+      "category": "analytics",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 70
+    }
+  ],
+  "enrichers": [
+    {
+      "id": "workout-summary",
+      "type": 2,
+      "name": "Workout Summary",
+      "description": "Generates a text summary of strength training exercises",
+      "icon": "📋",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "format",
+          "label": "Summary Format",
+          "description": "How sets should be displayed",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "detailed",
+          "options": [
+            {
+              "value": "compact",
+              "label": "Compact (4×10×100kg)"
+            },
+            {
+              "value": "detailed",
+              "label": "Detailed (4 x 10 × 100.0kg)"
+            },
+            {
+              "value": "verbose",
+              "label": "Verbose (4 sets of 10 reps at 100.0 kilograms)"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "show_stats",
+          "label": "Show Stats",
+          "description": "Include headline stats (total volume, reps, etc.)",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "true",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### What is Workout Summary?\nThis booster uses advanced AI to analyze your strength training data and generate engaging, human-readable summaries of your sessions. Instead of just a list of numbers, you get a narrative description of your workout intensity, volume, and focus areas.\n\n### How it works\nFitGlue analyzes your sets, reps, and weight data, identifies your primary muscle groups targeted, and calculates total volume. It then uses a Large Language Model (LLM) to craft a summary that highlights your achievements, personal bests, and overall effort.\n  ",
+      "features": [
+        "✅ Narrative summaries of your strength workouts",
+        "✅ Highlights key lifts and personal bests",
+        "✅ Analyzes volume trends and intensity",
+        "✅ Customizable formats (Compact, Detailed, Verbose)"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "(empty)",
+          "after": "📋 Workout Summary:\n20 sets • 8,240kg volume • 57 reps • Heaviest: 80kg (Bench Press)\n\n- Bench Press: 4 × 8 × 80.0kg\n- Overhead Press: 4 × 10 × 40.0kg\n- Incline DB Press: 4 × 12 × 24.0kg\n- Lateral Raises: 4 × 15 × 10.0kg\n- Tricep Pushdowns: 4 × 12 × 25.0kg",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Share detailed strength logs on Strava",
+        "Track progressive overload with volume stats",
+        "Celebrate personal records automatically"
+      ],
+      "category": "transformation",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 90,
+      "enricherProviderType": 2
+    },
+    {
+      "id": "muscle-heatmap",
+      "type": 2,
+      "name": "Muscle Heatmap",
+      "description": "Generates an emoji-based heatmap showing muscle group volume",
+      "icon": "🔥",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "style",
+          "label": "Display Style",
+          "description": "How the heatmap should be rendered",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "emoji",
+          "options": [
+            {
+              "value": "emoji",
+              "label": "Emoji Bars (🟪🟪🟪⬜⬜)"
+            },
+            {
+              "value": "percentage",
+              "label": "Percentage (Chest: 80%)"
+            },
+            {
+              "value": "text",
+              "label": "Text Only (High: Chest, Medium: Legs)"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "bar_length",
+          "label": "Bar Length",
+          "description": "Number of squares in emoji bar",
+          "fieldType": 2,
+          "required": false,
+          "defaultValue": "5",
+          "options": [],
+          "validation": {
+            "minValue": 3,
+            "maxValue": 10
+          },
+          "dependsOn": {
+            "fieldKey": "style",
+            "values": [
+              "emoji"
+            ]
+          },
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "preset",
+          "label": "Coefficient Preset",
+          "description": "Muscle weighting preset",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "standard",
+          "options": [
+            {
+              "value": "standard",
+              "label": "Standard (balanced)"
+            },
+            {
+              "value": "powerlifting",
+              "label": "Powerlifting (emphasize compounds)"
+            },
+            {
+              "value": "bodybuilding",
+              "label": "Bodybuilding (emphasize isolation)"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Visualize Your Training\nThe Muscle Heatmap booster generates a visual representation of your training volume by muscle group. Using a heatmap style visualization, you can instantly see which muscles you hit hardest and which ones might be lagging.\n\n### How it works\nEvery exercise in your workout is mapped to primary and secondary muscle groups using our built-in exercise taxonomy. We calculate the volume load for each muscle and generate a \"heatmap\" bar or chart that is appended to your activity description.\n\n### Smart Exercise Recognition\nOur database includes 100+ canonical exercises with fuzzy matching, so even custom-named exercises like \"Dave's Bench Press\" are correctly identified. Abbreviations (DB, BB, KB) are automatically expanded, and typos are handled gracefully.\n  ",
+      "features": [
+        "✅ Visual heatmap of trained muscles",
+        "✅ Supports Emoji, Percentage, and Text formats",
+        "✅ Smart exercise recognition with fuzzy matching",
+        "✅ 100+ exercises in canonical database",
+        "✅ Adjustable muscle coefficients (Standard, Powerlifting, Bodybuilding)",
+        "✅ Works with all strength activities"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Muscle Heatmap",
+          "before": "Weight Training\n45 min",
+          "after": "",
+          "visualType": "",
+          "afterHtml": "<strong>🔥 Muscle Activation</strong><br><br><span class=\"heatmap-row\">Chest: <span class=\"heatmap-bar high\">🟪🟪🟪🟪🟪</span></span><br><span class=\"heatmap-row\">Shoulders: <span class=\"heatmap-bar high\">🟪🟪🟪🟪⬛</span></span><br><span class=\"heatmap-row\">Triceps: <span class=\"heatmap-bar med\">🟪🟪⬛⬛⬛</span></span><br><span class=\"heatmap-row\">Core: <span class=\"heatmap-bar low\">🟪⬛⬛⬛⬛</span></span>"
+        }
+      ],
+      "useCases": [
+        "Visualize muscle balance in your program",
+        "Show training focus areas on Strava",
+        "Identify lagging muscle groups",
+        "Track custom exercises with automatic muscle mapping"
+      ],
+      "category": "transformation",
+      "sortOrder": 3,
+      "isPremium": false,
+      "popularityScore": 85,
+      "enricherProviderType": 3
+    },
+    {
+      "id": "muscle_heatmap_image",
+      "type": 2,
+      "name": "Muscle Heatmap Image",
+      "description": "Generates an anatomical SVG diagram with muscle activation highlighting",
+      "icon": "🔥",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "requiredTier": "athlete",
+      "configSchema": [],
+      "marketingDescription": "\n### Premium Visual Muscle Activation\nThe Muscle Heatmap Image booster creates a stunning anatomical diagram showing exactly which muscles you trained and how hard. Unlike the text-based heatmap, this generates a shareable visual asset perfect for social media and the Showcase.\n\n### How it works\nEvery exercise is analyzed to calculate volume per muscle group. We then generate an SVG image of the human body with muscles colored by intensity - from gray (no activation) through purple gradients to hot pink (maximum activation).\n\n### Athlete-Tier Exclusive\nThis premium visual enricher is available exclusively to Athlete-tier users. The generated image is stored in Cloud Storage and automatically embedded in your Showcase page.\n  ",
+      "features": [
+        "✅ Anatomical SVG diagram with muscle highlighting",
+        "✅ Color-coded intensity (gray → purple → hot pink)",
+        "✅ Stored as shareable image asset",
+        "✅ Automatically embedded in Showcase",
+        "✅ Perfect for social media sharing",
+        "✅ Athlete-tier exclusive"
+      ],
+      "transformations": [
+        {
+          "field": "metadata",
+          "label": "Muscle Activation Image",
+          "before": "(no image)",
+          "after": "",
+          "visualType": "image",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Share visual muscle activation on social media",
+        "Track training balance with anatomical diagrams",
+        "Create professional-looking workout summaries"
+      ],
+      "category": "transformation",
+      "sortOrder": 4,
+      "isPremium": true,
+      "popularityScore": 95,
+      "enricherProviderType": 26
+    },
+    {
+      "id": "route_thumbnail",
+      "type": 2,
+      "name": "Route Thumbnail",
+      "description": "Generates a stunning SVG map image of your GPS route",
+      "icon": "🗺️",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "requiredTier": "athlete",
+      "configSchema": [],
+      "marketingDescription": "\n### Beautiful Route Visualization\nThe Route Thumbnail booster creates a beautiful stylized SVG map of your GPS route. Perfect for sharing on social media and displaying in your Showcase.\n\n### How it works\nFitGlue extracts GPS coordinates from your activity, simplifies the route using the Douglas-Peucker algorithm for optimal rendering, and generates a stunning SVG visualization with FitGlue's signature gradient colors and animated start/finish markers.\n\n### Athlete-Tier Exclusive\nThis premium visual enricher is available exclusively to Athlete-tier users. The generated SVG is stored in Cloud Storage and automatically embedded in your Showcase page.\n  ",
+      "features": [
+        "✅ Stunning SVG route visualization",
+        "✅ FitGlue signature gradient colors (pink → purple → green)",
+        "✅ Animated start and finish markers",
+        "✅ Route simplification for clean rendering",
+        "✅ Stored as shareable image asset",
+        "✅ Automatically embedded in Showcase",
+        "✅ Athlete-tier exclusive"
+      ],
+      "transformations": [
+        {
+          "field": "metadata",
+          "label": "Route Thumbnail URL",
+          "before": "(no route image)",
+          "after": "showcase-assets/{activityId}/route-thumbnail.svg",
+          "visualType": "image",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Share beautiful route maps on social media",
+        "Display route visualization in Showcase header",
+        "Create visual summaries of running and cycling routes"
+      ],
+      "category": "visual",
+      "sortOrder": 1,
+      "isPremium": true,
+      "popularityScore": 85,
+      "enricherProviderType": 27
+    },
+    {
+      "id": "ai_banner",
+      "type": 2,
+      "name": "AI Activity Banner",
+      "description": "Generates a custom AI header image for your activity",
+      "icon": "🎨",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "requiredTier": "athlete",
+      "configSchema": [
+        {
+          "key": "style",
+          "label": "Image Style",
+          "description": "Visual style for the generated banner",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "vibrant",
+          "options": [
+            {
+              "value": "vibrant",
+              "label": "Vibrant & Energetic"
+            },
+            {
+              "value": "minimal",
+              "label": "Minimal & Clean"
+            },
+            {
+              "value": "dramatic",
+              "label": "Dramatic & Bold"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### AI-Generated Activity Banners\nCreate stunning, custom header images for your activities using Google's Gemini AI. Each banner is uniquely generated based on your activity type, time of day, and conditions.\n\n### How it works\nWhen enabled, FitGlue analyzes your activity context and generates a custom banner image using Gemini 2.0 Flash. The image is stored in Cloud Storage and displayed as the hero background in your Showcase page.\n\n### Athlete-Tier Exclusive\nThis premium visual enricher is available exclusively to Athlete-tier users. The generated image is also used for OpenGraph/Twitter social sharing cards.\n  ",
+      "features": [
+        "✅ AI-generated custom banners for each activity",
+        "✅ Context-aware (activity type, time of day)",
+        "✅ Multiple style options (Vibrant, Minimal, Dramatic)",
+        "✅ Displayed as Showcase hero background",
+        "✅ Used for social sharing (OpenGraph/Twitter cards)",
+        "✅ Athlete-tier exclusive"
+      ],
+      "transformations": [
+        {
+          "field": "metadata",
+          "label": "AI Banner URL",
+          "before": "(no banner)",
+          "after": "showcase-assets/{activityId}/banner.png",
+          "visualType": "image",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Create eye-catching social media shares",
+        "Professional-looking activity showcases",
+        "Unique visual identity for each workout"
+      ],
+      "category": "visual",
+      "sortOrder": 2,
+      "isPremium": true,
+      "popularityScore": 75,
+      "enricherProviderType": 28
+    },
+    {
+      "id": "fitbit-heart-rate",
+      "type": 2,
+      "name": "Fitbit Heart Rate",
+      "description": "Adds heart rate data from Fitbit to your activity with smart GPS alignment",
+      "icon": "🩵",
+      "enabled": true,
+      "requiredIntegrations": [
+        "fitbit"
+      ],
+      "configSchema": [
+        {
+          "key": "force",
+          "label": "Force Overwrite",
+          "description": "Overwrite existing heart rate data if present",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "false",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Unified Heart Data\nSync your heart rate data from your Fitbit device and overlay it onto your imported activities. This is perfect for when you track a workout (like weightlifting) on one app but wear your Fitbit for health monitoring.\n\n### How it works\nWhen an activity is imported (e.g., from Hevy), FitGlue checks your Fitbit account for heart rate data recorded during that time window. It creates a second-by-second heart rate stream and attaches it to the activity before sending it to Strava or other destinations.\n\n### Smart GPS Alignment\nWhen your activity has GPS data (from a phone app or watch), FitGlue uses an \"Elastic Match\" algorithm to align Fitbit heart rate data with your GPS timestamps. This handles minor clock drift between devices automatically, ensuring your HR matches the correct location points within ±2 seconds accuracy.\n  ",
+      "features": [
+        "✅ Merges heart rate from Fitbit to any activity",
+        "✅ Smart GPS alignment handles clock drift between devices",
+        "✅ Perfect for activities where you don't start a GPS watch",
+        "✅ Accurate calorie data based on heart rate",
+        "✅ Linear interpolation for precise timestamp matching",
+        "✅ Seamless background synchronization"
+      ],
+      "transformations": [
+        {
+          "field": "heartRateStream",
+          "label": "Heart Rate Data",
+          "before": "(no heart rate)",
+          "after": "",
+          "visualType": "hr-graph",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Add heart rate to Hevy gym workouts",
+        "Merge Fitbit HR with phone GPS running data",
+        "Complete activity data on Strava",
+        "Track training intensity across all activities"
+      ],
+      "category": "stats",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 80,
+      "enricherProviderType": 1
+    },
+    {
+      "id": "virtual-gps",
+      "type": 2,
+      "name": "Virtual GPS",
+      "description": "Adds GPS coordinates from a virtual route to indoor activities",
+      "icon": "🗺️",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "route",
+          "label": "Route",
+          "description": "Virtual route to use for GPS generation",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "london",
+          "options": [
+            {
+              "value": "london",
+              "label": "London Hyde Park (~4km loop)"
+            },
+            {
+              "value": "nyc",
+              "label": "NYC Central Park (~10km loop)"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "force",
+          "label": "Force Override",
+          "description": "Override existing GPS data if present",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "false",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Virtual GPS for Indoor Workouts\nAdd GPS coordinates to indoor activities so they appear with a map on Strava. Choose from preset routes in famous locations like London’s Hyde Park or NYC’s Central Park.\n\n### How it works\nWhen an activity is processed, Virtual GPS overlays a pre-defined GPS route onto the activity. The route is scaled to match your workout duration, giving your indoor session a scenic virtual location.\n  ",
+      "features": [
+        "✅ Adds GPS to indoor/gym activities",
+        "✅ Activities appear with a map on Strava",
+        "✅ Choice of scenic routes (London, NYC)",
+        "✅ Route scaled to match workout duration"
+      ],
+      "transformations": [
+        {
+          "field": "gpsData",
+          "label": "GPS Routes",
+          "before": "Indoor workout\nNo location",
+          "after": "",
+          "visualType": "gps-map",
+          "afterHtml": ""
+        },
+        {
+          "field": "description",
+          "label": "Virtual Tour Message",
+          "before": "(empty)",
+          "after": "🗺️ Took a virtual tour of London Hyde Park (GPS generated for this indoor workout)",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Get indoor activities on your Strava heatmap",
+        "Add visual interest to home gym sessions",
+        "Virtual touring while on the treadmill"
+      ],
+      "category": "location",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 70,
+      "enricherProviderType": 6
+    },
+    {
+      "id": "source-link",
+      "type": 2,
+      "name": "Source Link",
+      "description": "Appends a link to the original activity in the description",
+      "icon": "🔗",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [],
+      "marketingDescription": "\n### Link Back to the Source\nAutomatically appends a deep link to the original activity in your workout description. Great for cross-referencing your data.\n\n### How it works\nWhen activities are imported from sources like Hevy or Fitbit, Source Link adds a clickable URL pointing back to the original activity. This makes it easy to see the full details in the source app.\n  ",
+      "features": [
+        "✅ Adds a link to the original activity",
+        "✅ Easy cross-referencing between apps",
+        "✅ Works with all source integrations"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "Upper Body Workout",
+          "after": "Upper Body Workout\n\n🔗 View in Hevy: https://hevy.app/workout/abc123",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Trace activities back to the source app",
+        "Keep links to detailed exercise data",
+        "Cross-reference between platforms"
+      ],
+      "category": "references",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 65,
+      "enricherProviderType": 4
+    },
+    {
+      "id": "type-mapper",
+      "type": 2,
+      "name": "Type Mapper",
+      "description": "Maps activity types based on title keywords (e.g., title containing \"Zwift\" → Virtual Ride)",
+      "icon": "🏷️",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "type_rules",
+          "label": "Type Mapping Rules",
+          "description": "Map activity titles to desired types. Enter the text to match (case-insensitive), then select the activity type.",
+          "fieldType": 6,
+          "required": true,
+          "defaultValue": "",
+          "options": [],
+          "valueOptions": [
+            {
+              "value": "ACTIVITY_TYPE_ALPINE_SKI",
+              "label": "Alpine Ski"
+            },
+            {
+              "value": "ACTIVITY_TYPE_BACKCOUNTRY_SKI",
+              "label": "Backcountry Ski"
+            },
+            {
+              "value": "ACTIVITY_TYPE_BADMINTON",
+              "label": "Badminton"
+            },
+            {
+              "value": "ACTIVITY_TYPE_CANOEING",
+              "label": "Canoeing"
+            },
+            {
+              "value": "ACTIVITY_TYPE_CROSSFIT",
+              "label": "Crossfit"
+            },
+            {
+              "value": "ACTIVITY_TYPE_EBIKE_RIDE",
+              "label": "E-Bike Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_ELLIPTICAL",
+              "label": "Elliptical"
+            },
+            {
+              "value": "ACTIVITY_TYPE_EMOUNTAIN_BIKE_RIDE",
+              "label": "E-Mountain Bike Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_GOLF",
+              "label": "Golf"
+            },
+            {
+              "value": "ACTIVITY_TYPE_GRAVEL_RIDE",
+              "label": "Gravel Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_HANDCYCLE",
+              "label": "Handcycle"
+            },
+            {
+              "value": "ACTIVITY_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING",
+              "label": "HIIT"
+            },
+            {
+              "value": "ACTIVITY_TYPE_HIKE",
+              "label": "Hike"
+            },
+            {
+              "value": "ACTIVITY_TYPE_ICE_SKATE",
+              "label": "Ice Skate"
+            },
+            {
+              "value": "ACTIVITY_TYPE_INLINE_SKATE",
+              "label": "Inline Skate"
+            },
+            {
+              "value": "ACTIVITY_TYPE_KAYAKING",
+              "label": "Kayaking"
+            },
+            {
+              "value": "ACTIVITY_TYPE_KITESURF",
+              "label": "Kitesurf"
+            },
+            {
+              "value": "ACTIVITY_TYPE_MOUNTAIN_BIKE_RIDE",
+              "label": "Mountain Bike Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_NORDIC_SKI",
+              "label": "Nordic Ski"
+            },
+            {
+              "value": "ACTIVITY_TYPE_PICKLEBALL",
+              "label": "Pickleball"
+            },
+            {
+              "value": "ACTIVITY_TYPE_PILATES",
+              "label": "Pilates"
+            },
+            {
+              "value": "ACTIVITY_TYPE_RACQUETBALL",
+              "label": "Racquetball"
+            },
+            {
+              "value": "ACTIVITY_TYPE_RIDE",
+              "label": "Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_ROCK_CLIMBING",
+              "label": "Rock Climbing"
+            },
+            {
+              "value": "ACTIVITY_TYPE_ROLLER_SKI",
+              "label": "Roller Ski"
+            },
+            {
+              "value": "ACTIVITY_TYPE_ROWING",
+              "label": "Rowing"
+            },
+            {
+              "value": "ACTIVITY_TYPE_RUN",
+              "label": "Run"
+            },
+            {
+              "value": "ACTIVITY_TYPE_SAIL",
+              "label": "Sail"
+            },
+            {
+              "value": "ACTIVITY_TYPE_SKATEBOARD",
+              "label": "Skateboard"
+            },
+            {
+              "value": "ACTIVITY_TYPE_SNOWBOARD",
+              "label": "Snowboard"
+            },
+            {
+              "value": "ACTIVITY_TYPE_SNOWSHOE",
+              "label": "Snowshoe"
+            },
+            {
+              "value": "ACTIVITY_TYPE_SOCCER",
+              "label": "Soccer"
+            },
+            {
+              "value": "ACTIVITY_TYPE_SQUASH",
+              "label": "Squash"
+            },
+            {
+              "value": "ACTIVITY_TYPE_STAIR_STEPPER",
+              "label": "Stair Stepper"
+            },
+            {
+              "value": "ACTIVITY_TYPE_STAND_UP_PADDLING",
+              "label": "Stand Up Paddling"
+            },
+            {
+              "value": "ACTIVITY_TYPE_SURFING",
+              "label": "Surfing"
+            },
+            {
+              "value": "ACTIVITY_TYPE_SWIM",
+              "label": "Swim"
+            },
+            {
+              "value": "ACTIVITY_TYPE_TABLE_TENNIS",
+              "label": "Table Tennis"
+            },
+            {
+              "value": "ACTIVITY_TYPE_TENNIS",
+              "label": "Tennis"
+            },
+            {
+              "value": "ACTIVITY_TYPE_TRAIL_RUN",
+              "label": "Trail Run"
+            },
+            {
+              "value": "ACTIVITY_TYPE_VELOMOBILE",
+              "label": "Velomobile"
+            },
+            {
+              "value": "ACTIVITY_TYPE_VIRTUAL_RIDE",
+              "label": "Virtual Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_VIRTUAL_ROW",
+              "label": "Virtual Row"
+            },
+            {
+              "value": "ACTIVITY_TYPE_VIRTUAL_RUN",
+              "label": "Virtual Run"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WALK",
+              "label": "Walk"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WEIGHT_TRAINING",
+              "label": "Weight Training"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WHEELCHAIR",
+              "label": "Wheelchair"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WINDSURF",
+              "label": "Windsurf"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WORKOUT",
+              "label": "Workout"
+            },
+            {
+              "value": "ACTIVITY_TYPE_YOGA",
+              "label": "Yoga"
+            }
+          ],
+          "keyOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Remap Activity Types by Title\nAutomatically change an activity's type based on keywords in the title. Perfect for when your source app doesn't correctly categorize your workouts.\n\n### How it works\nDefine matching rules like \"title contains 'Zwift'\" → \"Virtual Ride\" or \"title contains 'Treadmill'\" → \"Run\". When activities are processed, their type is automatically updated if the title matches your pattern.\n  ",
+      "features": [
+        "✅ Match activity titles with keywords",
+        "✅ Full Strava activity type dropdown",
+        "✅ Case-insensitive matching",
+        "✅ Multiple rules per enricher"
+      ],
+      "transformations": [
+        {
+          "field": "activityType",
+          "label": "Activity Type",
+          "before": "Workout (from source)",
+          "after": "Virtual Ride (matched \"Zwift\" in title)",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Categorize indoor cycling as Virtual Ride",
+        "Mark treadmill runs correctly",
+        "Fix incorrect activity types from source apps"
+      ],
+      "category": "logic",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 55,
+      "enricherProviderType": 7
+    },
+    {
+      "id": "parkrun",
+      "type": 2,
+      "name": "Parkrun",
+      "description": "Detects Parkrun events, sets title, and enriches with official results",
+      "icon": "🏃",
+      "enabled": true,
+      "requiredIntegrations": [
+        "parkrun"
+      ],
+      "configSchema": [
+        {
+          "key": "enable_titling",
+          "label": "Set Title",
+          "description": "Replace activity title with Parkrun event name",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "true",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "title_pattern",
+          "label": "Title Pattern",
+          "description": "Template for activity title. Use {location} for event name, {date} for date, {special} for holiday name.",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "{location}",
+          "options": [],
+          "dependsOn": {
+            "fieldKey": "enable_titling",
+            "values": [
+              "true"
+            ]
+          },
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "special_title_pattern",
+          "label": "Special Event Title",
+          "description": "Title pattern for Christmas/New Year. Use {location}, {date}, {special}.",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "{location} - {special} Edition",
+          "options": [],
+          "dependsOn": {
+            "fieldKey": "enable_titling",
+            "values": [
+              "true"
+            ]
+          },
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "fetch_results",
+          "label": "Fetch Official Results",
+          "description": "Automatically fetch your official position, time, and age grade after the event",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "true",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "tags",
+          "label": "Tags",
+          "description": "Comma-separated tags to add when matched (e.g., Parkrun)",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "Parkrun",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Automatic Parkrun Detection & Results\nAutomatically detects when your activity is a Parkrun event based on GPS location and time, then boosts it with your official results.\n\n### How it works\n1. **Detection**: If your Saturday morning run starts near any of 2,500+ Parkrun locations at the right time, FitGlue recognizes it\n2. **Immediate Update**: Your activity title is updated to \"Parkrun @ [Location]\"\n3. **Delayed Results**: ~2 hours after your run, we fetch your **official results** from parkrun.org and update your activity with position, time, age grade, and PB status\n\n### Special Events\nChristmas Day and New Year's Day Parkruns get festive titles automatically!\n  ",
+      "features": [
+        "✅ Automatic Parkrun detection via GPS",
+        "✅ 2,500+ worldwide Parkrun locations supported",
+        "✅ Official results fetched automatically",
+        "✅ Position, time, and age grade in description",
+        "✅ PB celebrations highlighted 🎉",
+        "✅ Special Christmas & New Year event titles",
+        "✅ Customizable title patterns"
+      ],
+      "transformations": [
+        {
+          "field": "title",
+          "label": "Activity Title",
+          "before": "Morning Run",
+          "after": "Parkrun @ Newark",
+          "visualType": "",
+          "afterHtml": ""
+        },
+        {
+          "field": "description",
+          "label": "Official Results",
+          "before": "(empty)",
+          "after": "🏃 **Official Parkrun Results**\n\n📍 Newark Parkrun\n🏁 Position: 42\n⏱️ Official Time: 24:12\n📊 Age Grade: 65.2%",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Auto-name Parkrun activities with official results",
+        "Track your Parkrun positions and times",
+        "Celebrate PBs with automatic highlighting",
+        "Special event detection for Christmas & New Year"
+      ],
+      "category": "detection",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 75,
+      "enricherProviderType": 8
+    },
+    {
+      "id": "condition-matcher",
+      "type": 2,
+      "name": "Condition Matcher",
+      "description": "Applies title/description templates when conditions match (type, day, time, location)",
+      "icon": "🎯",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "activity_type",
+          "label": "Activity Type",
+          "description": "Match specific activity type (optional)",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "",
+          "options": [
+            {
+              "value": "",
+              "label": "(Any)"
+            },
+            {
+              "value": "ACTIVITY_TYPE_RUN",
+              "label": "Run"
+            },
+            {
+              "value": "ACTIVITY_TYPE_TRAIL_RUN",
+              "label": "Trail Run"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WALK",
+              "label": "Walk"
+            },
+            {
+              "value": "ACTIVITY_TYPE_HIKE",
+              "label": "Hike"
+            },
+            {
+              "value": "ACTIVITY_TYPE_RIDE",
+              "label": "Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_VIRTUAL_RIDE",
+              "label": "Virtual Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WEIGHT_TRAINING",
+              "label": "Weight Training"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WORKOUT",
+              "label": "Workout"
+            },
+            {
+              "value": "ACTIVITY_TYPE_YOGA",
+              "label": "Yoga"
+            },
+            {
+              "value": "ACTIVITY_TYPE_SWIM",
+              "label": "Swim"
+            },
+            {
+              "value": "ACTIVITY_TYPE_CROSSFIT",
+              "label": "Crossfit"
+            },
+            {
+              "value": "ACTIVITY_TYPE_ELLIPTICAL",
+              "label": "Elliptical"
+            },
+            {
+              "value": "ACTIVITY_TYPE_ROWING",
+              "label": "Rowing"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "days_of_week",
+          "label": "Days of Week",
+          "description": "Match activities on these days (optional)",
+          "fieldType": 5,
+          "required": false,
+          "defaultValue": "",
+          "options": [
+            {
+              "value": "Mon",
+              "label": "Monday"
+            },
+            {
+              "value": "Tue",
+              "label": "Tuesday"
+            },
+            {
+              "value": "Wed",
+              "label": "Wednesday"
+            },
+            {
+              "value": "Thu",
+              "label": "Thursday"
+            },
+            {
+              "value": "Fri",
+              "label": "Friday"
+            },
+            {
+              "value": "Sat",
+              "label": "Saturday"
+            },
+            {
+              "value": "Sun",
+              "label": "Sunday"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "start_time",
+          "label": "Start Time",
+          "description": "Earliest time, 24-hour format e.g. 09:00 (optional)",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "end_time",
+          "label": "End Time",
+          "description": "Latest time, 24-hour format e.g. 17:00 (optional)",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "location_lat",
+          "label": "Location Latitude",
+          "description": "Target latitude (optional)",
+          "fieldType": 2,
+          "required": false,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "location_long",
+          "label": "Location Longitude",
+          "description": "Target longitude (optional)",
+          "fieldType": 2,
+          "required": false,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "radius_m",
+          "label": "Radius (meters)",
+          "description": "Match radius around location (optional)",
+          "fieldType": 2,
+          "required": false,
+          "defaultValue": "200",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "title_template",
+          "label": "Title Template",
+          "description": "New title when conditions match, e.g. \"Morning Gym Session\"",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "description_template",
+          "label": "Description Template",
+          "description": "New description when conditions match",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Smart Conditional Templates\nApply custom titles and descriptions based on when, where, and what type of activity you’re doing.\n\n### How it works\nDefine conditions like \"Saturday morning run near the park\" and specify a title template. When activities match your conditions, the template is applied automatically. Perfect for recurring workouts like \"Morning Gym Session\" or \"Sunday Long Run\".\n  ",
+      "features": [
+        "✅ Match by activity type, day, time, or location",
+        "✅ Custom title and description templates",
+        "✅ Perfect for recurring workout names",
+        "✅ Radius-based location matching"
+      ],
+      "transformations": [
+        {
+          "field": "title",
+          "label": "Activity Title",
+          "before": "Workout",
+          "after": "Morning Gym Session",
+          "visualType": "",
+          "afterHtml": ""
+        },
+        {
+          "field": "description",
+          "label": "Custom Description",
+          "before": "(empty)",
+          "after": "(your template text)",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Auto-title recurring workouts",
+        "Name activities by location",
+        "Set titles by day or time"
+      ],
+      "category": "detection",
+      "sortOrder": 2,
+      "isPremium": false,
+      "popularityScore": 60,
+      "enricherProviderType": 9
+    },
+    {
+      "id": "auto-increment",
+      "type": 2,
+      "name": "Auto Increment",
+      "description": "Appends an incrementing counter number to activity titles",
+      "icon": "🔢",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "counter_key",
+          "label": "Counter Key",
+          "description": "Select existing counter or create new one",
+          "fieldType": 7,
+          "required": true,
+          "defaultValue": "",
+          "options": [],
+          "dynamicSource": "counters",
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "title_contains",
+          "label": "Title Filter",
+          "description": "Only increment if title contains this (optional)",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "initial_value",
+          "label": "Initial Value",
+          "description": "Starting number (optional, defaults to 1)",
+          "fieldType": 2,
+          "required": false,
+          "defaultValue": "1",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Numbered Activity Series\nAutomatically add incrementing numbers to your activity titles. Great for tracking workout series.\n\n### How it works\nDefine a counter key and optional title filter. Activities matching the filter get an incrementing number appended, like \"Leg Day #1\", \"Leg Day #2\", etc. Each counter key maintains its own sequence.\n  ",
+      "features": [
+        "✅ Automatic sequential numbering",
+        "✅ Multiple independent counters",
+        "✅ Title filtering for targeted numbering",
+        "✅ Configurable starting value"
+      ],
+      "transformations": [
+        {
+          "field": "title",
+          "label": "Activity Title",
+          "before": "Leg Day",
+          "after": "Leg Day #42",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Number workout series",
+        "Track session counts",
+        "Create numbered runs"
+      ],
+      "category": "logic",
+      "sortOrder": 2,
+      "isPremium": false,
+      "popularityScore": 45,
+      "enricherProviderType": 10
+    },
+    {
+      "id": "user-input",
+      "type": 2,
+      "name": "User Input",
+      "description": "Pauses pipeline to wait for user input (title, description, etc.)",
+      "icon": "✍️",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "fields",
+          "label": "Required Fields",
+          "description": "Which fields you want to provide (optional, defaults to description)",
+          "fieldType": 5,
+          "required": false,
+          "defaultValue": "description",
+          "options": [
+            {
+              "value": "title",
+              "label": "Title"
+            },
+            {
+              "value": "description",
+              "label": "Description"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Manual Intervention Point\nPauses the pipeline to let you manually add or edit activity details before continuing.\n\n### How it works\nWhen an activity reaches this booster, it’s held pending your input. You receive a notification and can update the title, description, or other fields. Once you confirm, the activity continues through the pipeline.\n  ",
+      "features": [
+        "✅ Manual title and description editing",
+        "✅ Activity held until you approve",
+        "✅ Notification when input is needed",
+        "✅ Configurable required fields"
+      ],
+      "transformations": [
+        {
+          "field": "title",
+          "label": "Activity Title",
+          "before": "Workout",
+          "after": "(your custom title)",
+          "visualType": "",
+          "afterHtml": ""
+        },
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "(empty)",
+          "after": "(your custom description)",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Add personal notes to activities",
+        "Review before publishing",
+        "Custom titles per workout"
+      ],
+      "category": "logic",
+      "sortOrder": 3,
+      "isPremium": false,
+      "popularityScore": 50,
+      "enricherProviderType": 11
+    },
+    {
+      "id": "activity-filter",
+      "type": 2,
+      "name": "Activity Filter",
+      "description": "Skips activities matching exclude patterns or not matching include patterns",
+      "icon": "🚫",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "exclude_activity_types",
+          "label": "Exclude Activity Types",
+          "description": "Skip activities of these types",
+          "fieldType": 5,
+          "required": false,
+          "defaultValue": "",
+          "options": [
+            {
+              "value": "ACTIVITY_TYPE_RUN",
+              "label": "Run"
+            },
+            {
+              "value": "ACTIVITY_TYPE_TRAIL_RUN",
+              "label": "Trail Run"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WALK",
+              "label": "Walk"
+            },
+            {
+              "value": "ACTIVITY_TYPE_HIKE",
+              "label": "Hike"
+            },
+            {
+              "value": "ACTIVITY_TYPE_RIDE",
+              "label": "Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_VIRTUAL_RIDE",
+              "label": "Virtual Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WEIGHT_TRAINING",
+              "label": "Weight Training"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WORKOUT",
+              "label": "Workout"
+            },
+            {
+              "value": "ACTIVITY_TYPE_YOGA",
+              "label": "Yoga"
+            },
+            {
+              "value": "ACTIVITY_TYPE_SWIM",
+              "label": "Swim"
+            },
+            {
+              "value": "ACTIVITY_TYPE_CROSSFIT",
+              "label": "Crossfit"
+            },
+            {
+              "value": "ACTIVITY_TYPE_ELLIPTICAL",
+              "label": "Elliptical"
+            },
+            {
+              "value": "ACTIVITY_TYPE_ROWING",
+              "label": "Rowing"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "exclude_title_contains",
+          "label": "Exclude Titles Containing",
+          "description": "Skip if title contains these patterns (comma-separated)",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "exclude_description_contains",
+          "label": "Exclude Descriptions Containing",
+          "description": "Skip if description contains these patterns (comma-separated)",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "include_activity_types",
+          "label": "Include Only Activity Types",
+          "description": "Only allow activities of these types",
+          "fieldType": 5,
+          "required": false,
+          "defaultValue": "",
+          "options": [
+            {
+              "value": "ACTIVITY_TYPE_RUN",
+              "label": "Run"
+            },
+            {
+              "value": "ACTIVITY_TYPE_TRAIL_RUN",
+              "label": "Trail Run"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WALK",
+              "label": "Walk"
+            },
+            {
+              "value": "ACTIVITY_TYPE_HIKE",
+              "label": "Hike"
+            },
+            {
+              "value": "ACTIVITY_TYPE_RIDE",
+              "label": "Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_VIRTUAL_RIDE",
+              "label": "Virtual Ride"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WEIGHT_TRAINING",
+              "label": "Weight Training"
+            },
+            {
+              "value": "ACTIVITY_TYPE_WORKOUT",
+              "label": "Workout"
+            },
+            {
+              "value": "ACTIVITY_TYPE_YOGA",
+              "label": "Yoga"
+            },
+            {
+              "value": "ACTIVITY_TYPE_SWIM",
+              "label": "Swim"
+            },
+            {
+              "value": "ACTIVITY_TYPE_CROSSFIT",
+              "label": "Crossfit"
+            },
+            {
+              "value": "ACTIVITY_TYPE_ELLIPTICAL",
+              "label": "Elliptical"
+            },
+            {
+              "value": "ACTIVITY_TYPE_ROWING",
+              "label": "Rowing"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "include_title_contains",
+          "label": "Include Only Titles Containing",
+          "description": "Only allow if title contains one of these (comma-separated)",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "include_description_contains",
+          "label": "Include Only Descriptions Containing",
+          "description": "Only allow if description contains one of these (comma-separated)",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Filter Unwanted Activities\nSkip activities you don’t want synced based on type or title patterns.\n\n### How it works\nDefine include or exclude rules by activity type or title keywords. Activities matching exclude patterns (or not matching include patterns) are skipped and won’t be sent to destinations. Perfect for filtering out test workouts or specific activity types.\n  ",
+      "features": [
+        "✅ Include or exclude by activity type",
+        "✅ Title keyword filtering",
+        "✅ Stop unwanted activities from syncing",
+        "✅ Flexible pattern matching"
+      ],
+      "transformations": [],
+      "useCases": [
+        "Skip test workouts",
+        "Filter by activity type",
+        "Only sync strength sessions"
+      ],
+      "category": "logic",
+      "sortOrder": 4,
+      "isPremium": false,
+      "popularityScore": 50,
+      "enricherProviderType": 12
+    },
+    {
+      "id": "logic-gate",
+      "type": 2,
+      "name": "Logic Gate",
+      "description": "Evaluate rules to conditionally continue or halt the pipeline",
+      "icon": "🚦",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "match_mode",
+          "label": "Match Mode",
+          "description": "How rules are combined",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "all",
+          "options": [
+            {
+              "value": "all",
+              "label": "All rules must match (AND)"
+            },
+            {
+              "value": "any",
+              "label": "Any rule matches (OR)"
+            },
+            {
+              "value": "none",
+              "label": "No rules match (NOR)"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "rules",
+          "label": "Rules",
+          "description": "JSON array of rules: [{field, op, values, negate}]",
+          "fieldType": 1,
+          "required": true,
+          "defaultValue": "[]",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "on_match",
+          "label": "On Match",
+          "description": "Action when rules match",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "continue",
+          "options": [
+            {
+              "value": "continue",
+              "label": "Continue pipeline"
+            },
+            {
+              "value": "halt",
+              "label": "Halt pipeline (skip destinations)"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "on_no_match",
+          "label": "On No Match",
+          "description": "Action when rules do not match",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "continue",
+          "options": [
+            {
+              "value": "continue",
+              "label": "Continue pipeline"
+            },
+            {
+              "value": "halt",
+              "label": "Halt pipeline (skip destinations)"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Conditional Pipeline Control\nLogic Gate lets you create powerful rules to filter, route, or halt activities based on any combination of conditions.\n\n### How it works\nDefine rules using fields like activity type, day of week, time, location, or title/description content. Combine them with AND/ANY/NONE logic and choose whether to continue or halt the pipeline.\n\n### Supported Rule Fields\n- **activity_type**: Match by activity type (Run, Ride, etc.)\n- **days**: Match by day of week (Mon, Tue, etc.)\n- **time_start / time_end**: Match by time of day (HH:MM)\n- **location**: Match by GPS coordinates within radius\n- **title_contains / description_contains**: Match text content\n  ",
+      "features": [
+        "✅ Match by activity type, day, time, location",
+        "✅ Title and description content matching",
+        "✅ Flexible AND/OR/NOR logic modes",
+        "✅ Continue or halt pipeline on match",
+        "✅ Negate individual rules for inverse matching"
+      ],
+      "transformations": [],
+      "useCases": [
+        "Filter out test workouts",
+        "Only sync activities from specific locations",
+        "Route morning runs to different destinations",
+        "Block activities on certain days"
+      ],
+      "category": "logic",
+      "sortOrder": 5,
+      "isPremium": false,
+      "popularityScore": 55,
+      "enricherProviderType": 13
+    },
+    {
+      "id": "heart-rate-summary",
+      "type": 2,
+      "name": "Heart Rate Summary",
+      "description": "Adds min/avg/max heart rate stats to the activity description",
+      "icon": "❤️",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [],
+      "marketingDescription": "\n### Heart Rate Stats at a Glance\nAutomatically calculates and appends heart rate statistics to your activity description. See your min, average, and max heart rate without diving into charts.\n\n### How it works\nWhen your activity has heart rate data (from Fitbit, Apple Watch, or any source), this enricher analyzes all the data points and adds a clean summary showing your minimum, average, and maximum heart rates during the workout.\n  ",
+      "features": [
+        "✅ Calculates min/avg/max heart rate",
+        "✅ Appends clean summary to description",
+        "✅ Works with any heart rate source",
+        "✅ No configuration required"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "Morning Run",
+          "after": "Morning Run\n\n❤️ Heart Rate: 95 bpm min • 145 bpm avg • 178 bpm max",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Quick HR overview on Strava",
+        "Track training zones summary",
+        "Share intensity without graphs"
+      ],
+      "category": "stats",
+      "sortOrder": 2,
+      "isPremium": false,
+      "popularityScore": 82,
+      "enricherProviderType": 14
+    },
+    {
+      "id": "ai-companion",
+      "type": 2,
+      "name": "AI Activity Companion",
+      "description": "Generates AI-powered titles, descriptions, and summaries for your activities (Athlete tier only)",
+      "icon": "✨",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "requiredTier": "athlete",
+      "configSchema": [
+        {
+          "key": "mode",
+          "label": "Mode",
+          "description": "What the AI should generate",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "description",
+          "options": [
+            {
+              "value": "title",
+              "label": "Title only"
+            },
+            {
+              "value": "description",
+              "label": "Description only"
+            },
+            {
+              "value": "both",
+              "label": "Both title and description"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "section_header",
+          "label": "Show Section Header",
+          "description": "Prepend \"✨ AI Summary:\" to the generated description",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "true",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### AI-Powered Activity Companion\nLet AI craft engaging titles and descriptions for your workouts. Turn raw data into compelling stories.\n\n### How it works\nWhen enabled, this Booster uses a large language model to analyze your activity data—type, duration, distance, heart rate, exercises—and generates a human-like title and/or description. Perfect for making your Strava feed more interesting!\n\n### Configurable Summaries\nYou can choose whether to include a \"✨ AI Summary:\" header. This is useful if you want to keep your own description and add the AI-generated one below it.\n\n### Athlete Tier Only\nThis premium feature is exclusively available to Athlete tier subscribers.\n  ",
+      "features": [
+        "✅ AI-generated titles and descriptions",
+        "✅ Analyzes activity context and data (HR, Cadence, Sets, etc.)",
+        "✅ Optional \"✨ AI Summary:\" section header",
+        "✅ Creates engaging workout narratives",
+        "✅ Athlete tier exclusive"
+      ],
+      "transformations": [
+        {
+          "field": "title",
+          "label": "Activity Title (mode: title or both)",
+          "before": "Weight Training",
+          "after": "Iron Therapy: Push Day Edition",
+          "visualType": "",
+          "afterHtml": ""
+        },
+        {
+          "field": "description",
+          "label": "Activity Description (mode: description or both)",
+          "before": "45 min session",
+          "after": "✨ AI Summary:\n💪 Crushed an intense upper body session today! Focused on compound movements with progressive overload. Feeling strong!",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Make Strava posts more engaging",
+        "Save time writing descriptions",
+        "Add personality to workout logs"
+      ],
+      "category": "ai_content",
+      "sortOrder": 1,
+      "isPremium": true,
+      "popularityScore": 95,
+      "enricherProviderType": 15
+    },
+    {
+      "id": "pace-summary",
+      "type": 2,
+      "name": "Pace Summary",
+      "description": "Adds avg/best pace stats (min/km) to the activity description",
+      "icon": "⚡",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [],
+      "marketingDescription": "\n### Pace Stats at a Glance\nAutomatically calculates and appends pace statistics to your activity description. See your average and best pace without diving into charts.\n\n### How it works\nWhen your activity has speed data (from GPS or sensors), this enricher converts speed to pace and adds a clean summary showing your average and best pace in min/km format.\n  ",
+      "features": [
+        "✅ Calculates avg/best pace from speed data",
+        "✅ Formats pace as min/km",
+        "✅ Appends clean summary to description",
+        "✅ No configuration required"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "Morning Run",
+          "after": "Morning Run\n\n⚡ Pace: 5:32/km avg • 4:45/km best",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Quick pace overview on Strava",
+        "Track running performance",
+        "Share pace without complex stats"
+      ],
+      "category": "stats",
+      "sortOrder": 3,
+      "isPremium": false,
+      "popularityScore": 75,
+      "enricherProviderType": 16
+    },
+    {
+      "id": "cadence-summary",
+      "type": 2,
+      "name": "Cadence Summary",
+      "description": "Adds avg/max cadence stats to the activity description",
+      "icon": "🦶",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [],
+      "marketingDescription": "\n### Cadence Stats at a Glance\nAutomatically calculates and appends cadence statistics to your activity description. See your average and max cadence at a glance.\n\n### How it works\nWhen your activity has cadence data (from sensors), this enricher calculates avg/max cadence and adds a clean summary. Uses spm (steps per minute) for running activities and rpm for cycling.\n  ",
+      "features": [
+        "✅ Calculates avg/max cadence",
+        "✅ Appends clean summary to description",
+        "✅ Smart unit detection (spm vs rpm)",
+        "✅ No configuration required"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "Morning Run",
+          "after": "Morning Run\n\n🦶 Cadence: 172 spm avg • 185 spm max",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Track running cadence efficiency",
+        "Monitor cycling cadence",
+        "Analyze stride consistency"
+      ],
+      "category": "stats",
+      "sortOrder": 4,
+      "isPremium": false,
+      "popularityScore": 55,
+      "enricherProviderType": 17
+    },
+    {
+      "id": "power-summary",
+      "type": 2,
+      "name": "Power Summary",
+      "description": "Adds avg/max power stats (watts) to the activity description",
+      "icon": "⚡",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [],
+      "marketingDescription": "\n### Power Stats at a Glance\nAutomatically calculates and appends power statistics to your activity description. Perfect for cyclists with power meters.\n\n### How it works\nWhen your activity has power data (from a power meter), this enricher calculates avg/max power and adds a clean summary in watts.\n  ",
+      "features": [
+        "✅ Calculates avg/max power from power meter data",
+        "✅ Appends clean summary to description",
+        "✅ Works with any power source",
+        "✅ No configuration required"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "Morning Ride",
+          "after": "Morning Ride\n\n⚡ Power: 245W avg • 380W max",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Quick power overview on Strava",
+        "Track cycling power output",
+        "Share power stats easily"
+      ],
+      "category": "stats",
+      "sortOrder": 5,
+      "isPremium": false,
+      "popularityScore": 60,
+      "enricherProviderType": 18
+    },
+    {
+      "id": "speed-summary",
+      "type": 2,
+      "name": "Speed Summary",
+      "description": "Adds avg/max speed stats (km/h) to the activity description",
+      "icon": "🚀",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [],
+      "marketingDescription": "\n### Speed Stats at a Glance\nAutomatically calculates and appends speed statistics to your activity description. See your average and max speed in km/h.\n\n### How it works\nWhen your activity has speed data (from GPS or sensors), this enricher calculates avg/max speed and adds a clean summary in km/h format.\n  ",
+      "features": [
+        "✅ Calculates avg/max speed from GPS or sensor data",
+        "✅ Formats speed as km/h",
+        "✅ Appends clean summary to description",
+        "✅ No configuration required"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "Morning Ride",
+          "after": "Morning Ride\n\n🚀 Speed: 28.5 km/h avg • 42.1 km/h max",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Quick speed overview on Strava",
+        "Track cycling speed",
+        "Monitor activity performance"
+      ],
+      "category": "stats",
+      "sortOrder": 6,
+      "isPremium": false,
+      "popularityScore": 50,
+      "enricherProviderType": 19
+    },
+    {
+      "id": "training-load",
+      "type": 2,
+      "name": "Training Load",
+      "description": "Calculates Training Impulse (TRIMP) from heart rate data",
+      "icon": "💪",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "max_hr",
+          "label": "Max Heart Rate",
+          "description": "Your maximum heart rate (default: 190)",
+          "fieldType": 2,
+          "required": false,
+          "defaultValue": "190",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "rest_hr",
+          "label": "Resting Heart Rate",
+          "description": "Your resting heart rate (default: 60)",
+          "fieldType": 2,
+          "required": false,
+          "defaultValue": "60",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "gender",
+          "label": "Gender",
+          "description": "Used for TRIMP coefficient calculation",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "male",
+          "options": [
+            {
+              "value": "male",
+              "label": "Male"
+            },
+            {
+              "value": "female",
+              "label": "Female"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Measure Your Training Intensity\nThe Training Load booster calculates your Training Impulse (TRIMP) using the scientifically validated Banister Formula. This gives you a single number to represent the physiological load of your workout based on heart rate and duration.\n\n### How it works\nFitGlue analyzes your heart rate stream throughout the activity. It calculates your Heart Rate Reserve (HRR) and applies the Banister Formula (weighted for gender) to determine total TRIMP. This load is then categorized into Effort Zones from Recovery to Very Hard.\n\n### Know Your Hardest Sessions\nTRIMP is cumulative, meaning a long easy session can have the same load as a short intense one. This helps you track total training stimulus across different workout types.\n  ",
+      "features": [
+        "✅ Calculates cumulative TRIMP (Training Impulse)",
+        "✅ Uses the Banister Formula (weighted for gender)",
+        "✅ categorizes effort into 5 zones",
+        "✅ Works with any heart rate data source",
+        "✅ Customizable max and resting heart rate"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "Morning Run",
+          "after": "Morning Run\\n\\n💪 Training Load: 142 (Hard)",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Track total training stress on Strava",
+        "Compare intensity between different activities",
+        "Monitor recovery needs based on load",
+        "Celebrate your hardest training sessions"
+      ],
+      "category": "stats",
+      "sortOrder": 7,
+      "isPremium": false,
+      "popularityScore": 65,
+      "enricherProviderType": 21
+    },
+    {
+      "id": "personal-records",
+      "type": 2,
+      "name": "Personal Records",
+      "description": "Detects and celebrates new PRs for cardio and strength activities",
+      "icon": "🏆",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "cardio_records",
+          "label": "Track Cardio PRs",
+          "description": "Track PRs for running and cycling (5K, 10K, longest distance, etc.)",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "true",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "strength_records",
+          "label": "Track Strength PRs",
+          "description": "Track PRs for weightlifting (1RM, volume, max reps)",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "true",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "celebrate_in_title",
+          "label": "Celebrate in Title",
+          "description": "Add 🎉 emoji to activity title when a PR is achieved",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "false",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Automatic Personal Record Detection\nNever miss a PR again! FitGlue automatically detects when you've achieved a new personal record and adds a celebration to your activity.\n\n### Cardio Records Tracked\n- **Fastest 5K, 10K, Half Marathon**: Time-based records for running\n- **Longest Run**: Your greatest single-run distance\n- **Longest Ride**: Your greatest single-ride distance\n- **Highest Elevation Gain**: Most climbing in one activity\n\n### Strength Records Tracked (per exercise)\n- **1RM**: Uses the Epley formula to estimate your one-rep max\n- **Volume**: Most total volume (sets × reps × weight) in one session\n- **Reps**: Most reps in a single set\n\nAll records are stored in Firestore, so your PRs persist across time.\n  ",
+      "features": [
+        "✅ Automatic PR detection for cardio and strength",
+        "✅ Epley formula for estimated 1RM",
+        "✅ Smart exercise name normalization",
+        "✅ Percentage improvement shown",
+        "✅ Persistent storage in Firestore",
+        "✅ Optional title celebration emoji"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "Weight Training",
+          "after": "Weight Training\\n\\n🏆 NEW PR! Deadlift 1RM: 140kg (previous: 135kg, +3.7%)",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Celebrate running PRs automatically",
+        "Track strength progression over time",
+        "Share PR achievements on Strava",
+        "Know immediately when you hit a new max"
+      ],
+      "category": "detection",
+      "sortOrder": 3,
+      "isPremium": false,
+      "popularityScore": 78,
+      "enricherProviderType": 20
+    },
+    {
+      "id": "elevation-summary",
+      "type": 2,
+      "name": "Elevation Summary",
+      "description": "Calculates elevation gain, loss, and maximum altitude from activity records",
+      "icon": "⛰️",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [],
+      "marketingDescription": "\n### Total Ascent & Descent\nAutomatically calculates and appends elevation statistics to your activity description. Perfect for hilly runs, mountain bike rides, or mountain hikes.\n\n### How it works\nWhen your activity contains altitude data (from GPS tracks or barometric sensors), this enricher calculates your total ascent (gain), total descent (loss), and the maximum altitude reached during the activity.\n\n### Clean Data Processing\nFilters out zero or negative altitude records to ensure accurate calculations even if your GPS occasionally loses altitude data.\n  ",
+      "features": [
+        "✅ Calculates total elevation gain (ascent)",
+        "✅ Calculates total elevation loss (descent)",
+        "✅ Tracks maximum altitude seen during the activity",
+        "✅ Appends clean summary with emoji to description",
+        "✅ No configuration required"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "Mountain Hike",
+          "after": "Mountain Hike\n\n⛰️ Elevation: +342m gain • -289m loss • 1,245m max",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Hilly runs and rides",
+        "Mountain hiking and climbing",
+        "Track total effort on vertical terrain"
+      ],
+      "category": "stats",
+      "sortOrder": 8,
+      "isPremium": false,
+      "popularityScore": 68,
+      "enricherProviderType": 24
+    },
+    {
+      "id": "weather",
+      "type": 2,
+      "name": "Weather",
+      "description": "Adds weather conditions to outdoor activities",
+      "icon": "🌤️",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "include_wind",
+          "label": "Include Wind",
+          "description": "Show wind speed and direction in the summary",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "true",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Weather Context for Outdoor Activities\nAutomatically adds weather conditions to your outdoor activities. See temperature, conditions, and wind at a glance.\n\n### How it works\nWhen your activity has GPS data, this enricher fetches historical weather data from Open-Meteo for the exact time and location of your workout. It adds a clean summary showing temperature, weather conditions, and optionally wind information.\n  ",
+      "features": [
+        "✅ Fetches historical weather data",
+        "✅ Shows temperature and conditions",
+        "✅ Optional wind speed and direction",
+        "✅ Works with any GPS-enabled activity",
+        "✅ Free API, no authentication required"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "Morning Run",
+          "after": "Morning Run\\n\\n🌤️ Weather: 18°C, Partly Cloudy • Wind: 12 km/h W",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Track weather conditions for training analysis",
+        "Remember what the weather was like",
+        "Share outdoor conditions on Strava"
+      ],
+      "category": "location",
+      "sortOrder": 2,
+      "isPremium": false,
+      "popularityScore": 72,
+      "enricherProviderType": 23
+    },
+    {
+      "id": "spotify-tracks",
+      "type": 2,
+      "name": "Spotify Soundtrack",
+      "description": "Shows what music you listened to during your activity",
+      "icon": "🎵",
+      "enabled": true,
+      "requiredIntegrations": [
+        "spotify"
+      ],
+      "isTemporarilyUnavailable": true,
+      "configSchema": [],
+      "marketingDescription": "\n### Your Activity Soundtrack\nAutomatically track what music you listened to during your workouts. See your top played tracks and workout playlists.\n\n### How it works\nWhen you complete an activity, FitGlue checks your Spotify listening history for tracks played during that time window and adds a summary to your activity description.\n  ",
+      "features": [
+        "✅ Track count and top played songs",
+        "✅ Playlist identification",
+        "✅ Automatic time-window matching",
+        "✅ Works with all activity types"
+      ],
+      "transformations": [
+        {
+          "field": "description",
+          "label": "Activity Description",
+          "before": "Morning Run",
+          "after": "Morning Run\\n\\n🎵 Soundtrack: 12 tracks • Top played: Blinding Lights - The Weeknd • From playlist: Running Hits 2026",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Track your workout music preferences",
+        "Share your activity soundtrack on Strava",
+        "Discover which playlists motivate you most"
+      ],
+      "category": "references",
+      "sortOrder": 2,
+      "isPremium": false,
+      "popularityScore": 58,
+      "iconType": "png",
+      "iconPath": "/images/icons/spotify.png",
+      "enricherProviderType": 22
+    },
+    {
+      "id": "location_naming",
+      "type": 2,
+      "name": "Location Naming",
+      "description": "Auto-generates activity titles from GPS location",
+      "icon": "📍",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [
+        {
+          "key": "mode",
+          "label": "Mode",
+          "description": "How to apply the location name",
+          "fieldType": 4,
+          "required": false,
+          "defaultValue": "title",
+          "options": [
+            {
+              "value": "title",
+              "label": "Generate Title"
+            },
+            {
+              "value": "description",
+              "label": "Add to Description"
+            }
+          ],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "title_template",
+          "label": "Title Template",
+          "description": "Template for title mode, e.g. \"{activity_type} in {location}\"",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "{activity_type} in {location}",
+          "options": [],
+          "dependsOn": {
+            "fieldKey": "mode",
+            "values": [
+              "title"
+            ]
+          },
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "fallback_enabled",
+          "label": "Use City Fallback",
+          "description": "Use city name if no specific location (park, leisure) found",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "true",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "marketingDescription": "\n### Automatic Location-Based Titles\nGive your activities meaningful names based on where you exercised. Instead of generic \"Morning Run\", get \"Morning Run in Hyde Park\".\n\n### How it works\nWhen your activity has GPS data, this enricher uses OpenStreetMap's Nominatim API to reverse geocode your starting location. It prioritizes parks and leisure venues, falling back to suburb or city names when no specific location is found.\n  ",
+      "features": [
+        "✅ Automatic location detection from GPS",
+        "✅ Prioritizes parks and leisure venues",
+        "✅ Customizable title templates",
+        "✅ City fallback for urban activities",
+        "✅ Free API, no authentication required"
+      ],
+      "transformations": [
+        {
+          "field": "title",
+          "label": "Activity Title",
+          "before": "Morning Run",
+          "after": "Morning Run in Hyde Park",
+          "visualType": "",
+          "afterHtml": ""
+        }
+      ],
+      "useCases": [
+        "Give runs and rides meaningful location names",
+        "Track which parks and venues you visit",
+        "Share location context on Strava"
+      ],
+      "category": "location",
+      "sortOrder": 3,
+      "isPremium": false,
+      "popularityScore": 68,
+      "enricherProviderType": 25
+    }
+  ],
+  "destinations": [
+    {
+      "id": "strava",
+      "type": 3,
+      "name": "Strava",
+      "description": "Upload activities to Strava",
+      "icon": "🚴",
+      "enabled": true,
+      "requiredIntegrations": [
+        "strava"
+      ],
+      "configSchema": [],
+      "destinationType": 1,
+      "marketingDescription": "\n### Share Your Boosted Activities\nUpload your boosted activities to Strava automatically. Your AI descriptions, muscle heatmaps, and merged heart rate data will appear on your Strava feed.\n\n### How it works\nOnce activities pass through your Pipeline, FitGlue uploads them to Strava via the official API. They appear as native Strava activities, complete with all the Boosters you've configured.\n  ",
+      "features": [
+        "✅ Upload activities to Strava automatically",
+        "✅ AI descriptions and muscle heatmaps included",
+        "✅ Heart rate and GPS data attached",
+        "✅ Secure OAuth connection to your Strava account"
+      ],
+      "transformations": [],
+      "useCases": [],
+      "externalUrlTemplate": "https://www.strava.com/activities/{id}",
+      "category": "social",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 95,
+      "iconType": "svg",
+      "iconPath": "/images/icons/strava.svg"
+    },
+    {
+      "id": "showcase",
+      "type": 3,
+      "name": "Showcase",
+      "description": "Generate a public, shareable link to your boosted activity",
+      "icon": "🔗",
+      "enabled": true,
+      "requiredIntegrations": [],
+      "configSchema": [],
+      "destinationType": 2,
+      "marketingDescription": "\n### Share Your Magic\nCreate beautiful, public links to your boosted activities. Share your activity data—HR graphs, GPS maps, Boosters applied—with anyone, no login required.\n\n### Tiered Retention\n- **Hobbyist**: Showcase links expire after 1 month\n- **Athlete**: Showcase links never expire\n  ",
+      "features": [
+        "✅ Beautiful public activity pages",
+        "✅ Heart rate graphs and GPS maps",
+        "✅ Shows all applied FitGlue boosters",
+        "✅ Social sharing with rich previews",
+        "✅ Mobile-optimized design"
+      ],
+      "transformations": [],
+      "useCases": [
+        "Share activities with friends and coaches",
+        "Embed activity summaries in blogs",
+        "Create a public fitness portfolio"
+      ],
+      "externalUrlTemplate": "",
+      "category": "social",
+      "sortOrder": 2,
+      "isPremium": false,
+      "popularityScore": 85
+    },
+    {
+      "id": "hevy",
+      "type": 3,
+      "name": "Hevy",
+      "description": "Upload boosted activities to Hevy",
+      "icon": "🏋️",
+      "enabled": true,
+      "requiredIntegrations": [
+        "hevy"
+      ],
+      "configSchema": [],
+      "destinationType": 3,
+      "marketingDescription": "\n### Complete Activity Target\nUpload all your activities to Hevy - from strength training to cardio. Perfect for centralizing your complete fitness history.\n\n### How it works\nActivities pass through your Pipeline and are uploaded to Hevy via the official API. Strength sets, reps, and weights are preserved. Cardio activities (runs, rides, walks) are mapped to Hevy's distance-based exercise templates.\n\n### Smart Template Matching\nExercise names are fuzzy-matched to Hevy's library. Unknown exercises automatically create custom templates.\n  ",
+      "features": [
+        "✅ Upload all activity types to Hevy",
+        "✅ Strength sets, reps, and weights preserved",
+        "✅ Cardio mapped to distance-based templates",
+        "✅ Smart exercise template matching"
+      ],
+      "transformations": [],
+      "useCases": [
+        "Log Strava runs in Hevy for complete history",
+        "Centralize gym workouts from multiple sources",
+        "Track Fitbit activities in Hevy"
+      ],
+      "externalUrlTemplate": "https://hevy.com/workouts/{id}",
+      "category": "logging",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 75,
+      "iconType": "svg",
+      "iconPath": "/images/icons/hevy.svg"
+    },
+    {
+      "id": "trainingpeaks",
+      "type": 3,
+      "name": "TrainingPeaks",
+      "description": "Upload activities to TrainingPeaks",
+      "icon": "📈",
+      "enabled": true,
+      "requiredIntegrations": [
+        "trainingpeaks"
+      ],
+      "configSchema": [],
+      "destinationType": 4,
+      "marketingDescription": "\n### Professional Training Platform\nUpload your boosted activities to TrainingPeaks. Perfect for athletes who use TrainingPeaks for training planning and analysis.\n\n### How it works\nActivities pass through your Pipeline and are uploaded to TrainingPeaks via the official API. Duration, distance, heart rate data, and activity type are all preserved.\n\n### Smart Activity Mapping\nActivity types are automatically mapped to TrainingPeaks workout types (Run, Bike, Swim, Strength, Other).\n  ",
+      "features": [
+        "✅ Upload activities to TrainingPeaks automatically",
+        "✅ Duration, distance, and heart rate data included",
+        "✅ Activity types mapped intelligently",
+        "✅ Secure OAuth connection"
+      ],
+      "isTemporarilyUnavailable": true,
+      "transformations": [],
+      "useCases": [
+        "Sync gym workouts to your training calendar",
+        "Track all activities in one training platform",
+        "Analyze training load across sources"
+      ],
+      "externalUrlTemplate": "https://app.trainingpeaks.com/workout/{id}",
+      "category": "analytics",
+      "sortOrder": 1,
+      "isPremium": false,
+      "popularityScore": 70,
+      "iconType": "svg",
+      "iconPath": "/images/icons/trainingpeaks.svg"
+    },
+    {
+      "id": "intervals",
+      "type": 3,
+      "name": "Intervals.icu",
+      "description": "Upload boosted activities to Intervals.icu",
+      "icon": "📊",
+      "enabled": true,
+      "requiredIntegrations": [
+        "intervals"
+      ],
+      "configSchema": [],
+      "destinationType": 5,
+      "marketingDescription": "\n### Advanced Training Analytics Platform\nUpload your boosted activities to Intervals.icu for detailed power analysis, training load tracking, and fitness modeling. Perfect for cyclists and triathletes who want advanced analytics.\n\n### How it works\nActivities pass through your Pipeline and are uploaded to Intervals.icu via the official API. FIT files are uploaded with full data fidelity, preserving all power, heart rate, cadence, and GPS data. Your AI descriptions and enriched titles appear on your Intervals calendar.\n\n### Complete Data Fidelity\nUnlike some platforms, Intervals.icu accepts raw FIT files, meaning all your data—power curves, GPS tracks, metrics—are preserved exactly as recorded.\n  ",
+      "features": [
+        "✅ Upload activities to Intervals.icu automatically",
+        "✅ FIT files uploaded for full data fidelity",
+        "✅ Power, heart rate, cadence, and GPS preserved",
+        "✅ AI descriptions and enriched titles included",
+        "✅ Simple API key connection"
+      ],
+      "isTemporarilyUnavailable": true,
+      "transformations": [],
+      "useCases": [
+        "Analyze training load from multiple sources in Intervals.icu",
+        "Build fitness/fatigue (CTL/ATL/TSB) from all activities",
+        "Plan races with complete training history"
+      ],
+      "externalUrlTemplate": "https://intervals.icu/activities/{id}",
+      "category": "analytics",
+      "sortOrder": 2,
+      "isPremium": false,
+      "popularityScore": 70
+    },
+    {
+      "id": "googlesheets",
+      "type": 3,
+      "name": "Google Sheets",
+      "description": "Log activities to a Google Spreadsheet",
+      "icon": "📊",
+      "enabled": true,
+      "externalUrlTemplate": "https://docs.google.com/spreadsheets/d/${spreadsheet_id}/edit#gid=0&range=A${row_number}",
+      "requiredIntegrations": [
+        "google"
+      ],
+      "configSchema": [
+        {
+          "key": "spreadsheet_id",
+          "label": "Spreadsheet ID",
+          "description": "The ID from your Google Sheets URL (docs.google.com/spreadsheets/d/{ID}/edit)",
+          "fieldType": 1,
+          "required": true,
+          "defaultValue": "",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "sheet_name",
+          "label": "Sheet Name",
+          "description": "Which tab to append activities to",
+          "fieldType": 1,
+          "required": false,
+          "defaultValue": "Activities",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "include_showcase_link",
+          "label": "Include Showcase Link",
+          "description": "Add a column with the Showcase URL for each activity",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "true",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        },
+        {
+          "key": "include_visuals",
+          "label": "Include Visual Assets",
+          "description": "Add IMAGE formulas for muscle heatmaps and route thumbnails",
+          "fieldType": 3,
+          "required": false,
+          "defaultValue": "true",
+          "options": [],
+          "keyOptions": [],
+          "valueOptions": []
+        }
+      ],
+      "destinationType": 6,
+      "marketingDescription": "\n### Personal Activity Log\nAutomatically log all your activities to a Google Sheet for personal tracking, analysis, and visualization. Perfect for creating custom dashboards and long-term fitness tracking.\n\n### How it works\nOnce you connect your Google account and provide a Spreadsheet ID, FitGlue appends a new row for each activity. Columns include date, type, title, duration, distance, calories, heart rate, and more.\n\n### Visual Assets\nIf enabled, muscle heatmaps and route thumbnails are embedded using Google Sheets IMAGE formulas, making your spreadsheet a rich visual log of your training.\n  ",
+      "features": [
+        "✅ Automatic activity logging to your spreadsheet",
+        "✅ Customizable columns (date, type, stats, description)",
+        "✅ Visual assets via IMAGE formulas",
+        "✅ Showcase links for sharing",
+        "✅ Perfect for custom dashboards and analysis"
+      ],
+      "isTemporarilyUnavailable": true,
+      "transformations": [],
+      "useCases": [
+        "Create custom fitness dashboards in Google Sheets",
+        "Track long-term training trends",
+        "Share activity logs with coaches",
+        "Build personal analytics with pivot tables"
+      ],
+      "category": "logging",
+      "sortOrder": 2,
+      "isPremium": false,
+      "popularityScore": 65
+    }
+  ],
+  "integrations": [
+    {
+      "id": "hevy",
+      "name": "Hevy",
+      "description": "Import strength training workouts",
+      "icon": "🏋️",
+      "authType": 2,
+      "enabled": true,
+      "docsUrl": "https://docs.hevy.com",
+      "setupTitle": "Connect Hevy",
+      "setupInstructions": "To connect Hevy, you'll need a **Hevy Pro** subscription and an API key:\n\n1. Open the **Hevy app** on your phone\n2. Go to **Settings** (gear icon)\n3. Scroll down and tap **Developer** (requires Hevy Pro)\n4. Tap **Generate API Key**\n5. Copy the key and enter it in your **FitGlue Dashboard**\n\n**Note:** The Developer API requires **Hevy Pro**. Free tier accounts cannot access this feature.",
+      "apiKeyLabel": "Hevy API Key",
+      "apiKeyHelpUrl": "https://docs.hevy.com/developer-api",
+      "marketingDescription": "\n### What is Hevy?\nHevy is a popular workout tracking app designed for strength training enthusiasts. It lets you log exercises, sets, reps, and weights with a clean, intuitive interface.\n\n### What FitGlue Does\nFitGlue connects to your Hevy account via API key, allowing your logged activities to flow into the FitGlue Pipeline. From there, you can boost them with AI summaries, muscle heatmaps, and more — then sync them to your Targets.\n  ",
+      "features": [
+        "✅ Import all your strength workouts automatically",
+        "✅ Exercises, sets, reps, and weights included",
+        "✅ Real-time sync when you finish a workout",
+        "✅ Simple API key setup — no OAuth required"
+      ]
+    },
+    {
+      "id": "fitbit",
+      "name": "Fitbit",
+      "description": "Sync activities and health data from your Fitbit device",
+      "icon": "⌚",
+      "authType": 1,
+      "enabled": true,
+      "docsUrl": "",
+      "setupTitle": "Connect Fitbit",
+      "setupInstructions": "Connect your Fitbit account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Fitbit\n3. Sign in to your **Fitbit account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue access\n5. You're connected! Activities will sync automatically\n\nFitGlue uses secure OAuth — your Fitbit password is never stored.",
+      "apiKeyLabel": "",
+      "apiKeyHelpUrl": "",
+      "marketingDescription": "\n### What is Fitbit?\nFitbit is a leading wearable fitness tracker that monitors your activity, heart rate, sleep, and more. Millions of users rely on Fitbit devices to track their daily health metrics.\n\n### What FitGlue Does\nFitGlue connects to your Fitbit account via OAuth, enabling you to import activities and heart rate data. Use Fitbit as a Source for activities, or overlay heart rate data onto activities from other Sources like Hevy.\n  ",
+      "features": [
+        "✅ Import activities tracked by your Fitbit device",
+        "✅ Use heart rate data to boost activities from other Sources",
+        "✅ Secure OAuth connection — no passwords stored",
+        "✅ Automatic sync of new activities"
+      ]
+    },
+    {
+      "id": "strava",
+      "name": "Strava",
+      "description": "Upload activities to Strava",
+      "icon": "🚴",
+      "authType": 1,
+      "enabled": true,
+      "docsUrl": "",
+      "setupTitle": "Connect Strava",
+      "setupInstructions": "Connect your Strava account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Strava\n3. Sign in to your **Strava account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to upload activities\n5. You're connected! Boosted activities will appear on your Strava feed\n\nFitGlue uses secure OAuth — your Strava password is never stored.",
+      "apiKeyLabel": "",
+      "apiKeyHelpUrl": "",
+      "marketingDescription": "\n### What is Strava?\nStrava is the social network for athletes. Share your activities with friends, compete on segments, and track your training progress over time.\n\n### What FitGlue Does\nFitGlue connects to your Strava account via OAuth and can upload your boosted activities directly. Activities from Hevy or Fitbit — boosted with AI descriptions, muscle heatmaps, and heart rate data — appear on your Strava feed automatically.\n  ",
+      "features": [
+        "✅ Upload boosted activities to Strava automatically",
+        "✅ AI-generated descriptions appear in your feed",
+        "✅ Muscle heatmaps and stats included",
+        "✅ Secure OAuth connection"
+      ]
+    },
+    {
+      "id": "apple-health",
+      "name": "Apple Health",
+      "description": "Sync workouts and health data from your iOS device",
+      "icon": "🍎",
+      "authType": 3,
+      "enabled": true,
+      "docsUrl": "",
+      "setupTitle": "Connect Apple Health",
+      "setupInstructions": "To connect Apple Health, install the **FitGlue mobile app** on your iOS device:\n\n1. Download **FitGlue** from the App Store\n2. Sign in with your FitGlue account\n3. Grant access to Apple Health when prompted\n4. Your workouts will sync automatically in the background\n\n**Note:** Apple Health data can only be accessed from the mobile app running on your iOS device.",
+      "apiKeyLabel": "",
+      "apiKeyHelpUrl": "",
+      "marketingDescription": "\n### What is Apple Health?\nApple Health is the centralized health data repository on iOS devices. It aggregates data from your Apple Watch, iPhone sensors, and third-party fitness apps.\n\n### What FitGlue Does\nFitGlue's mobile app reads your workout data from Apple Health and syncs it to the cloud. Workouts complete with heart rate data and GPS routes flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava.\n  ",
+      "features": [
+        "✅ Import workouts from Apple Watch and iPhone",
+        "✅ Heart rate data from wrist sensors",
+        "✅ GPS routes for outdoor activities",
+        "✅ Background sync via FitGlue mobile app"
+      ]
+    },
+    {
+      "id": "health-connect",
+      "name": "Health Connect",
+      "description": "Sync workouts and health data from your Android device",
+      "icon": "🤖",
+      "authType": 3,
+      "enabled": true,
+      "docsUrl": "",
+      "setupTitle": "Connect Health Connect",
+      "setupInstructions": "To connect Health Connect, install the **FitGlue mobile app** on your Android device:\n\n1. Download **FitGlue** from the Google Play Store\n2. Sign in with your FitGlue account\n3. Grant access to Health Connect when prompted\n4. Your workouts will sync automatically in the background\n\n**Note:** Health Connect data can only be accessed from the mobile app running on your Android device.",
+      "apiKeyLabel": "",
+      "apiKeyHelpUrl": "",
+      "marketingDescription": "\n### What is Health Connect?\nHealth Connect is Android's unified health data platform. It allows apps and wearables to share health and fitness data in a standardized way.\n\n### What FitGlue Does\nFitGlue's mobile app reads your workout data from Health Connect and syncs it to the cloud. Workouts from Garmin, Samsung, Fitbit, and other compatible devices flow through your FitGlue pipeline for enhancement and distribution.\n  ",
+      "features": [
+        "✅ Import workouts from any Health Connect-compatible device",
+        "✅ Works with Garmin, Samsung, Fitbit, and more",
+        "✅ Heart rate and GPS data included",
+        "✅ Background sync via FitGlue mobile app"
+      ]
+    },
+    {
+      "id": "parkrun",
+      "name": "Parkrun",
+      "description": "Enhanced Parkrun detection with official results",
+      "icon": "🏃",
+      "authType": 4,
+      "enabled": true,
+      "docsUrl": "https://www.parkrun.com",
+      "setupTitle": "Connect Parkrun",
+      "setupInstructions": "To connect Parkrun, you'll need your athlete barcode number:\n\n1. **Find your barcode** — Your Parkrun barcode starts with \"A\" followed by numbers (e.g. A12345678)\n2. **Check your barcode card** — This is printed on your physical barcode card, or find it on the Parkrun website in your profile\n3. **Enter your barcode** — Enter your barcode number (including the A) in the form below\n\nOnce connected, FitGlue can fetch your official results and update your activities automatically.",
+      "apiKeyLabel": "Barcode Number",
+      "apiKeyHelpUrl": "https://www.parkrun.com/register/",
+      "marketingDescription": "\n### What is Parkrun?\nParkrun is a free, community-organized 5K running event held every Saturday morning at locations worldwide. Millions of people participate, from first-timers to elite runners.\n\n### What FitGlue Does\nFitGlue automatically detects when your run is a Parkrun based on GPS location and time. With your barcode connected, we can fetch your **official results** — position, time, age grade, and PB status — and update your activity with all the details.\n  ",
+      "features": [
+        "✅ Automatic Parkrun event detection via GPS",
+        "✅ Official results fetched after the event",
+        "✅ Position, time, and age grade added to description",
+        "✅ PB celebrations highlighted",
+        "✅ Special event detection (Christmas, New Year)",
+        "✅ 2,500+ worldwide Parkrun locations supported"
+      ]
+    },
+    {
+      "id": "trainingpeaks",
+      "name": "TrainingPeaks",
+      "description": "Upload activities to TrainingPeaks",
+      "icon": "📈",
+      "authType": 1,
+      "enabled": true,
+      "isTemporarilyUnavailable": true,
+      "docsUrl": "https://developer.trainingpeaks.com",
+      "setupTitle": "Connect TrainingPeaks",
+      "setupInstructions": "Connect your TrainingPeaks account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on TrainingPeaks\n3. Sign in to your **TrainingPeaks account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to upload workouts\n5. You're connected! Boosted activities will appear in your TrainingPeaks calendar\n\nFitGlue uses secure OAuth — your TrainingPeaks password is never stored.",
+      "apiKeyLabel": "",
+      "apiKeyHelpUrl": "",
+      "marketingDescription": "\n### What is TrainingPeaks?\nTrainingPeaks is a professional training platform used by athletes and coaches worldwide. It provides structured training plans, workout analysis, and performance tracking.\n\n### What FitGlue Does\nFitGlue connects to your TrainingPeaks account via OAuth and uploads your boosted activities. Activities from your connected sources — enhanced with AI descriptions, muscle heatmaps, and heart rate data — appear in your TrainingPeaks calendar automatically.\n  ",
+      "features": [
+        "✅ Upload boosted activities to TrainingPeaks automatically",
+        "✅ Duration, distance, and heart rate data included",
+        "✅ Activity types mapped to TrainingPeaks workout types",
+        "✅ Secure OAuth connection"
+      ]
+    },
+    {
+      "id": "spotify",
+      "name": "Spotify",
+      "description": "Connect your Spotify account to track music during activities",
+      "icon": "🎵",
+      "authType": 1,
+      "enabled": true,
+      "isTemporarilyUnavailable": true,
+      "docsUrl": "https://www.spotify.com",
+      "setupTitle": "Connect Spotify",
+      "setupInstructions": "To connect Spotify, you'll authorize FitGlue to access your listening history:\n\n1. **Click Connect** — You'll be redirected to Spotify's authorization page\n2. **Sign in to Spotify** — Use your Spotify account credentials\n3. **Authorize FitGlue** — Grant permission to read your recently played tracks\n4. **Done!** — You'll be redirected back to FitGlue\n\nOnce connected, FitGlue can track what music you listened to during your activities.",
+      "apiKeyLabel": "",
+      "apiKeyHelpUrl": "",
+      "marketingDescription": "\n### What is Spotify?\nSpotify is the world's leading music streaming platform with millions of songs, podcasts, and playlists.\n\n### What FitGlue Does\nFitGlue connects to your Spotify account and tracks what music you listened to during your workouts. See your top played tracks, discover your workout playlists, and share your activity soundtrack.\n  ",
+      "features": [
+        "✅ Track music played during activities",
+        "✅ See top played tracks",
+        "✅ Identify workout playlists",
+        "✅ Automatic time-window matching"
+      ]
+    },
+    {
+      "id": "google",
+      "name": "Google",
+      "description": "Connect your Google account for Sheets integration",
+      "icon": "🔵",
+      "authType": 1,
+      "enabled": true,
+      "isTemporarilyUnavailable": true,
+      "docsUrl": "https://developers.google.com/sheets",
+      "setupTitle": "Connect Google",
+      "setupInstructions": "To connect Google, you'll authorize FitGlue to access your Google Sheets:\n\n1. **Click Connect** — You'll be redirected to Google's authorization page\n2. **Sign in to Google** — Use your Google account credentials\n3. **Authorize FitGlue** — Grant permission to read and write to your spreadsheets\n4. **Done!** — You'll be redirected back to FitGlue\n\nOnce connected, FitGlue can log your activities to any Google Sheet you specify.",
+      "apiKeyLabel": "",
+      "apiKeyHelpUrl": "",
+      "marketingDescription": "\n### What is Google Sheets?\nGoogle Sheets is a powerful, cloud-based spreadsheet application that's part of Google Workspace. It's perfect for tracking, analyzing, and visualizing your fitness data.\n\n### What FitGlue Does\nFitGlue connects to your Google account and automatically logs your activities to a spreadsheet of your choice. Each activity becomes a row with customizable columns including stats, visual assets, and showcase links.\n  ",
+      "features": [
+        "✅ Automatic activity logging to Google Sheets",
+        "✅ Customizable columns and data fields",
+        "✅ Visual assets via IMAGE formulas",
+        "✅ Secure OAuth connection"
+      ]
+    },
+    {
+      "id": "oura",
+      "name": "Oura Ring",
+      "description": "Import workouts from your Oura Ring",
+      "icon": "💍",
+      "authType": 1,
+      "enabled": true,
+      "isTemporarilyUnavailable": true,
+      "docsUrl": "https://cloud.ouraring.com/docs",
+      "setupTitle": "Connect Oura Ring",
+      "setupInstructions": "Connect your Oura account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Oura Ring\n3. Sign in to your **Oura account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to access your workouts\n5. You're connected! Workouts will sync automatically\n\nFitGlue uses secure OAuth — your Oura password is never stored.",
+      "apiKeyLabel": "",
+      "apiKeyHelpUrl": "",
+      "marketingDescription": "\n### What is Oura Ring?\nOura Ring is a smart ring that tracks sleep, readiness, and activity. It provides detailed insights into your recovery and overall health, with workout tracking capabilities.\n\n### What FitGlue Does\nFitGlue connects to your Oura account via OAuth and imports your tracked workouts. Heart rate data, calories, and workout duration flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava.\n  ",
+      "features": [
+        "✅ Import workouts tracked by your Oura Ring",
+        "✅ Heart rate data (average and max) included",
+        "✅ Automatic sync of new workouts",
+        "✅ Secure OAuth connection"
+      ]
+    },
+    {
+      "id": "polar",
+      "name": "Polar Flow",
+      "description": "Import activities from Polar wearables",
+      "icon": "❄️",
+      "authType": 1,
+      "enabled": true,
+      "isTemporarilyUnavailable": true,
+      "docsUrl": "https://www.polar.com/accesslink-api",
+      "setupTitle": "Connect Polar Flow",
+      "setupInstructions": "Connect your Polar Flow account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Polar Flow\n3. Sign in to your **Polar account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to access your activities\n5. You're connected! Activities will sync automatically\n\nFitGlue uses secure OAuth — your Polar password is never stored.\n\n**Note:** App registration at admin.polaraccesslink.com is required.",
+      "apiKeyLabel": "",
+      "apiKeyHelpUrl": "",
+      "marketingDescription": "\n### What is Polar Flow?\nPolar Flow is the cloud platform for Polar wearables and sports watches. It stores your training data, provides analytics, and syncs across devices.\n\n### What FitGlue Does\nFitGlue connects to your Polar Flow account via OAuth and imports your activities via webhooks. Heart rate data, GPS routes, and training metrics flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava.\n\n### Transaction-Based Reliability\nPolar uses a unique transaction-based API that ensures no activities are lost. FitGlue handles the transaction lifecycle automatically.\n  ",
+      "features": [
+        "✅ Import activities from Polar watches",
+        "✅ Heart rate data with zones included",
+        "✅ GPS routes for outdoor activities",
+        "✅ Training load metrics",
+        "✅ Real-time sync via webhooks",
+        "✅ Secure OAuth connection"
+      ]
+    },
+    {
+      "id": "intervals",
+      "name": "Intervals.icu",
+      "description": "Advanced training analytics with power and performance metrics",
+      "icon": "📊",
+      "authType": 2,
+      "enabled": true,
+      "isTemporarilyUnavailable": true,
+      "docsUrl": "https://intervals.icu/api",
+      "setupTitle": "Connect Intervals.icu",
+      "setupInstructions": "To connect Intervals.icu, you'll need your **API Key** and **Athlete ID**:\n\n1. Go to **Intervals.icu** and log in\n2. Navigate to **Settings** → **Developer Settings**\n3. Click **Generate API Key** and copy the key\n4. Find your **Athlete ID** in the URL: intervals.icu/athlete/**{your-id}**/calendar\n5. Enter both values in your **FitGlue Dashboard**\n\n**Note:** The API key and athlete ID are unique to your account. Keep them secure.",
+      "apiKeyLabel": "API Key",
+      "apiKeyHelpUrl": "https://intervals.icu/api",
+      "marketingDescription": "\n### What is Intervals.icu?\nIntervals.icu is a free, advanced training analytics platform popular with cyclists and triathletes. It provides detailed power analysis, training load tracking, fitness modeling (CTL/ATL/TSB), and race planning tools.\n\n### What FitGlue Does\nFitGlue connects to your Intervals.icu account via API key and can upload your boosted activities. Your enriched workouts — with AI descriptions, heart rate summaries, and performance metrics — appear in your Intervals.icu calendar for detailed analysis.\n  ",
+      "features": [
+        "✅ Upload boosted activities to Intervals.icu automatically",
+        "✅ Power, heart rate, and GPS data included",
+        "✅ FIT files uploaded for full data fidelity",
+        "✅ Simple API key setup — no OAuth required",
+        "✅ Works with all FitGlue boosters"
+      ]
+    },
+    {
+      "id": "wahoo",
+      "name": "Wahoo",
+      "description": "Import workouts from Wahoo Cloud",
+      "icon": "📱",
+      "authType": 1,
+      "enabled": true,
+      "isTemporarilyUnavailable": true,
+      "docsUrl": "https://developers.wahooligan.com",
+      "setupTitle": "Connect Wahoo",
+      "setupInstructions": "Connect your Wahoo account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Wahoo\n3. Sign in to your **Wahoo account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to access your workouts\n5. You're connected! Activities will sync automatically\n\nFitGlue uses secure OAuth — your Wahoo password is never stored.",
+      "apiKeyLabel": "",
+      "apiKeyHelpUrl": "",
+      "marketingDescription": "\n### What is Wahoo?\nWahoo is a leading cycling technology company known for ELEMNT bike computers, KICKR smart trainers, and TICKR heart rate monitors. Wahoo Cloud stores your workout data from all Wahoo devices.\n\n### What FitGlue Does\nFitGlue connects to your Wahoo account via OAuth and imports your workouts with full FIT file data. Power, heart rate, cadence, and GPS data flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava or TrainingPeaks.\n  ",
+      "features": [
+        "✅ Import workouts from ELEMNT, KICKR, and all Wahoo devices",
+        "✅ Full FIT file support with complete sensor data",
+        "✅ Power, HR, cadence, and GPS data included",
+        "✅ Real-time sync via webhooks",
+        "✅ Secure OAuth connection"
+      ]
+    }
+  ]
+}

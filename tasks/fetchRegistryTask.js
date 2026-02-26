@@ -54,8 +54,16 @@ export function fetchRegistryTask(config) {
 
         return { registry: data };
       } catch (error) {
-        ctx.logger.error(`Failed to fetch registry: ${error.message}`);
-        throw new Error('Build cannot continue without registry data.');
+        ctx.logger.warn(`Failed to fetch registry: ${error.message}`);
+
+        // Fall back to cached registry file if available
+        if (existsSync(cfg.registryFile)) {
+          ctx.logger.warn('Using cached registry.json as fallback');
+          const data = JSON.parse(readFileSync(cfg.registryFile, 'utf-8'));
+          return { registry: data };
+        }
+
+        throw new Error('Build cannot continue without registry data (no API and no cached file).');
       }
     },
   };

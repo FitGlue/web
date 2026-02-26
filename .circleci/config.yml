@@ -33,10 +33,10 @@ jobs:
       - run:
           name: Build TypeScript
           command: |
-            # Use direct Cloud Run URL to bypass Firebase Hosting routing
-            # (firebase.json with /api/v2/** rewrite may not be deployed yet)
-            export REGISTRY_API_URL="https://api-client-56cqxmt5jq-uc.a.run.app/api/v2/registry"
-            npm run build
+            # Only validate the Vite app build (tsc + vite build).
+            # The full build (including Skier static pages that fetch from the
+            # registry API) happens in the firebase-deploy job.
+            npm run _build:app
       - run:
           name: Lint HTML and CSS
           command: npm run lint
@@ -168,14 +168,18 @@ jobs:
       - run:
           name: Build for Environment
           command: |
-            # Use direct Cloud Run URLs to bypass Firebase Hosting routing
-            # (firebase.json with /api/v2/** rewrite may not be deployed yet)
+            # Seed .cache with committed snapshot so Skier can fall back to it
+            # if the registry API isn't reachable yet (bootstrap scenario)
+            mkdir -p .cache
+            cp data/registry-snapshot.json .cache/registry.json
+
+            # Set registry API URL (will work once firebase.json is deployed)
             if [ "<< parameters.target >>" = "prod" ]; then
-              export REGISTRY_API_URL="https://api-client-56cqxmt5jq-uc.a.run.app/api/v2/registry"
+              export REGISTRY_API_URL="https://fitglue.tech/api/v2/registry"
             elif [ "<< parameters.target >>" = "test" ]; then
-              export REGISTRY_API_URL="https://api-client-mdof6vmk5a-uc.a.run.app/api/v2/registry"
+              export REGISTRY_API_URL="https://test.fitglue.tech/api/v2/registry"
             else
-              export REGISTRY_API_URL="https://api-client-56cqxmt5jq-uc.a.run.app/api/v2/registry"
+              export REGISTRY_API_URL="https://dev.fitglue.tech/api/v2/registry"
             fi
             npm run build:<< parameters.target >>
       - run:
