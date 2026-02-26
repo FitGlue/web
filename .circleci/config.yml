@@ -32,7 +32,11 @@ jobs:
             - node_modules
       - run:
           name: Build TypeScript
-          command: npm run build
+          command: |
+            # Use direct Cloud Run URL to bypass Firebase Hosting routing
+            # (firebase.json with /api/v2/** rewrite may not be deployed yet)
+            export REGISTRY_API_URL="https://api-client-56cqxmt5jq-uc.a.run.app/api/v2/registry"
+            npm run build
       - run:
           name: Lint HTML and CSS
           command: npm run lint
@@ -164,13 +168,14 @@ jobs:
       - run:
           name: Build for Environment
           command: |
-            # Set registry API URL based on target environment
+            # Use direct Cloud Run URLs to bypass Firebase Hosting routing
+            # (firebase.json with /api/v2/** rewrite may not be deployed yet)
             if [ "<< parameters.target >>" = "prod" ]; then
-              export REGISTRY_API_URL="https://fitglue.tech/api/registry"
+              export REGISTRY_API_URL="https://api-client-56cqxmt5jq-uc.a.run.app/api/v2/registry"
             elif [ "<< parameters.target >>" = "test" ]; then
-              export REGISTRY_API_URL="https://test.fitglue.tech/api/registry"
+              export REGISTRY_API_URL="https://api-client-mdof6vmk5a-uc.a.run.app/api/v2/registry"
             else
-              export REGISTRY_API_URL="https://dev.fitglue.tech/api/registry"
+              export REGISTRY_API_URL="https://api-client-56cqxmt5jq-uc.a.run.app/api/v2/registry"
             fi
             npm run build:<< parameters.target >>
       - run:
