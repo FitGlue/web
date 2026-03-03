@@ -28,6 +28,7 @@ import { PluginManifest } from '../types/plugin';
 import { Input } from '../components/library/forms';
 import { encodePipeline } from '../../shared/pipeline-sharing';
 import { ENRICHER_CATEGORIES, groupPluginsByCategory } from '../utils/pluginCategories';
+import { resolveEnum } from '../utils/resolveEnum';
 
 interface EnricherConfig {
     providerType: number;
@@ -108,9 +109,16 @@ const PipelineEditPage: React.FC = () => {
             setPipeline(pipelineData);
             setPipelineName(pipelineData.name || '');
             setSelectedSource(pipelineData.source);
-            setSelectedDestinations(pipelineData.destinations.map(d => String(d)));
+            setSelectedDestinations(pipelineData.destinations.map(d => {
+                // Convert numeric enum values to string IDs via manifest lookup
+                if (typeof d === 'number' || !isNaN(Number(d))) {
+                    const manifest = destinations.find(m => m.destinationType === Number(d));
+                    return manifest?.id ?? String(d);
+                }
+                return String(d);
+            }));
             const enricherConfigs: SelectedEnricher[] = pipelineData.enrichers.map(e => {
-                const manifest = enrichers.find(m => Number(m.enricherProviderType) === Number(e.providerType));
+                const manifest = enrichers.find(m => resolveEnum(m.enricherProviderType, EnricherProviderType) === resolveEnum(e.providerType, EnricherProviderType));
                 return {
                     manifest: manifest || { id: `unknown-${e.providerType}`, name: `Enricher ${e.providerType}` } as PluginManifest,
                     config: e.typedConfig || {}
@@ -168,7 +176,7 @@ const PipelineEditPage: React.FC = () => {
                     name: pipelineName || undefined,
                     source: selectedSource,
                     enrichers: enricherConfigs,
-                    destinations: selectedDestinations.map(d => isNaN(Number(d)) ? d : Number(d)),
+                    destinations: selectedDestinations.map(id => destinations.find(d => d.id === id)?.destinationType ?? 0),
                     sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
                     destinationConfigs: Object.keys(mergedDestConfigs).length > 0 ? mergedDestConfigs : undefined,
                 } as never
@@ -204,8 +212,8 @@ const PipelineEditPage: React.FC = () => {
 
     const toggleDestination = (dest: PluginManifest) => {
         setSelectedDestinations(prev => {
-            const isSelected = prev.some(sd => sd === dest.id || Number(sd) === dest.destinationType);
-            if (isSelected) return prev.filter(d => d !== dest.id && Number(d) !== dest.destinationType);
+            const isSelected = prev.includes(dest.id);
+            if (isSelected) return prev.filter(d => d !== dest.id);
             return [...prev, dest.id!];
         });
     };
@@ -367,7 +375,7 @@ const PipelineEditPage: React.FC = () => {
                             onSelect={(option) => toggleDestination(option as unknown as PluginManifest)}
                             selectionMode="multi"
                             getOptionProps={(dest) => ({
-                                selected: selectedDestinations.some(sd => sd === dest.id || Number(sd) === (dest as unknown as PluginManifest).destinationType)
+                                selected: selectedDestinations.includes(dest.id)
                             })}
                         />
                         <WizardExcludedSection
@@ -379,7 +387,7 @@ const PipelineEditPage: React.FC = () => {
                         />
                         {/* NerdMode: Per-destination enricher exclusions */}
                         {isNerdMode && selectedEnrichers.length > 0 && selectedDestinations.map(destId => {
-                            const destManifest = destinations.find(d => d.id === destId || d.destinationType === Number(destId));
+                            const destManifest = destinations.find(d => d.id === destId);
                             if (!destManifest) return null;
                             const enricherInfos = selectedEnrichers.map(e => ({
                                 id: e.manifest.id,
@@ -407,7 +415,7 @@ const PipelineEditPage: React.FC = () => {
 
                     {/* Destination Config Sections — shown inline for each selected destination with configSchema */}
                     {selectedDestinations.map(destId => {
-                        const destManifest = destinations.find(d => d.id === destId || d.destinationType === Number(destId));
+                        const destManifest = destinations.find(d => d.id === destId);
                         if (!destManifest?.configSchema?.length) return null;
                         return (
                             <Card key={`config-${destManifest.id}`}>
@@ -452,7 +460,7 @@ const PipelineEditPage: React.FC = () => {
                             // If it's already a string ID (not a number), return as-is
                             if (isNaN(Number(d))) return d;
                             // Find the destination manifest by destinationType and return its ID
-                            const destManifest = destinations.find(dest => dest.destinationType === Number(d));
+                            const destManifest = destinations.find(dest => dest.id === d);
                             return destManifest?.id ?? d;
                         })
                     })}

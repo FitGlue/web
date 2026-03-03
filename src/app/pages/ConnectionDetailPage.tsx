@@ -10,6 +10,7 @@ import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useConnectionActions } from '../hooks/useConnectionActions';
 import { IntegrationAuthType } from '../types/plugin';
+import { resolveEnum } from '../utils/resolveEnum';
 import '../components/library/ui/CardSkeleton.css';
 
 interface IntegrationStatus {
@@ -151,9 +152,7 @@ const ConnectionDetailPage: React.FC = () => {
         );
     }
 
-    const authType = typeof integration.authType === 'string'
-        ? IntegrationAuthType[integration.authType as keyof typeof IntegrationAuthType]
-        : (integration.authType as number);
+    const authType = resolveEnum(integration.authType, IntegrationAuthType);
     const isOAuth = authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_OAUTH;
     const isAppSync = authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_APP_SYNC;
 

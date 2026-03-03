@@ -1,4 +1,6 @@
 import { usePluginRegistry } from './usePluginRegistry';
+import { resolveEnum } from '../utils/resolveEnum';
+import { EnricherProviderType } from '../../types/pb/user';
 
 /**
  * Plugin info returned by lookup functions
@@ -37,7 +39,7 @@ export const usePluginLookup = () => {
     const normalized = String(dest).toLowerCase();
     const found = destinations.find(d =>
       d.id === normalized ||
-      d.destinationType === Number(dest)
+      d.destinationType === (typeof dest === 'number' ? dest : Number(dest))
     );
     return {
       id: normalized,
@@ -55,7 +57,7 @@ export const usePluginLookup = () => {
     const normalized = String(enricher).toLowerCase().replace('enricher_provider_', '');
     const found = enrichers.find(e =>
       e.id === normalized ||
-      e.enricherProviderType === Number(enricher)
+      resolveEnum(e.enricherProviderType, EnricherProviderType) === resolveEnum(enricher, EnricherProviderType)
     );
     return {
       id: normalized,

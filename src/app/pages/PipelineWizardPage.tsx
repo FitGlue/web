@@ -259,7 +259,7 @@ const PipelineWizardPage: React.FC = () => {
                     name: pipelineName || undefined,
                     source: selectedSource,
                     enrichers: enricherConfigs,
-                    destinations: selectedDestinations,
+                    destinations: selectedDestinations.map(id => destinations.find(d => d.id === id)?.destinationType ?? 0),
                     sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
                     destinationConfigs: Object.keys(mergedDestConfigs).length > 0 ? mergedDestConfigs : undefined,
                 } as never,

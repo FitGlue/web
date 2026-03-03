@@ -10,6 +10,7 @@ import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { client } from '../../shared/api/client';
 import { useUser } from '../hooks/useUser';
 import { IntegrationAuthType } from '../types/plugin';
+import { resolveEnum } from '../utils/resolveEnum';
 
 const ConnectionSetupPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -64,9 +65,7 @@ const ConnectionSetupPage: React.FC = () => {
         try {
             // Build integration-appropriate body:
             // PUBLIC_ID integrations (parkrun) need specific field names matching Firestore schema
-            const authType = typeof integration.authType === 'string'
-                ? IntegrationAuthType[integration.authType as keyof typeof IntegrationAuthType]
-                : integration.authType;
+            const authType = resolveEnum(integration.authType, IntegrationAuthType);
             let body: Record<string, unknown>;
             if (authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_PUBLIC_ID) {
                 body = { athlete_id: apiKey.trim(), enabled: true, consent_given: true };
@@ -368,9 +367,7 @@ const ConnectionSetupPage: React.FC = () => {
         );
     };
 
-    const authType = typeof integration.authType === 'string'
-        ? IntegrationAuthType[integration.authType as keyof typeof IntegrationAuthType]
-        : (integration.authType as number);
+    const authType = resolveEnum(integration.authType, IntegrationAuthType);
 
     return (
         <PageLayout
