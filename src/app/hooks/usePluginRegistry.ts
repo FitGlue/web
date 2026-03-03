@@ -68,7 +68,7 @@ export const usePluginRegistry = () => {
     sources: registry?.sources ?? [],
     enrichers: registry?.enrichers ?? [],
     destinations: registry?.destinations ?? [],
-    integrations: registry?.integrations ?? [],
+    integrations: (registry?.integrations ?? []).filter(i => !i.isTemporarilyUnavailable),
     loading,
     error,
     refresh: useCallback(() => fetchRegistry(true), [fetchRegistry]),

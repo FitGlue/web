@@ -242,7 +242,7 @@ const PipelineWizardPage: React.FC = () => {
                     ...(excludedEnrichersByDest[k]?.length ? { excludedEnrichers: excludedEnrichersByDest[k] } : {}),
                 };
             }
-            await client.POST('/users/me/pipelines', {
+            const { error: apiError } = await client.POST('/users/me/pipelines', {
                 body: {
                     name: pipelineName || undefined,
                     source: selectedSource,
@@ -252,6 +252,7 @@ const PipelineWizardPage: React.FC = () => {
                     destinationConfigs: Object.keys(mergedDestConfigs).length > 0 ? mergedDestConfigs : undefined,
                 } as never,
             });
+            if (apiError) throw new Error('Pipeline creation failed');
             await refreshPipelines();
             toast.success('Pipeline Created', `"${pipelineName || 'New Pipeline'}" has been created`);
             navigate('/settings/pipelines');

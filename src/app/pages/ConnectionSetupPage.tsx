@@ -357,7 +357,9 @@ const ConnectionSetupPage: React.FC = () => {
         );
     };
 
-    const authType = integration.authType as number;
+    const authType = typeof integration.authType === 'string'
+        ? IntegrationAuthType[integration.authType as keyof typeof IntegrationAuthType]
+        : (integration.authType as number);
 
     return (
         <PageLayout

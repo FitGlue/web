@@ -151,7 +151,9 @@ const ConnectionDetailPage: React.FC = () => {
         );
     }
 
-    const authType = integration.authType as number;
+    const authType = typeof integration.authType === 'string'
+        ? IntegrationAuthType[integration.authType as keyof typeof IntegrationAuthType]
+        : (integration.authType as number);
     const isOAuth = authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_OAUTH;
     const isAppSync = authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_APP_SYNC;
 
