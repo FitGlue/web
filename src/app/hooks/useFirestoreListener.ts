@@ -256,6 +256,7 @@ export function useFirestoreListener<TData>(
             setLoading(false);
             return;
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [enabled, userId, baseKey, queryFactory, refreshTrigger]);
 
     const refresh = useCallback(() => {

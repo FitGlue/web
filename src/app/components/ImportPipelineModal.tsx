@@ -17,7 +17,6 @@ import {
     PortablePipeline,
     ImportValidationResult
 } from '../../shared/pipeline-sharing';
-import { PluginRegistryResponse } from '../types/plugin';
 
 interface Props {
     onClose: () => void;
@@ -28,7 +27,7 @@ interface Props {
 export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initialCode }) => {
     const navigate = useNavigate();
     const toast = useToast();
-    const { registry, sources, enrichers, destinations, integrations } = usePluginRegistry();
+    const { registry, sources, enrichers, destinations } = usePluginRegistry();
     const { integrations: userIntegrations } = useRealtimeIntegrations();
 
     const [code, setCode] = useState(initialCode || '');
@@ -49,7 +48,7 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initi
                 setError(err instanceof Error ? err.message : 'Invalid pipeline code');
             }
         }
-    }, [initialCode, sources.length, userIntegrations]);
+    }, [initialCode, sources.length, userIntegrations, registry]);
 
     const handleValidate = () => {
         setError(null);

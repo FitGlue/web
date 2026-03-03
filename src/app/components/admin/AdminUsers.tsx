@@ -33,6 +33,7 @@ export const AdminUsers: React.FC = () => {
   // Fetch users on mount and when filters change
   useEffect(() => {
     fetchUsers(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleApplyFilters = useCallback(() => {

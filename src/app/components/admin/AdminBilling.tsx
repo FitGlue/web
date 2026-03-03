@@ -23,6 +23,7 @@ export const AdminBilling: React.FC = () => {
   // Fetch users on mount
   useEffect(() => {
     fetchUsers(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Filter to athlete users or users with Stripe

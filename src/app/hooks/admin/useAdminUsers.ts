@@ -79,7 +79,7 @@ export function useAdminUsers(): UseAdminUsersResult {
     } finally {
       setSelectedUserLoading(false);
     }
-  }, []);
+  }, [setSelectedUser, setSelectedUserLoading]);
 
   const updateUser = useCallback(async (userId: string, updates: Partial<AdminUser>) => {
     try {
@@ -120,7 +120,7 @@ export function useAdminUsers(): UseAdminUsersResult {
 
   const clearSelectedUser = useCallback(() => {
     setSelectedUser(null);
-  }, []);
+  }, [setSelectedUser]);
 
   return {
     users,

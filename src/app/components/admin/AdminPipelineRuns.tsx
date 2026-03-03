@@ -42,6 +42,7 @@ export const AdminPipelineRuns: React.FC = () => {
   // Fetch runs on mount
   useEffect(() => {
     fetchRuns();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleApplyFilters = useCallback(() => {

@@ -94,7 +94,7 @@ export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
 
   const selectRun = useCallback((run: AdminPipelineRun | null) => {
     setSelectedRun(run);
-  }, []);
+  }, [setSelectedRun]);
 
   return {
     runs,
