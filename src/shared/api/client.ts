@@ -24,12 +24,17 @@ client.use({
     }
     return request;
   },
-  async onResponse({ response }) {
-    if (!response.ok && response.status >= 500) {
+  async onResponse({ response, request }) {
+    if (!response.ok) {
       Sentry.captureException(
-        new Error(`API ${response.url} failed: ${response.status} ${response.statusText}`),
+        new Error(`API ${request.method} ${new URL(response.url).pathname} failed: ${response.status} ${response.statusText}`),
         {
-          tags: { api_status: response.status },
+          tags: {
+            api_method: request.method,
+            api_path: new URL(response.url).pathname,
+            status_code: response.status,
+          },
+          extra: { statusText: response.statusText },
         }
       );
     }
