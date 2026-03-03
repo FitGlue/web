@@ -10,10 +10,8 @@ import {
   AdminOverview,
   AdminUsers,
   AdminPipelineRuns,
-  AdminExecutions,
   AdminBilling,
   UserDetailModal,
-  ExecutionDetailModal,
   PipelineRunDetailModal,
 } from '../components/admin';
 
@@ -24,7 +22,6 @@ import {
  * - Overview: Platform-wide statistics
  * - Users: User management with filtering
  * - Pipeline Runs: Cross-user pipeline execution monitoring
- * - Executions: Raw execution logs
  * - Billing: Stripe billing information
  */
 const AdminPage: React.FC = () => {
@@ -48,7 +45,6 @@ const AdminPage: React.FC = () => {
     { id: 'overview', icon: '📊', label: 'Overview' },
     { id: 'users', icon: '👥', label: 'Users' },
     { id: 'pipeline-runs', icon: '🔄', label: 'Pipeline Runs' },
-    { id: 'executions', icon: '📝', label: 'Executions' },
     { id: 'billing', icon: '💳', label: 'Billing' },
   ];
 
@@ -63,14 +59,12 @@ const AdminPage: React.FC = () => {
           {activeTab === 'overview' && <AdminOverview />}
           {activeTab === 'users' && <AdminUsers />}
           {activeTab === 'pipeline-runs' && <AdminPipelineRuns />}
-          {activeTab === 'executions' && <AdminExecutions />}
           {activeTab === 'billing' && <AdminBilling />}
         </TabbedCard>
       </Container>
 
       {/* Modals */}
       <UserDetailModal />
-      <ExecutionDetailModal />
       <PipelineRunDetailModal />
     </PageLayout>
   );

@@ -47,6 +47,15 @@ export interface CancelSubscriptionRequest {
   userId: string;
 }
 
+export interface CreateBillingPortalSessionRequest {
+  userId: string;
+  returnUrl: string;
+}
+
+export interface CreateBillingPortalSessionResponse {
+  url: string;
+}
+
 export interface BillingService {
   GetSubscription(request: GetSubscriptionRequest): Promise<SubscriptionState>;
   CreateCheckoutSession(request: CreateCheckoutSessionRequest): Promise<CreateCheckoutSessionResponse>;
@@ -54,4 +63,5 @@ export interface BillingService {
   GetTierStatus(request: GetTierStatusRequest): Promise<GetTierStatusResponse>;
   StartTrial(request: StartTrialRequest): Promise<SubscriptionState>;
   CancelSubscription(request: CancelSubscriptionRequest): Promise<SubscriptionState>;
+  CreateBillingPortalSession(request: CreateBillingPortalSessionRequest): Promise<CreateBillingPortalSessionResponse>;
 }

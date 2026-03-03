@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useApi } from './useApi';
+import { client } from '../../shared/api/client';
 
 export interface PluginDefault {
     pluginId: string;
@@ -15,7 +15,6 @@ export interface PluginDefault {
  * and by the settings UI for managing defaults directly.
  */
 export const usePluginDefaults = () => {
-    const api = useApi();
     const [defaults, setDefaults] = useState<PluginDefault[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -24,8 +23,9 @@ export const usePluginDefaults = () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await api.get('/users/me/plugin-defaults');
-            setDefaults(response.defaults || []);
+            const { data } = await client.GET('/users/me/plugin-defaults');
+            const typedData = data as { defaults?: PluginDefault[] };
+            setDefaults(typedData?.defaults || []);
         } catch (err) {
             console.error('Failed to fetch plugin defaults:', err);
             setError('Failed to load plugin defaults');
@@ -33,7 +33,7 @@ export const usePluginDefaults = () => {
         } finally {
             setLoading(false);
         }
-    }, [api]);
+    }, []);
 
     useEffect(() => {
         fetchDefaults();
@@ -57,15 +57,17 @@ export const usePluginDefaults = () => {
     const setDefault = useCallback(
         async (pluginId: string, config: Record<string, string>) => {
             try {
-                await api.put(`/users/me/plugin-defaults/${pluginId}`, { config });
-                // Refresh the local cache
+                await client.PUT('/users/me/plugin-defaults/{pluginId}', {
+                    params: { path: { pluginId } },
+                    body: { defaults: config } as never,
+                });
                 await fetchDefaults();
             } catch (err) {
                 console.error('Failed to save plugin default:', err);
                 throw err;
             }
         },
-        [api, fetchDefaults]
+        [fetchDefaults]
     );
 
     /**
@@ -74,15 +76,16 @@ export const usePluginDefaults = () => {
     const deleteDefault = useCallback(
         async (pluginId: string) => {
             try {
-                await api.delete(`/users/me/plugin-defaults/${pluginId}`);
-                // Refresh the local cache
+                await client.DELETE('/users/me/plugin-defaults/{pluginId}', {
+                    params: { path: { pluginId } },
+                });
                 await fetchDefaults();
             } catch (err) {
                 console.error('Failed to delete plugin default:', err);
                 throw err;
             }
         },
-        [api, fetchDefaults]
+        [fetchDefaults]
     );
 
     return {

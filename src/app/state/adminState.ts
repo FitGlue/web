@@ -8,14 +8,13 @@ import { UserTier } from '../../types/pb/user';
 // ============================================================================
 // Tab State
 // ============================================================================
-export type AdminTabId = 'overview' | 'users' | 'pipeline-runs' | 'executions' | 'billing';
+export type AdminTabId = 'overview' | 'users' | 'pipeline-runs' | 'billing';
 export const adminActiveTabAtom = atom<AdminTabId>('overview');
 
 // ============================================================================
 // Modal State
 // ============================================================================
 export const selectedUserIdAtom = atom<string | null>(null);
-export const selectedExecutionIdAtom = atom<string | null>(null);
 export const selectedPipelineRunIdAtom = atom<string | null>(null);
 
 // ============================================================================
@@ -23,7 +22,6 @@ export const selectedPipelineRunIdAtom = atom<string | null>(null);
 // ============================================================================
 export const selectedUserDetailAtom = atom<AdminUserDetail | null>(null);
 export const selectedUserLoadingAtom = atom<boolean>(false);
-export const selectedExecutionDetailAtom = atom<Execution | null>(null);
 export const selectedPipelineRunDetailAtom = atom<AdminPipelineRun | null>(null);
 
 // ============================================================================
@@ -41,16 +39,8 @@ export interface PipelineRunFilters {
   limit?: number;
 }
 
-export interface ExecutionFilters {
-  service?: string;
-  status?: string;
-  userId?: string;
-  limit?: number;
-}
-
 export const userFiltersAtom = atom<UserFilters>({});
 export const pipelineRunFiltersAtom = atom<PipelineRunFilters>({ limit: 50 });
-export const executionFiltersAtom = atom<ExecutionFilters>({ limit: 50 });
 
 // ============================================================================
 // Admin Types
@@ -108,16 +98,7 @@ export interface AdminUserDetail {
   pendingInputs?: PendingInputDetail[];
 }
 
-export interface Execution {
-  id: string;
-  service: string;
-  status: string;
-  userId?: string;
-  pipelineExecutionId?: string;
-  timestamp: string;
-  errorMessage?: string;
-  triggerType?: string;
-}
+
 
 export interface BoosterExecution {
   providerName: string;

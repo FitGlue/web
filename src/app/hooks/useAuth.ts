@@ -7,7 +7,7 @@ import {
   updatePassword,
   EmailAuthProvider,
 } from 'firebase/auth';
-import { useApi } from './useApi';
+import { client } from '../../shared/api/client';
 import { initFirebase } from '../../shared/firebase';
 
 interface AuthError {
@@ -19,7 +19,7 @@ export function useAuth() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<AuthError | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const api = useApi();
+
 
   const clearMessages = useCallback(() => {
     setError(null);
@@ -53,7 +53,7 @@ export function useAuth() {
     try {
       const auth = await getAuth();
       await createUserWithEmailAndPassword(auth, email, password);
-      await api.post('/users/me/auth-email/send-verification');
+      await client.POST('/users/me/auth-email/send-verification');
       return true;
     } catch (e) {
       setError({ message: e instanceof Error ? e.message : 'Registration failed' });
@@ -61,14 +61,14 @@ export function useAuth() {
     } finally {
       setLoading(false);
     }
-  }, [clearMessages, api]);
+  }, [clearMessages]);
 
 
   const sendPasswordReset = useCallback(async (email: string) => {
     clearMessages();
     setLoading(true);
     try {
-      await api.post('/auth-email/send-password-reset', { email });
+      await client.POST('/auth-email/send-password-reset' as never, { body: { email } } as never);
       setSuccess('Password reset email sent! Check your inbox.');
       return true;
     } catch (e) {
@@ -77,13 +77,13 @@ export function useAuth() {
     } finally {
       setLoading(false);
     }
-  }, [clearMessages, api]);
+  }, [clearMessages]);
 
   const resendVerificationEmail = useCallback(async () => {
     clearMessages();
     setLoading(true);
     try {
-      await api.post('/users/me/auth-email/send-verification');
+      await client.POST('/users/me/auth-email/send-verification');
       setSuccess('Verification email sent! Check your inbox.');
       return true;
     } catch (e) {
@@ -92,7 +92,7 @@ export function useAuth() {
     } finally {
       setLoading(false);
     }
-  }, [clearMessages, api]);
+  }, [clearMessages]);
 
   const changePassword = useCallback(async (currentPassword: string, newPassword: string) => {
     clearMessages();

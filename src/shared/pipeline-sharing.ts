@@ -4,14 +4,23 @@
  * Client-side utilities for encoding, decoding, and validating shareable pipeline configurations.
  * Uses base64 encoding for compact, shareable strings.
  */
+import type { PluginManifest, PluginRegistryResponse } from '../app/types/plugin';
+import type { IntegrationsSummary } from '../app/state/integrationsState';
 
-import type { components } from './api/schema';
+// Local types for pipeline config — not all fields are in the gateway OpenAPI spec yet.
+interface PipelineConfig {
+  id?: string;
+  name?: string;
+  source: string;
+  enrichers: EnricherConfig[];
+  destinations: (string | number)[];
+  [key: string]: unknown;
+}
 
-type PipelineConfig = components['schemas']['PipelineConfig'];
-type EnricherConfig = components['schemas']['EnricherConfig'];
-type PluginRegistryResponse = components['schemas']['PluginRegistryResponse'];
-type PluginManifest = components['schemas']['PluginManifest'];
-type IntegrationsSummary = components['schemas']['IntegrationsSummary'];
+interface EnricherConfig {
+  providerType: number;
+  typedConfig?: Record<string, string>;
+}
 
 /**
  * Portable pipeline format with shortened keys for compact encoding.
@@ -72,7 +81,7 @@ export function encodePipeline(pipeline: PipelineConfig): string {
       p: e.providerType,
       c: e.typedConfig && Object.keys(e.typedConfig).length > 0 ? e.typedConfig : undefined,
     })),
-    d: pipeline.destinations,
+    d: pipeline.destinations.map(d => String(d)),
   };
   return utf8ToBase64(JSON.stringify(portable));
 }
@@ -132,19 +141,19 @@ export function validatePipelineImport(
   const checkPlugin = (plugin: PluginManifest | undefined) => {
     if (!plugin?.requiredIntegrations) return;
     for (const req of plugin.requiredIntegrations) {
-      if (!connectedIds.includes(req) && !missingConnections.includes(req)) {
+      if (req && !connectedIds.includes(req) && !missingConnections.includes(req)) {
         missingConnections.push(req);
       }
     }
   };
 
   // Check source
-  const sourcePlugin = registry.sources.find((s) => s.id === portable.s);
+  const sourcePlugin = (registry.sources || []).find((s) => s.id === portable.s);
   checkPlugin(sourcePlugin);
 
   // Check enrichers
   for (const enricher of portable.e) {
-    const enricherPlugin = registry.enrichers.find(
+    const enricherPlugin = (registry.enrichers || []).find(
       (en) => en.enricherProviderType === enricher.p
     );
     checkPlugin(enricherPlugin);
@@ -152,7 +161,7 @@ export function validatePipelineImport(
 
   // Check destinations
   for (const destId of portable.d) {
-    const destPlugin = registry.destinations.find((d) => d.id === destId);
+    const destPlugin = (registry.destinations || []).find((d) => d.id === destId);
     checkPlugin(destPlugin);
   }
 
@@ -185,7 +194,7 @@ export function getMissingConnectionInfo(
   connectionId: string,
   registry: PluginRegistryResponse
 ): { name: string; icon: string } | null {
-  const integration = registry.integrations.find((i) => i.id === connectionId);
+  const integration = (registry.integrations || []).find((i) => i.id === connectionId);
   if (integration) {
     return { name: integration.name, icon: integration.icon || '🔗' };
   }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { Stack } from './library/layout/Stack';
 import { Text } from './library/ui/Text';
 import { Button } from './library/ui/Button';
@@ -32,7 +32,6 @@ export const KeyValueMapEditor: React.FC<KeyValueMapEditorProps> = ({
     valueOptions,
     valueDynamicSource,
 }) => {
-    const api = useApi();
     const [entries, setEntries] = useState<{ key: string; value: string }[]>(() => {
         try {
             const parsed = JSON.parse(value || '{}');
@@ -52,8 +51,9 @@ export const KeyValueMapEditor: React.FC<KeyValueMapEditorProps> = ({
         if (!valueDynamicSource) return;
         const fetchOptions = async () => {
             try {
-                const response = await api.get(`/users/me/${valueDynamicSource}`) as { id: string; count?: number }[];
-                const fetched = response.map((item: { id: string; count?: number }) => ({
+                const { data: response } = await client.GET(`/users/me/${valueDynamicSource}` as never);
+                const items = response as unknown as { id: string; count?: number }[];
+                const fetched = items.map((item: { id: string; count?: number }) => ({
                     value: item.id,
                     label: item.count !== undefined ? `${item.id} (current: ${item.count})` : item.id,
                 }));
@@ -75,7 +75,7 @@ export const KeyValueMapEditor: React.FC<KeyValueMapEditorProps> = ({
             }
         };
         fetchOptions();
-    }, [api, valueDynamicSource]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [valueDynamicSource]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const effectiveValueOptions = dynamicOptions ?? valueOptions ?? null;
 

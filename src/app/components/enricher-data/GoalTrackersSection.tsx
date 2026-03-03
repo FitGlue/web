@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Stack, Grid } from '../library/layout';
 import { Card, Button, Heading, Paragraph, Badge, AccordionTrigger } from '../library/ui';
 import { Input, FormField, Select } from '../library/forms';
-import { useApi } from '../../hooks/useApi';
+import { client } from '../../../shared/api/client';
 import { BoosterDataEntry } from './types';
 import { getBoosterLabel, formatDate } from './helpers';
 
@@ -13,7 +13,6 @@ interface GoalTrackersSectionProps {
 }
 
 const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, loading, onRefresh }) => {
-    const api = useApi();
     const [editingBooster, setEditingBooster] = useState<BoosterDataEntry | null>(null);
     const [showNew, setShowNew] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -23,7 +22,7 @@ const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, load
 
     const handleSave = async (entry: BoosterDataEntry) => {
         try {
-            await api.put(`/users/me/booster-data/${encodeURIComponent(entry.id)}`, entry.data);
+            await client.PUT('/users/me/booster-data/{boosterId}', { params: { path: { boosterId: entry.id } }, body: entry.data as never });
             setEditingBooster(null);
             onRefresh();
         } catch (err) {
@@ -34,7 +33,7 @@ const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, load
     const handleDelete = async (id: string) => {
         if (!confirm(`Delete booster data "${id}"? This will reset this booster's progress.`)) return;
         try {
-            await api.delete(`/users/me/booster-data/${encodeURIComponent(id)}`);
+            await client.DELETE('/users/me/booster-data/{boosterId}', { params: { path: { boosterId: id } } });
             onRefresh();
         } catch (err) {
             console.error('Failed to delete booster data:', err);
@@ -44,10 +43,9 @@ const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, load
     const handleCreate = async () => {
         const id = `goal_tracker_${newPeriod}_${newMetric}`;
         try {
-            await api.put(`/users/me/booster-data/${encodeURIComponent(id)}`, {
-                accumulated: newAccumulated,
-                period_key: '',
-                last_update: new Date().toISOString(),
+            await client.PUT('/users/me/booster-data/{boosterId}', {
+                params: { path: { boosterId: id } },
+                body: { accumulated: newAccumulated, period_key: '', last_update: new Date().toISOString() } as never,
             });
             setShowNew(false);
             setNewPeriod('month');

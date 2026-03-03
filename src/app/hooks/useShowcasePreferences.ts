@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useApi } from './useApi';
+import { client } from '../../shared/api/client';
 
 interface ShowcasePreferences {
     defaultDestination: boolean;
@@ -10,20 +10,19 @@ interface ShowcasePreferences {
  * Returns whether the showcase should be pre-selected as a destination.
  */
 export const useShowcasePreferences = () => {
-    const api = useApi();
     const [preferences, setPreferences] = useState<ShowcasePreferences>({ defaultDestination: false });
     const [loading, setLoading] = useState(true);
 
     const fetchPreferences = useCallback(async () => {
         try {
-            const data = await api.get('/users/me/showcase-management/preferences') as ShowcasePreferences;
-            setPreferences(data);
+            const { data } = await client.GET('/users/me/showcase-management/preferences');
+            if (data) setPreferences(data as ShowcasePreferences);
         } catch {
             // Non-critical — default to false
         } finally {
             setLoading(false);
         }
-    }, [api]);
+    }, []);
 
     useEffect(() => {
         fetchPreferences();

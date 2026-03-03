@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
-import { useApi } from '../useApi';
+import { adminClient } from '../../../shared/api/admin-client';
 import { AdminPipelineRun, pipelineRunFiltersAtom, selectedPipelineRunDetailAtom } from '../../state/adminState';
 
 export interface PipelineRunStats {
@@ -43,7 +43,6 @@ export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
   const [selectedRun, setSelectedRun] = useAtom(selectedPipelineRunDetailAtom);
 
   const filters = useAtomValue(pipelineRunFiltersAtom);
-  const api = useApi();
 
   const fetchRuns = useCallback(async () => {
     setLoading(true);
@@ -55,18 +54,19 @@ export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
       if (filters.userId) params.set('userId', filters.userId);
       params.set('limit', String(filters.limit || 50));
 
-      const data = await api.get(`/admin/pipeline-runs?${params.toString()}`) as PipelineRunsResponse;
-      setRuns(data.runs);
-      setStats(data.stats);
-      setCursor(data.nextCursor);
-      setHasMore(data.hasMore);
+      const { data } = await adminClient.GET(`/pipeline-runs?${params.toString()}` as never);
+      const typedData = data as unknown as PipelineRunsResponse;
+      setRuns(typedData.runs);
+      setStats(typedData.stats);
+      setCursor(typedData.nextCursor);
+      setHasMore(typedData.hasMore);
     } catch (err) {
       console.error('Failed to fetch pipeline runs:', err);
       setError('Failed to load pipeline runs');
     } finally {
       setLoading(false);
     }
-  }, [api, filters]);
+  }, [filters]);
 
   const loadMore = useCallback(async () => {
     if (!cursor || loading) return;
@@ -80,16 +80,17 @@ export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
       params.set('limit', String(filters.limit || 50));
       params.set('cursor', cursor);
 
-      const data = await api.get(`/admin/pipeline-runs?${params.toString()}`) as PipelineRunsResponse;
-      setRuns(prev => [...prev, ...data.runs]);
-      setCursor(data.nextCursor);
-      setHasMore(data.hasMore);
+      const { data } = await adminClient.GET(`/pipeline-runs?${params.toString()}` as never);
+      const typedData = data as unknown as PipelineRunsResponse;
+      setRuns(prev => [...prev, ...typedData.runs]);
+      setCursor(typedData.nextCursor);
+      setHasMore(typedData.hasMore);
     } catch (err) {
       console.error('Failed to load more pipeline runs:', err);
     } finally {
       setLoading(false);
     }
-  }, [api, cursor, filters, loading]);
+  }, [cursor, filters, loading]);
 
   const selectRun = useCallback((run: AdminPipelineRun | null) => {
     setSelectedRun(run);

@@ -4,7 +4,7 @@ import { updateProfile } from 'firebase/auth';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
 import { Card, Button, Heading, Paragraph, Badge, Code, List, ListItem, GlowCard, Avatar, ProgressBar, useToast } from '../components/library/ui';
 import { Link } from '../components/library/navigation';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { useUser } from '../hooks/useUser';
 import { useAuth } from '../hooks/useAuth';
 import { userAtom } from '../state/authState';
@@ -17,7 +17,6 @@ import { ReauthModal } from '../components/ReauthModal';
 const AccountSettingsPage: React.FC = () => {
     const [firebaseUser] = useAtom(userAtom);
     const { user: profile } = useUser();
-    const api = useApi();
     const toast = useToast();
     const { isNerdMode } = useNerdMode();
     const { changePassword } = useAuth();
@@ -91,7 +90,7 @@ const AccountSettingsPage: React.FC = () => {
         setEmailSent(false);
 
         try {
-            await api.post('/users/me/auth-email/send-email-change', { newEmail: editedEmail.trim() });
+            await client.POST('/users/me/auth-email/send-email-change', { body: { newEmail: editedEmail.trim() } as never });
             setEmailSent(true);
             toast.info('Verification Sent', `Check ${editedEmail} for the verification link`);
         } catch (err: unknown) {
@@ -170,7 +169,7 @@ const AccountSettingsPage: React.FC = () => {
         setDeleteError(null);
 
         try {
-            await api.delete('/users/me');
+            await client.DELETE('/users/me');
             window.location.href = '/auth/logout';
         } catch (err) {
             console.error('Failed to delete account:', err);
@@ -186,22 +185,24 @@ const AccountSettingsPage: React.FC = () => {
         setExportDownloadUrl(null);
 
         try {
-            const response = await api.post('/users/me/export');
-            const jobId = response.jobId as string;
+            const { data: response } = await client.POST('/users/me/export');
+            const typedResponse = response as { jobId: string };
+            const jobId = typedResponse?.jobId;
 
             // Poll for completion
             const pollInterval = setInterval(async () => {
                 try {
-                    const status = await api.get(`/export/status/${jobId}`);
-                    if (status.status === 'COMPLETED') {
+                    const { data: status } = await client.GET('/export/status/{jobId}' as never, { params: { path: { jobId } } } as never);
+                    const typedStatus = status as unknown as { status: string; downloadUrl?: string; error?: string };
+                    if (typedStatus?.status === 'COMPLETED') {
                         clearInterval(pollInterval);
                         setExportStatus('completed');
-                        setExportDownloadUrl(status.downloadUrl as string);
+                        setExportDownloadUrl(typedStatus.downloadUrl as string);
                         toast.success('Export Ready', 'Your data export is ready to download');
-                    } else if (status.status === 'FAILED') {
+                    } else if (typedStatus?.status === 'FAILED') {
                         clearInterval(pollInterval);
                         setExportStatus('failed');
-                        setExportError(status.error as string || 'Export failed');
+                        setExportError(typedStatus.error || 'Export failed');
                         toast.error('Export Failed', 'Your data export could not be completed');
                     } else {
                         setExportStatus('running');
@@ -220,10 +221,11 @@ const AccountSettingsPage: React.FC = () => {
         }
     };
 
+
     const connectionCount = [
-        profile?.integrations?.strava?.connected,
-        profile?.integrations?.fitbit?.connected,
-        profile?.integrations?.hevy?.connected
+        ((profile as Record<string, unknown>)?.integrations as Record<string, { connected?: boolean }> | undefined)?.strava?.connected,
+        ((profile as Record<string, unknown>)?.integrations as Record<string, { connected?: boolean }> | undefined)?.fitbit?.connected,
+        ((profile as Record<string, unknown>)?.integrations as Record<string, { connected?: boolean }> | undefined)?.hevy?.connected
     ].filter(Boolean).length;
 
     const effectiveTier = profile ? getEffectiveTier(profile) : TIER_HOBBYIST;

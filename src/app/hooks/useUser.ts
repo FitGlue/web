@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from 'jotai';
 import { useCallback, useEffect, useRef } from 'react';
-import { useApi } from './useApi';
+import { client } from '../../shared/api/client';
 import { userProfileAtom, profileLoadingAtom, profileErrorAtom, UserProfile } from '../state/userState';
 import { userAtom, authLoadingAtom } from '../state/authState';
 
@@ -10,7 +10,6 @@ export function useUser() {
   const [user, setUser] = useAtom(userProfileAtom);
   const [loading, setLoading] = useAtom(profileLoadingAtom);
   const [error, setError] = useAtom(profileErrorAtom);
-  const api = useApi();
 
   // Track in-flight fetch to prevent duplicate calls
   const fetchInProgressRef = useRef(false);
@@ -23,8 +22,9 @@ export function useUser() {
     setLoading(true);
     setError(null);
     try {
-      const data = await api.get('/users/me') as UserProfile;
-      setUser(data);
+      const { data, error: apiError } = await client.GET('/users/me');
+      if (apiError) throw new Error('Failed to fetch user profile');
+      setUser(data as UserProfile);
     } catch (err) {
       console.error('Failed to fetch user profile:', err);
       setError('Failed to load user profile');
@@ -32,7 +32,7 @@ export function useUser() {
       fetchInProgressRef.current = false;
       setLoading(false);
     }
-  }, [api, setUser, setLoading, setError]);
+  }, [setUser, setLoading, setError]);
 
   // Fetch on mount if not already loaded (don't retry on error)
   // IMPORTANT: Wait for Firebase auth to be ready before fetching profile
@@ -61,3 +61,4 @@ export function useUser() {
     refresh: () => fetchProfile(true),
   };
 }
+

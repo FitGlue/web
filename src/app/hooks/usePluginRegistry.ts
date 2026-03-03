@@ -1,5 +1,6 @@
 import { useAtom } from 'jotai';
 import { useCallback, useEffect, useRef } from 'react';
+import { client } from '../../shared/api/client';
 import { PluginRegistryResponse } from '../types/plugin';
 import {
   pluginRegistryAtom,
@@ -12,7 +13,7 @@ import {
 const STALE_THRESHOLD_MS = 10 * 60 * 1000; // 10 minutes (registry changes rarely)
 
 /**
- * Hook to fetch and cache the plugin registry from /api/plugins
+ * Hook to fetch and cache the plugin registry from /registry/plugins
  * Uses Jotai atoms for shared state - all components share the same cached data
  * Returns sources, enrichers, and destinations with their manifests
  */
@@ -33,13 +34,10 @@ export const usePluginRegistry = () => {
     fetchInProgressRef.current = true;
     setLoading(true);
     try {
-      // No auth required for the plugins endpoint
-      const response = await fetch('/api/v2/registry/plugins');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch plugin registry: ${response.statusText}`);
-      }
-      const data: PluginRegistryResponse = await response.json();
-      setRegistry(data);
+      // No auth required for the plugins endpoint — middleware skips unauthenticated requests
+      const { data, error: apiError } = await client.GET('/registry/plugins');
+      if (apiError) throw new Error('Failed to fetch plugin registry');
+      setRegistry(data as PluginRegistryResponse);
       setLastUpdated(new Date());
       setLoaded(true);
       setError(null);
@@ -76,3 +74,4 @@ export const usePluginRegistry = () => {
     refresh: useCallback(() => fetchRegistry(true), [fetchRegistry]),
   };
 };
+

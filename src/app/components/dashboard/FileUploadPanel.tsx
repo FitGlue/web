@@ -10,7 +10,7 @@ import { Heading } from '../library/ui/Heading';
 import { Input, Textarea, FormField, FileInput, Select } from '../library/forms';
 import { Stack } from '../library/layout/Stack';
 import { Grid } from '../library/layout/Grid';
-import { useApi } from '../../hooks/useApi';
+import { client } from '../../../shared/api/client';
 import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { useUser } from '../../hooks/useUser';
 import { useNerdMode } from '../../state/NerdModeContext';
@@ -21,7 +21,6 @@ import './FileUploadPanel.css';
  * FileUploadPanel - Dashboard component for uploading FIT files
  */
 export const FileUploadPanel: React.FC = () => {
-  const api = useApi();
   const navigate = useNavigate();
   const { pipelines, loading: pipelinesLoading } = useRealtimePipelines();
   const { user } = useUser();
@@ -105,11 +104,12 @@ export const FileUploadPanel: React.FC = () => {
         payload.pipelineId = selectedPipelineId;
       }
 
-      const data = await api.post('/users/me/parse-fit', payload);
+      const { data } = await client.POST('/users/me/parse-fit', { body: payload as never });
+      const typedData = data as Record<string, unknown>;
 
       setMessage({
         type: 'success',
-        text: data.message || 'Activity uploaded and queued for processing!'
+        text: (typedData?.message as string) || 'Activity uploaded and queued for processing!'
       });
 
       setFile(null);

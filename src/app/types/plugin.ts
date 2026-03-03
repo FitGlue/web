@@ -1,18 +1,44 @@
 /**
  * Plugin Registry Types
- * Re-exports types from generated OpenAPI schema
+ *
+ * Proto3 makes all fields optional by default, but the registry guarantees
+ * that manifests always have `id`, `name`, `icon`, etc. populated. We
+ * mark those fields required here so downstream code doesn't need hundreds
+ * of non-null assertions.
  */
 
-import { components } from '../../shared/api/schema';
+import { components } from '../../shared/api/schema-client';
 
-// Re-export types from generated schema
-export type ConfigFieldOption = components['schemas']['ConfigFieldOption'];
+// --- Raw generated types (all fields optional per proto3) ---
+type RawPluginManifest = components['schemas']['PluginManifest'];
+type RawConfigFieldSchema = components['schemas']['ConfigFieldSchema'];
+type RawConfigFieldOption = components['schemas']['ConfigFieldOption'];
+type RawIntegrationManifest = components['schemas']['IntegrationManifest'];
+
+// --- Re-export with required fields ---
+
+/** Config field option — `value` and `label` are always populated. */
+export type ConfigFieldOption = Required<Pick<RawConfigFieldOption, 'value' | 'label'>> & Omit<RawConfigFieldOption, 'value' | 'label'>;
+
 export type ConfigFieldValidation = components['schemas']['ConfigFieldValidation'];
 export type ConfigFieldDependency = components['schemas']['ConfigFieldDependency'];
-export type ConfigFieldSchema = components['schemas']['ConfigFieldSchema'];
+
+/** Config field schema — `key` and `label` are always populated, `options` uses required-field ConfigFieldOption. */
+export type ConfigFieldSchema = Required<Pick<RawConfigFieldSchema, 'key' | 'label'>>
+  & Omit<RawConfigFieldSchema, 'key' | 'label' | 'options' | 'dependsOn'>
+  & {
+    options?: ConfigFieldOption[];
+    dependsOn?: { fieldKey: string; values?: string[] };
+  };
+
 export type Transformation = components['schemas']['Transformation'];
-// PluginManifest now has all fields in OpenAPI spec
-export type PluginManifest = components['schemas']['PluginManifest'];
+
+/** Plugin manifest with core identity fields marked required and configSchema using ConfigFieldSchema. */
+export type PluginManifest = Required<Pick<RawPluginManifest,
+  'id' | 'name' | 'icon' | 'description' | 'enabled'
+>> & Omit<RawPluginManifest, 'id' | 'name' | 'icon' | 'description' | 'enabled' | 'configSchema'> & {
+  configSchema?: ConfigFieldSchema[];
+};
 
 // Action that can be triggered for an integration (not in OpenAPI spec yet)
 export interface IntegrationAction {
@@ -22,12 +48,21 @@ export interface IntegrationAction {
   icon: string;
 }
 
-// Extended IntegrationManifest to include actions (exists in server but not yet in OpenAPI spec)
-export type IntegrationManifest = components['schemas']['IntegrationManifest'] & {
+/** Integration manifest with core identity fields marked required. */
+export type IntegrationManifest = Required<Pick<RawIntegrationManifest,
+  'id' | 'name' | 'icon' | 'description'
+>> & Omit<RawIntegrationManifest, 'id' | 'name' | 'icon' | 'description'> & {
   actions?: IntegrationAction[];
 };
 
-export type PluginRegistryResponse = Omit<components['schemas']['PluginRegistryResponse'], 'integrations'> & {
+/** Registry response — override all arrays to use required-field manifest types. */
+export type PluginRegistryResponse = Omit<
+  components['schemas']['PluginRegistryResponse'],
+  'sources' | 'enrichers' | 'destinations' | 'integrations'
+> & {
+  sources: PluginManifest[];
+  enrichers: PluginManifest[];
+  destinations: PluginManifest[];
   integrations: IntegrationManifest[];
 };
 

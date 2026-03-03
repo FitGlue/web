@@ -2,12 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Stack, Grid } from '../library/layout';
 import { Card, Button, Heading, Paragraph, Badge, AccordionTrigger } from '../library/ui';
 import { Input, FormField } from '../library/forms';
-import { useApi } from '../../hooks/useApi';
+import { client } from '../../../shared/api/client';
 import { Counter } from './types';
 import { formatDate } from './helpers';
 
 const CountersSection: React.FC = () => {
-    const api = useApi();
     const [counters, setCounters] = useState<Counter[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingCounter, setEditingCounter] = useState<Counter | null>(null);
@@ -18,14 +17,15 @@ const CountersSection: React.FC = () => {
     const fetchCounters = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await api.get('/users/me/counters') as { counters: Counter[] };
-            setCounters(response.counters || []);
+            const { data } = await client.GET('/users/me/counters');
+            const response = data as unknown as { counters: Counter[] };
+            setCounters(response?.counters || []);
         } catch (err) {
             console.error('Failed to fetch counters:', err);
         } finally {
             setLoading(false);
         }
-    }, [api]);
+    }, []);
 
     useEffect(() => {
         fetchCounters();
@@ -33,7 +33,7 @@ const CountersSection: React.FC = () => {
 
     const handleSave = async (counter: Counter) => {
         try {
-            await api.put(`/users/me/counters/${encodeURIComponent(counter.id)}`, { count: counter.count });
+            await client.PUT('/users/me/counters/{name}', { params: { path: { name: counter.id } }, body: { count: counter.count } as never });
             setEditingCounter(null);
             fetchCounters();
         } catch (err) {
@@ -44,7 +44,7 @@ const CountersSection: React.FC = () => {
     const handleCreate = async () => {
         if (!newCounter.id.trim()) return;
         try {
-            await api.put(`/users/me/counters/${encodeURIComponent(newCounter.id)}`, { count: newCounter.count });
+            await client.PUT('/users/me/counters/{name}', { params: { path: { name: newCounter.id } }, body: { count: newCounter.count } as never });
             setNewCounter({ id: '', count: 0 });
             setShowNew(false);
             fetchCounters();
@@ -56,7 +56,7 @@ const CountersSection: React.FC = () => {
     const handleDelete = async (id: string) => {
         if (!confirm(`Delete counter "${id}"?`)) return;
         try {
-            await api.delete(`/users/me/counters/${encodeURIComponent(id)}`);
+            await client.DELETE('/users/me/counters/{name}', { params: { path: { name: id } } });
             fetchCounters();
         } catch (err) {
             console.error('Failed to delete counter:', err);

@@ -21,7 +21,7 @@ import { PWAInstallBanner } from '../components/dashboard/PWAInstallBanner';
 import { SmartNudge } from '../components/SmartNudge';
 import { IntegrationsSummary } from '../state/integrationsState';
 import { useUser } from '../hooks/useUser';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
 import { GuidedTour } from '../components/onboarding/GuidedTour';
 import { GuidedTourProvider, useGuidedTour } from '../hooks/useGuidedTour';
@@ -49,23 +49,19 @@ const DashboardPageInner: React.FC = () => {
 
     // User tier and showcase profile
     const { user } = useUser();
-    const api = useApi();
     const isAthlete = user ? getEffectiveTier(user) === TIER_ATHLETE : false;
     const [hasShowcaseProfile, setHasShowcaseProfile] = useState(false);
 
     const fetchShowcaseStatus = useCallback(async () => {
         if (!isAthlete) return;
         try {
-            const data = await api.get('/users/me/showcase-management/profile') as {
-                profile: { subtitle?: string; bio?: string } | null;
-            };
-            // Consider profile 'set up' when subtitle or bio is filled in
-            const p = data.profile;
-            setHasShowcaseProfile(!!(p));
+            const { data } = await client.GET('/users/me/showcase-management/profile');
+            const profile = (data as Record<string, unknown>)?.profile;
+            setHasShowcaseProfile(!!profile);
         } catch {
             // Silently ignore — showcase check is non-critical
         }
-    }, [api, isAthlete]);
+    }, [isAthlete]);
 
     useEffect(() => {
         fetchShowcaseStatus();

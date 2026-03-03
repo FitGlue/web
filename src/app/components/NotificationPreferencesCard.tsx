@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Heading, Paragraph, useToast } from './library/ui';
 import { Stack } from './library/layout';
 import { Checkbox } from './library/forms';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 
 interface NotificationPreferences {
     notifyPendingInput: boolean;
@@ -14,7 +14,6 @@ interface NotificationPreferences {
  * NotificationPreferencesCard - Toggle controls for push notification preferences
  */
 export const NotificationPreferencesCard: React.FC = () => {
-    const api = useApi();
     const toast = useToast();
     const [preferences, setPreferences] = useState<NotificationPreferences>({
         notifyPendingInput: true,
@@ -28,11 +27,11 @@ export const NotificationPreferencesCard: React.FC = () => {
     useEffect(() => {
         const fetchPreferences = async () => {
             try {
-                const data = await api.get('/users/me/notification-prefs');
+                const { data } = await client.GET('/users/me/notification-prefs');
                 setPreferences({
-                    notifyPendingInput: data.notifyPendingInput ?? true,
-                    notifyPipelineSuccess: data.notifyPipelineSuccess ?? true,
-                    notifyPipelineFailure: data.notifyPipelineFailure ?? true,
+                    notifyPendingInput: data?.notifyPendingInput ?? true,
+                    notifyPipelineSuccess: data?.notifyPipelineSuccess ?? true,
+                    notifyPipelineFailure: data?.notifyPipelineFailure ?? true,
                 });
             } catch (err) {
                 console.error('Failed to fetch notification preferences:', err);
@@ -42,7 +41,7 @@ export const NotificationPreferencesCard: React.FC = () => {
             }
         };
         fetchPreferences();
-    }, [api]);
+    }, []);
 
     const updatePreference = useCallback(async (key: keyof NotificationPreferences, value: boolean) => {
         setUpdating(key);
@@ -52,7 +51,7 @@ export const NotificationPreferencesCard: React.FC = () => {
         setPreferences(prev => ({ ...prev, [key]: value }));
 
         try {
-            await api.put('/users/me/notification-prefs', { [key]: value });
+            await client.PUT('/users/me/notification-prefs', { body: { [key]: value } as never });
         } catch (err) {
             console.error('Failed to update preference:', err);
             // Revert on error
@@ -61,7 +60,7 @@ export const NotificationPreferencesCard: React.FC = () => {
         } finally {
             setUpdating(null);
         }
-    }, [api, preferences, toast]);
+    }, [preferences, toast]);
 
     if (loading) {
         return (

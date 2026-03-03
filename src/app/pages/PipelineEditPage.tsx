@@ -17,7 +17,7 @@ import { BoosterExclusionPills } from '../components/BoosterExclusionPills';
 import { Input as FormInput } from '../components/library/forms';
 import { useNerdMode } from '../state/NerdModeContext';
 import { EnricherProviderType } from '../../types/pb/user';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { usePluginDefaults } from '../hooks/usePluginDefaults';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
@@ -52,7 +52,6 @@ interface SelectedEnricher {
 const PipelineEditPage: React.FC = () => {
     const { pipelineId } = useParams<{ pipelineId: string }>();
     const navigate = useNavigate();
-    const api = useApi();
     const { sources, enrichers, destinations, integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { integrations: userIntegrations } = useRealtimeIntegrations();
     const { refresh: invalidatePipelines } = useRealtimePipelines();
@@ -103,8 +102,9 @@ const PipelineEditPage: React.FC = () => {
         if (!pipelineId) return;
         setLoading(true);
         try {
-            const response = await api.get(`/users/me/pipelines/${pipelineId}`);
-            const pipelineData = response as PipelineConfig;
+            const { data } = await client.GET('/users/me/pipelines/{id}', { params: { path: { id: pipelineId } } });
+            const response = data as PipelineConfig;
+            const pipelineData = response;
             setPipeline(pipelineData);
             setPipelineName(pipelineData.name || '');
             setSelectedSource(pipelineData.source);
@@ -136,7 +136,7 @@ const PipelineEditPage: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [pipelineId, api, enrichers]);
+    }, [pipelineId, enrichers]);
 
     const toast = useToast();
 
@@ -162,13 +162,16 @@ const PipelineEditPage: React.FC = () => {
                     ...(excludedEnrichersByDest[k]?.length ? { excludedEnrichers: excludedEnrichersByDest[k] } : {}),
                 };
             }
-            await api.put(`/users/me/pipelines/${pipelineId}`, {
-                name: pipelineName || undefined,
-                source: selectedSource,
-                enrichers: enricherConfigs,
-                destinations: selectedDestinations.map(d => isNaN(Number(d)) ? d : Number(d)),
-                sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
-                destinationConfigs: Object.keys(mergedDestConfigs).length > 0 ? mergedDestConfigs : undefined,
+            await client.PUT('/users/me/pipelines/{id}', {
+                params: { path: { id: pipelineId! } },
+                body: {
+                    name: pipelineName || undefined,
+                    source: selectedSource,
+                    enrichers: enricherConfigs,
+                    destinations: selectedDestinations.map(d => isNaN(Number(d)) ? d : Number(d)),
+                    sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
+                    destinationConfigs: Object.keys(mergedDestConfigs).length > 0 ? mergedDestConfigs : undefined,
+                } as never
             });
             invalidatePipelines();
             toast.success('Pipeline Saved', `"${pipelineName || 'Pipeline'}" has been updated`);
@@ -203,7 +206,7 @@ const PipelineEditPage: React.FC = () => {
         setSelectedDestinations(prev => {
             const isSelected = prev.some(sd => sd === dest.id || Number(sd) === dest.destinationType);
             if (isSelected) return prev.filter(d => d !== dest.id && Number(d) !== dest.destinationType);
-            return [...prev, dest.id];
+            return [...prev, dest.id!];
         });
     };
 

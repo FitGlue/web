@@ -9,7 +9,7 @@ import { List, ListItem } from './library/ui/List';
 import { useToast } from './library/ui/Toast';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import {
     decodePipeline,
     validatePipelineImport,
@@ -17,6 +17,7 @@ import {
     PortablePipeline,
     ImportValidationResult
 } from '../../shared/pipeline-sharing';
+import { PluginRegistryResponse } from '../types/plugin';
 
 interface Props {
     onClose: () => void;
@@ -26,9 +27,8 @@ interface Props {
 
 export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initialCode }) => {
     const navigate = useNavigate();
-    const api = useApi();
     const toast = useToast();
-    const { sources, enrichers, destinations, integrations } = usePluginRegistry();
+    const { registry, sources, enrichers, destinations, integrations } = usePluginRegistry();
     const { integrations: userIntegrations } = useRealtimeIntegrations();
 
     const [code, setCode] = useState(initialCode || '');
@@ -37,15 +37,13 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initi
     const [error, setError] = useState<string | null>(null);
     const [importing, setImporting] = useState(false);
 
-    const registry = { sources, enrichers, destinations, integrations };
-
     // Auto-validate if initialCode is provided
     useEffect(() => {
         if (initialCode && sources.length > 0) {
             try {
                 const portable = decodePipeline(initialCode);
                 setDecoded(portable);
-                const result = validatePipelineImport(portable, userIntegrations, registry);
+                const result = validatePipelineImport(portable, userIntegrations, registry!);
                 setValidation(result);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Invalid pipeline code');
@@ -62,7 +60,7 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initi
             const portable = decodePipeline(code);
             setDecoded(portable);
 
-            const result = validatePipelineImport(portable, userIntegrations, registry);
+            const result = validatePipelineImport(portable, userIntegrations, registry!);
             setValidation(result);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Invalid pipeline code');
@@ -74,7 +72,7 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initi
 
         setImporting(true);
         try {
-            await api.post('/users/me/pipelines', validation.request);
+            await client.POST('/users/me/pipelines', { body: validation.request as never });
             toast.success('Pipeline Imported', `"${decoded.n}" has been imported successfully`);
             onSuccess();
             onClose();
@@ -130,7 +128,7 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initi
                         <Paragraph>Connect these services before importing:</Paragraph>
                         <List>
                             {validation.missingConnections.map(connId => {
-                                const info = getMissingConnectionInfo(connId, registry);
+                                const info = getMissingConnectionInfo(connId, registry!);
                                 return (
                                     <ListItem key={connId}>
                                         <Stack direction="horizontal" gap="sm" align="center">

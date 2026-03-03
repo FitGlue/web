@@ -32,9 +32,11 @@ export function getEffectiveTier(user: UserProfile): EffectiveTier {
     return TIER_ATHLETE;
   }
 
-  // Fall back to stored tier (default: hobbyist)
-  // The schema now correctly types tier as 'hobbyist' | 'athlete'.
-  if (user.tier === TIER_ATHLETE) {
+  // Fall back to stored tier (default: hobbyist).
+  // The proto schema serialises the tier enum as a number (1=hobbyist, 2=athlete)
+  // but the JSON serialiser may emit it as a string. Handle both.
+  const tierValue = user.tier;
+  if (tierValue === 2 || String(tierValue) === TIER_ATHLETE) {
     return TIER_ATHLETE;
   }
 

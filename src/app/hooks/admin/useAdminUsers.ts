@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
-import { useApi } from '../useApi';
+import { adminClient } from '../../../shared/api/admin-client';
 import {
   AdminUser,
   AdminUserDetail,
@@ -24,10 +24,6 @@ export interface UseAdminUsersResult {
   clearSelectedUser: () => void;
 }
 
-interface UsersResponse {
-  data: AdminUser[];
-  pagination: Pagination;
-}
 
 /**
  * Hook for fetching and managing admin users
@@ -43,7 +39,6 @@ export function useAdminUsers(): UseAdminUsersResult {
   const [selectedUserLoading, setSelectedUserLoading] = useAtom(selectedUserLoadingAtom);
 
   const filters = useAtomValue(userFiltersAtom);
-  const api = useApi();
 
   const fetchUsers = useCallback(async (page = 1) => {
     setLoading(true);
@@ -57,32 +52,41 @@ export function useAdminUsers(): UseAdminUsersResult {
       if (filters.tier) params.set('tier', filters.tier);
       if (filters.userId) params.set('userId', filters.userId);
 
-      const data = await api.get(`/admin/users?${params.toString()}`) as UsersResponse;
-      setUsers(data.data);
-      setPagination(data.pagination);
+      const { data } = await adminClient.GET('/users', {
+        params: { query: { limit: 25, page_token: String(page) } },
+      });
+      if (data) {
+        setUsers((data.users || []) as unknown as AdminUser[]);
+        setPagination({ page } as Pagination);
+      }
     } catch (err) {
       console.error('Failed to fetch users:', err);
       setError('Failed to load users. Admin access required.');
     } finally {
       setLoading(false);
     }
-  }, [api, filters]);
+  }, [filters]);
 
   const fetchUserDetail = useCallback(async (userId: string) => {
     setSelectedUserLoading(true);
     try {
-      const data = await api.get(`/admin/users/${userId}`) as AdminUserDetail;
-      setSelectedUser(data);
+      const { data } = await adminClient.GET('/users/{id}', {
+        params: { path: { id: userId } },
+      });
+      setSelectedUser(data as unknown as AdminUserDetail);
     } catch (err) {
       console.error('Failed to fetch user details:', err);
     } finally {
       setSelectedUserLoading(false);
     }
-  }, [api]);
+  }, []);
 
   const updateUser = useCallback(async (userId: string, updates: Partial<AdminUser>) => {
     try {
-      await api.put(`/admin/users/${userId}`, updates);
+      await adminClient.PUT('/users/{id}', {
+        params: { path: { id: userId } },
+        body: updates as never,
+      });
       // Refresh the users list
       await fetchUsers(pagination?.page || 1);
       // Refresh selected user if it's the same one
@@ -93,7 +97,7 @@ export function useAdminUsers(): UseAdminUsersResult {
       console.error('Failed to update user:', err);
       throw new Error('Failed to update user');
     }
-  }, [api, fetchUsers, fetchUserDetail, pagination, selectedUser]);
+  }, [fetchUsers, fetchUserDetail, pagination, selectedUser]);
 
   const deleteUserData = useCallback(async (
     userId: string,
@@ -105,14 +109,14 @@ export function useAdminUsers(): UseAdminUsersResult {
         ? `/admin/users/${userId}/${dataType}/${subId}`
         : `/admin/users/${userId}/${dataType}`;
 
-      await api.delete(path);
+      await adminClient.DELETE(path as never);
       // Refresh user detail
       await fetchUserDetail(userId);
     } catch (err) {
       console.error(`Failed to delete ${dataType}:`, err);
       throw new Error(`Failed to delete ${dataType}`);
     }
-  }, [api, fetchUserDetail]);
+  }, [fetchUserDetail]);
 
   const clearSelectedUser = useCallback(() => {
     setSelectedUser(null);

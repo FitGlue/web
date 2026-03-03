@@ -2,14 +2,13 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Stack, Grid } from '../library/layout';
 import { Card, Button, Heading, Paragraph, Badge, AccordionTrigger } from '../library/ui';
 import { Input, FormField, Select } from '../library/forms';
-import { useApi } from '../../hooks/useApi';
+import { client } from '../../../shared/api/client';
 import { PersonalRecord } from './types';
 import { CARDIO_RECORDS, STRENGTH_SUFFIXES, HYBRID_RACE_TYPES, HYBRID_STATIONS } from './constants';
 import { RecordCategory, formatDate, formatRecordValue, getRecordDisplayName, getGroupedExercises } from './helpers';
 import DurationInput from './DurationInput';
 
 const PersonalRecordsSection: React.FC = () => {
-    const api = useApi();
     const [records, setRecords] = useState<PersonalRecord[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingRecord, setEditingRecord] = useState<PersonalRecord | null>(null);
@@ -75,14 +74,14 @@ const PersonalRecordsSection: React.FC = () => {
     const fetchRecords = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await api.get('/users/me/personal-records') as { records: PersonalRecord[] };
-            setRecords(response.records || []);
+            const { data } = await client.GET('/users/me/personal-records');
+            setRecords((data as { records: PersonalRecord[] })?.records || []);
         } catch (err) {
             console.error('Failed to fetch personal records:', err);
         } finally {
             setLoading(false);
         }
-    }, [api]);
+    }, []);
 
     useEffect(() => {
         fetchRecords();
@@ -90,7 +89,7 @@ const PersonalRecordsSection: React.FC = () => {
 
     const handleSave = async (record: PersonalRecord) => {
         try {
-            await api.put(`/users/me/personal-records/${encodeURIComponent(record.recordType)}`, record);
+            await client.PUT('/users/me/personal-records/{recordType}', { params: { path: { recordType: record.recordType } }, body: record as never });
             setEditingRecord(null);
             fetchRecords();
         } catch (err) {
@@ -101,10 +100,9 @@ const PersonalRecordsSection: React.FC = () => {
     const handleCreate = async () => {
         if (!newRecordType || !newRecordUnit) return;
         try {
-            await api.put(`/users/me/personal-records/${encodeURIComponent(newRecordType)}`, {
-                recordType: newRecordType,
-                value: newRecordValue,
-                unit: newRecordUnit,
+            await client.PUT('/users/me/personal-records/{recordType}', {
+                params: { path: { recordType: newRecordType } },
+                body: { recordType: newRecordType, value: newRecordValue, unit: newRecordUnit } as never,
             });
             resetForm();
             fetchRecords();
@@ -116,7 +114,7 @@ const PersonalRecordsSection: React.FC = () => {
     const handleDelete = async (recordType: string) => {
         if (!confirm(`Delete personal record "${recordType}"?`)) return;
         try {
-            await api.delete(`/users/me/personal-records/${encodeURIComponent(recordType)}`);
+            await client.DELETE('/users/me/personal-records/{recordType}', { params: { path: { recordType } } });
             fetchRecords();
         } catch (err) {
             console.error('Failed to delete personal record:', err);

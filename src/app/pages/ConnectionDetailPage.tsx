@@ -5,7 +5,7 @@ import {
     Button, Heading, Paragraph, CardSkeleton, Card, Badge, Code, ConfirmDialog, useToast
 } from '../components/library/ui';
 import { PluginIcon } from '../components/library/ui/PluginIcon';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useConnectionActions } from '../hooks/useConnectionActions';
@@ -22,7 +22,6 @@ interface IntegrationStatus {
 const ConnectionDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const api = useApi();
     const toast = useToast();
     const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { integrations, loading: integrationsLoading, refresh } = useRealtimeIntegrations();
@@ -78,7 +77,7 @@ const ConnectionDetailPage: React.FC = () => {
         setShowDisconnectConfirm(false);
         setDisconnecting(true);
         try {
-            await api.delete(`/users/me/integrations/${id}`);
+            await client.DELETE('/users/me/integrations/{provider}', { params: { path: { provider: id! } } });
             await refresh();
             toast.success('Disconnected', `${integration?.name} has been disconnected`);
             navigate('/connections');

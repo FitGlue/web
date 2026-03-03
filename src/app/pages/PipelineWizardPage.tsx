@@ -7,7 +7,7 @@ import { Button } from '../components/library/ui/Button';
 import { Heading } from '../components/library/ui/Heading';
 import { Paragraph } from '../components/library/ui/Paragraph';
 import { useToast } from '../components/library/ui/Toast';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { usePluginDefaults } from '../hooks/usePluginDefaults';
 import { FormField, Input as FormInput } from '../components/library/forms';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
@@ -37,7 +37,6 @@ type WizardStep = 'source' | 'source-config' | 'enrichers' | 'enricher-config' |
 
 const PipelineWizardPage: React.FC = () => {
     const navigate = useNavigate();
-    const api = useApi();
     const { refresh: refreshPipelines } = useRealtimePipelines();
     const { sources, enrichers, destinations, integrations: registryIntegrations, loading, error: registryError } = usePluginRegistry();
     const { integrations: userIntegrations } = useRealtimeIntegrations();
@@ -243,13 +242,15 @@ const PipelineWizardPage: React.FC = () => {
                     ...(excludedEnrichersByDest[k]?.length ? { excludedEnrichers: excludedEnrichersByDest[k] } : {}),
                 };
             }
-            await api.post('/users/me/pipelines', {
-                name: pipelineName || undefined,
-                source: selectedSource,
-                enrichers: enricherConfigs,
-                destinations: selectedDestinations,
-                sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
-                destinationConfigs: Object.keys(mergedDestConfigs).length > 0 ? mergedDestConfigs : undefined,
+            await client.POST('/users/me/pipelines', {
+                body: {
+                    name: pipelineName || undefined,
+                    source: selectedSource,
+                    enrichers: enricherConfigs,
+                    destinations: selectedDestinations,
+                    sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
+                    destinationConfigs: Object.keys(mergedDestConfigs).length > 0 ? mergedDestConfigs : undefined,
+                } as never,
             });
             await refreshPipelines();
             toast.success('Pipeline Created', `"${pipelineName || 'New Pipeline'}" has been created`);

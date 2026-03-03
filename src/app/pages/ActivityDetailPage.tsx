@@ -10,7 +10,7 @@ import { BoosterGrid } from '../components/library/ui/BoosterGrid';
 import '../components/library/ui/CardSkeleton.css';
 import { EnricherBadge } from '../components/dashboard/EnricherBadge';
 import { RepostActionsMenu } from '../components/RepostActionsMenu';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { useNerdMode } from '../state/NerdModeContext';
 import { formatActivityType, formatDestination, formatDestinationStatus } from '../../types/pb/enum-formatters';
 import { buildDestinationUrl } from '../utils/destinationUrls';
@@ -218,7 +218,6 @@ const ActivityDetailPage: React.FC = () => {
     const { pipelines } = useRealtimePipelines();
     const { sources, destinations: registryDestinations, enrichers } = usePluginRegistry();
     const { isNerdMode } = useNerdMode();
-    const api = useApi();
     const toast = useToast();
 
     // Per-run export state
@@ -862,7 +861,7 @@ const ActivityDetailPage: React.FC = () => {
                                 pipelineId: pipelineRun.pipelineId,
                                 pipelineExecutionId: pipelineRun.id,
                                 syncedAt: pipelineRun.updatedAt,
-                            } as SynchronizedActivity}
+                            } as unknown as SynchronizedActivity}
                             onSuccess={() => { }}
                             isPro={true}
                             inline
@@ -874,8 +873,8 @@ const ActivityDetailPage: React.FC = () => {
                             onClick={async () => {
                                 setExportStatus('loading');
                                 try {
-                                    const data = await api.get(`/export/run/${pipelineRun.id}`);
-                                    const response = data as { downloadUrl: string; fitFileAvailable: boolean };
+                                    const { data } = await client.GET('/export/run/{id}' as never, { params: { path: { id: pipelineRun.id } } } as never);
+                                    const response = data as unknown as { downloadUrl: string; fitFileAvailable: boolean };
                                     const link = document.createElement('a');
                                     link.href = response.downloadUrl;
                                     link.download = `run-${pipelineRun.id}.zip`;

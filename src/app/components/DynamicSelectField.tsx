@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ConfigFieldSchema } from '../types/plugin';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { Stack } from './library/layout/Stack';
 import { Text } from './library/ui/Text';
 import { Button } from './library/ui/Button';
@@ -18,7 +18,6 @@ interface DynamicSelectFieldProps {
 }
 
 export const DynamicSelectField: React.FC<DynamicSelectFieldProps> = ({ field, value, onChange }) => {
-    const api = useApi();
     const [options, setOptions] = useState<{ value: string; label: string }[]>([]);
     const [loading, setLoading] = useState(true);
     const [mode, setMode] = useState<'select' | 'custom'>('select');
@@ -32,8 +31,9 @@ export const DynamicSelectField: React.FC<DynamicSelectFieldProps> = ({ field, v
 
             try {
                 // Fetch options from /users/me/{dynamicSource}
-                const response = await api.get(`/users/me/${field.dynamicSource}`) as { id: string; count?: number }[];
-                const fetchedOptions = response.map((item: { id: string; count?: number }) => ({
+                const { data: response } = await client.GET(`/users/me/${field.dynamicSource}` as never);
+                const items = response as unknown as { id: string; count?: number }[];
+                const fetchedOptions = items.map((item: { id: string; count?: number }) => ({
                     value: item.id,
                     label: item.count !== undefined ? `${item.id} (current: ${item.count})` : item.id,
                 }));
@@ -52,7 +52,7 @@ export const DynamicSelectField: React.FC<DynamicSelectFieldProps> = ({ field, v
         };
 
         fetchOptions();
-    }, [api, field.dynamicSource, value]);
+    }, [field.dynamicSource, value]);
 
     // Check if current value is in options
     useEffect(() => {

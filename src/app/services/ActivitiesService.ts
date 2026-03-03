@@ -1,10 +1,51 @@
 import { client } from '../../shared/api/client';
-import { components } from '../../shared/api/schema';
-import { getFirebaseAuth } from '../../shared/firebase';
 
-export type SynchronizedActivity = components['schemas']['SynchronizedActivity'];
-export type UnsynchronizedEntry = components['schemas']['UnsynchronizedEntry'];
-export type ExecutionRecord = components['schemas']['ExecutionRecord'];
+// These types would come from the generated schema once activities
+// endpoints are added to the gateway proto. For now, defined locally.
+export interface SynchronizedActivity {
+  id: string;
+  activityId?: string;
+  name?: string;
+  sport?: string;
+  startedAt?: string;
+  source?: string;
+  pipelineExecution?: ExecutionRecord[];
+  enrichedData?: Record<string, unknown>;
+  destinations?: Array<{ destination: string; status: string; externalId?: string; error?: string }>;
+}
+
+export interface UnsynchronizedEntry {
+  pipelineExecutionId: string;
+  activityId?: string;
+  source?: string;
+  startedAt?: string;
+  error?: string;
+  title?: string;
+  activityType?: string;
+  timestamp?: string;
+  status?: string;
+  errorMessage?: string;
+}
+
+export interface ExecutionRecord {
+  /** Service name, e.g. "parkrun-results", "workout-summary" */
+  service?: string;
+  executionId?: string;
+  step?: string;
+  status?: string;
+  /** ISO timestamp */
+  timestamp?: string;
+  startTime?: string;
+  endTime?: string;
+  startedAt?: string;
+  completedAt?: string;
+  triggerType?: string;
+  /** JSON-encoded input/output payloads for nerd mode */
+  inputsJson?: string;
+  outputsJson?: string;
+  error?: string;
+  errorMessage?: string;
+}
 
 export interface RepostResponse {
   success: boolean;
@@ -21,71 +62,47 @@ export interface IActivitiesService {
     monthlySynced: number;
     weeklySynced: number;
   }>;
-  // list() removed - use useRealtimePipelineRuns hook instead
-  get(id: string): Promise<SynchronizedActivity | null>; // Kept for detail page
+  get(id: string): Promise<SynchronizedActivity | null>;
   listUnsynchronized(limit?: number, offset?: number): Promise<UnsynchronizedEntry[]>;
   getUnsynchronizedTrace(pipelineExecutionId: string): Promise<{ pipelineExecutionId: string; pipelineExecution: ExecutionRecord[] } | null>;
-  // Re-post methods
   repostToMissedDestination(activityId: string, destination: string): Promise<RepostResponse>;
   retryDestination(activityId: string, destination: string): Promise<RepostResponse>;
   fullPipelineRerun(activityId: string): Promise<RepostResponse>;
 }
 
-const getAuthHeader = async (): Promise<Record<string, string>> => {
-  const auth = getFirebaseAuth();
-  const token = await auth?.currentUser?.getIdToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
-};
 
+// TODO: Add unsynchronized endpoints to gateway proto so they appear in the OpenAPI spec.
 export const ActivitiesService: IActivitiesService = {
   async getStats() {
-    const headers = await getAuthHeader();
-    const { data, error } = await client.GET('/activities/stats', {
-      headers,
-    });
+    const { data, error } = await client.GET('/users/me/activities/stats');
 
     if (error) {
       console.error('Failed to fetch activity stats', error);
       return { synchronizedCount: 0, totalSynced: 0, monthlySynced: 0, weeklySynced: 0 };
     }
 
+    const d = data as Record<string, unknown>;
     return {
-      synchronizedCount: data?.synchronizedCount || 0,
-      totalSynced: data?.totalSynced || 0,
-      monthlySynced: data?.monthlySynced || 0,
-      weeklySynced: data?.weeklySynced || 0,
+      synchronizedCount: (d?.synchronizedCount as number) || 0,
+      totalSynced: (d?.totalSynced as number) || 0,
+      monthlySynced: (d?.monthlySynced as number) || 0,
+      weeklySynced: (d?.weeklySynced as number) || 0,
     };
   },
 
-  // list() removed - use useRealtimePipelineRuns hook instead
-
   async get(id: string) {
-    const headers = await getAuthHeader();
-    const { data, error } = await client.GET('/activities/{id}', {
-      headers,
-      params: {
-        path: { id }
-      }
+    const { data, error } = await client.GET('/users/me/activities/{id}', {
+      params: { path: { id } }
     });
 
-    if (error) {
-      // 404 is expected, but other errors might be worth logging
-      return null;
-    }
-
-    return data?.activity || null;
+    if (error) return null;
+    return ((data as Record<string, unknown>)?.activity as SynchronizedActivity) || null;
   },
 
+  // TODO: Add /users/me/activities/unsynchronized to gateway proto
   async listUnsynchronized(limit = 20, offset = 0) {
-    const headers = await getAuthHeader();
-    const { data, error } = await client.GET('/activities/unsynchronized', {
-      headers,
-      params: {
-        query: {
-          limit,
-          offset
-        }
-      }
+    const { data, error } = await client.GET('/activities/unsynchronized' as '/users/me/activities/{id}', {
+      params: { query: { limit, offset } } as never
     });
 
     if (error) {
@@ -93,83 +110,55 @@ export const ActivitiesService: IActivitiesService = {
       return [];
     }
 
-    return data?.executions || [];
+    return ((data as Record<string, unknown>)?.executions as UnsynchronizedEntry[]) || [];
   },
 
+  // TODO: Add /users/me/activities/unsynchronized/{id} to gateway proto
   async getUnsynchronizedTrace(pipelineExecutionId: string) {
-    const headers = await getAuthHeader();
-    const { data, error } = await client.GET('/activities/unsynchronized/{pipelineExecutionId}', {
-      headers,
-      params: {
-        path: { pipelineExecutionId }
-      }
+    const { data, error } = await client.GET('/activities/unsynchronized/{pipelineExecutionId}' as '/users/me/activities/{id}', {
+      params: { path: { pipelineExecutionId } } as never
     });
 
-    if (error) {
-      return null;
-    }
+    if (error) return null;
 
-    return data ? { pipelineExecutionId: data.pipelineExecutionId || pipelineExecutionId, pipelineExecution: data.pipelineExecution || [] } : null;
+    const d = data as Record<string, unknown>;
+    return d ? { pipelineExecutionId: (d.pipelineExecutionId as string) || pipelineExecutionId, pipelineExecution: (d.pipelineExecution as ExecutionRecord[]) || [] } : null;
   },
 
-  // Re-post: Send activity to a new destination
   async repostToMissedDestination(activityId: string, destination: string): Promise<RepostResponse> {
-    const headers = await getAuthHeader();
-    const response = await fetch('/api/v2/repost/missed-destination', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
-      body: JSON.stringify({ activityId, destination }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Request failed' }));
-      return { success: false, message: errorData.error || 'Failed to re-post to destination' };
+    try {
+      const { data, error } = await client.POST('/repost/missed-destination', {
+        body: { activityId, destination } as never,
+      });
+      if (error) return { success: false, message: 'Failed to re-post to destination' };
+      return (data as RepostResponse) || { success: true };
+    } catch {
+      return { success: false, message: 'Failed to re-post to destination' };
     }
-
-    return response.json();
   },
 
-  // Re-post: Retry an existing destination
   async retryDestination(activityId: string, destination: string): Promise<RepostResponse> {
-    const headers = await getAuthHeader();
-    const response = await fetch('/api/v2/repost/retry-destination', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
-      body: JSON.stringify({ activityId, destination }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Request failed' }));
-      return { success: false, message: errorData.error || 'Failed to retry destination' };
+    try {
+      const { data, error } = await client.POST('/repost/retry-destination', {
+        body: { activityId, destination } as never,
+      });
+      if (error) return { success: false, message: 'Failed to retry destination' };
+      return (data as RepostResponse) || { success: true };
+    } catch {
+      return { success: false, message: 'Failed to retry destination' };
     }
-
-    return response.json();
   },
 
-  // Re-post: Full pipeline re-execution
   async fullPipelineRerun(activityId: string): Promise<RepostResponse> {
-    const headers = await getAuthHeader();
-    const response = await fetch('/api/v2/repost/full-pipeline', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
-      body: JSON.stringify({ activityId }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Request failed' }));
-      return { success: false, message: errorData.error || 'Failed to re-run pipeline' };
+    try {
+      const { data, error } = await client.POST('/repost/full-pipeline', {
+        body: { activityId } as never,
+      });
+      if (error) return { success: false, message: 'Failed to re-run pipeline' };
+      return (data as RepostResponse) || { success: true };
+    } catch {
+      return { success: false, message: 'Failed to re-run pipeline' };
     }
-
-    return response.json();
   },
 };
 

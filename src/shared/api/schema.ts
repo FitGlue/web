@@ -4,6 +4,138 @@
  */
 
 export interface paths {
+    "/billing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description ===================== Billing (Stripe) ===================== */
+        post: operations["WebhookGatewayService_BillingEvent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/billing/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_CancelSubscription"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/billing/checkout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_CreateCheckoutSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/billing/subscription": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Billing ===================== */
+        get: operations["ClientGatewayService_GetSubscription"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/billing/tier": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetTierStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/billing/trial": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_StartTrial"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/fitbit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Fitbit ===================== */
+        get: operations["WebhookGatewayService_FitbitVerification"];
+        put?: never;
+        post: operations["WebhookGatewayService_FitbitEvent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pipelines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Pipeline Management ===================== */
+        get: operations["AdminGatewayService_ListAllPipelines"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/registry": {
         parameters: {
             query?: never;
@@ -11,30 +143,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get plugin registry
-         * @description Returns all registered sources, enrichers, destinations, and integrations
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Plugin registry */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["PluginRegistryResponse"];
-                    };
-                };
-            };
-        };
+        /** @description ===================== Registry ===================== */
+        get: operations["PublicGatewayService_GetPluginRegistry"];
         put?: never;
         post?: never;
         delete?: never;
@@ -43,7 +153,87 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/inputs": {
+    "/registry/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicGatewayService_ListCategories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/registry/plugins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicGatewayService_ListPlugins"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/registry/plugins/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicGatewayService_GetPlugin"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/registry/plugins/{id}/icon": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetPluginIcon"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/registry/sources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicGatewayService_ListSources"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/repost/full-pipeline": {
         parameters: {
             query?: never;
             header?: never;
@@ -52,47 +242,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Resolve a pending input */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": components["schemas"]["InputResolutionRequest"];
-                };
-            };
-            responses: {
-                /** @description Input resolved and activity re-published */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success?: boolean;
-                        };
-                    };
-                };
-                /** @description Pending input not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        post: operations["ClientGatewayService_RepostFullPipeline"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/inputs/{id}": {
+    "/repost/missed-destination": {
         parameters: {
             query?: never;
             header?: never;
@@ -101,55 +258,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
-        /**
-         * Dismiss a pending input
-         * @description Dismiss a pending input activity
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Input dismissed */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success?: boolean;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Pending input not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        /** @description ===================== Repost Variants ===================== */
+        post: operations["ClientGatewayService_RepostMissedDestination"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/inputs/fcm-token": {
+    "/repost/retry-destination": {
         parameters: {
             query?: never;
             header?: never;
@@ -158,77 +275,21 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Register FCM Token
-         * @description Register a Firebase Cloud Messaging token for the user
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": {
-                        token: string;
-                    };
-                };
-            };
-            responses: {
-                /** @description Token registered successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success?: boolean;
-                        };
-                    };
-                };
-            };
-        };
+        post: operations["ClientGatewayService_RepostRetryDestination"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/activities/stats": {
+    "/showcase/profile/{slug}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get activity stats */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Activity statistics */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            synchronizedCount?: number;
-                            totalSynced?: number;
-                            monthlySynced?: number;
-                            weeklySynced?: number;
-                        };
-                    };
-                };
-            };
-        };
+        get: operations["PublicGatewayService_GetPublicShowcaseProfile"];
         put?: never;
         post?: never;
         delete?: never;
@@ -237,48 +298,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/activities/{id}": {
+    "/showcase/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get activity details with execution trace
-         * @description Returns activity details including pipelineExecution for trace visualization
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Activity Details */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            activity?: components["schemas"]["SynchronizedActivity"];
-                        };
-                    };
-                };
-                /** @description Activity not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        /** @description ===================== Public Showcase ===================== */
+        get: operations["PublicGatewayService_GetPublicShowcase"];
         put?: never;
         post?: never;
         delete?: never;
@@ -287,89 +315,32 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/activities/unsynchronized": {
+    "/strava": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * List unsynchronized pipeline executions
-         * @description Lists pipeline executions that did not result in a synchronized activity
-         */
-        get: {
-            parameters: {
-                query?: {
-                    limit?: number;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description List of unsynchronized executions */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            executions?: components["schemas"]["UnsynchronizedEntry"][];
-                        };
-                    };
-                };
-            };
-        };
+        /** @description ===================== Strava ===================== */
+        get: operations["WebhookGatewayService_StravaVerification"];
         put?: never;
-        post?: never;
+        post: operations["WebhookGatewayService_StravaEvent"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/activities/unsynchronized/{pipelineExecutionId}": {
+    "/users": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get unsynchronized pipeline execution trace */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    pipelineExecutionId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Pipeline execution trace */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            pipelineExecutionId?: string;
-                            pipelineExecution?: components["schemas"]["ExecutionRecord"][];
-                        };
-                    };
-                };
-                /** @description Pipeline execution not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        /** @description ===================== User Management ===================== */
+        get: operations["AdminGatewayService_ListUsers"];
         put?: never;
         post?: never;
         delete?: never;
@@ -385,181 +356,162 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
+        /** @description ===================== User Profile ===================== */
+        get: operations["ClientGatewayService_GetProfile"];
+        put: operations["ClientGatewayService_UpdateProfile"];
         post?: never;
-        /**
-         * Delete user account
-         * @description Permanently delete user account and all associated data (cascade delete)
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Account deleted */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success?: boolean;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        delete: operations["ClientGatewayService_DeleteSelf"];
         options?: never;
         head?: never;
-        /**
-         * Update user profile
-         * @description Update allowed user profile fields
-         */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": Record<string, never>;
-                };
-            };
-            responses: {
-                /** @description Profile updated */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success?: boolean;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        patch?: never;
         trace?: never;
     };
-    "/users/me/notification-preferences": {
+    "/users/me/activities": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get notification preferences
-         * @description Returns user notification preferences for push notifications
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Notification preferences */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Notify when pending input is required */
-                            notifyPendingInput?: boolean;
-                            /** @description Notify on successful pipeline completion */
-                            notifyPipelineSuccess?: boolean;
-                            /** @description Notify on pipeline failure */
-                            notifyPipelineFailure?: boolean;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        /** @description ===================== Activities ===================== */
+        get: operations["ClientGatewayService_ListActivities"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /**
-         * Update notification preferences
-         * @description Update one or more notification preferences
-         */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        notifyPendingInput?: boolean;
-                        notifyPipelineSuccess?: boolean;
-                        notifyPipelineFailure?: boolean;
-                    };
-                };
-            };
-            responses: {
-                /** @description Preferences updated */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success?: boolean;
-                        };
-                    };
-                };
-                /** @description No valid preferences provided */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/activities/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
+        get: operations["ClientGatewayService_GetActivityStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/activities/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetActivity"];
+        put?: never;
+        post?: never;
+        delete: operations["ClientGatewayService_DeleteActivity"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/activities/{id}/repost": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_RepostActivity"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/auth-email/send-email-change": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_SendEmailChangeVerification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/auth-email/send-verification": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description ===================== Auth Email ===================== */
+        post: operations["ClientGatewayService_SendVerificationEmail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/booster-data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Booster Data ===================== */
+        get: operations["ClientGatewayService_GetBoosterData"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/booster-data/{boosterId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ClientGatewayService_SetBoosterData"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeleteBoosterData"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/connections/{provider}/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description ===================== Connection Actions ===================== */
+        post: operations["ClientGatewayService_ConnectionAction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/users/me/counters": {
@@ -569,45 +521,94 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * List user counters
-         * @description Returns all user-defined counters for dynamic select in Auto Increment enricher
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description List of counters */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Counter key/identifier */
-                            id: string;
-                            /** @description Current counter value */
-                            count?: number;
-                        }[];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        /** @description ===================== Counters ===================== */
+        get: operations["ClientGatewayService_ListCounters"];
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/counters/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ClientGatewayService_UpdateCounter"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeleteCounter"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description ===================== Data Export ===================== */
+        post: operations["ClientGatewayService_ExportData"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/fcm-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description ===================== FCM Token ===================== */
+        post: operations["ClientGatewayService_SetFCMToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/integrations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Integrations ===================== */
+        get: operations["ClientGatewayService_ListIntegrations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/integrations/{provider}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetIntegration"];
+        put: operations["ClientGatewayService_SetIntegration"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeleteIntegration"];
         options?: never;
         head?: never;
         patch?: never;
@@ -622,53 +623,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Generate OAuth URL for provider
-         * @description Generates an OAuth authorization URL for the specified provider
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    provider: "strava" | "fitbit";
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OAuth URL generated */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["OAuthConnectResponse"];
-                    };
-                };
-                /** @description Invalid provider */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        post: operations["ClientGatewayService_OAuthConnect"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/users/me/integrations/{provider}": {
+    "/users/me/mobile/sync": {
         parameters: {
             query?: never;
             header?: never;
@@ -677,49 +639,92 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
-        /**
-         * Disconnect integration
-         * @description Removes the integration credentials for the specified provider
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    provider: "strava" | "fitbit" | "hevy";
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Integration disconnected */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success?: boolean;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Integration not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
+        /** @description ===================== Mobile Sync ===================== */
+        post: operations["ClientGatewayService_MobileSync"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/notification-prefs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
+        /** @description ===================== Notification Preferences ===================== */
+        get: operations["ClientGatewayService_GetNotificationPrefs"];
+        put: operations["ClientGatewayService_UpdateNotificationPrefs"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/parse-fit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description ===================== FIT File Parse ===================== */
+        post: operations["ClientGatewayService_ParseFitFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/pending-inputs/{inputId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_SubmitInput"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/personal-records": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Personal Records ===================== */
+        get: operations["ClientGatewayService_ListPersonalRecords"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/personal-records/{recordType}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ClientGatewayService_SetPersonalRecord"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeletePersonalRecord"];
         options?: never;
         head?: never;
         patch?: never;
@@ -732,161 +737,62 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** @description ===================== Pipelines ===================== */
+        get: operations["ClientGatewayService_ListPipelines"];
         put?: never;
-        /**
-         * Create pipeline
-         * @description Creates a new pipeline for the user
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["CreatePipelineRequest"];
-                };
-            };
-            responses: {
-                /** @description Pipeline created */
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["PipelineConfig"];
-                    };
-                };
-                /** @description Invalid pipeline configuration */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        post: operations["ClientGatewayService_CreatePipeline"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/users/me/pipelines/{pipelineId}": {
+    "/users/me/pipelines/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
+        get: operations["ClientGatewayService_GetPipeline"];
+        put: operations["ClientGatewayService_UpdatePipeline"];
         post?: never;
-        /**
-         * Delete pipeline
-         * @description Permanently removes a pipeline
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    pipelineId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Pipeline deleted */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success?: boolean;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Pipeline not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        delete: operations["ClientGatewayService_DeletePipeline"];
         options?: never;
         head?: never;
-        /**
-         * Update pipeline
-         * @description Updates an existing pipeline configuration
-         */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    pipelineId: string;
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["UpdatePipelineRequest"];
-                };
-            };
-            responses: {
-                /** @description Pipeline updated */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["PipelineConfig"];
-                    };
-                };
-                /** @description Invalid pipeline configuration */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Pipeline not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/pipelines/{id}/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
+        get: operations["ClientGatewayService_ListPipelineRuns"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/pipelines/{id}/runs/{runId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetPipelineRun"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/users/me/plugin-defaults": {
@@ -896,39 +802,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * List plugin defaults
-         * @description Returns all user-level plugin default configurations
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Plugin defaults */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            defaults?: components["schemas"]["PluginDefault"][];
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        /** @description ===================== Plugin Defaults ===================== */
+        get: operations["ClientGatewayService_ListPluginDefaults"];
         put?: never;
         post?: never;
         delete?: never;
@@ -945,83 +820,155 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /**
-         * Set plugin default
-         * @description Create or update a plugin default configuration
-         */
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    pluginId: string;
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": {
-                        config: {
-                            [key: string]: string;
-                        };
-                    };
-                };
-            };
-            responses: {
-                /** @description Plugin default saved */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["PluginDefault"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        put: operations["ClientGatewayService_SetPluginDefaults"];
         post?: never;
-        /**
-         * Delete plugin default
-         * @description Remove a plugin default configuration
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    pluginId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Plugin default deleted */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            success?: boolean;
-                        };
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
+        delete: operations["ClientGatewayService_DeletePluginDefaults"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcase-management/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
+        /** @description ===================== Showcase Management ===================== */
+        get: operations["ClientGatewayService_GetShowcasePreferences"];
+        put: operations["ClientGatewayService_UpdateShowcasePreferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcase-management/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetShowcaseSettings"];
+        put: operations["ClientGatewayService_UpdateShowcaseSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcase-management/profile/entries/{showcaseId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_AddShowcaseEntry"];
+        delete: operations["ClientGatewayService_RemoveShowcaseEntry"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcase-management/profile/picture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_GetShowcaseProfilePictureUploadUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcase-management/profile/slug": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ClientGatewayService_UpdateShowcaseSlug"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Showcases ===================== */
+        get: operations["ClientGatewayService_ListShowcases"];
+        put?: never;
+        post: operations["ClientGatewayService_CreateShowcase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcases/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetShowcase"];
+        put: operations["ClientGatewayService_UpdateShowcase"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeleteShowcase"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcases/{id}/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_GenerateShowcaseImages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AdminGatewayService_GetUser"];
+        put: operations["AdminGatewayService_UpdateUser"];
+        post?: never;
+        delete: operations["AdminGatewayService_DeleteUser"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1031,292 +978,874 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        PendingInput: {
-            id: string;
-            activityId: string;
-            userId?: string;
-            /** @description 1=WAITING, 2=COMPLETED */
-            status: number;
-            requiredFields?: string[];
-            inputData?: {
-                [key: string]: string;
-            };
+        AdminEmptyResponse: Record<string, never>;
+        AppleHealthIntegration: {
+            enabled?: boolean;
             /** Format: date-time */
             createdAt?: string;
-            /** @description True if this pending input was auto-created by the system (e.g., for Parkrun results) */
-            autoPopulated?: boolean;
-            /** @description ID of the enricher that created this pending input (e.g., 'parkrun') */
-            enricherProviderId?: string;
-            /**
-             * Format: date-time
-             * @description Deadline for auto-resolution (after which user may need to provide manual input)
-             */
-            autoDeadline?: string;
-            /** @description ID of the activity that was already created (for resume mode) */
-            linkedActivityId?: string;
-            /** @description ID of the pipeline that contains the enricher which created this pending input */
-            pipelineId?: string;
-            /** @description Provider-specific metadata for rich UI interactions (e.g., laps, presets) */
-            providerMetadata?: {
-                [key: string]: string;
-            };
-        };
-        InputResolutionRequest: {
-            activityId: string;
-            inputData: {
-                [key: string]: string;
-            };
-        };
-        SynchronizedActivity: {
-            activityId?: string;
-            title?: string;
-            description?: string;
-            /** @description ActivityType enum */
-            type?: number;
-            source?: string;
-            /** Format: date-time */
-            startTime?: string;
-            /** Format: date-time */
-            syncedAt?: string;
-            pipelineId?: string;
-            pipelineExecutionId?: string;
-            pipelineExecution?: components["schemas"]["ExecutionRecord"][];
-            destinations?: {
-                [key: string]: string;
-            };
-        };
-        ExecutionRecord: {
-            executionId?: string;
-            service?: string;
-            status?: string;
-            /** Format: date-time */
-            timestamp?: string;
-            /** Format: date-time */
-            startTime?: string;
-            /** Format: date-time */
-            endTime?: string;
-            errorMessage?: string;
-            triggerType?: string;
-            /** @description JSON-encoded input payload */
-            inputsJson?: string;
-            /** @description JSON-encoded output/result */
-            outputsJson?: string;
-        };
-        UnsynchronizedEntry: {
-            pipelineExecutionId?: string;
-            title?: string;
-            activityType?: string;
-            source?: string;
-            status?: string;
-            errorMessage?: string;
-            /** Format: date-time */
-            timestamp?: string;
-        };
-        UserProfile: {
-            userId: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /**
-             * @description User subscription tier
-             * @enum {string}
-             */
-            tier?: "hobbyist" | "athlete";
-            /** @description Whether user has admin privileges */
-            isAdmin?: boolean;
-            /** @description Waitlist gate - false until admin enables access */
-            accessEnabled?: boolean;
-            /**
-             * Format: date-time
-             * @description Trial expiration date, if applicable
-             */
-            trialEndsAt?: string;
-            /** @description Number of syncs used this month */
-            syncCountThisMonth?: number;
-            integrations?: components["schemas"]["IntegrationsSummary"];
-            pipelines?: components["schemas"]["PipelineConfig"][];
-        };
-        IntegrationsSummary: {
-            hevy?: components["schemas"]["IntegrationStatus"];
-            strava?: components["schemas"]["IntegrationStatus"];
-            fitbit?: components["schemas"]["IntegrationStatus"];
-            parkrun?: components["schemas"]["IntegrationStatus"];
-        };
-        IntegrationStatus: {
-            connected: boolean;
-            /** @description Masked or truncated external user ID */
-            externalUserId?: string;
             /** Format: date-time */
             lastUsedAt?: string;
         };
-        PipelineConfig: {
-            id: string;
-            /** @description Optional user-friendly name for the pipeline */
-            name?: string;
-            source: string;
-            enrichers?: components["schemas"]["EnricherConfig"][];
-            destinations: string[];
-            /** @description Destination plugin configurations, keyed by destination ID */
-            destinationConfigs?: {
-                [key: string]: {
-                    config?: {
-                        [key: string]: string;
-                    };
-                };
-            };
+        /** @description Stripe billing webhook */
+        BillingWebhookRequest: {
+            /** Format: bytes */
+            payload?: string;
         };
-        EnricherConfig: {
-            /** @description EnricherProviderType enum value */
-            providerType: number;
-            typedConfig?: {
+        BoosterExecution: {
+            providerName?: string;
+            status?: string;
+            durationMs?: string;
+            metadata?: {
                 [key: string]: string;
             };
+            error?: string;
         };
-        CreatePipelineRequest: {
-            /** @description Optional user-friendly name for the pipeline */
-            name?: string;
-            source: string;
-            enrichers?: components["schemas"]["EnricherConfig"][];
-            destinations: string[];
-        };
-        UpdatePipelineRequest: {
-            /** @description Optional user-friendly name for the pipeline */
-            name?: string;
-            source?: string;
-            enrichers?: components["schemas"]["EnricherConfig"][];
-            destinations?: string[];
-        };
-        OAuthConnectResponse: {
-            /** @description OAuth authorization URL to redirect user to */
-            authUrl: string;
+        ConfigFieldDependency: {
+            fieldKey?: string;
+            values?: string[];
         };
         ConfigFieldOption: {
-            value: string;
-            label: string;
-        };
-        ConfigFieldValidation: {
-            minLength?: number;
-            maxLength?: number;
-            pattern?: string;
-            minValue?: number;
-            maxValue?: number;
+            value?: string;
+            label?: string;
         };
         ConfigFieldSchema: {
-            key: string;
-            label: string;
+            key?: string;
+            label?: string;
             description?: string;
-            /** @description ConfigFieldType enum */
-            fieldType: number;
+            /** Format: enum */
+            fieldType?: number;
             required?: boolean;
             defaultValue?: string;
             options?: components["schemas"]["ConfigFieldOption"][];
             validation?: components["schemas"]["ConfigFieldValidation"];
             dependsOn?: components["schemas"]["ConfigFieldDependency"];
-            /** @description Options for the key side of KEY_VALUE_MAP */
             keyOptions?: components["schemas"]["ConfigFieldOption"][];
-            /** @description Options for the value side of KEY_VALUE_MAP */
             valueOptions?: components["schemas"]["ConfigFieldOption"][];
-            /** @description Key for dynamic data source (e.g., 'hevy_routines') */
             dynamicSource?: string;
-            /** @description Key for dynamic data source for the value side of KEY_VALUE_MAP (e.g., 'counters') */
             valueDynamicSource?: string;
         };
-        ConfigFieldDependency: {
-            /** @description Key of the field this depends on */
-            fieldKey: string;
-            /** @description Show when dependent field has one of these values */
-            values: string[];
+        ConfigFieldValidation: {
+            /** Format: int32 */
+            minLength?: number;
+            /** Format: int32 */
+            maxLength?: number;
+            pattern?: string;
+            /** Format: double */
+            minValue?: number;
+            /** Format: double */
+            maxValue?: number;
+        };
+        ConnectionActionGatewayRequest: {
+            provider?: string;
+            action?: string;
+        };
+        Counter: {
+            id?: string;
+            count?: string;
+            /** Format: date-time */
+            lastUpdated?: string;
+        };
+        /** @description Billing */
+        CreateCheckoutGatewayRequest: {
+            successUrl?: string;
+            cancelUrl?: string;
+        };
+        CreateCheckoutGatewayResponse: {
+            sessionUrl?: string;
+        };
+        CreatePipelineGatewayRequest: {
+            pipeline?: components["schemas"]["PipelineConfig"];
+        };
+        CreateShowcaseGatewayRequest: {
+            showcase?: components["schemas"]["ShowcasedActivity"];
+        };
+        DestinationConfig: {
+            config?: {
+                [key: string]: string;
+            };
+            excludedEnrichers?: string[];
+        };
+        DestinationOutcome: {
+            /** Format: enum */
+            destination?: number;
+            /** Format: enum */
+            status?: number;
+            externalId?: string;
+            error?: string;
+            /** Format: date-time */
+            completedAt?: string;
+        };
+        EnricherConfig: {
+            /** Format: enum */
+            providerType?: number;
+            typedConfig?: {
+                [key: string]: string;
+            };
+        };
+        /** @description Data Export */
+        ExportDataGatewayResponse: {
+            downloadUrl?: string;
+        };
+        FitbitIntegration: {
+            enabled?: boolean;
+            accessToken?: string;
+            refreshToken?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            fitbitUserId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        FitbitVerificationResponse: Record<string, never>;
+        GetActivityStatsGatewayResponse: {
+            /** Format: int32 */
+            totalActivities?: number;
+            /** Format: int32 */
+            totalShowcases?: number;
+            lastActivityAt?: string;
+        };
+        /** @description Booster Data */
+        GetBoosterDataGatewayResponse: {
+            data?: {
+                [key: string]: Record<string, never>;
+            };
+        };
+        /** @description Integrations */
+        GetIntegrationGatewayResponse: {
+            integrations?: components["schemas"]["UserIntegrations"];
+        };
+        GetPictureUploadUrlGatewayRequest: {
+            contentType?: string;
+        };
+        GetPictureUploadUrlGatewayResponse: {
+            uploadUrl?: string;
+            publicUrl?: string;
+            contentType?: string;
+            maxSizeBytes?: string;
+        };
+        /** @description Registry */
+        GetPluginIconGatewayResponse: {
+            /** Format: bytes */
+            iconData?: string;
+            contentType?: string;
+        };
+        GetPublicShowcaseProfileResponse: {
+            profile?: components["schemas"]["ShowcaseProfile"];
+            showcases?: components["schemas"]["ShowcasedActivity"][];
+            /** Format: int32 */
+            totalPages?: number;
+            /** Format: int32 */
+            currentPage?: number;
+        };
+        GetShowcaseSettingsGatewayResponse: {
+            profile?: components["schemas"]["ShowcaseProfile"];
+            activities?: components["schemas"]["ShowcaseActivityEntryGateway"][];
+        };
+        GetTierStatusGatewayResponse: {
+            /** Format: enum */
+            effectiveTier?: number;
+            isTrial?: boolean;
+        };
+        GitHubIntegration: {
+            enabled?: boolean;
+            accessToken?: string;
+            refreshToken?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            githubUserId?: string;
+            githubUsername?: string;
+            scope?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        GoogleIntegration: {
+            enabled?: boolean;
+            accessToken?: string;
+            refreshToken?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            googleUserId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        /** @description Contains an arbitrary serialized message along with a @type that describes the type of the serialized message. */
+        GoogleProtobufAny: {
+            /** @description The type of the serialized message. */
+            "@type"?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        HealthConnectIntegration: {
+            enabled?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        HevyIntegration: {
+            enabled?: boolean;
+            apiKey?: string;
+            userId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        IntegrationAction: {
+            id?: string;
+            label?: string;
+            description?: string;
+            icon?: string;
+        };
+        IntegrationManifest: {
+            id?: string;
+            name?: string;
+            description?: string;
+            icon?: string;
+            /** Format: enum */
+            authType?: number;
+            enabled?: boolean;
+            docsUrl?: string;
+            setupTitle?: string;
+            setupInstructions?: string;
+            apiKeyLabel?: string;
+            apiKeyHelpUrl?: string;
+            marketingDescription?: string;
+            features?: string[];
+            iconType?: string;
+            iconPath?: string;
+            isTemporarilyUnavailable?: boolean;
+            actions?: components["schemas"]["IntegrationAction"][];
+        };
+        IntervalsIntegration: {
+            enabled?: boolean;
+            apiKey?: string;
+            athleteId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        Lap: {
+            /** Format: date-time */
+            startTime?: string;
+            /** Format: double */
+            totalElapsedTime?: number;
+            /** Format: double */
+            totalDistance?: number;
+            records?: components["schemas"]["Record"][];
+            exerciseName?: string;
+            intensity?: string;
+        };
+        ListActivitiesGatewayResponse: {
+            activities?: components["schemas"]["StandardizedActivity"][];
+            nextPageToken?: string;
+        };
+        ListAllPipelinesAdminResponse: {
+            pipelines?: components["schemas"]["PipelineConfig"][];
+        };
+        ListCategoriesGatewayResponse: {
+            categories?: string[];
+        };
+        ListCategoriesPublicResponse: {
+            categories?: string[];
+        };
+        /** @description Counters */
+        ListCountersGatewayResponse: {
+            counters?: components["schemas"]["Counter"][];
+        };
+        /** @description Personal Records */
+        ListPersonalRecordsGatewayResponse: {
+            records?: components["schemas"]["PersonalRecord"][];
+        };
+        ListPipelineRunsGatewayResponse: {
+            runs?: components["schemas"]["PipelineRun"][];
+            nextPageToken?: string;
+        };
+        /** @description Pipelines */
+        ListPipelinesGatewayResponse: {
+            pipelines?: components["schemas"]["PipelineConfig"][];
+        };
+        /** @description Plugin Defaults */
+        ListPluginDefaultsGatewayResponse: {
+            defaults?: {
+                [key: string]: Record<string, never>;
+            };
+        };
+        ListPluginsPublicResponse: {
+            plugins?: components["schemas"]["PluginManifest"][];
+        };
+        /** @description Showcases */
+        ListShowcasesGatewayResponse: {
+            showcases?: components["schemas"]["ShowcaseProfileEntry"][];
+        };
+        ListSourcesGatewayResponse: {
+            sources?: components["schemas"]["PluginManifest"][];
+        };
+        ListSourcesPublicResponse: {
+            sources?: components["schemas"]["PluginManifest"][];
+        };
+        ListUsersAdminResponse: {
+            users?: components["schemas"]["UserProfile"][];
+            nextPageToken?: string;
+        };
+        MockIntegration: {
+            enabled?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        NotificationPreferences: {
+            notifyPendingInput?: boolean;
+            notifyPipelineSuccess?: boolean;
+            notifyPipelineFailure?: boolean;
+        };
+        OAuthConnectResponse: {
+            url?: string;
+        };
+        OuraIntegration: {
+            enabled?: boolean;
+            accessToken?: string;
+            refreshToken?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            ouraUserId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        ParkrunIntegration: {
+            enabled?: boolean;
+            athleteId?: string;
+            countryUrl?: string;
+            consentGiven?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        /** @description FIT File Parse */
+        ParseFitFileGatewayRequest: {
+            /** Format: bytes */
+            fitFileContent?: string;
+            title?: string;
+            description?: string;
+            pipelineId?: string;
+        };
+        /** @description Personal Record for tracking PRs across cardio and strength activities */
+        PersonalRecord: {
+            recordType?: string;
+            /** Format: double */
+            value?: number;
+            unit?: string;
+            activityId?: string;
+            /** Format: date-time */
+            achievedAt?: string;
+            /** Format: enum */
+            activityType?: number;
+            /** Format: double */
+            previousValue?: number;
+            /** Format: double */
+            improvement?: number;
+        };
+        PipelineConfig: {
+            id?: string;
+            source?: string;
+            enrichers?: components["schemas"]["EnricherConfig"][];
+            destinations?: number[];
+            name?: string;
+            disabled?: boolean;
+            sourceConfig?: {
+                [key: string]: string;
+            };
+            destinationConfigs?: {
+                [key: string]: components["schemas"]["DestinationConfig"];
+            };
+        };
+        PipelineRun: {
+            id?: string;
+            pipelineId?: string;
+            activityId?: string;
+            source?: string;
+            sourceActivityId?: string;
+            title?: string;
+            description?: string;
+            /** Format: enum */
+            type?: number;
+            /** Format: date-time */
+            startTime?: string;
+            /** Format: enum */
+            status?: number;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            boosters?: components["schemas"]["BoosterExecution"][];
+            destinations?: components["schemas"]["DestinationOutcome"][];
+            statusMessage?: string;
+            pendingInputId?: string;
+            originalPayloadUri?: string;
+            enrichedEventUri?: string;
+        };
+        PluginManifest: {
+            id?: string;
+            /** Format: enum */
+            type?: number;
+            name?: string;
+            description?: string;
+            icon?: string;
+            configSchema?: components["schemas"]["ConfigFieldSchema"][];
+            requiredIntegrations?: string[];
+            enabled?: boolean;
+            /** Format: int32 */
+            enricherProviderType?: number;
+            /** Format: int32 */
+            destinationType?: number;
+            marketingDescription?: string;
+            features?: string[];
+            transformations?: components["schemas"]["Transformation"][];
+            useCases?: string[];
+            externalUrlTemplate?: string;
+            requiredTier?: string;
+            category?: string;
+            /** Format: int32 */
+            sortOrder?: number;
+            isPremium?: boolean;
+            /** Format: int32 */
+            popularityScore?: number;
+            iconType?: string;
+            iconPath?: string;
+            isTemporarilyUnavailable?: boolean;
+            allowMultipleInstances?: boolean;
+        };
+        PluginRegistryResponse: {
+            sources?: components["schemas"]["PluginManifest"][];
+            enrichers?: components["schemas"]["PluginManifest"][];
+            destinations?: components["schemas"]["PluginManifest"][];
+            integrations?: components["schemas"]["IntegrationManifest"][];
+        };
+        PolarIntegration: {
+            enabled?: boolean;
+            accessToken?: string;
+            refreshToken?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            polarUserId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        Record: {
+            /** Format: date-time */
+            timestamp?: string;
+            /** Format: int32 */
+            heartRate?: number;
+            /** Format: int32 */
+            power?: number;
+            /** Format: int32 */
+            cadence?: number;
+            /** Format: double */
+            speed?: number;
+            /** Format: double */
+            altitude?: number;
+            /** Format: double */
+            positionLat?: number;
+            /** Format: double */
+            positionLong?: number;
+            /** Format: int32 */
+            groundContactTime?: number;
+            /** Format: int32 */
+            verticalOscillation?: number;
+            /** Format: int32 */
+            verticalRatio?: number;
+            /** Format: double */
+            stepLength?: number;
+        };
+        RepostGatewayResponse: {
+            success?: boolean;
+            message?: string;
+        };
+        /** @description Repost Variants */
+        RepostVariantGatewayRequest: {
+            activityId?: string;
+            destination?: string;
+        };
+        /** @description Auth Email */
+        SendEmailChangeGatewayRequest: {
+            newEmail?: string;
+        };
+        Session: {
+            /** Format: date-time */
+            startTime?: string;
+            /** Format: double */
+            totalElapsedTime?: number;
+            /** Format: double */
+            totalDistance?: number;
+            laps?: components["schemas"]["Lap"][];
+            strengthSets?: components["schemas"]["StrengthSet"][];
+            /** Format: double */
+            totalCalories?: number;
+            /** Format: int32 */
+            avgHeartRate?: number;
+            /** Format: int32 */
+            maxHeartRate?: number;
+        };
+        /** @description FCM Token */
+        SetFCMTokenGatewayRequest: {
+            token?: string;
+            platform?: string;
+        };
+        SetPersonalRecordGatewayRequest: {
+            recordType?: string;
+            /** Format: double */
+            value?: number;
+            unit?: string;
+            activityId?: string;
+        };
+        ShowcaseActivityEntryGateway: {
+            showcaseId?: string;
+            title?: string;
+            activityType?: string;
+            source?: string;
+            startTime?: string;
+            createdAt?: string;
+            inProfile?: boolean;
+        };
+        ShowcaseProfile: {
+            slug?: string;
+            userId?: string;
+            displayName?: string;
+            entries?: components["schemas"]["ShowcaseProfileEntry"][];
+            /** Format: int32 */
+            totalActivities?: number;
+            /** Format: double */
+            totalDistanceMeters?: number;
+            /** Format: double */
+            totalDurationSeconds?: number;
+            /** Format: date-time */
+            latestActivityAt?: string;
+            /** Format: int32 */
+            totalSets?: number;
+            /** Format: int32 */
+            totalReps?: number;
+            /** Format: double */
+            totalWeightKg?: number;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            subtitle?: string;
+            bio?: string;
+            profilePictureUrl?: string;
+            visible?: boolean;
+            theme?: components["schemas"]["ShowcaseTheme"];
+        };
+        ShowcaseProfileEntry: {
+            showcaseId?: string;
+            title?: string;
+            /** Format: enum */
+            activityType?: number;
+            /** Format: enum */
+            source?: number;
+            /** Format: date-time */
+            startTime?: string;
+            routeThumbnailUrl?: string;
+            /** Format: double */
+            distanceMeters?: number;
+            /** Format: double */
+            durationSeconds?: number;
+            /** Format: int32 */
+            totalSets?: number;
+            /** Format: int32 */
+            totalReps?: number;
+            /** Format: double */
+            totalWeightKg?: number;
+        };
+        ShowcaseTheme: {
+            themeId?: string;
+            customAccentColor?: string;
+            animationId?: string;
+            cardStyle?: string;
+        };
+        /** @description ShowcasedActivity represents a publicly shareable activity snapshot. */
+        ShowcasedActivity: {
+            showcaseId?: string;
+            activityId?: string;
+            userId?: string;
+            title?: string;
+            description?: string;
+            /** Format: enum */
+            activityType?: number;
+            /** Format: enum */
+            source?: number;
+            /** Format: date-time */
+            startTime?: string;
+            activityData?: components["schemas"]["StandardizedActivity"];
+            fitFileUri?: string;
+            appliedEnrichments?: string[];
+            enrichmentMetadata?: {
+                [key: string]: string;
+            };
+            tags?: string[];
+            pipelineExecutionId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            ownerDisplayName?: string;
+            activityDataUri?: string;
+        };
+        SpotifyIntegration: {
+            enabled?: boolean;
+            accessToken?: string;
+            refreshToken?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            spotifyUserId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        StandardizedActivity: {
+            /** Format: enum */
+            source?: number;
+            externalId?: string;
+            userId?: string;
+            /** Format: date-time */
+            startTime?: string;
+            name?: string;
+            /** Format: enum */
+            type?: number;
+            sessions?: components["schemas"]["Session"][];
+            description?: string;
+            tags?: string[];
+            notes?: string;
+            timeMarkers?: components["schemas"]["TimeMarker"][];
+            workout?: components["schemas"]["WorkoutDefinition"];
+        };
+        /** @description The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors). */
+        Status: {
+            /**
+             * Format: int32
+             * @description The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+             */
+            code?: number;
+            /** @description A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client. */
+            message?: string;
+            /** @description A list of messages that carry the error details.  There is a common set of message types for APIs to use. */
+            details?: components["schemas"]["GoogleProtobufAny"][];
+        };
+        StravaIntegration: {
+            enabled?: boolean;
+            accessToken?: string;
+            refreshToken?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            athleteId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        StravaVerificationResponse: {
+            hubChallenge?: string;
+        };
+        StrengthSet: {
+            exerciseName?: string;
+            /** Format: int32 */
+            reps?: number;
+            /** Format: double */
+            weightKg?: number;
+            /** Format: date-time */
+            startTime?: string;
+            /** Format: int32 */
+            durationSeconds?: number;
+            notes?: string;
+            supersetId?: string;
+            /** Format: enum */
+            primaryMuscleGroup?: number;
+            secondaryMuscleGroups?: number[];
+            /** Format: double */
+            distanceMeters?: number;
+            setType?: string;
+        };
+        SubmitInputGatewayRequest: {
+            inputId?: string;
+            inputData?: {
+                [key: string]: string;
+            };
+        };
+        /** @description SubscriptionState tracks the user's billing info, decoupled from core profile. */
+        SubscriptionState: {
+            userId?: string;
+            /** @description Stripe customer ID for billing */
+            stripeCustomerId?: string;
+            stripeSubscriptionId?: string;
+            /**
+             * Format: date-time
+             * @description Athlete trial end date (null = no trial)
+             */
+            trialEndsAt?: string;
+            /**
+             * Format: enum
+             * @description The actual purchased tier (free users won't have this record or it will be free)
+             */
+            subscriptionTier?: number;
+            /** Format: date-time */
+            currentPeriodStart?: string;
+            /** Format: date-time */
+            currentPeriodEnd?: string;
+            cancelAtPeriodEnd?: boolean;
+            status?: string;
+        };
+        TimeMarker: {
+            /** Format: date-time */
+            timestamp?: string;
+            label?: string;
+            markerType?: string;
+        };
+        TrainingPeaksIntegration: {
+            enabled?: boolean;
+            accessToken?: string;
+            refreshToken?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            athleteId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
         };
         Transformation: {
             field?: string;
             label?: string;
             before?: string;
             after?: string;
-            /** @description Visual rendering type (hr-graph, gps-map) - renders SVG instead of text when set */
             visualType?: string;
-            /** @description Pre-formatted HTML for after state - used instead of after when set */
             afterHtml?: string;
         };
-        PluginManifest: {
-            id: string;
-            /** @description PluginType enum */
-            type: number;
-            name: string;
-            description?: string;
-            icon?: string;
-            enabled: boolean;
-            requiredIntegrations?: string[];
-            configSchema?: components["schemas"]["ConfigFieldSchema"][];
-            enricherProviderType?: number;
-            destinationType?: number;
-            marketingDescription?: string;
-            features?: string[];
-            transformations?: components["schemas"]["Transformation"][];
-            useCases?: string[];
-            /** @description Template URL for external activity link (e.g., 'https://strava.com/activities/{id}') */
-            externalUrlTemplate?: string;
-            /** @description Required subscription tier to use this plugin (e.g., 'athlete') */
-            requiredTier?: string;
-            /** @description Category for UX grouping (e.g., 'wearables', 'stats', 'detection') */
-            category?: string;
-            /** @description Ordering within category (lower = first) */
-            sortOrder?: number;
-            /** @description Display premium badge (Athlete-tier) */
-            isPremium?: boolean;
-            /** @description Score for 'recommended' sorting in wizard */
-            popularityScore?: number;
-            /** @description Icon type: emoji, svg, png, or jpg */
-            iconType?: string;
-            /** @description Path to icon asset (e.g., /images/icons/strava.svg) */
-            iconPath?: string;
-            /** @description When true, this enricher can be added multiple times to a pipeline with different configs */
-            allowMultipleInstances?: boolean;
+        UpdateCounterGatewayRequest: {
+            name?: string;
+            count?: string;
         };
-        IntegrationManifest: {
-            id: string;
-            name: string;
-            description?: string;
-            icon?: string;
-            /** @description IntegrationAuthType enum */
-            authType: number;
-            enabled: boolean;
-            docsUrl?: string;
-            setupTitle?: string;
-            setupInstructions?: string;
-            apiKeyLabel?: string;
-            apiKeyHelpUrl?: string;
-            /** @description Icon type: emoji, svg, png, or jpg */
-            iconType?: string;
-            /** @description Path to icon asset (e.g., /images/icons/strava.svg) */
-            iconPath?: string;
-            /** @description When true, marks integration as 'Coming Soon' */
-            isTemporarilyUnavailable?: boolean;
+        UpdatePipelineGatewayRequest: {
+            id?: string;
+            pipeline?: components["schemas"]["PipelineConfig"];
         };
-        /** @description Platform-wide statistics, returned only when marketingMode=true */
-        PlatformStats: {
-            /** @description Number of users with access enabled */
-            athleteCount: number;
-            /** @description Total synchronized activities across all users */
-            activitiesBoostedCount: number;
+        /** @description User */
+        UpdateProfileGatewayRequest: {
+            profile?: components["schemas"]["UserProfile"];
         };
-        PluginRegistryResponse: {
-            sources: components["schemas"]["PluginManifest"][];
-            enrichers: components["schemas"]["PluginManifest"][];
-            destinations: components["schemas"]["PluginManifest"][];
-            integrations: components["schemas"]["IntegrationManifest"][];
-            /** @description Platform stats, only present when marketingMode=true */
-            stats?: components["schemas"]["PlatformStats"];
+        UpdateShowcaseGatewayRequest: {
+            id?: string;
+            showcase?: components["schemas"]["ShowcasedActivity"];
         };
-        PluginDefault: {
-            /** @description Registry ID of the plugin (e.g., 'googlesheets', 'github') */
-            pluginId: string;
-            /** @description Default configuration key-value pairs */
-            config: {
-                [key: string]: string;
-            };
+        /** @description Showcase Management */
+        UpdateShowcasePreferencesGatewayRequest: {
+            preferences?: components["schemas"]["ShowcaseProfile"];
+        };
+        UpdateShowcaseSettingsGatewayRequest: {
+            settings?: components["schemas"]["ShowcaseProfile"];
+        };
+        UpdateShowcaseSlugGatewayRequest: {
+            slug?: string;
+        };
+        UpdateShowcaseSlugGatewayResponse: {
+            slug?: string;
+        };
+        UpdateUserAdminRequest: {
+            id?: string;
+            accessEnabled?: boolean;
+        };
+        /** @description UserIntegrations represents all connected third-party providers. */
+        UserIntegrations: {
+            hevy?: components["schemas"]["HevyIntegration"];
+            fitbit?: components["schemas"]["FitbitIntegration"];
+            strava?: components["schemas"]["StravaIntegration"];
+            mock?: components["schemas"]["MockIntegration"];
+            parkrun?: components["schemas"]["ParkrunIntegration"];
+            spotify?: components["schemas"]["SpotifyIntegration"];
+            trainingpeaks?: components["schemas"]["TrainingPeaksIntegration"];
+            intervals?: components["schemas"]["IntervalsIntegration"];
+            google?: components["schemas"]["GoogleIntegration"];
+            oura?: components["schemas"]["OuraIntegration"];
+            polar?: components["schemas"]["PolarIntegration"];
+            wahoo?: components["schemas"]["WahooIntegration"];
+            github?: components["schemas"]["GitHubIntegration"];
+            appleHealth?: components["schemas"]["AppleHealthIntegration"];
+            healthConnect?: components["schemas"]["HealthConnectIntegration"];
+        };
+        /**
+         * @description UserProfile represents the core user identity and preferences,
+         *      cleanly separated from billing and integrations.
+         */
+        UserProfile: {
+            userId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            fcmTokens?: string[];
+            /** Format: enum */
+            tier?: number;
+            isAdmin?: boolean;
+            /**
+             * Format: int32
+             * @description Monthly sync tracking
+             */
+            syncCountThisMonth?: number;
+            /** Format: date-time */
+            syncCountResetAt?: string;
+            /** Format: int32 */
+            preventedSyncCount?: number;
+            /** @description Waitlist gate - false until admin enables access */
+            accessEnabled?: boolean;
+            /** @description User's push notification preferences */
+            notificationPreferences?: components["schemas"]["NotificationPreferences"];
+            /** Format: date-time */
+            trialEndsAt?: string;
+            email?: string;
+            displayName?: string;
+        };
+        WahooIntegration: {
+            enabled?: boolean;
+            accessToken?: string;
+            refreshToken?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            wahooUserId?: string;
             /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
-            updatedAt?: string;
+            lastUsedAt?: string;
+        };
+        /** @description Generic webhook event payload (Strava/Fitbit POST events) */
+        WebhookEventRequest: {
+            /** Format: bytes */
+            payload?: string;
+        };
+        WorkoutDefinition: {
+            name?: string;
+            steps?: components["schemas"]["WorkoutStep"][];
+        };
+        WorkoutStep: {
+            intensity?: string;
+            durationType?: string;
+            /** Format: uint32 */
+            durationValue?: number;
+            targetType?: string;
+            /** Format: uint32 */
+            targetLow?: number;
+            /** Format: uint32 */
+            targetHigh?: number;
         };
     };
     responses: never;
@@ -1326,4 +1855,2537 @@ export interface components {
     pathItems: never;
 }
 export type $defs = Record<string, never>;
-export type operations = Record<string, never>;
+export interface operations {
+    WebhookGatewayService_BillingEvent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BillingWebhookRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_CancelSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubscriptionState"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_CreateCheckoutSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCheckoutGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateCheckoutGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubscriptionState"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetTierStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetTierStatusGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_StartTrial: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubscriptionState"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    WebhookGatewayService_FitbitVerification: {
+        parameters: {
+            query?: {
+                verify?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FitbitVerificationResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    WebhookGatewayService_FitbitEvent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookEventRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_ListAllPipelines: {
+        parameters: {
+            query?: {
+                userId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListAllPipelinesAdminResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    PublicGatewayService_GetPluginRegistry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PluginRegistryResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    PublicGatewayService_ListCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListCategoriesPublicResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    PublicGatewayService_ListPlugins: {
+        parameters: {
+            query?: {
+                category?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListPluginsPublicResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    PublicGatewayService_GetPlugin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PluginManifest"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetPluginIcon: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetPluginIconGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    PublicGatewayService_ListSources: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListSourcesPublicResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_RepostFullPipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RepostVariantGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepostGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_RepostMissedDestination: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RepostVariantGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepostGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_RepostRetryDestination: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RepostVariantGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepostGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    PublicGatewayService_GetPublicShowcaseProfile: {
+        parameters: {
+            query?: {
+                page?: number;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetPublicShowcaseProfileResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    PublicGatewayService_GetPublicShowcase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcasedActivity"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    WebhookGatewayService_StravaVerification: {
+        parameters: {
+            query?: {
+                hubMode?: string;
+                hubChallenge?: string;
+                hubVerifyToken?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StravaVerificationResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    WebhookGatewayService_StravaEvent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookEventRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_ListUsers: {
+        parameters: {
+            query?: {
+                limit?: number;
+                pageToken?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListUsersAdminResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfile"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdateProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProfileGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfile"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeleteSelf: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListActivities: {
+        parameters: {
+            query?: {
+                limit?: number;
+                pageToken?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListActivitiesGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetActivityStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetActivityStatsGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StandardizedActivity"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeleteActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_RepostActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SendEmailChangeVerification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendEmailChangeGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SendVerificationEmail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetBoosterData: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetBoosterDataGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SetBoosterData: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                boosterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeleteBoosterData: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                boosterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ConnectionAction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectionActionGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListCounters: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListCountersGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdateCounter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCounterGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Counter"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeleteCounter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ExportData: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportDataGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SetFCMToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetFCMTokenGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListIntegrations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserIntegrations"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetIntegrationGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SetIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeleteIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_OAuthConnect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthConnectResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_MobileSync: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetNotificationPrefs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationPreferences"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdateNotificationPrefs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationPreferences"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationPreferences"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ParseFitFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseFitFileGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StandardizedActivity"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SubmitInput: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                inputId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitInputGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListPersonalRecords: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListPersonalRecordsGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SetPersonalRecord: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                recordType: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetPersonalRecordGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalRecord"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeletePersonalRecord: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                recordType: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListPipelines: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListPipelinesGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_CreatePipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePipelineGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PipelineConfig"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetPipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PipelineConfig"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdatePipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePipelineGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PipelineConfig"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeletePipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListPipelineRuns: {
+        parameters: {
+            query?: {
+                limit?: number;
+                pageToken?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListPipelineRunsGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetPipelineRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                runId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PipelineRun"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListPluginDefaults: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListPluginDefaultsGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SetPluginDefaults: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pluginId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeletePluginDefaults: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pluginId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetShowcasePreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcaseProfile"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdateShowcasePreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateShowcasePreferencesGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcaseProfile"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetShowcaseSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetShowcaseSettingsGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdateShowcaseSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateShowcaseSettingsGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcaseProfile"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_AddShowcaseEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                showcaseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_RemoveShowcaseEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                showcaseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetShowcaseProfilePictureUploadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetPictureUploadUrlGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetPictureUploadUrlGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdateShowcaseSlug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateShowcaseSlugGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateShowcaseSlugGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListShowcases: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListShowcasesGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_CreateShowcase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateShowcaseGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcasedActivity"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetShowcase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcasedActivity"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdateShowcase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateShowcaseGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcasedActivity"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeleteShowcase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GenerateShowcaseImages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_GetUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfile"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_UpdateUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateUserAdminRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfile"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_DeleteUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminEmptyResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+}

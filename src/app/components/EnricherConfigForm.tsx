@@ -63,7 +63,7 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
   const isFieldVisible = (field: ConfigFieldSchema): boolean => {
     if (!field.dependsOn) return true;
     const dependentValue = values[field.dependsOn.fieldKey] || '';
-    return field.dependsOn.values.includes(dependentValue);
+    return (field.dependsOn.values ?? []).includes(dependentValue);
   };
 
   const renderField = (field: ConfigFieldSchema) => {
@@ -147,8 +147,8 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
             onChange={v => handleChange(field.key, v)}
             keyPlaceholder="Key"
             valuePlaceholder="Value"
-            keyOptions={(field.keyOptions?.length ?? 0) > 0 ? field.keyOptions : undefined}
-            valueOptions={(field.valueOptions?.length ?? 0) > 0 ? field.valueOptions : undefined}
+            keyOptions={(field.keyOptions?.length ?? 0) > 0 ? field.keyOptions as { value: string; label: string }[] : undefined}
+            valueOptions={(field.valueOptions?.length ?? 0) > 0 ? field.valueOptions as { value: string; label: string }[] : undefined}
             valueDynamicSource={field.valueDynamicSource}
           />
         );

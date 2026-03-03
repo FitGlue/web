@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useUser } from '../../../hooks/useUser';
-import { useApi } from '../../../hooks/useApi';
+import { client } from '../../../../shared/api/client';
 import { userAtom } from '../../../state/authState';
 import { profilePictureUrlAtom } from '../../../state/userState';
 import { getEffectiveTier, TIER_ATHLETE } from '../../../utils/tier';
@@ -13,7 +13,6 @@ let profilePicFetched = false;
 
 export const AppHeader: React.FC = () => {
     const { user: profile, loading } = useUser();
-    const api = useApi();
     const [firebaseUser] = useAtom(userAtom);
     const [showMenu, setShowMenu] = useState(false);
     const [profilePictureUrl, setProfilePictureUrl] = useAtom(profilePictureUrlAtom);
@@ -29,12 +28,13 @@ export const AppHeader: React.FC = () => {
         let cancelled = false;
         (async () => {
             try {
-                const data = await api.get('/showcase-management/profile') as {
+                const { data } = await client.GET('/users/me/showcase-management/profile');
+                const typedData = data as {
                     profile: { profilePictureUrl?: string } | null;
                 };
                 if (!cancelled) {
-                    if (data.profile?.profilePictureUrl) {
-                        setProfilePictureUrl(data.profile.profilePictureUrl);
+                    if (typedData.profile?.profilePictureUrl) {
+                        setProfilePictureUrl(typedData.profile.profilePictureUrl);
                     }
                 }
             } catch {
@@ -43,7 +43,7 @@ export const AppHeader: React.FC = () => {
             }
         })();
         return () => { cancelled = true; };
-    }, [api, isAthlete, setProfilePictureUrl]);
+    }, [isAthlete, setProfilePictureUrl]);
 
     // Close menu when clicking outside
     useEffect(() => {

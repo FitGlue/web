@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PageLayout, Stack } from '../components/library/layout';
 import { Card, Button, Heading, Paragraph, CardSkeleton, ConfirmDialog, IdBadge, Badge, GlowCard, FlowVisualization, BoosterGrid, Pill, useToast } from '../components/library/ui';
 
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { SmartNudge } from '../components/SmartNudge';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
@@ -152,7 +152,6 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
 
 
 const PipelinesPage: React.FC = () => {
-    const api = useApi();
     const navigate = useNavigate();
     const toast = useToast();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -186,7 +185,7 @@ const PipelinesPage: React.FC = () => {
         setDeleteConfirm(null);
         setDeleting(pipelineId);
         try {
-            await api.delete(`/users/me/pipelines/${pipelineId}`);
+            await client.DELETE('/users/me/pipelines/{id}', { params: { path: { id: pipelineId } } });
             await refreshPipelines();
             toast.success('Pipeline Deleted', `"${pipeline?.name || 'Pipeline'}" has been deleted`);
         } catch (error) {
@@ -201,7 +200,7 @@ const PipelinesPage: React.FC = () => {
         setToggling(pipelineId);
         const pipeline = pipelines.find(p => p.id === pipelineId);
         try {
-            await api.put(`/users/me/pipelines/${pipelineId}`, { disabled });
+            await client.PUT('/users/me/pipelines/{id}', { params: { path: { id: pipelineId } }, body: { disabled } as never });
             await refreshPipelines();
             toast.success(
                 disabled ? 'Pipeline Disabled' : 'Pipeline Enabled',
@@ -219,11 +218,13 @@ const PipelinesPage: React.FC = () => {
         setDuplicating(pipeline.id);
         try {
             const copyName = `${pipeline.name || 'Unnamed Pipeline'} (Copy)`;
-            await api.post('/users/me/pipelines', {
-                name: copyName,
-                source: pipeline.source,
-                enrichers: pipeline.enrichers ?? [],
-                destinations: pipeline.destinations,
+            await client.POST('/users/me/pipelines', {
+                body: {
+                    name: copyName,
+                    source: pipeline.source,
+                    enrichers: pipeline.enrichers ?? [],
+                    destinations: pipeline.destinations,
+                } as never,
             });
             await refreshPipelines();
             toast.success('Pipeline Duplicated', `"${copyName}" has been created`);

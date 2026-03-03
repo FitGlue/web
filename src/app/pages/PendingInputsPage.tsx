@@ -277,7 +277,7 @@ const PendingInputsPage: React.FC = () => {
                     loading={loading}
                     loadingMessage="Checking for pending items..."
 
-                    keyExtractor={(input) => input.id}
+                    keyExtractor={(input) => input.id || input.activityId}
                     renderItem={(input) => {
                         const displayInfo = getInputDisplayInfo(input, pipelines, getSourceInfo);
                         const isAutoPopulated = input.autoPopulated === true;

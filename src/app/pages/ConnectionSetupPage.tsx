@@ -7,14 +7,13 @@ import { PluginIcon } from '../components/library/ui/PluginIcon';
 import { Input, FormField } from '../components/library/forms';
 import { renderInlineMarkdown } from '../utils/markdown';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { useUser } from '../hooks/useUser';
 import { IntegrationAuthType } from '../types/plugin';
 
 const ConnectionSetupPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const api = useApi();
     const { loading: userLoading } = useUser();
     const { integrations, loading: registryLoading } = usePluginRegistry();
 
@@ -63,15 +62,15 @@ const ConnectionSetupPage: React.FC = () => {
         setSubmitting(true);
 
         try {
-            const response = await api.put(`/users/me/integrations/${integration.id}`, { apiKey: apiKey.trim() }) as {
-                message: string;
-                ingressApiKey?: string;
-                ingressKeyLabel?: string;
-            };
+            const { data: response, error } = await client.PUT('/users/me/integrations/{provider}', {
+                params: { path: { provider: integration.id } },
+                body: { apiKey: apiKey.trim() } as never,
+            });
+            if (error) throw error;
             navigate(`/connections/${integration.id}/success`, {
                 state: {
-                    ingressApiKey: response.ingressApiKey,
-                    ingressKeyLabel: response.ingressKeyLabel,
+                    ingressApiKey: (response as unknown as Record<string, unknown>)?.ingressApiKey,
+                    ingressKeyLabel: (response as unknown as Record<string, unknown>)?.ingressKeyLabel,
                     integrationName: integration.name,
                 }
             });
@@ -88,7 +87,9 @@ const ConnectionSetupPage: React.FC = () => {
         setSubmitting(true);
 
         try {
-            const response = await api.post(`/users/me/integrations/${integration.id}/connect`);
+            const { data: response } = await client.POST('/users/me/integrations/{provider}/connect', {
+                params: { path: { provider: integration.id } },
+            });
             const { url } = response as { url: string };
             window.location.href = url;
         } catch (err) {

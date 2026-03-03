@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PageLayout, Stack, Grid, FeatureItem } from '../components/library/layout';
 import { Card, Button, Heading, Paragraph, CardSkeleton, Badge, GlowCard } from '../components/library/ui';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { useUser } from '../hooks/useUser';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
 import { ATHLETE_BENEFITS, PLAN_FEATURES, DOWNGRADE_ITEMS } from '../utils/tierBenefits';
@@ -10,7 +10,6 @@ import '../components/library/ui/CardSkeleton.css';
 import './SubscriptionPage.css';
 
 const SubscriptionPage: React.FC = () => {
-    const api = useApi();
     const { user, loading, refresh } = useUser();
     const [searchParams] = useSearchParams();
     const [processing, setProcessing] = useState(false);
@@ -31,8 +30,14 @@ const SubscriptionPage: React.FC = () => {
     const handleCheckout = async () => {
         setProcessing(true);
         try {
-            const { url } = await api.post('/billing/checkout') as { url: string };
-            window.location.href = url;
+            const { data, error } = await client.POST('/billing/checkout', {
+                body: {
+                    successUrl: `${window.location.origin}/settings/subscription?billing=success`,
+                    cancelUrl: `${window.location.origin}/settings/subscription?billing=cancelled`,
+                },
+            });
+            if (error) throw error;
+            window.location.href = (data as Record<string, string>).sessionUrl;
         } catch (error) {
             console.error('Failed to start checkout:', error);
             setStatus({ type: 'error', message: 'Failed to start checkout process. Please try again later.' });
@@ -43,7 +48,8 @@ const SubscriptionPage: React.FC = () => {
     const handleOpenPortal = async () => {
         setProcessing(true);
         try {
-            const { url } = await api.post('/billing/portal') as { url: string };
+            const { data } = await client.POST('/billing/portal' as never);
+            const { url } = data as unknown as { url: string };
             window.location.href = url;
         } catch (error) {
             console.error('Failed to open billing portal:', error);

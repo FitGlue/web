@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { PageLayout, Stack } from '../components/library/layout';
 import { Card, Paragraph } from '../components/library/ui';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { BoosterDataEntry } from '../components/enricher-data/types';
 import CountersSection from '../components/enricher-data/CountersSection';
 import PersonalRecordsSection from '../components/enricher-data/PersonalRecordsSection';
@@ -10,7 +10,6 @@ import StreakTrackersSection from '../components/enricher-data/StreakTrackersSec
 import DistanceMilestonesSection from '../components/enricher-data/DistanceMilestonesSection';
 
 const EnricherDataPage: React.FC = () => {
-    const api = useApi();
 
     // Booster data (shared fetch for goal/streak/milestone sections)
     const [boosterData, setBoosterData] = useState<BoosterDataEntry[]>([]);
@@ -19,8 +18,8 @@ const EnricherDataPage: React.FC = () => {
     const fetchBoosterData = useCallback(async () => {
         setBoosterDataLoading(true);
         try {
-            const response = await api.get('/users/me/booster-data') as { data: Record<string, Record<string, unknown>> };
-            const entries: BoosterDataEntry[] = Object.entries(response.data || {}).map(([id, data]) => ({
+            const { data } = await client.GET('/users/me/booster-data');
+            const entries: BoosterDataEntry[] = Object.entries((data as Record<string, Record<string, unknown>>) || {}).map(([id, data]) => ({
                 id,
                 data: data as Record<string, unknown>,
             }));
@@ -30,7 +29,7 @@ const EnricherDataPage: React.FC = () => {
         } finally {
             setBoosterDataLoading(false);
         }
-    }, [api]);
+    }, []);
 
     useEffect(() => {
         fetchBoosterData();

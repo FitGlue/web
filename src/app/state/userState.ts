@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { components } from '../../shared/api/schema';
+import { components } from '../../shared/api/schema-client';
 
 // Re-export types from generated schema for convenience
 export type EnricherConfig = components['schemas']['EnricherConfig'];

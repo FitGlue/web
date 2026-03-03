@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useApi } from './useApi';
+import { client } from '../../shared/api/client';
 
 export interface ActionDefinition {
     id: string;
@@ -26,9 +26,11 @@ interface TriggerResult {
 
 /**
  * Hook for managing connection-specific actions (like importing historical PRs)
+ *
+ * FIXED: Previously called /integrations/{sourceId}/actions/{actionId} which doesn't
+ * exist on the backend. Now correctly calls /users/me/connections/{provider}/actions.
  */
-export const useConnectionActions = (sourceId: string) => {
-    const api = useApi();
+export const useConnectionActions = (provider: string) => {
     const [runningActions, setRunningActions] = useState<Set<string>>(new Set());
     const [completedActions, setCompletedActions] = useState<Set<string>>(new Set());
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -47,12 +49,17 @@ export const useConnectionActions = (sourceId: string) => {
         });
 
         try {
-            const result = await api.post(`/integrations/${sourceId}/actions/${actionId}`) as TriggerResult;
+            const { data, error: apiError } = await client.POST('/users/me/connections/{provider}/actions', {
+                params: { path: { provider } },
+                body: { action: actionId } as never,
+            });
+
+            if (apiError) throw new Error('Failed to trigger action');
 
             // Mark action as completed (it's been queued for background processing)
             setCompletedActions(prev => new Set(prev).add(actionId));
 
-            return result;
+            return data as unknown as TriggerResult;
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Failed to trigger action';
             setErrors(prev => ({ ...prev, [actionId]: message }));
@@ -64,7 +71,7 @@ export const useConnectionActions = (sourceId: string) => {
                 return next;
             });
         }
-    }, [api, sourceId]);
+    }, [provider]);
 
     /**
      * Check if an action is currently running

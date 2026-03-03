@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { PageLayout, Stack } from '../components/library/layout';
 import { Button, Paragraph, Card, Heading, Link, CardSkeleton, Avatar, Pagination } from '../components/library/ui';
 import { FormField, Input, Textarea, Toggle } from '../components/library/forms';
-import { useApi } from '../hooks/useApi';
+import { client } from '../../shared/api/client';
 import { useToast } from '../components/library/ui/Toast/Toast';
 import { ImageCropModal } from '../components/ImageCropModal';
 import { formatActivityType, formatActivitySource } from '../../types/pb/enum-formatters';
@@ -65,7 +65,6 @@ const CARD_STYLE_OPTIONS = [
 
 
 const ShowcaseManagementPage: React.FC = () => {
-    const api = useApi();
     const { success: showSuccess, error: showError } = useToast();
 
     // Profile state
@@ -106,23 +105,20 @@ const ShowcaseManagementPage: React.FC = () => {
     const fetchProfile = useCallback(async () => {
         try {
             setLoading(true);
-            const data = await api.get('/users/me/showcase-management/profile') as {
-                profile: ShowcaseProfile | null;
-                activities: ShowcaseActivity[];
-            };
-            setProfile(data.profile);
-            setActivities(data.activities || []);
-            if (data.profile) {
-                setSubtitle(data.profile.subtitle || '');
-                setBio(data.profile.bio || '');
-                setSlug(data.profile.slug || '');
-                setProfileVisible(data.profile.visible !== false);
-                // Theme
-                if (data.profile.theme) {
-                    setThemeId(data.profile.theme.themeId || 'default');
-                    setCustomAccentColor(data.profile.theme.customAccentColor || '');
-                    setAnimationId(data.profile.theme.animationId || 'particles');
-                    setCardStyle(data.profile.theme.cardStyle || 'glass');
+            const { data } = await client.GET('/users/me/showcase-management/profile');
+            const typedData = data as { profile: ShowcaseProfile | null; activities: ShowcaseActivity[] };
+            setProfile(typedData?.profile ?? null);
+            setActivities(typedData?.activities || []);
+            if (typedData?.profile) {
+                setSubtitle(typedData.profile.subtitle || '');
+                setBio(typedData.profile.bio || '');
+                setSlug(typedData.profile.slug || '');
+                setProfileVisible(typedData.profile.visible !== false);
+                if (typedData.profile.theme) {
+                    setThemeId(typedData.profile.theme.themeId || 'default');
+                    setCustomAccentColor(typedData.profile.theme.customAccentColor || '');
+                    setAnimationId(typedData.profile.theme.animationId || 'particles');
+                    setCardStyle(typedData.profile.theme.cardStyle || 'glass');
                 }
             }
         } catch (err) {
@@ -131,21 +127,20 @@ const ShowcaseManagementPage: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [api, showError]);
+    }, [showError]);
 
     // Fetch preferences
     const fetchPreferences = useCallback(async () => {
         try {
-            const data = await api.get('/users/me/showcase-management/preferences') as {
-                defaultDestination: boolean;
-            };
-            setDefaultDestination(data.defaultDestination);
+            const { data } = await client.GET('/users/me/showcase-management/preferences');
+            const typedData = data as { defaultDestination: boolean };
+            setDefaultDestination(typedData?.defaultDestination ?? false);
         } catch (err) {
             console.error('Failed to load preferences:', err);
         } finally {
             setLoadingPrefs(false);
         }
-    }, [api]);
+    }, []);
 
     useEffect(() => {
         fetchProfile();
@@ -156,7 +151,7 @@ const ShowcaseManagementPage: React.FC = () => {
     const handleSaveProfile = async () => {
         setSaving(true);
         try {
-            await api.put('/users/me/showcase-management/profile', { subtitle, bio });
+            await client.PUT('/users/me/showcase-management/profile', { body: { subtitle, bio } as never });
             showSuccess('Profile updated');
         } catch (err) {
             console.error('Failed to save profile:', err);
@@ -172,8 +167,9 @@ const ShowcaseManagementPage: React.FC = () => {
         setSavingSlug(true);
         setSlugError('');
         try {
-            const result = await api.put('/users/me/showcase-management/profile/slug', { slug }) as { slug: string };
-            setSlug(result.slug || slug);
+            const { data: result } = await client.PUT('/users/me/showcase-management/profile/slug', { body: { slug } as never });
+            const typedResult = result as { slug: string };
+            setSlug(typedResult?.slug || slug);
             showSuccess('Slug updated');
             // Refresh profile to get updated data
             fetchProfile();
@@ -193,8 +189,8 @@ const ShowcaseManagementPage: React.FC = () => {
     const handleSaveTheme = async () => {
         setSavingTheme(true);
         try {
-            await api.put('/users/me/showcase-management/profile', {
-                theme: { themeId, customAccentColor, animationId, cardStyle },
+            await client.PUT('/users/me/showcase-management/profile', {
+                body: { theme: { themeId, customAccentColor, animationId, cardStyle } } as never,
             });
             showSuccess('Theme updated');
         } catch (err) {
@@ -210,8 +206,8 @@ const ShowcaseManagementPage: React.FC = () => {
         const newVal = !defaultDestination;
         setDefaultDestination(newVal);
         try {
-            await api.put('/users/me/showcase-management/preferences', {
-                defaultDestination: newVal,
+            await client.PUT('/users/me/showcase-management/preferences', {
+                body: { defaultDestination: newVal } as never,
             });
             showSuccess(newVal ? 'Showcase will be added to new pipelines' : 'Default destination disabled');
         } catch (err) {
@@ -227,7 +223,7 @@ const ShowcaseManagementPage: React.FC = () => {
         const newVal = !profileVisible;
         setProfileVisible(newVal);
         try {
-            await api.put('/users/me/showcase-management/profile', { visible: newVal });
+            await client.PUT('/users/me/showcase-management/profile', { body: { visible: newVal } as never });
             showSuccess(newVal ? 'Profile is now publicly visible' : 'Profile is now hidden');
         } catch (err) {
             setProfileVisible(!newVal);
@@ -243,7 +239,7 @@ const ShowcaseManagementPage: React.FC = () => {
             a.showcaseId === showcaseId ? { ...a, inProfile: false } : a
         ));
         try {
-            await api.delete(`/users/me/showcase-management/profile/entries/${showcaseId}`);
+            await client.DELETE('/users/me/showcase-management/profile/entries/{showcaseId}', { params: { path: { showcaseId } } });
             showSuccess('Entry removed');
         } catch (err) {
             // Revert on failure
@@ -262,7 +258,7 @@ const ShowcaseManagementPage: React.FC = () => {
             a.showcaseId === showcaseId ? { ...a, inProfile: true } : a
         ));
         try {
-            await api.post(`/users/me/showcase-management/profile/entries/${showcaseId}`);
+            await client.POST('/users/me/showcase-management/profile/entries/{showcaseId}', { params: { path: { showcaseId } } });
             showSuccess('Entry added');
         } catch (err) {
             // Revert on failure
@@ -316,9 +312,11 @@ const ShowcaseManagementPage: React.FC = () => {
 
         try {
             // Cropped output is always WebP from canvas
-            const data = await api.post('/users/me/showcase-management/profile/picture', {
-                contentType: 'image/webp',
-            }) as {
+            const { data, error } = await client.POST('/users/me/showcase-management/profile/picture', {
+                body: { contentType: 'image/webp' } as never,
+            });
+            if (error) throw error;
+            const typedData = data as unknown as {
                 uploadUrl: string;
                 publicUrl: string;
                 contentType: string;
@@ -329,11 +327,11 @@ const ShowcaseManagementPage: React.FC = () => {
 
             // Upload to GCS via signed URL
             // x-goog-content-length-range must match the extensionHeaders used during signing
-            const uploadResponse = await fetch(data.uploadUrl, {
+            const uploadResponse = await fetch(typedData.uploadUrl, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': data.contentType,
-                    'x-goog-content-length-range': `0,${data.maxSizeBytes}`,
+                    'Content-Type': typedData.contentType,
+                    'x-goog-content-length-range': `0,${typedData.maxSizeBytes}`,
                 },
                 body: croppedBlob,
             });
@@ -344,8 +342,8 @@ const ShowcaseManagementPage: React.FC = () => {
             setUploadStatus('Saving…');
 
             // Update profile with the new URL
-            await api.put('/users/me/showcase-management/profile', {
-                profilePictureUrl: data.publicUrl,
+            await client.PUT('/users/me/showcase-management/profile', {
+                body: { profilePictureUrl: typedData.publicUrl } as never,
             });
 
             showSuccess('Profile picture updated');

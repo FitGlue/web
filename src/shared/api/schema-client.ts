@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/v2/admin/registration-summary": {
+    "/auth-email/send-password-reset": {
         parameters: {
             query?: never;
             header?: never;
@@ -13,15 +13,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Administrative RPCs */
-        post: operations["UserService_GenerateRegistrationSummary"];
+        post: operations["ClientGatewayService_SendPasswordReset"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/billing/webhook": {
+    "/billing/cancel": {
         parameters: {
             query?: never;
             header?: never;
@@ -30,110 +29,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["BillingService_HandleWebhookEvent"];
+        post: operations["ClientGatewayService_CancelSubscription"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/registry/categories": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["RegistryService_ListCategories"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v2/registry/destinations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["RegistryService_ListDestinations"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v2/registry/plugins": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["RegistryService_ListPlugins"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v2/registry/plugins/{pluginId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["RegistryService_GetPlugin"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v2/registry/plugins/{pluginId}/icon": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["RegistryService_GetPluginIcon"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v2/registry/sources": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["RegistryService_ListSources"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v2/user": {
+    "/billing/checkout": {
         parameters: {
             query?: never;
             header?: never;
@@ -142,14 +45,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["UserService_CreateUser"];
+        post: operations["ClientGatewayService_CreateCheckoutSession"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/user/email/reset-password": {
+    "/billing/portal": {
         parameters: {
             query?: never;
             header?: never;
@@ -158,14 +61,47 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["UserService_SendPasswordResetEmail"];
+        post: operations["ClientGatewayService_CreateBillingPortal"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/user/{userId}": {
+    "/billing/subscription": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Billing ===================== */
+        get: operations["ClientGatewayService_GetSubscription"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/billing/tier": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetTierStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/billing/trial": {
         parameters: {
             query?: never;
             header?: never;
@@ -174,21 +110,22 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
-        delete: operations["UserService_DeleteUser"];
+        post: operations["ClientGatewayService_StartTrial"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/user/{userId}/booster-data": {
+    "/registry": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["UserService_GetBoosterData"];
+        /** @description ===================== Registry (Unauthenticated, but on api-client) ===================== */
+        get: operations["ClientGatewayService_GetPluginRegistry"];
         put?: never;
         post?: never;
         delete?: never;
@@ -197,30 +134,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v2/user/{userId}/booster-data/{boosterId}": {
+    "/registry/categories": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put: operations["UserService_SetBoosterData"];
-        post?: never;
-        delete: operations["UserService_DeleteBoosterData"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v2/user/{userId}/counters": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["UserService_ListCounters"];
+        get: operations["ClientGatewayService_ListCategories"];
         put?: never;
         post?: never;
         delete?: never;
@@ -229,63 +150,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v2/user/{userId}/counters/{counterId}": {
+    "/registry/plugins": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["UserService_UpdateCounter"];
-        trace?: never;
-    };
-    "/v2/user/{userId}/email/change": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UserService_SendEmailChangeVerification"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v2/user/{userId}/email/verify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Email Auth RPCs */
-        post: operations["UserService_SendVerificationEmail"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v2/user/{userId}/integrations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["UserService_ListIntegrations"];
+        get: operations["ClientGatewayService_GetPluginRegistryPlugins"];
         put?: never;
         post?: never;
         delete?: never;
@@ -294,62 +166,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v2/user/{userId}/integrations/{provider}": {
+    "/registry/plugins/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["UserService_GetIntegration"];
-        put: operations["UserService_SetIntegration"];
-        post?: never;
-        delete: operations["UserService_DeleteIntegration"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v2/user/{userId}/notifications": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["UserService_GetNotificationPrefs"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["UserService_UpdateNotificationPrefs"];
-        trace?: never;
-    };
-    "/v2/user/{userId}/profile": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["UserService_GetProfile"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["UserService_UpdateProfile"];
-        trace?: never;
-    };
-    "/v2/users/{userId}/activities": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ActivityService_ListActivities"];
+        get: operations["ClientGatewayService_GetPlugin"];
         put?: never;
         post?: never;
         delete?: never;
@@ -358,23 +182,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/activities/{activityId}": {
+    "/registry/plugins/{id}/icon": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ActivityService_GetActivity"];
+        get: operations["ClientGatewayService_GetPluginIcon"];
         put?: never;
         post?: never;
-        delete: operations["ActivityService_DeleteActivity"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/activities/{activityId}/repost": {
+    "/registry/sources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_ListSources"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/repost/full-pipeline": {
         parameters: {
             query?: never;
             header?: never;
@@ -383,14 +223,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["PipelineService_RepostActivity"];
+        post: operations["ClientGatewayService_RepostFullPipeline"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/billing/cancel": {
+    "/repost/missed-destination": {
         parameters: {
             query?: never;
             header?: never;
@@ -399,14 +239,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["BillingService_CancelSubscription"];
+        /** @description ===================== Repost Variants ===================== */
+        post: operations["ClientGatewayService_RepostMissedDestination"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/billing/checkout": {
+    "/repost/retry-destination": {
         parameters: {
             query?: never;
             header?: never;
@@ -415,21 +256,39 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["BillingService_CreateCheckoutSession"];
+        post: operations["ClientGatewayService_RepostRetryDestination"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/billing/subscription": {
+    "/users/me": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["BillingService_GetSubscription"];
+        /** @description ===================== User Profile ===================== */
+        get: operations["ClientGatewayService_GetProfile"];
+        put: operations["ClientGatewayService_UpdateProfile"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeleteSelf"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Activities ===================== */
+        get: operations["ClientGatewayService_ListActivities"];
         put?: never;
         post?: never;
         delete?: never;
@@ -438,14 +297,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/billing/tier-status": {
+    "/users/me/activities/stats": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["BillingService_GetTierStatus"];
+        get: operations["ClientGatewayService_GetActivityStats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -454,7 +313,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/billing/trial": {
+    "/users/me/activities/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetActivity"];
+        put?: never;
+        post?: never;
+        delete: operations["ClientGatewayService_DeleteActivity"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/activities/{id}/repost": {
         parameters: {
             query?: never;
             header?: never;
@@ -463,14 +338,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["BillingService_StartTrial"];
+        post: operations["ClientGatewayService_RepostActivity"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/export-data": {
+    "/users/me/auth-email/send-email-change": {
         parameters: {
             query?: never;
             header?: never;
@@ -479,14 +354,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["ActivityService_ExportData"];
+        post: operations["ClientGatewayService_SendEmailChangeVerification"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/parse-fit": {
+    "/users/me/auth-email/send-verification": {
         parameters: {
             query?: never;
             header?: never;
@@ -495,21 +370,23 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["ActivityService_ParseFitFile"];
+        /** @description ===================== Auth Email ===================== */
+        post: operations["ClientGatewayService_SendVerificationEmail"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/pending-inputs": {
+    "/users/me/booster-data": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["PipelineService_ListPendingInputs"];
+        /** @description ===================== Booster Data ===================== */
+        get: operations["ClientGatewayService_GetBoosterData"];
         put?: never;
         post?: never;
         delete?: never;
@@ -518,7 +395,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/pending-inputs/{pendingInputId}/resolve": {
+    "/users/me/booster-data/{boosterId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ClientGatewayService_SetBoosterData"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeleteBoosterData"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/connections/{provider}/actions": {
         parameters: {
             query?: never;
             header?: never;
@@ -527,14 +420,48 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["PipelineService_ResolvePendingInput"];
+        /** @description ===================== Connection Actions ===================== */
+        post: operations["ClientGatewayService_ConnectionAction"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/pending-inputs/{pendingInputId}/submit": {
+    "/users/me/counters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Counters ===================== */
+        get: operations["ClientGatewayService_ListCounters"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/counters/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ClientGatewayService_UpdateCounter"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeleteCounter"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/export": {
         parameters: {
             query?: never;
             header?: never;
@@ -543,21 +470,40 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["PipelineService_SubmitInput"];
+        /** @description ===================== Data Export ===================== */
+        post: operations["ClientGatewayService_ExportData"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/pipeline-runs": {
+    "/users/me/fcm-token": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["PipelineService_ListPipelineRuns"];
+        get?: never;
+        put?: never;
+        /** @description ===================== FCM Token ===================== */
+        post: operations["ClientGatewayService_SetFCMToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/integrations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Integrations ===================== */
+        get: operations["ClientGatewayService_ListIntegrations"];
         put?: never;
         post?: never;
         delete?: never;
@@ -566,14 +512,114 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/pipeline-runs/{runId}": {
+    "/users/me/integrations/{provider}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["PipelineService_GetPipelineRun"];
+        get: operations["ClientGatewayService_GetIntegration"];
+        put: operations["ClientGatewayService_SetIntegration"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeleteIntegration"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/integrations/{provider}/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_OAuthConnect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/mobile/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description ===================== Mobile Sync ===================== */
+        post: operations["ClientGatewayService_MobileSync"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/notification-prefs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Notification Preferences ===================== */
+        get: operations["ClientGatewayService_GetNotificationPrefs"];
+        put: operations["ClientGatewayService_UpdateNotificationPrefs"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/parse-fit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description ===================== FIT File Parse ===================== */
+        post: operations["ClientGatewayService_ParseFitFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/pending-inputs/{inputId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_SubmitInput"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/personal-records": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Personal Records ===================== */
+        get: operations["ClientGatewayService_ListPersonalRecords"];
         put?: never;
         post?: never;
         delete?: never;
@@ -582,68 +628,248 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/pipelines": {
+    "/users/me/personal-records/{recordType}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["PipelineService_ListPipelines"];
+        get?: never;
+        put: operations["ClientGatewayService_SetPersonalRecord"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeletePersonalRecord"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/pipelines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Pipelines ===================== */
+        get: operations["ClientGatewayService_ListPipelines"];
         put?: never;
-        post: operations["PipelineService_CreatePipeline"];
+        post: operations["ClientGatewayService_CreatePipeline"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/pipelines/{pipelineId}": {
+    "/users/me/pipelines/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["PipelineService_GetPipeline"];
-        put?: never;
+        get: operations["ClientGatewayService_GetPipeline"];
+        put: operations["ClientGatewayService_UpdatePipeline"];
         post?: never;
-        delete: operations["PipelineService_DeletePipeline"];
+        delete: operations["ClientGatewayService_DeletePipeline"];
         options?: never;
         head?: never;
-        patch: operations["PipelineService_UpdatePipeline"];
+        patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/showcases": {
+    "/users/me/pipelines/{id}/runs": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ActivityService_ListShowcases"];
+        get: operations["ClientGatewayService_ListPipelineRuns"];
         put?: never;
-        post: operations["ActivityService_CreateShowcase"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v2/users/{userId}/showcases/{showcaseId}": {
+    "/users/me/pipelines/{id}/runs/{runId}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ActivityService_GetShowcase"];
+        get: operations["ClientGatewayService_GetPipelineRun"];
         put?: never;
         post?: never;
-        delete: operations["ActivityService_DeleteShowcase"];
+        delete?: never;
         options?: never;
         head?: never;
-        patch: operations["ActivityService_UpdateShowcase"];
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/plugin-defaults": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Plugin Defaults ===================== */
+        get: operations["ClientGatewayService_ListPluginDefaults"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/plugin-defaults/{pluginId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ClientGatewayService_SetPluginDefaults"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeletePluginDefaults"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcase-management/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Showcase Management ===================== */
+        get: operations["ClientGatewayService_GetShowcasePreferences"];
+        put: operations["ClientGatewayService_UpdateShowcasePreferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcase-management/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetShowcaseSettings"];
+        put: operations["ClientGatewayService_UpdateShowcaseSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcase-management/profile/entries/{showcaseId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_AddShowcaseEntry"];
+        delete: operations["ClientGatewayService_RemoveShowcaseEntry"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcase-management/profile/picture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_GetShowcaseProfilePictureUploadUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcase-management/profile/slug": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ClientGatewayService_UpdateShowcaseSlug"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Showcases ===================== */
+        get: operations["ClientGatewayService_ListShowcases"];
+        put?: never;
+        post: operations["ClientGatewayService_CreateShowcase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcases/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetShowcase"];
+        put: operations["ClientGatewayService_UpdateShowcase"];
+        post?: never;
+        delete: operations["ClientGatewayService_DeleteShowcase"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcases/{id}/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_GenerateShowcaseImages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
 }
@@ -665,9 +891,6 @@ export interface components {
                 [key: string]: string;
             };
             error?: string;
-        };
-        CancelSubscriptionRequest: {
-            userId?: string;
         };
         ConfigFieldDependency: {
             fieldKey?: string;
@@ -704,22 +927,35 @@ export interface components {
             /** Format: double */
             maxValue?: number;
         };
+        ConnectionActionGatewayRequest: {
+            provider?: string;
+            action?: string;
+        };
         Counter: {
             id?: string;
             count?: string;
             /** Format: date-time */
             lastUpdated?: string;
         };
-        CreateCheckoutSessionRequest: {
-            userId?: string;
+        CreateBillingPortalGatewayRequest: {
+            returnUrl?: string;
+        };
+        CreateBillingPortalGatewayResponse: {
+            url?: string;
+        };
+        /** @description Billing */
+        CreateCheckoutGatewayRequest: {
             successUrl?: string;
             cancelUrl?: string;
         };
-        CreateCheckoutSessionResponse: {
+        CreateCheckoutGatewayResponse: {
             sessionUrl?: string;
         };
-        CreateUserRequest: {
-            userId?: string;
+        CreatePipelineGatewayRequest: {
+            pipeline?: components["schemas"]["PipelineConfig"];
+        };
+        CreateShowcaseGatewayRequest: {
+            showcase?: components["schemas"]["ShowcasedActivity"];
         };
         DestinationConfig: {
             config?: {
@@ -744,10 +980,8 @@ export interface components {
                 [key: string]: string;
             };
         };
-        ExportDataRequest: {
-            userId?: string;
-        };
-        ExportDataResponse: {
+        /** @description Data Export */
+        ExportDataGatewayResponse: {
             downloadUrl?: string;
         };
         FitbitIntegration: {
@@ -762,29 +996,43 @@ export interface components {
             /** Format: date-time */
             lastUsedAt?: string;
         };
-        GenerateRegistrationSummaryRequest: {
-            /** @description Optional date override (e.g. "2026-02-23"), uses previous 24 hours if empty */
-            dateOverride?: string;
+        GetActivityStatsGatewayResponse: {
+            /** Format: int32 */
+            totalActivities?: number;
+            /** Format: int32 */
+            totalShowcases?: number;
+            lastActivityAt?: string;
         };
-        GetBoosterDataResponse: {
-            /** @description Map of booster_id to its JSON payload */
+        /** @description Booster Data */
+        GetBoosterDataGatewayResponse: {
             data?: {
                 [key: string]: Record<string, never>;
             };
         };
-        GetIntegrationResponse: {
-            /**
-             * @description Uses a generic bytes payload or structured oneOf depending on how we decide to send it
-             *      For now, returning the whole UserIntegrations tree is easiest
-             */
+        /** @description Integrations */
+        GetIntegrationGatewayResponse: {
             integrations?: components["schemas"]["UserIntegrations"];
         };
-        GetPluginIconResponse: {
+        GetPictureUploadUrlGatewayRequest: {
+            contentType?: string;
+        };
+        GetPictureUploadUrlGatewayResponse: {
+            uploadUrl?: string;
+            publicUrl?: string;
+            contentType?: string;
+            maxSizeBytes?: string;
+        };
+        /** @description Registry */
+        GetPluginIconGatewayResponse: {
             /** Format: bytes */
             iconData?: string;
             contentType?: string;
         };
-        GetTierStatusResponse: {
+        GetShowcaseSettingsGatewayResponse: {
+            profile?: components["schemas"]["ShowcaseProfile"];
+            activities?: components["schemas"]["ShowcaseActivityEntryGateway"][];
+        };
+        GetTierStatusGatewayResponse: {
             /** Format: enum */
             effectiveTier?: number;
             isTrial?: boolean;
@@ -822,11 +1070,6 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
-        HandleWebhookEventRequest: {
-            /** Format: bytes */
-            payload?: string;
-            signature?: string;
-        };
         HealthConnectIntegration: {
             enabled?: boolean;
             /** Format: date-time */
@@ -842,6 +1085,32 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             lastUsedAt?: string;
+        };
+        IntegrationAction: {
+            id?: string;
+            label?: string;
+            description?: string;
+            icon?: string;
+        };
+        IntegrationManifest: {
+            id?: string;
+            name?: string;
+            description?: string;
+            icon?: string;
+            /** Format: enum */
+            authType?: number;
+            enabled?: boolean;
+            docsUrl?: string;
+            setupTitle?: string;
+            setupInstructions?: string;
+            apiKeyLabel?: string;
+            apiKeyHelpUrl?: string;
+            marketingDescription?: string;
+            features?: string[];
+            iconType?: string;
+            iconPath?: string;
+            isTemporarilyUnavailable?: boolean;
+            actions?: components["schemas"]["IntegrationAction"][];
         };
         IntervalsIntegration: {
             enabled?: boolean;
@@ -863,35 +1132,40 @@ export interface components {
             exerciseName?: string;
             intensity?: string;
         };
-        ListActivitiesResponse: {
+        ListActivitiesGatewayResponse: {
             activities?: components["schemas"]["StandardizedActivity"][];
             nextPageToken?: string;
         };
-        ListCategoriesResponse: {
+        ListCategoriesGatewayResponse: {
             categories?: string[];
         };
-        ListCountersResponse: {
+        /** @description Counters */
+        ListCountersGatewayResponse: {
             counters?: components["schemas"]["Counter"][];
         };
-        ListDestinationsResponse: {
-            destinations?: components["schemas"]["PluginManifest"][];
+        /** @description Personal Records */
+        ListPersonalRecordsGatewayResponse: {
+            records?: components["schemas"]["PersonalRecord"][];
         };
-        ListPendingInputsResponse: {
-            inputs?: components["schemas"]["PendingInput"][];
-        };
-        ListPipelineRunsResponse: {
+        ListPipelineRunsGatewayResponse: {
             runs?: components["schemas"]["PipelineRun"][];
+            nextPageToken?: string;
         };
-        ListPipelinesResponse: {
+        /** @description Pipelines */
+        ListPipelinesGatewayResponse: {
             pipelines?: components["schemas"]["PipelineConfig"][];
         };
-        ListPluginsResponse: {
-            plugins?: components["schemas"]["PluginManifest"][];
+        /** @description Plugin Defaults */
+        ListPluginDefaultsGatewayResponse: {
+            defaults?: {
+                [key: string]: Record<string, never>;
+            };
         };
-        ListShowcasesResponse: {
+        /** @description Showcases */
+        ListShowcasesGatewayResponse: {
             showcases?: components["schemas"]["ShowcaseProfileEntry"][];
         };
-        ListSourcesResponse: {
+        ListSourcesGatewayResponse: {
             sources?: components["schemas"]["PluginManifest"][];
         };
         MockIntegration: {
@@ -905,6 +1179,9 @@ export interface components {
             notifyPendingInput?: boolean;
             notifyPipelineSuccess?: boolean;
             notifyPipelineFailure?: boolean;
+        };
+        OAuthConnectResponse: {
+            url?: string;
         };
         OuraIntegration: {
             enabled?: boolean;
@@ -928,40 +1205,29 @@ export interface components {
             /** Format: date-time */
             lastUsedAt?: string;
         };
-        ParseFitFileRequest: {
-            userId?: string;
+        /** @description FIT File Parse */
+        ParseFitFileGatewayRequest: {
             /** Format: bytes */
             fitFileContent?: string;
             title?: string;
             description?: string;
             pipelineId?: string;
         };
-        PendingInput: {
+        /** @description Personal Record for tracking PRs across cardio and strength activities */
+        PersonalRecord: {
+            recordType?: string;
+            /** Format: double */
+            value?: number;
+            unit?: string;
             activityId?: string;
-            userId?: string;
+            /** Format: date-time */
+            achievedAt?: string;
             /** Format: enum */
-            status?: number;
-            requiredFields?: string[];
-            inputData?: {
-                [key: string]: string;
-            };
-            originalPayloadUri?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-            /** Format: date-time */
-            completedAt?: string;
-            continuedWithoutResolution?: boolean;
-            linkedActivityId?: string;
-            pipelineId?: string;
-            enricherProviderId?: string;
-            autoPopulated?: boolean;
-            /** Format: date-time */
-            autoDeadline?: string;
-            providerMetadata?: {
-                [key: string]: string;
-            };
+            activityType?: number;
+            /** Format: double */
+            previousValue?: number;
+            /** Format: double */
+            improvement?: number;
         };
         PipelineConfig: {
             id?: string;
@@ -1033,6 +1299,12 @@ export interface components {
             isTemporarilyUnavailable?: boolean;
             allowMultipleInstances?: boolean;
         };
+        PluginRegistryResponse: {
+            sources?: components["schemas"]["PluginManifest"][];
+            enrichers?: components["schemas"]["PluginManifest"][];
+            destinations?: components["schemas"]["PluginManifest"][];
+            integrations?: components["schemas"]["IntegrationManifest"][];
+        };
         PolarIntegration: {
             enabled?: boolean;
             accessToken?: string;
@@ -1071,23 +1343,21 @@ export interface components {
             /** Format: double */
             stepLength?: number;
         };
-        RepostActivityRequest: {
-            userId?: string;
+        RepostGatewayResponse: {
+            success?: boolean;
+            message?: string;
+        };
+        /** @description Repost Variants */
+        RepostVariantGatewayRequest: {
             activityId?: string;
+            destination?: string;
         };
-        ResolvePendingInputRequest: {
-            userId?: string;
-            pendingInputId?: string;
-        };
-        SendEmailChangeVerificationRequest: {
-            userId?: string;
+        /** @description Auth Email */
+        SendEmailChangeGatewayRequest: {
             newEmail?: string;
         };
-        SendPasswordResetEmailRequest: {
+        SendPasswordResetGatewayRequest: {
             email?: string;
-        };
-        SendVerificationEmailRequest: {
-            userId?: string;
         };
         Session: {
             /** Format: date-time */
@@ -1105,9 +1375,55 @@ export interface components {
             /** Format: int32 */
             maxHeartRate?: number;
         };
-        SetIntegrationRequest: {
+        /** @description FCM Token */
+        SetFCMTokenGatewayRequest: {
+            token?: string;
+            platform?: string;
+        };
+        SetPersonalRecordGatewayRequest: {
+            recordType?: string;
+            /** Format: double */
+            value?: number;
+            unit?: string;
+            activityId?: string;
+        };
+        ShowcaseActivityEntryGateway: {
+            showcaseId?: string;
+            title?: string;
+            activityType?: string;
+            source?: string;
+            startTime?: string;
+            createdAt?: string;
+            inProfile?: boolean;
+        };
+        ShowcaseProfile: {
+            slug?: string;
             userId?: string;
-            provider?: string;
+            displayName?: string;
+            entries?: components["schemas"]["ShowcaseProfileEntry"][];
+            /** Format: int32 */
+            totalActivities?: number;
+            /** Format: double */
+            totalDistanceMeters?: number;
+            /** Format: double */
+            totalDurationSeconds?: number;
+            /** Format: date-time */
+            latestActivityAt?: string;
+            /** Format: int32 */
+            totalSets?: number;
+            /** Format: int32 */
+            totalReps?: number;
+            /** Format: double */
+            totalWeightKg?: number;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            subtitle?: string;
+            bio?: string;
+            profilePictureUrl?: string;
+            visible?: boolean;
+            theme?: components["schemas"]["ShowcaseTheme"];
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;
@@ -1129,6 +1445,12 @@ export interface components {
             totalReps?: number;
             /** Format: double */
             totalWeightKg?: number;
+        };
+        ShowcaseTheme: {
+            themeId?: string;
+            customAccentColor?: string;
+            animationId?: string;
+            cardStyle?: string;
         };
         /** @description ShowcasedActivity represents a publicly shareable activity snapshot. */
         ShowcasedActivity: {
@@ -1187,9 +1509,6 @@ export interface components {
             timeMarkers?: components["schemas"]["TimeMarker"][];
             workout?: components["schemas"]["WorkoutDefinition"];
         };
-        StartTrialRequest: {
-            userId?: string;
-        };
         /** @description The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors). */
         Status: {
             /**
@@ -1233,9 +1552,8 @@ export interface components {
             distanceMeters?: number;
             setType?: string;
         };
-        SubmitInputRequest: {
-            userId?: string;
-            pendingInputId?: string;
+        SubmitInputGatewayRequest: {
+            inputId?: string;
             inputData?: {
                 [key: string]: string;
             };
@@ -1289,10 +1607,34 @@ export interface components {
             visualType?: string;
             afterHtml?: string;
         };
-        UpdateCounterRequest: {
-            userId?: string;
-            counterId?: string;
+        UpdateCounterGatewayRequest: {
+            name?: string;
             count?: string;
+        };
+        UpdatePipelineGatewayRequest: {
+            id?: string;
+            pipeline?: components["schemas"]["PipelineConfig"];
+        };
+        /** @description User */
+        UpdateProfileGatewayRequest: {
+            profile?: components["schemas"]["UserProfile"];
+        };
+        UpdateShowcaseGatewayRequest: {
+            id?: string;
+            showcase?: components["schemas"]["ShowcasedActivity"];
+        };
+        /** @description Showcase Management */
+        UpdateShowcasePreferencesGatewayRequest: {
+            preferences?: components["schemas"]["ShowcaseProfile"];
+        };
+        UpdateShowcaseSettingsGatewayRequest: {
+            settings?: components["schemas"]["ShowcaseProfile"];
+        };
+        UpdateShowcaseSlugGatewayRequest: {
+            slug?: string;
+        };
+        UpdateShowcaseSlugGatewayResponse: {
+            slug?: string;
         };
         /** @description UserIntegrations represents all connected third-party providers. */
         UserIntegrations: {
@@ -1339,6 +1681,8 @@ export interface components {
             notificationPreferences?: components["schemas"]["NotificationPreferences"];
             /** Format: date-time */
             trialEndsAt?: string;
+            email?: string;
+            displayName?: string;
         };
         WahooIntegration: {
             enabled?: boolean;
@@ -1376,7 +1720,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    UserService_GenerateRegistrationSummary: {
+    ClientGatewayService_SendPasswordReset: {
         parameters: {
             query?: never;
             header?: never;
@@ -1385,7 +1729,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GenerateRegistrationSummaryRequest"];
+                "application/json": components["schemas"]["SendPasswordResetGatewayRequest"];
             };
         };
         responses: {
@@ -1407,7 +1751,36 @@ export interface operations {
             };
         };
     };
-    BillingService_HandleWebhookEvent: {
+    ClientGatewayService_CancelSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubscriptionState"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_CreateCheckoutSession: {
         parameters: {
             query?: never;
             header?: never;
@@ -1416,7 +1789,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["HandleWebhookEventRequest"];
+                "application/json": components["schemas"]["CreateCheckoutGatewayRequest"];
             };
         };
         responses: {
@@ -1425,7 +1798,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["CreateCheckoutGatewayResponse"];
+                };
             };
             /** @description Default error response */
             default: {
@@ -1438,7 +1813,40 @@ export interface operations {
             };
         };
     };
-    RegistryService_ListCategories: {
+    ClientGatewayService_CreateBillingPortal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBillingPortalGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateBillingPortalGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetSubscription: {
         parameters: {
             query?: never;
             header?: never;
@@ -1453,7 +1861,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListCategoriesResponse"];
+                    "application/json": components["schemas"]["SubscriptionState"];
                 };
             };
             /** @description Default error response */
@@ -1467,7 +1875,7 @@ export interface operations {
             };
         };
     };
-    RegistryService_ListDestinations: {
+    ClientGatewayService_GetTierStatus: {
         parameters: {
             query?: never;
             header?: never;
@@ -1482,7 +1890,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListDestinationsResponse"];
+                    "application/json": components["schemas"]["GetTierStatusGatewayResponse"];
                 };
             };
             /** @description Default error response */
@@ -1496,11 +1904,9 @@ export interface operations {
             };
         };
     };
-    RegistryService_ListPlugins: {
+    ClientGatewayService_StartTrial: {
         parameters: {
-            query?: {
-                category?: string;
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -1513,7 +1919,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListPluginsResponse"];
+                    "application/json": components["schemas"]["SubscriptionState"];
                 };
             };
             /** @description Default error response */
@@ -1527,12 +1933,99 @@ export interface operations {
             };
         };
     };
-    RegistryService_GetPlugin: {
+    ClientGatewayService_GetPluginRegistry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PluginRegistryResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListCategoriesGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetPluginRegistryPlugins: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PluginRegistryResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetPlugin: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                pluginId: string;
+                id: string;
             };
             cookie?: never;
         };
@@ -1558,12 +2051,12 @@ export interface operations {
             };
         };
     };
-    RegistryService_GetPluginIcon: {
+    ClientGatewayService_GetPluginIcon: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                pluginId: string;
+                id: string;
             };
             cookie?: never;
         };
@@ -1575,7 +2068,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GetPluginIconResponse"];
+                    "application/json": components["schemas"]["GetPluginIconGatewayResponse"];
                 };
             };
             /** @description Default error response */
@@ -1589,7 +2082,7 @@ export interface operations {
             };
         };
     };
-    RegistryService_ListSources: {
+    ClientGatewayService_ListSources: {
         parameters: {
             query?: never;
             header?: never;
@@ -1604,7 +2097,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListSourcesResponse"];
+                    "application/json": components["schemas"]["ListSourcesGatewayResponse"];
                 };
             };
             /** @description Default error response */
@@ -1618,7 +2111,7 @@ export interface operations {
             };
         };
     };
-    UserService_CreateUser: {
+    ClientGatewayService_RepostFullPipeline: {
         parameters: {
             query?: never;
             header?: never;
@@ -1627,7 +2120,135 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateUserRequest"];
+                "application/json": components["schemas"]["RepostVariantGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepostGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_RepostMissedDestination: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RepostVariantGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepostGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_RepostRetryDestination: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RepostVariantGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepostGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfile"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdateProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProfileGatewayRequest"];
             };
         };
         responses: {
@@ -1651,7 +2272,184 @@ export interface operations {
             };
         };
     };
-    UserService_SendPasswordResetEmail: {
+    ClientGatewayService_DeleteSelf: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListActivities: {
+        parameters: {
+            query?: {
+                limit?: number;
+                pageToken?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListActivitiesGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetActivityStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetActivityStatsGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StandardizedActivity"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeleteActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_RepostActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SendEmailChangeVerification: {
         parameters: {
             query?: never;
             header?: never;
@@ -1660,7 +2458,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["SendPasswordResetEmailRequest"];
+                "application/json": components["schemas"]["SendEmailChangeGatewayRequest"];
             };
         };
         responses: {
@@ -1682,13 +2480,11 @@ export interface operations {
             };
         };
     };
-    UserService_DeleteUser: {
+    ClientGatewayService_SendVerificationEmail: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                userId: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -1711,15 +2507,11 @@ export interface operations {
             };
         };
     };
-    UserService_GetBoosterData: {
+    ClientGatewayService_GetBoosterData: {
         parameters: {
-            query?: {
-                boosterId?: string;
-            };
+            query?: never;
             header?: never;
-            path: {
-                userId: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -1730,7 +2522,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GetBoosterDataResponse"];
+                    "application/json": components["schemas"]["GetBoosterDataGatewayResponse"];
                 };
             };
             /** @description Default error response */
@@ -1744,12 +2536,11 @@ export interface operations {
             };
         };
     };
-    UserService_SetBoosterData: {
+    ClientGatewayService_SetBoosterData: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
                 boosterId: string;
             };
             cookie?: never;
@@ -1778,12 +2569,11 @@ export interface operations {
             };
         };
     };
-    UserService_DeleteBoosterData: {
+    ClientGatewayService_DeleteBoosterData: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
                 boosterId: string;
             };
             cookie?: never;
@@ -1808,13 +2598,44 @@ export interface operations {
             };
         };
     };
-    UserService_ListCounters: {
+    ClientGatewayService_ConnectionAction: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
+                provider: string;
             };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectionActionGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListCounters: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -1825,7 +2646,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListCountersResponse"];
+                    "application/json": components["schemas"]["ListCountersGatewayResponse"];
                 };
             };
             /** @description Default error response */
@@ -1839,19 +2660,18 @@ export interface operations {
             };
         };
     };
-    UserService_UpdateCounter: {
+    ClientGatewayService_UpdateCounter: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
-                counterId: string;
+                name: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdateCounterRequest"];
+                "application/json": components["schemas"]["UpdateCounterGatewayRequest"];
             };
         };
         responses: {
@@ -1875,18 +2695,74 @@ export interface operations {
             };
         };
     };
-    UserService_SendEmailChangeVerification: {
+    ClientGatewayService_DeleteCounter: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
+                name: string;
             };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ExportData: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportDataGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SetFCMToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["SendEmailChangeVerificationRequest"];
+                "application/json": components["schemas"]["SetFCMTokenGatewayRequest"];
             };
         };
         responses: {
@@ -1908,46 +2784,11 @@ export interface operations {
             };
         };
     };
-    UserService_SendVerificationEmail: {
+    ClientGatewayService_ListIntegrations: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SendVerificationEmailRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    UserService_ListIntegrations: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -1972,12 +2813,11 @@ export interface operations {
             };
         };
     };
-    UserService_GetIntegration: {
+    ClientGatewayService_GetIntegration: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
                 provider: string;
             };
             cookie?: never;
@@ -1990,7 +2830,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GetIntegrationResponse"];
+                    "application/json": components["schemas"]["GetIntegrationGatewayResponse"];
                 };
             };
             /** @description Default error response */
@@ -2004,19 +2844,18 @@ export interface operations {
             };
         };
     };
-    UserService_SetIntegration: {
+    ClientGatewayService_SetIntegration: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
                 provider: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["SetIntegrationRequest"];
+                "application/json": Record<string, never>;
             };
         };
         responses: {
@@ -2038,12 +2877,11 @@ export interface operations {
             };
         };
     };
-    UserService_DeleteIntegration: {
+    ClientGatewayService_DeleteIntegration: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
                 provider: string;
             };
             cookie?: never;
@@ -2068,13 +2906,69 @@ export interface operations {
             };
         };
     };
-    UserService_GetNotificationPrefs: {
+    ClientGatewayService_OAuthConnect: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
+                provider: string;
             };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthConnectResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_MobileSync: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetNotificationPrefs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -2099,13 +2993,11 @@ export interface operations {
             };
         };
     };
-    UserService_UpdateNotificationPrefs: {
+    ClientGatewayService_UpdateNotificationPrefs: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                userId: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody: {
@@ -2134,12 +3026,233 @@ export interface operations {
             };
         };
     };
-    UserService_GetProfile: {
+    ClientGatewayService_ParseFitFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseFitFileGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StandardizedActivity"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SubmitInput: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
+                inputId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitInputGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListPersonalRecords: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListPersonalRecordsGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_SetPersonalRecord: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                recordType: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetPersonalRecordGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalRecord"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeletePersonalRecord: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                recordType: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListPipelines: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListPipelinesGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_CreatePipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePipelineGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PipelineConfig"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetPipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
             };
             cookie?: never;
         };
@@ -2151,7 +3264,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    "application/json": components["schemas"]["PipelineConfig"];
                 };
             };
             /** @description Default error response */
@@ -2165,18 +3278,18 @@ export interface operations {
             };
         };
     };
-    UserService_UpdateProfile: {
+    ClientGatewayService_UpdatePipeline: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
+                id: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UserProfile"];
+                "application/json": components["schemas"]["UpdatePipelineGatewayRequest"];
             };
         };
         responses: {
@@ -2186,7 +3299,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    "application/json": components["schemas"]["PipelineConfig"];
                 };
             };
             /** @description Default error response */
@@ -2200,7 +3313,36 @@ export interface operations {
             };
         };
     };
-    ActivityService_ListActivities: {
+    ClientGatewayService_DeletePipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListPipelineRuns: {
         parameters: {
             query?: {
                 limit?: number;
@@ -2208,7 +3350,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                userId: string;
+                id: string;
             };
             cookie?: never;
         };
@@ -2220,7 +3362,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListActivitiesResponse"];
+                    "application/json": components["schemas"]["ListPipelineRunsGatewayResponse"];
                 };
             };
             /** @description Default error response */
@@ -2234,475 +3376,12 @@ export interface operations {
             };
         };
     };
-    ActivityService_GetActivity: {
+    ClientGatewayService_GetPipelineRun: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
-                activityId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StandardizedActivity"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    ActivityService_DeleteActivity: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-                activityId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    PipelineService_RepostActivity: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-                activityId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RepostActivityRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    BillingService_CancelSubscription: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CancelSubscriptionRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SubscriptionState"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    BillingService_CreateCheckoutSession: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCheckoutSessionRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateCheckoutSessionResponse"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    BillingService_GetSubscription: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SubscriptionState"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    BillingService_GetTierStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetTierStatusResponse"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    BillingService_StartTrial: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["StartTrialRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SubscriptionState"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    ActivityService_ExportData: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ExportDataRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ExportDataResponse"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    ActivityService_ParseFitFile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ParseFitFileRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StandardizedActivity"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    PipelineService_ListPendingInputs: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListPendingInputsResponse"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    PipelineService_ResolvePendingInput: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-                pendingInputId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ResolvePendingInputRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    PipelineService_SubmitInput: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-                pendingInputId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SubmitInputRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    PipelineService_ListPipelineRuns: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListPipelineRunsResponse"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    PipelineService_GetPipelineRun: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
+                id: string;
                 runId: string;
             };
             cookie?: never;
@@ -2729,13 +3408,11 @@ export interface operations {
             };
         };
     };
-    PipelineService_ListPipelines: {
+    ClientGatewayService_ListPluginDefaults: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                userId: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -2746,7 +3423,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListPipelinesResponse"];
+                    "application/json": components["schemas"]["ListPluginDefaultsGatewayResponse"];
                 };
             };
             /** @description Default error response */
@@ -2760,18 +3437,18 @@ export interface operations {
             };
         };
     };
-    PipelineService_CreatePipeline: {
+    ClientGatewayService_SetPluginDefaults: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
+                pluginId: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PipelineConfig"];
+                "application/json": Record<string, never>;
             };
         };
         responses: {
@@ -2780,9 +3457,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["PipelineConfig"];
-                };
+                content?: never;
             };
             /** @description Default error response */
             default: {
@@ -2795,45 +3470,12 @@ export interface operations {
             };
         };
     };
-    PipelineService_GetPipeline: {
+    ClientGatewayService_DeletePluginDefaults: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
-                pipelineId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PipelineConfig"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    PipelineService_DeletePipeline: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-                pipelineId: string;
+                pluginId: string;
             };
             cookie?: never;
         };
@@ -2857,49 +3499,11 @@ export interface operations {
             };
         };
     };
-    PipelineService_UpdatePipeline: {
+    ClientGatewayService_GetShowcasePreferences: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                userId: string;
-                pipelineId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PipelineConfig"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PipelineConfig"];
-                };
-            };
-            /** @description Default error response */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Status"];
-                };
-            };
-        };
-    };
-    ActivityService_ListShowcases: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                userId: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -2910,7 +3514,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListShowcasesResponse"];
+                    "application/json": components["schemas"]["ShowcaseProfile"];
                 };
             };
             /** @description Default error response */
@@ -2924,18 +3528,16 @@ export interface operations {
             };
         };
     };
-    ActivityService_CreateShowcase: {
+    ClientGatewayService_UpdateShowcasePreferences: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                userId: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ShowcasedActivity"];
+                "application/json": components["schemas"]["UpdateShowcasePreferencesGatewayRequest"];
             };
         };
         responses: {
@@ -2945,7 +3547,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ShowcasedActivity"];
+                    "application/json": components["schemas"]["ShowcaseProfile"];
                 };
             };
             /** @description Default error response */
@@ -2959,14 +3561,11 @@ export interface operations {
             };
         };
     };
-    ActivityService_GetShowcase: {
+    ClientGatewayService_GetShowcaseSettings: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                userId: string;
-                showcaseId: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -2977,7 +3576,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ShowcasedActivity"];
+                    "application/json": components["schemas"]["GetShowcaseSettingsGatewayResponse"];
                 };
             };
             /** @description Default error response */
@@ -2991,12 +3590,44 @@ export interface operations {
             };
         };
     };
-    ActivityService_DeleteShowcase: {
+    ClientGatewayService_UpdateShowcaseSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateShowcaseSettingsGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcaseProfile"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_AddShowcaseEntry: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
                 showcaseId: string;
             };
             cookie?: never;
@@ -3021,19 +3652,140 @@ export interface operations {
             };
         };
     };
-    ActivityService_UpdateShowcase: {
+    ClientGatewayService_RemoveShowcaseEntry: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                userId: string;
                 showcaseId: string;
             };
             cookie?: never;
         };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetShowcaseProfilePictureUploadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ShowcasedActivity"];
+                "application/json": components["schemas"]["GetPictureUploadUrlGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetPictureUploadUrlGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdateShowcaseSlug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateShowcaseSlugGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateShowcaseSlugGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListShowcases: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListShowcasesGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_CreateShowcase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateShowcaseGatewayRequest"];
             };
         };
         responses: {
@@ -3045,6 +3797,130 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ShowcasedActivity"];
                 };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetShowcase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcasedActivity"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdateShowcase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateShowcaseGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcasedActivity"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_DeleteShowcase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GenerateShowcaseImages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Default error response */
             default: {
