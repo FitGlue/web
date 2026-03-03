@@ -25,6 +25,7 @@ import { useShowcasePreferences } from '../hooks/useShowcasePreferences';
 import { useNerdMode } from '../state/NerdModeContext';
 import { EnricherProviderType } from '../../types/pb/user';
 import { PluginManifest, ConfigFieldType } from '../types/plugin';
+import { resolveEnum } from '../utils/resolveEnum';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST } from '../utils/tier';
 import { ENRICHER_CATEGORIES, groupPluginsByCategory, getRecommendedPlugins } from '../utils/pluginCategories';
 
@@ -38,7 +39,18 @@ type WizardStep = 'source' | 'source-config' | 'enrichers' | 'enricher-config' |
 const PipelineWizardPage: React.FC = () => {
     const navigate = useNavigate();
     const { refresh: refreshPipelines } = useRealtimePipelines();
-    const { sources, enrichers, destinations, integrations: registryIntegrations, loading, error: registryError } = usePluginRegistry();
+    const { sources: allSources, enrichers, destinations, integrations: registryIntegrations, loading, error: registryError } = usePluginRegistry();
+    // Filter out sources that are temporarily unavailable (either directly or via their required integration)
+    const sources = allSources.filter(s => {
+        if (s.isTemporarilyUnavailable) return false;
+        if (s.requiredIntegrations?.length) {
+            return !s.requiredIntegrations.some(reqId => {
+                const integration = registryIntegrations.find(i => i.id === reqId);
+                return integration?.isTemporarilyUnavailable;
+            });
+        }
+        return true;
+    });
     const { integrations: userIntegrations } = useRealtimeIntegrations();
     const { user } = useUser();
     const { getDefault: getPluginDefault } = usePluginDefaults();
@@ -522,7 +534,7 @@ const PipelineWizardPage: React.FC = () => {
 
         const isKeyValueMap = (enricher: SelectedEnricher, key: string): boolean => {
             const field = (enricher.manifest.configSchema ?? []).find(f => f.key === key);
-            return field?.fieldType === ConfigFieldType.CONFIG_FIELD_TYPE_KEY_VALUE_MAP;
+            return resolveEnum(field?.fieldType, ConfigFieldType) === ConfigFieldType.CONFIG_FIELD_TYPE_KEY_VALUE_MAP;
         };
 
         // Convert selected enrichers to ReviewEnricher format

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ConfigFieldSchema, ConfigFieldType } from '../types/plugin';
+import { resolveEnum } from '../utils/resolveEnum';
 import { Stack } from './library/layout/Stack';
 import { Paragraph } from './library/ui/Paragraph';
 import { Select } from './library/forms/Select';
@@ -68,8 +69,9 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
 
   const renderField = (field: ConfigFieldSchema) => {
     const value = values[field.key] || '';
+    const fieldType = resolveEnum(field.fieldType, ConfigFieldType);
 
-    switch (field.fieldType) {
+    switch (fieldType) {
       case ConfigFieldType.CONFIG_FIELD_TYPE_STRING:
         return (
           <Input

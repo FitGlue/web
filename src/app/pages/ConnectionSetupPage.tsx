@@ -62,9 +62,20 @@ const ConnectionSetupPage: React.FC = () => {
         setSubmitting(true);
 
         try {
+            // Build integration-appropriate body:
+            // PUBLIC_ID integrations (parkrun) need specific field names matching Firestore schema
+            const authType = typeof integration.authType === 'string'
+                ? IntegrationAuthType[integration.authType as keyof typeof IntegrationAuthType]
+                : integration.authType;
+            let body: Record<string, unknown>;
+            if (authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_PUBLIC_ID) {
+                body = { athlete_id: apiKey.trim(), enabled: true, consent_given: true };
+            } else {
+                body = { apiKey: apiKey.trim() };
+            }
             const { data: response, error } = await client.PUT('/users/me/integrations/{provider}', {
                 params: { path: { provider: integration.id } },
-                body: { apiKey: apiKey.trim() } as never,
+                body: body as never,
             });
             if (error) throw error;
             navigate(`/connections/${integration.id}/success`, {
