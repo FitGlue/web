@@ -19,8 +19,6 @@ const getWebhookUrl = (integrationId: string): string => {
     let baseUrl: string;
     if (hostname.includes('dev.fitglue') || hostname === 'localhost') {
         baseUrl = 'https://dev.fitglue.tech';
-    } else if (hostname.includes('test.fitglue')) {
-        baseUrl = 'https://test.fitglue.tech';
     } else {
         baseUrl = 'https://fitglue.tech';
     }

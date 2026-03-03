@@ -176,8 +176,6 @@ jobs:
             # Set registry API URL (will work once firebase.json is deployed)
             if [ "<< parameters.target >>" = "prod" ]; then
               export REGISTRY_API_URL="https://fitglue.tech/api/v2/registry"
-            elif [ "<< parameters.target >>" = "test" ]; then
-              export REGISTRY_API_URL="https://test.fitglue.tech/api/v2/registry"
             else
               export REGISTRY_API_URL="https://dev.fitglue.tech/api/v2/registry"
             fi
@@ -274,22 +272,10 @@ workflows:
           filters:
             branches:
               only: main
-      - terraform-apply:
-          name: terraform-apply-test
-          target: test
-          project_number: "797085295878"
-          requires:
-            - firebase-deploy-dev
-      - firebase-deploy:
-          name: firebase-deploy-test
-          target: test
-          project_number: "797085295878"
-          requires:
-            - terraform-apply-test
       - approve-prod:
           type: approval
           requires:
-            - firebase-deploy-test
+            - firebase-deploy-dev
       - terraform-apply:
           name: terraform-apply-prod
           target: prod
@@ -320,12 +306,7 @@ workflows:
           project_number: "911679924866"
           requires:
             - build-and-test
-      - firebase-deploy:
-          name: firebase-deploy-test
-          target: test
-          project_number: "797085295878"
-          requires:
-            - build-and-test
+
       - firebase-deploy:
           name: firebase-deploy-prod
           target: prod
