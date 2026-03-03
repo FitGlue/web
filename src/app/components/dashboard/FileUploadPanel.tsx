@@ -94,7 +94,7 @@ export const FileUploadPanel: React.FC = () => {
       const base64Data = btoa(binary);
 
       const payload: Record<string, string | undefined> = {
-        fitFileBase64: base64Data,
+        fitFileContent: base64Data,
         title: title || undefined,
         description: description || undefined,
       };
@@ -104,7 +104,13 @@ export const FileUploadPanel: React.FC = () => {
         payload.pipelineId = selectedPipelineId;
       }
 
-      const { data } = await client.POST('/users/me/parse-fit', { body: payload as never });
+      const { data, error } = await client.POST('/users/me/parse-fit', { body: payload as never });
+
+      if (error) {
+        const typedError = error as Record<string, unknown>;
+        throw new Error((typedError?.message as string) || 'Upload failed');
+      }
+
       const typedData = data as Record<string, unknown>;
 
       setMessage({

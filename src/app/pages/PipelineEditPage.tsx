@@ -29,9 +29,10 @@ import { Input } from '../components/library/forms';
 import { encodePipeline } from '../../shared/pipeline-sharing';
 import { ENRICHER_CATEGORIES, groupPluginsByCategory } from '../utils/pluginCategories';
 import { resolveEnum } from '../utils/resolveEnum';
+import { DestinationType, EnricherProviderType as SchemaEnricherProviderType } from '../../shared/api/schema-enums';
 
 interface EnricherConfig {
-    providerType: number;
+    providerType: SchemaEnricherProviderType;
     typedConfig?: Record<string, string>;
 }
 
@@ -40,7 +41,7 @@ interface PipelineConfig {
     name?: string;
     source: string;
     enrichers: EnricherConfig[];
-    destinations: (string | number)[];
+    destinations: DestinationType[];
     sourceConfig?: Record<string, string>;
     destinationConfigs?: Record<string, { config: Record<string, string>; excludedEnrichers?: string[] }>;
 }
@@ -144,7 +145,7 @@ const PipelineEditPage: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [pipelineId, enrichers]);
+    }, [pipelineId, enrichers, destinations]);
 
     const toast = useToast();
 

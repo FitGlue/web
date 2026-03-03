@@ -134,8 +134,11 @@ export interface components {
             key?: string;
             label?: string;
             description?: string;
-            /** Format: enum */
-            fieldType?: number;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            fieldType?: "CONFIG_FIELD_TYPE_UNSPECIFIED" | "CONFIG_FIELD_TYPE_STRING" | "CONFIG_FIELD_TYPE_NUMBER" | "CONFIG_FIELD_TYPE_BOOLEAN" | "CONFIG_FIELD_TYPE_SELECT" | "CONFIG_FIELD_TYPE_MULTI_SELECT" | "CONFIG_FIELD_TYPE_KEY_VALUE_MAP" | "CONFIG_FIELD_TYPE_DYNAMIC_SELECT";
             required?: boolean;
             defaultValue?: string;
             options?: components["schemas"]["ConfigFieldOption"][];
@@ -183,8 +186,11 @@ export interface components {
             name?: string;
             description?: string;
             icon?: string;
-            /** Format: enum */
-            authType?: number;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            authType?: "INTEGRATION_AUTH_TYPE_UNSPECIFIED" | "INTEGRATION_AUTH_TYPE_OAUTH" | "INTEGRATION_AUTH_TYPE_API_KEY" | "INTEGRATION_AUTH_TYPE_APP_SYNC" | "INTEGRATION_AUTH_TYPE_PUBLIC_ID";
             enabled?: boolean;
             docsUrl?: string;
             setupTitle?: string;
@@ -220,8 +226,11 @@ export interface components {
         };
         PluginManifest: {
             id?: string;
-            /** Format: enum */
-            type?: number;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            type?: "PLUGIN_TYPE_UNSPECIFIED" | "PLUGIN_TYPE_SOURCE" | "PLUGIN_TYPE_ENRICHER" | "PLUGIN_TYPE_DESTINATION";
             name?: string;
             description?: string;
             icon?: string;
@@ -329,10 +338,16 @@ export interface components {
         ShowcaseProfileEntry: {
             showcaseId?: string;
             title?: string;
-            /** Format: enum */
-            activityType?: number;
-            /** Format: enum */
-            source?: number;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            activityType?: "ACTIVITY_TYPE_UNSPECIFIED" | "ACTIVITY_TYPE_ALPINE_SKI" | "ACTIVITY_TYPE_BACKCOUNTRY_SKI" | "ACTIVITY_TYPE_BADMINTON" | "ACTIVITY_TYPE_CANOEING" | "ACTIVITY_TYPE_CROSSFIT" | "ACTIVITY_TYPE_EBIKE_RIDE" | "ACTIVITY_TYPE_ELLIPTICAL" | "ACTIVITY_TYPE_EMOUNTAIN_BIKE_RIDE" | "ACTIVITY_TYPE_GOLF" | "ACTIVITY_TYPE_GRAVEL_RIDE" | "ACTIVITY_TYPE_HANDCYCLE" | "ACTIVITY_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING" | "ACTIVITY_TYPE_HIKE" | "ACTIVITY_TYPE_ICE_SKATE" | "ACTIVITY_TYPE_INLINE_SKATE" | "ACTIVITY_TYPE_KAYAKING" | "ACTIVITY_TYPE_KITESURF" | "ACTIVITY_TYPE_MOUNTAIN_BIKE_RIDE" | "ACTIVITY_TYPE_NORDIC_SKI" | "ACTIVITY_TYPE_PICKLEBALL" | "ACTIVITY_TYPE_PILATES" | "ACTIVITY_TYPE_RACQUETBALL" | "ACTIVITY_TYPE_RIDE" | "ACTIVITY_TYPE_ROCK_CLIMBING" | "ACTIVITY_TYPE_ROLLER_SKI" | "ACTIVITY_TYPE_ROWING" | "ACTIVITY_TYPE_RUN" | "ACTIVITY_TYPE_SAIL" | "ACTIVITY_TYPE_SKATEBOARD" | "ACTIVITY_TYPE_SNOWBOARD" | "ACTIVITY_TYPE_SNOWSHOE" | "ACTIVITY_TYPE_SOCCER" | "ACTIVITY_TYPE_SQUASH" | "ACTIVITY_TYPE_STAIR_STEPPER" | "ACTIVITY_TYPE_STAND_UP_PADDLING" | "ACTIVITY_TYPE_SURFING" | "ACTIVITY_TYPE_SWIM" | "ACTIVITY_TYPE_TABLE_TENNIS" | "ACTIVITY_TYPE_TENNIS" | "ACTIVITY_TYPE_TRAIL_RUN" | "ACTIVITY_TYPE_VELOMOBILE" | "ACTIVITY_TYPE_VIRTUAL_RIDE" | "ACTIVITY_TYPE_VIRTUAL_ROW" | "ACTIVITY_TYPE_VIRTUAL_RUN" | "ACTIVITY_TYPE_WALK" | "ACTIVITY_TYPE_WEIGHT_TRAINING" | "ACTIVITY_TYPE_WHEELCHAIR" | "ACTIVITY_TYPE_WINDSURF" | "ACTIVITY_TYPE_WORKOUT" | "ACTIVITY_TYPE_YOGA";
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_GARMIN" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
             /** Format: date-time */
             startTime?: string;
             routeThumbnailUrl?: string;
@@ -360,10 +375,16 @@ export interface components {
             userId?: string;
             title?: string;
             description?: string;
-            /** Format: enum */
-            activityType?: number;
-            /** Format: enum */
-            source?: number;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            activityType?: "ACTIVITY_TYPE_UNSPECIFIED" | "ACTIVITY_TYPE_ALPINE_SKI" | "ACTIVITY_TYPE_BACKCOUNTRY_SKI" | "ACTIVITY_TYPE_BADMINTON" | "ACTIVITY_TYPE_CANOEING" | "ACTIVITY_TYPE_CROSSFIT" | "ACTIVITY_TYPE_EBIKE_RIDE" | "ACTIVITY_TYPE_ELLIPTICAL" | "ACTIVITY_TYPE_EMOUNTAIN_BIKE_RIDE" | "ACTIVITY_TYPE_GOLF" | "ACTIVITY_TYPE_GRAVEL_RIDE" | "ACTIVITY_TYPE_HANDCYCLE" | "ACTIVITY_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING" | "ACTIVITY_TYPE_HIKE" | "ACTIVITY_TYPE_ICE_SKATE" | "ACTIVITY_TYPE_INLINE_SKATE" | "ACTIVITY_TYPE_KAYAKING" | "ACTIVITY_TYPE_KITESURF" | "ACTIVITY_TYPE_MOUNTAIN_BIKE_RIDE" | "ACTIVITY_TYPE_NORDIC_SKI" | "ACTIVITY_TYPE_PICKLEBALL" | "ACTIVITY_TYPE_PILATES" | "ACTIVITY_TYPE_RACQUETBALL" | "ACTIVITY_TYPE_RIDE" | "ACTIVITY_TYPE_ROCK_CLIMBING" | "ACTIVITY_TYPE_ROLLER_SKI" | "ACTIVITY_TYPE_ROWING" | "ACTIVITY_TYPE_RUN" | "ACTIVITY_TYPE_SAIL" | "ACTIVITY_TYPE_SKATEBOARD" | "ACTIVITY_TYPE_SNOWBOARD" | "ACTIVITY_TYPE_SNOWSHOE" | "ACTIVITY_TYPE_SOCCER" | "ACTIVITY_TYPE_SQUASH" | "ACTIVITY_TYPE_STAIR_STEPPER" | "ACTIVITY_TYPE_STAND_UP_PADDLING" | "ACTIVITY_TYPE_SURFING" | "ACTIVITY_TYPE_SWIM" | "ACTIVITY_TYPE_TABLE_TENNIS" | "ACTIVITY_TYPE_TENNIS" | "ACTIVITY_TYPE_TRAIL_RUN" | "ACTIVITY_TYPE_VELOMOBILE" | "ACTIVITY_TYPE_VIRTUAL_RIDE" | "ACTIVITY_TYPE_VIRTUAL_ROW" | "ACTIVITY_TYPE_VIRTUAL_RUN" | "ACTIVITY_TYPE_WALK" | "ACTIVITY_TYPE_WEIGHT_TRAINING" | "ACTIVITY_TYPE_WHEELCHAIR" | "ACTIVITY_TYPE_WINDSURF" | "ACTIVITY_TYPE_WORKOUT" | "ACTIVITY_TYPE_YOGA";
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_GARMIN" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
             /** Format: date-time */
             startTime?: string;
             activityData?: components["schemas"]["StandardizedActivity"];
@@ -382,15 +403,21 @@ export interface components {
             activityDataUri?: string;
         };
         StandardizedActivity: {
-            /** Format: enum */
-            source?: number;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_GARMIN" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
             externalId?: string;
             userId?: string;
             /** Format: date-time */
             startTime?: string;
             name?: string;
-            /** Format: enum */
-            type?: number;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            type?: "ACTIVITY_TYPE_UNSPECIFIED" | "ACTIVITY_TYPE_ALPINE_SKI" | "ACTIVITY_TYPE_BACKCOUNTRY_SKI" | "ACTIVITY_TYPE_BADMINTON" | "ACTIVITY_TYPE_CANOEING" | "ACTIVITY_TYPE_CROSSFIT" | "ACTIVITY_TYPE_EBIKE_RIDE" | "ACTIVITY_TYPE_ELLIPTICAL" | "ACTIVITY_TYPE_EMOUNTAIN_BIKE_RIDE" | "ACTIVITY_TYPE_GOLF" | "ACTIVITY_TYPE_GRAVEL_RIDE" | "ACTIVITY_TYPE_HANDCYCLE" | "ACTIVITY_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING" | "ACTIVITY_TYPE_HIKE" | "ACTIVITY_TYPE_ICE_SKATE" | "ACTIVITY_TYPE_INLINE_SKATE" | "ACTIVITY_TYPE_KAYAKING" | "ACTIVITY_TYPE_KITESURF" | "ACTIVITY_TYPE_MOUNTAIN_BIKE_RIDE" | "ACTIVITY_TYPE_NORDIC_SKI" | "ACTIVITY_TYPE_PICKLEBALL" | "ACTIVITY_TYPE_PILATES" | "ACTIVITY_TYPE_RACQUETBALL" | "ACTIVITY_TYPE_RIDE" | "ACTIVITY_TYPE_ROCK_CLIMBING" | "ACTIVITY_TYPE_ROLLER_SKI" | "ACTIVITY_TYPE_ROWING" | "ACTIVITY_TYPE_RUN" | "ACTIVITY_TYPE_SAIL" | "ACTIVITY_TYPE_SKATEBOARD" | "ACTIVITY_TYPE_SNOWBOARD" | "ACTIVITY_TYPE_SNOWSHOE" | "ACTIVITY_TYPE_SOCCER" | "ACTIVITY_TYPE_SQUASH" | "ACTIVITY_TYPE_STAIR_STEPPER" | "ACTIVITY_TYPE_STAND_UP_PADDLING" | "ACTIVITY_TYPE_SURFING" | "ACTIVITY_TYPE_SWIM" | "ACTIVITY_TYPE_TABLE_TENNIS" | "ACTIVITY_TYPE_TENNIS" | "ACTIVITY_TYPE_TRAIL_RUN" | "ACTIVITY_TYPE_VELOMOBILE" | "ACTIVITY_TYPE_VIRTUAL_RIDE" | "ACTIVITY_TYPE_VIRTUAL_ROW" | "ACTIVITY_TYPE_VIRTUAL_RUN" | "ACTIVITY_TYPE_WALK" | "ACTIVITY_TYPE_WEIGHT_TRAINING" | "ACTIVITY_TYPE_WHEELCHAIR" | "ACTIVITY_TYPE_WINDSURF" | "ACTIVITY_TYPE_WORKOUT" | "ACTIVITY_TYPE_YOGA";
             sessions?: components["schemas"]["Session"][];
             description?: string;
             tags?: string[];
@@ -422,9 +449,12 @@ export interface components {
             durationSeconds?: number;
             notes?: string;
             supersetId?: string;
-            /** Format: enum */
-            primaryMuscleGroup?: number;
-            secondaryMuscleGroups?: number[];
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            primaryMuscleGroup?: "MUSCLE_GROUP_UNSPECIFIED" | "MUSCLE_GROUP_ABDOMINALS" | "MUSCLE_GROUP_SHOULDERS" | "MUSCLE_GROUP_BICEPS" | "MUSCLE_GROUP_TRICEPS" | "MUSCLE_GROUP_FOREARMS" | "MUSCLE_GROUP_QUADRICEPS" | "MUSCLE_GROUP_HAMSTRINGS" | "MUSCLE_GROUP_CALVES" | "MUSCLE_GROUP_GLUTES" | "MUSCLE_GROUP_ABDUCTORS" | "MUSCLE_GROUP_ADDUCTORS" | "MUSCLE_GROUP_LATS" | "MUSCLE_GROUP_UPPER_BACK" | "MUSCLE_GROUP_TRAPS" | "MUSCLE_GROUP_LOWER_BACK" | "MUSCLE_GROUP_CHEST" | "MUSCLE_GROUP_CARDIO" | "MUSCLE_GROUP_NECK" | "MUSCLE_GROUP_FULL_BODY" | "MUSCLE_GROUP_OTHER";
+            secondaryMuscleGroups?: ("MUSCLE_GROUP_UNSPECIFIED" | "MUSCLE_GROUP_ABDOMINALS" | "MUSCLE_GROUP_SHOULDERS" | "MUSCLE_GROUP_BICEPS" | "MUSCLE_GROUP_TRICEPS" | "MUSCLE_GROUP_FOREARMS" | "MUSCLE_GROUP_QUADRICEPS" | "MUSCLE_GROUP_HAMSTRINGS" | "MUSCLE_GROUP_CALVES" | "MUSCLE_GROUP_GLUTES" | "MUSCLE_GROUP_ABDUCTORS" | "MUSCLE_GROUP_ADDUCTORS" | "MUSCLE_GROUP_LATS" | "MUSCLE_GROUP_UPPER_BACK" | "MUSCLE_GROUP_TRAPS" | "MUSCLE_GROUP_LOWER_BACK" | "MUSCLE_GROUP_CHEST" | "MUSCLE_GROUP_CARDIO" | "MUSCLE_GROUP_NECK" | "MUSCLE_GROUP_FULL_BODY" | "MUSCLE_GROUP_OTHER")[];
             /** Format: double */
             distanceMeters?: number;
             setType?: string;
