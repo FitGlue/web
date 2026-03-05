@@ -30,13 +30,12 @@ const SubscriptionPage: React.FC = () => {
     const handleCheckout = async () => {
         setProcessing(true);
         try {
-            const { data, error } = await client.POST('/billing/checkout', {
+            const { data } = await client.POST('/billing/checkout', {
                 body: {
                     successUrl: `${window.location.origin}/settings/subscription?billing=success`,
                     cancelUrl: `${window.location.origin}/settings/subscription?billing=cancelled`,
                 },
             });
-            if (error) throw error;
             window.location.href = (data as Record<string, string>).sessionUrl;
         } catch (error) {
             console.error('Failed to start checkout:', error);

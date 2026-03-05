@@ -36,40 +36,25 @@ export interface IInputsService {
 
 export const InputsService: IInputsService = {
   async resolveInput(request) {
-    const { error } = await client.POST('/users/me/pending-inputs/{inputId}/submit', {
+    await client.POST('/users/me/pending-inputs/{inputId}/submit', {
       params: { path: { inputId: request.activityId } },
       body: request as never,
     });
-
-    if (error) {
-      throw new Error('Failed to resolve input');
-    }
-
     return true;
   },
 
   async setFCMToken(token: string) {
-    const { error } = await client.POST('/users/me/fcm-token', {
+    await client.POST('/users/me/fcm-token', {
       body: { token } as never,
     });
-
-    if (error) {
-      throw new Error('Failed to set FCM token');
-    }
-
     return true;
   },
 
   async dismissInput(activityId: string) {
     // TODO: Add proper dismiss endpoint to gateway proto
-    const { error } = await client.DELETE('/inputs/{id}' as '/users/me/activities/{id}', {
+    await client.DELETE('/inputs/{id}' as '/users/me/activities/{id}', {
       params: { path: { id: activityId } } as never
     });
-
-    if (error) {
-      throw new Error('Failed to dismiss input');
-    }
     return true;
   },
 };
-

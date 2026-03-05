@@ -72,11 +72,10 @@ const ConnectionSetupPage: React.FC = () => {
             } else {
                 body = { apiKey: apiKey.trim() };
             }
-            const { data: response, error } = await client.PUT('/users/me/integrations/{provider}', {
+            const { data: response } = await client.PUT('/users/me/integrations/{provider}', {
                 params: { path: { provider: integration.id } },
                 body: body as never,
             });
-            if (error) throw error;
             navigate(`/connections/${integration.id}/success`, {
                 state: {
                     ingressApiKey: (response as unknown as Record<string, unknown>)?.ingressApiKey,

@@ -74,63 +74,63 @@ export interface IActivitiesService {
 // TODO: Add unsynchronized endpoints to gateway proto so they appear in the OpenAPI spec.
 export const ActivitiesService: IActivitiesService = {
   async getStats() {
-    const { data, error } = await client.GET('/users/me/activities/stats');
-
-    if (error) {
-      console.error('Failed to fetch activity stats', error);
+    try {
+      const { data } = await client.GET('/users/me/activities/stats');
+      const d = data as Record<string, unknown>;
+      return {
+        synchronizedCount: (d?.synchronizedCount as number) || 0,
+        totalSynced: (d?.totalSynced as number) || 0,
+        monthlySynced: (d?.monthlySynced as number) || 0,
+        weeklySynced: (d?.weeklySynced as number) || 0,
+      };
+    } catch (err) {
+      console.error('Failed to fetch activity stats', err);
       return { synchronizedCount: 0, totalSynced: 0, monthlySynced: 0, weeklySynced: 0 };
     }
-
-    const d = data as Record<string, unknown>;
-    return {
-      synchronizedCount: (d?.synchronizedCount as number) || 0,
-      totalSynced: (d?.totalSynced as number) || 0,
-      monthlySynced: (d?.monthlySynced as number) || 0,
-      weeklySynced: (d?.weeklySynced as number) || 0,
-    };
   },
 
   async get(id: string) {
-    const { data, error } = await client.GET('/users/me/activities/{id}', {
-      params: { path: { id } }
-    });
-
-    if (error) return null;
-    return ((data as Record<string, unknown>)?.activity as SynchronizedActivity) || null;
+    try {
+      const { data } = await client.GET('/users/me/activities/{id}', {
+        params: { path: { id } }
+      });
+      return ((data as Record<string, unknown>)?.activity as SynchronizedActivity) || null;
+    } catch {
+      return null;
+    }
   },
 
   // TODO: Add /users/me/activities/unsynchronized to gateway proto
   async listUnsynchronized(limit = 20, offset = 0) {
-    const { data, error } = await client.GET('/activities/unsynchronized' as '/users/me/activities/{id}', {
-      params: { query: { limit, offset } } as never
-    });
-
-    if (error) {
-      console.error('Failed to fetch unsynchronized executions', error);
+    try {
+      const { data } = await client.GET('/activities/unsynchronized' as '/users/me/activities/{id}', {
+        params: { query: { limit, offset } } as never
+      });
+      return ((data as Record<string, unknown>)?.executions as UnsynchronizedEntry[]) || [];
+    } catch (err) {
+      console.error('Failed to fetch unsynchronized executions', err);
       return [];
     }
-
-    return ((data as Record<string, unknown>)?.executions as UnsynchronizedEntry[]) || [];
   },
 
   // TODO: Add /users/me/activities/unsynchronized/{id} to gateway proto
   async getUnsynchronizedTrace(pipelineExecutionId: string) {
-    const { data, error } = await client.GET('/activities/unsynchronized/{pipelineExecutionId}' as '/users/me/activities/{id}', {
-      params: { path: { pipelineExecutionId } } as never
-    });
-
-    if (error) return null;
-
-    const d = data as Record<string, unknown>;
-    return d ? { pipelineExecutionId: (d.pipelineExecutionId as string) || pipelineExecutionId, pipelineExecution: (d.pipelineExecution as ExecutionRecord[]) || [] } : null;
+    try {
+      const { data } = await client.GET('/activities/unsynchronized/{pipelineExecutionId}' as '/users/me/activities/{id}', {
+        params: { path: { pipelineExecutionId } } as never
+      });
+      const d = data as Record<string, unknown>;
+      return d ? { pipelineExecutionId: (d.pipelineExecutionId as string) || pipelineExecutionId, pipelineExecution: (d.pipelineExecution as ExecutionRecord[]) || [] } : null;
+    } catch {
+      return null;
+    }
   },
 
   async repostToMissedDestination(activityId: string, destination: string): Promise<RepostResponse> {
     try {
-      const { data, error } = await client.POST('/repost/missed-destination', {
+      const { data } = await client.POST('/repost/missed-destination', {
         body: { activityId, destination } as never,
       });
-      if (error) return { success: false, message: 'Failed to re-post to destination' };
       return (data as RepostResponse) || { success: true };
     } catch {
       return { success: false, message: 'Failed to re-post to destination' };
@@ -139,10 +139,9 @@ export const ActivitiesService: IActivitiesService = {
 
   async retryDestination(activityId: string, destination: string): Promise<RepostResponse> {
     try {
-      const { data, error } = await client.POST('/repost/retry-destination', {
+      const { data } = await client.POST('/repost/retry-destination', {
         body: { activityId, destination } as never,
       });
-      if (error) return { success: false, message: 'Failed to retry destination' };
       return (data as RepostResponse) || { success: true };
     } catch {
       return { success: false, message: 'Failed to retry destination' };
@@ -151,14 +150,12 @@ export const ActivitiesService: IActivitiesService = {
 
   async fullPipelineRerun(activityId: string): Promise<RepostResponse> {
     try {
-      const { data, error } = await client.POST('/repost/full-pipeline', {
+      const { data } = await client.POST('/repost/full-pipeline', {
         body: { activityId } as never,
       });
-      if (error) return { success: false, message: 'Failed to re-run pipeline' };
       return (data as RepostResponse) || { success: true };
     } catch {
       return { success: false, message: 'Failed to re-run pipeline' };
     }
   },
 };
-

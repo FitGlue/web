@@ -1,17 +1,18 @@
 import createClient from "openapi-fetch";
 import type { paths } from "./schema-client";
 import { getFirebaseAuth } from "../firebase";
-import { Sentry } from "../../app/infrastructure/sentry";
+import type { ThrowingClient } from "./throwing-client";
+import { createErrorMiddleware } from "./throwing-client";
 
 // Authenticated client for api-client gateway (/api/v2/*)
 const BASE_URL = "/api/v2";
 
-export const client = createClient<paths>({
+const rawClient = createClient<paths>({
   baseUrl: BASE_URL,
 });
 
 // Auth middleware — attaches Firebase ID token to every request
-client.use({
+rawClient.use({
   async onRequest({ request }) {
     const auth = getFirebaseAuth();
     if (auth?.currentUser) {
@@ -24,22 +25,11 @@ client.use({
     }
     return request;
   },
-  async onResponse({ response, request }) {
-    if (!response.ok) {
-      Sentry.captureException(
-        new Error(`API ${request.method} ${new URL(response.url).pathname} failed: ${response.status} ${response.statusText}`),
-        {
-          tags: {
-            api_method: request.method,
-            api_path: new URL(response.url).pathname,
-            status_code: response.status,
-          },
-          extra: { statusText: response.statusText },
-        }
-      );
-    }
-    return response;
-  },
 });
 
+// Error middleware — throws on non-2xx (after Sentry capture)
+rawClient.use(createErrorMiddleware("API"));
+
+// Export as ThrowingClient so callers can't destructure { error }
+export const client = rawClient as unknown as ThrowingClient<paths>;
 export default client;

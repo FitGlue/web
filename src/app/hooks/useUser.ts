@@ -22,8 +22,7 @@ export function useUser() {
     setLoading(true);
     setError(null);
     try {
-      const { data, error: apiError } = await client.GET('/users/me');
-      if (apiError) throw new Error('Failed to fetch user profile');
+      const { data } = await client.GET('/users/me');
       setUser(data as UserProfile);
     } catch (err) {
       console.error('Failed to fetch user profile:', err);

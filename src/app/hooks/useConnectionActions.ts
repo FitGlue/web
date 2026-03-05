@@ -49,12 +49,10 @@ export const useConnectionActions = (provider: string) => {
         });
 
         try {
-            const { data, error: apiError } = await client.POST('/users/me/connections/{provider}/actions', {
+            const { data } = await client.POST('/users/me/connections/{provider}/actions', {
                 params: { path: { provider } },
                 body: { action: actionId } as never,
             });
-
-            if (apiError) throw new Error('Failed to trigger action');
 
             // Mark action as completed (it's been queued for background processing)
             setCompletedActions(prev => new Set(prev).add(actionId));

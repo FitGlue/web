@@ -35,8 +35,7 @@ export const usePluginRegistry = () => {
     setLoading(true);
     try {
       // No auth required for the plugins endpoint — middleware skips unauthenticated requests
-      const { data, error: apiError } = await client.GET('/registry/plugins');
-      if (apiError) throw new Error('Failed to fetch plugin registry');
+      const { data } = await client.GET('/registry/plugins');
       setRegistry(data as PluginRegistryResponse);
       setLastUpdated(new Date());
       setLoaded(true);

@@ -312,10 +312,9 @@ const ShowcaseManagementPage: React.FC = () => {
 
         try {
             // Cropped output is always WebP from canvas
-            const { data, error } = await client.POST('/users/me/showcase-management/profile/picture', {
+            const { data } = await client.POST('/users/me/showcase-management/profile/picture', {
                 body: { contentType: 'image/webp' } as never,
             });
-            if (error) throw error;
             const typedData = data as unknown as {
                 uploadUrl: string;
                 publicUrl: string;

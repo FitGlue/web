@@ -104,12 +104,7 @@ export const FileUploadPanel: React.FC = () => {
         payload.pipelineId = selectedPipelineId;
       }
 
-      const { data, error } = await client.POST('/users/me/parse-fit', { body: payload as never });
-
-      if (error) {
-        const typedError = error as Record<string, unknown>;
-        throw new Error((typedError?.message as string) || 'Upload failed');
-      }
+      const { data } = await client.POST('/users/me/parse-fit', { body: payload as never });
 
       const typedData = data as Record<string, unknown>;
 

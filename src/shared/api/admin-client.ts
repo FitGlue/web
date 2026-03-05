@@ -1,17 +1,18 @@
 import createClient from "openapi-fetch";
 import type { paths } from "./schema-admin";
 import { getFirebaseAuth } from "../firebase";
-import { Sentry } from "../../app/infrastructure/sentry";
+import type { ThrowingClient } from "./throwing-client";
+import { createErrorMiddleware } from "./throwing-client";
 
 // Authenticated client for api-admin gateway (/api/admin/*)
 const BASE_URL = "/api/admin";
 
-export const adminClient = createClient<paths>({
+const rawClient = createClient<paths>({
     baseUrl: BASE_URL,
 });
 
 // Auth middleware — attaches Firebase ID token to every request
-adminClient.use({
+rawClient.use({
     async onRequest({ request }) {
         const auth = getFirebaseAuth();
         if (auth?.currentUser) {
@@ -24,22 +25,11 @@ adminClient.use({
         }
         return request;
     },
-    async onResponse({ response, request }) {
-        if (!response.ok) {
-            Sentry.captureException(
-                new Error(`Admin API ${request.method} ${new URL(response.url).pathname} failed: ${response.status} ${response.statusText}`),
-                {
-                    tags: {
-                        api_method: request.method,
-                        api_path: new URL(response.url).pathname,
-                        status_code: response.status,
-                    },
-                    extra: { statusText: response.statusText },
-                }
-            );
-        }
-        return response;
-    },
 });
 
+// Error middleware — throws on non-2xx (after Sentry capture)
+rawClient.use(createErrorMiddleware("Admin API"));
+
+// Export as ThrowingClient so callers can't destructure { error }
+export const adminClient = rawClient as unknown as ThrowingClient<paths>;
 export default adminClient;
