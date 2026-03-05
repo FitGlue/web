@@ -443,10 +443,10 @@ const PipelineWizardPage: React.FC = () => {
                 <Paragraph>{current.manifest.description}</Paragraph>
                 <Card>
                     {current.manifest.id === 'logic-gate' ? (
-                        <LogicGateConfigForm initialValues={current.config}
+                        <LogicGateConfigForm key={`logic-gate-${currentEnricherIndex}`} initialValues={current.config}
                             onChange={config => updateEnricherConfig(currentEnricherIndex, config)} />
                     ) : (
-                        <EnricherConfigForm schema={current.manifest.configSchema ?? []} initialValues={current.config}
+                        <EnricherConfigForm key={`${current.manifest.id}-${currentEnricherIndex}`} schema={current.manifest.configSchema ?? []} initialValues={current.config}
                             onChange={config => updateEnricherConfig(currentEnricherIndex, config)} />
                     )}
                 </Card>
