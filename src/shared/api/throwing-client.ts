@@ -10,30 +10,25 @@ import { Sentry } from "../../app/infrastructure/sentry";
  *
  * All non-2xx responses throw before returning, courtesy of the
  * onResponse middleware below.
+ * 
+ * We strip `error` from the return type via Omit on the awaited result.
+ * The method signatures are preserved exactly as openapi-fetch provides them.
  */
-type SuccessResponse<T> = T extends { data: infer D; response: infer R }
-    ? { data: D; response: R }
-    : never;
 
-type ThrowingClientMethod<Original> = Original extends (
-    url: infer U,
-    ...init: infer I
-) => Promise<infer R>
-    ? (url: U, ...init: I) => Promise<SuccessResponse<R>>
-    : never;
+/**
+ * Helper: given the original Client type, produce a new type where
+ * every HTTP method's Promise resolves to Omit<R, 'error'> instead of R.
+ *
+ * We use a mapped type over keyof Client, and for the known HTTP methods
+ * we wrap their return types. Everything else (use, eject, etc) passes through.
+ */
+type StripError<T> = T extends (...args: infer A) => Promise<infer R>
+    ? (...args: A) => Promise<Omit<R, 'error'>>
+    : T;
 
-export type ThrowingClient<Paths extends {}, Media extends MediaType = MediaType> = Omit<
-    Client<Paths, Media>,
-    "GET" | "PUT" | "POST" | "DELETE" | "OPTIONS" | "HEAD" | "PATCH" | "TRACE"
-> & {
-    GET: ThrowingClientMethod<Client<Paths, Media>["GET"]>;
-    PUT: ThrowingClientMethod<Client<Paths, Media>["PUT"]>;
-    POST: ThrowingClientMethod<Client<Paths, Media>["POST"]>;
-    DELETE: ThrowingClientMethod<Client<Paths, Media>["DELETE"]>;
-    OPTIONS: ThrowingClientMethod<Client<Paths, Media>["OPTIONS"]>;
-    HEAD: ThrowingClientMethod<Client<Paths, Media>["HEAD"]>;
-    PATCH: ThrowingClientMethod<Client<Paths, Media>["PATCH"]>;
-    TRACE: ThrowingClientMethod<Client<Paths, Media>["TRACE"]>;
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type ThrowingClient<Paths extends {}, Media extends MediaType = MediaType> = {
+    [K in keyof Client<Paths, Media>]: StripError<Client<Paths, Media>[K]>;
 };
 
 /**

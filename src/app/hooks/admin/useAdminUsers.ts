@@ -109,7 +109,7 @@ export function useAdminUsers(): UseAdminUsersResult {
         ? `/admin/users/${userId}/${dataType}/${subId}`
         : `/admin/users/${userId}/${dataType}`;
 
-      await adminClient.DELETE(path as never);
+      await adminClient.DELETE(path as never, {} as never);
       // Refresh user detail
       await fetchUserDetail(userId);
     } catch (err) {
