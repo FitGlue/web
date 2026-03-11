@@ -3620,9 +3620,9 @@
   }
 
   (async function () {
-    // Extract ID from URL path: /showcase/{id}
+    // Extract ID from URL path: /s/{id} or /showcase/{id}
     const pathParts = window.location.pathname.split('/').filter(Boolean);
-    let showcaseId = pathParts[0] === 'showcase' && pathParts[1] ? pathParts[1] : new URLSearchParams(window.location.search).get('id');
+    let showcaseId = (pathParts[0] === 's' || pathParts[0] === 'showcase') && pathParts[1] ? pathParts[1] : new URLSearchParams(window.location.search).get('id');
 
     const loadingEl = document.getElementById('showcase-loading');
     const errorEl = document.getElementById('showcase-error');

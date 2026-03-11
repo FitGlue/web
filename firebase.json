@@ -58,13 +58,6 @@
         }
       },
       {
-        "source": "/showcase/**",
-        "run": {
-          "serviceId": "api-public",
-          "region": "us-central1"
-        }
-      },
-      {
         "source": "/api/admin/**",
         "run": {
           "serviceId": "api-admin",
@@ -74,6 +67,14 @@
       {
         "source": "/app/**",
         "destination": "/app/index.html"
+      },
+      {
+        "source": "/s/**",
+        "destination": "/showcase.html"
+      },
+      {
+        "source": "/u/**",
+        "destination": "/showcase-profile.html"
       }
     ]
   }
