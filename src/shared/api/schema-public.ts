@@ -289,6 +289,8 @@ export interface components {
             verticalRatio?: number;
             /** Format: double */
             stepLength?: number;
+            /** Format: double */
+            distance?: number;
         };
         Session: {
             /** Format: date-time */

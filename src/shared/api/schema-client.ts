@@ -1372,6 +1372,8 @@ export interface components {
             verticalRatio?: number;
             /** Format: double */
             stepLength?: number;
+            /** Format: double */
+            distance?: number;
         };
         RepostGatewayResponse: {
             success?: boolean;

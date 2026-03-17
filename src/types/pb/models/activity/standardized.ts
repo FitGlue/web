@@ -87,7 +87,11 @@ export interface Record {
   groundContactTime?: number | undefined;
   verticalOscillation?: number | undefined;
   verticalRatio?: number | undefined;
-  stepLength?: number | undefined;
+  stepLength?:
+    | number
+    | undefined;
+  /** Cumulative distance in meters from activity start */
+  distance: number;
 }
 
 export interface StrengthSet {
