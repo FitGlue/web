@@ -4159,20 +4159,15 @@
       if (data.appliedEnrichments && data.appliedEnrichments.length > 0) {
         const enrichSection = document.getElementById('enrichments-section');
         const badgesEl = document.getElementById('enrichment-badges');
-        const registry = data.registry || {};
 
         badgesEl.innerHTML = data.appliedEnrichments.map(e => {
-          const info = registry[e] || {
-            icon: '⚡',
-            name: e.replace('ENRICHER_PROVIDER_', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-            description: 'Boosted activity data'
-          };
+          const info = getEnricherInfo(e);
           return `
           <div class="enrichment-item">
             <span class="enrichment-icon">${info.icon}</span>
             <div class="enrichment-info">
               <div class="enrichment-name">${info.name}</div>
-              <div class="enrichment-desc">${info.description || info.desc}</div>
+              <div class="enrichment-desc">${info.description}</div>
             </div>
           </div>
         `;
@@ -6835,15 +6830,77 @@
 
     function formatActivityType(type) {
       const types = {
-        0: 'Workout', 5: 'CrossFit', 12: 'HIIT', 13: 'Hike', 23: 'Ride', 27: 'Run', 37: 'Swim',
-        40: 'Trail Run', 45: 'Walk', 46: 'Weight Training', 49: 'Workout', 50: 'Yoga'
+        0: 'Workout', 1: 'Alpine Ski', 2: 'Backcountry Ski', 3: 'Badminton', 4: 'Canoeing',
+        5: 'CrossFit', 6: 'E-Bike Ride', 7: 'Elliptical', 8: 'E-Mountain Bike Ride', 9: 'Golf',
+        10: 'Gravel Ride', 11: 'Handcycle', 12: 'HIIT', 13: 'Hike', 14: 'Ice Skate',
+        15: 'Inline Skate', 16: 'Kayaking', 17: 'Kitesurf', 18: 'Mountain Bike Ride', 19: 'Nordic Ski',
+        20: 'Pickleball', 21: 'Pilates', 22: 'Racquetball', 23: 'Ride', 24: 'Rock Climbing',
+        25: 'Roller Ski', 26: 'Rowing', 27: 'Run', 28: 'Sail', 29: 'Skateboard',
+        30: 'Snowboard', 31: 'Snowshoe', 32: 'Soccer', 33: 'Squash', 34: 'Stair Stepper',
+        35: 'Stand Up Paddling', 36: 'Surfing', 37: 'Swim', 38: 'Table Tennis', 39: 'Tennis',
+        40: 'Trail Run', 41: 'Velomobile', 42: 'Virtual Ride', 43: 'Virtual Row', 44: 'Virtual Run',
+        45: 'Walk', 46: 'Weight Training', 47: 'Wheelchair', 48: 'Windsurf', 49: 'Workout', 50: 'Yoga'
       };
       return types[type] || 'Activity';
     }
 
     function formatSource(source) {
-      const sources = { 0: 'Unknown', 1: 'Hevy', 3: 'Fitbit', 4: 'Parkrun', 5: 'FIT Upload', 99: 'Test' };
+      const sources = {
+        0: 'Unknown', 1: 'Hevy', 3: 'Fitbit', 4: 'Parkrun', 5: 'FIT Upload',
+        6: 'Strava', 7: 'Garmin', 8: 'Apple Health', 9: 'Health Connect',
+        10: 'Oura', 11: 'Polar', 12: 'Wahoo', 13: 'Intervals.icu',
+        14: 'TrainingPeaks', 15: 'Google Sheets', 16: 'GitHub', 99: 'Test'
+      };
       return sources[source] || 'Unknown';
+    }
+
+    // Enricher registry for public showcase display
+    function getEnricherInfo(key) {
+      const REGISTRY = {
+        'ENRICHER_PROVIDER_FITBIT_HEART_RATE':     { icon: '❤️', name: 'Fitbit Heart Rate', description: 'Heart rate data from Fitbit' },
+        'ENRICHER_PROVIDER_WORKOUT_SUMMARY':       { icon: '📋', name: 'Workout Summary', description: 'AI-generated workout overview' },
+        'ENRICHER_PROVIDER_MUSCLE_HEATMAP':        { icon: '🔥', name: 'Muscle Heatmap', description: 'Visual muscle activation analysis' },
+        'ENRICHER_PROVIDER_SOURCE_LINK':           { icon: '🔗', name: 'Source Link', description: 'Link back to original platform' },
+        'ENRICHER_PROVIDER_VIRTUAL_GPS':           { icon: '📍', name: 'Virtual GPS', description: 'Simulated GPS route overlay' },
+        'ENRICHER_PROVIDER_TYPE_MAPPER':           { icon: '🏷️', name: 'Type Mapper', description: 'Activity type classification' },
+        'ENRICHER_PROVIDER_PARKRUN':               { icon: '🏃', name: 'Parkrun Results', description: 'Official parkrun finish data' },
+        'ENRICHER_PROVIDER_CONDITION_MATCHER':      { icon: '🔍', name: 'Condition Matcher', description: 'Smart activity filtering' },
+        'ENRICHER_PROVIDER_AUTO_INCREMENT':         { icon: '🔢', name: 'Auto Counter', description: 'Sequential activity numbering' },
+        'ENRICHER_PROVIDER_USER_INPUT':             { icon: '✏️', name: 'User Input', description: 'Custom user-defined data' },
+        'ENRICHER_PROVIDER_ACTIVITY_FILTER':        { icon: '🎯', name: 'Activity Filter', description: 'Conditional activity processing' },
+        'ENRICHER_PROVIDER_LOGIC_GATE':             { icon: '🚦', name: 'Logic Gate', description: 'Advanced conditional logic' },
+        'ENRICHER_PROVIDER_HEART_RATE_SUMMARY':     { icon: '💓', name: 'Heart Rate Summary', description: 'Detailed HR zone analysis' },
+        'ENRICHER_PROVIDER_AI_COMPANION':           { icon: '🤖', name: 'AI Companion', description: 'AI-powered activity insights' },
+        'ENRICHER_PROVIDER_PACE_SUMMARY':           { icon: '⚡', name: 'Pace Summary', description: 'Detailed pace breakdown' },
+        'ENRICHER_PROVIDER_CADENCE_SUMMARY':        { icon: '🦶', name: 'Cadence Summary', description: 'Step cadence analysis' },
+        'ENRICHER_PROVIDER_POWER_SUMMARY':          { icon: '💪', name: 'Power Summary', description: 'Power output analysis' },
+        'ENRICHER_PROVIDER_SPEED_SUMMARY':          { icon: '🚀', name: 'Speed Summary', description: 'Speed and velocity analysis' },
+        'ENRICHER_PROVIDER_PERSONAL_RECORDS':       { icon: '🏆', name: 'Personal Records', description: 'Best performance tracking' },
+        'ENRICHER_PROVIDER_TRAINING_LOAD':          { icon: '📊', name: 'Training Load', description: 'Cumulative training stress' },
+        'ENRICHER_PROVIDER_SPOTIFY_TRACKS':         { icon: '🎵', name: 'Spotify Tracks', description: 'Music played during activity' },
+        'ENRICHER_PROVIDER_WEATHER':                { icon: '🌤️', name: 'Weather', description: 'Weather conditions during activity' },
+        'ENRICHER_PROVIDER_ELEVATION_SUMMARY':      { icon: '⛰️', name: 'Elevation Summary', description: 'Elevation gain and profile' },
+        'ENRICHER_PROVIDER_LOCATION_NAMING':        { icon: '📍', name: 'Location Naming', description: 'Automatic location tagging' },
+        'ENRICHER_PROVIDER_MUSCLE_HEATMAP_IMAGE':   { icon: '🔥', name: 'Muscle Heatmap Image', description: 'Visual muscle activation map' },
+        'ENRICHER_PROVIDER_ROUTE_THUMBNAIL':        { icon: '🗺️', name: 'Route Thumbnail', description: 'Route map preview image' },
+        'ENRICHER_PROVIDER_AI_BANNER':              { icon: '🎨', name: 'AI Banner', description: 'AI-generated activity artwork' },
+        'ENRICHER_PROVIDER_FIT_FILE_HEART_RATE':    { icon: '❤️', name: 'FIT File Heart Rate', description: 'Heart rate from FIT files' },
+        'ENRICHER_PROVIDER_HYBRID_RACE_TAGGER':     { icon: '🏁', name: 'Hybrid Race Tagger', description: 'Multi-discipline race analysis' },
+        'ENRICHER_PROVIDER_RUNNING_DYNAMICS':       { icon: '🏃', name: 'Running Dynamics', description: 'Advanced running form metrics' },
+        'ENRICHER_PROVIDER_HEART_RATE_ZONES':       { icon: '❤️‍🔥', name: 'Heart Rate Zones', description: 'Training zone distribution' },
+        'ENRICHER_PROVIDER_CALORIES_BURNED':        { icon: '🔥', name: 'Calories Burned', description: 'Energy expenditure estimate' },
+        'ENRICHER_PROVIDER_GOAL_TRACKER':           { icon: '🎯', name: 'Goal Tracker', description: 'Goal progress tracking' },
+        'ENRICHER_PROVIDER_STREAK_TRACKER':         { icon: '🔥', name: 'Streak Tracker', description: 'Consecutive activity streaks' },
+        'ENRICHER_PROVIDER_DISTANCE_MILESTONES':    { icon: '🏅', name: 'Distance Milestones', description: 'Distance achievement tracking' },
+        'ENRICHER_PROVIDER_RECOVERY_ADVISOR':       { icon: '🛌', name: 'Recovery Advisor', description: 'Rest and recovery guidance' },
+        'ENRICHER_PROVIDER_EFFORT_SCORE':           { icon: '💯', name: 'Effort Score', description: 'Overall activity intensity rating' },
+        'ENRICHER_PROVIDER_INTERVALS':              { icon: '⏱️', name: 'Intervals', description: 'Interval training analysis' },
+      };
+      return REGISTRY[key] || {
+        icon: '✨',
+        name: key.replace('ENRICHER_PROVIDER_', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+        description: 'Activity data booster'
+      };
     }
 
     function formatDuration(seconds) {

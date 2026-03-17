@@ -116,7 +116,10 @@ const PipelineEditPage: React.FC = () => {
                     const manifest = destinations.find(m => m.destinationType === Number(d));
                     return manifest?.id ?? String(d);
                 }
-                return String(d);
+                // Convert string enum names like "DESTINATION_SHOWCASE" to manifest IDs like "showcase"
+                const normalized = String(d).toLowerCase().replace('destination_', '');
+                const manifest = destinations.find(m => m.id === normalized);
+                return manifest?.id ?? normalized;
             }));
             const enricherConfigs: SelectedEnricher[] = pipelineData.enrichers.map(e => {
                 const manifest = enrichers.find(m => resolveEnum(m.enricherProviderType, EnricherProviderType) === resolveEnum(e.providerType, EnricherProviderType));

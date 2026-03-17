@@ -36,7 +36,7 @@ export const usePluginLookup = () => {
    * Get destination info (name, icon) from destination ID or enum value
    */
   const getDestinationInfo = (dest: string | number): PluginInfo => {
-    const normalized = String(dest).toLowerCase();
+    const normalized = String(dest).toLowerCase().replace('destination_', '');
     const found = destinations.find(d =>
       d.id === normalized ||
       d.destinationType === (typeof dest === 'number' ? dest : Number(dest))

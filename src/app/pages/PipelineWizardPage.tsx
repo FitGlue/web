@@ -42,6 +42,7 @@ const PipelineWizardPage: React.FC = () => {
     const { sources: allSources, enrichers, destinations, integrations: registryIntegrations, loading, error: registryError } = usePluginRegistry();
     // Filter out sources that are temporarily unavailable (either directly or via their required integration)
     const sources = allSources.filter(s => {
+        if (!s.enabled) return false;
         if (s.isTemporarilyUnavailable) return false;
         if (s.requiredIntegrations?.length) {
             return !s.requiredIntegrations.some(reqId => {

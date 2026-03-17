@@ -88,5 +88,9 @@ export interface ShowcaseProfile {
   bio: string;
   profilePictureUrl: string;
   visible: boolean;
-  theme?: ShowcaseTheme | undefined;
+  theme?:
+    | ShowcaseTheme
+    | undefined;
+  /** Auto-add Showcase destination when creating new pipelines */
+  defaultDestination: boolean;
 }

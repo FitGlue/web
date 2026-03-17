@@ -1454,6 +1454,7 @@ export interface components {
             profilePictureUrl?: string;
             visible?: boolean;
             theme?: components["schemas"]["ShowcaseTheme"];
+            defaultDestination?: boolean;
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;
