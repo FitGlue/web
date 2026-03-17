@@ -895,21 +895,23 @@
 
     function renderProfileHeader(profile) {
         // Set display name
-        document.getElementById('profile-name').textContent = profile.displayName;
-        document.title = profile.displayName + ' — FitGlue';
+        const displayName = profile.display_name || profile.displayName || 'Unknown Athlete';
+        document.getElementById('profile-name').textContent = displayName;
+        document.title = displayName + ' — FitGlue';
 
         // Set profile avatar
         var avatarEl = document.getElementById('profile-avatar');
-        if (profile.profilePictureUrl) {
-            avatarEl.innerHTML = '<img src="' + profile.profilePictureUrl + '" alt="' + profile.displayName + '" />';
+        const profilePicUrl = profile.profile_picture_url || profile.profilePictureUrl;
+        if (profilePicUrl) {
+            avatarEl.innerHTML = '<img src="' + profilePicUrl + '" alt="' + displayName + '" />';
             avatarEl.style.display = '';
             avatarEl.classList.add('profile-avatar--clickable');
             avatarEl.addEventListener('click', function (e) {
                 e.stopPropagation();
-                openLightbox(profile.profilePictureUrl, profile.displayName);
+                openLightbox(profilePicUrl, displayName);
             });
-        } else if (profile.displayName) {
-            avatarEl.textContent = profile.displayName.charAt(0).toUpperCase();
+        } else if (displayName) {
+            avatarEl.textContent = displayName.charAt(0).toUpperCase();
             avatarEl.style.display = 'flex';
         }
 
@@ -929,21 +931,21 @@
         const statsContainer = document.getElementById('profile-stats');
         const stats = [];
 
-        stats.push({ value: profile.totalActivities, label: 'Activities', gradient: 'pink' });
+        stats.push({ value: profile.total_activities || 0, label: 'Activities', gradient: 'pink' });
 
-        const dist = formatDistance(profile.totalDistanceMeters);
+        const dist = formatDistance(profile.total_distance_meters);
         if (dist) stats.push({ value: dist, label: 'Distance', gradient: 'purple' });
 
-        const dur = formatDurationLong(profile.totalDurationSeconds);
+        const dur = formatDurationLong(profile.total_duration_seconds);
         if (dur) stats.push({ value: dur, label: 'Active Time', gradient: 'blue' });
 
-        const sets = formatNumber(profile.totalSets);
+        const sets = formatNumber(profile.total_sets);
         if (sets) stats.push({ value: sets, label: 'Sets', gradient: 'orange' });
 
-        const reps = formatNumber(profile.totalReps);
+        const reps = formatNumber(profile.total_reps);
         if (reps) stats.push({ value: reps, label: 'Reps', gradient: 'green' });
 
-        const weight = formatWeight(profile.totalWeightKg);
+        const weight = formatWeight(profile.total_weight_kg);
         if (weight) stats.push({ value: weight, label: 'Volume Lifted', gradient: 'orange' });
 
         statsContainer.innerHTML = stats.map(function (s) {
@@ -969,14 +971,15 @@
         }
 
         entries.forEach(function (entry) {
-            var key = getDateKey(entry.startTime);
+            var startTime = entry.start_time || entry.startTime;
+            var key = getDateKey(startTime);
 
             // If this entry belongs to a different date group, create a new one
             if (key !== lastGroupKey) {
                 var groupEl = document.createElement('div');
                 groupEl.className = 'activity-date-group';
                 groupEl.setAttribute('data-date-key', key);
-                groupEl.innerHTML = '<div class="activity-date-header">' + formatDateGroupHeader(entry.startTime) + '</div>'
+                groupEl.innerHTML = '<div class="activity-date-header">' + formatDateGroupHeader(startTime) + '</div>'
                     + '<div class="activity-date-cards"></div>';
                 listContainer.appendChild(groupEl);
                 lastGroupKey = key;
@@ -984,20 +987,37 @@
             }
 
             // Build the card
-            var icon = getActivityIcon(entry.activityType);
-            var cat = ACTIVITY_CATEGORY[entry.activityType] || 'general';
+            var activityType = entry.activity_type || entry.activityType;
+            var icon = getActivityIcon(activityType);
+            var cat = ACTIVITY_CATEGORY[activityType] || 'general';
             var metaParts = [];
-            var distStr = formatDistance(entry.distanceMeters);
-            if (distStr) metaParts.push('<span class="activity-meta-item">📏 ' + distStr + '</span>');
-            var durStr = formatDuration(entry.durationSeconds);
-            if (durStr) metaParts.push('<span class="activity-meta-item">⏱ ' + durStr + '</span>');
-            if (entry.totalSets > 0) metaParts.push('<span class="activity-meta-item">🏋️ ' + entry.totalSets + ' sets</span>');
+            
+            // Metrics extraction
+            var distance = 0;
+            var duration = 0;
+            if (entry.activity_data && entry.activity_data.sessions && entry.activity_data.sessions[0]) {
+                distance = entry.activity_data.sessions[0].total_distance || 0;
+                duration = entry.activity_data.sessions[0].total_elapsed_time || 0;
+            } else if (entry.activityData && entry.activityData.sessions && entry.activityData.sessions[0]) {
+                distance = entry.activityData.sessions[0].totalDistance || 0;
+                duration = entry.activityData.sessions[0].totalElapsedTime || 0;
+            }
 
-            var thumbnailHtml = entry.routeThumbnailUrl
-                ? '<img class="activity-thumbnail" src="' + entry.routeThumbnailUrl + '" alt="Route" />'
+            var distStr = formatDistance(distance);
+            if (distStr) metaParts.push('<span class="activity-meta-item">📏 ' + distStr + '</span>');
+            var durStr = formatDuration(duration);
+            if (durStr) metaParts.push('<span class="activity-meta-item">⏱ ' + durStr + '</span>');
+            
+            var totalSets = entry.total_sets || entry.totalSets || 0;
+            if (totalSets > 0) metaParts.push('<span class="activity-meta-item">🏋️ ' + totalSets + ' sets</span>');
+
+            var thumbnailUrl = entry.route_thumbnail_url || entry.routeThumbnailUrl;
+            var thumbnailHtml = thumbnailUrl
+                ? '<img class="activity-thumbnail" src="' + thumbnailUrl + '" alt="Route" />'
                 : '<div class="activity-icon">' + icon + '</div>';
 
-            var showcaseUrl = '/u/' + encodeURIComponent(getSlugFromUrl()) + '/' + entry.showcaseId;
+            var showcaseId = entry.showcase_id || entry.showcaseId;
+            var showcaseUrl = '/u/' + encodeURIComponent(getSlugFromUrl()) + '/' + showcaseId;
             var delay = (_totalCardIdx % 20) * 0.06; // Reset animation delay per page
             _totalCardIdx++;
 
