@@ -766,12 +766,20 @@
                 return;
             }
 
-            const profile = await resp.json();
+            const data = await resp.json();
+            const profile = data.profile || {};
+            
             applyTheme(profile.theme);
             renderProfileHeader(profile);
-            appendEntries(profile.entries || []);
-            _currentPage = 1;
-            _hasMore = profile.pagination ? profile.pagination.hasMore : false;
+            
+            // Clear and append entries
+            document.getElementById('activity-list').innerHTML = '';
+            _totalCardIdx = 0;
+            appendEntries(data.showcases || []);
+            
+            _currentPage = data.currentPage || data.current_page || 1;
+            const totalPages = data.totalPages || data.total_pages || 1;
+            _hasMore = _currentPage < totalPages;
             updateLoadMoreState();
 
             // Show content, hide loading
@@ -802,9 +810,10 @@
                 return;
             }
             var data = await resp.json();
-            appendEntries(data.entries || []);
-            _currentPage = nextPage;
-            _hasMore = data.pagination ? data.pagination.hasMore : false;
+            appendEntries(data.showcases || []);
+            _currentPage = data.currentPage || data.current_page || nextPage;
+            const totalPages = data.totalPages || data.total_pages || 1;
+            _hasMore = _currentPage < totalPages;
             updateLoadMoreState();
         } catch (err) {
             console.error('Failed to load more activities:', err);
@@ -895,13 +904,13 @@
 
     function renderProfileHeader(profile) {
         // Set display name
-        const displayName = profile.display_name || profile.displayName || 'Unknown Athlete';
+        const displayName = profile.displayName || 'Unknown Athlete';
         document.getElementById('profile-name').textContent = displayName;
         document.title = displayName + ' — FitGlue';
 
         // Set profile avatar
         var avatarEl = document.getElementById('profile-avatar');
-        const profilePicUrl = profile.profile_picture_url || profile.profilePictureUrl;
+        const profilePicUrl = profile.profilePictureUrl;
         if (profilePicUrl) {
             avatarEl.innerHTML = '<img src="' + profilePicUrl + '" alt="' + displayName + '" />';
             avatarEl.style.display = '';
@@ -931,21 +940,21 @@
         const statsContainer = document.getElementById('profile-stats');
         const stats = [];
 
-        stats.push({ value: profile.total_activities || 0, label: 'Activities', gradient: 'pink' });
+        stats.push({ value: profile.totalActivities || 0, label: 'Activities', gradient: 'pink' });
 
-        const dist = formatDistance(profile.total_distance_meters);
+        const dist = formatDistance(profile.totalDistanceMeters);
         if (dist) stats.push({ value: dist, label: 'Distance', gradient: 'purple' });
 
-        const dur = formatDurationLong(profile.total_duration_seconds);
+        const dur = formatDurationLong(profile.totalDurationSeconds);
         if (dur) stats.push({ value: dur, label: 'Active Time', gradient: 'blue' });
 
-        const sets = formatNumber(profile.total_sets);
+        const sets = formatNumber(profile.totalSets);
         if (sets) stats.push({ value: sets, label: 'Sets', gradient: 'orange' });
 
-        const reps = formatNumber(profile.total_reps);
+        const reps = formatNumber(profile.totalReps);
         if (reps) stats.push({ value: reps, label: 'Reps', gradient: 'green' });
 
-        const weight = formatWeight(profile.total_weight_kg);
+        const weight = formatWeight(profile.totalWeightKg);
         if (weight) stats.push({ value: weight, label: 'Volume Lifted', gradient: 'orange' });
 
         statsContainer.innerHTML = stats.map(function (s) {
@@ -971,7 +980,7 @@
         }
 
         entries.forEach(function (entry) {
-            var startTime = entry.start_time || entry.startTime;
+            var startTime = entry.startTime;
             var key = getDateKey(startTime);
 
             // If this entry belongs to a different date group, create a new one
@@ -987,7 +996,7 @@
             }
 
             // Build the card
-            var activityType = entry.activity_type || entry.activityType;
+            var activityType = entry.activityType;
             var icon = getActivityIcon(activityType);
             var cat = ACTIVITY_CATEGORY[activityType] || 'general';
             var metaParts = [];
@@ -995,10 +1004,7 @@
             // Metrics extraction
             var distance = 0;
             var duration = 0;
-            if (entry.activity_data && entry.activity_data.sessions && entry.activity_data.sessions[0]) {
-                distance = entry.activity_data.sessions[0].total_distance || 0;
-                duration = entry.activity_data.sessions[0].total_elapsed_time || 0;
-            } else if (entry.activityData && entry.activityData.sessions && entry.activityData.sessions[0]) {
+            if (entry.activityData && entry.activityData.sessions && entry.activityData.sessions[0]) {
                 distance = entry.activityData.sessions[0].totalDistance || 0;
                 duration = entry.activityData.sessions[0].totalElapsedTime || 0;
             }
@@ -1008,15 +1014,15 @@
             var durStr = formatDuration(duration);
             if (durStr) metaParts.push('<span class="activity-meta-item">⏱ ' + durStr + '</span>');
             
-            var totalSets = entry.total_sets || entry.totalSets || 0;
+            var totalSets = entry.totalSets || 0;
             if (totalSets > 0) metaParts.push('<span class="activity-meta-item">🏋️ ' + totalSets + ' sets</span>');
 
-            var thumbnailUrl = entry.route_thumbnail_url || entry.routeThumbnailUrl;
+            var thumbnailUrl = entry.routeThumbnailUrl;
             var thumbnailHtml = thumbnailUrl
                 ? '<img class="activity-thumbnail" src="' + thumbnailUrl + '" alt="Route" />'
                 : '<div class="activity-icon">' + icon + '</div>';
 
-            var showcaseId = entry.showcase_id || entry.showcaseId;
+            var showcaseId = entry.showcaseId;
             var showcaseUrl = '/u/' + encodeURIComponent(getSlugFromUrl()) + '/' + showcaseId;
             var delay = (_totalCardIdx % 20) * 0.06; // Reset animation delay per page
             _totalCardIdx++;
