@@ -603,71 +603,113 @@
     //  SHOWCASE PROFILE - VANILLA JS
     // ========================================
 
-    // Icons keyed by protobuf ActivityType enum value
+    // Icons keyed by protobuf ActivityType enum string name
+    // (protojson serialises enums as their string name, not integer)
     const ACTIVITY_TYPE_ICONS = {
-        1: '⛷️',   // Alpine Ski
-        2: '⛷️',   // Backcountry Ski
-        3: '🏸',   // Badminton
-        4: '🛶',   // Canoeing
-        5: '🏋️',   // CrossFit
-        6: '🚲',   // E-Bike Ride
-        7: '🏃',   // Elliptical
-        8: '🚵',   // E-Mountain Bike Ride
-        9: '⛳',   // Golf
-        10: '🚴',  // Gravel Ride
-        11: '♿',   // Handcycle
-        12: '🔥',  // HIIT
-        13: '🥾',  // Hike
-        14: '⛸️',  // Ice Skate
-        15: '🛼',  // Inline Skate
-        16: '🛶',  // Kayaking
-        17: '🪁',  // Kitesurf
-        18: '🚵',  // Mountain Bike Ride
-        19: '⛷️',  // Nordic Ski
-        20: '🏓',  // Pickleball
-        21: '🧘',  // Pilates
-        22: '🏸',  // Racquetball
-        23: '🚴',  // Ride
-        24: '🧗',  // Rock Climbing
-        25: '⛷️',  // Roller Ski
-        26: '🚣',  // Rowing
-        27: '🏃',  // Run
-        28: '⛵',   // Sail
-        29: '🛹',  // Skateboard
-        30: '🏂',  // Snowboard
-        31: '🥾',  // Snowshoe
-        32: '⚽',   // Soccer
-        33: '🏸',  // Squash
-        34: '🪜',  // Stair Stepper
-        35: '🏄',  // Stand Up Paddling
-        36: '🏄',  // Surfing
-        37: '🏊',  // Swim
-        38: '🏓',  // Table Tennis
-        39: '🎾',  // Tennis
-        40: '🏃‍♂️', // Trail Run
-        41: '🚴',  // Velomobile
-        42: '🚴',  // Virtual Ride
-        43: '🚣',  // Virtual Row
-        44: '🏃',  // Virtual Run
-        45: '🚶',  // Walk
-        46: '🏋️',  // Weight Training
-        47: '♿',   // Wheelchair
-        48: '🏄',  // Windsurf
-        49: '💪',  // Workout
-        50: '🧘',  // Yoga
+        'ACTIVITY_TYPE_ALPINE_SKI': '⛷️',
+        'ACTIVITY_TYPE_BACKCOUNTRY_SKI': '⛷️',
+        'ACTIVITY_TYPE_BADMINTON': '🏸',
+        'ACTIVITY_TYPE_CANOEING': '🛶',
+        'ACTIVITY_TYPE_CROSSFIT': '🏋️',
+        'ACTIVITY_TYPE_EBIKE_RIDE': '🚲',
+        'ACTIVITY_TYPE_ELLIPTICAL': '🏃',
+        'ACTIVITY_TYPE_EMOUNTAIN_BIKE_RIDE': '🚵',
+        'ACTIVITY_TYPE_GOLF': '⛳',
+        'ACTIVITY_TYPE_GRAVEL_RIDE': '🚴',
+        'ACTIVITY_TYPE_HANDCYCLE': '♿',
+        'ACTIVITY_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING': '🔥',
+        'ACTIVITY_TYPE_HIKE': '🥾',
+        'ACTIVITY_TYPE_ICE_SKATE': '⛸️',
+        'ACTIVITY_TYPE_INLINE_SKATE': '🛼',
+        'ACTIVITY_TYPE_KAYAKING': '🛶',
+        'ACTIVITY_TYPE_KITESURF': '🪁',
+        'ACTIVITY_TYPE_MOUNTAIN_BIKE_RIDE': '🚵',
+        'ACTIVITY_TYPE_NORDIC_SKI': '⛷️',
+        'ACTIVITY_TYPE_PICKLEBALL': '🏓',
+        'ACTIVITY_TYPE_PILATES': '🧘',
+        'ACTIVITY_TYPE_RACQUETBALL': '🏸',
+        'ACTIVITY_TYPE_RIDE': '🚴',
+        'ACTIVITY_TYPE_ROCK_CLIMBING': '🧗',
+        'ACTIVITY_TYPE_ROLLER_SKI': '⛷️',
+        'ACTIVITY_TYPE_ROWING': '🚣',
+        'ACTIVITY_TYPE_RUN': '🏃',
+        'ACTIVITY_TYPE_SAIL': '⛵',
+        'ACTIVITY_TYPE_SKATEBOARD': '🛹',
+        'ACTIVITY_TYPE_SNOWBOARD': '🏂',
+        'ACTIVITY_TYPE_SNOWSHOE': '🥾',
+        'ACTIVITY_TYPE_SOCCER': '⚽',
+        'ACTIVITY_TYPE_SQUASH': '🏸',
+        'ACTIVITY_TYPE_STAIR_STEPPER': '🪜',
+        'ACTIVITY_TYPE_STAND_UP_PADDLING': '🏄',
+        'ACTIVITY_TYPE_SURFING': '🏄',
+        'ACTIVITY_TYPE_SWIM': '🏊',
+        'ACTIVITY_TYPE_TABLE_TENNIS': '🏓',
+        'ACTIVITY_TYPE_TENNIS': '🎾',
+        'ACTIVITY_TYPE_TRAIL_RUN': '🏃‍♂️',
+        'ACTIVITY_TYPE_VELOMOBILE': '🚴',
+        'ACTIVITY_TYPE_VIRTUAL_RIDE': '🚴',
+        'ACTIVITY_TYPE_VIRTUAL_ROW': '🚣',
+        'ACTIVITY_TYPE_VIRTUAL_RUN': '🏃',
+        'ACTIVITY_TYPE_WALK': '🚶',
+        'ACTIVITY_TYPE_WEIGHT_TRAINING': '🏋️',
+        'ACTIVITY_TYPE_WHEELCHAIR': '♿',
+        'ACTIVITY_TYPE_WINDSURF': '🏄',
+        'ACTIVITY_TYPE_WORKOUT': '💪',
+        'ACTIVITY_TYPE_YOGA': '🧘',
     };
 
-    // Category for gradient accent colour
+    // Category for gradient accent colour (keyed by protobuf enum string)
     const ACTIVITY_CATEGORY = {
-        1: 'winter', 2: 'winter', 19: 'winter', 25: 'winter', 30: 'winter', 31: 'winter', 12: 'winter',
-        5: 'strength', 46: 'strength', 49: 'strength', 12: 'cardio',
-        7: 'cardio', 27: 'cardio', 40: 'cardio', 44: 'cardio', 34: 'cardio', 45: 'cardio',
-        6: 'cycling', 8: 'cycling', 10: 'cycling', 18: 'cycling', 23: 'cycling', 41: 'cycling', 42: 'cycling',
-        3: 'sport', 9: 'sport', 20: 'sport', 22: 'sport', 32: 'sport', 33: 'sport', 38: 'sport', 39: 'sport',
-        4: 'water', 16: 'water', 17: 'water', 26: 'water', 28: 'water', 35: 'water', 36: 'water', 37: 'water', 43: 'water', 48: 'water',
-        13: 'outdoor', 24: 'outdoor', 29: 'outdoor',
-        21: 'mind', 50: 'mind',
-        11: 'general', 14: 'general', 15: 'general', 47: 'general',
+        'ACTIVITY_TYPE_ALPINE_SKI': 'winter',
+        'ACTIVITY_TYPE_BACKCOUNTRY_SKI': 'winter',
+        'ACTIVITY_TYPE_NORDIC_SKI': 'winter',
+        'ACTIVITY_TYPE_ROLLER_SKI': 'winter',
+        'ACTIVITY_TYPE_SNOWBOARD': 'winter',
+        'ACTIVITY_TYPE_SNOWSHOE': 'winter',
+        'ACTIVITY_TYPE_CROSSFIT': 'strength',
+        'ACTIVITY_TYPE_WEIGHT_TRAINING': 'strength',
+        'ACTIVITY_TYPE_WORKOUT': 'strength',
+        'ACTIVITY_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING': 'cardio',
+        'ACTIVITY_TYPE_ELLIPTICAL': 'cardio',
+        'ACTIVITY_TYPE_RUN': 'cardio',
+        'ACTIVITY_TYPE_TRAIL_RUN': 'cardio',
+        'ACTIVITY_TYPE_VIRTUAL_RUN': 'cardio',
+        'ACTIVITY_TYPE_STAIR_STEPPER': 'cardio',
+        'ACTIVITY_TYPE_WALK': 'cardio',
+        'ACTIVITY_TYPE_EBIKE_RIDE': 'cycling',
+        'ACTIVITY_TYPE_EMOUNTAIN_BIKE_RIDE': 'cycling',
+        'ACTIVITY_TYPE_GRAVEL_RIDE': 'cycling',
+        'ACTIVITY_TYPE_MOUNTAIN_BIKE_RIDE': 'cycling',
+        'ACTIVITY_TYPE_RIDE': 'cycling',
+        'ACTIVITY_TYPE_VELOMOBILE': 'cycling',
+        'ACTIVITY_TYPE_VIRTUAL_RIDE': 'cycling',
+        'ACTIVITY_TYPE_BADMINTON': 'sport',
+        'ACTIVITY_TYPE_GOLF': 'sport',
+        'ACTIVITY_TYPE_PICKLEBALL': 'sport',
+        'ACTIVITY_TYPE_RACQUETBALL': 'sport',
+        'ACTIVITY_TYPE_SOCCER': 'sport',
+        'ACTIVITY_TYPE_SQUASH': 'sport',
+        'ACTIVITY_TYPE_TABLE_TENNIS': 'sport',
+        'ACTIVITY_TYPE_TENNIS': 'sport',
+        'ACTIVITY_TYPE_CANOEING': 'water',
+        'ACTIVITY_TYPE_KAYAKING': 'water',
+        'ACTIVITY_TYPE_KITESURF': 'water',
+        'ACTIVITY_TYPE_ROWING': 'water',
+        'ACTIVITY_TYPE_SAIL': 'water',
+        'ACTIVITY_TYPE_STAND_UP_PADDLING': 'water',
+        'ACTIVITY_TYPE_SURFING': 'water',
+        'ACTIVITY_TYPE_SWIM': 'water',
+        'ACTIVITY_TYPE_VIRTUAL_ROW': 'water',
+        'ACTIVITY_TYPE_WINDSURF': 'water',
+        'ACTIVITY_TYPE_HIKE': 'outdoor',
+        'ACTIVITY_TYPE_ROCK_CLIMBING': 'outdoor',
+        'ACTIVITY_TYPE_SKATEBOARD': 'outdoor',
+        'ACTIVITY_TYPE_PILATES': 'mind',
+        'ACTIVITY_TYPE_YOGA': 'mind',
+        'ACTIVITY_TYPE_HANDCYCLE': 'general',
+        'ACTIVITY_TYPE_ICE_SKATE': 'general',
+        'ACTIVITY_TYPE_INLINE_SKATE': 'general',
+        'ACTIVITY_TYPE_WHEELCHAIR': 'general',
     };
 
     function getActivityIcon(type) {
@@ -775,7 +817,7 @@
             // Clear and append entries
             document.getElementById('activity-list').innerHTML = '';
             _totalCardIdx = 0;
-            appendEntries(data.showcases || []);
+            appendEntries((data.profile && data.profile.entries) || []);
             
             _currentPage = data.currentPage || data.current_page || 1;
             const totalPages = data.totalPages || data.total_pages || 1;
@@ -810,7 +852,7 @@
                 return;
             }
             var data = await resp.json();
-            appendEntries(data.showcases || []);
+            appendEntries((data.profile && data.profile.entries) || []);
             _currentPage = data.currentPage || data.current_page || nextPage;
             const totalPages = data.totalPages || data.total_pages || 1;
             _hasMore = _currentPage < totalPages;
@@ -1001,13 +1043,9 @@
             var cat = ACTIVITY_CATEGORY[activityType] || 'general';
             var metaParts = [];
             
-            // Metrics extraction
-            var distance = 0;
-            var duration = 0;
-            if (entry.activityData && entry.activityData.sessions && entry.activityData.sessions[0]) {
-                distance = entry.activityData.sessions[0].totalDistance || 0;
-                duration = entry.activityData.sessions[0].totalElapsedTime || 0;
-            }
+            // Metrics extraction - read directly from ShowcaseProfileEntry fields
+            var distance = entry.distanceMeters || 0;
+            var duration = entry.durationSeconds || 0;
 
             var distStr = formatDistance(distance);
             if (distStr) metaParts.push('<span class="activity-meta-item">📏 ' + distStr + '</span>');

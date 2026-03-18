@@ -42,6 +42,8 @@ export interface ShowcasedActivity {
   expiresAt?: Date | undefined;
   ownerDisplayName: string;
   activityDataUri: string;
+  ownerProfilePictureUrl: string;
+  ownerProfileSlug: string;
 }
 
 export interface ShowcasedActivity_EnrichmentMetadataEntry {

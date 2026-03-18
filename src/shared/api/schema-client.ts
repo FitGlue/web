@@ -1524,6 +1524,8 @@ export interface components {
             expiresAt?: string;
             ownerDisplayName?: string;
             activityDataUri?: string;
+            ownerProfilePictureUrl?: string;
+            ownerProfileSlug?: string;
         };
         SpotifyIntegration: {
             enabled?: boolean;
