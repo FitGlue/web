@@ -810,15 +810,15 @@
 
             const data = await resp.json();
             const profile = data.profile || {};
-            
+
             applyTheme(profile.theme);
             renderProfileHeader(profile);
-            
+
             // Clear and append entries
             document.getElementById('activity-list').innerHTML = '';
             _totalCardIdx = 0;
             appendEntries((data.profile && data.profile.entries) || []);
-            
+
             _currentPage = data.currentPage || data.current_page || 1;
             const totalPages = data.totalPages || data.total_pages || 1;
             _hasMore = _currentPage < totalPages;
@@ -1042,7 +1042,7 @@
             var icon = getActivityIcon(activityType);
             var cat = ACTIVITY_CATEGORY[activityType] || 'general';
             var metaParts = [];
-            
+
             // Metrics extraction - read directly from ShowcaseProfileEntry fields
             var distance = entry.distanceMeters || 0;
             var duration = entry.durationSeconds || 0;
@@ -1051,7 +1051,7 @@
             if (distStr) metaParts.push('<span class="activity-meta-item">📏 ' + distStr + '</span>');
             var durStr = formatDuration(duration);
             if (durStr) metaParts.push('<span class="activity-meta-item">⏱ ' + durStr + '</span>');
-            
+
             var totalSets = entry.totalSets || 0;
             if (totalSets > 0) metaParts.push('<span class="activity-meta-item">🏋️ ' + totalSets + ' sets</span>');
 
@@ -1061,7 +1061,7 @@
                 : '<div class="activity-icon">' + icon + '</div>';
 
             var showcaseId = entry.showcaseId;
-            var showcaseUrl = '/u/' + encodeURIComponent(getSlugFromUrl()) + '/' + showcaseId;
+            var showcaseUrl = '/s/' + showcaseId;
             var delay = (_totalCardIdx % 20) * 0.06; // Reset animation delay per page
             _totalCardIdx++;
 
