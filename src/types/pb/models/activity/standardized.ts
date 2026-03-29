@@ -53,6 +53,7 @@ export interface TimeMarker {
   timestamp?: Date | undefined;
   label: string;
   markerType: string;
+  durationSeconds: number;
 }
 
 export interface Session {

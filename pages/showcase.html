@@ -4069,15 +4069,15 @@
 
             // Calculate duration to next marker or use marker's own duration if available
             let duration = 0;
-            if (nextMarker && marker.timestamp && nextMarker.timestamp) {
+            if (marker.durationSeconds) {
+              duration = marker.durationSeconds;
+            } else if (nextMarker && marker.timestamp && nextMarker.timestamp) {
               const startMs = new Date(marker.timestamp).getTime();
               const endMs = new Date(nextMarker.timestamp).getTime();
               duration = (endMs - startMs) / 1000; // seconds
             } else if (isLastMarker && sessionTotalTime > 0 && totalDuration > 0) {
               // For the last marker, calculate remaining time from session total
               duration = sessionTotalTime - totalDuration;
-            } else if (marker.durationSeconds) {
-              duration = marker.durationSeconds;
             }
 
             if (duration > 0) {

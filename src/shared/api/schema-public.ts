@@ -469,6 +469,8 @@ export interface components {
             timestamp?: string;
             label?: string;
             markerType?: string;
+            /** Format: int32 */
+            durationSeconds?: number;
         };
         Transformation: {
             field?: string;
