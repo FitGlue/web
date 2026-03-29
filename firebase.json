@@ -30,6 +30,13 @@
         }
       },
       {
+        "source": "/api/webhooks/**",
+        "run": {
+          "serviceId": "api-webhook",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/mobile/**",
         "run": {
           "serviceId": "api-webhook",

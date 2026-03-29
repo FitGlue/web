@@ -22,7 +22,7 @@ const getWebhookUrl = (integrationId: string): string => {
     } else {
         baseUrl = 'https://fitglue.tech';
     }
-    return `${baseUrl}/hooks/${integrationId}`;
+    return `${baseUrl}/api/webhooks/${integrationId}`;
 };
 
 const ConnectionSuccessPage: React.FC = () => {
