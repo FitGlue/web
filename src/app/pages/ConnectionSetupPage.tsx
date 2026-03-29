@@ -70,7 +70,7 @@ const ConnectionSetupPage: React.FC = () => {
             if (authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_PUBLIC_ID) {
                 body = { athlete_id: apiKey.trim(), enabled: true, consent_given: true };
             } else {
-                body = { apiKey: apiKey.trim() };
+                body = { apiKey: apiKey.trim(), enabled: true, consent_given: true };
             }
             const { data: response } = await client.PUT('/users/me/integrations/{provider}', {
                 params: { path: { provider: integration.id } },
