@@ -175,6 +175,18 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        HybridRaceSegment: {
+            /** Format: date-time */
+            startTime?: string;
+            /** Format: int32 */
+            durationSeconds?: number;
+            label?: string;
+            icon?: string;
+            isRun?: boolean;
+        };
+        HybridRaceSummary: {
+            segments?: components["schemas"]["HybridRaceSegment"][];
+        };
         IntegrationAction: {
             id?: string;
             label?: string;
@@ -214,6 +226,7 @@ export interface components {
             records?: components["schemas"]["Record"][];
             exerciseName?: string;
             intensity?: string;
+            isTelemetryContainerOnly?: boolean;
         };
         ListCategoriesPublicResponse: {
             categories?: string[];
@@ -429,6 +442,7 @@ export interface components {
             notes?: string;
             timeMarkers?: components["schemas"]["TimeMarker"][];
             workout?: components["schemas"]["WorkoutDefinition"];
+            hybridRaceSummary?: components["schemas"]["HybridRaceSummary"];
         };
         /** @description The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors). */
         Status: {

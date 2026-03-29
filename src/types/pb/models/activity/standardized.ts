@@ -47,6 +47,19 @@ export interface StandardizedActivity {
   notes: string;
   timeMarkers: TimeMarker[];
   workout?: WorkoutDefinition | undefined;
+  hybridRaceSummary?: HybridRaceSummary | undefined;
+}
+
+export interface HybridRaceSummary {
+  segments: HybridRaceSegment[];
+}
+
+export interface HybridRaceSegment {
+  startTime?: Date | undefined;
+  durationSeconds: number;
+  label: string;
+  icon: string;
+  isRun: boolean;
 }
 
 export interface TimeMarker {
@@ -74,6 +87,7 @@ export interface Lap {
   records: Record[];
   exerciseName: string;
   intensity: string;
+  isTelemetryContainerOnly: boolean;
 }
 
 export interface Record {
