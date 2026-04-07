@@ -60,6 +60,9 @@ export interface ActivityPayload {
   useUpdateMethod: boolean;
   resumePendingInputId?: string | undefined;
   originDestination?: string | undefined;
+  isRepost: boolean;
+  repostMode: string;
+  repostDestination: string;
 }
 
 export interface ActivityPayload_MetadataEntry {
