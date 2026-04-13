@@ -1,6 +1,30 @@
 # FitGlue Changelog
 
-<!-- LAST_PUBLISHED: server=v14.8.1, web=v10.28.0 -->
+<!-- LAST_PUBLISHED: server=v16.2.0, web=v10.38.0 -->
+
+## Server v16.2.0 / Web v10.38.0 - April 13, 2026
+
+### ⚠ Breaking Changes
+
+- We've made some big changes under the hood to improve performance and stability. You shouldn't notice any difference in how you use FitGlue, but it sets us up for bigger and better things in the future!
+
+### ✨ New Features
+
+- Connect to Apple Health and Health Connect to automatically sync your health and fitness data.
+- Personalize your Showcase profile with new themes and showcase your best activities.
+- Upload FIT files directly from your computer to GitHub.
+- Track your cycling PRs and native distance in your activities.
+- See time markers for intervals and splits in your workouts.
+- Hevy users, enjoy improved integration and error tracking.
+- New and improved look and feel for your activity pipelines!
+- Filter enrichments per destination in your pipeline editor.
+
+### 🐛 Bug Fixes
+
+- Improved connection stability with Strava and Hevy.
+- Various bug fixes and improvements to make FitGlue even more reliable.
+- General UI improvements and refinements.
+
 
 ## Server v14.8.1 / Web v10.28.0 - February 15, 2026
 
