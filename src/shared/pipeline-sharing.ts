@@ -169,11 +169,20 @@ export function validatePipelineImport(
     return { valid: false, missingConnections };
   }
 
-  // Build the create request with "(Imported)" suffix
+  // Build the create request with "(Imported)" suffix.
+  // Destinations must be resolved to their numeric destinationType values,
+  // matching what the Pipeline Wizard sends to the backend.
   const enrichers: EnricherConfig[] = portable.e.map((e) => ({
     providerType: e.p,
     typedConfig: e.c || {},
   }));
+
+  const resolvedDestinations = portable.d
+    .map((destId) => {
+      const destPlugin = (registry.destinations || []).find((d) => d.id === destId);
+      return destPlugin?.destinationType ?? null;
+    })
+    .filter((dt): dt is number => dt !== null);
 
   return {
     valid: true,
@@ -182,7 +191,7 @@ export function validatePipelineImport(
       name: `${portable.n} (Imported)`,
       source: portable.s,
       enrichers,
-      destinations: portable.d,
+      destinations: resolvedDestinations,
     },
   };
 }
