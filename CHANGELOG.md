@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.0.0](https://github.com/fitglue/web/compare/v10.38.0...v11.0.0) (2026-04-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* useApi() hook removed; all API calls now use typed gateway-specific clients
+
+### Features
+
+* add durationSeconds field to activity markers and update calculation logic in showcase view ([395a53b](https://github.com/fitglue/web/commit/395a53be3b8225b966fe9e6e65889c3487fc9c5c))
+* add is_private configuration option to Hevy integration schema ([41b3655](https://github.com/fitglue/web/commit/41b365558f6a405411d0223b5fff7de44984e025))
+* add preflight git push hook ([c7f183e](https://github.com/fitglue/web/commit/c7f183e599efa23f9045bd6580a7b91f726b9230))
+* add repost metadata fields to pipeline event interface ([09355a2](https://github.com/fitglue/web/commit/09355a2abb627a8c3568207d472608f7bce5a4ae))
+* **api:** add cumulative distance field to activity records ([47c0126](https://github.com/fitglue/web/commit/47c0126b6a524de72df6b07b8081cc001a3b5804))
+* fixes for showcase and other pipeline shenanigans ([63ccbca](https://github.com/fitglue/web/commit/63ccbca120b16a58606ca90279d87afb7388383b))
+* introduce HybridRaceSummary model and refactor race visualization to use pre-calculated segments ([5b8d9d8](https://github.com/fitglue/web/commit/5b8d9d8dcdb9c29ebaeab4df6b5b6df280e5ba44))
+* migrate to per-gateway typed API clients and remove legacy types ([a0dcd66](https://github.com/fitglue/web/commit/a0dcd66c6fcc857bd8020df683e8e1ca184ef37c))
+* more fixes due to re-arch ([b6743c5](https://github.com/fitglue/web/commit/b6743c56a3c518822b9bb9d3308641313576d3f0))
+* **showcase:** migrate profile page to protobuf enum keys and entry-level metrics ([fae5cad](https://github.com/fitglue/web/commit/fae5cadb7712eafa9ce107a29e4c129538dc8a6c))
+
+
+### Bug Fixes
+
+* circular dependency on registry ([9d71c04](https://github.com/fitglue/web/commit/9d71c04726c9ca5be461a06aa1dd36b78b98b857))
+* client throwing ([8193daf](https://github.com/fitglue/web/commit/8193dafd5a14dbab7ce4ba254b1845131046c2b0))
+* correct hevy webhook url ([4a00ea7](https://github.com/fitglue/web/commit/4a00ea7f6b85fa776150ae95959aa272759ef354))
+* destroy test env ([15e17df](https://github.com/fitglue/web/commit/15e17df8753550d2b6b2781c6dcaf38dc69aad76))
+* firebase rewrites and showcase processing ([696a953](https://github.com/fitglue/web/commit/696a953fc96c696bdbfae3c17abc1fa1728b6c8c))
+* log to sentry ([0354b64](https://github.com/fitglue/web/commit/0354b646e69df20bd85bf6b311ab1e023d8250a1))
+* preflight ([91c0c53](https://github.com/fitglue/web/commit/91c0c533f5c23238514681b118ba02cf323761f5))
+* preflight issues ([05484a1](https://github.com/fitglue/web/commit/05484a1e5920ff16118dca448ddc3d6395f96fcc))
+* registry cache fallback ([97114b7](https://github.com/fitglue/web/commit/97114b7e5f312bf1a9cafe490f7cfee09f295ecb))
+* registry types ([4b0c997](https://github.com/fitglue/web/commit/4b0c997f1c8dc8b442136c3fe2823cb19bbff473))
+* send full request when connecting public key integrations ([ea4580e](https://github.com/fitglue/web/commit/ea4580ec815193950650dd7acce7bbb3a3228e26))
+* showcase activity links from profile ([bec0b73](https://github.com/fitglue/web/commit/bec0b73fdda69c05df795986102c048b1a67fe6d))
+* showcase profile ([236b551](https://github.com/fitglue/web/commit/236b5512bf9777b824b0355ef215191f6ee88672))
+* **showcase:** improve activity type and source formatting ([0ead3cf](https://github.com/fitglue/web/commit/0ead3cf27644ee2395768a4dc9ad2070457f85b2))
+* standardize enum interactions with server ([2e7fe85](https://github.com/fitglue/web/commit/2e7fe854efe3548a69dc741294abe161cfa651a8))
+* use enum types from openapi spec, fix file upload ([43c0fbc](https://github.com/fitglue/web/commit/43c0fbc56e3ae4222b31d4011c90a234dcd327b0))
+* various ([475356d](https://github.com/fitglue/web/commit/475356d1e574e6adef3f82d878ff4239ed5cbb1d))
+* various bug fixes again ([dd53a97](https://github.com/fitglue/web/commit/dd53a972ca2cb7515dfe6bd548507cd1569714c9))
+* various bugs with new architecture ([3c2fbb6](https://github.com/fitglue/web/commit/3c2fbb6d4fd4543482a2106938271547bc0de014))
+
 ## [10.38.0](https://github.com/fitglue/web/compare/v10.37.1...v10.38.0) (2026-02-23)
 
 
