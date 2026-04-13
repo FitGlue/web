@@ -134,6 +134,13 @@ Deployment is automated via CircleCI:
 - **Test**: Auto-deploy after dev succeeds
 - **Prod**: Manual approval required
 
+## Troubleshooting
+
+- **Frontend errors**: Check the browser console and [Sentry](https://fitglue.sentry.io/issues/) (web project)
+- **Backend/API errors**: See the server [Troubleshooting Guide](../server/docs/guides/troubleshooting.md) for per-domain debugging playbooks
+- **Pipeline/enricher/webhook issues**: All server-side — refer to the server troubleshooting guide
+- **Build issues**: Run `npm run lint` and `npm run typecheck` to catch common problems
+
 ## License
 
 MIT
