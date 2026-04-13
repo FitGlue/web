@@ -24,8 +24,14 @@ export const usePluginDefaults = () => {
             setLoading(true);
             setError(null);
             const { data } = await client.GET('/users/me/plugin-defaults');
-            const typedData = data as { defaults?: PluginDefault[] };
-            setDefaults(typedData?.defaults || []);
+            // API returns { defaults: { [pluginId]: { [key]: value, ... } } } (map<string, Struct>)
+            // Normalise to PluginDefault[] for consistent .find() access
+            const rawMap = (data as { defaults?: Record<string, Record<string, string>> } | undefined)?.defaults ?? {};
+            const normalised: PluginDefault[] = Object.entries(rawMap).map(([pluginId, config]) => ({
+                pluginId,
+                config: config ?? {},
+            }));
+            setDefaults(normalised);
         } catch (err) {
             console.error('Failed to fetch plugin defaults:', err);
             setError('Failed to load plugin defaults');
