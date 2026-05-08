@@ -28,6 +28,7 @@ import EnricherDataPage from './pages/EnricherDataPage';
 import SubscriptionPage from './pages/SubscriptionPage';
 import AdminPage from './pages/AdminPage';
 import ShowcaseManagementPage from './pages/ShowcaseManagementPage';
+import PhotoEditorPage from './pages/PhotoEditorPage';
 import RecipesPage from './pages/RecipesPage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -173,6 +174,7 @@ const App: React.FC = () => {
               <Route path="/settings/enricher-data" element={<ProtectedRoute><EnricherDataPage /></ProtectedRoute>} />
               <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
               <Route path="/settings/showcase" element={<ProtectedRoute><ShowcaseManagementPage /></ProtectedRoute>} />
+              <Route path="/settings/photo-editor" element={<ProtectedRoute><PhotoEditorPage /></ProtectedRoute>} />
               <Route path="/settings/upgrade" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
               <Route path="/recipes" element={<ProtectedRoute><RecipesPage /></ProtectedRoute>} />
               <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />

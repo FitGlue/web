@@ -15,7 +15,8 @@ type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
 type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
 type ShowcaseLink = components['schemas']['ShowcaseLink'];
 
-function getLinkEmoji(url: string): string {
+function getLinkEmoji(url: string | undefined): string {
+  if (!url) return '🔗';
   if (url.includes('strava.com')) return '🏃';
   if (url.includes('instagram.com')) return '📸';
   if (url.includes('twitter.com') || url.includes('x.com')) return '𝕏';
@@ -30,7 +31,7 @@ function ProfileLinks({ links }: { links: ShowcaseLink[] }) {
   if (!links || links.length === 0) return null;
   return (
     <div className="profile-links">
-      {links.map((link, i) => (
+      {links.filter(link => link.url).map((link, i) => (
         <a
           key={i}
           href={link.url}
