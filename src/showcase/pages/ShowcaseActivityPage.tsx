@@ -12,6 +12,7 @@ import {
   parseDescriptionSections,
 } from '../components/DescriptionSections';
 import { formatActivityType, formatSource, formatDateFull, getEnricherInfo } from '../utils/format';
+import { PhotoGallery } from '../components/PhotoGallery';
 
 type ShowcasedActivity = components['schemas']['ShowcasedActivity'];
 type Record = components['schemas']['Record'];
@@ -178,6 +179,11 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
 
         {/* AI Summary */}
         {aiSummarySection && <AISummaryCard section={aiSummarySection} idx={0} />}
+
+        {/* Photo Gallery */}
+        {(data.photoUrls ?? []).length > 0 && (
+          <PhotoGallery photos={data.photoUrls!} />
+        )}
 
         {/* Stats */}
         {session && <ActivityStats session={session} />}

@@ -1436,6 +1436,14 @@ const EnricherProviderTypeNames: Record<string, string> = {
     'PHOTO_UPLOAD': 'Photo Upload',
     'Photo Upload': 'Photo Upload',
     '40': 'Photo Upload',
+    'ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY': 'Manual Workout Entry',
+    'MANUAL_WORKOUT_ENTRY': 'Manual Workout Entry',
+    'Manual Workout Entry': 'Manual Workout Entry',
+    '41': 'Manual Workout Entry',
+    'ENRICHER_PROVIDER_AI_ACTIVITY_TYPE': 'Ai Activity Type',
+    'AI_ACTIVITY_TYPE': 'Ai Activity Type',
+    'Ai Activity Type': 'Ai Activity Type',
+    '42': 'Ai Activity Type',
     'ENRICHER_PROVIDER_MOCK': 'Mock',
     'MOCK': 'Mock',
     'Mock': 'Mock',
@@ -1501,6 +1509,8 @@ export function formatEnricherProviderType(value: EnricherProviderType | number 
     case EnricherProviderType.ENRICHER_PROVIDER_EFFORT_SCORE: return 'Effort Score';
     case EnricherProviderType.ENRICHER_PROVIDER_INTERVALS: return 'Intervals';
     case EnricherProviderType.ENRICHER_PROVIDER_PHOTO_UPLOAD: return 'Photo Upload';
+    case EnricherProviderType.ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY: return 'Manual Workout Entry';
+    case EnricherProviderType.ENRICHER_PROVIDER_AI_ACTIVITY_TYPE: return 'Ai Activity Type';
     case EnricherProviderType.ENRICHER_PROVIDER_MOCK: return 'Mock';
     default: return 'Unknown';
   }
@@ -1664,6 +1674,14 @@ const EnricherProviderTypeValues: Record<string, EnricherProviderType> = {
     'photo_upload': EnricherProviderType.ENRICHER_PROVIDER_PHOTO_UPLOAD,
     'photo upload': EnricherProviderType.ENRICHER_PROVIDER_PHOTO_UPLOAD,
     '40': EnricherProviderType.ENRICHER_PROVIDER_PHOTO_UPLOAD,
+    'enricher_provider_manual_workout_entry': EnricherProviderType.ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY,
+    'manual_workout_entry': EnricherProviderType.ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY,
+    'manual workout entry': EnricherProviderType.ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY,
+    '41': EnricherProviderType.ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY,
+    'enricher_provider_ai_activity_type': EnricherProviderType.ENRICHER_PROVIDER_AI_ACTIVITY_TYPE,
+    'ai_activity_type': EnricherProviderType.ENRICHER_PROVIDER_AI_ACTIVITY_TYPE,
+    'ai activity type': EnricherProviderType.ENRICHER_PROVIDER_AI_ACTIVITY_TYPE,
+    '42': EnricherProviderType.ENRICHER_PROVIDER_AI_ACTIVITY_TYPE,
     'enricher_provider_mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     'mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     '99': EnricherProviderType.ENRICHER_PROVIDER_MOCK,

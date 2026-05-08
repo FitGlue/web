@@ -73,6 +73,11 @@ export interface ShowcaseTheme {
   cardStyle: string;
 }
 
+export interface ShowcaseLink {
+  label: string;
+  url: string;
+}
+
 export interface ShowcaseProfile {
   slug: string;
   userId: string;
@@ -97,4 +102,5 @@ export interface ShowcaseProfile {
   /** Auto-add Showcase destination when creating new pipelines */
   defaultDestination: boolean;
   showPhotoGallery: boolean;
+  links: ShowcaseLink[];
 }

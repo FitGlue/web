@@ -321,6 +321,10 @@ export interface components {
             /** Format: int32 */
             maxHeartRate?: number;
         };
+        ShowcaseLink: {
+            label?: string;
+            url?: string;
+        };
         ShowcaseProfile: {
             slug?: string;
             userId?: string;
@@ -351,6 +355,7 @@ export interface components {
             theme?: components["schemas"]["ShowcaseTheme"];
             defaultDestination?: boolean;
             showPhotoGallery?: boolean;
+            links?: components["schemas"]["ShowcaseLink"][];
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;

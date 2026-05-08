@@ -13,6 +13,37 @@ import {
 
 type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
 type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
+type ShowcaseLink = components['schemas']['ShowcaseLink'];
+
+function getLinkEmoji(url: string): string {
+  if (url.includes('strava.com')) return '🏃';
+  if (url.includes('instagram.com')) return '📸';
+  if (url.includes('twitter.com') || url.includes('x.com')) return '𝕏';
+  if (url.includes('github.com')) return '🐙';
+  if (url.includes('youtube.com')) return '▶️';
+  if (url.includes('tiktok.com')) return '🎵';
+  if (url.includes('facebook.com')) return '👥';
+  return '🔗';
+}
+
+function ProfileLinks({ links }: { links: ShowcaseLink[] }) {
+  if (!links || links.length === 0) return null;
+  return (
+    <div className="profile-links">
+      {links.map((link, i) => (
+        <a
+          key={i}
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="profile-link-chip"
+        >
+          {getLinkEmoji(link.url)} {link.label}
+        </a>
+      ))}
+    </div>
+  );
+}
 
 interface StatCard { value: string | number; label: string; gradient: string }
 
@@ -164,6 +195,9 @@ export default function ShowcaseProfilePage() {
             {profile.bio && (
               <div className="profile-bio">{renderBio(profile.bio)}</div>
             )}
+            {profile.links && profile.links.length > 0 && (
+              <ProfileLinks links={profile.links} />
+            )}
           </div>
 
           {/* Stats */}
@@ -177,6 +211,29 @@ export default function ShowcaseProfilePage() {
               ))}
             </div>
           )}
+
+          {/* Photo Gallery — shown when enabled and entries have route thumbnails */}
+          {profile.showPhotoGallery && (() => {
+            const thumbEntries = entries.filter((e) => e.routeThumbnailUrl);
+            if (thumbEntries.length === 0) return null;
+            return (
+              <div className="profile-photo-gallery">
+                <h2 className="section-title">📷 Activity Gallery</h2>
+                <div className="profile-photo-gallery-grid">
+                  {thumbEntries.slice(0, 12).map((entry) => (
+                    <a
+                      key={entry.showcaseId}
+                      href={`/showcase/activity/${entry.showcaseId}`}
+                      className="profile-photo-gallery-item"
+                    >
+                      <img src={entry.routeThumbnailUrl!} alt={entry.title ?? 'Activity'} loading="lazy" />
+                      <div className="profile-photo-gallery-caption">{entry.title}</div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Activity List */}
           <ProfileActivityList

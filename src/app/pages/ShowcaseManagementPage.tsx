@@ -25,6 +25,11 @@ interface ShowcaseTheme {
     cardStyle: string;
 }
 
+interface ShowcaseLink {
+    label: string;
+    url: string;
+}
+
 interface ShowcaseProfile {
     slug: string;
     displayName: string;
@@ -32,8 +37,10 @@ interface ShowcaseProfile {
     bio: string;
     profilePictureUrl: string;
     visible: boolean;
+    showPhotoGallery?: boolean;
     entries: Array<{ showcaseId: string }>;
     theme?: ShowcaseTheme;
+    links?: ShowcaseLink[];
 }
 
 const THEME_PRESETS = [
@@ -91,6 +98,7 @@ const ShowcaseManagementPage: React.FC = () => {
     // Default destination
     const [defaultDestination, setDefaultDestination] = useState(false);
     const [profileVisible, setProfileVisible] = useState(true);
+    const [showPhotoGallery, setShowPhotoGallery] = useState(false);
     const [loadingPrefs, setLoadingPrefs] = useState(true);
 
     // Theme state
@@ -99,6 +107,13 @@ const ShowcaseManagementPage: React.FC = () => {
     const [animationId, setAnimationId] = useState('particles');
     const [cardStyle, setCardStyle] = useState('glass');
     const [savingTheme, setSavingTheme] = useState(false);
+
+    // Links state
+    const [links, setLinks] = useState<ShowcaseLink[]>([]);
+    const [newLinkLabel, setNewLinkLabel] = useState('');
+    const [newLinkUrl, setNewLinkUrl] = useState('');
+    const [linkError, setLinkError] = useState('');
+    const [savingLinks, setSavingLinks] = useState(false);
 
 
     // Fetch profile data
@@ -120,6 +135,8 @@ const ShowcaseManagementPage: React.FC = () => {
                     setAnimationId(typedData.profile.theme.animationId || 'particles');
                     setCardStyle(typedData.profile.theme.cardStyle || 'glass');
                 }
+                setLinks(typedData.profile.links || []);
+                setShowPhotoGallery(typedData.profile.showPhotoGallery ?? false);
             }
         } catch (err) {
             console.error('Failed to load showcase profile:', err);
@@ -201,6 +218,49 @@ const ShowcaseManagementPage: React.FC = () => {
         }
     };
 
+    // Save links
+    const handleAddLink = async () => {
+        setLinkError('');
+        const label = newLinkLabel.trim();
+        const url = newLinkUrl.trim();
+        if (!label) { setLinkError('Label is required'); return; }
+        if (!url) { setLinkError('URL is required'); return; }
+        if (!url.startsWith('https://')) { setLinkError('URL must start with https://'); return; }
+        if (url.length > 200) { setLinkError('URL must be 200 characters or fewer'); return; }
+        if (label.length > 50) { setLinkError('Label must be 50 characters or fewer'); return; }
+        if (links.length >= 10) { setLinkError('Maximum 10 links allowed'); return; }
+
+        const updatedLinks = [...links, { label, url }];
+        setSavingLinks(true);
+        try {
+            await client.PUT('/users/me/showcase-management/profile', { body: { links: updatedLinks } as never });
+            setLinks(updatedLinks);
+            setNewLinkLabel('');
+            setNewLinkUrl('');
+            showSuccess('Link added');
+        } catch (err) {
+            console.error('Failed to save links:', err);
+            showError('Failed to save link');
+        } finally {
+            setSavingLinks(false);
+        }
+    };
+
+    const handleRemoveLink = async (index: number) => {
+        const updatedLinks = links.filter((_, i) => i !== index);
+        setSavingLinks(true);
+        try {
+            await client.PUT('/users/me/showcase-management/profile', { body: { links: updatedLinks } as never });
+            setLinks(updatedLinks);
+            showSuccess('Link removed');
+        } catch (err) {
+            console.error('Failed to remove link:', err);
+            showError('Failed to remove link');
+        } finally {
+            setSavingLinks(false);
+        }
+    };
+
     // Toggle default destination
     const handleToggleDefaultDestination = async () => {
         const newVal = !defaultDestination;
@@ -229,6 +289,22 @@ const ShowcaseManagementPage: React.FC = () => {
             setProfileVisible(!newVal);
             console.error('Failed to update visibility:', err);
             showError('Failed to update visibility');
+        }
+    };
+
+    // Toggle photo gallery
+    const handleTogglePhotoGallery = async () => {
+        const newVal = !showPhotoGallery;
+        setShowPhotoGallery(newVal);
+        try {
+            await client.PUT('/users/me/showcase-management/profile', {
+                body: { showPhotoGallery: newVal } as never,
+            });
+            showSuccess(newVal ? 'Photo gallery enabled' : 'Photo gallery disabled');
+        } catch (err) {
+            setShowPhotoGallery(!newVal);
+            console.error('Failed to update photo gallery setting:', err);
+            showError('Failed to update photo gallery setting');
         }
     };
 
@@ -415,6 +491,9 @@ const ShowcaseManagementPage: React.FC = () => {
                                     {uploadStatus || 'WebP recommended • Max 5MB'}
                                 </Paragraph>
                             </Stack>
+                            <Button variant="secondary" size="small" onClick={() => window.location.href = '/app/settings/photo-editor'}>
+                                🎨 Create Post
+                            </Button>
                         </Stack>
 
                         <FormField label="Subtitle">
@@ -442,6 +521,72 @@ const ShowcaseManagementPage: React.FC = () => {
                                 {saving ? 'Saving…' : 'Save Profile'}
                             </Button>
                         </Stack>
+                    </Stack>
+                </Card>
+
+                {/* Links */}
+                <Card className="showcase-mgmt__section">
+                    <Stack gap="md">
+                        <Heading level={3} className="showcase-mgmt__section-title">
+                            🔗 Links ({links.length}/10)
+                        </Heading>
+
+                        {links.length > 0 && (
+                            <Stack gap="xs" className="showcase-mgmt__links-list">
+                                {links.map((link, i) => (
+                                    <Stack key={i} direction="horizontal" align="center" justify="between" className="showcase-mgmt__link-item">
+                                        <Stack gap="xs">
+                                            <Paragraph className="showcase-mgmt__link-label">{link.label}</Paragraph>
+                                            <Paragraph size="sm" muted className="showcase-mgmt__link-url">{link.url}</Paragraph>
+                                        </Stack>
+                                        <Button
+                                            variant="danger"
+                                            size="small"
+                                            onClick={() => handleRemoveLink(i)}
+                                            disabled={savingLinks}
+                                        >
+                                            ×
+                                        </Button>
+                                    </Stack>
+                                ))}
+                            </Stack>
+                        )}
+
+                        {links.length < 10 && (
+                            <Stack gap="sm" className="showcase-mgmt__add-link">
+                                <FormField label="Label">
+                                    <Input
+                                        value={newLinkLabel}
+                                        onChange={(e) => setNewLinkLabel(e.target.value.slice(0, 50))}
+                                        placeholder="e.g. My Strava"
+                                        maxLength={50}
+                                    />
+                                    <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{newLinkLabel.length}/50</Paragraph>
+                                </FormField>
+                                <FormField label="URL">
+                                    <Input
+                                        value={newLinkUrl}
+                                        onChange={(e) => setNewLinkUrl(e.target.value.slice(0, 200))}
+                                        placeholder="https://..."
+                                        maxLength={200}
+                                    />
+                                    <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{newLinkUrl.length}/200</Paragraph>
+                                </FormField>
+                                {linkError && (
+                                    <Paragraph className="showcase-mgmt__slug-error">{linkError}</Paragraph>
+                                )}
+                                <Stack className="showcase-mgmt__actions">
+                                    <Button
+                                        variant="primary"
+                                        size="small"
+                                        onClick={handleAddLink}
+                                        disabled={savingLinks || !newLinkLabel.trim() || !newLinkUrl.trim()}
+                                    >
+                                        {savingLinks ? 'Saving…' : 'Add Link'}
+                                    </Button>
+                                </Stack>
+                            </Stack>
+                        )}
                     </Stack>
                 </Card>
 
@@ -679,6 +824,12 @@ const ShowcaseManagementPage: React.FC = () => {
                             checked={defaultDestination}
                             onChange={handleToggleDefaultDestination}
                             disabled={loadingPrefs}
+                        />
+                        <Toggle
+                            label="Show photo gallery on public profile"
+                            description="Display a gallery of activity route images on your public showcase profile page"
+                            checked={showPhotoGallery}
+                            onChange={handleTogglePhotoGallery}
                         />
                     </Stack>
                 </Card>
