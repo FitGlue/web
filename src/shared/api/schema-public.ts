@@ -350,6 +350,7 @@ export interface components {
             visible?: boolean;
             theme?: components["schemas"]["ShowcaseTheme"];
             defaultDestination?: boolean;
+            showPhotoGallery?: boolean;
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;
@@ -419,6 +420,7 @@ export interface components {
             activityDataUri?: string;
             ownerProfilePictureUrl?: string;
             ownerProfileSlug?: string;
+            photoUrls?: string[];
         };
         StandardizedActivity: {
             /**

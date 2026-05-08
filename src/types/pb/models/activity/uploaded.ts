@@ -44,6 +44,7 @@ export interface ShowcasedActivity {
   activityDataUri: string;
   ownerProfilePictureUrl: string;
   ownerProfileSlug: string;
+  photoUrls: string[];
 }
 
 export interface ShowcasedActivity_EnrichmentMetadataEntry {
@@ -95,4 +96,5 @@ export interface ShowcaseProfile {
     | undefined;
   /** Auto-add Showcase destination when creating new pipelines */
   defaultDestination: boolean;
+  showPhotoGallery: boolean;
 }

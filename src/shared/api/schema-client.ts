@@ -345,6 +345,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/me/activity-photos/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_GetActivityPhotoUploadUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/me/auth-email/send-email-change": {
         parameters: {
             query?: never;
@@ -987,7 +1003,7 @@ export interface components {
              * Format: enum
              * @enum {string}
              */
-            providerType?: "ENRICHER_PROVIDER_UNSPECIFIED" | "ENRICHER_PROVIDER_FITBIT_HEART_RATE" | "ENRICHER_PROVIDER_WORKOUT_SUMMARY" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP" | "ENRICHER_PROVIDER_SOURCE_LINK" | "ENRICHER_PROVIDER_VIRTUAL_GPS" | "ENRICHER_PROVIDER_TYPE_MAPPER" | "ENRICHER_PROVIDER_PARKRUN" | "ENRICHER_PROVIDER_CONDITION_MATCHER" | "ENRICHER_PROVIDER_AUTO_INCREMENT" | "ENRICHER_PROVIDER_USER_INPUT" | "ENRICHER_PROVIDER_ACTIVITY_FILTER" | "ENRICHER_PROVIDER_LOGIC_GATE" | "ENRICHER_PROVIDER_HEART_RATE_SUMMARY" | "ENRICHER_PROVIDER_AI_COMPANION" | "ENRICHER_PROVIDER_PACE_SUMMARY" | "ENRICHER_PROVIDER_CADENCE_SUMMARY" | "ENRICHER_PROVIDER_POWER_SUMMARY" | "ENRICHER_PROVIDER_SPEED_SUMMARY" | "ENRICHER_PROVIDER_PERSONAL_RECORDS" | "ENRICHER_PROVIDER_TRAINING_LOAD" | "ENRICHER_PROVIDER_SPOTIFY_TRACKS" | "ENRICHER_PROVIDER_WEATHER" | "ENRICHER_PROVIDER_ELEVATION_SUMMARY" | "ENRICHER_PROVIDER_LOCATION_NAMING" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP_IMAGE" | "ENRICHER_PROVIDER_ROUTE_THUMBNAIL" | "ENRICHER_PROVIDER_AI_BANNER" | "ENRICHER_PROVIDER_FIT_FILE_HEART_RATE" | "ENRICHER_PROVIDER_HYBRID_RACE_TAGGER" | "ENRICHER_PROVIDER_RUNNING_DYNAMICS" | "ENRICHER_PROVIDER_HEART_RATE_ZONES" | "ENRICHER_PROVIDER_CALORIES_BURNED" | "ENRICHER_PROVIDER_GOAL_TRACKER" | "ENRICHER_PROVIDER_STREAK_TRACKER" | "ENRICHER_PROVIDER_DISTANCE_MILESTONES" | "ENRICHER_PROVIDER_RECOVERY_ADVISOR" | "ENRICHER_PROVIDER_EFFORT_SCORE" | "ENRICHER_PROVIDER_INTERVALS" | "ENRICHER_PROVIDER_MOCK";
+            providerType?: "ENRICHER_PROVIDER_UNSPECIFIED" | "ENRICHER_PROVIDER_FITBIT_HEART_RATE" | "ENRICHER_PROVIDER_WORKOUT_SUMMARY" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP" | "ENRICHER_PROVIDER_SOURCE_LINK" | "ENRICHER_PROVIDER_VIRTUAL_GPS" | "ENRICHER_PROVIDER_TYPE_MAPPER" | "ENRICHER_PROVIDER_PARKRUN" | "ENRICHER_PROVIDER_CONDITION_MATCHER" | "ENRICHER_PROVIDER_AUTO_INCREMENT" | "ENRICHER_PROVIDER_USER_INPUT" | "ENRICHER_PROVIDER_ACTIVITY_FILTER" | "ENRICHER_PROVIDER_LOGIC_GATE" | "ENRICHER_PROVIDER_HEART_RATE_SUMMARY" | "ENRICHER_PROVIDER_AI_COMPANION" | "ENRICHER_PROVIDER_PACE_SUMMARY" | "ENRICHER_PROVIDER_CADENCE_SUMMARY" | "ENRICHER_PROVIDER_POWER_SUMMARY" | "ENRICHER_PROVIDER_SPEED_SUMMARY" | "ENRICHER_PROVIDER_PERSONAL_RECORDS" | "ENRICHER_PROVIDER_TRAINING_LOAD" | "ENRICHER_PROVIDER_SPOTIFY_TRACKS" | "ENRICHER_PROVIDER_WEATHER" | "ENRICHER_PROVIDER_ELEVATION_SUMMARY" | "ENRICHER_PROVIDER_LOCATION_NAMING" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP_IMAGE" | "ENRICHER_PROVIDER_ROUTE_THUMBNAIL" | "ENRICHER_PROVIDER_AI_BANNER" | "ENRICHER_PROVIDER_FIT_FILE_HEART_RATE" | "ENRICHER_PROVIDER_HYBRID_RACE_TAGGER" | "ENRICHER_PROVIDER_RUNNING_DYNAMICS" | "ENRICHER_PROVIDER_HEART_RATE_ZONES" | "ENRICHER_PROVIDER_CALORIES_BURNED" | "ENRICHER_PROVIDER_GOAL_TRACKER" | "ENRICHER_PROVIDER_STREAK_TRACKER" | "ENRICHER_PROVIDER_DISTANCE_MILESTONES" | "ENRICHER_PROVIDER_RECOVERY_ADVISOR" | "ENRICHER_PROVIDER_EFFORT_SCORE" | "ENRICHER_PROVIDER_INTERVALS" | "ENRICHER_PROVIDER_PHOTO_UPLOAD" | "ENRICHER_PROVIDER_MOCK";
             typedConfig?: {
                 [key: string]: string;
             };
@@ -1007,6 +1023,17 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             lastUsedAt?: string;
+        };
+        GetActivityPhotoUploadUrlGatewayRequest: {
+            activityId?: string;
+            filename?: string;
+            contentType?: string;
+        };
+        GetActivityPhotoUploadUrlGatewayResponse: {
+            uploadUrl?: string;
+            publicUrl?: string;
+            contentType?: string;
+            maxSizeBytes?: string;
         };
         GetActivityStatsGatewayResponse: {
             /** Format: int32 */
@@ -1470,6 +1497,7 @@ export interface components {
             visible?: boolean;
             theme?: components["schemas"]["ShowcaseTheme"];
             defaultDestination?: boolean;
+            showPhotoGallery?: boolean;
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;
@@ -1539,6 +1567,7 @@ export interface components {
             activityDataUri?: string;
             ownerProfilePictureUrl?: string;
             ownerProfileSlug?: string;
+            photoUrls?: string[];
         };
         SpotifyIntegration: {
             enabled?: boolean;
@@ -2513,6 +2542,39 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetActivityPhotoUploadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetActivityPhotoUploadUrlGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetActivityPhotoUploadUrlGatewayResponse"];
+                };
             };
             /** @description Default error response */
             default: {

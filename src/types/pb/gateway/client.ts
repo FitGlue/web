@@ -274,6 +274,19 @@ export interface GetPictureUploadUrlGatewayResponse {
   maxSizeBytes: number;
 }
 
+export interface GetActivityPhotoUploadUrlGatewayRequest {
+  activityId: string;
+  filename: string;
+  contentType: string;
+}
+
+export interface GetActivityPhotoUploadUrlGatewayResponse {
+  uploadUrl: string;
+  publicUrl: string;
+  contentType: string;
+  maxSizeBytes: number;
+}
+
 /** Data Export */
 export interface ExportDataGatewayResponse {
   downloadUrl: string;
@@ -416,6 +429,9 @@ export interface ClientGatewayService {
   GetShowcaseProfilePictureUploadUrl(
     request: GetPictureUploadUrlGatewayRequest,
   ): Promise<GetPictureUploadUrlGatewayResponse>;
+  GetActivityPhotoUploadUrl(
+    request: GetActivityPhotoUploadUrlGatewayRequest,
+  ): Promise<GetActivityPhotoUploadUrlGatewayResponse>;
   /** ===================== Data Export ===================== */
   ExportData(request: EmptyRequest): Promise<ExportDataGatewayResponse>;
   /** ===================== FIT File Parse ===================== */

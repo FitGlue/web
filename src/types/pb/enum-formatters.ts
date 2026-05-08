@@ -1432,6 +1432,10 @@ const EnricherProviderTypeNames: Record<string, string> = {
     'INTERVALS': 'Intervals',
     'Intervals': 'Intervals',
     '39': 'Intervals',
+    'ENRICHER_PROVIDER_PHOTO_UPLOAD': 'Photo Upload',
+    'PHOTO_UPLOAD': 'Photo Upload',
+    'Photo Upload': 'Photo Upload',
+    '40': 'Photo Upload',
     'ENRICHER_PROVIDER_MOCK': 'Mock',
     'MOCK': 'Mock',
     'Mock': 'Mock',
@@ -1496,6 +1500,7 @@ export function formatEnricherProviderType(value: EnricherProviderType | number 
     case EnricherProviderType.ENRICHER_PROVIDER_RECOVERY_ADVISOR: return 'Recovery Advisor';
     case EnricherProviderType.ENRICHER_PROVIDER_EFFORT_SCORE: return 'Effort Score';
     case EnricherProviderType.ENRICHER_PROVIDER_INTERVALS: return 'Intervals';
+    case EnricherProviderType.ENRICHER_PROVIDER_PHOTO_UPLOAD: return 'Photo Upload';
     case EnricherProviderType.ENRICHER_PROVIDER_MOCK: return 'Mock';
     default: return 'Unknown';
   }
@@ -1655,6 +1660,10 @@ const EnricherProviderTypeValues: Record<string, EnricherProviderType> = {
     'enricher_provider_intervals': EnricherProviderType.ENRICHER_PROVIDER_INTERVALS,
     'intervals': EnricherProviderType.ENRICHER_PROVIDER_INTERVALS,
     '39': EnricherProviderType.ENRICHER_PROVIDER_INTERVALS,
+    'enricher_provider_photo_upload': EnricherProviderType.ENRICHER_PROVIDER_PHOTO_UPLOAD,
+    'photo_upload': EnricherProviderType.ENRICHER_PROVIDER_PHOTO_UPLOAD,
+    'photo upload': EnricherProviderType.ENRICHER_PROVIDER_PHOTO_UPLOAD,
+    '40': EnricherProviderType.ENRICHER_PROVIDER_PHOTO_UPLOAD,
     'enricher_provider_mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     'mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     '99': EnricherProviderType.ENRICHER_PROVIDER_MOCK,

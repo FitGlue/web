@@ -151,6 +151,20 @@ export interface GetShowcaseProfilePictureUploadUrlResponse {
   maxSizeBytes: number;
 }
 
+export interface GetActivityPhotoUploadUrlRequest {
+  userId: string;
+  activityId: string;
+  filename: string;
+  contentType: string;
+}
+
+export interface GetActivityPhotoUploadUrlResponse {
+  uploadUrl: string;
+  publicUrl: string;
+  contentType: string;
+  maxSizeBytes: number;
+}
+
 export interface GetPublicShowcaseProfileRequest {
   slug: string;
   page: number;
@@ -199,4 +213,5 @@ export interface ActivityService {
   GetShowcaseProfilePictureUploadUrl(
     request: GetShowcaseProfilePictureUploadUrlRequest,
   ): Promise<GetShowcaseProfilePictureUploadUrlResponse>;
+  GetActivityPhotoUploadUrl(request: GetActivityPhotoUploadUrlRequest): Promise<GetActivityPhotoUploadUrlResponse>;
 }
