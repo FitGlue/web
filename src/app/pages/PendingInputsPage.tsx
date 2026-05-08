@@ -10,6 +10,7 @@ import { Button, Pill, Paragraph, Heading, EmptyState, GlowCard, DashboardSummar
 import { Select, Textarea, Input, FormField, FileInput } from '../components/library/forms';
 import { PipelineConfig } from '../state/pipelinesState';
 import { HybridRaceTaggerInput } from '../components/forms/HybridRaceTaggerInput';
+import { PhotoUploadInput } from '../components/forms/PhotoUploadInput';
 
 
 interface ParsedInputInfo {
@@ -172,6 +173,16 @@ const PendingInputsPage: React.FC = () => {
                 <HybridRaceTaggerInput
                     lapsJson={lapsJson}
                     presetsJson={presetsJson}
+                    value={value}
+                    onChange={(newValue) => handleInputChange(activityId, field, newValue)}
+                />
+            );
+        }
+
+        if (fieldType === 'photo_upload') {
+            return (
+                <PhotoUploadInput
+                    activityId={activityId}
                     value={value}
                     onChange={(newValue) => handleInputChange(activityId, field, newValue)}
                 />

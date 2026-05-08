@@ -1,0 +1,218 @@
+import { useEffect, useRef, useState } from 'react';
+import { client } from '../../../shared/api/client';
+
+interface UploadedPhoto {
+    publicUrl: string;
+    previewUrl: string;
+}
+
+interface Props {
+    activityId: string;
+    value: string;
+    onChange: (value: string) => void;
+}
+
+const MAX_PHOTOS = 10;
+const MAX_SIZE_BYTES = 10 * 1024 * 1024;
+const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic'];
+
+export const PhotoUploadInput: React.FC<Props> = ({ activityId, value, onChange }) => {
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [photos, setPhotos] = useState<UploadedPhoto[]>([]);
+    const [uploading, setUploading] = useState(false);
+    const [uploadStatus, setUploadStatus] = useState('');
+    const [error, setError] = useState('');
+
+    // Initialise value to "[]" on mount so the required-field check passes.
+    useEffect(() => {
+        if (!value) {
+            onChange('[]');
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const syncToParent = (updated: UploadedPhoto[]) => {
+        onChange(JSON.stringify(updated.map(p => p.publicUrl)));
+    };
+
+    const handleFilesSelected = async (files: FileList) => {
+        setError('');
+        const remaining = MAX_PHOTOS - photos.length;
+        const toUpload = Array.from(files).slice(0, remaining);
+
+        if (toUpload.length === 0) {
+            setError(`Maximum ${MAX_PHOTOS} photos allowed.`);
+            return;
+        }
+
+        for (const file of toUpload) {
+            if (!ACCEPTED_TYPES.includes(file.type)) {
+                setError(`Unsupported file type: ${file.type}. Use JPEG, PNG, WebP, or HEIC.`);
+                return;
+            }
+            if (file.size > MAX_SIZE_BYTES) {
+                setError(`${file.name} exceeds the 10MB limit.`);
+                return;
+            }
+        }
+
+        setUploading(true);
+
+        const newPhotos: UploadedPhoto[] = [];
+        for (let i = 0; i < toUpload.length; i++) {
+            const file = toUpload[i];
+            setUploadStatus(`Uploading ${i + 1} of ${toUpload.length}…`);
+            try {
+                const { data, error: apiErr } = await client.POST('/users/me/activity-photos/upload-url', {
+                    body: {
+                        activityId,
+                        filename: file.name,
+                        contentType: file.type,
+                    } as never,
+                });
+                if (apiErr || !data) throw new Error('Failed to get upload URL');
+
+                const typed = data as unknown as {
+                    uploadUrl: string;
+                    publicUrl: string;
+                    contentType: string;
+                    maxSizeBytes: number;
+                };
+
+                const uploadRes = await fetch(typed.uploadUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': typed.contentType,
+                        'x-goog-content-length-range': `0,${typed.maxSizeBytes}`,
+                    },
+                    body: file,
+                });
+                if (!uploadRes.ok) throw new Error(`Upload failed: ${uploadRes.status}`);
+
+                newPhotos.push({
+                    publicUrl: typed.publicUrl,
+                    previewUrl: URL.createObjectURL(file),
+                });
+            } catch (err) {
+                setError(`Failed to upload ${file.name}. Please try again.`);
+                console.error('Photo upload error:', err);
+                break;
+            }
+        }
+
+        setUploading(false);
+        setUploadStatus('');
+
+        if (newPhotos.length > 0) {
+            const updated = [...photos, ...newPhotos];
+            setPhotos(updated);
+            syncToParent(updated);
+        }
+    };
+
+    const removePhoto = (index: number) => {
+        const updated = photos.filter((_, i) => i !== index);
+        URL.revokeObjectURL(photos[index].previewUrl);
+        setPhotos(updated);
+        syncToParent(updated);
+    };
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <p style={{ margin: 0, color: 'var(--color-text-muted, #888)', fontSize: '0.875rem' }}>
+                {photos.length === 0
+                    ? 'Add up to 10 photos from this activity (optional).'
+                    : `${photos.length} photo${photos.length === 1 ? '' : 's'} added. You can add ${MAX_PHOTOS - photos.length} more.`
+                }
+            </p>
+
+            {photos.length > 0 && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: '8px' }}>
+                    {photos.map((photo, index) => (
+                        <div key={photo.publicUrl} style={{ position: 'relative' }}>
+                            <img
+                                src={photo.previewUrl}
+                                alt={`Photo ${index + 1}`}
+                                style={{
+                                    width: '100%',
+                                    aspectRatio: '1',
+                                    objectFit: 'cover',
+                                    borderRadius: '6px',
+                                    display: 'block',
+                                }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => removePhoto(index)}
+                                style={{
+                                    position: 'absolute',
+                                    top: '2px',
+                                    right: '2px',
+                                    background: 'rgba(0,0,0,0.6)',
+                                    color: '#fff',
+                                    border: 'none',
+                                    borderRadius: '50%',
+                                    width: '20px',
+                                    height: '20px',
+                                    cursor: 'pointer',
+                                    fontSize: '12px',
+                                    lineHeight: '20px',
+                                    textAlign: 'center',
+                                    padding: 0,
+                                }}
+                            >
+                                ×
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {uploading && (
+                <p style={{ margin: 0, color: 'var(--color-text-muted, #888)', fontSize: '0.875rem' }}>
+                    {uploadStatus}
+                </p>
+            )}
+
+            {error && (
+                <p style={{ margin: 0, color: 'var(--color-error, #e53e3e)', fontSize: '0.875rem' }}>
+                    {error}
+                </p>
+            )}
+
+            {photos.length < MAX_PHOTOS && (
+                <>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        multiple
+                        accept={ACCEPTED_TYPES.join(',')}
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                            if (e.target.files) {
+                                handleFilesSelected(e.target.files);
+                                e.target.value = '';
+                            }
+                        }}
+                    />
+                    <button
+                        type="button"
+                        disabled={uploading}
+                        onClick={() => fileInputRef.current?.click()}
+                        style={{
+                            padding: '8px 16px',
+                            borderRadius: '6px',
+                            border: '1px dashed var(--color-border, #444)',
+                            background: 'transparent',
+                            color: 'var(--color-text, #fff)',
+                            cursor: uploading ? 'not-allowed' : 'pointer',
+                            fontSize: '0.875rem',
+                        }}
+                    >
+                        {uploading ? 'Uploading…' : '📷 Add Photos'}
+                    </button>
+                </>
+            )}
+        </div>
+    );
+};
