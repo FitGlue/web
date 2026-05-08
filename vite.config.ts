@@ -97,9 +97,8 @@ export default defineConfig(({ mode }) => {
       minify: mode !== 'development', // Disable minification in dev for React DevTools
       rollupOptions: {
         input: {
-          // Static pages are now built by Skier, only React app entry point here
           app: resolve(__dirname, 'public/app/index.html'),
-          // Service worker is now built separately via plugin to ensure IIFE format
+          showcase: resolve(__dirname, 'public/showcase/index.html'),
         },
         output: {
           sourcemapExcludeSources: false, // Include sources in source maps

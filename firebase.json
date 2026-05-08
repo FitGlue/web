@@ -76,12 +76,8 @@
         "destination": "/app/index.html"
       },
       {
-        "source": "/s/**",
-        "destination": "/showcase.html"
-      },
-      {
-        "source": "/u/**",
-        "destination": "/showcase-profile.html"
+        "source": "/showcase/**",
+        "destination": "/showcase/index.html"
       }
     ]
   }
