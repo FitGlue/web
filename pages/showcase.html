@@ -1309,6 +1309,9 @@
     font-weight: 600;
     font-size: 0.85rem;
     color: #e0d0f0;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
   }
 
   .interval-sub-rows {
@@ -2027,6 +2030,18 @@
     color: #eee;
     flex: 1;
     min-width: 0;
+  }
+
+  .workout-ex-superset-badge {
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .workout-exercise-card.has-superset {
+    border-left-width: 4px;
+    border-left-style: solid;
+    border-left-color: #a855f7;
   }
 
   .workout-ex-set-rows {
@@ -4689,9 +4704,11 @@
         // Check if this line is a section header. Two patterns:
         // 1. Line ends with colon (multi-line sections like "🏁 Hyrox - Male Single:")
         // 2. Line preceded by blank line AND starts with emoji + colon pattern (single-line like "❤️ Heart Rate: value")
-        const endsWithColon = trimmedLine.endsWith(':') && trimmedLine.length > 1;
         // Single-line sections must start with an emoji (not dash, bullet, etc.)
         const startsWithEmoji = /^[\u{1F300}-\u{1FAD6}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{2300}-\u{23FF}]/u.test(trimmedLine);
+        // Enricher section headers always start with an emoji — requiring startsWithEmoji prevents
+        // markdown bullet lines like "* Ski Erg:" from being misidentified as section headers.
+        const endsWithColon = trimmedLine.endsWith(':') && trimmedLine.length > 1 && startsWithEmoji;
         const isSingleLineSection = prevLine === '' && i > 0 && startsWithEmoji && trimmedLine.includes(':');
 
         if (endsWithColon || isSingleLineSection) {
@@ -5654,11 +5671,29 @@
         const colonIdx = line.indexOf(':');
         if (colonIdx < 0) return null;
         const name = line.substring(0, colonIdx).trim();
-        const squares = line.substring(colonIdx + 1).trim();
-        // Count filled squares (🟪) out of total squares
-        const filled = ([...squares].filter(c => c === '🟪')).length;
-        const total = ([...squares].filter(c => c === '🟪' || c === '⬜')).length || 5;
-        return { name, filled, total };
+        const value = line.substring(colonIdx + 1).trim();
+
+        // Format 1: emoji bars — "Glutes: 🟪🟪🟪⬜⬜"
+        const filledCount = ([...value].filter(c => c === '🟪')).length;
+        const totalCount = ([...value].filter(c => c === '🟪' || c === '⬜')).length;
+        if (totalCount > 0) {
+          return { name, filled: filledCount, total: totalCount };
+        }
+
+        // Format 2: percentage — "Glutes: 70%"
+        const pctMatch = value.match(/^(\d+)%$/);
+        if (pctMatch) {
+          const pct = parseInt(pctMatch[1]);
+          return { name, filled: pct, total: 100 };
+        }
+
+        // Format 3: text level — "Glutes: High" / "Glutes: Very High" etc.
+        const textLevels = { 'Very High': 100, 'High': 75, 'Medium': 50, 'Low': 25 };
+        if (Object.prototype.hasOwnProperty.call(textLevels, value)) {
+          return { name, filled: textLevels[value], total: 100 };
+        }
+
+        return null;
       }).filter(Boolean);
 
       if (muscles.length === 0) return renderEnhancedCompactPills(section, idx);
@@ -6560,9 +6595,14 @@
           const setDelay = delay + ((si + 1) * 0.03);
           return `<div class="workout-ex-set-row" style="animation-delay:${setDelay}s">${escapeHtml(s)}</div>`;
         }).join('');
-        return `<div class="workout-exercise-card cat-${cat}" style="animation-delay:${delay}s">
+        const supersetBadge = ex.superset && ex.superset !== '⬜'
+          ? `<span class="workout-ex-superset-badge">${ex.superset}</span>`
+          : '';
+        const supersetClass = ex.superset && ex.superset !== '⬜' ? ' has-superset' : '';
+        return `<div class="workout-exercise-card cat-${cat}${supersetClass}" style="animation-delay:${delay}s">
           <div class="workout-ex-header">
             <span class="workout-ex-icon">${icon}</span>
+            ${supersetBadge}
             <span class="workout-ex-name">${escapeHtml(ex.name)}</span>
           </div>
           ${setRowsHtml ? `<div class="workout-ex-set-rows">${setRowsHtml}</div>` : ''}
