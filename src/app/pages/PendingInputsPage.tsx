@@ -11,6 +11,7 @@ import { Select, Textarea, Input, FormField, FileInput } from '../components/lib
 import { PipelineConfig } from '../state/pipelinesState';
 import { HybridRaceTaggerInput } from '../components/forms/HybridRaceTaggerInput';
 import { PhotoUploadInput } from '../components/forms/PhotoUploadInput';
+import { WorkoutEntryInput } from '../components/forms/WorkoutEntryInput';
 
 
 interface ParsedInputInfo {
@@ -183,6 +184,15 @@ const PendingInputsPage: React.FC = () => {
             return (
                 <PhotoUploadInput
                     activityId={activityId}
+                    value={value}
+                    onChange={(newValue) => handleInputChange(activityId, field, newValue)}
+                />
+            );
+        }
+
+        if (fieldType === 'workout_entry') {
+            return (
+                <WorkoutEntryInput
                     value={value}
                     onChange={(newValue) => handleInputChange(activityId, field, newValue)}
                 />

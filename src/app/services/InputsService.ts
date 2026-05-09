@@ -51,9 +51,11 @@ export const InputsService: IInputsService = {
   },
 
   async dismissInput(activityId: string) {
-    // TODO: Add proper dismiss endpoint to gateway proto
-    await client.DELETE('/inputs/{id}' as '/users/me/activities/{id}', {
-      params: { path: { id: activityId } } as never
+    // No dedicated dismiss endpoint exists. Submit with empty inputData so the
+    // enricher treats it as skipped and the pipeline proceeds.
+    await client.POST('/users/me/pending-inputs/{inputId}/submit', {
+      params: { path: { inputId: activityId } },
+      body: { activityId, inputData: {} } as never,
     });
     return true;
   },
