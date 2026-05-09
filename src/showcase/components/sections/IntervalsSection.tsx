@@ -1,5 +1,7 @@
 import React from 'react';
 import type { DescriptionSection } from '../DescriptionSections';
+import { SectionCard } from '../SectionCard';
+import { splitLines } from '../../utils/section';
 
 type LineType = 'warmup' | 'cooldown' | 'insight-comparison' | 'insight-trend' | 'group-header' | 'sub-row' | 'generic';
 interface ClassifiedLine { type: LineType; text: string }
@@ -30,7 +32,7 @@ function statClass(part: string): string {
   return '';
 }
 
-const StatPills: React.FC<{ text: string }> = ({ text }) => {
+const IntervalStatPills: React.FC<{ text: string }> = ({ text }) => {
   const pills = parseStatPills(text);
   if (pills.length === 0) return null;
   return (
@@ -43,11 +45,7 @@ const StatPills: React.FC<{ text: string }> = ({ text }) => {
   );
 };
 
-const GroupCard: React.FC<{ header: string; subRows: string[]; delay: number }> = ({
-  header,
-  subRows,
-  delay,
-}) => (
+const GroupCard: React.FC<{ header: string; subRows: string[]; delay: number }> = ({ header, subRows, delay }) => (
   <div className="interval-group-card" style={{ animationDelay: `${delay}s` }}>
     <div className="interval-group-header" style={{ animationDelay: `${delay}s` }}>
       <span className="interval-group-label">{header}</span>
@@ -57,7 +55,7 @@ const GroupCard: React.FC<{ header: string; subRows: string[]; delay: number }> 
         {subRows.map((text, i) => (
           <div key={i} className="interval-sub-row" style={{ animationDelay: `${delay + (i + 1) * 0.04}s` }}>
             <span className="interval-sub-label">{text.split('•')[0]?.trim()}</span>
-            <StatPills text={text.includes('•') ? text.slice(text.indexOf('•')) : text} />
+            <IntervalStatPills text={text.includes('•') ? text.slice(text.indexOf('•')) : text} />
           </div>
         ))}
       </div>
@@ -65,12 +63,8 @@ const GroupCard: React.FC<{ header: string; subRows: string[]; delay: number }> 
   </div>
 );
 
-export const IntervalsSection: React.FC<{ section: DescriptionSection; idx: number }> = ({
-  section,
-  idx,
-}) => {
-  const lines = section.content.split('\n').filter((l) => l.trim());
-  const classified: ClassifiedLine[] = lines.map(classifyLine);
+export const IntervalsSection: React.FC<{ section: DescriptionSection; idx: number }> = ({ section, idx }) => {
+  const classified: ClassifiedLine[] = splitLines(section.content).map(classifyLine);
 
   let workoutSubtitle = '';
   const workItems = [...classified];
@@ -89,26 +83,19 @@ export const IntervalsSection: React.FC<{ section: DescriptionSection; idx: numb
     if (item.type === 'group-header') {
       const subRows: string[] = [];
       let j = i + 1;
-      while (j < workItems.length && workItems[j].type === 'sub-row') {
-        subRows.push(workItems[j].text);
-        j++;
-      }
+      while (j < workItems.length && workItems[j].type === 'sub-row') { subRows.push(workItems[j].text); j++; }
       cards.push(<GroupCard key={cardIdx} header={item.text} subRows={subRows} delay={delay} />);
-      cardIdx++;
-      i = j;
-      continue;
+      cardIdx++; i = j; continue;
     }
 
     if (item.type === 'warmup' || item.type === 'cooldown') {
       cards.push(
         <div key={cardIdx} className={`interval-standalone-row interval-${item.type}`} style={{ animationDelay: `${delay}s` }}>
           <span className="interval-standalone-label">{item.text.split('•')[0]?.trim()}</span>
-          <StatPills text={item.text.includes('•') ? item.text.slice(item.text.indexOf('•')) : ''} />
+          <IntervalStatPills text={item.text.includes('•') ? item.text.slice(item.text.indexOf('•')) : ''} />
         </div>
       );
-      cardIdx++;
-      i++;
-      continue;
+      cardIdx++; i++; continue;
     }
 
     if (item.type === 'insight-comparison' || item.type === 'insight-trend') {
@@ -117,28 +104,20 @@ export const IntervalsSection: React.FC<{ section: DescriptionSection; idx: numb
           <span className="interval-insight-text">{item.text}</span>
         </div>
       );
-      cardIdx++;
-      i++;
-      continue;
+      cardIdx++; i++; continue;
     }
 
-    // generic
     cards.push(
       <div key={cardIdx} className="interval-generic-row" style={{ animationDelay: `${delay}s` }}>
         {item.text}
       </div>
     );
-    cardIdx++;
-    i++;
+    cardIdx++; i++;
   }
 
   return (
-    <div className="showcase-section glass-card description-section-card" style={{ animationDelay: `${idx * 0.1}s` }}>
-      <div className="section-header">
-        <h2>{section.emoji} {section.title}</h2>
-        {workoutSubtitle && <span className="section-subtitle">{workoutSubtitle}</span>}
-      </div>
+    <SectionCard section={section} idx={idx} subtitle={workoutSubtitle}>
       <div className="intervals-body">{cards}</div>
-    </div>
+    </SectionCard>
   );
 };

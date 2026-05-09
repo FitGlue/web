@@ -230,7 +230,7 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
 
         {/* Charts */}
         {allRecords.length > 0 && (
-          <ActivityCharts records={allRecords} timeMarkers={activity?.timeMarkers} />
+          <ActivityCharts records={allRecords} timeMarkers={activity?.timeMarkers} descriptionSections={sections} />
         )}
 
         {/* Enricher Description Sections */}
@@ -282,11 +282,11 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
               {(data.appliedEnrichments ?? []).map((key) => {
                 const info = getEnricherInfo(key);
                 return (
-                  <div key={key} className="enrichment-badge">
-                    <span className="enrichment-badge-icon">{info.icon}</span>
-                    <div className="enrichment-badge-text">
-                      <span className="enrichment-badge-name">{info.name}</span>
-                      <span className="enrichment-badge-desc">{info.description}</span>
+                  <div key={key} className="enrichment-item">
+                    <span className="enrichment-icon">{info.icon}</span>
+                    <div className="enrichment-info">
+                      <span className="enrichment-name">{info.name}</span>
+                      <span className="enrichment-desc">{info.description}</span>
                     </div>
                   </div>
                 );

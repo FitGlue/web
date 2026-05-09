@@ -6,6 +6,24 @@ import { HRZonesSection } from './sections/HRZonesSection';
 import { GoalSection } from './sections/GoalSection';
 import { StreakSection } from './sections/StreakSection';
 import { EffortSection } from './sections/EffortSection';
+import { PersonalRecordsSection } from './sections/PersonalRecordsSection';
+import { RecoveryAdvisorSection } from './sections/RecoveryAdvisorSection';
+import { CaloriesSection } from './sections/CaloriesSection';
+import { TrainingLoadSection } from './sections/TrainingLoadSection';
+import { HeartRateSection } from './sections/HeartRateSection';
+import { ElevationSection } from './sections/ElevationSection';
+import { RunningDynamicsSection } from './sections/RunningDynamicsSection';
+import { SplitsSection } from './sections/SplitsSection';
+import { CadenceSection } from './sections/CadenceSection';
+import { SpeedSection } from './sections/SpeedSection';
+import { PowerSection } from './sections/PowerSection';
+import { PaceSection } from './sections/PaceSection';
+import { DistanceMilestonesSection } from './sections/DistanceMilestonesSection';
+import { SpotifySoundtrackSection } from './sections/SpotifySoundtrackSection';
+import { BulletListSection } from './sections/BulletListSection';
+import { CompactPillsSection } from './sections/CompactPillsSection';
+import { ConditionsSection } from './sections/ConditionsSection';
+import { SectionCard as SectionCardPrimitive } from './SectionCard';
 
 export interface DescriptionSection {
   emoji: string;
@@ -42,10 +60,8 @@ export function parseDescriptionSections(text: string): DescriptionSection[] {
     const prevLine = i > 0 ? lines[i - 1].trim() : '';
 
     const startsWithEmoji = trimmedLine.length > 0 && trimmedLine.codePointAt(0)! > 0xFF;
-    const endsWithColon =
-      trimmedLine.endsWith(':') && trimmedLine.length > 1 && startsWithEmoji;
-    const isSingleLineSection =
-      prevLine === '' && i > 0 && startsWithEmoji && trimmedLine.includes(':');
+    const endsWithColon = trimmedLine.endsWith(':') && trimmedLine.length > 1 && startsWithEmoji;
+    const isSingleLineSection = prevLine === '' && i > 0 && startsWithEmoji && trimmedLine.includes(':');
 
     if (endsWithColon || isSingleLineSection) {
       if (currentSection === null && preHeaderContent.length > 0) {
@@ -59,15 +75,12 @@ export function parseDescriptionSections(text: string): DescriptionSection[] {
       if (endsWithColon) {
         const headerText = trimmedLine.slice(0, -1).trim();
         const r = extractLeadingEmoji(headerText);
-        emoji = r.emoji;
-        title = r.rest.trim() || 'Section';
-        sectionContent = '';
+        emoji = r.emoji; title = r.rest.trim() || 'Section'; sectionContent = '';
       } else {
         const colonIdx = trimmedLine.indexOf(':');
         const headerText = trimmedLine.slice(0, colonIdx).trim();
         const r = extractLeadingEmoji(headerText);
-        emoji = r.emoji;
-        title = r.rest.trim() || 'Section';
+        emoji = r.emoji; title = r.rest.trim() || 'Section';
         sectionContent = trimmedLine.slice(colonIdx + 1).trim();
       }
       currentSection = { emoji, title, content: sectionContent };
@@ -106,22 +119,13 @@ interface Props {
   onAISummary?: (section: DescriptionSection) => void;
 }
 
-export const DescriptionSections: React.FC<Props> = ({
-  text,
-  hasGraphs,
-  hasHybridRace,
-  onUserDescription,
-  onAISummary,
-}) => {
+export const DescriptionSections: React.FC<Props> = ({ text, hasGraphs, hasHybridRace, onUserDescription, onAISummary }) => {
   const sections = parseDescriptionSections(text);
 
   const userDescSection = sections.find((s) => s.title === 'Description');
   const aiSummarySection = sections.find((s) => s.title === 'AI Summary');
-  const enricherSections = sections.filter(
-    (s) => s.title !== 'Description' && s.title !== 'AI Summary'
-  );
+  const enricherSections = sections.filter((s) => s.title !== 'Description' && s.title !== 'AI Summary');
 
-  // Notify parent of user description & AI summary (rendered elsewhere)
   React.useEffect(() => {
     if (userDescSection?.content) onUserDescription?.(userDescSection.content);
     if (aiSummarySection) onAISummary?.(aiSummarySection);
@@ -143,14 +147,7 @@ export const DescriptionSections: React.FC<Props> = ({
   const weatherSection = filtered.find((s) => s.title === 'Weather');
   const merged = filtered.filter((s) => s.title !== 'Location' && s.title !== 'Weather');
   if (locationSection || weatherSection) {
-    merged.push({
-      title: 'Conditions',
-      emoji: '🌍',
-      content: '',
-      _location: locationSection,
-      _weather: weatherSection,
-      _merged: true,
-    });
+    merged.push({ title: 'Conditions', emoji: '🌍', content: '', _location: locationSection, _weather: weatherSection, _merged: true });
   }
 
   if (merged.length === 0) return null;
@@ -167,6 +164,7 @@ export const DescriptionSections: React.FC<Props> = ({
 const SectionCard: React.FC<{ section: DescriptionSection; idx: number }> = ({ section, idx }) => {
   const { title } = section;
 
+  if (title === 'Personal Records') return <PersonalRecordsSection section={section} idx={idx} />;
   if (title === 'Muscle Heatmap') return <MuscleHeatmapSection section={section} idx={idx} />;
   if (title === 'Workout Summary') return <WorkoutSummarySection section={section} idx={idx} />;
   if (title.startsWith('Intervals')) return <IntervalsSection section={section} idx={idx} />;
@@ -174,130 +172,33 @@ const SectionCard: React.FC<{ section: DescriptionSection; idx: number }> = ({ s
   if (title.includes('Goal Progress')) return <GoalSection section={section} idx={idx} />;
   if (title === 'Streak Tracker') return <StreakSection section={section} idx={idx} />;
   if (title.startsWith('Effort Score')) return <EffortSection section={section} idx={idx} />;
+  if (title === 'Recovery Advisor') return <RecoveryAdvisorSection section={section} idx={idx} />;
+  if (title === 'Calories') return <CaloriesSection section={section} idx={idx} />;
+  if (title === 'Training Load') return <TrainingLoadSection section={section} idx={idx} />;
+  if (title === 'Heart Rate') return <HeartRateSection section={section} idx={idx} />;
+  if (title === 'Elevation') return <ElevationSection section={section} idx={idx} />;
+  if (title === 'Running Dynamics') return <RunningDynamicsSection section={section} idx={idx} />;
+  if (title === 'Splits' || title.startsWith('Splits')) return <SplitsSection section={section} idx={idx} />;
+  if (title === 'Cadence') return <CadenceSection section={section} idx={idx} />;
+  if (title === 'Speed') return <SpeedSection section={section} idx={idx} />;
+  if (title === 'Power') return <PowerSection section={section} idx={idx} />;
+  if (title === 'Pace') return <PaceSection section={section} idx={idx} />;
+  if (title === 'Soundtrack') return <SpotifySoundtrackSection section={section} idx={idx} />;
+  if (title.includes('Lifetime')) return <DistanceMilestonesSection section={section} idx={idx} />;
   if (title === 'Conditions' && section._merged) return <ConditionsSection section={section} idx={idx} />;
 
   const lines = section.content.split('\n').filter((l) => l.trim());
   const bulletLines = lines.filter((l) => l.trim().startsWith('•'));
-  if (bulletLines.length > 0 && bulletLines.length === lines.length) {
-    return <BulletListSection section={section} idx={idx} />;
-  }
-  if (lines.length <= 1 && section.content.includes(' • ')) {
-    return <CompactPillsSection section={section} idx={idx} />;
-  }
-  if (lines.length <= 1 && section.content.trim()) {
-    return <CompactPillsSection section={section} idx={idx} />;
-  }
+  if (bulletLines.length > 0 && bulletLines.length === lines.length) return <BulletListSection section={section} idx={idx} />;
+  if (lines.length <= 1) return <CompactPillsSection section={section} idx={idx} />;
 
-  return (
-    <div
-      className="showcase-section glass-card description-section-card"
-      style={{ animationDelay: `${idx * 0.1}s` }}
-    >
-      <div className="section-header">
-        <h2>{section.emoji} {section.title}</h2>
-      </div>
-      <pre className="activity-description">{section.content}</pre>
-    </div>
-  );
+  return <FallbackSection section={section} idx={idx} />;
 };
 
-const BulletListSection: React.FC<{ section: DescriptionSection; idx: number }> = ({ section, idx }) => {
-  const lines = section.content.split('\n').filter((l) => l.trim());
-  return (
-    <div
-      className="showcase-section glass-card description-section-card"
-      style={{ animationDelay: `${idx * 0.1}s` }}
-    >
-      <div className="section-header">
-        <h2>{section.emoji} {section.title}</h2>
-      </div>
-      <div className="bullet-list-rows">
-        {lines.map((line, i) => {
-          const clean = line.replace(/^•\s*/, '').trim();
-          const colonIdx = clean.indexOf(':');
-          if (colonIdx > 0) {
-            return (
-              <div key={i} className="bullet-stat-row">
-                <span className="bullet-stat-label">{clean.slice(0, colonIdx).trim()}</span>
-                <span className="bullet-stat-value">{clean.slice(colonIdx + 1).trim()}</span>
-              </div>
-            );
-          }
-          return <div key={i} className="bullet-stat-row-simple">• {clean}</div>;
-        })}
-      </div>
-    </div>
-  );
-};
-
-const CompactPillsSection: React.FC<{ section: DescriptionSection; idx: number }> = ({ section, idx }) => {
-  const parts = section.content.split(' • ').map((p) => p.trim()).filter(Boolean);
-  if (parts.length <= 1) {
-    return (
-      <div
-        className="showcase-section glass-card description-section-card compact-pill-section"
-        style={{ animationDelay: `${idx * 0.1}s` }}
-      >
-        <div className="section-header">
-          <h2>{section.emoji} {section.title}</h2>
-        </div>
-        <div className="compact-pill-value">{section.content}</div>
-      </div>
-    );
-  }
-  return (
-    <div
-      className="showcase-section glass-card description-section-card compact-pill-section"
-      style={{ animationDelay: `${idx * 0.1}s` }}
-    >
-      <div className="section-header">
-        <h2>{section.emoji} {section.title}</h2>
-      </div>
-      <div className="enhanced-pills">
-        {parts.map((p, i) => (
-          <span key={i} className="stat-pill">
-            <span className="stat-pill-value">{p}</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const ConditionsSection: React.FC<{ section: DescriptionSection; idx: number }> = ({ section, idx }) => {
-  const renderSub = (sub: DescriptionSection | undefined) => {
-    if (!sub) return null;
-    return (
-      <div className="conditions-sub">
-        <div className="section-header" style={{ marginBottom: '0.5rem' }}>
-          <h3 style={{ fontSize: '0.9rem' }}>{sub.emoji} {sub.title}</h3>
-        </div>
-        <pre className="activity-description" style={{ fontSize: '0.85rem' }}>{sub.content}</pre>
-      </div>
-    );
-  };
-  return (
-    <div
-      className="showcase-section glass-card description-section-card"
-      style={{ animationDelay: `${idx * 0.1}s` }}
-    >
-      <div className="section-header">
-        <h2>{section.emoji} {section.title}</h2>
-      </div>
-      {renderSub(section._location)}
-      {renderSub(section._weather)}
-    </div>
-  );
-};
-
-export const AISummaryCard: React.FC<{ section: DescriptionSection; idx?: number }> = ({ section, idx = 0 }) => (
-  <div
-    className="showcase-section glass-card description-section-card ai-summary-card"
-    style={{ animationDelay: `${idx * 0.1}s` }}
-  >
-    <div className="section-header ai-summary-header">
-      <h2>{section.emoji} {section.title}</h2>
-    </div>
-    <div className="ai-summary-prose">{section.content}</div>
-  </div>
+const FallbackSection: React.FC<{ section: DescriptionSection; idx: number }> = ({ section, idx }) => (
+  <SectionCardPrimitive section={section} idx={idx}>
+    <pre className="activity-description">{section.content}</pre>
+  </SectionCardPrimitive>
 );
+
+export { AISummaryCard } from './AISummaryCard';

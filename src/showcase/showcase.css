@@ -4409,3 +4409,964 @@ body:has(.showcase-page)>footer.footer {
   background: rgba(255,255,255,0.15);
 }
 
+/* ========================================
+   ENRICHMENT LIST (Boosters Applied)
+   ======================================== */
+.enrichment-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.enrichment-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(157, 78, 221, 0.15), rgba(255, 27, 141, 0.1));
+  border: 1px solid rgba(157, 78, 221, 0.3);
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.enrichment-item:hover {
+  border-color: rgba(255, 27, 141, 0.5);
+  transform: translateY(-2px);
+}
+
+.enrichment-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+  flex-shrink: 0;
+}
+
+.enrichment-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.enrichment-name {
+  font-weight: 700;
+  color: #fff;
+}
+
+.enrichment-desc {
+  font-size: 0.875rem;
+  color: #aaa;
+}
+
+/* ========================================
+   RECOVERY ADVISOR
+   ======================================== */
+.recovery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.recovery-grid.has-acwr {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 480px) {
+  .recovery-grid.has-acwr {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.recovery-stat-block {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  text-align: center;
+}
+
+.recovery-stat-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.recovery-stat-sub {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 0.1rem;
+}
+
+.recovery-stat-label {
+  font-size: 0.65rem;
+  color: #888;
+  text-transform: uppercase;
+  margin-top: 0.15rem;
+}
+
+.recovery-stat-hint {
+  font-size: 0.62rem;
+  color: #64748b;
+  margin-top: 0.15rem;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.recovery-stat-tag {
+  font-size: 0.6rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  margin-left: 0.3rem;
+  font-weight: 600;
+}
+
+.recovery-stat-tag.easy,
+.recovery-stat-tag.recovery {
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+}
+
+.recovery-stat-tag.moderate,
+.recovery-stat-tag.optimal {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+}
+
+.recovery-stat-tag.hard,
+.recovery-stat-tag.building {
+  background: rgba(251, 146, 60, 0.2);
+  color: #fb923c;
+}
+
+.recovery-stat-tag.overreaching {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.recovery-stat-tag.detraining {
+  background: rgba(103, 232, 249, 0.2);
+  color: #67e8f9;
+}
+
+.recovery-fatigue-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(251, 146, 60, 0.08);
+  border: 1px solid rgba(251, 146, 60, 0.25);
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  color: #fb923c;
+  font-size: 0.78rem;
+  margin-bottom: 0.4rem;
+}
+
+.recovery-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(96, 165, 250, 0.08);
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  color: #94a3b8;
+  font-size: 0.82rem;
+}
+
+.recovery-suggestion .icon {
+  font-size: 1.1rem;
+}
+
+.recovery-suggestion .value {
+  color: #60a5fa;
+  font-weight: 700;
+}
+
+/* ========================================
+   CALORIES
+   ======================================== */
+.calories-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.calories-value-block {
+  text-align: center;
+}
+
+.calories-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fbbf24;
+}
+
+.calories-unit {
+  font-size: 0.75rem;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.calories-food-callout {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: 10px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+  color: #fbbf24;
+  font-weight: 500;
+}
+
+/* ========================================
+   TRAINING LOAD
+   ======================================== */
+.training-load-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.training-load-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.training-load-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+}
+
+.training-load-badge.easy {
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.training-load-badge.moderate {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.training-load-badge.hard {
+  background: rgba(251, 146, 60, 0.2);
+  color: #fb923c;
+  border: 1px solid rgba(251, 146, 60, 0.3);
+}
+
+.training-load-badge.extreme {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.training-load-badge.recovery {
+  background: rgba(103, 232, 249, 0.2);
+  color: #67e8f9;
+  border: 1px solid rgba(103, 232, 249, 0.3);
+}
+
+.training-load-scale {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  margin-top: 0.6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.training-load-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s ease;
+}
+
+/* ========================================
+   HEART RATE DASHBOARD
+   ======================================== */
+.hr-dashboard {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hr-dashboard-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  min-width: 70px;
+}
+
+.hr-dashboard-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.hr-dashboard-value.min { color: #4ade80; }
+.hr-dashboard-value.avg { color: #ef4444; }
+.hr-dashboard-value.max { color: #fbbf24; }
+
+.hr-dashboard-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  color: #888;
+  margin-top: 0.1rem;
+}
+
+.hr-dashboard-unit {
+  font-size: 0.65rem;
+  color: #666;
+}
+
+.hr-drift-badge {
+  font-size: 0.6rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  margin-top: 0.15rem;
+}
+
+.hr-drift-badge.warning { background: rgba(251, 146, 60, 0.2); color: #fb923c; }
+.hr-drift-badge.normal { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+
+/* ========================================
+   ELEVATION
+   ======================================== */
+.elevation-stats-grid {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.elevation-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.elevation-stat-arrow { font-size: 1rem; }
+.elevation-stat-value { font-size: 1.3rem; font-weight: 700; }
+.elevation-stat-label { font-size: 0.6rem; color: #888; text-transform: uppercase; }
+
+.elevation-sparkline {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  font-family: monospace;
+  font-size: 0.9rem;
+  text-align: center;
+  color: #94a3b8;
+}
+
+/* ========================================
+   RUNNING DYNAMICS
+   ======================================== */
+.dynamics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+@media (max-width: 500px) {
+  .dynamics-grid { grid-template-columns: 1fr; }
+}
+
+.dynamics-stat {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  padding: 0.6rem 0.5rem;
+  text-align: center;
+}
+
+.dynamics-icon { font-size: 1.1rem; margin-bottom: 0.2rem; }
+.dynamics-value { font-size: 1.2rem; font-weight: 700; color: #fff; }
+.dynamics-label { font-size: 0.6rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.1rem; }
+
+/* ========================================
+   SPLITS
+   ======================================== */
+.splits-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.split-row {
+  display: grid;
+  grid-template-columns: 52px 1fr 56px;
+  align-items: center;
+  gap: 0.5rem;
+  animation: fadeInUp 0.35s ease-out backwards;
+}
+
+.split-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ccc;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.split-bar-track {
+  height: 22px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.split-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(157, 78, 221, 0.7), rgba(76, 201, 240, 0.7));
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 8px;
+}
+
+.split-bar-fill.fastest { background: linear-gradient(90deg, rgba(74, 222, 128, 0.8), rgba(52, 211, 153, 0.9)); }
+.split-bar-fill.slowest { background: linear-gradient(90deg, rgba(251, 146, 60, 0.7), rgba(239, 68, 68, 0.6)); }
+
+.split-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.split-badge { font-size: 0.7rem; line-height: 1; }
+
+.split-insight {
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  border-left: 3px solid rgba(157, 78, 221, 0.6);
+  font-size: 0.82rem;
+  color: #ccc;
+  animation: fadeInUp 0.4s ease-out backwards;
+}
+
+.split-insight .insight-emoji { margin-right: 0.3rem; }
+.split-insight .highlight {
+  font-weight: 700;
+  background: linear-gradient(135deg, #FF1B8D, #9D4EDD);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ========================================
+   CONDITIONS (Location + Weather)
+   ======================================== */
+.conditions-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.conditions-item {
+  flex: 1;
+  min-width: 120px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.conditions-icon { font-size: 1.2rem; }
+
+.conditions-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+}
+
+.conditions-value { font-size: 0.85rem; font-weight: 600; color: #fff; }
+.conditions-label { font-size: 0.6rem; color: #888; text-transform: uppercase; }
+
+/* ========================================
+   PERSONAL RECORDS
+   ======================================== */
+.pr-distance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.pr-distance-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.6rem 0.4rem;
+  border-radius: 12px;
+  background: rgba(251, 146, 60, 0.1);
+  border: 1px solid rgba(251, 146, 60, 0.18);
+  animation: fadeInUp 0.3s ease-out backwards;
+  transition: all 0.2s ease;
+}
+
+.pr-distance-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(251, 146, 60, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.pr-distance-value {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fb923c, #fbbf24);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pr-distance-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #999;
+}
+
+.pr-distance-improvement {
+  font-size: 0.55rem;
+  font-weight: 600;
+  margin-top: 0.1rem;
+}
+
+.pr-distance-improvement.positive { color: #4ade80; }
+.pr-distance-improvement.negative { color: #ef4444; }
+
+.pr-records-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pr-grouped-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  animation: fadeInUp 0.3s ease-out backwards;
+}
+
+.pr-grouped-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pr-emoji { font-size: 1.1rem; }
+
+.pr-grouped-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.pr-grouped-records {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pr-record-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 10px;
+  flex: 1;
+  min-width: 5rem;
+}
+
+.pr-record-chip.chip-1rm { background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.2); }
+.pr-record-chip.chip-volume { background: rgba(96, 165, 250, 0.12); border: 1px solid rgba(96, 165, 250, 0.2); }
+.pr-record-chip.chip-reps { background: rgba(74, 222, 128, 0.12); border: 1px solid rgba(74, 222, 128, 0.2); }
+.pr-record-chip.chip-time { background: rgba(251, 146, 60, 0.12); border: 1px solid rgba(251, 146, 60, 0.2); }
+.pr-record-chip.chip-distance { background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.2); }
+
+.pr-record-value { font-size: 0.9rem; font-weight: 700; color: #fff; }
+.pr-record-type { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; color: #999; letter-spacing: 0.04em; }
+
+.pr-record-improvement { font-size: 0.65rem; font-weight: 600; }
+.pr-record-improvement.positive { color: #4ade80; }
+.pr-record-improvement.negative { color: #ef4444; }
+
+/* ========================================
+   ENHANCED COMPACT STAT PILLS
+   ======================================== */
+.enhanced-pills-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.enhanced-stat-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+  min-width: 80px;
+}
+
+.enhanced-stat-pill .pill-value { font-size: 1.2rem; font-weight: 700; color: #fff; }
+.enhanced-stat-pill .pill-label { font-size: 0.6rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+
+
+/* ========================================
+   CHART STATS STRIP
+   Stats rendered above graphs inside chart cards
+   ======================================== */
+
+.chart-stats-strip {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.chart-stats-bar {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.chart-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.chart-stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  line-height: 1;
+}
+
+.chart-stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.chart-stat-item.chart-stat-wide { flex: 1; min-width: 160px; }
+.chart-stat-note { font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); font-style: italic; }
+
+/* ========================================
+   DISTANCE MILESTONES SECTION
+   ======================================== */
+
+.milestone-celebration {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.milestone-badge {
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.milestone-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.milestone-stat {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.milestone-sub {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.milestone-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.milestone-total {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.milestone-next {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ========================================
+   SPOTIFY SOUNDTRACK SECTION
+   ======================================== */
+
+.spotify-soundtrack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.spotify-track-count {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.spotify-count-value {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1DB954, #4ade80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.spotify-count-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.spotify-top-track {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(29, 185, 84, 0.08);
+  border: 1px solid rgba(29, 185, 84, 0.2);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+}
+
+.spotify-top-icon { font-size: 1.1rem; }
+
+.spotify-top-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.spotify-top-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #1DB954;
+}
+
+.spotify-top-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.spotify-playlist {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.spotify-playlist-name { font-style: italic; }
+
+/* ========================================
+   HORIZONTAL BAR — shared bar component
+   ======================================== */
+
+.h-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.2rem 0;
+}
+
+.h-bar-label {
+  width: 90px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.75);
+  flex-shrink: 0;
+}
+
+.h-bar-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.h-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.7), rgba(167, 139, 250, 1));
+  transition: width 0.8s ease;
+}
+
+.h-bar-right {
+  flex-shrink: 0;
+  min-width: 50px;
+  text-align: right;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* HR Zone fill colours */
+.h-bar-fill.zone-1 { background: linear-gradient(90deg, #93c5fd, #60a5fa); }
+.h-bar-fill.zone-2 { background: linear-gradient(90deg, #86efac, #4ade80); }
+.h-bar-fill.zone-3 { background: linear-gradient(90deg, #fde68a, #fbbf24); }
+.h-bar-fill.zone-4 { background: linear-gradient(90deg, #fdba74, #fb923c); }
+.h-bar-fill.zone-5 { background: linear-gradient(90deg, #fca5a5, #ef4444); }
+
+/* ========================================
+   INTENSITY BADGE — unified intensity pill
+   ======================================== */
+
+.intensity-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  padding: 0.12rem 0.38rem;
+  border-radius: 5px;
+  margin-left: 0.3rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.intensity-badge.recovery {
+  background: rgba(103, 232, 249, 0.18);
+  color: #67e8f9;
+}
+
+.intensity-badge.easy {
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+}
+
+.intensity-badge.moderate {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+}
+
+.intensity-badge.hard {
+  background: rgba(251, 146, 60, 0.2);
+  color: #fb923c;
+}
+
+.intensity-badge.extreme {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.intensity-badge.large {
+  font-size: 0.85rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  margin-left: 0.5rem;
+}
+
+/* ========================================
+   STAT BLOCK — unified value+label column
+   ======================================== */
+
+.stat-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  gap: 0.1rem;
+}
+
+.stat-block-icon {
+  font-size: 1.1rem;
+  margin-bottom: 0.15rem;
+}
+
+.stat-block-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.stat-block-value.min { color: #60a5fa; }
+.stat-block-value.avg { color: #fff; }
+.stat-block-value.max { color: #f87171; }
+
+.stat-block-sub {
+  font-size: 0.68rem;
+  color: #64748b;
+}
+
+.stat-block-label {
+  font-size: 0.62rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.stat-block-unit {
+  font-size: 0.72rem;
+  color: #666;
+  font-weight: 400;
+}
+
+.stat-block-hint {
+  font-size: 0.6rem;
+  color: #64748b;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+/* HR dashboard overrides for larger bpm values */
+.hr-dashboard .stat-block-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+}

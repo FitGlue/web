@@ -1,12 +1,14 @@
 import React from 'react';
 import type { DescriptionSection } from '../DescriptionSections';
+import { SectionCard } from '../SectionCard';
+import { HorizontalBar } from '../HorizontalBar';
+import { StatPills } from '../StatPills';
+import { splitLines } from '../../utils/section';
 
 interface MuscleBar { name: string; filled: number; total: number }
 
 function parseMuscleBars(content: string): MuscleBar[] {
-  return content
-    .split('\n')
-    .filter((l) => l.trim())
+  return splitLines(content)
     .map((line) => {
       const colonIdx = line.indexOf(':');
       if (colonIdx < 0) return null;
@@ -29,41 +31,30 @@ function parseMuscleBars(content: string): MuscleBar[] {
     .filter((x): x is MuscleBar => x !== null);
 }
 
-export const MuscleHeatmapSection: React.FC<{ section: DescriptionSection; idx: number }> = ({
-  section,
-  idx,
-}) => {
+export const MuscleHeatmapSection: React.FC<{ section: DescriptionSection; idx: number }> = ({ section, idx }) => {
   const muscles = parseMuscleBars(section.content);
 
   if (muscles.length === 0) {
-    const parts = section.content.split(' • ').map((p) => p.trim()).filter(Boolean);
     return (
-      <div className="showcase-section glass-card description-section-card" style={{ animationDelay: `${idx * 0.1}s` }}>
-        <div className="section-header"><h2>{section.emoji} {section.title}</h2></div>
-        <div className="enhanced-pills">
-          {parts.map((p, i) => <span key={i} className="stat-pill"><span className="stat-pill-value">{p}</span></span>)}
-        </div>
-      </div>
+      <SectionCard section={section} idx={idx}>
+        <StatPills items={section.content.split(' • ').map((p) => p.trim()).filter(Boolean)} />
+      </SectionCard>
     );
   }
 
   return (
-    <div className="showcase-section glass-card description-section-card" style={{ animationDelay: `${idx * 0.1}s` }}>
-      <div className="section-header"><h2>{section.emoji} {section.title}</h2></div>
+    <SectionCard section={section} idx={idx}>
       <div className="muscle-heatmap-grid">
-        {muscles.map((m, i) => {
-          const pct = (m.filled / m.total) * 100;
-          return (
-            <div key={i} className="muscle-bar-row" style={{ animationDelay: `${idx * 0.1 + i * 0.04}s` }}>
-              <span className="muscle-bar-label">{m.name}</span>
-              <div className="muscle-bar-track">
-                <div className="muscle-bar-fill" style={{ width: `${pct}%` }} />
-              </div>
-              <span className="muscle-bar-level">{m.filled}/{m.total}</span>
-            </div>
-          );
-        })}
+        {muscles.map((m, i) => (
+          <HorizontalBar
+            key={i}
+            label={m.name}
+            percentage={(m.filled / m.total) * 100}
+            rightContent={<span>{m.filled}/{m.total}</span>}
+            animationDelay={`${idx * 0.1 + i * 0.04}s`}
+          />
+        ))}
       </div>
-    </div>
+    </SectionCard>
   );
 };

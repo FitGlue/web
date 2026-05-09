@@ -1,6 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import type { ChartConfiguration } from 'chart.js';
 import type { components } from '../../shared/api/schema-public';
+import type { DescriptionSection } from './DescriptionSections';
+import { HeartRateStats } from './sections/HeartRateSection';
+import { ElevationStats } from './sections/ElevationSection';
+import { PaceStats } from './sections/PaceSection';
+import { PowerStats } from './sections/PowerSection';
+import { CadenceStats } from './sections/CadenceSection';
+import { SpeedStats } from './sections/SpeedSection';
 
 type Record = components['schemas']['Record'];
 
@@ -62,8 +69,8 @@ const SingleChart: React.FC<{
   title: string;
   data: ChartData;
   color: string;
-  summary?: string;
-}> = ({ title, data, color, summary }) => {
+  statsContent?: React.ReactNode;
+}> = ({ title, data, color, statsContent }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<{ destroy: () => void } | null>(null);
 
@@ -88,7 +95,7 @@ const SingleChart: React.FC<{
   return (
     <div className="showcase-section glass-card">
       <div className="section-header"><h2>{title}</h2></div>
-      {summary && <div className="graph-summary">{summary}</div>}
+      {statsContent && <div className="chart-stats-strip">{statsContent}</div>}
       <div className="chart-container" style={{ height: '200px', position: 'relative' }}>
         <canvas ref={canvasRef} />
       </div>
@@ -99,10 +106,13 @@ const SingleChart: React.FC<{
 interface Props {
   records: Record[];
   timeMarkers?: components['schemas']['TimeMarker'][];
+  descriptionSections?: DescriptionSection[];
 }
 
-export const ActivityCharts: React.FC<Props> = ({ records }) => {
+export const ActivityCharts: React.FC<Props> = ({ records, descriptionSections = [] }) => {
   if (records.length === 0) return null;
+
+  const findSection = (title: string) => descriptionSections.find((s) => s.title === title);
 
   const hrRecords = records.filter((r) => r.heartRate !== undefined && r.heartRate > 0);
   const hrLabels = buildTimeLabels(hrRecords);
@@ -138,18 +148,51 @@ export const ActivityCharts: React.FC<Props> = ({ records }) => {
     values: speedRecords.map((r) => parseFloat((r.speed! * 3.6).toFixed(2))),
   };
 
+  const hrSection = findSection('Heart Rate');
+  const elevSection = findSection('Elevation');
+  const paceSection = findSection('Pace');
+  const powerSection = findSection('Power');
+  const cadenceSection = findSection('Cadence');
+  const speedSection = findSection('Speed');
+
   return (
     <>
       <SingleChart
         title="❤️ Heart Rate"
         data={{ labels: hrLabels, values: hrRecords.map((r) => r.heartRate!) }}
         color="#EF4444"
+        statsContent={hrSection ? <HeartRateStats section={hrSection} /> : undefined}
       />
-      <SingleChart title="⛰️ Elevation" data={elevData} color="#10B981" />
-      <SingleChart title="⚡ Pace" data={paceData} color="#6366F1" />
-      <SingleChart title="⚡ Power" data={powerData} color="#F59E0B" />
-      <SingleChart title="🦶 Cadence" data={cadenceData} color="#8B5CF6" />
-      <SingleChart title="🚀 Speed" data={speedData} color="#06B6D4" />
+      <SingleChart
+        title="⛰️ Elevation"
+        data={elevData}
+        color="#10B981"
+        statsContent={elevSection ? <ElevationStats section={elevSection} /> : undefined}
+      />
+      <SingleChart
+        title="⚡ Pace"
+        data={paceData}
+        color="#6366F1"
+        statsContent={paceSection ? <PaceStats section={paceSection} /> : undefined}
+      />
+      <SingleChart
+        title="⚡ Power"
+        data={powerData}
+        color="#F59E0B"
+        statsContent={powerSection ? <PowerStats section={powerSection} /> : undefined}
+      />
+      <SingleChart
+        title="🦶 Cadence"
+        data={cadenceData}
+        color="#8B5CF6"
+        statsContent={cadenceSection ? <CadenceStats section={cadenceSection} /> : undefined}
+      />
+      <SingleChart
+        title="🚀 Speed"
+        data={speedData}
+        color="#06B6D4"
+        statsContent={speedSection ? <SpeedStats section={speedSection} /> : undefined}
+      />
     </>
   );
 };

@@ -1,5 +1,7 @@
 import React from 'react';
 import type { DescriptionSection } from '../DescriptionSections';
+import { SectionCard } from '../SectionCard';
+import { splitLines, stripBullet } from '../../utils/section';
 
 interface Exercise { superset: string; name: string; sets: string }
 
@@ -24,11 +26,8 @@ const CAT_ICONS: Record<string, string> = {
   stretch: '🧘',
 };
 
-export const WorkoutSummarySection: React.FC<{ section: DescriptionSection; idx: number }> = ({
-  section,
-  idx,
-}) => {
-  const lines = section.content.split('\n').filter((l) => l.trim());
+export const WorkoutSummarySection: React.FC<{ section: DescriptionSection; idx: number }> = ({ section, idx }) => {
+  const lines = splitLines(section.content);
   const headlineStats: string[] = [];
   let heaviestLine = '';
   const exercises: Exercise[] = [];
@@ -40,7 +39,7 @@ export const WorkoutSummarySection: React.FC<{ section: DescriptionSection; idx:
       continue;
     }
     if (trimmed.startsWith('Heaviest:') || trimmed.startsWith('• Heaviest:')) {
-      heaviestLine = trimmed.replace(/^•\s*/, '');
+      heaviestLine = stripBullet(trimmed);
       continue;
     }
     if (trimmed.startsWith('•')) {
@@ -48,10 +47,7 @@ export const WorkoutSummarySection: React.FC<{ section: DescriptionSection; idx:
       let superset = '';
       let exerciseContent = content;
       const supersetMatch = content.match(/^([1-9]️⃣|🔟|⬜)\s*(.+)$/);
-      if (supersetMatch) {
-        superset = supersetMatch[1];
-        exerciseContent = supersetMatch[2];
-      }
+      if (supersetMatch) { superset = supersetMatch[1]; exerciseContent = supersetMatch[2]; }
       const colonIdx = exerciseContent.indexOf(':');
       if (colonIdx > 0) {
         exercises.push({ superset, name: exerciseContent.substring(0, colonIdx).trim(), sets: exerciseContent.substring(colonIdx + 1).trim() });
@@ -62,8 +58,7 @@ export const WorkoutSummarySection: React.FC<{ section: DescriptionSection; idx:
   }
 
   return (
-    <div className="showcase-section glass-card description-section-card" style={{ animationDelay: `${idx * 0.1}s` }}>
-      <div className="section-header"><h2>{section.emoji} {section.title}</h2></div>
+    <SectionCard section={section} idx={idx}>
       <div className="workout-summary-body">
         {headlineStats.length > 0 && (
           <div className="workout-headline-stats">
@@ -72,14 +67,11 @@ export const WorkoutSummarySection: React.FC<{ section: DescriptionSection; idx:
             ))}
           </div>
         )}
-        {heaviestLine && (
-          <div className="workout-headline-callout">🏅 {heaviestLine}</div>
-        )}
+        {heaviestLine && <div className="workout-headline-callout">🏅 {heaviestLine}</div>}
         {exercises.length > 0 && (
           <div className="workout-exercises">
             {exercises.map((ex, i) => {
               const cat = categorise(ex);
-              const icon = CAT_ICONS[cat];
               const delay = idx * 0.1 + i * 0.04;
               const setItems = ex.sets ? ex.sets.split(',').map((s) => s.trim()).filter(Boolean) : [];
               const hasSupersetBadge = ex.superset && ex.superset !== '⬜';
@@ -90,20 +82,14 @@ export const WorkoutSummarySection: React.FC<{ section: DescriptionSection; idx:
                   style={{ animationDelay: `${delay}s` }}
                 >
                   <div className="workout-ex-header">
-                    <span className="workout-ex-icon">{icon}</span>
-                    {hasSupersetBadge && (
-                      <span className="workout-ex-superset-badge">{ex.superset}</span>
-                    )}
+                    <span className="workout-ex-icon">{CAT_ICONS[cat]}</span>
+                    {hasSupersetBadge && <span className="workout-ex-superset-badge">{ex.superset}</span>}
                     <span className="workout-ex-name">{ex.name}</span>
                   </div>
                   {setItems.length > 0 && (
                     <div className="workout-ex-set-rows">
                       {setItems.map((s, si) => (
-                        <div
-                          key={si}
-                          className="workout-ex-set-row"
-                          style={{ animationDelay: `${delay + (si + 1) * 0.03}s` }}
-                        >
+                        <div key={si} className="workout-ex-set-row" style={{ animationDelay: `${delay + (si + 1) * 0.03}s` }}>
                           {s}
                         </div>
                       ))}
@@ -115,6 +101,6 @@ export const WorkoutSummarySection: React.FC<{ section: DescriptionSection; idx:
           </div>
         )}
       </div>
-    </div>
+    </SectionCard>
   );
 };
