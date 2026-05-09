@@ -124,6 +124,11 @@ const extractGeneratedAssets = (providerExecutions: ProviderExecution[]): Genera
                     url: value,
                     providerName: execution.ProviderName || 'Unknown',
                 });
+            } else if (key === 'photo_urls' && typeof value === 'string' && value) {
+                const urls = value.split(',').filter((u) => u.startsWith('http'));
+                for (const url of urls) {
+                    assets.push({ type: 'photo', url, providerName: execution.ProviderName || 'Unknown' });
+                }
             }
         }
     }
@@ -136,6 +141,7 @@ const formatAssetType = (type: string): string => {
         'ai_banner': 'AI Banner',
         'muscle_heatmap': 'Muscle Heatmap',
         'route_thumbnail': 'Route Map',
+        'photo': 'Activity Photo',
     };
     return typeMap[type] || type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 };
@@ -698,7 +704,7 @@ const ActivityDetailPage: React.FC = () => {
                                         {enricher.Metadata && Object.keys(enricher.Metadata).length > 0 ? (
                                             <Stack gap="xs">
                                                 {Object.entries(enricher.Metadata)
-                                                    .filter(([key]) => !key.startsWith('asset_'))
+                                                    .filter(([key]) => !key.startsWith('asset_') && key !== 'photo_urls')
                                                     .slice(0, isNerdMode ? undefined : 6)
                                                     .map(([key, value]) => (
                                                         <Stack key={key} direction="horizontal" justify="between">
