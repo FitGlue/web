@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout/PageLayout';
 import { Stack } from '../components/library/layout/Stack';
@@ -83,6 +83,7 @@ const PipelineEditPage: React.FC = () => {
         return `Connect ${getMissingIntegrations(plugin).join(', ')} to enable`;
     };
 
+    const hasFetchedRef = useRef(false);
     const [pipeline, setPipeline] = useState<PipelineConfig | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -124,7 +125,7 @@ const PipelineEditPage: React.FC = () => {
             const enricherConfigs: SelectedEnricher[] = pipelineData.enrichers.map(e => {
                 const manifest = enrichers.find(m => resolveEnum(m.enricherProviderType, EnricherProviderType) === resolveEnum(e.providerType, EnricherProviderType));
                 return {
-                    manifest: manifest || { id: `unknown-${e.providerType}`, name: `Enricher ${e.providerType}` } as PluginManifest,
+                    manifest: manifest || { id: `unknown-${e.providerType}`, name: `Enricher ${e.providerType}`, enricherProviderType: resolveEnum(e.providerType, EnricherProviderType) } as unknown as PluginManifest,
                     config: e.typedConfig || {}
                 };
             }).filter(e => e.manifest);
@@ -153,7 +154,10 @@ const PipelineEditPage: React.FC = () => {
     const toast = useToast();
 
     useEffect(() => {
-        if (!registryLoading && enrichers.length > 0) fetchPipeline();
+        if (!registryLoading && enrichers.length > 0 && !hasFetchedRef.current) {
+            hasFetchedRef.current = true;
+            fetchPipeline();
+        }
     }, [fetchPipeline, registryLoading, enrichers]);
 
     const handleSave = async () => {
