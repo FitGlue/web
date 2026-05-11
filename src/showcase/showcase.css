@@ -5478,11 +5478,12 @@ body:has(.showcase-page)>footer.footer {
 }
 
 .export-preview-wrapper {
-  width: 100%;
   background: #000;
   border-radius: 8px;
   overflow: hidden;
   position: relative;
+  align-self: center;
+  flex-shrink: 0;
 }
 
 .export-options {
