@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.3.0](https://github.com/fitglue/web/compare/v11.2.0...v11.3.0) (2026-05-11)
+
+
+### Features
+
+* **theme:** add global styles and reset for showcase pages ([3693d44](https://github.com/fitglue/web/commit/3693d4407a4176d2357221dbd0c93f6b341cb3e1))
+
 ## [11.2.0](https://github.com/fitglue/web/compare/v11.1.0...v11.2.0) (2026-05-11)
 
 
