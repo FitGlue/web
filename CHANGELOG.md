@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.2.0](https://github.com/fitglue/web/compare/v11.1.0...v11.2.0) (2026-05-11)
+
+
+### Features
+
+* **showcase,workout:** bio callouts, workout input rewrite, and photo export ([ed4fd1f](https://github.com/fitglue/web/commit/ed4fd1ffbec8b5c299ccde52f0a84117250959a9))
+
 ## [11.1.0](https://github.com/fitglue/web/compare/v11.0.2...v11.1.0) (2026-05-11)
 
 
