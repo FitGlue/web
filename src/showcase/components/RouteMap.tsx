@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import 'leaflet/dist/leaflet.css';
 import type { Map as LeafletMap } from 'leaflet';
 
 interface LatLng { lat: number; lng: number }

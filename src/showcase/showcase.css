@@ -8,6 +8,18 @@
    Common styles for all public showcase pages.
    ======================================== */
 
+/* ---- Global reset for showcase pages ---- */
+html:has(#showcase-root),
+body:has(#showcase-root) {
+    margin: 0;
+    padding: 0;
+    background: #0a0a0a;
+}
+
+#showcase-root {
+    min-height: 100vh;
+}
+
 /* ---- Theme Custom Properties ---- */
 .showcase-page {
     /* Default theme (FitGlue Classic) */

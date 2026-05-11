@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface PhotoGalleryProps {
   photos: string[];
@@ -59,7 +60,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ photos, title = 'ðŸ“
         )}
       </div>
 
-      {lightboxIdx !== null && (
+      {lightboxIdx !== null && createPortal(
         <div className="photo-lightbox" onClick={closeLightbox}>
           <button className="photo-lightbox-close" onClick={closeLightbox} aria-label="Close">âœ•</button>
           {photos.length > 1 && (
@@ -75,7 +76,8 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ photos, title = 'ðŸ“
             <button className="photo-lightbox-nav photo-lightbox-nav--next" onClick={(e) => { e.stopPropagation(); next(); }} aria-label="Next">â€º</button>
           )}
           <div className="photo-lightbox-counter">{lightboxIdx + 1} / {photos.length}</div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
