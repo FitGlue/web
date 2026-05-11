@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.1.0](https://github.com/fitglue/web/compare/v11.0.2...v11.1.0) (2026-05-11)
+
+
+### Features
+
+* **activity-detail:** display uploaded photos in Generated Assets section ([5ee5e6d](https://github.com/fitglue/web/commit/5ee5e6d1d3b95e6d8534e31ff767e2c50cacbdad))
+* **pending-inputs:** add WorkoutEntryInput component for manual workout entry ([6f83568](https://github.com/fitglue/web/commit/6f835688174c2589fe39f96e987d8c4e2c4702bd))
+* **photo-editor:** add canvas-based photo overlay generator ([31ef964](https://github.com/fitglue/web/commit/31ef964aeeef44395248104caa44fa2ccaa2682f))
+* **photo-upload:** add photo upload input renderer to pending inputs page ([2c4d3f2](https://github.com/fitglue/web/commit/2c4d3f23b6ca91dca55eef389e0eccd8cc3152c2))
+* **showcase:** add photo gallery, profile links, bio pull-quotes, and photo gallery toggle ([d938ac4](https://github.com/fitglue/web/commit/d938ac467c1fa32b6ab3d8ab8b238ba15619d024))
+* **showcase:** convert activity and profile pages to React ([b620bec](https://github.com/fitglue/web/commit/b620bec9a833900dc5179691f433147765a0aae8))
+
+
+### Bug Fixes
+
+* **pipeline-edit:** preserve enricher type on lookup failure and prevent mid-edit refetch ([d874c2c](https://github.com/fitglue/web/commit/d874c2c2eae543b04e9b521a5458f65fdb373d03))
+* **showcase:** fix four rendering bugs in showcase activity page ([4f9a8fb](https://github.com/fitglue/web/commit/4f9a8fbc957f2d4c56faf8bcbf7bf174514dad85))
+
 ### [11.0.2](https://github.com/fitglue/web/compare/v11.0.1...v11.0.2) (2026-04-13)
 
 
