@@ -14,6 +14,7 @@ import {
 type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
 type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
 type ShowcaseLink = components['schemas']['ShowcaseLink'];
+type ShowcaseBioCallout = components['schemas']['ShowcaseBioCallout'];
 
 function getLinkEmoji(url: string | undefined): string {
   if (!url) return '🔗';
@@ -25,6 +26,17 @@ function getLinkEmoji(url: string | undefined): string {
   if (url.includes('tiktok.com')) return '🎵';
   if (url.includes('facebook.com')) return '👥';
   return '🔗';
+}
+
+function ProfileCallouts({ callouts }: { callouts: ShowcaseBioCallout[] }) {
+  if (!callouts || callouts.length === 0) return null;
+  return (
+    <div className="profile-callouts">
+      {callouts.filter(c => c.text).map((c, i) => (
+        <span key={i} className="profile-callout-chip">{c.text}</span>
+      ))}
+    </div>
+  );
 }
 
 function ProfileLinks({ links }: { links: ShowcaseLink[] }) {
@@ -195,6 +207,9 @@ export default function ShowcaseProfilePage() {
             <p className="profile-subtitle">{profile.subtitle ?? 'FitGlue Athlete'}</p>
             {profile.bio && (
               <div className="profile-bio">{renderBio(profile.bio)}</div>
+            )}
+            {profile.callouts && profile.callouts.length > 0 && (
+              <ProfileCallouts callouts={profile.callouts} />
             )}
             {profile.links && profile.links.length > 0 && (
               <ProfileLinks links={profile.links} />

@@ -30,6 +30,10 @@ interface ShowcaseLink {
     url: string;
 }
 
+interface ShowcaseBioCallout {
+    text: string;
+}
+
 interface ShowcaseProfile {
     slug: string;
     displayName: string;
@@ -41,6 +45,7 @@ interface ShowcaseProfile {
     entries: Array<{ showcaseId: string }>;
     theme?: ShowcaseTheme;
     links?: ShowcaseLink[];
+    callouts?: ShowcaseBioCallout[];
 }
 
 const THEME_PRESETS = [
@@ -115,6 +120,12 @@ const ShowcaseManagementPage: React.FC = () => {
     const [linkError, setLinkError] = useState('');
     const [savingLinks, setSavingLinks] = useState(false);
 
+    // Callouts state
+    const [callouts, setCallouts] = useState<ShowcaseBioCallout[]>([]);
+    const [newCalloutText, setNewCalloutText] = useState('');
+    const [calloutError, setCalloutError] = useState('');
+    const [savingCallouts, setSavingCallouts] = useState(false);
+
 
     // Fetch profile data
     const fetchProfile = useCallback(async () => {
@@ -136,6 +147,7 @@ const ShowcaseManagementPage: React.FC = () => {
                     setCardStyle(typedData.profile.theme.cardStyle || 'glass');
                 }
                 setLinks(typedData.profile.links || []);
+                setCallouts(typedData.profile.callouts || []);
                 setShowPhotoGallery(typedData.profile.showPhotoGallery ?? false);
             }
         } catch (err) {
@@ -258,6 +270,44 @@ const ShowcaseManagementPage: React.FC = () => {
             showError('Failed to remove link');
         } finally {
             setSavingLinks(false);
+        }
+    };
+
+    // Callout handlers
+    const handleAddCallout = async () => {
+        setCalloutError('');
+        const text = newCalloutText.trim();
+        if (!text) { setCalloutError('Callout text is required'); return; }
+        if (text.length > 150) { setCalloutError('Callout must be 150 characters or fewer'); return; }
+        if (callouts.length >= 10) { setCalloutError('Maximum 10 callouts allowed'); return; }
+
+        const updated = [...callouts, { text }];
+        setSavingCallouts(true);
+        try {
+            await client.PUT('/users/me/showcase-management/profile', { body: { callouts: updated } as never });
+            setCallouts(updated);
+            setNewCalloutText('');
+            showSuccess('Callout added');
+        } catch (err) {
+            console.error('Failed to save callout:', err);
+            showError('Failed to save callout');
+        } finally {
+            setSavingCallouts(false);
+        }
+    };
+
+    const handleRemoveCallout = async (index: number) => {
+        const updated = callouts.filter((_, i) => i !== index);
+        setSavingCallouts(true);
+        try {
+            await client.PUT('/users/me/showcase-management/profile', { body: { callouts: updated } as never });
+            setCallouts(updated);
+            showSuccess('Callout removed');
+        } catch (err) {
+            console.error('Failed to remove callout:', err);
+            showError('Failed to remove callout');
+        } finally {
+            setSavingCallouts(false);
         }
     };
 
@@ -583,6 +633,63 @@ const ShowcaseManagementPage: React.FC = () => {
                                         disabled={savingLinks || !newLinkLabel.trim() || !newLinkUrl.trim()}
                                     >
                                         {savingLinks ? 'Saving…' : 'Add Link'}
+                                    </Button>
+                                </Stack>
+                            </Stack>
+                        )}
+                    </Stack>
+                </Card>
+
+                {/* Bio Callouts */}
+                <Card className="showcase-mgmt__section">
+                    <Stack gap="md">
+                        <Heading level={3} className="showcase-mgmt__section-title">
+                            💬 Bio Callouts ({callouts.length}/10)
+                        </Heading>
+                        <Paragraph size="sm" muted>
+                            Short stat-chip lines shown under your bio. Great for quick facts like your location, height, or personal bests.
+                        </Paragraph>
+
+                        {callouts.length > 0 && (
+                            <Stack gap="xs" className="showcase-mgmt__links-list">
+                                {callouts.map((callout, i) => (
+                                    <Stack key={i} direction="horizontal" align="center" justify="between" className="showcase-mgmt__link-item">
+                                        <Paragraph className="showcase-mgmt__link-label">{callout.text}</Paragraph>
+                                        <Button
+                                            variant="danger"
+                                            size="small"
+                                            onClick={() => handleRemoveCallout(i)}
+                                            disabled={savingCallouts}
+                                        >
+                                            ×
+                                        </Button>
+                                    </Stack>
+                                ))}
+                            </Stack>
+                        )}
+
+                        {callouts.length < 10 && (
+                            <Stack gap="sm" className="showcase-mgmt__add-link">
+                                <FormField label="Callout text">
+                                    <Input
+                                        value={newCalloutText}
+                                        onChange={(e) => { setNewCalloutText(e.target.value.slice(0, 150)); setCalloutError(''); }}
+                                        placeholder="e.g. 🇬🇧 Nottinghamshire, UK"
+                                        maxLength={150}
+                                    />
+                                    <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{newCalloutText.length}/150</Paragraph>
+                                </FormField>
+                                {calloutError && (
+                                    <Paragraph className="showcase-mgmt__slug-error">{calloutError}</Paragraph>
+                                )}
+                                <Stack className="showcase-mgmt__actions">
+                                    <Button
+                                        variant="primary"
+                                        size="small"
+                                        onClick={handleAddCallout}
+                                        disabled={savingCallouts || !newCalloutText.trim()}
+                                    >
+                                        {savingCallouts ? 'Saving…' : 'Add Callout'}
                                     </Button>
                                 </Stack>
                             </Stack>

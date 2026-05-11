@@ -78,6 +78,10 @@ export interface ShowcaseLink {
   url: string;
 }
 
+export interface ShowcaseBioCallout {
+  text: string;
+}
+
 export interface ShowcaseProfile {
   slug: string;
   userId: string;
@@ -103,4 +107,5 @@ export interface ShowcaseProfile {
   defaultDestination: boolean;
   showPhotoGallery: boolean;
   links: ShowcaseLink[];
+  callouts: ShowcaseBioCallout[];
 }

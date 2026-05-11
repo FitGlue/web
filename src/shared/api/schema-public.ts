@@ -321,6 +321,9 @@ export interface components {
             /** Format: int32 */
             maxHeartRate?: number;
         };
+        ShowcaseBioCallout: {
+            text?: string;
+        };
         ShowcaseLink: {
             label?: string;
             url?: string;
@@ -356,6 +359,7 @@ export interface components {
             defaultDestination?: boolean;
             showPhotoGallery?: boolean;
             links?: components["schemas"]["ShowcaseLink"][];
+            callouts?: components["schemas"]["ShowcaseBioCallout"][];
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;

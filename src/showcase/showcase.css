@@ -4409,6 +4409,27 @@ body:has(.showcase-page)>footer.footer {
   background: rgba(255,255,255,0.15);
 }
 
+.profile-callouts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.profile-callout-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(var(--accent-rgb, 255,27,141), 0.12);
+  border: 1px solid rgba(var(--accent-rgb, 255,27,141), 0.3);
+  color: var(--accent-color, #FF1B8D);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
 /* ========================================
    ENRICHMENT LIST (Boosters Applied)
    ======================================== */
@@ -5369,4 +5390,159 @@ body:has(.showcase-page)>footer.footer {
 .hr-dashboard .stat-block-value {
   font-size: 1.8rem;
   font-weight: 800;
+}
+
+/* ========================================
+   SHARE BUTTON
+   ======================================== */
+.showcase-share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: rgba(255,27,141,0.15);
+  border: 1px solid rgba(255,27,141,0.5);
+  color: #FF1B8D;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.75rem;
+}
+
+.showcase-share-btn:hover {
+  background: rgba(255,27,141,0.25);
+}
+
+/* ========================================
+   EXPORT MODAL
+   ======================================== */
+.export-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.export-modal {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.export-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.export-modal-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.export-modal-close {
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.export-preview-wrapper {
+  width: 100%;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.export-option-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.export-option-label {
+  font-size: 0.75rem;
+  color: #888;
+  min-width: 72px;
+}
+
+.export-option-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.export-pill {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid #444;
+  background: transparent;
+  color: #aaa;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.export-pill--active {
+  border-color: #FF1B8D;
+  color: #FF1B8D;
+  background: rgba(255,27,141,0.12);
+}
+
+.export-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.export-swatch--active {
+  border-color: #fff;
+  outline: 2px solid rgba(255,255,255,0.4);
+  outline-offset: 1px;
+}
+
+.export-download-btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  background: #FF1B8D;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.export-download-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

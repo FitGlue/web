@@ -300,6 +300,26 @@ export interface ParseFitFileGatewayRequest {
   pipelineId: string;
 }
 
+/** Exercise Library */
+export interface GetExerciseLibraryGatewayRequest {
+  /** optional search query */
+  q: string;
+}
+
+export interface ExerciseLibraryEntry {
+  name: string;
+  /** e.g. "Chest", "Back", "Legs" */
+  category: string;
+  /** e.g. "Pectoralis Major" */
+  primaryMuscle: string;
+  /** "hevy" or "builtin" */
+  source: string;
+}
+
+export interface GetExerciseLibraryGatewayResponse {
+  exercises: ExerciseLibraryEntry[];
+}
+
 /** Repost Variants */
 export interface RepostVariantGatewayRequest {
   activityId: string;
@@ -436,6 +456,8 @@ export interface ClientGatewayService {
   ExportData(request: EmptyRequest): Promise<ExportDataGatewayResponse>;
   /** ===================== FIT File Parse ===================== */
   ParseFitFile(request: ParseFitFileGatewayRequest): Promise<StandardizedActivity>;
+  /** ===================== Exercise Library ===================== */
+  GetExerciseLibrary(request: GetExerciseLibraryGatewayRequest): Promise<GetExerciseLibraryGatewayResponse>;
   /** ===================== Repost Variants ===================== */
   RepostMissedDestination(request: RepostVariantGatewayRequest): Promise<RepostGatewayResponse>;
   RepostRetryDestination(request: RepostVariantGatewayRequest): Promise<RepostGatewayResponse>;

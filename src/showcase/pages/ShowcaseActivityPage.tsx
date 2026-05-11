@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
 import publicClient from '../../shared/api/public-client';
 import type { components } from '../../shared/api/schema-public';
 import { ThemeProvider } from '../components/ThemeProvider';
@@ -13,6 +14,8 @@ import {
 } from '../components/DescriptionSections';
 import { formatActivityType, formatSource, formatDateFull, getEnricherInfo } from '../utils/format';
 import { PhotoGallery } from '../components/PhotoGallery';
+import { ShowcaseExportModal } from '../components/ShowcaseExportModal';
+import { initFirebase } from '../../shared/firebase';
 
 type ShowcasedActivity = components['schemas']['ShowcasedActivity'];
 type Record = components['schemas']['Record'];
@@ -96,6 +99,19 @@ export default function ShowcaseActivityPage() {
 }
 
 const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
+  const [isOwner, setIsOwner] = useState(false);
+  const [showExport, setShowExport] = useState(false);
+
+  useEffect(() => {
+    initFirebase().then((fb) => {
+      if (!fb) return;
+      const unsub = onAuthStateChanged(fb.auth, (user) => {
+        setIsOwner(Boolean(user && data.userId && user.uid === data.userId));
+      });
+      return unsub;
+    }).catch(() => { /* Firebase unavailable */ });
+  }, [data.userId]);
+
   const activity = data.activityData;
   const session = activity?.sessions?.[0];
   const allRecords: Record[] = useMemo(
@@ -174,6 +190,11 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
           </div>
           {userDescSection?.content && (
             <div className="user-description">{userDescSection.content}</div>
+          )}
+          {isOwner && (
+            <button className="showcase-share-btn" onClick={() => setShowExport(true)}>
+              ✦ Share
+            </button>
           )}
         </div>
 
@@ -312,6 +333,10 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
           </a>
         </div>
       </div>
+
+      {showExport && (
+        <ShowcaseExportModal data={data} onClose={() => setShowExport(false)} />
+      )}
     </div>
   );
 };

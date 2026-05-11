@@ -477,6 +477,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/me/exercise-library": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Exercise Library ===================== */
+        get: operations["ClientGatewayService_GetExerciseLibrary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/me/export": {
         parameters: {
             query?: never;
@@ -1008,6 +1025,12 @@ export interface components {
                 [key: string]: string;
             };
         };
+        ExerciseLibraryEntry: {
+            name?: string;
+            category?: string;
+            primaryMuscle?: string;
+            source?: string;
+        };
         /** @description Data Export */
         ExportDataGatewayResponse: {
             downloadUrl?: string;
@@ -1047,6 +1070,9 @@ export interface components {
             data?: {
                 [key: string]: Record<string, never>;
             };
+        };
+        GetExerciseLibraryGatewayResponse: {
+            exercises?: components["schemas"]["ExerciseLibraryEntry"][];
         };
         /** @description Integrations */
         GetIntegrationGatewayResponse: {
@@ -1468,6 +1494,9 @@ export interface components {
             createdAt?: string;
             inProfile?: boolean;
         };
+        ShowcaseBioCallout: {
+            text?: string;
+        };
         ShowcaseLink: {
             label?: string;
             url?: string;
@@ -1503,6 +1532,7 @@ export interface components {
             defaultDestination?: boolean;
             showPhotoGallery?: boolean;
             links?: components["schemas"]["ShowcaseLink"][];
+            callouts?: components["schemas"]["ShowcaseBioCallout"][];
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;
@@ -2855,6 +2885,37 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetExerciseLibrary: {
+        parameters: {
+            query?: {
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetExerciseLibraryGatewayResponse"];
+                };
             };
             /** @description Default error response */
             default: {
