@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.6.0](https://github.com/fitglue/web/compare/v11.5.0...v11.6.0) (2026-05-12)
+
+
+### Features
+
+* **showcase:** enhance chart export options with background selection and watermark toggle ([284d2d7](https://github.com/fitglue/web/commit/284d2d7921438fbc782cfe631a03269592f6ed5e))
+
 ## [11.5.0](https://github.com/fitglue/web/compare/v11.4.0...v11.5.0) (2026-05-12)
 
 
