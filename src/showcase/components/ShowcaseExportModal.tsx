@@ -29,21 +29,15 @@ const CARD_BACKGROUNDS = [
   { id: 'clear',    label: 'Clear',    style: 'transparent' },
 ];
 
-const IMAGE_BACKGROUNDS = [
-  { id: 'dark',        label: 'Dark',        color: '#0a0a0a' as string | null },
-  { id: 'transparent', label: 'Transparent', color: null },
-];
-
-const CARD_SHAPES = [
-  { id: 'landscape', label: 'Landscape', borderRadius: '24px',  widthPct: 88, ratio: '16/7'  },
-  { id: 'square',    label: 'Square',    borderRadius: '32px',  widthPct: 78, ratio: '1'     },
-  { id: 'portrait',  label: 'Portrait',  borderRadius: '32px',  widthPct: 54, ratio: '2/3'   },
-  { id: 'circle',    label: 'Circle',    borderRadius: '50%',   widthPct: 72, ratio: '1'     },
-  { id: 'pill',      label: 'Pill',      borderRadius: '999px', widthPct: 90, ratio: '14/5'  },
+const CARD_SHAPES: Array<{ id: string; label: string; borderRadius: string; widthPct: number; ratio: string | null }> = [
+  { id: 'landscape', label: 'Landscape', borderRadius: '24px',  widthPct: 88, ratio: '16/7' },
+  { id: 'square',    label: 'Square',    borderRadius: '32px',  widthPct: 78, ratio: '1'    },
+  { id: 'portrait',  label: 'Portrait',  borderRadius: '32px',  widthPct: 54, ratio: '2/3'  },
+  { id: 'circle',    label: 'Circle',    borderRadius: '50%',   widthPct: 72, ratio: '1'    },
+  { id: 'pill',      label: 'Pill',      borderRadius: '999px', widthPct: 90, ratio: null   },
 ];
 
 const EXPORT_W = 1080;
-const EXPORT_H = 1080;
 const PREVIEW_SIZE = 280;
 
 // ─── Stats helpers ────────────────────────────────────────────────────────────
@@ -208,14 +202,14 @@ function buildAllStats(data: ShowcasedActivity): StatOption[] {
 interface ExportFrameProps {
   data: ShowcasedActivity;
   cardBg: typeof CARD_BACKGROUNDS[number];
-  imageBgColor: string | null;
   accent: string;
   cardShape: typeof CARD_SHAPES[number];
   stats: StatOption[];
+  showWatermark: boolean;
 }
 
 const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
-  ({ data, cardBg, imageBgColor, accent, cardShape, stats }, ref) => {
+  ({ data, cardBg, accent, cardShape, stats, showWatermark }, ref) => {
     const bannerUrl = data.enrichmentMetadata?.['asset_route_thumbnail'] ?? data.enrichmentMetadata?.['asset_ai_banner'];
     const isClear = cardBg.id === 'clear';
 
@@ -231,7 +225,7 @@ const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
       boxSizing: 'border-box',
       padding: '60px 80px',
       width: `${cardShape.widthPct}%`,
-      aspectRatio: cardShape.ratio,
+      ...(cardShape.ratio ? { aspectRatio: cardShape.ratio } : {}),
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
@@ -241,11 +235,12 @@ const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
 
     return (
       <div ref={ref} style={{
-        width: `${EXPORT_W}px`, height: `${EXPORT_H}px`,
-        background: imageBgColor ?? 'transparent',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        position: 'relative', overflow: 'hidden',
+        width: `${EXPORT_W}px`,
+        background: 'transparent',
+        display: 'flex', justifyContent: 'center',
+        position: 'relative',
         fontFamily: "'Inter','Helvetica Neue',sans-serif",
+        padding: '80px 0',
       }}>
         <div style={cardStyle}>
           {/* Banner image clipped to card shape via overflow:hidden on parent */}
@@ -279,13 +274,14 @@ const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
               {data.ownerDisplayName}
             </div>
           )}
-        </div>
 
-        {!isClear && (
-          <div style={{ position: 'absolute', bottom: '32px', right: '48px', fontSize: '22px', color: 'rgba(255,255,255,0.3)', fontWeight: 700, letterSpacing: '0.05em' }}>
-            Fit<span style={{ color: accent }}>Glue</span>
-          </div>
-        )}
+          {/* Watermark lives inside the card (bottom-right), clipped with the card shape */}
+          {showWatermark && (
+            <div style={{ position: 'absolute', bottom: '20px', right: '28px', fontSize: '18px', color: 'rgba(255,255,255,0.28)', fontWeight: 700, letterSpacing: '0.05em', zIndex: 2 }}>
+              Fit<span style={{ color: accent }}>Glue</span>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
@@ -306,9 +302,9 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
   const [accent, setAccent] = useState(ACCENTS[0].color);
 
   // ── Stats tab state ──
-  const [imageBg, setImageBg] = useState(IMAGE_BACKGROUNDS[0]);
   const [cardBg, setCardBg] = useState(CARD_BACKGROUNDS[0]);
   const [cardShape, setCardShape] = useState(CARD_SHAPES[0]);
+  const [showWatermark, setShowWatermark] = useState(true);
   const [exporting, setExporting] = useState(false);
   const frameRef = useRef<HTMLDivElement>(null);
 
@@ -325,14 +321,15 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
     if (!frameRef.current) return;
     setExporting(true);
     try {
-      const dataUrl = await toPng(frameRef.current, { width: EXPORT_W, height: EXPORT_H, pixelRatio: 1, backgroundColor: imageBg.color ?? undefined });
+      const h = frameRef.current.scrollHeight;
+      const dataUrl = await toPng(frameRef.current, { width: EXPORT_W, height: h, pixelRatio: 1 });
       const link = document.createElement('a');
       link.download = `${(data.title ?? 'activity').replace(/\s+/g, '-').toLowerCase()}-fitglue.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) { console.error('Export failed:', err); }
     finally { setExporting(false); }
-  }, [data.title, imageBg.color]);
+  }, [data.title]);
 
   // ── Available tabs ──
   const allRecords = useMemo<ActivityRecord[]>(
@@ -369,13 +366,12 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
             <>
               <div className="export-modal-preview-col">
                 <div className="export-preview-wrapper" style={{
-                  width: PREVIEW_SIZE, height: PREVIEW_SIZE,
-                  background: imageBg.color ?? undefined,
-                  backgroundImage: imageBg.color ? undefined : 'repeating-conic-gradient(#2a2a2a 0% 25%, #1a1a1a 0% 50%) 0 0 / 12px 12px',
+                  width: PREVIEW_SIZE,
+                  backgroundImage: 'repeating-conic-gradient(#2a2a2a 0% 25%, #1a1a1a 0% 50%) 0 0 / 12px 12px',
                   position: 'relative', overflow: 'hidden',
                 }}>
-                  <div style={{ position: 'absolute', top: 0, left: 0, transform: `scale(${previewScale})`, transformOrigin: 'top left', pointerEvents: 'none', width: EXPORT_W, height: EXPORT_H }}>
-                    <ExportFrame ref={frameRef} data={data} cardBg={cardBg} imageBgColor={imageBg.color} accent={accent} cardShape={cardShape} stats={selectedStats} />
+                  <div style={{ transform: `scale(${previewScale})`, transformOrigin: 'top left', pointerEvents: 'none', width: EXPORT_W }}>
+                    <ExportFrame ref={frameRef} data={data} cardBg={cardBg} accent={accent} cardShape={cardShape} stats={selectedStats} showWatermark={showWatermark} />
                   </div>
                 </div>
                 <button className="export-download-btn" onClick={handleStatsExport} disabled={exporting}>
@@ -385,14 +381,6 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
 
               <div className="export-modal-options-col">
                 <div className="export-options">
-                  <div className="export-option-group">
-                    <span className="export-option-label">Image</span>
-                    <div className="export-option-row">
-                      {IMAGE_BACKGROUNDS.map((b) => (
-                        <button key={b.id} className={`export-pill${imageBg.id === b.id ? ' export-pill--active' : ''}`} onClick={() => setImageBg(b)}>{b.label}</button>
-                      ))}
-                    </div>
-                  </div>
                   <div className="export-option-group">
                     <span className="export-option-label">Shape</span>
                     <div className="export-option-row export-option-row--wrap">
@@ -428,6 +416,12 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
                       <p className="export-stats-hint">Up to 4 · click to toggle · hover to preview value</p>
                     </div>
                   )}
+                  <div className="export-option-group">
+                    <span className="export-option-label">Include</span>
+                    <div className="export-option-row">
+                      <button className={`export-pill${showWatermark ? ' export-pill--active' : ''}`} onClick={() => setShowWatermark((v) => !v)}>Watermark</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </>

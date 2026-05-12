@@ -5410,6 +5410,7 @@ body:has(.showcase-page)>footer.footer {
 .showcase-share-btn {
   display: inline-flex;
   align-items: center;
+  align-self: center;
   gap: 0.4rem;
   padding: 0.45rem 1rem;
   border-radius: 999px;
