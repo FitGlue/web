@@ -29,11 +29,22 @@ const CARD_BACKGROUNDS = [
   { id: 'clear',    label: 'Clear',    style: 'transparent' },
 ];
 
-const FORMATS = [
-  { id: 'square',    label: 'Square',    w: 1080, h: 1080 },
-  { id: 'portrait',  label: 'Story',     w: 1080, h: 1920 },
-  { id: 'landscape', label: 'Landscape', w: 1920, h: 1080 },
+const IMAGE_BACKGROUNDS = [
+  { id: 'dark',        label: 'Dark',        color: '#0a0a0a' as string | null },
+  { id: 'transparent', label: 'Transparent', color: null },
 ];
+
+const CARD_SHAPES = [
+  { id: 'landscape', label: 'Landscape', borderRadius: '24px',  widthPct: 88, ratio: '16/7'  },
+  { id: 'square',    label: 'Square',    borderRadius: '32px',  widthPct: 78, ratio: '1'     },
+  { id: 'portrait',  label: 'Portrait',  borderRadius: '32px',  widthPct: 54, ratio: '2/3'   },
+  { id: 'circle',    label: 'Circle',    borderRadius: '50%',   widthPct: 72, ratio: '1'     },
+  { id: 'pill',      label: 'Pill',      borderRadius: '999px', widthPct: 90, ratio: '14/5'  },
+];
+
+const EXPORT_W = 1080;
+const EXPORT_H = 1080;
+const PREVIEW_SIZE = 280;
 
 // ─── Stats helpers ────────────────────────────────────────────────────────────
 
@@ -197,79 +208,81 @@ function buildAllStats(data: ShowcasedActivity): StatOption[] {
 interface ExportFrameProps {
   data: ShowcasedActivity;
   cardBg: typeof CARD_BACKGROUNDS[number];
+  imageBgColor: string | null;
   accent: string;
-  format: typeof FORMATS[number];
+  cardShape: typeof CARD_SHAPES[number];
   stats: StatOption[];
 }
 
 const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
-  ({ data, cardBg, accent, format, stats }, ref) => {
+  ({ data, cardBg, imageBgColor, accent, cardShape, stats }, ref) => {
     const bannerUrl = data.enrichmentMetadata?.['asset_route_thumbnail'] ?? data.enrichmentMetadata?.['asset_ai_banner'];
-    const isStory = format.id === 'portrait';
     const isClear = cardBg.id === 'clear';
 
     const cardStyle: React.CSSProperties = isClear ? {
       position: 'relative', zIndex: 1, textAlign: 'center',
-      padding: isStory ? '0 64px' : '0 80px',
-      width: isStory ? '80%' : '75%',
-      marginBottom: isStory ? '80px' : '0',
+      padding: '0 80px',
+      width: `${cardShape.widthPct}%`,
     } : {
       position: 'relative', zIndex: 1, textAlign: 'center',
       background: cardBg.style,
       border: `2px solid ${accent}44`,
-      borderRadius: isStory ? '48px' : '32px',
-      padding: isStory ? '80px 64px' : '60px 80px',
-      width: isStory ? '75%' : '70%',
-      marginBottom: isStory ? '80px' : '0',
+      borderRadius: cardShape.borderRadius,
+      boxSizing: 'border-box',
+      padding: '60px 80px',
+      width: `${cardShape.widthPct}%`,
+      aspectRatio: cardShape.ratio,
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
     };
 
     return (
       <div ref={ref} style={{
-        width: `${format.w}px`, height: `${format.h}px`,
-        background: 'transparent',
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: isStory ? 'flex-end' : 'center',
+        width: `${EXPORT_W}px`, height: `${EXPORT_H}px`,
+        background: imageBgColor ?? 'transparent',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
         position: 'relative', overflow: 'hidden',
         fontFamily: "'Inter','Helvetica Neue',sans-serif",
       }}>
-        {bannerUrl && !isClear && (
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${bannerUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.2 }} />
-        )}
-        {!isClear && (
-          <div style={{ position: 'absolute', width: '70%', height: '70%', borderRadius: '50%', background: accent, filter: 'blur(220px)', opacity: 0.15, top: isStory ? '25%' : '15%', left: '15%', pointerEvents: 'none' }} />
-        )}
-
         <div style={cardStyle}>
-          <div style={{ display: 'inline-block', background: `${accent}22`, border: `1px solid ${accent}88`, borderRadius: '999px', padding: '10px 32px', color: accent, fontSize: isStory ? '32px' : '24px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '32px' }}>
+          {/* Banner image clipped to card shape via overflow:hidden on parent */}
+          {bannerUrl && !isClear && (
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${bannerUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.18 }} />
+          )}
+
+          <div style={{ position: 'relative', zIndex: 1, display: 'inline-block', background: `${accent}22`, border: `1px solid ${accent}88`, borderRadius: '999px', padding: '10px 32px', color: accent, fontSize: '24px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '32px' }}>
             {formatActivityType(data.activityType)}
           </div>
-          <div style={{ fontSize: isStory ? '72px' : '56px', fontWeight: 800, color: '#fff', lineHeight: 1.1, marginBottom: '24px', textShadow: isClear ? '0 2px 24px rgba(0,0,0,0.8)' : '0 2px 20px rgba(0,0,0,0.5)' }}>
+          <div style={{ position: 'relative', zIndex: 1, fontSize: '56px', fontWeight: 800, color: '#fff', lineHeight: 1.1, marginBottom: '24px', textShadow: isClear ? '0 2px 24px rgba(0,0,0,0.8)' : '0 2px 20px rgba(0,0,0,0.5)' }}>
             {data.title ?? 'Activity'}
           </div>
           {data.startTime && (
-            <div style={{ fontSize: isStory ? '28px' : '22px', color: 'rgba(255,255,255,0.65)', marginBottom: '40px', textShadow: isClear ? '0 1px 12px rgba(0,0,0,0.8)' : undefined }}>
+            <div style={{ position: 'relative', zIndex: 1, fontSize: '22px', color: 'rgba(255,255,255,0.65)', marginBottom: '40px', textShadow: isClear ? '0 1px 12px rgba(0,0,0,0.8)' : undefined }}>
               {formatDateFull(data.startTime)}
             </div>
           )}
           {stats.length > 0 && (
-            <div style={{ display: 'flex', gap: isStory ? '40px' : '32px', justifyContent: 'center', marginBottom: '40px', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative', zIndex: 1, display: 'flex', gap: '32px', justifyContent: 'center', marginBottom: '40px', flexWrap: 'wrap' }}>
               {stats.map((s, i) => (
                 <div key={i} style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: isStory ? '52px' : '40px', fontWeight: 700, color: '#fff', lineHeight: 1, textShadow: isClear ? '0 2px 16px rgba(0,0,0,0.9)' : undefined }}>{s.value}</div>
-                  <div style={{ fontSize: isStory ? '24px' : '18px', color: 'rgba(255,255,255,0.5)', marginTop: '6px', textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>{s.label}</div>
+                  <div style={{ fontSize: '40px', fontWeight: 700, color: '#fff', lineHeight: 1, textShadow: isClear ? '0 2px 16px rgba(0,0,0,0.9)' : undefined }}>{s.value}</div>
+                  <div style={{ fontSize: '18px', color: 'rgba(255,255,255,0.5)', marginTop: '6px', textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>{s.label}</div>
                 </div>
               ))}
             </div>
           )}
           {data.ownerDisplayName && (
-            <div style={{ fontSize: isStory ? '28px' : '22px', color: 'rgba(255,255,255,0.45)', textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>
+            <div style={{ position: 'relative', zIndex: 1, fontSize: '22px', color: 'rgba(255,255,255,0.45)', textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>
               {data.ownerDisplayName}
             </div>
           )}
         </div>
 
         {!isClear && (
-          <div style={{ position: 'absolute', bottom: isStory ? '40px' : '32px', right: isStory ? '60px' : '48px', fontSize: isStory ? '28px' : '22px', color: 'rgba(255,255,255,0.3)', fontWeight: 700, letterSpacing: '0.05em' }}>
+          <div style={{ position: 'absolute', bottom: '32px', right: '48px', fontSize: '22px', color: 'rgba(255,255,255,0.3)', fontWeight: 700, letterSpacing: '0.05em' }}>
             Fit<span style={{ color: accent }}>Glue</span>
           </div>
         )}
@@ -288,16 +301,14 @@ interface Props {
   onClose: () => void;
 }
 
-const PREVIEW_COL_W = 280;
-const MAX_PREVIEW_H = 380;
-
 export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
   const [activeTab, setActiveTab] = useState<Tab>('stats');
   const [accent, setAccent] = useState(ACCENTS[0].color);
 
   // ── Stats tab state ──
+  const [imageBg, setImageBg] = useState(IMAGE_BACKGROUNDS[0]);
   const [cardBg, setCardBg] = useState(CARD_BACKGROUNDS[0]);
-  const [format, setFormat] = useState(FORMATS[0]);
+  const [cardShape, setCardShape] = useState(CARD_SHAPES[0]);
   const [exporting, setExporting] = useState(false);
   const frameRef = useRef<HTMLDivElement>(null);
 
@@ -308,22 +319,20 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
     setSelectedStatIds((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : prev.length >= 4 ? prev : [...prev, id]);
   }, []);
 
-  const previewScale = Math.min(PREVIEW_COL_W / format.w, MAX_PREVIEW_H / format.h);
-  const previewW = Math.round(format.w * previewScale);
-  const previewH = Math.round(format.h * previewScale);
+  const previewScale = PREVIEW_SIZE / EXPORT_W;
 
   const handleStatsExport = useCallback(async () => {
     if (!frameRef.current) return;
     setExporting(true);
     try {
-      const dataUrl = await toPng(frameRef.current, { width: format.w, height: format.h, pixelRatio: 1, backgroundColor: 'rgba(0,0,0,0)' });
+      const dataUrl = await toPng(frameRef.current, { width: EXPORT_W, height: EXPORT_H, pixelRatio: 1, backgroundColor: imageBg.color ?? undefined });
       const link = document.createElement('a');
       link.download = `${(data.title ?? 'activity').replace(/\s+/g, '-').toLowerCase()}-fitglue.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) { console.error('Export failed:', err); }
     finally { setExporting(false); }
-  }, [data.title, format]);
+  }, [data.title, imageBg.color]);
 
   // ── Available tabs ──
   const allRecords = useMemo<ActivityRecord[]>(
@@ -360,11 +369,13 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
             <>
               <div className="export-modal-preview-col">
                 <div className="export-preview-wrapper" style={{
-                  width: `${previewW}px`, height: `${previewH}px`,
-                  backgroundImage: 'repeating-conic-gradient(#2a2a2a 0% 25%, #1a1a1a 0% 50%) 0 0 / 12px 12px',
+                  width: PREVIEW_SIZE, height: PREVIEW_SIZE,
+                  background: imageBg.color ?? undefined,
+                  backgroundImage: imageBg.color ? undefined : 'repeating-conic-gradient(#2a2a2a 0% 25%, #1a1a1a 0% 50%) 0 0 / 12px 12px',
+                  position: 'relative', overflow: 'hidden',
                 }}>
-                  <div style={{ transform: `scale(${previewScale})`, transformOrigin: 'top left', pointerEvents: 'none', width: `${format.w}px`, height: `${format.h}px` }}>
-                    <ExportFrame ref={frameRef} data={data} cardBg={cardBg} accent={accent} format={format} stats={selectedStats} />
+                  <div style={{ position: 'absolute', top: 0, left: 0, transform: `scale(${previewScale})`, transformOrigin: 'top left', pointerEvents: 'none', width: EXPORT_W, height: EXPORT_H }}>
+                    <ExportFrame ref={frameRef} data={data} cardBg={cardBg} imageBgColor={imageBg.color} accent={accent} cardShape={cardShape} stats={selectedStats} />
                   </div>
                 </div>
                 <button className="export-download-btn" onClick={handleStatsExport} disabled={exporting}>
@@ -375,10 +386,18 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
               <div className="export-modal-options-col">
                 <div className="export-options">
                   <div className="export-option-group">
-                    <span className="export-option-label">Format</span>
+                    <span className="export-option-label">Image</span>
                     <div className="export-option-row">
-                      {FORMATS.map((f) => (
-                        <button key={f.id} className={`export-pill${format.id === f.id ? ' export-pill--active' : ''}`} onClick={() => setFormat(f)}>{f.label}</button>
+                      {IMAGE_BACKGROUNDS.map((b) => (
+                        <button key={b.id} className={`export-pill${imageBg.id === b.id ? ' export-pill--active' : ''}`} onClick={() => setImageBg(b)}>{b.label}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="export-option-group">
+                    <span className="export-option-label">Shape</span>
+                    <div className="export-option-row export-option-row--wrap">
+                      {CARD_SHAPES.map((s) => (
+                        <button key={s.id} className={`export-pill${cardShape.id === s.id ? ' export-pill--active' : ''}`} onClick={() => setCardShape(s)}>{s.label}</button>
                       ))}
                     </div>
                   </div>
