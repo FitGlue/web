@@ -111,6 +111,11 @@ const CHART_W = 1200;
 const CHART_H = 400;
 const PREVIEW_SCALE = 0.233; // ≈ 280 / 1200
 
+const BG_OPTIONS = [
+  { id: 'dark',        label: 'Dark',        color: '#0a0a0a' as string | null },
+  { id: 'transparent', label: 'Transparent', color: null },
+];
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 interface Props {
@@ -137,6 +142,8 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
   const [showAxes, setShowAxes] = useState(true);
   const [showTitle, setShowTitle] = useState(true);
   const [showStats, setShowStats] = useState(true);
+  const [showWatermark, setShowWatermark] = useState(true);
+  const [bgId, setBgId] = useState('dark');
   const [exporting, setExporting] = useState(false);
 
   const frameRef = useRef<HTMLDivElement>(null);
@@ -145,6 +152,7 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
 
   const selectedChart = chartDefs.find((c) => c.id === selectedId) ?? chartDefs[0];
   const chartColor = useAccentColor ? accent : (selectedChart?.defaultColor ?? accent);
+  const selectedBg = BG_OPTIONS.find((b) => b.id === bgId)!;
 
   const statsSummary = useMemo(() => {
     if (!selectedChart || selectedChart.data.values.length === 0) return null;
@@ -187,7 +195,7 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
         width: CHART_W,
         height: h,
         pixelRatio: 1,
-        backgroundColor: '#0a0a0a',
+        backgroundColor: selectedBg.color ?? undefined,
       });
       const link = document.createElement('a');
       link.download = `${(activityTitle || 'activity').replace(/\s+/g, '-').toLowerCase()}-${selectedId}-fitglue.png`;
@@ -198,7 +206,7 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
     } finally {
       setExporting(false);
     }
-  }, [activityTitle, selectedId]);
+  }, [activityTitle, selectedId, selectedBg.color]);
 
   if (chartDefs.length === 0) {
     return (
@@ -212,16 +220,30 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
   }
 
   const previewW = Math.round(CHART_W * PREVIEW_SCALE);
-  const previewH = 210; // fixed preview height — overflow:hidden clips the rest
+  const previewH = 210;
+
+  const checkerBg = 'repeating-conic-gradient(#2a2a2a 0% 25%, #1a1a1a 0% 50%) 0 0 / 12px 12px';
 
   return (
     <>
       {/* ── Left: preview + download ── */}
       <div className="export-modal-preview-col">
-        <div className="export-preview-wrapper" style={{ width: previewW, height: previewH, background: '#0a0a0a' }}>
-          <div style={{ transform: `scale(${PREVIEW_SCALE})`, transformOrigin: 'top left' }}>
+        <div
+          className="export-preview-wrapper"
+          style={{
+            width: previewW,
+            height: previewH,
+            background: selectedBg.color ?? undefined,
+            backgroundImage: selectedBg.color ? undefined : checkerBg,
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+        >
+          {/* position:absolute prevents the scaled child's layout width (1200px)
+              from escaping the wrapper and expanding the modal */}
+          <div style={{ position: 'absolute', top: 0, left: 0, transform: `scale(${PREVIEW_SCALE})`, transformOrigin: 'top left', width: CHART_W }}>
             {/* frameRef is both the visible preview source AND the toPng capture target */}
-            <div ref={frameRef} style={{ width: CHART_W, background: '#0a0a0a', padding: '40px 60px 48px', fontFamily: "'Inter','Helvetica Neue',sans-serif" }}>
+            <div ref={frameRef} style={{ width: CHART_W, background: selectedBg.color ?? 'transparent', padding: '40px 60px 48px', fontFamily: "'Inter','Helvetica Neue',sans-serif" }}>
               {showTitle && (
                 <div style={{ fontSize: 36, fontWeight: 700, color: '#fff', marginBottom: 28 }}>
                   {selectedChart?.emoji} {selectedChart?.label}
@@ -241,9 +263,11 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
                     ))}
                   </>
                 )}
-                <div style={{ marginLeft: 'auto', fontSize: 24, fontWeight: 700, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.04em' }}>
-                  Fit<span style={{ color: accent }}>Glue</span>
-                </div>
+                {showWatermark && (
+                  <div style={{ marginLeft: 'auto', fontSize: 24, fontWeight: 700, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.04em' }}>
+                    Fit<span style={{ color: accent }}>Glue</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -264,6 +288,17 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
               {chartDefs.map((c) => (
                 <button key={c.id} className={`export-pill${selectedId === c.id ? ' export-pill--active' : ''}`} onClick={() => setSelectedId(c.id)}>
                   {c.emoji} {c.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="export-option-group">
+            <span className="export-option-label">Background</span>
+            <div className="export-option-row">
+              {BG_OPTIONS.map((b) => (
+                <button key={b.id} className={`export-pill${bgId === b.id ? ' export-pill--active' : ''}`} onClick={() => setBgId(b.id)}>
+                  {b.label}
                 </button>
               ))}
             </div>
@@ -293,6 +328,7 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
               <button className={`export-pill${showAxes ? ' export-pill--active' : ''}`} onClick={() => setShowAxes((v) => !v)}>Axes</button>
               <button className={`export-pill${showTitle ? ' export-pill--active' : ''}`} onClick={() => setShowTitle((v) => !v)}>Title</button>
               <button className={`export-pill${showStats ? ' export-pill--active' : ''}`} onClick={() => setShowStats((v) => !v)}>Min / Avg / Max</button>
+              <button className={`export-pill${showWatermark ? ' export-pill--active' : ''}`} onClick={() => setShowWatermark((v) => !v)}>Watermark</button>
             </div>
           </div>
 

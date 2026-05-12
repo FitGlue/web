@@ -121,6 +121,61 @@ function buildAllStats(data: ShowcasedActivity): StatOption[] {
   if (session?.totalCalories)
     stats.push({ id: 'calories', label: 'Calories', value: `${Math.round(session.totalCalories)} kcal` });
 
+  // ── Enrichment metadata ──────────────────────────────────────────────────────
+
+  const meta = data.enrichmentMetadata ?? {};
+
+  // Effort Score enricher
+  if (meta['status'] === 'success' && meta['score']) {
+    const score = parseFloat(meta['score']);
+    if (!isNaN(score)) {
+      stats.push({ id: 'effort_score', label: 'Effort Score', value: `${Math.round(score)}/100` });
+      if (meta['label']) stats.push({ id: 'effort_label', label: 'Effort', value: meta['label'] });
+    }
+  }
+
+  // Recovery Advisor enricher
+  if (meta['recovery_hours']) {
+    const h = parseFloat(meta['recovery_hours']);
+    if (!isNaN(h)) stats.push({ id: 'recovery', label: 'Recovery', value: h >= 24 ? `${(h / 24).toFixed(1)}d` : `${Math.round(h)}h` });
+  }
+  if (meta['acwr'] && meta['acwr_label']) {
+    const acwr = parseFloat(meta['acwr']);
+    if (!isNaN(acwr)) stats.push({ id: 'acwr', label: 'ACWR', value: `${acwr.toFixed(2)} · ${meta['acwr_label']}` });
+  }
+  if (meta['intensity'] && meta['consecutive_hard_days']) {
+    const days = parseInt(meta['consecutive_hard_days'], 10);
+    if (!isNaN(days) && days >= 2) stats.push({ id: 'hard_days', label: 'Hard Days', value: `${days} streak` });
+  }
+
+  // Training Load enricher
+  if (meta['trimp']) {
+    const trimp = parseFloat(meta['trimp']);
+    if (!isNaN(trimp)) {
+      const zone = meta['trimp_zone'] ? ` · ${meta['trimp_zone']}` : '';
+      stats.push({ id: 'trimp', label: 'TRIMP', value: `${Math.round(trimp)}${zone}` });
+    }
+  }
+
+  // Personal Records enricher
+  if (meta['pr_status'] === 'pr_detected' && meta['pr_count']) {
+    const count = parseInt(meta['pr_count'], 10);
+    if (!isNaN(count) && count > 0) stats.push({ id: 'prs', label: count === 1 ? 'New PR 🏆' : 'New PRs 🏆', value: `${count}` });
+  }
+
+  // HR Zones enricher (zone minutes breakdown)
+  const zoneTotalMin = parseFloat(meta['total_duration'] ?? '0');
+  if (zoneTotalMin > 0) {
+    const zoneLabels = ['Rest', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5'];
+    for (let z = 1; z <= 5; z++) {
+      const min = parseInt(meta[`zone${z}_minutes`] ?? '0', 10);
+      if (min > 0) {
+        const pct = Math.round((min / zoneTotalMin) * 100);
+        stats.push({ id: `zone${z}`, label: `HR ${zoneLabels[z]}`, value: `${min}m (${pct}%)` });
+      }
+    }
+  }
+
   const sets = session?.strengthSets;
   if (sets?.length) {
     stats.push({ id: 'sets', label: 'Sets', value: `${sets.length}` });
@@ -209,9 +264,11 @@ const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
           )}
         </div>
 
-        <div style={{ position: 'absolute', bottom: isStory ? '40px' : '32px', right: isStory ? '60px' : '48px', fontSize: isStory ? '28px' : '22px', color: 'rgba(255,255,255,0.3)', fontWeight: 700, letterSpacing: '0.05em', textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>
-          Fit<span style={{ color: accent }}>Glue</span>
-        </div>
+        {!isClear && (
+          <div style={{ position: 'absolute', bottom: isStory ? '40px' : '32px', right: isStory ? '60px' : '48px', fontSize: isStory ? '28px' : '22px', color: 'rgba(255,255,255,0.3)', fontWeight: 700, letterSpacing: '0.05em' }}>
+            Fit<span style={{ color: accent }}>Glue</span>
+          </div>
+        )}
       </div>
     );
   }
