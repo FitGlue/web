@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.8.0](https://github.com/fitglue/web/compare/v11.7.0...v11.8.0) (2026-05-12)
+
+
+### Features
+
+* **showcase:** add customizable image backgrounds and card shapes for export modal ([cef05b2](https://github.com/fitglue/web/commit/cef05b25e788e9010aaf50a5de91f92cf674cd31))
+
 ## [11.7.0](https://github.com/fitglue/web/compare/v11.6.0...v11.7.0) (2026-05-12)
 
 
