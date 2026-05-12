@@ -107,8 +107,9 @@ function buildChartConfig(data: ChartData, color: string, showAxes: boolean) {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const CHART_W = 1200;
-const CHART_H = 400;
+const CHART_W = 1200;      // total export width
+const CHART_H = 400;       // chart canvas height
+const CHART_PAD = 60;      // horizontal padding for header/footer rows
 const PREVIEW_SCALE = 0.233; // ≈ 280 / 1200
 
 const BG_OPTIONS = [
@@ -243,14 +244,19 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
               from escaping the wrapper and expanding the modal */}
           <div style={{ position: 'absolute', top: 0, left: 0, transform: `scale(${PREVIEW_SCALE})`, transformOrigin: 'top left', width: CHART_W }}>
             {/* frameRef is both the visible preview source AND the toPng capture target */}
-            <div ref={frameRef} style={{ width: CHART_W, background: selectedBg.color ?? 'transparent', padding: '40px 60px 48px', fontFamily: "'Inter','Helvetica Neue',sans-serif" }}>
-              {showTitle && (
-                <div style={{ fontSize: 36, fontWeight: 700, color: '#fff', marginBottom: 28 }}>
-                  {selectedChart?.emoji} {selectedChart?.label}
-                </div>
-              )}
+            <div ref={frameRef} style={{ width: CHART_W, background: selectedBg.color ?? 'transparent', fontFamily: "'Inter','Helvetica Neue',sans-serif" }}>
+              {/* Header row — padded */}
+              <div style={{ padding: `40px ${CHART_PAD}px ${showTitle ? 28 : 0}px` }}>
+                {showTitle && (
+                  <div style={{ fontSize: 36, fontWeight: 700, color: '#fff' }}>
+                    {selectedChart?.emoji} {selectedChart?.label}
+                  </div>
+                )}
+              </div>
+              {/* Chart canvas — full width, no padding so it doesn't overflow */}
               <canvas ref={canvasRef} style={{ display: 'block', width: CHART_W, height: CHART_H }} />
-              <div style={{ display: 'flex', alignItems: 'flex-end', marginTop: 32, gap: 60 }}>
+              {/* Footer row — padded */}
+              <div style={{ display: 'flex', alignItems: 'flex-end', padding: `32px ${CHART_PAD}px 48px`, gap: 60 }}>
                 {showStats && statsSummary && (
                   <>
                     {([['Min', statsSummary.min], ['Avg', statsSummary.avg], ['Max', statsSummary.max]] as [string, string][]).map(([label, val]) => (

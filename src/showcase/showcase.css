@@ -4266,8 +4266,8 @@ body:has(.showcase-page)>footer.footer {
 }
 
 .photo-gallery-main {
-  aspect-ratio: 16/9;
   overflow: hidden;
+  min-height: 200px;
 }
 .photo-gallery-main:hover img { transform: scale(1.03); }
 
