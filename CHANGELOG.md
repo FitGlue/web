@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.7.0](https://github.com/fitglue/web/compare/v11.6.0...v11.7.0) (2026-05-12)
+
+
+### Features
+
+* enhance personal records enrichment in stats with detailed PR information ([c708552](https://github.com/fitglue/web/commit/c708552e406938fb372f6fea390ed1adb917d1ef))
+* **showcase:** improve chart export layout with padding adjustments and enhance photo gallery minimum height ([156283d](https://github.com/fitglue/web/commit/156283d13b54e4f0e2050c9aa18caf603a6d71b8))
+
 ## [11.6.0](https://github.com/fitglue/web/compare/v11.5.0...v11.6.0) (2026-05-12)
 
 
