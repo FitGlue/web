@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.5.0](https://github.com/fitglue/web/compare/v11.4.0...v11.5.0) (2026-05-12)
+
+
+### Features
+
+* add ShowcaseExportRoute component for route visualization and export functionality ([3b9f4a2](https://github.com/fitglue/web/commit/3b9f4a2c95e8f57904f2a23bcc8ac296a2e5b2c7))
+
 ## [11.4.0](https://github.com/fitglue/web/compare/v11.3.0...v11.4.0) (2026-05-11)
 
 
