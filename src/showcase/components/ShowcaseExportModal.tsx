@@ -157,10 +157,14 @@ function buildAllStats(data: ShowcasedActivity): StatOption[] {
     }
   }
 
-  // Personal Records enricher
+  // Personal Records enricher — one stat per individual PR
   if (meta['pr_status'] === 'pr_detected' && meta['pr_count']) {
     const count = parseInt(meta['pr_count'], 10);
-    if (!isNaN(count) && count > 0) stats.push({ id: 'prs', label: count === 1 ? 'New PR 🏆' : 'New PRs 🏆', value: `${count}` });
+    for (let i = 0; i < count; i++) {
+      const label = meta[`pr_${i}_label`];
+      const value = meta[`pr_${i}_value`];
+      if (label && value) stats.push({ id: `pr_${i}`, label: `🏆 ${label}`, value });
+    }
   }
 
   // HR Zones enricher (zone minutes breakdown)
