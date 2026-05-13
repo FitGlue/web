@@ -21,6 +21,16 @@ export const ACCENTS = [
   { id: 'gold',   color: '#FBBF24' },
 ];
 
+export const TEXT_SWATCHES = [
+  { id: 'white',  color: '#ffffff' },
+  { id: 'pink',   color: '#FF1B8D' },
+  { id: 'cyan',   color: '#4CC9F0' },
+  { id: 'orange', color: '#FF6B35' },
+  { id: 'green',  color: '#4ADE80' },
+  { id: 'purple', color: '#E040FB' },
+  { id: 'gold',   color: '#FBBF24' },
+];
+
 const CARD_BACKGROUNDS = [
   { id: 'dark',     label: 'Dark',     style: 'linear-gradient(135deg, #0a0a0a 0%, #1a0a20 50%, #0a0a0a 100%)' },
   { id: 'midnight', label: 'Midnight', style: 'linear-gradient(135deg, #0a0a1a 0%, #0d1b3e 50%, #0a0a1a 100%)' },
@@ -204,13 +214,14 @@ interface ExportFrameProps {
   data: ShowcasedActivity;
   cardBg: typeof CARD_BACKGROUNDS[number];
   accent: string;
+  textColor: string;
   cardShape: typeof CARD_SHAPES[number];
   stats: StatOption[];
   showWatermark: boolean;
 }
 
 const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
-  ({ data, cardBg, accent, cardShape, stats, showWatermark }, ref) => {
+  ({ data, cardBg, accent, textColor, cardShape, stats, showWatermark }, ref) => {
     const bannerUrl = data.enrichmentMetadata?.['asset_route_thumbnail'] ?? data.enrichmentMetadata?.['asset_ai_banner'];
     const isClear = cardBg.id === 'clear';
 
@@ -252,11 +263,11 @@ const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
           <div style={{ position: 'relative', zIndex: 1, display: 'inline-block', background: `${accent}22`, border: `1px solid ${accent}88`, borderRadius: '999px', padding: '10px 32px', color: accent, fontSize: '24px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '32px' }}>
             {formatActivityType(data.activityType)}
           </div>
-          <div style={{ position: 'relative', zIndex: 1, fontSize: '56px', fontWeight: 800, color: '#fff', lineHeight: 1.1, marginBottom: '24px', textShadow: isClear ? '0 2px 24px rgba(0,0,0,0.8)' : '0 2px 20px rgba(0,0,0,0.5)' }}>
+          <div style={{ position: 'relative', zIndex: 1, fontSize: '56px', fontWeight: 800, color: textColor, lineHeight: 1.1, marginBottom: '24px', textShadow: isClear ? '0 2px 24px rgba(0,0,0,0.8)' : '0 2px 20px rgba(0,0,0,0.5)' }}>
             {data.title ?? 'Activity'}
           </div>
           {data.startTime && (
-            <div style={{ position: 'relative', zIndex: 1, fontSize: '22px', color: 'rgba(255,255,255,0.65)', marginBottom: '40px', textShadow: isClear ? '0 1px 12px rgba(0,0,0,0.8)' : undefined }}>
+            <div style={{ position: 'relative', zIndex: 1, fontSize: '22px', color: `${textColor}a6`, marginBottom: '40px', textShadow: isClear ? '0 1px 12px rgba(0,0,0,0.8)' : undefined }}>
               {formatDateFull(data.startTime)}
             </div>
           )}
@@ -264,14 +275,14 @@ const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
             <div style={{ position: 'relative', zIndex: 1, display: 'flex', gap: '32px', justifyContent: 'center', marginBottom: '40px', flexWrap: 'wrap' }}>
               {stats.map((s, i) => (
                 <div key={i} style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '40px', fontWeight: 700, color: '#fff', lineHeight: 1, textShadow: isClear ? '0 2px 16px rgba(0,0,0,0.9)' : undefined }}>{s.value}</div>
-                  <div style={{ fontSize: '18px', color: 'rgba(255,255,255,0.5)', marginTop: '6px', textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>{s.label}</div>
+                  <div style={{ fontSize: '40px', fontWeight: 700, color: accent, lineHeight: 1, textShadow: isClear ? '0 2px 16px rgba(0,0,0,0.9)' : undefined }}>{s.value}</div>
+                  <div style={{ fontSize: '18px', color: `${textColor}80`, marginTop: '6px', textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>{s.label}</div>
                 </div>
               ))}
             </div>
           )}
           {data.ownerDisplayName && (
-            <div style={{ position: 'relative', zIndex: 1, fontSize: '22px', color: 'rgba(255,255,255,0.45)', textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>
+            <div style={{ position: 'relative', zIndex: 1, fontSize: '22px', color: `${textColor}73`, textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>
               {data.ownerDisplayName}
             </div>
           )}
@@ -302,6 +313,7 @@ interface Props {
 export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab }) => {
   const [activeTab, setActiveTab] = useState<Tab>(initialTab ?? 'stats');
   const [accent, setAccent] = useState(ACCENTS[0].color);
+  const [textColor, setTextColor] = useState('#ffffff');
 
   // ── Stats tab state ──
   const [cardBg, setCardBg] = useState(CARD_BACKGROUNDS[0]);
@@ -379,7 +391,7 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
                   position: 'relative', overflow: 'hidden',
                 }}>
                   <div style={{ transform: `scale(${previewScale})`, transformOrigin: 'top left', pointerEvents: 'none', width: EXPORT_W }}>
-                    <ExportFrame ref={frameRef} data={data} cardBg={cardBg} accent={accent} cardShape={cardShape} stats={selectedStats} showWatermark={showWatermark} />
+                    <ExportFrame ref={frameRef} data={data} cardBg={cardBg} accent={accent} textColor={textColor} cardShape={cardShape} stats={selectedStats} showWatermark={showWatermark} />
                   </div>
                 </div>
                 <button className="export-download-btn" onClick={handleStatsExport} disabled={exporting}>
@@ -413,6 +425,20 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
                       ))}
                     </div>
                   </div>
+                  <div className="export-option-group">
+                    <span className="export-option-label">Text</span>
+                    <div className="export-option-row">
+                      {TEXT_SWATCHES.map((a) => (
+                        <button
+                          key={a.id}
+                          className={`export-swatch${textColor === a.color ? ' export-swatch--active' : ''}`}
+                          style={{ background: a.color, ...(a.color === '#ffffff' ? { boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.25)' } : {}) }}
+                          onClick={() => setTextColor(a.color)}
+                          aria-label={a.id}
+                        />
+                      ))}
+                    </div>
+                  </div>
                   {allStats.length > 0 && (
                     <div className="export-option-group export-option-group--stats">
                       <span className="export-option-label">Stats</span>
@@ -437,7 +463,7 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
 
           {/* ── CHART TAB ── */}
           {activeTab === 'chart' && (
-            <ChartExportTab records={allRecords} accent={accent} onAccentChange={setAccent} activityTitle={data.title ?? ''} />
+            <ChartExportTab records={allRecords} accent={accent} onAccentChange={setAccent} textColor={textColor} onTextColorChange={setTextColor} activityTitle={data.title ?? ''} />
           )}
 
           {/* ── ROUTE TAB ── */}

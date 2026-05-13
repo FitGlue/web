@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import type { components } from '../../shared/api/schema-public';
+import { ACCENTS, TEXT_SWATCHES } from './ShowcaseExportModal';
 
 type ActivityRecord = components['schemas']['Record'];
 
@@ -107,10 +108,10 @@ function buildChartConfig(data: ChartData, color: string, showAxes: boolean) {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const CHART_W = 1200;      // total export width
-const CHART_H = 400;       // chart canvas height
-const CHART_PAD = 60;      // horizontal padding for header/footer rows
-const PREVIEW_SCALE = 0.233; // ≈ 280 / 1200
+const CHART_W     = 1200;
+const CHART_H     = 400;
+const CHART_PAD   = 60;
+const PREVIEW_SCALE = 0.233;
 
 const BG_OPTIONS = [
   { id: 'dark',        label: 'Dark',        color: '#0a0a0a' as string | null },
@@ -123,37 +124,30 @@ interface Props {
   records: ActivityRecord[];
   accent: string;
   onAccentChange: (c: string) => void;
+  textColor: string;
+  onTextColorChange: (c: string) => void;
   activityTitle: string;
 }
 
-const ACCENTS = [
-  { id: 'pink',   color: '#FF1B8D' },
-  { id: 'cyan',   color: '#4CC9F0' },
-  { id: 'orange', color: '#FF6B35' },
-  { id: 'green',  color: '#4ADE80' },
-  { id: 'purple', color: '#E040FB' },
-  { id: 'gold',   color: '#FBBF24' },
-];
-
-export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChange, activityTitle }) => {
+export const ChartExportTab: React.FC<Props> = ({
+  records, accent, onAccentChange, textColor, onTextColorChange, activityTitle,
+}) => {
   const chartDefs = useMemo(() => buildChartDefs(records), [records]);
 
   const [selectedId, setSelectedId] = useState(() => chartDefs[0]?.id ?? '');
-  const [useAccentColor, setUseAccentColor] = useState(false);
-  const [showAxes, setShowAxes] = useState(true);
-  const [showTitle, setShowTitle] = useState(true);
-  const [showStats, setShowStats] = useState(true);
+  const [showAxes,     setShowAxes]     = useState(true);
+  const [showTitle,    setShowTitle]    = useState(true);
+  const [showStats,    setShowStats]    = useState(true);
   const [showWatermark, setShowWatermark] = useState(true);
   const [bgId, setBgId] = useState('dark');
   const [exporting, setExporting] = useState(false);
 
-  const frameRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const frameRef        = useRef<HTMLDivElement>(null);
+  const canvasRef       = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<{ destroy: () => void } | null>(null);
 
   const selectedChart = chartDefs.find((c) => c.id === selectedId) ?? chartDefs[0];
-  const chartColor = useAccentColor ? accent : (selectedChart?.defaultColor ?? accent);
-  const selectedBg = BG_OPTIONS.find((b) => b.id === bgId)!;
+  const selectedBg    = BG_OPTIONS.find((b) => b.id === bgId)!;
 
   const statsSummary = useMemo(() => {
     if (!selectedChart || selectedChart.data.values.length === 0) return null;
@@ -165,12 +159,11 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
     return { min: fmt(min), avg: fmt(avg), max: fmt(max), unit: selectedChart.unit };
   }, [selectedChart]);
 
-  // Rebuild chart when anything relevant changes
   useEffect(() => {
     if (!canvasRef.current || !selectedChart || selectedChart.data.values.length === 0) return;
 
     const canvas = canvasRef.current;
-    canvas.width = CHART_W;
+    canvas.width  = CHART_W;
     canvas.height = CHART_H;
 
     let destroyed = false;
@@ -178,14 +171,14 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
       if (destroyed || !canvasRef.current) return;
       if (chartInstanceRef.current) chartInstanceRef.current.destroy();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      chartInstanceRef.current = new (mod.default as any)(canvas, buildChartConfig(selectedChart.data, chartColor, showAxes));
+      chartInstanceRef.current = new (mod.default as any)(canvas, buildChartConfig(selectedChart.data, accent, showAxes));
     });
 
     return () => {
       destroyed = true;
       if (chartInstanceRef.current) { chartInstanceRef.current.destroy(); chartInstanceRef.current = null; }
     };
-  }, [selectedChart, chartColor, showAxes]);
+  }, [selectedChart, accent, showAxes]);
 
   const handleExport = useCallback(async () => {
     if (!frameRef.current) return;
@@ -220,9 +213,8 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
     );
   }
 
-  const previewW = Math.round(CHART_W * PREVIEW_SCALE);
-  const previewH = 210;
-
+  const previewW  = Math.round(CHART_W * PREVIEW_SCALE);
+  const previewH  = 210;
   const checkerBg = 'repeating-conic-gradient(#2a2a2a 0% 25%, #1a1a1a 0% 50%) 0 0 / 12px 12px';
 
   return (
@@ -240,31 +232,25 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
             overflow: 'hidden',
           }}
         >
-          {/* position:absolute prevents the scaled child's layout width (1200px)
-              from escaping the wrapper and expanding the modal */}
           <div style={{ position: 'absolute', top: 0, left: 0, transform: `scale(${PREVIEW_SCALE})`, transformOrigin: 'top left', width: CHART_W }}>
-            {/* frameRef is both the visible preview source AND the toPng capture target */}
             <div ref={frameRef} style={{ width: CHART_W, background: selectedBg.color ?? 'transparent', fontFamily: "'Inter','Helvetica Neue',sans-serif" }}>
-              {/* Header row — padded */}
               <div style={{ padding: `40px ${CHART_PAD}px ${showTitle ? 28 : 0}px` }}>
                 {showTitle && (
-                  <div style={{ fontSize: 36, fontWeight: 700, color: '#fff' }}>
+                  <div style={{ fontSize: 36, fontWeight: 700, color: textColor }}>
                     {selectedChart?.emoji} {selectedChart?.label}
                   </div>
                 )}
               </div>
-              {/* Chart canvas — full width, no padding so it doesn't overflow */}
               <canvas ref={canvasRef} style={{ display: 'block', width: CHART_W, height: CHART_H }} />
-              {/* Footer row — padded */}
               <div style={{ display: 'flex', alignItems: 'flex-end', padding: `32px ${CHART_PAD}px 48px`, gap: 60 }}>
                 {showStats && statsSummary && (
                   <>
                     {([['Min', statsSummary.min], ['Avg', statsSummary.avg], ['Max', statsSummary.max]] as [string, string][]).map(([label, val]) => (
                       <div key={label}>
-                        <div style={{ fontSize: 34, fontWeight: 700, color: '#fff', lineHeight: 1 }}>
-                          {val} <span style={{ fontSize: 20, color: 'rgba(255,255,255,0.35)', fontWeight: 400 }}>{statsSummary.unit}</span>
+                        <div style={{ fontSize: 34, fontWeight: 700, color: accent, lineHeight: 1 }}>
+                          {val} <span style={{ fontSize: 20, color: `${textColor}59`, fontWeight: 400 }}>{statsSummary.unit}</span>
                         </div>
-                        <div style={{ fontSize: 18, color: 'rgba(255,255,255,0.4)', marginTop: 6 }}>{label}</div>
+                        <div style={{ fontSize: 18, color: `${textColor}66`, marginTop: 6 }}>{label}</div>
                       </div>
                     ))}
                   </>
@@ -311,19 +297,26 @@ export const ChartExportTab: React.FC<Props> = ({ records, accent, onAccentChang
           </div>
 
           <div className="export-option-group">
-            <span className="export-option-label">Line color</span>
-            <div className="export-option-row">
-              <button className={`export-pill${!useAccentColor ? ' export-pill--active' : ''}`} onClick={() => setUseAccentColor(false)}>Default</button>
-              <button className={`export-pill${useAccentColor ? ' export-pill--active' : ''}`} onClick={() => setUseAccentColor(true)}>Accent</button>
-            </div>
-          </div>
-
-          <div className="export-option-group">
             <span className="export-option-label">Accent</span>
             <div className="export-option-row">
               {ACCENTS.map((a) => (
                 <button key={a.id} className={`export-swatch${accent === a.color ? ' export-swatch--active' : ''}`}
                   style={{ background: a.color }} onClick={() => onAccentChange(a.color)} aria-label={a.id} />
+              ))}
+            </div>
+          </div>
+
+          <div className="export-option-group">
+            <span className="export-option-label">Text</span>
+            <div className="export-option-row">
+              {TEXT_SWATCHES.map((a) => (
+                <button
+                  key={a.id}
+                  className={`export-swatch${textColor === a.color ? ' export-swatch--active' : ''}`}
+                  style={{ background: a.color, ...(a.color === '#ffffff' ? { boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.25)' } : {}) }}
+                  onClick={() => onTextColorChange(a.color)}
+                  aria-label={a.id}
+                />
               ))}
             </div>
           </div>
