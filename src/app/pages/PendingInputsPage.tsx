@@ -128,6 +128,38 @@ const PendingInputsPage: React.FC = () => {
         }
     };
 
+    const handleNoExercises = async (activityId: string) => {
+        setSubmittingIds((prev) => {
+            const next = new Set(prev);
+            next.add(activityId);
+            return next;
+        });
+
+        try {
+            const success = await InputsService.resolveInput({
+                activityId,
+                inputData: { workout_data: '[]' },
+            });
+            if (success) {
+                toast.success('Got it', 'Activity synced without exercise data');
+                refresh();
+                setFormValues((prev) => {
+                    const next = { ...prev };
+                    delete next[activityId];
+                    return next;
+                });
+            }
+        } catch {
+            toast.error('Failed', 'Failed to submit. Please try again.');
+        } finally {
+            setSubmittingIds((prev) => {
+                const next = new Set(prev);
+                next.delete(activityId);
+                return next;
+            });
+        }
+    };
+
     const handleDismiss = async (activityId: string) => {
         if (!confirm('Are you sure you want to dismiss this input request? The activity might remain unsynchronized.')) {
             return;
@@ -403,6 +435,18 @@ const PendingInputsPage: React.FC = () => {
                                             >
                                                 {submittingIds.has(input.activityId) ? '✨ Syncing...' : '✨ Complete & Sync'}
                                             </Button>
+                                            {input.requiredFields?.some(f =>
+                                                (input.displayConfig?.fieldTypes?.[f] ?? '') === 'workout_entry'
+                                            ) && (
+                                                <Button
+                                                    variant="secondary"
+                                                    fullWidth
+                                                    onClick={() => handleNoExercises(input.activityId)}
+                                                    disabled={submittingIds.has(input.activityId)}
+                                                >
+                                                    No exercises in this workout
+                                                </Button>
+                                            )}
                                             <Button
                                                 variant="secondary"
                                                 onClick={() => handleDismiss(input.activityId)}
