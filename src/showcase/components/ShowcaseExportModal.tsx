@@ -5,6 +5,7 @@ import type { components } from '../../shared/api/schema-public';
 import { formatActivityType, formatDateFull } from '../utils/format';
 import { ChartExportTab, buildChartDefs } from './ShowcaseExportChart';
 import { RouteExportTab } from './ShowcaseExportRoute';
+import { HybridRaceExportTab } from './ShowcaseExportHybridRace';
 
 type ShowcasedActivity = components['schemas']['ShowcasedActivity'];
 type ActivityRecord = components['schemas']['Record'];
@@ -290,15 +291,16 @@ ExportFrame.displayName = 'ExportFrame';
 
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
-type Tab = 'stats' | 'chart' | 'route';
+export type Tab = 'stats' | 'chart' | 'route' | 'race';
 
 interface Props {
   data: ShowcasedActivity;
   onClose: () => void;
+  initialTab?: Tab;
 }
 
-export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
-  const [activeTab, setActiveTab] = useState<Tab>('stats');
+export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab }) => {
+  const [activeTab, setActiveTab] = useState<Tab>(initialTab ?? 'stats');
   const [accent, setAccent] = useState(ACCENTS[0].color);
 
   // ── Stats tab state ──
@@ -342,6 +344,11 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
   );
   const hasCharts = useMemo(() => buildChartDefs(allRecords).length > 0, [allRecords]);
   const hasRoute = gpsPoints.length > 2;
+  const hybridSegments = useMemo(
+    () => data.activityData?.hybridRaceSummary?.segments ?? [],
+    [data]
+  );
+  const hasHybridRace = hybridSegments.length > 0;
 
   return createPortal(
     <div className="export-modal-overlay" onClick={onClose}>
@@ -354,6 +361,7 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
             <button className={`export-tab${activeTab === 'stats' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('stats')}>Stats</button>
             {hasCharts && <button className={`export-tab${activeTab === 'chart' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('chart')}>Charts</button>}
             {hasRoute && <button className={`export-tab${activeTab === 'route' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('route')}>Route</button>}
+            {hasHybridRace && <button className={`export-tab${activeTab === 'race' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('race')}>Race</button>}
           </div>
           <button className="export-modal-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
@@ -435,6 +443,16 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose }) => {
           {/* ── ROUTE TAB ── */}
           {activeTab === 'route' && (
             <RouteExportTab gpsPoints={gpsPoints} accent={accent} onAccentChange={setAccent} />
+          )}
+
+          {/* ── RACE TAB ── */}
+          {activeTab === 'race' && (
+            <HybridRaceExportTab
+              segments={hybridSegments}
+              activityTitle={data.title ?? 'Race'}
+              accent={accent}
+              onAccentChange={setAccent}
+            />
           )}
 
         </div>

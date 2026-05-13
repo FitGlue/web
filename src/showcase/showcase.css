@@ -3712,6 +3712,104 @@ body:has(.showcase-page)>footer.footer {
     color: transparent;
   }
 
+  /* Legend */
+  .hybrid-race-legend {
+    display: flex;
+    gap: 0.625rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .hybrid-race-legend-chip {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .hybrid-race-legend-run {
+    background: rgba(76, 201, 240, 0.12);
+    border: 1px solid rgba(76, 201, 240, 0.35);
+    color: #4CC9F0;
+  }
+
+  .hybrid-race-legend-station {
+    background: rgba(255, 27, 141, 0.12);
+    border: 1px solid rgba(255, 27, 141, 0.35);
+    color: #FF1B8D;
+  }
+
+  /* Section share button */
+  .hybrid-race-share-btn {
+    padding: 0.3rem 0.8rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.65);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .hybrid-race-share-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #fff;
+  }
+
+  /* Run / Station split summary */
+  .hybrid-race-split {
+    display: flex;
+    align-items: stretch;
+    margin-top: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .hybrid-race-split-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .hybrid-race-split-item strong {
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .hybrid-race-split-run {
+    background: rgba(76, 201, 240, 0.07);
+  }
+
+  .hybrid-race-split-run strong {
+    color: #4CC9F0;
+  }
+
+  .hybrid-race-split-station {
+    background: rgba(255, 27, 141, 0.07);
+  }
+
+  .hybrid-race-split-station strong {
+    background: linear-gradient(135deg, #FF1B8D, #9D4EDD);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hybrid-race-split-divider {
+    width: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+  }
+
 
 /* =========================================================
    SHOWCASE PROFILE PAGE

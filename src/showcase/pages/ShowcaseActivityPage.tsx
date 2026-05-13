@@ -14,11 +14,12 @@ import {
 } from '../components/DescriptionSections';
 import { formatActivityType, formatSource, formatDateFull, getEnricherInfo } from '../utils/format';
 import { PhotoGallery } from '../components/PhotoGallery';
-import { ShowcaseExportModal } from '../components/ShowcaseExportModal';
+import { ShowcaseExportModal, type Tab as ExportTab } from '../components/ShowcaseExportModal';
 import { initFirebase } from '../../shared/firebase';
 
 type ShowcasedActivity = components['schemas']['ShowcasedActivity'];
 type Record = components['schemas']['Record'];
+type HybridRaceSegment = components['schemas']['HybridRaceSegment'];
 
 const LOADING_MESSAGES = [
   'Loading activity...',
@@ -98,9 +99,108 @@ export default function ShowcaseActivityPage() {
   return <ShowcaseContent data={data} />;
 }
 
+function fmtSegTime(s: number) {
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+function fmtTotalTime(s: number) {
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const ss = s % 60;
+  return h > 0
+    ? `${h}:${String(m).padStart(2, '0')}:${String(ss).padStart(2, '0')}`
+    : `${m}:${String(ss).padStart(2, '0')}`;
+}
+
+const HybridRaceBreakdown: React.FC<{ segments: HybridRaceSegment[]; onShare?: () => void }> = ({ segments, onShare }) => {
+  const [animated, setAnimated] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setAnimated(true), 80);
+    return () => clearTimeout(t);
+  }, []);
+
+  const maxDuration = Math.max(...segments.map((s) => s.durationSeconds ?? 0), 1);
+  const totalSeconds = segments.reduce((a, s) => a + (s.durationSeconds ?? 0), 0);
+  const runSeconds = segments.filter((s) => s.isRun).reduce((a, s) => a + (s.durationSeconds ?? 0), 0);
+  const stationSeconds = totalSeconds - runSeconds;
+  const hasRunsAndStations = runSeconds > 0 && stationSeconds > 0;
+
+  return (
+    <div id="hybrid-race-section" className="showcase-section glass-card">
+      <div className="section-header">
+        <h2>🏁 Race Breakdown</h2>
+        {onShare && (
+          <button className="hybrid-race-share-btn" onClick={onShare}>
+            ✦ Share
+          </button>
+        )}
+      </div>
+
+      <div className="hybrid-race-legend">
+        <span className="hybrid-race-legend-chip hybrid-race-legend-run">🏃 Run</span>
+        <span className="hybrid-race-legend-chip hybrid-race-legend-station">💪 Station</span>
+      </div>
+
+      <div className="hybrid-race-bars">
+        {segments.map((seg, i) => {
+          const dur = seg.durationSeconds ?? 0;
+          const pct = (dur / maxDuration) * 100;
+          return (
+            <div key={i} className="hybrid-race-bar-row">
+              <span className="hybrid-race-bar-icon">
+                {seg.icon || (seg.isRun ? '🏃' : '💪')}
+              </span>
+              <span className="hybrid-race-bar-label">{seg.label ?? ''}</span>
+              <div className="hybrid-race-bar-container">
+                <div
+                  className={`hybrid-race-bar ${seg.isRun ? 'bar-run' : 'bar-station'}`}
+                  style={{
+                    width: animated ? `${pct}%` : '0%',
+                    transitionDelay: `${i * 55}ms`,
+                  }}
+                >
+                  {dur > 0 && (
+                    <span className="hybrid-race-bar-time">{fmtSegTime(dur)}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {hasRunsAndStations && (
+        <div className="hybrid-race-split">
+          <div className="hybrid-race-split-item hybrid-race-split-run">
+            <span>🏃 Runs</span>
+            <strong>{fmtTotalTime(runSeconds)}</strong>
+          </div>
+          <div className="hybrid-race-split-divider" />
+          <div className="hybrid-race-split-item hybrid-race-split-station">
+            <span>💪 Stations</span>
+            <strong>{fmtTotalTime(stationSeconds)}</strong>
+          </div>
+        </div>
+      )}
+
+      <div className="hybrid-race-total">
+        <span className="hybrid-race-total-label">Total Time</span>
+        <span className="hybrid-race-total-value">{fmtTotalTime(totalSeconds)}</span>
+      </div>
+    </div>
+  );
+};
+
 const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
   const [isOwner, setIsOwner] = useState(false);
+  const [exportTab, setExportTab] = useState<ExportTab>('stats');
   const [showExport, setShowExport] = useState(false);
+
+  const openExport = (tab: ExportTab = 'stats') => {
+    setExportTab(tab);
+    setShowExport(true);
+  };
 
   useEffect(() => {
     initFirebase().then((fb) => {
@@ -192,7 +292,7 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
             <div className="user-description">{userDescSection.content}</div>
           )}
           {isOwner && (
-            <button className="showcase-share-btn" onClick={() => setShowExport(true)}>
+            <button className="showcase-share-btn" onClick={() => openExport('stats')}>
               ✦ Share
             </button>
           )}
@@ -211,24 +311,10 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
 
         {/* Hybrid Race Breakdown */}
         {hasHybridRace && hybridRace?.segments && (
-          <div className="showcase-section glass-card">
-            <div className="section-header">
-              <h2>🏁 Race Breakdown</h2>
-            </div>
-            <div className="hybrid-race-bars">
-              {hybridRace.segments.map((seg, i) => (
-                <div key={i} className="hybrid-race-segment">
-                  <span className="hybrid-race-seg-icon">{seg.icon ?? (seg.isRun ? '🏃' : '💪')}</span>
-                  <span className="hybrid-race-seg-label">{seg.label}</span>
-                  {seg.durationSeconds && (
-                    <span className="hybrid-race-seg-time">
-                      {Math.floor(seg.durationSeconds / 60)}:{String(seg.durationSeconds % 60).padStart(2, '0')}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+          <HybridRaceBreakdown
+            segments={hybridRace.segments}
+            onShare={isOwner ? () => openExport('race') : undefined}
+          />
         )}
 
         {/* Route Thumbnail or Map */}
@@ -335,7 +421,7 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
       </div>
 
       {showExport && (
-        <ShowcaseExportModal data={data} onClose={() => setShowExport(false)} />
+        <ShowcaseExportModal data={data} onClose={() => setShowExport(false)} initialTab={exportTab} />
       )}
     </div>
   );
