@@ -20,14 +20,14 @@ export const EffortSection: React.FC<{ section: DescriptionSection; idx: number 
   for (const line of splitLines(section.content)) {
     const trimmed = stripBullet(line);
     // Support both /100 and /10 scale from enricher
-    const m100 = trimmed.match(/^(\d+(?:\.\d+)?)\s*\/\s*100\s*[–\-]\s*(.+)/);
-    const m10  = trimmed.match(/^(\d+(?:\.\d+)?)\s*\/\s*10\s*[–\-]\s*(.+)/);
+    const m100 = trimmed.match(/^(\d+(?:\.\d+)?)\s*\/\s*100\s*[–-]\s*(.+)/);
+    const m10  = trimmed.match(/^(\d+(?:\.\d+)?)\s*\/\s*10\s*[–-]\s*(.+)/);
     const alt  = trimmed.match(/^(\d+(?:\.\d+)?)\/10/);
     if (m100 && !scoreValue) { scoreValue = m100[1]; scoreLabel = m100[2].trim(); continue; }
     if (m10  && !scoreValue) { scoreValue = m10[1];  scoreLabel = m10[2].trim();  continue; }
     if (alt  && !scoreValue) {
       scoreValue = alt[1];
-      scoreLabel = trimmed.replace(alt[0], '').replace(/^\s*[–\-]\s*/, '').trim();
+      scoreLabel = trimmed.replace(alt[0], '').replace(/^\s*[–-]\s*/, '').trim();
       continue;
     }
     if (trimmed) factors.push(trimmed);
