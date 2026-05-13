@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.10.0](https://github.com/fitglue/web/compare/v11.9.0...v11.10.0) (2026-05-13)
+
+
+### Features
+
+* **pending-inputs:** add handling for activities without exercises and update UI accordingly ([ac55f4c](https://github.com/fitglue/web/commit/ac55f4c79e0207c09fcff3a127df0031b751676f))
+
 ## [11.9.0](https://github.com/fitglue/web/compare/v11.8.0...v11.9.0) (2026-05-13)
 
 
