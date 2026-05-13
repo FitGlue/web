@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.9.0](https://github.com/fitglue/web/compare/v11.8.0...v11.9.0) (2026-05-13)
+
+
+### Features
+
+* **showcase:** add hybrid race breakdown with animated bars and Race export tab ([0593fc3](https://github.com/fitglue/web/commit/0593fc34bc8967e4e9c9ca17933bc359170706a7))
+
+
+### Bug Fixes
+
+* **showcase:** tighten export card layout and share button alignment ([32bd45d](https://github.com/fitglue/web/commit/32bd45d92efb73f2efe92ce5f1ef541c2d1ac3f9))
+
 ## [11.8.0](https://github.com/fitglue/web/compare/v11.7.0...v11.8.0) (2026-05-12)
 
 
