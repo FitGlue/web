@@ -5751,3 +5751,243 @@ body:has(.showcase-page)>footer.footer {
   text-align: center;
   padding: 40px 20px;
 }
+
+/* ========================================
+   EFFORT SCORE — redesigned
+   ======================================== */
+.effort-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.effort-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.effort-score-num {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.effort-bar-track {
+  width: 100%;
+  height: 7px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.effort-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.9s ease;
+}
+
+.effort-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.1rem;
+}
+
+.effort-chip {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+}
+
+/* ========================================
+   STREAK TRACKER — redesigned
+   ======================================== */
+.streak-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.streak-hero {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.streak-flame {
+  font-size: 2rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(251,146,60,0.5));
+}
+
+.streak-count-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.streak-count {
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #fb923c, #ef4444);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+
+.streak-count-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+}
+
+.streak-pb-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  background: rgba(251,191,36,0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(251,191,36,0.25);
+  width: fit-content;
+}
+
+.streak-details {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.streak-details li {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.55);
+}
+
+/* ========================================
+   TRAINING LOAD — zone markers
+   ======================================== */
+.training-load-context {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+  margin: 0.1rem 0 0.4rem;
+}
+
+.training-load-scale {
+  position: relative;
+}
+
+.training-load-marker {
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: calc(100% + 6px);
+  background: rgba(255,255,255,0.18);
+  pointer-events: none;
+}
+
+.training-load-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.3);
+  margin-top: 0.3rem;
+  letter-spacing: 0.03em;
+}
+
+/* ========================================
+   DISTANCE MILESTONES — redesigned
+   ======================================== */
+.milestone-hit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.milestone-confetti-row {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.milestone-hit-km {
+  font-size: 2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.milestone-hit-sub {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 0.25rem;
+}
+
+.milestone-hit-stats {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.milestone-hit-stat {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+}
+
+.milestone-hit-delta {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.45);
+}
+
+.milestone-progress-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.milestone-total-km {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.milestone-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.milestone-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #4CC9F0, #9D4EDD);
+  transition: width 0.9s ease;
+}
+
+.milestone-next-label {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.milestone-delta {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+}
