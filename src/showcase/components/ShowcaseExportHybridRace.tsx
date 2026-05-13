@@ -100,7 +100,6 @@ const HybridRaceExportCard = React.forwardRef<HTMLDivElement, CardProps>(
     const hasSplit = showSplit && runs > 0 && stns > 0;
     const isClear  = bgStyle === null;
     const textShadow  = isClear ? '0 2px 12px rgba(0,0,0,0.9)' : undefined;
-    const totalGrad   = `linear-gradient(135deg, ${stnColor}, ${runColor})`;
 
     const cardStyle: React.CSSProperties = {
       width: `${cardShape.widthPct}%`,
@@ -236,8 +235,7 @@ const HybridRaceExportCard = React.forwardRef<HTMLDivElement, CardProps>(
             <span style={{ fontSize: 24 * cs, fontWeight: 700, color: '#fff', textShadow }}>Total Time</span>
             <span style={{
               fontSize: 50 * cs, fontWeight: 900, lineHeight: 1,
-              background: totalGrad,
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              color: stnColor,
             }}>
               {fmtTotal(total)}
             </span>
