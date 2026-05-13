@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.11.0](https://github.com/fitglue/web/compare/v11.10.0...v11.11.0) (2026-05-13)
+
+
+### Features
+
+* **showcase:** redesign enricher sections and standardise chart stats ([7112c4a](https://github.com/fitglue/web/commit/7112c4a85d88e5d2cb4833f0876cb49c13e523e5))
+
+
+### Bug Fixes
+
+* **showcase:** remove useless escape characters in EffortSection regex ([c8f6ccf](https://github.com/fitglue/web/commit/c8f6ccf6bd1cac9dbcd7d98bfc7884cf3404241b))
+
 ## [11.10.0](https://github.com/fitglue/web/compare/v11.9.0...v11.10.0) (2026-05-13)
 
 
