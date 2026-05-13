@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.12.0](https://github.com/fitglue/web/compare/v11.11.0...v11.12.0) (2026-05-13)
+
+
+### Features
+
+* **showcase:** add shape, header toggle, and transparent bg to hybrid race export ([7fa17e5](https://github.com/fitglue/web/commit/7fa17e51bd2ea670c43f28846f42b7cc7de00039))
+* **showcase:** add text colour picker to stats and charts export tabs ([e0e2fd1](https://github.com/fitglue/web/commit/e0e2fd1c7ea20c47ee05def2aed1b16715305eb6))
+
+
+### Bug Fixes
+
+* **showcase:** fix race export download button, content scaling, fonts, and dual colours ([345a6b0](https://github.com/fitglue/web/commit/345a6b029f627606b7095ca81c00a7ba269fbdaa))
+* **showcase:** use solid colour for total time — gradient text fails in html-to-image ([27ab17e](https://github.com/fitglue/web/commit/27ab17e993de9eec873eb512f042e4830aff824f))
+
 ## [11.11.0](https://github.com/fitglue/web/compare/v11.10.0...v11.11.0) (2026-05-13)
 
 
