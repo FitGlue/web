@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.13.0](https://github.com/fitglue/web/compare/v11.12.0...v11.13.0) (2026-05-14)
+
+
+### Features
+
+* **intervals:** add webhook URL setup instructions to connection flow UI ([527c6c7](https://github.com/fitglue/web/commit/527c6c7aaa32b060774b8a3169c675a9c7294343))
+* **upload:** enhance file upload panel with multi-file support and improved UI elements ([b720c07](https://github.com/fitglue/web/commit/b720c0783045b734080d811ca768dfac7e58cddd))
+
+
+### Bug Fixes
+
+* **pipeline:** prevent duplicate enricher adds, fix PR display and GPS route filter ([0fcc6e0](https://github.com/fitglue/web/commit/0fcc6e0e8fd49b1e28e9ed890a40d7ccad7e5267))
+* **showcase:** update slug paths to reflect new profile URL structure ([58e9e99](https://github.com/fitglue/web/commit/58e9e99890d7e3c7f110e7252c322c8f0dce39b5))
+
 ## [11.12.0](https://github.com/fitglue/web/compare/v11.11.0...v11.12.0) (2026-05-13)
 
 
