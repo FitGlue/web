@@ -55,7 +55,7 @@ export const AdminOverview: React.FC = () => {
           <Stack gap="xs">
             <Text variant="muted">Success</Text>
             <Stack direction="horizontal" gap="sm" align="center">
-              <Heading level={2}>{stats.recentExecutions.success}</Heading>
+              <Heading level={2}>{stats.recentExecutions?.success ?? 0}</Heading>
               <Badge variant="success" size="sm">✓</Badge>
             </Stack>
           </Stack>
@@ -64,8 +64,8 @@ export const AdminOverview: React.FC = () => {
           <Stack gap="xs">
             <Text variant="muted">Failed</Text>
             <Stack direction="horizontal" gap="sm" align="center">
-              <Heading level={2}>{stats.recentExecutions.failed}</Heading>
-              {stats.recentExecutions.failed > 0 && <Badge variant="error" size="sm">!</Badge>}
+              <Heading level={2}>{stats.recentExecutions?.failed ?? 0}</Heading>
+              {(stats.recentExecutions?.failed ?? 0) > 0 && <Badge variant="error" size="sm">!</Badge>}
             </Stack>
           </Stack>
         </Card>
@@ -73,8 +73,8 @@ export const AdminOverview: React.FC = () => {
           <Stack gap="xs">
             <Text variant="muted">Started</Text>
             <Stack direction="horizontal" gap="sm" align="center">
-              <Heading level={2}>{stats.recentExecutions.started}</Heading>
-              {stats.recentExecutions.started > 0 && <Badge variant="info" size="sm">⏳</Badge>}
+              <Heading level={2}>{stats.recentExecutions?.started ?? 0}</Heading>
+              {(stats.recentExecutions?.started ?? 0) > 0 && <Badge variant="info" size="sm">⏳</Badge>}
             </Stack>
           </Stack>
         </Card>

@@ -21,6 +21,9 @@ export interface UseAdminPipelineRunsResult {
   loadMore: () => Promise<void>;
 }
 
+// The schema's ListPipelineRunsAdminResponse doesn't yet declare `stats` or
+// `hasMore` — the server returns them but they're not in the proto. This local
+// type captures the full server response until the proto is updated.
 interface PipelineRunsResponse {
   runs: AdminPipelineRun[];
   stats: PipelineRunStats;
@@ -28,9 +31,6 @@ interface PipelineRunsResponse {
   hasMore: boolean;
 }
 
-/**
- * Hook for fetching admin pipeline runs across all users
- */
 export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
   const [runs, setRuns] = useState<AdminPipelineRun[]>([]);
   const [stats, setStats] = useState<PipelineRunStats | null>(null);
@@ -39,22 +39,24 @@ export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [hasMore, setHasMore] = useState(false);
 
-  // Use shared atom for selected pipeline run
   const [selectedRun, setSelectedRun] = useAtom(selectedPipelineRunDetailAtom);
-
   const filters = useAtomValue(pipelineRunFiltersAtom);
 
   const fetchRuns = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const params = new URLSearchParams();
-      if (filters.status) params.set('status', filters.status);
-      if (filters.source) params.set('source', filters.source);
-      if (filters.userId) params.set('userId', filters.userId);
-      params.set('limit', String(filters.limit || 50));
-
-      const { data } = await adminClient.GET(`/pipeline-runs?${params.toString()}` as never);
+      const { data } = await adminClient.GET('/pipeline-runs', {
+        params: {
+          query: {
+            status: filters.status,
+            source: filters.source,
+            userId: filters.userId,
+            limit: filters.limit || 50,
+          },
+        },
+      });
+      // Cast needed: server returns stats+hasMore+nextCursor not yet in proto.
       const typedData = data as unknown as PipelineRunsResponse;
       setRuns(typedData.runs);
       setStats(typedData.stats);
@@ -73,14 +75,17 @@ export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
 
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (filters.status) params.set('status', filters.status);
-      if (filters.source) params.set('source', filters.source);
-      if (filters.userId) params.set('userId', filters.userId);
-      params.set('limit', String(filters.limit || 50));
-      params.set('cursor', cursor);
-
-      const { data } = await adminClient.GET(`/pipeline-runs?${params.toString()}` as never);
+      const { data } = await adminClient.GET('/pipeline-runs', {
+        params: {
+          query: {
+            status: filters.status,
+            source: filters.source,
+            userId: filters.userId,
+            limit: filters.limit || 50,
+            pageToken: cursor,
+          },
+        },
+      });
       const typedData = data as unknown as PipelineRunsResponse;
       setRuns(prev => [...prev, ...typedData.runs]);
       setCursor(typedData.nextCursor);

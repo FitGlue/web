@@ -44,16 +44,13 @@ const getInputDisplayInfo = (
 
     let timestamp = '';
     if (input.createdAt) {
-        const date = new Date(input.createdAt);
-        if (!isNaN(date.getTime())) {
-            timestamp = date.toLocaleString(undefined, {
-                weekday: 'short',
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-            });
-        }
+        timestamp = input.createdAt.toLocaleString(undefined, {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+        });
     }
 
     return { sourceName, sourceIcon, pipelineName, timestamp };
@@ -75,16 +72,10 @@ const ACTIVITY_TYPE_ICONS: Record<string, string> = {
     SNOWBOARDING: '🏂',
 };
 
-const formatActivityType = (raw: string): string => {
-    return raw
-        .replace(/^ACTIVITY_TYPE_/, '')
-        .split('_')
-        .map(w => w.charAt(0) + w.slice(1).toLowerCase())
-        .join(' ');
-};
 
-const formatSourceStartTime = (iso: string): string => {
-    const date = new Date(iso);
+const formatSourceStartTime = (value: Date | undefined): string => {
+    if (!value) return '';
+    const date = value instanceof Date ? value : new Date(value);
     if (isNaN(date.getTime())) return '';
     return date.toLocaleString(undefined, {
         weekday: 'short',
@@ -370,7 +361,7 @@ const PendingInputsPage: React.FC = () => {
                     renderItem={(input) => {
                         const displayInfo = getInputDisplayInfo(input, pipelines, getSourceInfo);
                         const isAutoPopulated = input.autoPopulated === true;
-                        const autoDeadline = input.autoDeadline ? new Date(input.autoDeadline) : null;
+                        const autoDeadline = input.autoDeadline ?? null;
                         const enricherId = input.enricherProviderId || '';
                         const enricherInfo = enrichers.find(e => e.id === enricherId.toLowerCase());
                         const enricherName = enricherInfo?.name || (enricherId ? enricherId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'Unknown Enricher');
@@ -515,7 +506,7 @@ const PendingInputsPage: React.FC = () => {
 
                                 {input.createdAt && (
                                     <Paragraph muted size="sm" centered>
-                                        Created: {new Date(input.createdAt).toLocaleString()}
+                                        Created: {input.createdAt.toLocaleString()}
                                     </Paragraph>
                                 )}
                             </GlowCard>

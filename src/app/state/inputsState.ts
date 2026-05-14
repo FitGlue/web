@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { PendingInput as BasePendingInput } from '../services/InputsService';
+import type { PendingInput as ProtoPendingInput } from '../../types/pb/models/pipeline/pending_input';
 
 /** Structured display configuration parsed from provider_metadata display.* keys */
 export interface DisplayConfig {
@@ -10,16 +10,19 @@ export interface DisplayConfig {
     help?: string;
 }
 
-/** Extended PendingInput with parsed display config and additional fields */
-export interface PendingInput extends Omit<BasePendingInput, 'providerMetadata'> {
-    providerMetadata?: { [key: string]: string };
+/**
+ * PendingInput as it lives in the web app state.
+ *
+ * Extends the proto-generated type with:
+ * - `id`: the Firestore document ID (not in proto)
+ * - `displayConfig`: parsed from provider_metadata display.* keys
+ *
+ * All other fields (activityId, pipelineId, requiredFields, sourceDisplayName, etc.)
+ * come directly from the proto type and are kept in sync via `make generate`.
+ */
+export interface PendingInput extends ProtoPendingInput {
+    id?: string;
     displayConfig?: DisplayConfig;
-    updatedAt?: string;
-    userId?: string;
-    deadline?: string;
-    autoPopulated?: boolean;
-    providerType?: number;
-    pipelineId?: string;
 }
 
 export const pendingInputsAtom = atom<PendingInput[]>([]);

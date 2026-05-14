@@ -1,9 +1,6 @@
-/**
- * Admin State Management
- * Jotai atoms for admin dashboard state
- */
 import { atom } from 'jotai';
 import { UserTier } from '../../types/pb/user';
+import type { components } from '../../shared/api/schema-admin';
 
 // ============================================================================
 // Tab State
@@ -43,20 +40,25 @@ export const userFiltersAtom = atom<UserFilters>({});
 export const pipelineRunFiltersAtom = atom<PipelineRunFilters>({ limit: 50 });
 
 // ============================================================================
-// Admin Types
+// Admin Types — sourced from schema-admin where the schema is accurate.
+// Local types are kept where the server returns richer data than the proto
+// declares (see comments). These should shrink as the admin proto is updated.
 // ============================================================================
-export interface AdminStats {
-  totalUsers: number;
-  athleteUsers: number;
-  adminUsers: number;
-  totalSyncsThisMonth: number;
-  recentExecutions: {
-    success: number;
-    failed: number;
-    started: number;
-  };
-}
 
+// Direct schema aliases — these match exactly.
+export type AdminBoosterExecution = components['schemas']['BoosterExecution'];
+export type AdminDestinationOutcome = components['schemas']['DestinationOutcome'];
+export type AdminStats = components['schemas']['GetAdminStatsResponse'];
+
+// AdminPipelineRun: schema PipelineRun + userId which the server includes in
+// the admin response but is not declared in the proto yet.
+export type AdminPipelineRun = components['schemas']['PipelineRun'] & {
+  userId?: string;
+};
+
+// AdminUser and AdminUserDetail: kept local because the server returns
+// integrations, pipelineCount, pipelines[], activityCount, pendingInputs, etc.
+// that are not declared in UserProfile in the admin proto.
 export interface AdminUser {
   userId: string;
   createdAt: string;
@@ -96,43 +98,6 @@ export interface AdminUserDetail {
   activityCount: number;
   pendingInputCount: number;
   pendingInputs?: PendingInputDetail[];
-}
-
-
-
-export interface BoosterExecution {
-  providerName: string;
-  status: string;
-  durationMs: number;
-  metadata?: Record<string, string>;
-  error?: string;
-}
-
-export interface DestinationOutcome {
-  destination: string;
-  status: string;
-  externalId?: string;
-  error?: string;
-  completedAt?: string;
-}
-
-export interface AdminPipelineRun {
-  id: string;
-  userId: string;
-  pipelineId: string;
-  activityId: string;
-  source: string;
-  sourceActivityId: string;
-  title: string;
-  description?: string;
-  type: string;
-  startTime: string;
-  status: string;
-  statusMessage?: string;
-  boosters: BoosterExecution[];
-  destinations: DestinationOutcome[];
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface Pagination {

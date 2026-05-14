@@ -10,6 +10,7 @@ import {
     PendingInput,
     DisplayConfig,
 } from '../state/inputsState';
+import { PendingInput_Status } from '../../types/pb/models/pipeline/pending_input';
 
 export type { PendingInput, DisplayConfig };
 
@@ -25,20 +26,14 @@ function parseDisplayConfig(metadata?: Record<string, string>): DisplayConfig | 
     return (config.fieldLabels || config.fieldTypes || config.summary || config.title || config.help) ? config : undefined;
 }
 
-// Helper to convert Firestore Timestamp to ISO string
-const toISOString = (value: unknown): string | undefined => {
+/** Convert a Firestore Timestamp, Date, or ISO string to a Date object */
+const toDate = (value: unknown): Date | undefined => {
     if (!value) return undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const v = value as any;
-    if (v.toDate && typeof v.toDate === 'function') {
-        return v.toDate().toISOString();
-    }
-    if (v instanceof Date) {
-        return v.toISOString();
-    }
-    if (typeof v === 'string') {
-        return v;
-    }
+    if (v.toDate && typeof v.toDate === 'function') return v.toDate() as Date;
+    if (v instanceof Date) return v;
+    if (typeof v === 'string') { const d = new Date(v); return isNaN(d.getTime()) ? undefined : d; }
     return undefined;
 };
 
@@ -49,6 +44,7 @@ const toISOString = (value: unknown): string | undefined => {
  * Uses the shared useFirestoreListener for common functionality.
  *
  * Architecture: Firebase SDK for reads, REST for mutations only.
+ * PendingInput is typed from the proto-generated type — keep in sync via `make generate`.
  */
 export const useRealtimeInputs = () => {
     const [inputs, setInputs] = useAtom(pendingInputsAtom);
@@ -73,24 +69,36 @@ export const useRealtimeInputs = () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const querySnapshot = snapshot as any;
         return querySnapshot.docs.map((doc: { id: string; data: () => Record<string, unknown> }) => {
-            const data = doc.data();
+            const d = doc.data();
+            const providerMetadata = (d.provider_metadata ?? d.providerMetadata ?? {}) as Record<string, string>;
             const input: PendingInput = {
                 id: doc.id,
-                activityId: (data.activity_id || data.activityId || doc.id) as string,
-                status: data.status as number,
-                requiredFields: (data.required_fields || data.requiredFields || []) as string[],
-                inputData: (data.input_data || data.inputData || {}) as Record<string, string>,
-                createdAt: toISOString(data.created_at) || toISOString(data.createdAt),
-                updatedAt: toISOString(data.updated_at) || toISOString(data.updatedAt),
-                deadline: toISOString(data.deadline),
-                autoPopulated: (data.auto_populated || data.autoPopulated || false) as boolean,
-                providerType: (data.provider_type || data.providerType) as number | undefined,
-                providerMetadata: (data.provider_metadata || data.providerMetadata || {}) as { [key: string]: string },
-                sourceDisplayName: (data.source_display_name || data.sourceDisplayName) as string | undefined,
-                sourceActivityType: (data.source_activity_type || data.sourceActivityType) as string | undefined,
-                sourceStartTime: toISOString(data.source_start_time) || toISOString(data.sourceStartTime),
+                // Core identity
+                activityId:               String(d.activity_id ?? d.activityId ?? doc.id),
+                userId:                   String(d.user_id ?? d.userId ?? ''),
+                status:                   (d.status ?? PendingInput_Status.STATUS_WAITING) as PendingInput_Status,
+                pipelineId:               String(d.pipeline_id ?? d.pipelineId ?? ''),
+                enricherProviderId:       String(d.enricher_provider_id ?? d.enricherProviderId ?? ''),
+                linkedActivityId:         String(d.linked_activity_id ?? d.linkedActivityId ?? ''),
+                originalPayloadUri:       String(d.original_payload_uri ?? d.originalPayloadUri ?? ''),
+                // Fields
+                requiredFields:           (d.required_fields ?? d.requiredFields ?? []) as string[],
+                inputData:                (d.input_data ?? d.inputData ?? {}) as Record<string, string>,
+                providerMetadata,
+                // Booleans
+                autoPopulated:            Boolean(d.auto_populated ?? d.autoPopulated ?? false),
+                continuedWithoutResolution: Boolean(d.continued_without_resolution ?? d.continuedWithoutResolution ?? false),
+                // Timestamps
+                createdAt:                toDate(d.created_at ?? d.createdAt),
+                updatedAt:                toDate(d.updated_at ?? d.updatedAt),
+                completedAt:              toDate(d.completed_at ?? d.completedAt),
+                autoDeadline:             toDate(d.auto_deadline ?? d.autoDeadline),
+                // Source activity display metadata (populated for FIT file uploads)
+                sourceDisplayName:        String(d.source_display_name ?? d.sourceDisplayName ?? ''),
+                sourceActivityType:       String(d.source_activity_type ?? d.sourceActivityType ?? ''),
+                sourceStartTime:          toDate(d.source_start_time ?? d.sourceStartTime),
             };
-            input.displayConfig = parseDisplayConfig(input.providerMetadata);
+            input.displayConfig = parseDisplayConfig(providerMetadata);
             return input;
         });
     }, []);

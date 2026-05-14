@@ -1,34 +1,14 @@
 import { client } from '../../shared/api/client';
+import type { components } from '../../shared/api/schema-client';
 
-// These types are not yet in the gateway OpenAPI spec. Defined locally.
-export interface PendingInput {
-  id?: string;
-  activityId: string;
-  pipelineId?: string;
-  enricherType?: string;
-  enricherProviderId?: string;
-  prompt?: string;
-  options?: Array<{ label: string; value: string }>;
-  requiredFields?: string[];
-  createdAt?: string;
-  autoDeadline?: string;
-  autoPopulated?: boolean;
-  providerMetadata?: Record<string, string>;
-  providerType?: number;
-  /** Numeric status from Firestore */
-  status?: number;
-  /** Input data collected from the user */
-  inputData?: Record<string, string>;
-  /** Display metadata about the source activity (populated for FIT file uploads) */
-  sourceDisplayName?: string;
-  sourceActivityType?: string;
-  sourceStartTime?: string;
-}
+// PendingInput is a Firestore document — typed from the proto-generated TS type.
+export type { PendingInput } from '../../types/pb/models/pipeline/pending_input';
+
+type SubmitInputRequest = components['schemas']['SubmitInputGatewayRequest'];
+type SetFCMTokenRequest = components['schemas']['SetFCMTokenGatewayRequest'];
 
 export interface InputResolutionRequest {
   activityId: string;
-  enricherType?: string;
-  resolution?: string;
   inputData?: Record<string, string>;
 }
 
@@ -40,26 +20,31 @@ export interface IInputsService {
 
 export const InputsService: IInputsService = {
   async resolveInput(request) {
+    const body: SubmitInputRequest = {
+      inputId: request.activityId,
+      inputData: request.inputData ?? {},
+    };
     await client.POST('/users/me/pending-inputs/{inputId}/submit', {
       params: { path: { inputId: request.activityId } },
-      body: request as never,
+      body,
     });
     return true;
   },
 
   async setFCMToken(token: string) {
-    await client.POST('/users/me/fcm-token', {
-      body: { token } as never,
-    });
+    const body: SetFCMTokenRequest = { token };
+    await client.POST('/users/me/fcm-token', { body });
     return true;
   },
 
   async dismissInput(activityId: string) {
-    // No dedicated dismiss endpoint exists. Submit with empty inputData so the
-    // enricher treats it as skipped and the pipeline proceeds.
+    const body: SubmitInputRequest = {
+      inputId: activityId,
+      inputData: {},
+    };
     await client.POST('/users/me/pending-inputs/{inputId}/submit', {
       params: { path: { inputId: activityId } },
-      body: { activityId, inputData: {} } as never,
+      body,
     });
     return true;
   },

@@ -1,5 +1,8 @@
 import { useState, useCallback } from 'react';
 import { client } from '../../shared/api/client';
+import type { components } from '../../shared/api/schema-client';
+
+type ConnectionActionRequest = components['schemas']['ConnectionActionGatewayRequest'];
 
 export interface ActionDefinition {
     id: string;
@@ -49,9 +52,10 @@ export const useConnectionActions = (provider: string) => {
         });
 
         try {
+            const body: ConnectionActionRequest = { provider, action: actionId };
             const { data } = await client.POST('/users/me/connections/{provider}/actions', {
                 params: { path: { provider } },
-                body: { action: actionId } as never,
+                body,
             });
 
             // Mark action as completed (it's been queued for background processing)

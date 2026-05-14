@@ -52,7 +52,8 @@ const ConnectionSuccessPage: React.FC = () => {
     const icon = integration?.icon || '✓';
 
     const requiresWebhookSetup = id === 'hevy';
-    const webhookUrl = useMemo(() => requiresWebhookSetup && id ? getWebhookUrl(id) : '', [id, requiresWebhookSetup]);
+    const requiresWebhookUrlOnly = id === 'intervals';
+    const webhookUrl = useMemo(() => (requiresWebhookSetup || requiresWebhookUrlOnly) && id ? getWebhookUrl(id) : '', [id, requiresWebhookSetup, requiresWebhookUrlOnly]);
 
     // Realtime hook auto-refreshes, but we can still trigger manual refresh
     useEffect(() => {
@@ -184,7 +185,33 @@ const ConnectionSuccessPage: React.FC = () => {
                     </Stack>
                 )}
 
-                {!ingressApiKey && (
+                {requiresWebhookUrlOnly && (
+                    <Stack gap="md">
+                        <Heading level={2}>🔧 One More Step</Heading>
+                        <Paragraph>
+                            To receive activities from Intervals.icu, register this webhook URL in your{' '}
+                            <strong>Intervals.icu account settings</strong>:
+                        </Paragraph>
+
+                        <Stack gap="xs">
+                            <Paragraph size="sm" muted>
+                                Go to <strong>Settings → Developer → Webhook URL</strong> and paste:
+                            </Paragraph>
+                            <Stack direction="horizontal" align="center" gap="sm">
+                                <Code>{webhookUrl}</Code>
+                                <Button variant="secondary" onClick={handleCopyUrl}>
+                                    {copiedUrl ? '✓ Copied!' : '📋 Copy'}
+                                </Button>
+                            </Stack>
+                        </Stack>
+
+                        <Paragraph size="sm" muted>
+                            Once saved, FitGlue will be notified whenever you log an activity in Intervals.icu.
+                        </Paragraph>
+                    </Stack>
+                )}
+
+                {!ingressApiKey && !requiresWebhookUrlOnly && (
                     <Paragraph muted centered>
                         Your activities will now sync automatically.
                     </Paragraph>

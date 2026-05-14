@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout, Stack } from '../components/library/layout';
 import {
@@ -12,6 +12,14 @@ import { useConnectionActions } from '../hooks/useConnectionActions';
 import { IntegrationAuthType } from '../types/plugin';
 import { resolveEnum } from '../utils/resolveEnum';
 import '../components/library/ui/CardSkeleton.css';
+
+const getWebhookUrl = (integrationId: string): string => {
+    const hostname = window.location.hostname;
+    const baseUrl = (hostname.includes('dev.fitglue') || hostname === 'localhost')
+        ? 'https://dev.fitglue.tech'
+        : 'https://fitglue.tech';
+    return `${baseUrl}/api/webhooks/${integrationId}`;
+};
 
 interface IntegrationStatus {
     connected: boolean;
@@ -30,6 +38,10 @@ const ConnectionDetailPage: React.FC = () => {
     const [disconnecting, setDisconnecting] = useState(false);
     const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [copiedWebhook, setCopiedWebhook] = useState(false);
+
+    const requiresWebhookUrlOnly = id === 'intervals';
+    const webhookUrl = useMemo(() => requiresWebhookUrlOnly && id ? getWebhookUrl(id) : '', [id, requiresWebhookUrlOnly]);
 
     const integration = registryIntegrations.find(i => i.id === id);
     const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[id || ''];
@@ -68,6 +80,13 @@ const ConnectionDetailPage: React.FC = () => {
         } catch {
             toast.error('Failed', 'Could not copy to clipboard');
         }
+    };
+
+    const handleCopyWebhookUrl = async () => {
+        if (!webhookUrl) return;
+        await navigator.clipboard.writeText(webhookUrl);
+        setCopiedWebhook(true);
+        setTimeout(() => setCopiedWebhook(false), 2000);
     };
 
     const handleReconnect = () => {
@@ -235,6 +254,29 @@ const ConnectionDetailPage: React.FC = () => {
                                     <Paragraph size="sm" muted>
                                         Activities from {integration.name} are synced through the FitGlue mobile app.
                                     </Paragraph>
+                                </Stack>
+                            </Stack>
+                        </Card>
+                    )}
+
+                    {/* Intervals webhook URL reminder */}
+                    {requiresWebhookUrlOnly && (
+                        <Card variant="default">
+                            <Stack gap="md">
+                                <Stack direction="horizontal" gap="md" align="start">
+                                    <Paragraph inline>🔗</Paragraph>
+                                    <Stack gap="xs">
+                                        <Paragraph bold>Webhook Setup Required</Paragraph>
+                                        <Paragraph size="sm" muted>
+                                            Register this URL in <strong>Intervals.icu → Settings → Developer → Webhook URL</strong> so FitGlue is notified when you log activities.
+                                        </Paragraph>
+                                    </Stack>
+                                </Stack>
+                                <Stack direction="horizontal" align="center" gap="sm">
+                                    <Code>{webhookUrl}</Code>
+                                    <Button variant="secondary" size="small" onClick={handleCopyWebhookUrl}>
+                                        {copiedWebhook ? '✓ Copied!' : 'Copy'}
+                                    </Button>
                                 </Stack>
                             </Stack>
                         </Card>

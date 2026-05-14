@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { adminClient } from '../../../shared/api/admin-client';
+import type { components } from '../../../shared/api/schema-admin';
 import {
   AdminUser,
   AdminUserDetail,
@@ -9,6 +10,8 @@ import {
   selectedUserDetailAtom,
   selectedUserLoadingAtom,
 } from '../../state/adminState';
+
+type UpdateUserRequest = components['schemas']['UpdateUserAdminRequest'];
 
 export interface UseAdminUsersResult {
   users: AdminUser[];
@@ -83,9 +86,13 @@ export function useAdminUsers(): UseAdminUsersResult {
 
   const updateUser = useCallback(async (userId: string, updates: Partial<AdminUser>) => {
     try {
+      const body: UpdateUserRequest = {
+        id: userId,
+        accessEnabled: updates.accessEnabled,
+      };
       await adminClient.PUT('/users/{id}', {
         params: { path: { id: userId } },
-        body: updates as never,
+        body,
       });
       // Refresh the users list
       await fetchUsers(pagination?.page || 1);

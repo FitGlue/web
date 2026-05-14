@@ -11,15 +11,16 @@ import {
 import { useAdminPipelineRuns } from '../../hooks/admin';
 import { pipelineRunFiltersAtom, AdminPipelineRun, selectedPipelineRunIdAtom } from '../../state/adminState';
 
-// Status badge variant mapping
+// Status badge variant mapping — keys match schema enum strings.
 const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 'default'> = {
-  'Synced': 'success',
-  'In Progress': 'info',
-  'Pending': 'warning',
-  'Partial': 'warning',
-  'Failed': 'error',
-  'Skipped': 'default',
-  'Archived': 'default',
+  'PIPELINE_RUN_STATUS_SYNCED': 'success',
+  'PIPELINE_RUN_STATUS_RUNNING': 'info',
+  'PIPELINE_RUN_STATUS_PENDING': 'warning',
+  'PIPELINE_RUN_STATUS_PARTIAL': 'warning',
+  'PIPELINE_RUN_STATUS_FAILED': 'error',
+  'PIPELINE_RUN_STATUS_SKIPPED': 'default',
+  'PIPELINE_RUN_STATUS_ARCHIVED': 'default',
+  'PIPELINE_RUN_STATUS_TIER_BLOCKED': 'warning',
 };
 
 /**
@@ -55,7 +56,7 @@ export const AdminPipelineRuns: React.FC = () => {
   }, [setFilters, fetchRuns]);
 
   const handleRowClick = useCallback((run: AdminPipelineRun) => {
-    setSelectedRunId(run.id);
+    setSelectedRunId(run.id ?? null);
     selectRun(run);
   }, [setSelectedRunId, selectRun]);
 
@@ -79,7 +80,7 @@ export const AdminPipelineRuns: React.FC = () => {
       key: 'createdAt',
       header: 'Time',
       render: (run) => (
-        <Text variant="small">{formatRelativeTime(run.createdAt)}</Text>
+        <Text variant="small">{formatRelativeTime(run.createdAt ?? null)}</Text>
       ),
       width: '100px',
     },
@@ -97,7 +98,7 @@ export const AdminPipelineRuns: React.FC = () => {
       key: 'userId',
       header: 'User',
       render: (run) => (
-        <Code>{run.userId.slice(0, 8)}...</Code>
+        <Code>{(run.userId ?? 'unknown').slice(0, 8)}...</Code>
       ),
       width: '120px',
     },
@@ -105,7 +106,7 @@ export const AdminPipelineRuns: React.FC = () => {
       key: 'status',
       header: 'Status',
       render: (run) => (
-        <Badge variant={statusVariants[run.status] || 'default'} size="sm">
+        <Badge variant={statusVariants[run.status ?? ''] || 'default'} size="sm">
           {run.status}
         </Badge>
       ),
@@ -116,8 +117,8 @@ export const AdminPipelineRuns: React.FC = () => {
       header: 'Boosters',
       render: (run) => (
         <Text variant="small">
-          {run.boosters.length > 0
-            ? run.boosters.map(b => b.providerName).join(', ')
+          {(run.boosters ?? []).length > 0
+            ? (run.boosters ?? []).map(b => b.providerName).join(', ')
             : '-'
           }
         </Text>
@@ -130,10 +131,10 @@ export const AdminPipelineRuns: React.FC = () => {
       header: 'Destinations',
       render: (run) => (
         <Stack direction="horizontal" gap="xs">
-          {run.destinations.map((d, i) => (
+          {(run.destinations ?? []).map((d, i) => (
             <Badge
               key={i}
-              variant={d.status === 'Success' || d.status === '2' ? 'success' : d.status === 'Failed' || d.status === '3' ? 'error' : 'default'}
+              variant={d.status === 'DESTINATION_STATUS_SUCCESS' ? 'success' : d.status === 'DESTINATION_STATUS_FAILED' ? 'error' : 'default'}
               size="sm"
             >
               {d.destination}

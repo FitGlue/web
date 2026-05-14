@@ -4,19 +4,20 @@ import { Stack, Grid } from '../library/layout';
 import { Modal, Badge, Code, Card, Text, Heading, KeyValue, Paragraph } from '../library/ui';
 import { selectedPipelineRunIdAtom, selectedPipelineRunDetailAtom } from '../../state/adminState';
 
-// Status badge variant mapping
+// Status badge variant mapping — keys match schema enum strings.
 const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 'default'> = {
-  'Synced': 'success',
-  'In Progress': 'info',
-  'Pending': 'warning',
-  'Partial': 'warning',
-  'Failed': 'error',
-  'Skipped': 'default',
-  'Archived': 'default',
-  'SUCCESS': 'success',
-  'FAILED': 'error',
-  '2': 'success',
-  '3': 'error',
+  'PIPELINE_RUN_STATUS_SYNCED': 'success',
+  'PIPELINE_RUN_STATUS_RUNNING': 'info',
+  'PIPELINE_RUN_STATUS_PENDING': 'warning',
+  'PIPELINE_RUN_STATUS_PARTIAL': 'warning',
+  'PIPELINE_RUN_STATUS_FAILED': 'error',
+  'PIPELINE_RUN_STATUS_SKIPPED': 'default',
+  'PIPELINE_RUN_STATUS_ARCHIVED': 'default',
+  'PIPELINE_RUN_STATUS_TIER_BLOCKED': 'warning',
+  'DESTINATION_STATUS_SUCCESS': 'success',
+  'DESTINATION_STATUS_FAILED': 'error',
+  'DESTINATION_STATUS_PENDING': 'warning',
+  'DESTINATION_STATUS_SKIPPED': 'default',
 };
 
 /**
@@ -48,12 +49,12 @@ export const PipelineRunDetailModal: React.FC = () => {
           <Heading level={4}>Overview</Heading>
           <Grid cols={2}>
             <KeyValue label="Run ID" value={selectedRun.id} format="code" />
-            <KeyValue label="User ID" value={selectedRun.userId} format="code" />
+            <KeyValue label="User ID" value={selectedRun.userId ?? ''} format="code" />
             <KeyValue label="Pipeline ID" value={selectedRun.pipelineId} format="code" />
             <KeyValue label="Activity ID" value={selectedRun.activityId} format="code" />
             <Stack direction="horizontal" gap="sm" align="center">
               <Paragraph><strong>Status:</strong></Paragraph>
-              <Badge variant={statusVariants[selectedRun.status] || 'default'}>
+              <Badge variant={statusVariants[selectedRun.status ?? ''] || 'default'}>
                 {selectedRun.status}
               </Badge>
             </Stack>
@@ -75,18 +76,18 @@ export const PipelineRunDetailModal: React.FC = () => {
         {/* Booster Executions */}
         <Stack gap="sm">
           <Heading level={4}>Booster Executions</Heading>
-          {selectedRun.boosters.length === 0 ? (
+          {(selectedRun.boosters ?? []).length === 0 ? (
             <Text variant="muted">No boosters executed</Text>
           ) : (
             <Stack gap="sm">
-              {selectedRun.boosters.map((booster, index) => (
+              {(selectedRun.boosters ?? []).map((booster, index) => (
                 <Card key={index} variant="elevated">
                   <Stack direction="horizontal" justify="between" align="center">
                     <Stack gap="xs">
                       <Paragraph><strong>{booster.providerName}</strong></Paragraph>
                       <Text variant="small">{booster.durationMs}ms</Text>
                     </Stack>
-                    <Badge variant={statusVariants[booster.status] || 'default'}>
+                    <Badge variant={statusVariants[booster.status ?? ''] || 'default'}>
                       {booster.status}
                     </Badge>
                   </Stack>
@@ -102,11 +103,11 @@ export const PipelineRunDetailModal: React.FC = () => {
         {/* Destination Outcomes */}
         <Stack gap="sm">
           <Heading level={4}>Destination Outcomes</Heading>
-          {selectedRun.destinations.length === 0 ? (
+          {(selectedRun.destinations ?? []).length === 0 ? (
             <Text variant="muted">No destination outcomes</Text>
           ) : (
             <Stack gap="sm">
-              {selectedRun.destinations.map((dest, index) => (
+              {(selectedRun.destinations ?? []).map((dest, index) => (
                 <Card key={index} variant="elevated">
                   <Stack direction="horizontal" justify="between" align="center">
                     <Stack gap="xs">
@@ -115,8 +116,8 @@ export const PipelineRunDetailModal: React.FC = () => {
                         <Text variant="small">External ID: {dest.externalId}</Text>
                       )}
                     </Stack>
-                    <Badge variant={statusVariants[dest.status] || 'default'}>
-                      {dest.status === '2' ? 'Success' : dest.status === '3' ? 'Failed' : dest.status}
+                    <Badge variant={statusVariants[dest.status ?? ''] || 'default'}>
+                      {dest.status === 'DESTINATION_STATUS_SUCCESS' ? 'Success' : dest.status === 'DESTINATION_STATUS_FAILED' ? 'Failed' : dest.status}
                     </Badge>
                   </Stack>
                   {dest.error && (
