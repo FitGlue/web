@@ -19,6 +19,10 @@ export interface PendingInput {
   status?: number;
   /** Input data collected from the user */
   inputData?: Record<string, string>;
+  /** Display metadata about the source activity (populated for FIT file uploads) */
+  sourceDisplayName?: string;
+  sourceActivityType?: string;
+  sourceStartTime?: string;
 }
 
 export interface InputResolutionRequest {

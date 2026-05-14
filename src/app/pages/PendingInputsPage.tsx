@@ -59,6 +59,42 @@ const getInputDisplayInfo = (
     return { sourceName, sourceIcon, pipelineName, timestamp };
 };
 
+const ACTIVITY_TYPE_ICONS: Record<string, string> = {
+    RUN: '🏃',
+    RIDE: '🚴',
+    SWIM: '🏊',
+    WALK: '🚶',
+    HIKE: '🥾',
+    WEIGHT_TRAINING: '🏋️',
+    WORKOUT: '💪',
+    ROWING: '🚣',
+    TENNIS: '🎾',
+    GOLF: '⛳',
+    YOGA: '🧘',
+    SKIING: '⛷️',
+    SNOWBOARDING: '🏂',
+};
+
+const formatActivityType = (raw: string): string => {
+    return raw
+        .replace(/^ACTIVITY_TYPE_/, '')
+        .split('_')
+        .map(w => w.charAt(0) + w.slice(1).toLowerCase())
+        .join(' ');
+};
+
+const formatSourceStartTime = (iso: string): string => {
+    const date = new Date(iso);
+    if (isNaN(date.getTime())) return '';
+    return date.toLocaleString(undefined, {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+        hour: 'numeric',
+        minute: '2-digit',
+    });
+};
+
 
 const PendingInputsPage: React.FC = () => {
     const { inputs, loading, refresh } = useRealtimeInputs();
@@ -362,6 +398,17 @@ const PendingInputsPage: React.FC = () => {
                                                 <Paragraph inline>{displayInfo.sourceName}</Paragraph>
                                                 {displayInfo.pipelineName && (
                                                     <Paragraph inline muted size="sm">via {displayInfo.pipelineName}</Paragraph>
+                                                )}
+                                                {input.sourceDisplayName && (
+                                                    <Paragraph inline bold size="sm">
+                                                        {input.sourceActivityType
+                                                            ? (ACTIVITY_TYPE_ICONS[input.sourceActivityType.replace(/^ACTIVITY_TYPE_/, '')] || '🏅') + ' '
+                                                            : '🏅 '}
+                                                        {input.sourceDisplayName}
+                                                        {input.sourceStartTime && (
+                                                            <span style={{ fontWeight: 'normal', opacity: 0.7 }}>{' · '}{formatSourceStartTime(input.sourceStartTime)}</span>
+                                                        )}
+                                                    </Paragraph>
                                                 )}
                                             </Stack>
                                         </Stack>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../library/ui/Card';
 import { CardHeader } from '../library/ui/CardHeader';
@@ -7,7 +7,7 @@ import '../library/ui/CardSkeleton.css';
 import { Button } from '../library/ui/Button';
 import { Paragraph } from '../library/ui/Paragraph';
 import { Heading } from '../library/ui/Heading';
-import { Input, Textarea, FormField, FileInput, Select } from '../library/forms';
+import { Input, Textarea, FormField, Select } from '../library/forms';
 import { Stack } from '../library/layout/Stack';
 import { Grid } from '../library/layout/Grid';
 import { client } from '../../../shared/api/client';
@@ -17,30 +17,59 @@ import { useNerdMode } from '../../state/NerdModeContext';
 import { getEffectiveTier, TIER_ATHLETE, HOBBYIST_TIER_LIMITS } from '../../utils/tier';
 import './FileUploadPanel.css';
 
-/**
- * FileUploadPanel - Dashboard component for uploading FIT files
- */
+type QueueStatus = 'pending' | 'uploading' | 'success' | 'error';
+
+interface QueueItem {
+  id: string;
+  file: File;
+  status: QueueStatus;
+  errorMessage?: string;
+}
+
+const formatSize = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
+const STATUS_ICON: Record<QueueStatus, string> = {
+  pending: '⏳',
+  uploading: '⬆',
+  success: '✓',
+  error: '✕',
+};
+
+const STATUS_LABEL: Record<QueueStatus, string> = {
+  pending: 'Queued',
+  uploading: 'Uploading…',
+  success: 'Uploaded',
+  error: 'Failed',
+};
+
 export const FileUploadPanel: React.FC = () => {
   const navigate = useNavigate();
   const { pipelines, loading: pipelinesLoading } = useRealtimePipelines();
   const { user } = useUser();
+  const { isNerdMode } = useNerdMode();
 
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const [file, setFile] = useState<File | null>(null);
+  const [queue, setQueue] = useState<QueueItem[]>([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-
-  // Nerd Mode from shared context
-  const { isNerdMode } = useNerdMode();
   const [selectedPipelineId, setSelectedPipelineId] = useState('');
+
+  const isBulkMode = queue.length > 1;
+  const pendingCount = queue.filter(i => i.status === 'pending').length;
+  const successCount = queue.filter(i => i.status === 'success').length;
+  const errorCount = queue.filter(i => i.status === 'error').length;
+  const allDone = queue.length > 0 && pendingCount === 0 && !uploading;
 
   const hasFileUploadPipeline = pipelines.some((p: { source?: string }) =>
     p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload'
   );
 
-  // Filter to only file-upload pipelines for the selector
   const fileUploadPipelines = useMemo(() =>
     pipelines.filter((p: { source?: string; disabled?: boolean }) =>
       (p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload') && !p.disabled
@@ -48,7 +77,6 @@ export const FileUploadPanel: React.FC = () => {
     [pipelines]
   );
 
-  // Build options for the pipeline selector
   const pipelineOptions = useMemo(() =>
     fileUploadPipelines.map((p: { id: string; name?: string }) => ({
       value: p.id,
@@ -57,78 +85,100 @@ export const FileUploadPanel: React.FC = () => {
     [fileUploadPipelines]
   );
 
-  // Check if hobbyist is at the monthly sync limit
-  const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE && (user.syncCountThisMonth || 0) >= HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH;
+  const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE &&
+    (user.syncCountThisMonth || 0) >= HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH;
 
-  // Show skeleton while loading pipelines
-  if (pipelinesLoading) {
-    return <CardSkeleton variant="file-upload" />;
-  }
+  const handleFilesSelected = useCallback((files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const fitFiles = Array.from(files).filter(f => f.name.toLowerCase().endsWith('.fit'));
+    if (fitFiles.length === 0) return;
+    const newItems: QueueItem[] = fitFiles.map(f => ({
+      id: `${f.name}-${f.size}-${f.lastModified}`,
+      file: f,
+      status: 'pending',
+    }));
+    setQueue(prev => {
+      const existingIds = new Set(prev.map(i => i.id));
+      return [...prev, ...newItems.filter(i => !existingIds.has(i.id))];
+    });
+    if (inputRef.current) inputRef.current.value = '';
+  }, []);
 
-  // Hide if no file upload pipeline configured
-  if (!hasFileUploadPipeline) {
-    return null;
-  }
+  const handleDropzoneClick = () => {
+    if (!uploading) inputRef.current?.click();
+  };
 
-  const handleFileSelect = (selected: File) => {
-    if (selected.name.toLowerCase().endsWith('.fit')) {
-      setFile(selected);
-      setMessage(null);
-    } else {
-      setMessage({ type: 'error', text: 'Please select a .fit file' });
-      setFile(null);
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    handleFilesSelected(e.dataTransfer.files);
+  }, [handleFilesSelected]);
+
+  const removeItem = (id: string) => {
+    setQueue(prev => prev.filter(i => i.id !== id));
+  };
+
+  const clearQueue = () => {
+    setQueue([]);
+    setTitle('');
+    setDescription('');
+  };
+
+  const uploadOne = async (item: QueueItem): Promise<void> => {
+    const arrayBuffer = await item.file.arrayBuffer();
+    const bytes = new Uint8Array(arrayBuffer);
+    let binary = '';
+    bytes.forEach(byte => { binary += String.fromCharCode(byte); });
+    const base64Data = btoa(binary);
+
+    const payload: Record<string, string | undefined> = {
+      fitFileContent: base64Data,
+      title: (!isBulkMode && title) ? title : undefined,
+      description: (!isBulkMode && description) ? description : undefined,
+    };
+
+    if (isNerdMode && selectedPipelineId) {
+      payload.pipelineId = selectedPipelineId;
     }
+
+    await client.POST('/users/me/parse-fit', { body: payload as never });
   };
 
   const handleUpload = async () => {
-    if (!file) return;
-
+    if (queue.length === 0 || uploading) return;
     setUploading(true);
-    setMessage(null);
 
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const bytes = new Uint8Array(arrayBuffer);
-      let binary = '';
-      bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
-      const base64Data = btoa(binary);
+    for (const item of queue) {
+      if (item.status !== 'pending') continue;
 
-      const payload: Record<string, string | undefined> = {
-        fitFileContent: base64Data,
-        title: title || undefined,
-        description: description || undefined,
-      };
+      setQueue(prev => prev.map(i => i.id === item.id ? { ...i, status: 'uploading' } : i));
 
-      // Nerd Mode: target a specific pipeline
-      if (isNerdMode && selectedPipelineId) {
-        payload.pipelineId = selectedPipelineId;
+      try {
+        await uploadOne(item);
+        setQueue(prev => prev.map(i => i.id === item.id ? { ...i, status: 'success' } : i));
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Upload failed';
+        setQueue(prev => prev.map(i =>
+          i.id === item.id ? { ...i, status: 'error', errorMessage: message } : i
+        ));
       }
+    }
 
-      const { data } = await client.POST('/users/me/parse-fit', { body: payload as never });
-
-      const typedData = data as Record<string, unknown>;
-
-      setMessage({
-        type: 'success',
-        text: (typedData?.message as string) || 'Activity uploaded and queued for processing!'
-      });
-
-      setFile(null);
+    setUploading(false);
+    if (!isBulkMode) {
       setTitle('');
       setDescription('');
-    } catch (error) {
-      console.error('Upload error:', error);
-      setMessage({
-        type: 'error',
-        text: error instanceof Error ? error.message : 'Upload failed'
-      });
-    } finally {
-      setUploading(false);
     }
   };
 
+  const retryFailed = () => {
+    setQueue(prev => prev.map(i =>
+      i.status === 'error' ? { ...i, status: 'pending', errorMessage: undefined } : i
+    ));
+  };
 
-  // Show upgrade prompt if at tier limit
+  if (pipelinesLoading) return <CardSkeleton variant="file-upload" />;
+  if (!hasFileUploadPipeline) return null;
+
   if (isAtLimit) {
     return (
       <Card>
@@ -147,52 +197,158 @@ export const FileUploadPanel: React.FC = () => {
     );
   }
 
+  const uploadingIndex = queue.filter(i => i.status === 'success').length + 1;
+  const uploadButtonLabel = uploading
+    ? `⬆ Uploading ${uploadingIndex} / ${queue.length}…`
+    : isBulkMode
+      ? `🚀 Upload ${pendingCount} file${pendingCount !== 1 ? 's' : ''}`
+      : '🚀 Upload & Process';
+
   return (
     <Card>
       <Stack gap="md">
         <CardHeader icon="📤" title="Upload FIT File" />
 
-        <Grid cols={2} gap="md">
-          {/* Left: File Selection */}
-          <Stack gap="sm">
-            <Heading level={5}>Select File</Heading>
-            <FileInput
-              accept=".fit"
-              placeholder="Click to select .fit file"
-              fileName={file?.name}
-              fileSize={file?.size}
-              disabled={uploading}
-              onFileSelect={handleFileSelect}
-            />
-          </Stack>
+        {/* Hidden multi-file input */}
+        <input
+          ref={inputRef}
+          type="file"
+          accept=".fit"
+          multiple
+          className="form-file-input__hidden"
+          onChange={e => handleFilesSelected(e.target.files)}
+        />
 
-          {/* Right: Title & Description */}
-          <Stack gap="sm">
-            <Heading level={5}>Activity Details</Heading>
-            <Stack gap="sm">
-              <FormField label="Title" htmlFor="upload-title">
-                <Input
-                  id="upload-title"
-                  type="text"
-                  placeholder="Auto-generated if left blank"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  disabled={uploading}
-                />
-              </FormField>
-              <FormField label="Description" htmlFor="upload-desc">
-                <Textarea
-                  id="upload-desc"
-                  placeholder="Add notes about this activity..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  disabled={uploading}
-                  rows={2}
-                />
-              </FormField>
+        {/* Empty state dropzone */}
+        {queue.length === 0 && (
+          <div
+            className="upload-dropzone upload-dropzone--empty"
+            onClick={handleDropzoneClick}
+            onDrop={handleDrop}
+            onDragOver={e => e.preventDefault()}
+          >
+            <Stack gap="xs" align="center">
+              <Paragraph inline>📂</Paragraph>
+              <Paragraph inline bold>Click to select .fit files</Paragraph>
+              <Paragraph inline muted size="sm">Select one or many — or drag &amp; drop</Paragraph>
             </Stack>
+          </div>
+        )}
+
+        {/* Single file mode */}
+        {queue.length === 1 && (
+          <Grid cols={2} gap="md">
+            <Stack gap="sm">
+              <Heading level={5}>Selected File</Heading>
+              <div
+                className="upload-dropzone upload-dropzone--has-file"
+                onClick={handleDropzoneClick}
+                onDrop={handleDrop}
+                onDragOver={e => e.preventDefault()}
+              >
+                <Stack gap="xs" align="center">
+                  <Paragraph inline>📁</Paragraph>
+                  <Paragraph inline bold>{queue[0].file.name}</Paragraph>
+                  <Paragraph inline muted size="sm">{formatSize(queue[0].file.size)}</Paragraph>
+                  {queue[0].status === 'success' && (
+                    <Paragraph inline size="sm" className="upload-status--success">✓ Uploaded</Paragraph>
+                  )}
+                  {queue[0].status === 'error' && (
+                    <Paragraph inline size="sm" className="upload-status--error">✕ {queue[0].errorMessage}</Paragraph>
+                  )}
+                </Stack>
+              </div>
+              <button className="upload-link-btn" onClick={clearQueue} disabled={uploading}>
+                Change file
+              </button>
+            </Stack>
+
+            <Stack gap="sm">
+              <Heading level={5}>Activity Details</Heading>
+              <Stack gap="sm">
+                <FormField label="Title" htmlFor="upload-title">
+                  <Input
+                    id="upload-title"
+                    type="text"
+                    placeholder="Auto-generated if left blank"
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    disabled={uploading}
+                  />
+                </FormField>
+                <FormField label="Description" htmlFor="upload-desc">
+                  <Textarea
+                    id="upload-desc"
+                    placeholder="Add notes about this activity…"
+                    value={description}
+                    onChange={e => setDescription(e.target.value)}
+                    disabled={uploading}
+                    rows={2}
+                  />
+                </FormField>
+              </Stack>
+            </Stack>
+          </Grid>
+        )}
+
+        {/* Bulk mode queue */}
+        {isBulkMode && (
+          <Stack gap="sm">
+            <div className="upload-queue-header">
+              <Paragraph bold inline>{queue.length} files selected</Paragraph>
+              <div className="upload-queue-header-actions">
+                <button
+                  className="upload-link-btn"
+                  onClick={handleDropzoneClick}
+                  disabled={uploading}
+                >
+                  + Add more
+                </button>
+                <button
+                  className="upload-link-btn upload-link-btn--danger"
+                  onClick={clearQueue}
+                  disabled={uploading}
+                >
+                  Clear all
+                </button>
+              </div>
+            </div>
+
+            <div className="upload-queue-list">
+              {queue.map(item => (
+                <div key={item.id} className={`upload-queue-item upload-queue-item--${item.status}`}>
+                  <span className="upload-queue-item__icon">{STATUS_ICON[item.status]}</span>
+                  <span className="upload-queue-item__name" title={item.file.name}>{item.file.name}</span>
+                  <span className="upload-queue-item__size">{formatSize(item.file.size)}</span>
+                  <span className="upload-queue-item__status">{STATUS_LABEL[item.status]}</span>
+                  {item.status === 'pending' && !uploading && (
+                    <button
+                      className="upload-queue-item__remove"
+                      onClick={() => removeItem(item.id)}
+                      title="Remove"
+                    >
+                      ×
+                    </button>
+                  )}
+                  {item.status === 'error' && item.errorMessage && (
+                    <span className="upload-queue-item__error" title={item.errorMessage}>ⓘ</span>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {allDone && (
+              <Paragraph muted size="sm">
+                {successCount > 0 && `✓ ${successCount} uploaded`}
+                {successCount > 0 && errorCount > 0 && ' · '}
+                {errorCount > 0 && `✕ ${errorCount} failed`}
+                {errorCount > 0 && (
+                  <> · <button className="upload-link-btn" onClick={retryFailed}>Retry failed</button></>
+                )}
+              </Paragraph>
+            )}
           </Stack>
-        </Grid>
+        )}
 
         {/* Nerd Mode: Pipeline Selector */}
         {isNerdMode && (
@@ -203,7 +359,7 @@ export const FileUploadPanel: React.FC = () => {
                 options={pipelineOptions}
                 placeholder="All pipelines (default)"
                 value={selectedPipelineId}
-                onChange={(e) => setSelectedPipelineId(e.target.value)}
+                onChange={e => setSelectedPipelineId(e.target.value)}
                 disabled={uploading}
               />
             </FormField>
@@ -215,24 +371,24 @@ export const FileUploadPanel: React.FC = () => {
           </Stack>
         )}
 
-        {/* Status message */}
-        {message && (
-          <Card variant={message.type === 'success' ? 'elevated' : 'default'}>
-            <Paragraph>
-              {message.type === 'success' ? '✓' : '✕'} {message.text}
-            </Paragraph>
-          </Card>
+        {/* Upload button */}
+        {queue.length > 0 && !allDone && (
+          <Button
+            variant="primary"
+            onClick={handleUpload}
+            disabled={pendingCount === 0 || uploading}
+            fullWidth
+          >
+            {uploadButtonLabel}
+          </Button>
         )}
 
-        {/* Upload button */}
-        <Button
-          variant="primary"
-          onClick={handleUpload}
-          disabled={!file || uploading}
-          fullWidth
-        >
-          {uploading ? '⏳ Uploading...' : '🚀 Upload & Process'}
-        </Button>
+        {/* Post-bulk actions */}
+        {allDone && isBulkMode && (
+          <Button variant="secondary" onClick={clearQueue} fullWidth>
+            Upload more files
+          </Button>
+        )}
       </Stack>
     </Card>
   );

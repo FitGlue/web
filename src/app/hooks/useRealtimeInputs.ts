@@ -85,7 +85,10 @@ export const useRealtimeInputs = () => {
                 deadline: toISOString(data.deadline),
                 autoPopulated: (data.auto_populated || data.autoPopulated || false) as boolean,
                 providerType: (data.provider_type || data.providerType) as number | undefined,
-                providerMetadata: (data.provider_metadata || data.providerMetadata || {}) as { [key: string]: string }
+                providerMetadata: (data.provider_metadata || data.providerMetadata || {}) as { [key: string]: string },
+                sourceDisplayName: (data.source_display_name || data.sourceDisplayName) as string | undefined,
+                sourceActivityType: (data.source_activity_type || data.sourceActivityType) as string | undefined,
+                sourceStartTime: toISOString(data.source_start_time) || toISOString(data.sourceStartTime),
             };
             input.displayConfig = parseDisplayConfig(input.providerMetadata);
             return input;

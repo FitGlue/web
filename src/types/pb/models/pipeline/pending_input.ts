@@ -34,6 +34,13 @@ export interface PendingInput {
   autoPopulated: boolean;
   autoDeadline?: Date | undefined;
   providerMetadata: { [key: string]: string };
+  /**
+   * Display metadata about the source activity (populated when the pending input is created).
+   * Used by the web UI to identify which activity a pending input relates to.
+   */
+  sourceDisplayName: string;
+  sourceActivityType: string;
+  sourceStartTime?: Date | undefined;
 }
 
 export enum PendingInput_Status {
