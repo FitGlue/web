@@ -220,7 +220,7 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
   );
   const gpsRecords = useMemo(
     () => allRecords
-      .filter((r) => r.positionLat !== undefined && r.positionLong !== undefined)
+      .filter((r) => r.positionLat !== undefined && r.positionLong !== undefined && (r.positionLat !== 0 || r.positionLong !== 0))
       .map((r) => ({ lat: r.positionLat!, lng: r.positionLong! })),
     [allRecords]
   );

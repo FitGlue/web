@@ -56,9 +56,7 @@ function parsePRLine(line: string): PRRecord | null {
     if (ci < 0) return null;
     const bc = rest.substring(0, ci).trim();
     const ac = rest.substring(ci + 1).trim();
-    const words = bc.split(/\s+/);
-    if (words.length > 1) { recordType = words.pop()!; name = words.join(' '); }
-    else { name = bc; recordType = ''; }
+    name = bc; recordType = '';
     const parenM = ac.match(/^(.+?)\s*\(previous:\s*(.+?),\s*([+-]?[\d.]+%)\)$/);
     if (parenM) { value = parenM[1].trim(); previous = parenM[2].trim(); improvement = parenM[3].trim(); }
     else value = ac;
