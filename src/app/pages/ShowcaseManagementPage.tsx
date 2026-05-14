@@ -706,7 +706,7 @@ const ShowcaseManagementPage: React.FC = () => {
                         <Stack direction="horizontal" className="showcase-mgmt__slug-row" gap="sm" align="center">
                             <FormField label="">
                                 <Stack direction="horizontal" gap="xs" align="center">
-                                    <Paragraph inline className="showcase-mgmt__slug-prefix">fitglue.tech/u/</Paragraph>
+                                    <Paragraph inline className="showcase-mgmt__slug-prefix">fitglue.tech/showcase/profile/</Paragraph>
                                     <Input
                                         value={slug}
                                         onChange={(e) => {
@@ -729,7 +729,7 @@ const ShowcaseManagementPage: React.FC = () => {
                         {slugError && <Paragraph className="showcase-mgmt__slug-error">{slugError}</Paragraph>}
                         {profileVisible ? (
                             <Link
-                                href={`/u/${encodeURIComponent(profile.slug)}`}
+                                href={`/showcase/profile/${encodeURIComponent(profile.slug)}`}
                                 external
                                 className="showcase-mgmt__view-link"
                             >
