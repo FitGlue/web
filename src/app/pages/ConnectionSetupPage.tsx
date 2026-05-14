@@ -19,8 +19,11 @@ const ConnectionSetupPage: React.FC = () => {
     const { integrations, loading: registryLoading } = usePluginRegistry();
 
     const [apiKey, setApiKey] = useState('');
+    const [athleteId, setAthleteId] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const requiresAthleteId = id === 'intervals';
 
     const integration = integrations.find(i => i.id === id);
 
@@ -58,6 +61,10 @@ const ConnectionSetupPage: React.FC = () => {
             setError('Please enter your API key');
             return;
         }
+        if (requiresAthleteId && !athleteId.trim()) {
+            setError('Please enter your Athlete ID');
+            return;
+        }
 
         setError(null);
         setSubmitting(true);
@@ -65,10 +72,13 @@ const ConnectionSetupPage: React.FC = () => {
         try {
             // Build integration-appropriate body:
             // PUBLIC_ID integrations (parkrun) need specific field names matching Firestore schema
+            // Intervals needs both apiKey and athleteId
             const authType = resolveEnum(integration.authType, IntegrationAuthType);
             let body: Record<string, unknown>;
             if (authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_PUBLIC_ID) {
                 body = { athlete_id: apiKey.trim(), enabled: true, consent_given: true };
+            } else if (requiresAthleteId) {
+                body = { apiKey: apiKey.trim(), athleteId: athleteId.trim(), enabled: true, consent_given: true };
             } else {
                 body = { apiKey: apiKey.trim(), enabled: true, consent_given: true };
             }
@@ -151,6 +161,19 @@ const ConnectionSetupPage: React.FC = () => {
                                 disabled={submitting}
                             />
                         </FormField>
+
+                        {requiresAthleteId && (
+                            <FormField label="Athlete ID" htmlFor="athleteId">
+                                <Input
+                                    id="athleteId"
+                                    type="text"
+                                    value={athleteId}
+                                    onChange={e => setAthleteId(e.target.value)}
+                                    placeholder="e.g. i12345"
+                                    disabled={submitting}
+                                />
+                            </FormField>
+                        )}
                     </Stack>
 
                     {error && (
@@ -169,7 +192,7 @@ const ConnectionSetupPage: React.FC = () => {
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={submitting || !apiKey.trim()}
+                            disabled={submitting || !apiKey.trim() || (requiresAthleteId && !athleteId.trim())}
                         >
                             {submitting ? 'Connecting...' : `Connect ${integration.name}`}
                         </Button>

@@ -40,16 +40,26 @@ export function createErrorMiddleware(label: string): Middleware {
     return {
         async onResponse({ response, request }) {
             if (!response.ok) {
+                const path = new URL(response.url).pathname;
+                let serverMessage: string | undefined;
+                try {
+                    const body = await response.clone().json() as { message?: string; error?: string };
+                    serverMessage = body?.message || body?.error;
+                } catch {
+                    // ignore parse failures — fall back to status text
+                }
                 const err = new Error(
-                    `${label} ${request.method} ${new URL(response.url).pathname} failed: ${response.status} ${response.statusText}`
+                    serverMessage
+                        ? serverMessage
+                        : `${label} ${request.method} ${path} failed: ${response.status} ${response.statusText}`
                 );
                 Sentry.captureException(err, {
                     tags: {
                         api_method: request.method,
-                        api_path: new URL(response.url).pathname,
+                        api_path: path,
                         status_code: response.status,
                     },
-                    extra: { statusText: response.statusText },
+                    extra: { statusText: response.statusText, serverMessage },
                 });
                 throw err;
             }
