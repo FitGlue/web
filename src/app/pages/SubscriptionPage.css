@@ -254,7 +254,7 @@
     top: -10px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, #8b5cf6, #ff3da6);
+    background: var(--gradient-primary);
     color: #ffffff;
     font-size: 0.625rem;
     font-weight: var(--font-weight-bold);
