@@ -5,7 +5,7 @@
 .gallery-of-boosts {
   margin-top: 2.5rem;
   padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
 }
 
 .gallery-of-boosts__header {
@@ -26,7 +26,7 @@
   font-size: 1.25rem;
   font-weight: 700;
   margin: 0 0 0.25rem 0;
-  background: linear-gradient(135deg, #ff3da6 0%, #8b5cf6 100%);
+  background: var(--gradient-primary, linear-gradient(95deg, #ff3da6, #8b5cf6, #22d3ee));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -53,9 +53,8 @@
 .gallery-of-boosts__stat {
   flex: 1;
   min-width: 120px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  background: var(--fg-ink-2, #0d0c18);
+  border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
   padding: 1rem;
   text-align: center;
 }
@@ -97,12 +96,14 @@
 }
 
 .gallery-of-boosts__stat-enricher {
-  font-size: 0.8rem;
+  font-family: var(--fg-font-mono, 'JetBrains Mono', monospace);
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
   padding: 0.25rem 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-  color: var(--color-text-muted);
-  text-transform: capitalize;
+  background: rgba(245,243,235,.06);
+  color: var(--color-text-muted, rgba(245,243,235,.62));
 }
 
 /* Activity Cards Grid - FULL WIDTH for maximum impact */
