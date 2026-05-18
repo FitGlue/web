@@ -7,8 +7,10 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  font-weight: var(--font-weight-medium);
-  border-radius: var(--radius-full);
+  font-family: var(--fg-font-mono, 'JetBrains Mono', monospace);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
   white-space: nowrap;
   transition: transform var(--transition-fast);
 }
@@ -26,10 +28,9 @@
 
 /* Color variants */
 .ui-badge--default {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  font-weight: 400;
+  background: rgba(245, 243, 235, 0.06);
+  border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
+  color: var(--fg-paper, #f5f3eb);
 }
 
 .ui-badge--success {
@@ -54,8 +55,7 @@
 
 .ui-badge--premium {
   background: var(--gradient-primary);
-  color: #ffffff;
-  font-weight: 600;
+  color: var(--fg-ink, #070710);
   position: relative;
   overflow: hidden;
 }
@@ -100,44 +100,39 @@
   font-size: 0.875em;
 }
 
-/* Booster variant - pink/purple shimmer (matches GlowCard success) */
+/* Booster variant - aurora tint */
 .ui-badge--booster {
-  background: linear-gradient(135deg, rgba(255, 61, 166, 0.3), rgba(139, 92, 246, 0.3));
-  border: 1px solid rgba(255, 61, 166, 0.5);
-  color: #ffffff;
-  font-weight: 400;
+  background: rgba(255, 61, 166, 0.12);
+  border: 1.5px solid rgba(255, 61, 166, 0.4);
+  color: var(--fg-pink, #ff3da6);
 }
 
-/* Booster skipped variant - orange/yellow shimmer (matches GlowCard premium/skipped) */
+/* Booster skipped - gold tint */
 .ui-badge--booster-skipped {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(251, 191, 36, 0.3));
-  border: 1px solid rgba(251, 191, 36, 0.5);
-  color: #ffffff;
-  font-weight: 400;
+  background: rgba(255, 214, 10, 0.1);
+  border: 1.5px solid rgba(255, 214, 10, 0.4);
+  color: var(--fg-gold, #ffd60a);
 }
 
-/* Booster error variant - red (matches GlowCard default/failed) */
+/* Booster error - rose tint */
 .ui-badge--booster-error {
-  background: rgba(220, 38, 38, 0.25);
-  border: 1px solid rgba(239, 68, 68, 0.5);
-  color: #ffffff;
-  font-weight: 400;
+  background: rgba(255, 93, 108, 0.1);
+  border: 1.5px solid rgba(255, 93, 108, 0.4);
+  color: var(--fg-rose, #ff5d6c);
 }
 
-/* Source variant - purple tint */
+/* Source variant - violet tint */
 .ui-badge--source {
-  background: rgba(139, 92, 246, 0.25);
-  border: 1px solid rgba(167, 139, 250, 0.5);
-  color: #ffffff;
-  font-weight: 400;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1.5px solid rgba(139, 92, 246, 0.4);
+  color: var(--fg-violet, #8b5cf6);
 }
 
-/* Destination variant - pink/magenta */
+/* Destination variant - cyan tint */
 .ui-badge--destination {
-  background: rgba(255, 61, 166, 0.25);
-  border: 1px solid rgba(255, 105, 180, 0.5);
-  color: #ffffff;
-  font-weight: 400;
+  background: rgba(34, 211, 238, 0.08);
+  border: 1.5px solid rgba(34, 211, 238, 0.3);
+  color: var(--fg-cyan, #22d3ee);
 }
 
 /* Mobile: Slightly smaller badges for compact layout */
