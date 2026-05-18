@@ -22,7 +22,7 @@
   outline: none;
   background: rgba(0, 0, 0, 0.5);
   border-bottom: 2px solid;
-  border-image: linear-gradient(90deg, var(--color-primary), var(--color-secondary)) 1;
+  border-image: var(--gradient-primary) 1;
 }
 
 .form-input::placeholder {
