@@ -196,6 +196,7 @@ export interface components {
             destinationConfigs?: {
                 [key: string]: components["schemas"]["DestinationConfig"];
             };
+            sources?: string[];
         };
         PipelineRun: {
             id?: string;

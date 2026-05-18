@@ -157,8 +157,8 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initi
                                 <Paragraph inline>{decoded.n} (Imported)</Paragraph>
                             </Stack>
                             <Stack direction="horizontal" gap="sm">
-                                <Paragraph inline bold>Source</Paragraph>
-                                <Paragraph inline>{getSourceName(decoded.s)}</Paragraph>
+                                <Paragraph inline bold>Source{decoded.s.length !== 1 ? 's' : ''}</Paragraph>
+                                <Paragraph inline>{decoded.s.map(getSourceName).join(', ')}</Paragraph>
                             </Stack>
                             <Stack direction="horizontal" gap="sm">
                                 <Paragraph inline bold>Enrichers</Paragraph>

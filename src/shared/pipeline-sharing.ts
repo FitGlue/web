@@ -11,7 +11,7 @@ import type { IntegrationsSummary } from '../app/state/integrationsState';
 interface PipelineConfig {
   id?: string;
   name?: string;
-  source: string;
+  sources: string[];
   enrichers: EnricherConfig[];
   destinations: (string | number)[];
   [key: string]: unknown;
@@ -31,8 +31,8 @@ export interface PortablePipeline {
   v: 1;
   /** Pipeline name */
   n: string;
-  /** Source ID (e.g., "hevy", "fitbit") */
-  s: string;
+  /** Source IDs (e.g., ["hevy", "fitbit"]). Legacy v1 may have a string — normalised on decode. */
+  s: string[];
   /** Enrichers array */
   e: Array<{ p: number; c?: Record<string, string> }>;
   /** Destination IDs */
@@ -76,7 +76,7 @@ export function encodePipeline(pipeline: PipelineConfig): string {
   const portable: PortablePipeline = {
     v: 1,
     n: pipeline.name || 'Unnamed Pipeline',
-    s: pipeline.source,
+    s: pipeline.sources,
     e: (pipeline.enrichers || []).map((e) => ({
       p: e.providerType,
       c: e.typedConfig && Object.keys(e.typedConfig).length > 0 ? e.typedConfig : undefined,
@@ -101,6 +101,11 @@ export function decodePipeline(encoded: string): PortablePipeline {
 
     if (!parsed.s || !Array.isArray(parsed.d) || parsed.d.length === 0) {
       throw new Error('Invalid pipeline format: missing source or destinations');
+    }
+
+    // Normalise legacy string source to array.
+    if (typeof parsed.s === 'string') {
+      parsed.s = [parsed.s];
     }
 
     return parsed as PortablePipeline;
@@ -147,9 +152,11 @@ export function validatePipelineImport(
     }
   };
 
-  // Check source
-  const sourcePlugin = (registry.sources || []).find((s) => s.id === portable.s);
-  checkPlugin(sourcePlugin);
+  // Check all sources
+  for (const srcId of portable.s) {
+    const sourcePlugin = (registry.sources || []).find((s) => s.id === srcId);
+    checkPlugin(sourcePlugin);
+  }
 
   // Check enrichers
   for (const enricher of portable.e) {
@@ -189,7 +196,7 @@ export function validatePipelineImport(
     missingConnections: [],
     request: {
       name: `${portable.n} (Imported)`,
-      source: portable.s,
+      sources: portable.s,
       enrichers,
       destinations: resolvedDestinations,
     },

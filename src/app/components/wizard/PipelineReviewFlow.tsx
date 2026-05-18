@@ -35,17 +35,17 @@ export interface ReviewDestination {
 }
 
 export interface PipelineReviewFlowProps {
-    source?: ReviewSource;
+    sources: ReviewSource[];
     enrichers: ReviewEnricher[];
     destinations: ReviewDestination[];
 }
 
 /**
  * PipelineReviewFlow - Visual pipeline flow diagram for the review step.
- * Shows Source → Boosters → Destinations in a vertical layout.
+ * Shows Sources → Boosters → Destinations in a vertical layout.
  */
 export const PipelineReviewFlow: React.FC<PipelineReviewFlowProps> = ({
-    source,
+    sources,
     enrichers,
     destinations,
 }) => {
@@ -56,18 +56,20 @@ export const PipelineReviewFlow: React.FC<PipelineReviewFlowProps> = ({
                 <Stack direction="horizontal" align="center" gap="sm">
                     <Badge className="pipeline-review-flow__step-badge">1</Badge>
                     <Stack gap="xs">
-                        <Paragraph muted size="sm">Source</Paragraph>
-                        <Stack direction="horizontal" align="center" gap="xs">
-                            {source && (
+                        <Paragraph muted size="sm">Source{sources.length !== 1 ? 's' : ''}</Paragraph>
+                        {sources.length > 0 ? sources.map(source => (
+                            <Stack key={source.id} direction="horizontal" align="center" gap="xs">
                                 <PluginIcon
                                     icon={source.icon}
                                     iconType={source.iconType}
                                     iconPath={source.iconPath}
                                     size="small"
                                 />
-                            )}
-                            <Heading level={4}>{source?.name ?? 'Unknown'}</Heading>
-                        </Stack>
+                                <Heading level={4}>{source.name}</Heading>
+                            </Stack>
+                        )) : (
+                            <Heading level={4}>Unknown</Heading>
+                        )}
                     </Stack>
                 </Stack>
             </Card>

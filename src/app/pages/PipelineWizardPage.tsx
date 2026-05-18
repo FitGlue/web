@@ -93,7 +93,7 @@ const PipelineWizardPage: React.FC = () => {
     };
 
     const [step, setStep] = useState<WizardStep>('source');
-    const [selectedSource, setSelectedSource] = useState<string | null>(null);
+    const [selectedSources, setSelectedSources] = useState<string[]>([]);
     const [sourceConfig, setSourceConfig] = useState<Record<string, string>>({});
     const [selectedEnrichers, setSelectedEnrichers] = useState<SelectedEnricher[]>([]);
     const [currentEnricherIndex, setCurrentEnricherIndex] = useState<number>(0);
@@ -119,7 +119,8 @@ const PipelineWizardPage: React.FC = () => {
     const steps: WizardStep[] = ['source', 'source-config', 'enrichers', 'enricher-config', 'destinations', 'destination-config', 'review'];
     const currentStepIndex = steps.indexOf(step);
     const enrichersNeedConfig = selectedEnrichers.some(e => (e.manifest.configSchema?.length ?? 0) > 0);
-    const selectedSourceManifest = sources.find(s => s.id === selectedSource);
+    // Source config only applies when exactly one source is selected and it has configSchema.
+    const selectedSourceManifest = selectedSources.length === 1 ? sources.find(s => s.id === selectedSources[0]) : undefined;
     const sourceNeedsConfig = (selectedSourceManifest?.configSchema?.length ?? 0) > 0;
     const destinationsWithConfig = selectedDestinations
         .map(id => destinations.find(d => d.id === id))
@@ -128,7 +129,7 @@ const PipelineWizardPage: React.FC = () => {
 
     const canProceed = () => {
         switch (step) {
-            case 'source': return selectedSource !== null;
+            case 'source': return selectedSources.length > 0;
             case 'source-config': return true;
             case 'enrichers': return true;
             case 'enricher-config': return true;
@@ -238,7 +239,7 @@ const PipelineWizardPage: React.FC = () => {
     const toast = useToast();
 
     const handleCreate = async () => {
-        if (!selectedSource || selectedDestinations.length === 0) return;
+        if (selectedSources.length === 0 || selectedDestinations.length === 0) return;
         setCreating(true);
         setError(null);
         try {
@@ -258,7 +259,7 @@ const PipelineWizardPage: React.FC = () => {
             await client.POST('/users/me/pipelines', {
                 body: {
                     name: pipelineName || undefined,
-                    source: selectedSource,
+                    sources: selectedSources,
                     enrichers: enricherConfigs,
                     destinations: selectedDestinations.map(id => destinations.find(d => d.id === id)?.destinationType ?? 0),
                     sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
@@ -328,17 +329,19 @@ const PipelineWizardPage: React.FC = () => {
 
         return (
             <Stack>
-                <Heading level={3}>Select a Source</Heading>
-                <Paragraph>Pick <strong>one</strong> source for your activities.</Paragraph>
+                <Heading level={3}>Select Sources</Heading>
+                <Paragraph>Pick <strong>one or more</strong> sources for your activities.</Paragraph>
                 {loading ? (
                     <Paragraph>Loading sources...</Paragraph>
                 ) : (
                     <>
                         <WizardOptionGrid
                             options={availableSources}
-                            selectedIds={selectedSource ? [selectedSource] : []}
-                            onSelect={(source) => setSelectedSource(source.id)}
-                            selectionMode="single"
+                            selectedIds={selectedSources}
+                            onSelect={(source) => setSelectedSources(prev =>
+                                prev.includes(source.id) ? prev.filter(id => id !== source.id) : [...prev, source.id]
+                            )}
+                            selectionMode="multi"
                         />
                         <WizardExcludedSection
                             items={excludedSources}
@@ -518,7 +521,9 @@ const PipelineWizardPage: React.FC = () => {
     };
 
     const renderReviewStep = () => {
-        const source = sources.find(s => s.id === selectedSource);
+        const reviewSources = sources
+            .filter(s => selectedSources.includes(s.id))
+            .map(s => ({ id: s.id, icon: s.icon, iconType: s.iconType, iconPath: s.iconPath, name: s.name }));
         const dests = destinations.filter(d => selectedDestinations.includes(d.id));
 
         const getFieldLabel = (enricher: SelectedEnricher, key: string): string => {
@@ -580,13 +585,7 @@ const PipelineWizardPage: React.FC = () => {
                 </Card>
 
                 <PipelineReviewFlow
-                    source={source ? {
-                        id: source.id,
-                        icon: source.icon,
-                        iconType: source.iconType,
-                        iconPath: source.iconPath,
-                        name: source.name,
-                    } : undefined}
+                    sources={reviewSources}
                     enrichers={reviewEnrichers}
                     destinations={reviewDests}
                 />

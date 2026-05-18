@@ -39,7 +39,8 @@ interface EnricherConfig {
 interface PipelineConfig {
     id: string;
     name?: string;
-    source: string;
+    source: string; // legacy field — prefer sources
+    sources?: string[];
     enrichers: EnricherConfig[];
     destinations: DestinationType[];
     sourceConfig?: Record<string, string>;
@@ -89,7 +90,7 @@ const PipelineEditPage: React.FC = () => {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [pipelineName, setPipelineName] = useState('');
-    const [selectedSource, setSelectedSource] = useState<string>('');
+    const [selectedSources, setSelectedSources] = useState<string[]>([]);
     const [selectedEnrichers, setSelectedEnrichers] = useState<SelectedEnricher[]>([]);
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
     const [sourceConfig, setSourceConfig] = useState<Record<string, string>>({});
@@ -110,7 +111,11 @@ const PipelineEditPage: React.FC = () => {
             const pipelineData = response;
             setPipeline(pipelineData);
             setPipelineName(pipelineData.name || '');
-            setSelectedSource(pipelineData.source);
+            // Prefer new sources array; fall back to legacy single source field.
+            const initSources = pipelineData.sources && pipelineData.sources.length > 0
+                ? pipelineData.sources
+                : pipelineData.source ? [pipelineData.source] : [];
+            setSelectedSources(initSources);
             setSelectedDestinations(pipelineData.destinations.map(d => {
                 // Convert numeric enum values to string IDs via manifest lookup
                 if (typeof d === 'number' || !isNaN(Number(d))) {
@@ -182,7 +187,7 @@ const PipelineEditPage: React.FC = () => {
                 params: { path: { id: pipelineId! } },
                 body: {
                     name: pipelineName || undefined,
-                    source: selectedSource,
+                    sources: selectedSources,
                     enrichers: enricherConfigs,
                     destinations: selectedDestinations.map(id => destinations.find(d => d.id === id)?.destinationType ?? 0),
                     sourceConfig: Object.keys(sourceConfig).length > 0 ? sourceConfig : undefined,
@@ -277,12 +282,14 @@ const PipelineEditPage: React.FC = () => {
                     {/* Source Section */}
                     <Card>
                         <Heading level={3}>📥 Source</Heading>
-                        <Paragraph>Pick <strong>only one</strong> source for your activities</Paragraph>
+                        <Paragraph>Pick <strong>one or more</strong> sources for your activities</Paragraph>
                         <WizardOptionGrid
                             options={availableSources}
-                            selectedIds={availableSources.filter(s => selectedSource.toLowerCase().includes(s.id)).map(s => s.id)}
-                            onSelect={(source) => setSelectedSource(source.id)}
-                            selectionMode="single"
+                            selectedIds={selectedSources}
+                            onSelect={(source) => setSelectedSources(prev =>
+                                prev.includes(source.id) ? prev.filter(id => id !== source.id) : [...prev, source.id]
+                            )}
+                            selectionMode="multi"
                         />
                         <WizardExcludedSection
                             items={excludedSources}
@@ -293,9 +300,11 @@ const PipelineEditPage: React.FC = () => {
                         />
                     </Card>
 
-                    {/* Source Config Section — shown inline if selected source has configSchema */}
+                    {/* Source Config Section — shown inline when exactly one source is selected and it has configSchema */}
                     {(() => {
-                        const sourceManifest = sources.find(s => selectedSource.toLowerCase().includes(s.id));
+                        const sourceManifest = selectedSources.length === 1
+                            ? sources.find(s => s.id === selectedSources[0])
+                            : undefined;
                         if (!sourceManifest?.configSchema?.length) return null;
                         return (
                             <Card>
@@ -442,7 +451,7 @@ const PipelineEditPage: React.FC = () => {
                         <Stack direction="horizontal" gap="sm">
                             <Button variant="secondary" onClick={() => navigate('/settings/pipelines')}>Cancel</Button>
                             <Button variant="primary" onClick={handleSave}
-                                disabled={saving || !selectedSource || selectedDestinations.length === 0}>
+                                disabled={saving || selectedSources.length === 0 || selectedDestinations.length === 0}>
                                 {saving ? 'Saving...' : 'Save Changes'}
                             </Button>
                         </Stack>
@@ -457,7 +466,7 @@ const PipelineEditPage: React.FC = () => {
                     encodedPipeline={encodePipeline({
                         id: pipeline.id,
                         name: pipelineName,
-                        source: selectedSource,
+                        sources: selectedSources,
                         enrichers: selectedEnrichers.map(e => ({
                             providerType: e.manifest.enricherProviderType || 0,
                             typedConfig: e.config

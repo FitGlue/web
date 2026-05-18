@@ -1064,6 +1064,8 @@ export interface components {
             /** Format: int32 */
             totalShowcases?: number;
             lastActivityAt?: string;
+            /** Format: int32 */
+            uploadsThisMonth?: number;
         };
         /** @description Booster Data */
         GetBoosterDataGatewayResponse: {
@@ -1329,6 +1331,7 @@ export interface components {
             destinationConfigs?: {
                 [key: string]: components["schemas"]["DestinationConfig"];
             };
+            sources?: string[];
         };
         PipelineRun: {
             id?: string;
