@@ -30,11 +30,11 @@
    --color-text-disabled: rgba(255, 255, 255, 0.3);
 
    /* ========================================
-     COLORS - Brand (inherited from main.css)
+     COLORS - Brand (aurora palette)
      ======================================== */
-   --color-primary: #FF1B8D;
-   --color-secondary: #9D4EDD;
-   --color-accent: #4CC9F0;
+   --color-primary: #ff3da6;
+   --color-secondary: #8b5cf6;
+   --color-accent: #22d3ee;
 
    /* ========================================
      COLORS - Semantic
@@ -93,8 +93,8 @@
       0 8px 16px rgba(0, 0, 0, 0.25);
 
    /* Colored glow shadows for premium feel */
-   --shadow-glow-primary: 0 0 20px rgba(255, 27, 141, 0.15);
-   --shadow-glow-secondary: 0 0 20px rgba(157, 78, 221, 0.15);
+   --shadow-glow-primary: 0 0 20px rgba(255, 61, 166, 0.15);
+   --shadow-glow-secondary: 0 0 20px rgba(139, 92, 246, 0.15);
    --shadow-glow-success: 0 0 15px rgba(16, 185, 129, 0.2);
    --shadow-glow-error: 0 0 15px rgba(239, 68, 68, 0.2);
 
@@ -128,7 +128,7 @@
    /* ========================================
      GRADIENTS
      ======================================== */
-   --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+   --gradient-primary: linear-gradient(95deg, #ff3da6, #8b5cf6, #22d3ee);
    --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
    --gradient-card-hover: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
 }

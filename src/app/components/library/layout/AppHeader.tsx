@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useUser } from '../../../hooks/useUser';
 import { client } from '../../../../shared/api/client';
@@ -89,10 +89,29 @@ export const AppHeader: React.FC = () => {
         <header className="app-header">
             <Link to="/" className="app-header__logo-link">
                 <h1 className="app-header__logo">
-                    <span className="app-header__logo-fit">Fit</span>
-                    <span className="app-header__logo-glue">Glue</span>
+                    <span className="app-header__logo-fit">FIT</span>
+                    <span className="app-header__logo-glue">GLUE</span>
                 </h1>
             </Link>
+            <nav className="app-header__nav">
+                <NavLink to="/" end className={({ isActive }) => `app-header__nav-link${isActive ? ' active' : ''}`}>
+                    Dashboard
+                </NavLink>
+                <NavLink to="/activities" className={({ isActive }) => `app-header__nav-link${isActive ? ' active' : ''}`}>
+                    Activities
+                </NavLink>
+                <NavLink to="/settings/pipelines" className={({ isActive }) => `app-header__nav-link${isActive ? ' active' : ''}`}>
+                    Pipelines
+                </NavLink>
+                <NavLink to="/connections" className={({ isActive }) => `app-header__nav-link${isActive ? ' active' : ''}`}>
+                    Connections
+                </NavLink>
+                {isAthlete && (
+                    <NavLink to="/settings/showcase" className={({ isActive }) => `app-header__nav-link${isActive ? ' active' : ''}`}>
+                        Showcase
+                    </NavLink>
+                )}
+            </nav>
             <div ref={menuRef} className="app-header__user-menu">
                 <button
                     className={`app-header__avatar${profilePictureUrl ? ' app-header__avatar--has-image' : ''}`}
