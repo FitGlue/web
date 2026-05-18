@@ -48,14 +48,14 @@
 .recipe-card__guide-link {
     display: inline-block;
     font-size: var(--font-size-sm, 0.875rem);
-    color: var(--color-accent, #4CC9F0);
+    color: var(--color-accent, #22d3ee);
     text-decoration: none;
     transition: color 0.15s ease, opacity 0.15s ease;
     opacity: 0.8;
 }
 
 .recipe-card__guide-link:hover {
-    color: var(--color-primary, #FF1B8D);
+    color: var(--color-primary, #ff3da6);
     opacity: 1;
     text-decoration: underline;
 }

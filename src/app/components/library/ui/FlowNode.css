@@ -42,7 +42,7 @@
 
 .flow-node--destination {
   border-color: var(--color-secondary);
-  background: rgba(157, 78, 221, 0.05);
+  background: rgba(139, 92, 246, 0.05);
 }
 
 .flow-node--enricher {

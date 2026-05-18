@@ -19,8 +19,8 @@ const BG_OPTIONS = [
 ];
 
 const ACCENTS = [
-  { id: 'pink',   color: '#FF1B8D' },
-  { id: 'cyan',   color: '#4CC9F0' },
+  { id: 'pink',   color: '#ff3da6' },
+  { id: 'cyan',   color: '#22d3ee' },
   { id: 'orange', color: '#FF6B35' },
   { id: 'green',  color: '#4ADE80' },
   { id: 'purple', color: '#E040FB' },

@@ -53,7 +53,7 @@
 }
 
 .ui-badge--premium {
-  background: linear-gradient(135deg, #9D4EDD, #FF1B8D);
+  background: linear-gradient(135deg, #8b5cf6, #ff3da6);
   color: #ffffff;
   font-weight: 600;
   position: relative;
@@ -102,8 +102,8 @@
 
 /* Booster variant - pink/purple shimmer (matches GlowCard success) */
 .ui-badge--booster {
-  background: linear-gradient(135deg, rgba(255, 27, 141, 0.3), rgba(157, 78, 221, 0.3));
-  border: 1px solid rgba(255, 27, 141, 0.5);
+  background: linear-gradient(135deg, rgba(255, 61, 166, 0.3), rgba(139, 92, 246, 0.3));
+  border: 1px solid rgba(255, 61, 166, 0.5);
   color: #ffffff;
   font-weight: 400;
 }
@@ -126,7 +126,7 @@
 
 /* Source variant - purple tint */
 .ui-badge--source {
-  background: rgba(157, 78, 221, 0.25);
+  background: rgba(139, 92, 246, 0.25);
   border: 1px solid rgba(167, 139, 250, 0.5);
   color: #ffffff;
   font-weight: 400;
@@ -134,7 +134,7 @@
 
 /* Destination variant - pink/magenta */
 .ui-badge--destination {
-  background: rgba(255, 27, 141, 0.25);
+  background: rgba(255, 61, 166, 0.25);
   border: 1px solid rgba(255, 105, 180, 0.5);
   color: #ffffff;
   font-weight: 400;

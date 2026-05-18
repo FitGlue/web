@@ -23,7 +23,7 @@
 
 .tab-button--active {
   color: #ffffff;
-  background: linear-gradient(180deg, rgba(255, 27, 141, 0.15) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(255, 61, 166, 0.15) 0%, transparent 100%);
   border-bottom-color: var(--color-primary, #ff1b8d);
 }
 

@@ -1,0 +1,112 @@
+/* ============================================================
+   FitGlue · Brutal × Aurora · MOBILE additions
+   ============================================================
+   Appended to components.css conceptually — kept in a separate
+   file here for clarity. Import after components.css.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   FG-MOBILE-BAR — bottom tab bar
+   ------------------------------------------------------------ */
+.fg-mobile-bar {
+  position: sticky; bottom: 0;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  background: var(--fg-ink);
+  border-top: 3px solid var(--fg-paper);
+  z-index: 50;
+}
+.fg-mobile-bar__item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; padding: 8px 4px 10px;
+  font-family: var(--fg-font-mono);
+  font-size: .5625rem; font-weight: 700; letter-spacing: .12em;
+  color: var(--color-text-muted);
+  text-decoration: none; text-transform: uppercase;
+}
+.fg-mobile-bar__item .ic { font-size: 1.25rem; line-height: 1; }
+.fg-mobile-bar__item.active { color: var(--fg-paper); }
+.fg-mobile-bar__item.active .ic {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 6px rgba(255,61,166,.4));
+}
+
+/* ------------------------------------------------------------
+   FG-MOBILE-APP-BAR — top app bar (logo + avatar)
+   ------------------------------------------------------------ */
+.fg-mobile-app-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--fg-ink);
+  border-bottom: 3px solid var(--fg-paper);
+  position: sticky; top: 0; z-index: 30;
+}
+.fg-mobile-app-bar__title {
+  font-family: var(--fg-font-display);
+  font-size: .9375rem; letter-spacing: -.005em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------
+   FG-MOBILE-HSCROLL — horizontal scroll strip for chips
+   ------------------------------------------------------------ */
+.fg-mobile-hscroll {
+  display: flex; gap: 6px;
+  overflow-x: auto;
+  padding: 8px 16px;
+  scrollbar-width: none;
+}
+.fg-mobile-hscroll::-webkit-scrollbar { display: none; }
+.fg-mobile-hscroll > * { flex-shrink: 0; }
+
+/* ------------------------------------------------------------
+   FG-MOBILE-SHEET — bottom-sheet style modal
+   ------------------------------------------------------------ */
+.fg-mobile-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: var(--fg-ink-2);
+  border-top: 3px solid var(--fg-paper);
+  z-index: 100;
+}
+.fg-mobile-sheet__handle {
+  width: 36px; height: 4px;
+  background: var(--fg-paper);
+  margin: 12px auto;
+  opacity: .4;
+}
+
+/* ------------------------------------------------------------
+   FG-MOBILE-STAT-STACK — stat blocks stacked w/ hairlines
+   replaces the desktop multi-column inline stat rows
+   ------------------------------------------------------------ */
+.fg-mobile-stat-stack { display: flex; flex-direction: column; }
+.fg-mobile-stat-stack > * {
+  padding: 14px 16px;
+}
+.fg-mobile-stat-stack > * + * {
+  border-top: 1.5px solid var(--fg-hairline-color);
+}
+
+/* ------------------------------------------------------------
+   FG-MOBILE-COLLAPSE — accordion section
+   ------------------------------------------------------------ */
+.fg-mobile-collapse summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 16px;
+  background: var(--fg-ink-2);
+  font-family: var(--fg-font-display);
+  font-size: .875rem; letter-spacing: -.005em;
+  text-transform: uppercase;
+}
+.fg-mobile-collapse summary::-webkit-details-marker { display: none; }
+.fg-mobile-collapse summary::after {
+  content: '+';
+  font-family: var(--fg-font-display);
+  font-size: 1.125rem;
+  transition: transform .15s ease;
+}
+.fg-mobile-collapse[open] summary::after { content: '−'; }
+.fg-mobile-collapse + .fg-mobile-collapse { border-top: 1.5px solid var(--fg-hairline-color); }

@@ -16,8 +16,8 @@ interface OverlayText {
 }
 
 const GRADIENT_PRESETS: Array<{ label: string; colors: [string, string] }> = [
-    { label: 'FitGlue', colors: ['#1a0a20', '#FF1B8D'] },
-    { label: 'Midnight', colors: ['#0a0a1a', '#4CC9F0'] },
+    { label: 'FitGlue', colors: ['#1a0a20', '#ff3da6'] },
+    { label: 'Midnight', colors: ['#0a0a1a', '#22d3ee'] },
     { label: 'Ember', colors: ['#2a0a0a', '#FF6B35'] },
     { label: 'Forest', colors: ['#0a1a0d', '#4ADE80'] },
     { label: 'Neon', colors: ['#1a0a2a', '#E040FB'] },
@@ -49,7 +49,7 @@ const PhotoEditorPage: React.FC = () => {
     const [backgroundType, setBackgroundType] = useState<BackgroundType>('gradient');
     const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
     const [photoUrls, setPhotoUrls] = useState<string[]>([]);
-    const [gradientColors, setGradientColors] = useState<[string, string]>(['#1a0a20', '#FF1B8D']);
+    const [gradientColors, setGradientColors] = useState<[string, string]>(['#1a0a20', '#ff3da6']);
     const [cardPosition, setCardPosition] = useState<CardPosition>('center');
     const [format, setFormat] = useState<Format>('square');
     const [overlayText, setOverlayText] = useState<OverlayText>({

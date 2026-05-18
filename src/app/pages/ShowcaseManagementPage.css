@@ -128,7 +128,7 @@
     height: 80px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid rgba(157, 78, 221, 0.4);
+    border: 3px solid rgba(139, 92, 246, 0.4);
     background: rgba(255, 255, 255, 0.05);
     display: flex;
     align-items: center;
@@ -441,7 +441,7 @@
 
 .showcase-mgmt__option-btn--active {
     border-color: var(--color-primary);
-    background: rgba(255, 27, 141, 0.08);
+    background: rgba(255, 61, 166, 0.08);
 }
 
 .showcase-mgmt__option-icon {

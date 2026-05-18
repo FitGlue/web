@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>FitGlue Reskin · Archetype Gallery</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/overrides.css" />
+<style>
+  html, body { margin: 0; padding: 0; background: var(--fg-ink); color: var(--fg-paper); min-height: 100vh; }
+  body { font-family: var(--fg-font-body); }
+  .head { padding: 2rem 2.5rem; border-bottom: var(--fg-rule-thick); display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: end; }
+  .head h1 { font-family: var(--fg-font-display); font-size: 3.5rem; letter-spacing: -.035em; margin: .5rem 0 0; text-transform: uppercase; }
+  .head .eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .head .links { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+  .toc { padding: 1rem 2.5rem; background: var(--fg-ink-2); display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+  .toc-label { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; margin-right: .5rem; }
+  .toc a { padding: .375rem .75rem; background: var(--fg-ink); color: var(--fg-paper); text-decoration: none; font-family: var(--fg-font-mono); font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; }
+  .toc a:hover { background: var(--gradient-primary); color: var(--fg-ink); }
+
+  .arche { padding: 3rem 2.5rem 1rem; }
+  .arche__head { display: grid; grid-template-columns: 1fr auto; gap: 1.25rem; align-items: end; padding-bottom: 1rem; border-bottom: var(--fg-rule-thin); margin-bottom: 1rem; }
+  .arche__num { font-family: var(--fg-font-mono); font-size: .75rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .arche__name { font-family: var(--fg-font-display); font-size: 1.75rem; margin: .25rem 0 0; letter-spacing: -.02em; text-transform: uppercase; }
+  .arche__pages { font-family: var(--fg-font-body); font-size: .875rem; color: var(--color-text-muted); margin-top: .375rem; max-width: 720px; line-height: 1.45; }
+  .arche__actions { display: flex; gap: .5rem; }
+  .arche__btn { padding: .5rem .875rem; background: var(--fg-paper); color: var(--fg-ink); text-decoration: none; font-family: var(--fg-font-display); font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; }
+  .arche__btn--ink { background: var(--fg-ink); color: var(--fg-paper); box-shadow: inset 0 0 0 2px var(--fg-paper); }
+  .arche__frame { width: 100%; height: 720px; background: var(--fg-ink); border: 0; box-shadow: inset 0 0 0 2px var(--fg-paper); display: block; }
+  /* taller artboards */
+  .arche__frame--tall { height: 1100px; }
+  .arche__frame--xtall { height: 1500px; }
+</style>
+</head>
+<body>
+
+  <div class="head">
+    <div>
+      <div class="eyebrow">FITGLUE REVAMP · BRUTAL × AURORA</div>
+      <h1>ARCHETYPE GALLERY</h1>
+      <p style="font-family:var(--fg-font-body);font-size:1rem;color:var(--color-text-muted);margin:1rem 0 0;max-width:720px;line-height:1.5">Seven representative pages applying the new design system to real FitGlue content. Together they cover all 56 pages in your repo via the mapping in <a href="HANDOFF.md" style="color:var(--fg-cyan)">HANDOFF.md</a>. Each iframe below is a working HTML page using <code style="font-family:var(--fg-font-mono);background:var(--fg-ink-2);padding:.125rem .375rem">tokens.css</code> + <code style="font-family:var(--fg-font-mono);background:var(--fg-ink-2);padding:.125rem .375rem">components.css</code> + <code style="font-family:var(--fg-font-mono);background:var(--fg-ink-2);padding:.125rem .375rem">overrides.css</code>.</p>
+    </div>
+    <div class="links">
+      <a class="arche__btn" href="../index.html">← Direction canvas (06 BA)</a>
+      <a class="arche__btn arche__btn--ink" href="HANDOFF.md" target="_blank">HANDOFF.md</a>
+    </div>
+  </div>
+
+  <nav class="toc">
+    <span class="toc-label">JUMP TO →</span>
+    <a href="#a1">01 Marketing · Landing</a>
+    <a href="#a2">02 Marketing · Pillar</a>
+    <a href="#a3">03 Marketing · Plugin detail</a>
+    <a href="#a4">04 Auth · Form</a>
+    <a href="#a5">05 App · Wizard</a>
+    <a href="#a6">06 App · Settings</a>
+    <a href="#a7">07 App · Modals</a>
+    <a href="#a8">08 Showcase · Profile</a>
+    <a href="#a9">09 Showcase · Activity</a>
+    <a href="#a10">10 App · Run Detail</a>
+    <a href="#m1" style="background:var(--gradient-primary);color:var(--fg-ink)">📱 MOBILE</a>
+    <span class="toc-label" style="margin-left:auto">FROM BA CANVAS →</span>
+    <a href="../index.html#brutal-aurora">Dashboard · Pipeline · Showcase · Connections · Marketing hero</a>
+  </nav>
+
+  <section class="arche" id="a1">
+    <div class="arche__head">
+      <div>
+        <div class="arche__num">ARCHETYPE 01 · 1440 × 2400</div>
+        <div class="arche__name">Marketing · Landing</div>
+        <div class="arche__pages">Used by <strong>pages/index.html</strong>. Header + huge hero (split with live pipeline preview) + problem/solution + how-it-works steps + gradient CTA + footer.</div>
+      </div>
+      <div class="arche__actions">
+        <a class="arche__btn" href="archetypes/marketing-landing.html" target="_blank">Open full</a>
+      </div>
+    </div>
+    <iframe class="arche__frame arche__frame--xtall" src="archetypes/marketing-landing.html?v=3"></iframe>
+  </section>
+
+  <section class="arche" id="a2">
+    <div class="arche__head">
+      <div>
+        <div class="arche__num">ARCHETYPE 02 · 1440 × 3800</div>
+        <div class="arche__name">Marketing · Pillar</div>
+        <div class="arche__pages">Used by <strong>features.html</strong>, <strong>how-it-works.html</strong>, <strong>pricing.html</strong>. Centred page-hero + feature/integration grids + pricing cards.</div>
+      </div>
+      <div class="arche__actions">
+        <a class="arche__btn" href="archetypes/marketing-pillar.html" target="_blank">Open full</a>
+      </div>
+    </div>
+    <iframe class="arche__frame arche__frame--xtall" src="archetypes/marketing-pillar.html?v=3"></iframe>
+  </section>
+
+  <section class="arche" id="a3">
+    <div class="arche__head">
+      <div>
+        <div class="arche__num">ARCHETYPE 03 · 1440 × 3200</div>
+        <div class="arche__name">Marketing · Plugin Detail</div>
+        <div class="arche__pages">Used by every dynamic page from <strong>templates/plugin-detail.html</strong> &amp; <strong>connection-detail.html</strong> — all 9 connection pages + all 25 booster pages. Hero + before/after transformations + features + use cases + config + required connections.</div>
+      </div>
+      <div class="arche__actions">
+        <a class="arche__btn" href="archetypes/marketing-plugin-detail.html" target="_blank">Open full</a>
+      </div>
+    </div>
+    <iframe class="arche__frame arche__frame--xtall" src="archetypes/marketing-plugin-detail.html?v=3"></iframe>
+  </section>
+
+  <section class="arche" id="a4">
+    <div class="arche__head">
+      <div>
+        <div class="arche__num">ARCHETYPE 04 · 1440 × 900</div>
+        <div class="arche__name">Auth · Form</div>
+        <div class="arche__pages">Used by <strong>auth/login</strong>, <strong>register</strong>, <strong>forgot-password</strong>, <strong>reset-password</strong>, <strong>verify-email</strong>, <strong>waitlist-confirmed</strong>, <strong>access-pending</strong>. Split panel · brand on left, form on right.</div>
+      </div>
+      <div class="arche__actions">
+        <a class="arche__btn" href="archetypes/auth-form.html" target="_blank">Open full</a>
+      </div>
+    </div>
+    <iframe class="arche__frame" src="archetypes/auth-form.html?v=3"></iframe>
+  </section>
+
+  <section class="arche" id="a5">
+    <div class="arche__head">
+      <div>
+        <div class="arche__num">ARCHETYPE 05 · 1440 × 1400</div>
+        <div class="arche__name">App · Wizard</div>
+        <div class="arche__pages">Used by <strong>PipelineWizardPage</strong>, <strong>ConnectionSetupPage</strong>. Step rail on left + form body + sticky action bar.</div>
+      </div>
+      <div class="arche__actions">
+        <a class="arche__btn" href="archetypes/app-wizard.html" target="_blank">Open full</a>
+      </div>
+    </div>
+    <iframe class="arche__frame arche__frame--tall" src="archetypes/app-wizard.html?v=3"></iframe>
+  </section>
+
+  <section class="arche" id="a6">
+    <div class="arche__head">
+      <div>
+        <div class="arche__num">ARCHETYPE 06 · 1440 × 1700</div>
+        <div class="arche__name">App · Settings</div>
+        <div class="arche__pages">Used by <strong>AccountSettingsPage</strong>, <strong>SubscriptionPage</strong>, <strong>EnricherDataPage</strong>, <strong>ShowcaseManagementPage</strong>. Side rail + sectioned form body + danger zone.</div>
+      </div>
+      <div class="arche__actions">
+        <a class="arche__btn" href="archetypes/app-settings.html" target="_blank">Open full</a>
+      </div>
+    </div>
+    <iframe class="arche__frame arche__frame--tall" src="archetypes/app-settings.html?v=3"></iframe>
+  </section>
+
+  <section class="arche" id="a7">
+    <div class="arche__head">
+      <div>
+        <div class="arche__num">ARCHETYPE 07 · 1440 × 1300</div>
+        <div class="arche__name">App · Modals</div>
+        <div class="arche__pages">Used by <strong>SharePipelineModal</strong>, <strong>RepostActionsMenu</strong>, <strong>EnricherInfoModal</strong>, <strong>ReauthModal</strong>, <strong>ImageCropModal</strong>, <strong>ImportPipelineModal</strong>. Four canonical variants: share, magic-actions, info, danger-confirm.</div>
+      </div>
+      <div class="arche__actions">
+        <a class="arche__btn" href="archetypes/app-modal.html" target="_blank">Open full</a>
+      </div>
+    </div>
+    <iframe class="arche__frame arche__frame--tall" src="archetypes/app-modal.html?v=3"></iframe>
+  </section>
+
+  <section class="arche" id="a8">
+    <div class="arche__head">
+      <div>
+        <div class="arche__num">ARCHETYPE 08 · 1440 × 2400</div>
+        <div class="arche__name">Showcase · Profile</div>
+        <div class="arche__pages">Public <strong>/showcase/[username]</strong> page. Hero w/ avatar + streak side-panel, season summary band, activity grid, booster stack, personal records grid, CTA. Replaces the old <code>.showcase-page</code> glassy theme system with the Brutal × Aurora aesthetic. (Note: the existing <code>_showcase-shared.css</code> theme variants — midnight / ember / forest / etc. — can stay as user-pickable accent tints; just retone <code>--sc-bg</code> to <code>var(--fg-ink)</code> + <code>--sc-card-bg</code> to <code>var(--fg-ink-2)</code> and drop the glass blur.)</div>
+      </div>
+      <div class="arche__actions">
+        <a class="arche__btn" href="archetypes/showcase-profile.html" target="_blank">Open full</a>
+      </div>
+    </div>
+    <iframe class="arche__frame arche__frame--xtall" src="archetypes/showcase-profile.html?v=3"></iframe>
+  </section>
+
+  <section class="arche" id="a9">
+    <div class="arche__head">
+      <div>
+        <div class="arche__num">ARCHETYPE 09 · 1440 × 2100</div>
+        <div class="arche__name">Showcase · Activity</div>
+        <div class="arche__pages">Public <strong>/showcase/activity/[slug]</strong> page — the polished, shareable view of a single workout. Hero w/ AI banner + 3 hero stats, AI Summary, Heart Rate (chart + zones), Effort &amp; Energy trio, Recovery Advisor, Progress (Goal / Streak / Cadence), Boosters Applied, conversion CTA. HTML port of the design from the BA canvas.</div>
+      </div>
+      <div class="arche__actions">
+        <a class="arche__btn" href="archetypes/showcase-activity.html" target="_blank">Open full</a>
+      </div>
+    </div>
+    <iframe class="arche__frame arche__frame--xtall" src="archetypes/showcase-activity.html?v=3"></iframe>
+  </section>
+
+  <section class="arche" id="a10">
+    <div class="arche__head">
+      <div>
+        <div class="arche__num">ARCHETYPE 10 · 1440 × 1900</div>
+        <div class="arche__name">App · Pipeline Run Detail</div>
+        <div class="arche__pages">In-app trace at <strong>/app/activities/unsynchronized/:pipelineExecutionId</strong> and as a sub-view on <strong>ActivityDetailPage</strong>. Replaces the existing <code>PipelineTrace</code> + <code>TraceItem</code> components. Summary band + step rail + focused step with provider table + Nerd Mode JSON dump + router fan-out preview. <code>TraceItem</code>'s service-specific renderers (Enricher / Router / Uploader / Webhook) map directly to the rd-provider / rd-dest / etc. patterns here.</div>
+      </div>
+      <div class="arche__actions">
+        <a class="arche__btn" href="archetypes/app-run-detail.html" target="_blank">Open full</a>
+      </div>
+    </div>
+    <iframe class="arche__frame arche__frame--xtall" src="archetypes/app-run-detail.html?v=3"></iframe>
+  </section>
+
+  <!-- ====================================================== -->
+  <!--  MOBILE SECTION                                         -->
+  <!-- ====================================================== -->
+
+  <section class="arche" id="m1" style="background:var(--fg-ink-2);margin-top:3rem;padding-top:3rem;border-top:3px solid var(--fg-paper)">
+    <div class="arche__head">
+      <div>
+        <div class="arche__num" style="background:var(--gradient-primary);color:var(--fg-ink);padding:4px 10px;display:inline-block;letter-spacing:.14em">📱 MOBILE · 390 × 844</div>
+        <div class="arche__name" style="margin-top:.5rem">Mobile Surfaces</div>
+        <div class="arche__pages">The two most-shared public links — <strong>Showcase Profile</strong> and <strong>Showcase Activity Detail</strong> — plus a sample of the in-app <strong>Dashboard</strong>, all designed at native phone width. Same tokens, same gradient, same hard rules. Differences from desktop: bands stay full-width and shrink in padding; nav becomes a 5-tab bottom bar inside the app; stat trios stack with hairlines instead of columns; booster walls become horizontal scroll strips on public pages; pipeline diagrams compress to source → dest pills.</div>
+      </div>
+      <div class="arche__actions">
+        <a class="arche__btn" href="archetypes/mobile/showcase-profile.html" target="_blank">Profile</a>
+        <a class="arche__btn" href="archetypes/mobile/showcase-activity.html" target="_blank">Activity</a>
+        <a class="arche__btn" href="archetypes/mobile/dashboard.html" target="_blank">Dashboard</a>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:32px;justify-content:center;align-items:flex-start;padding:2rem 0;flex-wrap:wrap">
+      <!-- Showcase Profile (priority) -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:1rem">
+        <div style="display:flex;align-items:center;gap:8px;font-family:var(--fg-font-mono);font-size:.75rem;letter-spacing:.14em;color:var(--color-text-muted);text-transform:uppercase">
+          <span style="padding:2px 8px;background:var(--gradient-primary);color:var(--fg-ink);font-weight:700">PRIORITY</span>
+          <span>Showcase · Profile</span>
+        </div>
+        <div style="padding:14px 14px 60px 14px;background:#15131a;border-radius:48px;box-shadow:inset 0 0 0 2px #2a2630,0 24px 60px rgba(0,0,0,.5);position:relative">
+          <div style="position:absolute;top:18px;left:50%;transform:translateX(-50%);width:90px;height:24px;background:#000;border-radius:14px"></div>
+          <iframe src="archetypes/mobile/showcase-profile.html?v=3" style="width:390px;height:844px;border:0;border-radius:34px;display:block;background:var(--fg-ink)"></iframe>
+        </div>
+      </div>
+
+      <!-- Showcase Activity (priority) -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:1rem">
+        <div style="display:flex;align-items:center;gap:8px;font-family:var(--fg-font-mono);font-size:.75rem;letter-spacing:.14em;color:var(--color-text-muted);text-transform:uppercase">
+          <span style="padding:2px 8px;background:var(--gradient-primary);color:var(--fg-ink);font-weight:700">PRIORITY</span>
+          <span>Showcase · Activity</span>
+        </div>
+        <div style="padding:14px 14px 60px 14px;background:#15131a;border-radius:48px;box-shadow:inset 0 0 0 2px #2a2630,0 24px 60px rgba(0,0,0,.5);position:relative">
+          <div style="position:absolute;top:18px;left:50%;transform:translateX(-50%);width:90px;height:24px;background:#000;border-radius:14px"></div>
+          <iframe src="archetypes/mobile/showcase-activity.html?v=3" style="width:390px;height:844px;border:0;border-radius:34px;display:block;background:var(--fg-ink)"></iframe>
+        </div>
+      </div>
+
+      <!-- Dashboard (in-app bonus) -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:1rem">
+        <div style="display:flex;align-items:center;gap:8px;font-family:var(--fg-font-mono);font-size:.75rem;letter-spacing:.14em;color:var(--color-text-muted);text-transform:uppercase">
+          <span style="padding:2px 8px;background:var(--fg-ink-3);color:var(--fg-paper)">BONUS</span>
+          <span>App · Dashboard</span>
+        </div>
+        <div style="padding:14px 14px 60px 14px;background:#15131a;border-radius:48px;box-shadow:inset 0 0 0 2px #2a2630,0 24px 60px rgba(0,0,0,.5);position:relative">
+          <div style="position:absolute;top:18px;left:50%;transform:translateX(-50%);width:90px;height:24px;background:#000;border-radius:14px"></div>
+          <iframe src="archetypes/mobile/dashboard.html?v=3" style="width:390px;height:844px;border:0;border-radius:34px;display:block;background:var(--fg-ink)"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:2rem 0;font-family:var(--fg-font-body);font-size:.9375rem;color:var(--color-text-muted);max-width:760px;margin:0 auto;text-align:center;line-height:1.5">
+      iframes show the live mobile pages at native 390 × 844 (iPhone 14 Pro), wrapped in faux device chrome for context. Scroll inside each phone to see the full page. Other mobile surfaces (landing, run detail, auth) can be derived from the same system on request.
+    </div>
+  </section>
+
+  <div style="padding:3rem 2.5rem;background:var(--fg-ink-2);border-top:var(--fg-rule-thick);margin-top:3rem;text-align:center">
+    <div style="font-family:var(--fg-font-mono);font-size:.75rem;letter-spacing:.14em;color:var(--color-text-muted);text-transform:uppercase;margin-bottom:.5rem">NEXT</div>
+    <h2 style="font-family:var(--fg-font-display);font-size:2rem;text-transform:uppercase;letter-spacing:-.025em;margin:0">Hand <a href="HANDOFF.md" style="background:var(--gradient-primary);-webkit-background-clip:text;background-clip:text;color:transparent">HANDOFF.md</a> to Claude Code.</h2>
+    <p style="font-family:var(--fg-font-body);font-size:1rem;color:var(--color-text-muted);max-width:640px;margin:1rem auto 0">It contains the page-by-page mapping, file drop-in instructions, and a recommended build order so Claude Code can apply this system across the FitGlue/web repo systematically.</p>
+  </div>
+
+</body>
+</html>

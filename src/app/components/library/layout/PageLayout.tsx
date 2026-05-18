@@ -48,8 +48,8 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 
     return (
         <div className="app-page-layout">
+            <AppHeader />
             <div className={contentClasses}>
-                <AppHeader />
                 <PageHeader
                     title={title}
                     backTo={backTo}

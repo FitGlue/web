@@ -49,8 +49,8 @@ interface ShowcaseProfile {
 }
 
 const THEME_PRESETS = [
-    { id: 'default', name: 'FitGlue Classic', accent: '#FF1B8D', gradient: 'linear-gradient(135deg, #0a0a0a, #1a0a20, #0a0a0a)' },
-    { id: 'midnight', name: 'Midnight Blue', accent: '#4CC9F0', gradient: 'linear-gradient(135deg, #0a0a1a, #0d1b3e, #0a0a1a)' },
+    { id: 'default', name: 'FitGlue Classic', accent: '#ff3da6', gradient: 'linear-gradient(135deg, #0a0a0a, #1a0a20, #0a0a0a)' },
+    { id: 'midnight', name: 'Midnight Blue', accent: '#22d3ee', gradient: 'linear-gradient(135deg, #0a0a1a, #0d1b3e, #0a0a1a)' },
     { id: 'ember', name: 'Ember', accent: '#FF6B35', gradient: 'linear-gradient(135deg, #0a0a0a, #2a0a0a, #0a0a0a)' },
     { id: 'forest', name: 'Forest', accent: '#4ADE80', gradient: 'linear-gradient(135deg, #0a0a0a, #0a1a0d, #0a0a0a)' },
     { id: 'neon', name: 'Neon Night', accent: '#E040FB', gradient: 'linear-gradient(135deg, #0a0a0a, #1a0a2a, #0a0a0a)' },
@@ -780,7 +780,7 @@ const ShowcaseManagementPage: React.FC = () => {
                             <Stack direction="horizontal" gap="sm" align="center">
                                 <input
                                     type="color"
-                                    value={customAccentColor || THEME_PRESETS.find(t => t.id === themeId)?.accent || '#FF1B8D'}
+                                    value={customAccentColor || THEME_PRESETS.find(t => t.id === themeId)?.accent || '#ff3da6'}
                                     onChange={(e) => setCustomAccentColor(e.target.value)}
                                     className="showcase-mgmt__color-picker"
                                 />

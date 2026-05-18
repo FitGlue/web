@@ -16,9 +16,9 @@
 /* CSS Variables - Design Tokens */
 :root {
   /* Brand Colors */
-  --color-primary: #FF1B8D;
-  --color-secondary: #9D4EDD;
-  --color-accent: #4CC9F0;
+  --color-primary: #ff3da6;
+  --color-secondary: #8b5cf6;
+  --color-accent: #22d3ee;
   --color-success: #06FFA5;
 
   /* Background */

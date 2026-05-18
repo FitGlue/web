@@ -15,7 +15,7 @@
 }
 
 .wei-exercise--superset {
-  border-color: var(--color-primary, #FF1B8D);
+  border-color: var(--color-primary, #ff3da6);
   border-left-width: 3px;
 }
 
@@ -97,7 +97,7 @@
 
 .wei-mode-btn--active {
   background: rgba(var(--color-primary-rgb, 255,27,141), 0.15);
-  border-color: var(--color-primary, #FF1B8D);
+  border-color: var(--color-primary, #ff3da6);
 }
 
 .wei-mode-label {
@@ -165,7 +165,7 @@
 
 .wei-input:focus {
   outline: none;
-  border-color: var(--color-primary, #FF1B8D);
+  border-color: var(--color-primary, #ff3da6);
 }
 
 .wei-exercise-name {
@@ -189,8 +189,8 @@
 
 .wei-superset-btn--active {
   background: rgba(var(--color-primary-rgb, 255,27,141), 0.15);
-  border-color: var(--color-primary, #FF1B8D);
-  color: var(--color-primary, #FF1B8D);
+  border-color: var(--color-primary, #ff3da6);
+  color: var(--color-primary, #ff3da6);
 }
 
 .wei-remove-btn {
@@ -219,8 +219,8 @@
 }
 
 .wei-add-set-btn:hover {
-  border-color: var(--color-primary, #FF1B8D);
-  color: var(--color-primary, #FF1B8D);
+  border-color: var(--color-primary, #ff3da6);
+  color: var(--color-primary, #ff3da6);
 }
 
 .wei-add-exercise-btn {
@@ -234,5 +234,5 @@
 }
 
 .wei-add-exercise-btn:hover {
-  border-color: var(--color-primary, #FF1B8D);
+  border-color: var(--color-primary, #ff3da6);
 }
