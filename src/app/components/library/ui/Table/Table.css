@@ -92,11 +92,11 @@
 }
 
 .ui-table-row--selected {
-  background: rgba(255, 27, 141, 0.08);
+  background: rgba(255, 61, 166, 0.08);
 }
 
 .ui-table-row--selected:hover {
-  background: rgba(255, 27, 141, 0.12);
+  background: rgba(255, 61, 166, 0.12);
 }
 
 /* Table Cell */

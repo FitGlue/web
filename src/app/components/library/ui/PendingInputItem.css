@@ -38,13 +38,13 @@
 
 /* Needs input variant - subtle pink tint */
 .pending-input-item--needs-input {
-  background: rgba(255, 27, 141, 0.08);
-  border-color: rgba(255, 27, 141, 0.25);
+  background: rgba(255, 61, 166, 0.08);
+  border-color: rgba(255, 61, 166, 0.25);
 }
 
 .pending-input-item--needs-input:hover {
-  background: rgba(255, 27, 141, 0.12);
-  border-color: rgba(255, 27, 141, 0.35);
+  background: rgba(255, 61, 166, 0.12);
+  border-color: rgba(255, 61, 166, 0.35);
 }
 
 .pending-input-item__icon {

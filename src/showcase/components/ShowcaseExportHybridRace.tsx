@@ -8,8 +8,8 @@ const EXPORT_W    = 1080;
 const PREVIEW_SIZE = 280;
 
 const SWATCHES = [
-  { id: 'cyan',   color: '#4CC9F0' },
-  { id: 'pink',   color: '#FF1B8D' },
+  { id: 'cyan',   color: '#22d3ee' },
+  { id: 'pink',   color: '#ff3da6' },
   { id: 'orange', color: '#FF6B35' },
   { id: 'green',  color: '#4ADE80' },
   { id: 'purple', color: '#E040FB' },
@@ -275,8 +275,8 @@ export const HybridRaceExportTab: React.FC<Props> = ({ segments, activityTitle }
   const [showHeader,    setShowHeader]    = useState(true);
   const [showSplit,     setShowSplit]     = useState(true);
   const [showWatermark, setShowWatermark] = useState(true);
-  const [runColor,      setRunColor]      = useState('#4CC9F0');
-  const [stnColor,      setStnColor]      = useState('#FF1B8D');
+  const [runColor,      setRunColor]      = useState('#22d3ee');
+  const [stnColor,      setStnColor]      = useState('#ff3da6');
   const [exporting,     setExporting]     = useState(false);
   const [wrapperHeight, setWrapperHeight] = useState<number | undefined>(undefined);
 

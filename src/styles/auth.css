@@ -23,11 +23,11 @@
 }
 
 .auth-container .title .fit {
-  color: #FF006E;
+  color: #ff3da6;
 }
 
 .auth-container .title .glue {
-  color: #8338EC;
+  color: #8b5cf6;
 }
 
 .auth-container h2 {
@@ -72,7 +72,7 @@
 
 .input-group input:focus {
   outline: none;
-  border-color: #FF006E;
+  border-color: #ff3da6;
   box-shadow: 0 0 0 3px rgba(255, 0, 110, 0.15);
 }
 
@@ -83,7 +83,7 @@
 .forgot-password-link {
   display: block;
   text-align: right;
-  color: #8338EC;
+  color: #8b5cf6;
   font-size: 0.875rem;
   margin-bottom: 1.5rem;
   text-decoration: none;
@@ -91,7 +91,7 @@
 }
 
 .forgot-password-link:hover {
-  color: #FF006E;
+  color: #ff3da6;
 }
 
 .auth-box .btn {
@@ -110,7 +110,7 @@
 }
 
 .auth-box .btn.primary {
-  background: linear-gradient(135deg, #FF006E 0%, #8338EC 100%);
+  background: linear-gradient(135deg, #ff3da6 0%, #8b5cf6 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(255, 0, 110, 0.3);
 }
@@ -181,14 +181,14 @@
 }
 
 .switch-auth a {
-  color: #8338EC;
+  color: #8b5cf6;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s ease;
 }
 
 .switch-auth a:hover {
-  color: #FF006E;
+  color: #ff3da6;
 }
 
 .auth-message {

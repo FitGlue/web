@@ -30,7 +30,7 @@ export const RouteMap: React.FC<Props> = ({ points }) => {
 
       const latlngs = points.map((p) => [p.lat, p.lng] as [number, number]);
       const polyline = L.polyline(latlngs, {
-        color: 'var(--sc-accent, #FF1B8D)',
+        color: 'var(--sc-accent, #ff3da6)',
         weight: 3,
         opacity: 0.9,
       }).addTo(map);

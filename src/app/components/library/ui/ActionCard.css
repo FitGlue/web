@@ -46,18 +46,18 @@
 
 /* Variant: Needs Input - pink tint */
 .action-card-wrapper--needs-input .card {
-  background: rgba(255, 27, 141, 0.06);
-  border-color: rgba(255, 27, 141, 0.2);
+  background: rgba(255, 61, 166, 0.06);
+  border-color: rgba(255, 61, 166, 0.2);
 }
 
 .action-card-wrapper--needs-input .card:hover {
-  background: rgba(255, 27, 141, 0.1);
-  border-color: rgba(255, 27, 141, 0.3);
+  background: rgba(255, 61, 166, 0.1);
+  border-color: rgba(255, 61, 166, 0.3);
 }
 
 .action-card-wrapper--needs-input .action-card__header {
-  background: rgba(255, 27, 141, 0.08);
-  border-bottom-color: rgba(255, 27, 141, 0.15);
+  background: rgba(255, 61, 166, 0.08);
+  border-bottom-color: rgba(255, 61, 166, 0.15);
 }
 
 /* Default variant */

@@ -31,7 +31,7 @@
 
 .pill[role="button"]:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(255, 27, 141, 0.3);
+  box-shadow: 0 0 0 2px rgba(255, 61, 166, 0.3);
 }
 
 .pill__icon {
@@ -82,7 +82,7 @@
 
 /* Pink variant - Complements primary purple */
 .pill--pink {
-  background: rgba(255, 27, 141, 0.2);
+  background: rgba(255, 61, 166, 0.2);
   color: #ff6baa;
 }
 

@@ -240,11 +240,11 @@
 }
 
 .subscription-plan-card--recommended {
-    border-color: rgba(157, 78, 221, 0.5);
-    background: rgba(157, 78, 221, 0.05);
+    border-color: rgba(139, 92, 246, 0.5);
+    background: rgba(139, 92, 246, 0.05);
     box-shadow:
-        0 0 20px rgba(157, 78, 221, 0.15),
-        0 0 40px rgba(255, 27, 141, 0.08);
+        0 0 20px rgba(139, 92, 246, 0.15),
+        0 0 40px rgba(255, 61, 166, 0.08);
     position: relative;
 }
 
@@ -254,7 +254,7 @@
     top: -10px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, #9D4EDD, #FF1B8D);
+    background: linear-gradient(135deg, #8b5cf6, #ff3da6);
     color: #ffffff;
     font-size: 0.625rem;
     font-weight: var(--font-weight-bold);

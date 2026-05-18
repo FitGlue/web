@@ -62,7 +62,7 @@
 .smart-nudge__cta {
     font-size: var(--font-size-xs, 0.75rem);
     font-weight: 600;
-    color: var(--color-accent, #4CC9F0);
+    color: var(--color-accent, #22d3ee);
     background: rgba(76, 201, 240, 0.12);
     border: 1px solid rgba(76, 201, 240, 0.2);
     border-radius: var(--radius-sm, 6px);

@@ -27,8 +27,8 @@
 /* Active state - Pink glow */
 .live-toggle--active {
   color: var(--color-primary);
-  background: rgba(255, 27, 141, 0.15);
-  border: 1px solid rgba(255, 27, 141, 0.3);
+  background: rgba(255, 61, 166, 0.15);
+  border: 1px solid rgba(255, 61, 166, 0.3);
 }
 
 .live-toggle__dot {

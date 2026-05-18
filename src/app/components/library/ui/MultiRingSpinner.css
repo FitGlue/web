@@ -29,7 +29,7 @@
     inset: 0;
     border-radius: 50%;
     border: 2px solid transparent;
-    border-top-color: var(--color-primary, #FF1B8D);
+    border-top-color: var(--color-primary, #ff3da6);
     animation: multi-ring-spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
 }
 
@@ -39,7 +39,7 @@
 
 .multi-ring-spinner__ring--2 {
     inset: 4px;
-    border-top-color: var(--color-secondary, #9D4EDD);
+    border-top-color: var(--color-secondary, #8b5cf6);
     animation-duration: 1.8s;
     animation-direction: reverse;
 }
@@ -54,7 +54,7 @@
 
 .multi-ring-spinner__ring--3 {
     inset: 8px;
-    border-top-color: var(--color-accent, #4CC9F0);
+    border-top-color: var(--color-accent, #22d3ee);
     animation-duration: 2.4s;
 }
 

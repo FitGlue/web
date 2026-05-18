@@ -18,8 +18,8 @@
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse at 20% 20%, rgba(255, 27, 141, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(157, 78, 221, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 20%, rgba(255, 61, 166, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
         radial-gradient(ellipse at 50% 50%, rgba(76, 201, 240, 0.03) 0%, transparent 70%);
     animation: loading-bg-pulse 4s ease-in-out infinite;
 }
@@ -70,7 +70,7 @@
 }
 
 .loading-logo-fit {
-    background: linear-gradient(135deg, #FF1B8D 0%, #FF6BB3 100%);
+    background: linear-gradient(135deg, #ff3da6 0%, #FF6BB3 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -78,7 +78,7 @@
 }
 
 .loading-logo-glue {
-    background: linear-gradient(135deg, #9D4EDD 0%, #C77DFF 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #C77DFF 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -117,20 +117,20 @@
     inset: 0;
     border-radius: 50%;
     border: 3px solid transparent;
-    border-top-color: var(--color-primary, #FF1B8D);
+    border-top-color: var(--color-primary, #ff3da6);
     animation: loading-spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
 }
 
 .loading-spinner-ring-2 {
     inset: 6px;
-    border-top-color: var(--color-secondary, #9D4EDD);
+    border-top-color: var(--color-secondary, #8b5cf6);
     animation-duration: 1.8s;
     animation-direction: reverse;
 }
 
 .loading-spinner-ring-3 {
     inset: 12px;
-    border-top-color: var(--color-accent, #4CC9F0);
+    border-top-color: var(--color-accent, #22d3ee);
     animation-duration: 2.4s;
 }
 

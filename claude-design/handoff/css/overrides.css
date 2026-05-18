@@ -1,0 +1,432 @@
+/* ============================================================
+   FitGlue · Brutal × Aurora · OVERRIDES of existing classes
+   ============================================================
+   This file retones existing un-prefixed classes in main.css so the
+   current HTML structure renders in the new system WITHOUT markup
+   changes. Import AFTER tokens.css + components.css.
+
+   Goal: 90%+ of existing markup looks correct with zero edits.
+   Where markup truly fights the system (e.g. radial-gradient bgs
+   on cards), see HANDOFF.md for the small surgical refactors.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   HEADER — flat ink with 3px paper rule, no backdrop blur
+   ------------------------------------------------------------ */
+
+.header {
+  background: var(--fg-ink);
+  border-bottom: var(--fg-rule-thick);
+  backdrop-filter: none;
+}
+.header.scrolled { background: var(--fg-ink); }
+
+.logo-fit  { color: var(--fg-paper); }
+.logo-glue {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.nav-link {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.nav-link::after { display: none; } /* drop underline animation */
+.nav-link:hover, .nav-link.active { color: var(--fg-paper); }
+
+/* Nav buttons — hard slabs, not pills */
+.nav-link-ghost {
+  border-radius: 0 !important;
+  border: 2px solid var(--fg-paper) !important;
+  padding: 0.5rem 1rem !important;
+  font-family: var(--fg-font-display) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.04em !important;
+}
+.nav-link-ghost:hover {
+  background: var(--fg-paper) !important;
+  color: var(--fg-ink) !important;
+  transform: none !important;
+}
+
+.nav-link-cta {
+  border-radius: 0 !important;
+  background: var(--gradient-primary) !important;
+  color: var(--fg-ink) !important;
+  padding: 0.5rem 1rem !important;
+  font-family: var(--fg-font-display) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.04em !important;
+  box-shadow: none !important;
+}
+.nav-link-cta:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: none !important;
+  filter: brightness(1.06);
+}
+
+/* ------------------------------------------------------------
+   BUTTONS — hard slabs replace pills
+   ------------------------------------------------------------ */
+
+.btn {
+  border-radius: 0;
+  padding: 0.875rem 1.375rem;
+  font-family: var(--fg-font-display);
+  font-weight: 400;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+.btn-primary {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  box-shadow: none;
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: none;
+  filter: brightness(1.06);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--fg-paper);
+  border: 2px solid var(--fg-paper);
+}
+.btn-secondary:hover {
+  background: var(--fg-paper);
+  color: var(--fg-ink);
+  border-color: var(--fg-paper);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--fg-paper);
+  border: 2px solid var(--fg-paper);
+  border-radius: 0;
+}
+.btn-ghost:hover { background: var(--fg-paper); color: var(--fg-ink); transform: none; }
+.btn-lg { padding: 1.125rem 1.625rem; font-size: 1rem; }
+.btn-sm { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+
+/* ------------------------------------------------------------
+   HERO — drop the soft glow ::before. Keep grain ::after.
+   The hero now reads as solid ink with one big aurora band of type.
+   ------------------------------------------------------------ */
+
+.hero {
+  background: var(--fg-ink);
+  padding-top: 100px;
+}
+.hero::before { display: none; } /* drop the radial glow */
+.hero::after { opacity: 0.4; } /* keep faint grid */
+
+.hero-title {
+  font-family: var(--fg-font-display);
+  font-size: var(--font-size-hero);
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+  line-height: 0.86;
+  animation: none;
+}
+.hero-title .fit  { color: var(--fg-paper); animation: none; }
+.hero-title .glue {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: none;
+}
+.hero-tagline {
+  font-family: var(--fg-font-body);
+  text-transform: none;
+  color: var(--color-text-muted);
+  animation: none;
+}
+.hero-highlight { color: var(--fg-pink); }
+.hero-cta { animation: none; }
+
+/* Drop the soft frosted carousel cards */
+.hc-card {
+  background: var(--fg-ink-2) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: inset 0 0 0 2px var(--fg-paper) !important;
+  backdrop-filter: none !important;
+}
+.hc-card-header h3 {
+  font-family: var(--fg-font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ------------------------------------------------------------
+   TEXT GRADIENT — already correct from var swap, but reassert
+   ------------------------------------------------------------ */
+
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ------------------------------------------------------------
+   SECTIONS — alternate tonal panels for rhythm
+   ------------------------------------------------------------ */
+
+.section { padding: var(--space-xl) 0; }
+.section-alt {
+  background: var(--fg-ink-2);
+  border-top: var(--fg-rule-thin);
+  border-bottom: var(--fg-rule-thin);
+}
+
+/* ------------------------------------------------------------
+   CARD SURFACES — drop rounded glass, become hard ink-2 slabs.
+   Hover reveals a gradient hairline at the top edge (instead of glow shadow).
+   ------------------------------------------------------------ */
+
+.feature-card,
+.problem-card,
+.integration-card,
+.pricing-card {
+  background: var(--fg-ink-2);
+  border: 0;
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+  position: relative;
+  transition: transform var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+.feature-card:hover,
+.problem-card:hover,
+.integration-card:hover,
+.pricing-card:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+}
+
+/* Re-use existing ::before hover bar — make it gradient and full opacity */
+.feature-card::before {
+  height: 4px;
+  background: var(--gradient-primary);
+  transform: scaleX(1);   /* always on */
+  transform-origin: 0 0;
+}
+
+/* Premium feature: replace gold tint with violet wash */
+.feature-card.premium {
+  background: linear-gradient(135deg, var(--fg-ink-2) 0%, rgba(139, 92, 246, 0.18) 100%);
+  box-shadow: inset 0 0 0 1.5px var(--fg-violet);
+}
+.feature-card.premium:hover {
+  box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+}
+
+.premium-badge {
+  background: var(--gradient-primary) !important;
+  color: var(--fg-ink) !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  font-family: var(--fg-font-mono);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+/* Integration status pills — sharp corners, mono */
+.integration-status {
+  border-radius: 0;
+  font-family: var(--fg-font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.integration-status.live   { background: var(--fg-green); color: var(--fg-ink); }
+.integration-status.coming { background: var(--fg-gold);  color: var(--fg-ink); }
+.integration-status.beta,
+.integration-status.booster{ background: var(--fg-violet); color: var(--fg-paper); }
+
+/* Integration logo — square ink-3 block, no rounding */
+.integration-logo {
+  background: var(--fg-ink-3);
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+}
+
+/* ------------------------------------------------------------
+   PRICING — featured tier replaces pink-tint background with band
+   ------------------------------------------------------------ */
+
+.pricing-card.featured {
+  background: var(--fg-ink-2);
+  box-shadow: inset 0 0 0 2.5px var(--fg-paper);
+  transform: none;
+}
+.pricing-card.featured:hover { transform: translateY(-2px); }
+
+.pricing-badge {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  border-radius: 0;
+  font-family: var(--fg-font-mono);
+  letter-spacing: 0.14em;
+}
+
+/* ------------------------------------------------------------
+   STEPS (how-it-works style) — gradient connector line + square number
+   ------------------------------------------------------------ */
+
+.steps::before {
+  background: var(--gradient-primary);
+}
+.step-number {
+  border-radius: 0;
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  font-family: var(--fg-font-display);
+  box-shadow: none;
+  letter-spacing: -0.02em;
+}
+
+/* Connection setup step variant (smaller, with left bar) */
+.setup-step {
+  background: var(--fg-ink-2);
+  border-radius: 0;
+  border-left: 4px solid;
+  border-image: var(--gradient-primary) 1;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+}
+.setup-step:hover {
+  transform: none;
+  box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+}
+
+/* ------------------------------------------------------------
+   CTA SECTION — replace soft glow with hard gradient band
+   ------------------------------------------------------------ */
+
+.cta-section {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  padding: var(--space-xl) var(--space-md);
+}
+.cta-section::before { display: none; }
+.cta-section h2,
+.cta-title { color: var(--fg-ink); }
+.cta-subtitle { color: rgba(7, 7, 16, 0.78); }
+.cta-section .btn-primary {
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+}
+.cta-section .btn-secondary {
+  border-color: var(--fg-ink);
+  color: var(--fg-ink);
+}
+.cta-section .btn-secondary:hover {
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+}
+
+/* ------------------------------------------------------------
+   WAITLIST FORM — hard edges, gradient submit
+   ------------------------------------------------------------ */
+
+.waitlist-input-group {
+  background: var(--fg-ink-2);
+  border: 2px solid var(--fg-paper);
+  border-radius: 0;
+  padding: 0.25rem;
+}
+.waitlist-input { color: var(--fg-paper); }
+
+.waitlist-success {
+  background: rgba(163, 255, 61, 0.10);
+  border: 2px solid var(--fg-green);
+  border-radius: 0;
+  color: var(--fg-green);
+}
+
+/* ------------------------------------------------------------
+   BREADCRUMB & misc
+   ------------------------------------------------------------ */
+
+.breadcrumb { font-family: var(--fg-font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.breadcrumb a { color: var(--fg-cyan); }
+
+.integration-type-badge {
+  background: var(--fg-ink-3);
+  border-radius: 0;
+  font-family: var(--fg-font-mono);
+  letter-spacing: 0.12em;
+}
+
+/* ------------------------------------------------------------
+   TRANSFORMATIONS (before/after) — hard slab cards
+   ------------------------------------------------------------ */
+
+.transformation-card,
+.before-after-card {
+  background: var(--fg-ink-2);
+  border-radius: 0;
+  border: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+}
+.transformation-after,
+.before-after-card.after {
+  background: linear-gradient(135deg, var(--fg-ink-2) 0%, rgba(255, 61, 166, 0.10) 100%);
+  border-left: 4px solid;
+  border-image: var(--gradient-primary) 1;
+  box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+}
+.transformation-arrow,
+.before-after-arrow { color: var(--fg-pink); }
+
+/* ------------------------------------------------------------
+   FOOTER — solid ink with paper 3px top rule
+   ------------------------------------------------------------ */
+
+.footer {
+  background: var(--fg-ink);
+  border-top: var(--fg-rule-thick);
+  padding: var(--space-lg) 0 var(--space-md);
+}
+.footer-heading {
+  font-family: var(--fg-font-mono);
+  letter-spacing: 0.16em;
+  color: var(--color-text-subtle);
+}
+.footer-links a { color: var(--color-text-muted); transition: color var(--transition-fast); }
+.footer-links a:hover { color: var(--fg-paper); text-decoration: underline; text-underline-offset: 3px; }
+
+.footer-social a {
+  background: var(--fg-ink-2);
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+}
+.footer-social a:hover {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  transform: none;
+}
+
+.footer-bottom { border-top: var(--fg-rule-thin); }
+
+/* ------------------------------------------------------------
+   ALL ROUNDED RECTANGLES → SQUARE (sweep)
+   Catches stragglers we didn't touch individually.
+   ------------------------------------------------------------ */
+
+.config-item, .config-option, .config-toggle .toggle-option,
+.connection-card, .strava-preview,
+.feature-icon-svg, .feature-icon-png, .feature-icon-jpg,
+.connection-card-icon-svg, .connection-card-icon-png, .connection-card-icon-jpg,
+.integration-hero-icon-svg, .integration-hero-icon-png, .integration-hero-icon-jpg {
+  border-radius: 0;
+}

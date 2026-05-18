@@ -43,7 +43,7 @@
 
 .tabbed-card__tab--active {
   color: #ffffff;
-  background: rgba(255, 27, 141, 0.1);
+  background: rgba(255, 61, 166, 0.1);
   border-bottom-color: var(--color-primary, #ff1b8d);
 }
 
