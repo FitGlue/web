@@ -8,9 +8,8 @@
   align-items: flex-end;
   gap: var(--spacing-md);
   padding: var(--spacing-md);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  background: var(--fg-ink-2, #0d0c18);
+  border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
 }
 
 .ui-filter-bar__fields {
@@ -46,10 +45,9 @@
 .ui-filter-bar select,
 .ui-filter-bar input[type="text"],
 .ui-filter-bar input[type="search"] {
-  background: var(--color-surface-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-primary);
+  background: var(--fg-ink, #070710);
+  border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
+  color: var(--fg-paper, #f5f3eb);
   padding: var(--spacing-xs) var(--spacing-sm);
   font-size: 0.875rem;
   min-width: 140px;
