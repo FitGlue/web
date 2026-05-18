@@ -1,6 +1,6 @@
 /* ========================================
    FitGlue Marketing Site Styles
-   Bold, fun, and unapologetically pink & purple
+   Brutal × Aurora — midnight, hard rules, aurora gradient
    ======================================== */
 
 /* Reset and base styles */
@@ -10,73 +10,191 @@
   box-sizing: border-box;
 }
 
+/* ============================================================
+   FitGlue · Brutal × Aurora · Design Tokens
+   ============================================================
+   Drop in to assets/styles/main.css by replacing the :root block.
+   All existing CSS variable names are preserved so nothing breaks;
+   their values are retoned for the Brutal × Aurora system.
+   New tokens are prefixed --fg-* to avoid collisions.
+   ============================================================ */
+
 :root {
-  /* Primary palette - BOLD pink & purple */
-  --color-primary: #FF006E;
-  --color-primary-light: #FF4D94;
-  --color-primary-dark: #CC0058;
+  /* -----------------------------------------------
+     COLOR — primary palette (was pink/purple, now aurora gradient stops)
+     ----------------------------------------------- */
 
-  --color-secondary: #8338EC;
-  --color-secondary-light: #9D5CF5;
-  --color-secondary-dark: #6B2DC2;
+  /* Aurora gradient stops — use as a 3-stop linear-gradient */
+  --fg-pink:    #ff3da6;
+  --fg-violet:  #8b5cf6;
+  --fg-cyan:    #22d3ee;
 
-  --color-accent: #3A86FF;
-  --color-success: #06FFA5;
-  --color-warning: #FFD60A;
+  /* Punctuation / status */
+  --fg-green:   #a3ff3d;   /* live / success ping */
+  --fg-rose:    #ff5d6c;   /* warn / overreaching */
+  --fg-gold:    #ffd60a;   /* premium tier */
 
-  /* Backgrounds */
-  --color-bg: #0A0A0A;
-  --color-bg-elevated: #151515;
-  --color-bg-card: rgba(255, 255, 255, 0.03);
+  /* Existing var names — retoned to the new system */
+  --color-primary:        var(--fg-pink);
+  --color-primary-light:  #ff66bd;
+  --color-primary-dark:   #cc1e7e;
 
-  /* Text */
-  --color-text: #FFFFFF;
-  --color-text-muted: #A0A0A0;
-  --color-text-subtle: #666666;
+  --color-secondary:        var(--fg-violet);
+  --color-secondary-light:  #a98cff;
+  --color-secondary-dark:   #6b3ed4;
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-  --gradient-hero: linear-gradient(180deg, var(--color-bg) 0%, #0D0818 50%, #150A20 100%);
-  --gradient-glow: radial-gradient(ellipse at center, rgba(131, 56, 236, 0.15) 0%, transparent 70%);
+  --color-accent:    var(--fg-cyan);
+  --color-success:   var(--fg-green);
+  --color-warning:   var(--fg-gold);
 
-  /* Shadows */
-  --shadow-glow-pink: 0 0 60px rgba(255, 0, 110, 0.3);
-  --shadow-glow-purple: 0 0 60px rgba(131, 56, 236, 0.3);
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
-  --shadow-card-hover: 0 12px 40px rgba(131, 56, 236, 0.25);
+  /* -----------------------------------------------
+     SURFACES — flat, hard-edged
+     ----------------------------------------------- */
 
-  /* Spacing */
-  --space-xs: 0.5rem;
-  --space-sm: 1rem;
-  --space-md: 2rem;
-  --space-lg: 4rem;
-  --space-xl: 6rem;
+  --fg-ink:        #070710;        /* base background */
+  --fg-ink-2:      #0d0c18;        /* panel raise */
+  --fg-ink-3:      #16142a;        /* hover / nested raise */
+  --fg-paper:      #f5f3eb;        /* foreground ink (text & rules on dark) */
+  --fg-paper-dim:  #cfcdc4;
+
+  /* Existing var names */
+  --color-bg:           var(--fg-ink);
+  --color-bg-elevated:  var(--fg-ink-2);
+  --color-bg-card:      var(--fg-ink-2);   /* was rgba glass — now solid raise */
+
+  /* -----------------------------------------------
+     TEXT
+     ----------------------------------------------- */
+
+  --color-text:         var(--fg-paper);
+  --color-text-muted:   rgba(245, 243, 235, 0.62);
+  --color-text-subtle:  rgba(245, 243, 235, 0.38);
+
+  /* -----------------------------------------------
+     LINES — 3-tier rule system
+     ----------------------------------------------- */
+
+  --fg-rule-thick:     3px solid var(--fg-paper);            /* chrome / outer frame */
+  --fg-rule-thin:      1.5px solid rgba(245, 243, 235, 0.16); /* interior dividers */
+  --fg-rule-dashed:    1.5px dashed rgba(245, 243, 235, 0.16);
+  --fg-hairline-color: rgba(245, 243, 235, 0.16);
+
+  /* -----------------------------------------------
+     GRADIENTS
+     ----------------------------------------------- */
+
+  --gradient-primary: linear-gradient(95deg,
+    var(--fg-pink) 0%,
+    var(--fg-violet) 50%,
+    var(--fg-cyan) 100%);
+
+  --gradient-hero: linear-gradient(180deg,
+    var(--fg-ink) 0%,
+    #0f0a1f 50%,
+    var(--fg-ink) 100%);
+
+  --gradient-glow: radial-gradient(ellipse at center,
+    rgba(139, 92, 246, 0.18) 0%,
+    transparent 70%);
+
+  --gradient-aurora-soft: linear-gradient(95deg,
+    rgba(255, 61, 166, 0.14),
+    rgba(139, 92, 246, 0.14) 50%,
+    rgba(34, 211, 238, 0.14));
+
+  /* -----------------------------------------------
+     SHADOWS — drop the glow-pink. Use clean drop shadows.
+     Visual weight should come from contrast & gradient bands, not glow.
+     ----------------------------------------------- */
+
+  --shadow-glow-pink:    0 12px 40px rgba(139, 92, 246, 0.35);  /* repurposed: violet glow */
+  --shadow-glow-purple:  0 12px 40px rgba(34, 211, 238, 0.25);  /* repurposed: cyan glow */
+  --shadow-card:         0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover:   0 16px 36px rgba(0, 0, 0, 0.55);
+
+  /* -----------------------------------------------
+     SPACING — unchanged
+     ----------------------------------------------- */
+
+  --space-xs:  0.5rem;
+  --space-sm:  1rem;
+  --space-md:  2rem;
+  --space-lg:  4rem;
+  --space-xl:  6rem;
   --space-xxl: 8rem;
 
-  /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.5rem;
-  --font-size-2xl: 2rem;
-  --font-size-3xl: 3rem;
-  --font-size-4xl: 4rem;
-  --font-size-hero: clamp(3rem, 10vw, 6rem);
+  /* -----------------------------------------------
+     TYPOGRAPHY — adds display + mono families
+     Inter stays for body (already loaded by partials/header.html).
+     Add these to the Google Fonts <link>:
+       Archivo:400;500;600;700;800;900
+       Archivo+Black            (display)
+       JetBrains+Mono:400;500;600;700
+     ----------------------------------------------- */
 
-  /* Border radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 30px;
-  --radius-full: 50px;
+  --font-family:          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --fg-font-display:      'Archivo Black', 'Arial Black', system-ui, sans-serif;
+  --fg-font-body:         'Archivo', 'Inter', system-ui, sans-serif;
+  --fg-font-mono:         'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
-  /* Transitions */
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.3s ease;
-  --transition-slow: 0.5s ease;
+  /* Type scale — display tightens letterspacing, body keeps comfort */
+  --font-size-xs:    0.75rem;
+  --font-size-sm:    0.875rem;
+  --font-size-base:  1rem;
+  --font-size-lg:    1.25rem;
+  --font-size-xl:    1.5rem;
+  --font-size-2xl:   2rem;
+  --font-size-3xl:   3rem;
+  --font-size-4xl:   4rem;
+  --font-size-hero:  clamp(3.5rem, 11vw, 9rem);
+
+  /* -----------------------------------------------
+     RADII — drop way down. Brutal = hard edges.
+     Keep --radius-full for legacy pill nav links, but new components avoid it.
+     ----------------------------------------------- */
+
+  --radius-sm:    0;
+  --radius-md:    0;
+  --radius-lg:    0;
+  --radius-xl:    0;
+  --radius-full:  999px;   /* preserved for legacy nav pills only */
+
+  /* -----------------------------------------------
+     TRANSITIONS — unchanged
+     ----------------------------------------------- */
+
+  --transition-fast:    0.15s ease;
+  --transition-normal:  0.25s ease;
+  --transition-slow:    0.5s ease;
 }
+
+/* ============================================================
+   GLOBAL TYPE — opt all headings into Archivo Black w/ tight tracking
+   ============================================================ */
+
+body {
+  font-family: var(--fg-font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--fg-font-display);
+  font-weight: 400;            /* Archivo Black is single-weight */
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+
+/* Restore comfortable case for body-flow headings (article/help/legal) */
+.markdown-content h3,
+.markdown-content h4,
+.fg-prose h2,
+.fg-prose h3,
+.fg-prose h4 {
+  text-transform: none;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
 
 /* ========================================
    Tighter Mobile Spacing
@@ -6263,4 +6381,1284 @@ h4 {
   60% {
     transform: translate3d(4px, 0, 0);
   }
+}
+
+/* ============================================================
+   FitGlue · Brutal × Aurora · NEW component classes
+   ============================================================
+   These are the new reusable classes the design depends on.
+   Import AFTER tokens.css and BEFORE overrides.css.
+
+   Naming: `.fg-*` prefix on every new class so they don't collide
+   with the existing un-prefixed marketing site classes.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   FG-BAND — Full-width gradient or solid section opener.
+   Replaces bordered section headers. This is the loud chapter marker.
+   ------------------------------------------------------------ */
+
+.fg-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.875rem;
+  padding: 0.625rem 1.125rem;
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+}
+
+.fg-band--ink    { background: var(--fg-ink);  color: var(--fg-paper); }
+.fg-band--paper  { background: var(--fg-paper); color: var(--fg-ink); }
+.fg-band--lg     { padding: 0.875rem 1.375rem; }
+.fg-band--sm     { padding: 0.4375rem 0.875rem; }
+
+.fg-band__label {
+  font-family: var(--fg-font-display);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.875rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.fg-band--lg .fg-band__label { font-size: 1.25rem; }
+.fg-band--sm .fg-band__label { font-size: 0.75rem; }
+
+.fg-band__right {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------
+   FG-PANEL — tonal surface block (no borders).
+   Use to differentiate sections from neighbours via tone.
+   ------------------------------------------------------------ */
+
+.fg-panel              { background: transparent; }
+.fg-panel--ink         { background: var(--fg-ink); }
+.fg-panel--ink-2       { background: var(--fg-ink-2); }
+.fg-panel--ink-3       { background: var(--fg-ink-3); }
+.fg-panel--aurora-wash { background: linear-gradient(135deg,
+                          rgba(255, 61, 166, 0.10),
+                          rgba(139, 92, 246, 0.10) 50%,
+                          rgba(34, 211, 238, 0.10)); }
+.fg-panel--pink-wash   { background: radial-gradient(80% 100% at 0% 0%,
+                          rgba(255, 61, 166, 0.14), transparent 60%); }
+.fg-panel--violet-wash { background: radial-gradient(70% 90% at 50% 0%,
+                          rgba(139, 92, 246, 0.16), transparent 60%); }
+.fg-panel--cyan-wash   { background: radial-gradient(80% 100% at 100% 100%,
+                          rgba(34, 211, 238, 0.14), transparent 60%); }
+
+/* ------------------------------------------------------------
+   FG-HAIRLINE — interior dividers within a section.
+   Tier 3 in the rule hierarchy.
+   ------------------------------------------------------------ */
+
+.fg-hairline {
+  border: 0;
+  border-top: var(--fg-rule-thin);
+  height: 0;
+  margin: 0;
+}
+.fg-hairline--dashed { border-top-style: dashed; }
+
+.fg-divide-y > * + * { border-top: var(--fg-rule-thin); }
+.fg-divide-x > * + * { border-left: var(--fg-rule-thin); }
+
+/* ------------------------------------------------------------
+   FG-STAMP — small mono caps pill with gradient/solid background.
+   Use for metadata: "PILATES", "VIA FILE UPLOAD", "✦ NEW".
+   ------------------------------------------------------------ */
+
+.fg-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3125rem 0.625rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+}
+
+.fg-stamp--paper  { background: var(--fg-paper); color: var(--fg-ink); }
+.fg-stamp--ink    { background: var(--fg-ink);   color: var(--fg-paper); }
+.fg-stamp--green  { background: var(--fg-green); color: var(--fg-ink); }
+.fg-stamp--rose   { background: var(--fg-rose);  color: var(--fg-paper); }
+.fg-stamp--outline{
+  background: transparent;
+  color: var(--fg-paper);
+  box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+}
+
+/* ------------------------------------------------------------
+   FG-BUTTON — replaces the soft pill buttons with hard slabs.
+   Drop on its own OR as a modifier on existing .btn (overrides.css).
+   ------------------------------------------------------------ */
+
+.fg-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.375rem;
+  border: 0;
+  cursor: pointer;
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  font-family: var(--fg-font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+.fg-button:hover { transform: translateY(-1px); filter: brightness(1.06); }
+
+.fg-button--lg  { padding: 1.125rem 1.625rem; font-size: 1rem; }
+.fg-button--sm  { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+
+.fg-button--ink {
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+  box-shadow: inset 0 0 0 2px var(--fg-paper);
+}
+.fg-button--ghost {
+  background: transparent;
+  color: var(--fg-paper);
+  box-shadow: inset 0 0 0 2px var(--fg-paper);
+}
+.fg-button--paper {
+  background: var(--fg-paper);
+  color: var(--fg-ink);
+}
+
+/* ------------------------------------------------------------
+   FG-INLINE-STAT — large display number + mono label.
+   Used in heading slabs (4 across), no border, hairline left divide.
+   ------------------------------------------------------------ */
+
+.fg-inline-stat {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1.125rem;
+  border-left: var(--fg-rule-thin);
+}
+
+.fg-inline-stat__n {
+  font-family: var(--fg-font-display);
+  font-size: 1.875rem;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  color: var(--fg-paper);
+}
+
+.fg-inline-stat__l {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+}
+
+.fg-inline-stat--gradient .fg-inline-stat__n {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.fg-inline-stat--warn .fg-inline-stat__n { color: var(--fg-rose); }
+
+/* ------------------------------------------------------------
+   FG-BOOSTER-CHIP — emoji + caps label.
+   Three states: done (paper bg), run (aurora bg), queued (outline).
+   ------------------------------------------------------------ */
+
+.fg-booster-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.4375rem 0.625rem;
+  font-family: var(--fg-font-display);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--fg-ink-2);
+  color: var(--fg-paper);
+}
+
+.fg-booster-chip--done    { background: var(--fg-paper); color: var(--fg-ink); }
+.fg-booster-chip--run     { background: var(--gradient-primary); color: var(--fg-ink); }
+.fg-booster-chip--queued  {
+  background: transparent;
+  color: var(--fg-paper);
+  box-shadow: inset 0 0 0 2px var(--fg-paper);
+}
+.fg-booster-chip--sm { padding: 0.3125rem 0.5rem; font-size: 0.625rem; }
+
+.fg-booster-chip__emoji { font-family: 'Apple Color Emoji', 'Segoe UI Emoji', system-ui; font-size: 0.8125rem; }
+
+/* ------------------------------------------------------------
+   FG-CHROME-BAR — the top app bar with the 3px paper rule beneath.
+   Used in both marketing and app shells.
+   ------------------------------------------------------------ */
+
+.fg-chrome-bar {
+  display: flex;
+  align-items: stretch;
+  border-bottom: var(--fg-rule-thick);
+  background: var(--fg-ink);
+}
+
+.fg-chrome-bar__brand   { padding: 0.875rem 1.375rem; display: flex; align-items: center; }
+.fg-chrome-bar__nav     { display: flex; align-items: stretch; flex: 1 1 auto; }
+.fg-chrome-bar__link    {
+  padding: 0.875rem 1.125rem;
+  display: flex;
+  align-items: center;
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.fg-chrome-bar__link[aria-current],
+.fg-chrome-bar__link.active {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+}
+
+/* ------------------------------------------------------------
+   FG-LOGO — square block, top half aurora gradient, bottom half ink.
+   Replaces text-only Fit/Glue logo where wanted.
+   ------------------------------------------------------------ */
+
+.fg-logo {
+  position: relative;
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  box-shadow: inset 0 0 0 2px var(--fg-paper);
+}
+.fg-logo::before,
+.fg-logo::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+.fg-logo::before { top: 0; bottom: 50%; background: var(--gradient-primary); }
+.fg-logo::after  { top: 50%; bottom: 0; background: var(--fg-ink); }
+
+/* ------------------------------------------------------------
+   FG-WORDMARK — logo + FITGLUE text in Archivo Black
+   ------------------------------------------------------------ */
+
+.fg-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-family: var(--fg-font-display);
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+  color: var(--fg-paper);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+/* ------------------------------------------------------------
+   FG-TEXT-GRADIENT — replaces .text-gradient for new components.
+   (Existing .text-gradient is also retoned in overrides.css.)
+   ------------------------------------------------------------ */
+
+.fg-text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+}
+
+/* ------------------------------------------------------------
+   FG-PROSE — content body wrapper that opts into looser type
+   for marketing long-form (guides, legal, help).
+   ------------------------------------------------------------ */
+
+.fg-prose {
+  font-family: var(--fg-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+}
+.fg-prose p           { margin-bottom: 1rem; }
+.fg-prose strong      { color: var(--fg-paper); }
+.fg-prose a           { color: var(--fg-cyan); text-decoration: underline; text-underline-offset: 3px; }
+.fg-prose ul, .fg-prose ol { margin: 0 0 1rem 1.25rem; }
+.fg-prose li          { margin-bottom: 0.375rem; }
+.fg-prose blockquote  {
+  border-left: 4px solid;
+  border-image: var(--gradient-primary) 1;
+  padding: 0.25rem 0 0.25rem 1rem;
+  margin: 1.5rem 0;
+  color: var(--fg-paper);
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------
+   FG-BG — page background with aurora wash + grain.
+   Apply to <body> on dark pages.
+   ------------------------------------------------------------ */
+
+.fg-bg {
+  background: var(--gradient-hero);
+  position: relative;
+}
+.fg-bg::before,
+.fg-bg::after {
+  content: '';
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+}
+.fg-bg::before {
+  left: -10%; top: -20%; width: 60%; height: 70%;
+  background: radial-gradient(closest-side, rgba(255, 61, 166, 0.20), transparent 70%);
+  filter: blur(40px);
+}
+.fg-bg::after {
+  right: -15%; bottom: -20%; width: 60%; height: 70%;
+  background: radial-gradient(closest-side, rgba(34, 211, 238, 0.16), transparent 70%);
+  filter: blur(40px);
+}
+.fg-bg > * { position: relative; z-index: 1; }
+
+
+/* ============================================================
+   FitGlue · Brutal × Aurora · OVERRIDES of existing classes
+   ============================================================
+   This file retones existing un-prefixed classes in main.css so the
+   current HTML structure renders in the new system WITHOUT markup
+   changes. Import AFTER tokens.css + components.css.
+
+   Goal: 90%+ of existing markup looks correct with zero edits.
+   Where markup truly fights the system (e.g. radial-gradient bgs
+   on cards), see HANDOFF.md for the small surgical refactors.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   HEADER — flat ink with 3px paper rule, no backdrop blur
+   ------------------------------------------------------------ */
+
+.header {
+  background: var(--fg-ink);
+  border-bottom: var(--fg-rule-thick);
+  backdrop-filter: none;
+}
+.header.scrolled { background: var(--fg-ink); }
+
+.logo-fit  { color: var(--fg-paper); }
+.logo-glue {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.nav-link {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.nav-link::after { display: none; } /* drop underline animation */
+.nav-link:hover, .nav-link.active { color: var(--fg-paper); }
+
+/* Nav buttons — hard slabs, not pills */
+.nav-link-ghost {
+  border-radius: 0 !important;
+  border: 2px solid var(--fg-paper) !important;
+  padding: 0.5rem 1rem !important;
+  font-family: var(--fg-font-display) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.04em !important;
+}
+.nav-link-ghost:hover {
+  background: var(--fg-paper) !important;
+  color: var(--fg-ink) !important;
+  transform: none !important;
+}
+
+.nav-link-cta {
+  border-radius: 0 !important;
+  background: var(--gradient-primary) !important;
+  color: var(--fg-ink) !important;
+  padding: 0.5rem 1rem !important;
+  font-family: var(--fg-font-display) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.04em !important;
+  box-shadow: none !important;
+}
+.nav-link-cta:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: none !important;
+  filter: brightness(1.06);
+}
+
+/* ------------------------------------------------------------
+   BUTTONS — hard slabs replace pills
+   ------------------------------------------------------------ */
+
+.btn {
+  border-radius: 0;
+  padding: 0.875rem 1.375rem;
+  font-family: var(--fg-font-display);
+  font-weight: 400;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+.btn-primary {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  box-shadow: none;
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: none;
+  filter: brightness(1.06);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--fg-paper);
+  border: 2px solid var(--fg-paper);
+}
+.btn-secondary:hover {
+  background: var(--fg-paper);
+  color: var(--fg-ink);
+  border-color: var(--fg-paper);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--fg-paper);
+  border: 2px solid var(--fg-paper);
+  border-radius: 0;
+}
+.btn-ghost:hover { background: var(--fg-paper); color: var(--fg-ink); transform: none; }
+.btn-lg { padding: 1.125rem 1.625rem; font-size: 1rem; }
+.btn-sm { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+
+/* ------------------------------------------------------------
+   HERO — drop the soft glow ::before. Keep grain ::after.
+   The hero now reads as solid ink with one big aurora band of type.
+   ------------------------------------------------------------ */
+
+.hero {
+  background: var(--fg-ink);
+  padding-top: 100px;
+}
+.hero::before { display: none; } /* drop the radial glow */
+.hero::after { opacity: 0.4; } /* keep faint grid */
+
+.hero-title {
+  font-family: var(--fg-font-display);
+  font-size: var(--font-size-hero);
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+  line-height: 0.86;
+  animation: none;
+}
+.hero-title .fit  { color: var(--fg-paper); animation: none; }
+.hero-title .glue {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: none;
+}
+.hero-tagline {
+  font-family: var(--fg-font-body);
+  text-transform: none;
+  color: var(--color-text-muted);
+  animation: none;
+}
+.hero-highlight { color: var(--fg-pink); }
+.hero-cta { animation: none; }
+
+/* Drop the soft frosted carousel cards */
+.hc-card {
+  background: var(--fg-ink-2) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: inset 0 0 0 2px var(--fg-paper) !important;
+  backdrop-filter: none !important;
+}
+.hc-card-header h3 {
+  font-family: var(--fg-font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ------------------------------------------------------------
+   TEXT GRADIENT — already correct from var swap, but reassert
+   ------------------------------------------------------------ */
+
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ------------------------------------------------------------
+   SECTIONS — alternate tonal panels for rhythm
+   ------------------------------------------------------------ */
+
+.section { padding: var(--space-xl) 0; }
+.section-alt {
+  background: var(--fg-ink-2);
+  border-top: var(--fg-rule-thin);
+  border-bottom: var(--fg-rule-thin);
+}
+
+/* ------------------------------------------------------------
+   CARD SURFACES — drop rounded glass, become hard ink-2 slabs.
+   Hover reveals a gradient hairline at the top edge (instead of glow shadow).
+   ------------------------------------------------------------ */
+
+.feature-card,
+.problem-card,
+.integration-card,
+.pricing-card {
+  background: var(--fg-ink-2);
+  border: 0;
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+  position: relative;
+  transition: transform var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+.feature-card:hover,
+.problem-card:hover,
+.integration-card:hover,
+.pricing-card:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+}
+
+/* Re-use existing ::before hover bar — make it gradient and full opacity */
+.feature-card::before {
+  height: 4px;
+  background: var(--gradient-primary);
+  transform: scaleX(1);   /* always on */
+  transform-origin: 0 0;
+}
+
+/* Premium feature: replace gold tint with violet wash */
+.feature-card.premium {
+  background: linear-gradient(135deg, var(--fg-ink-2) 0%, rgba(139, 92, 246, 0.18) 100%);
+  box-shadow: inset 0 0 0 1.5px var(--fg-violet);
+}
+.feature-card.premium:hover {
+  box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+}
+
+.premium-badge {
+  background: var(--gradient-primary) !important;
+  color: var(--fg-ink) !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  font-family: var(--fg-font-mono);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+/* Integration status pills — sharp corners, mono */
+.integration-status {
+  border-radius: 0;
+  font-family: var(--fg-font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.integration-status.live   { background: var(--fg-green); color: var(--fg-ink); }
+.integration-status.coming { background: var(--fg-gold);  color: var(--fg-ink); }
+.integration-status.beta,
+.integration-status.booster{ background: var(--fg-violet); color: var(--fg-paper); }
+
+/* Integration logo — square ink-3 block, no rounding */
+.integration-logo {
+  background: var(--fg-ink-3);
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+}
+
+/* ------------------------------------------------------------
+   PRICING — featured tier replaces pink-tint background with band
+   ------------------------------------------------------------ */
+
+.pricing-card.featured {
+  background: var(--fg-ink-2);
+  box-shadow: inset 0 0 0 2.5px var(--fg-paper);
+  transform: none;
+}
+.pricing-card.featured:hover { transform: translateY(-2px); }
+
+.pricing-badge {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  border-radius: 0;
+  font-family: var(--fg-font-mono);
+  letter-spacing: 0.14em;
+}
+
+/* ------------------------------------------------------------
+   STEPS (how-it-works style) — gradient connector line + square number
+   ------------------------------------------------------------ */
+
+.steps::before {
+  background: var(--gradient-primary);
+}
+.step-number {
+  border-radius: 0;
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  font-family: var(--fg-font-display);
+  box-shadow: none;
+  letter-spacing: -0.02em;
+}
+
+/* Connection setup step variant (smaller, with left bar) */
+.setup-step {
+  background: var(--fg-ink-2);
+  border-radius: 0;
+  border-left: 4px solid;
+  border-image: var(--gradient-primary) 1;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+}
+.setup-step:hover {
+  transform: none;
+  box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+}
+
+/* ------------------------------------------------------------
+   CTA SECTION — replace soft glow with hard gradient band
+   ------------------------------------------------------------ */
+
+.cta-section {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  padding: var(--space-xl) var(--space-md);
+}
+.cta-section::before { display: none; }
+.cta-section h2,
+.cta-title { color: var(--fg-ink); }
+.cta-subtitle { color: rgba(7, 7, 16, 0.78); }
+.cta-section .btn-primary {
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+}
+.cta-section .btn-secondary {
+  border-color: var(--fg-ink);
+  color: var(--fg-ink);
+}
+.cta-section .btn-secondary:hover {
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+}
+
+/* ------------------------------------------------------------
+   WAITLIST FORM — hard edges, gradient submit
+   ------------------------------------------------------------ */
+
+.waitlist-input-group {
+  background: var(--fg-ink-2);
+  border: 2px solid var(--fg-paper);
+  border-radius: 0;
+  padding: 0.25rem;
+}
+.waitlist-input { color: var(--fg-paper); }
+
+.waitlist-success {
+  background: rgba(163, 255, 61, 0.10);
+  border: 2px solid var(--fg-green);
+  border-radius: 0;
+  color: var(--fg-green);
+}
+
+/* ------------------------------------------------------------
+   BREADCRUMB & misc
+   ------------------------------------------------------------ */
+
+.breadcrumb { font-family: var(--fg-font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.breadcrumb a { color: var(--fg-cyan); }
+
+.integration-type-badge {
+  background: var(--fg-ink-3);
+  border-radius: 0;
+  font-family: var(--fg-font-mono);
+  letter-spacing: 0.12em;
+}
+
+/* ------------------------------------------------------------
+   TRANSFORMATIONS (before/after) — hard slab cards
+   ------------------------------------------------------------ */
+
+.transformation-card,
+.before-after-card {
+  background: var(--fg-ink-2);
+  border-radius: 0;
+  border: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+}
+.transformation-after,
+.before-after-card.after {
+  background: linear-gradient(135deg, var(--fg-ink-2) 0%, rgba(255, 61, 166, 0.10) 100%);
+  border-left: 4px solid;
+  border-image: var(--gradient-primary) 1;
+  box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+}
+.transformation-arrow,
+.before-after-arrow { color: var(--fg-pink); }
+
+/* ------------------------------------------------------------
+   FOOTER — solid ink with paper 3px top rule
+   ------------------------------------------------------------ */
+
+.footer {
+  background: var(--fg-ink);
+  border-top: var(--fg-rule-thick);
+  padding: var(--space-lg) 0 var(--space-md);
+}
+.footer-heading {
+  font-family: var(--fg-font-mono);
+  letter-spacing: 0.16em;
+  color: var(--color-text-subtle);
+}
+.footer-links a { color: var(--color-text-muted); transition: color var(--transition-fast); }
+.footer-links a:hover { color: var(--fg-paper); text-decoration: underline; text-underline-offset: 3px; }
+
+.footer-social a {
+  background: var(--fg-ink-2);
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+}
+.footer-social a:hover {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  transform: none;
+}
+
+.footer-bottom { border-top: var(--fg-rule-thin); }
+
+/* ------------------------------------------------------------
+   ALL ROUNDED RECTANGLES → SQUARE (sweep)
+   Catches stragglers we didn't touch individually.
+   ------------------------------------------------------------ */
+
+.config-item, .config-option, .config-toggle .toggle-option,
+.connection-card, .strava-preview,
+.feature-icon-svg, .feature-icon-png, .feature-icon-jpg,
+.connection-card-icon-svg, .connection-card-icon-png, .connection-card-icon-jpg,
+.integration-hero-icon-svg, .integration-hero-icon-png, .integration-hero-icon-jpg {
+  border-radius: 0;
+}
+
+
+/* ============================================================
+   FitGlue · Brutal × Aurora · MOBILE additions
+   ============================================================
+   Appended to components.css conceptually — kept in a separate
+   file here for clarity. Import after components.css.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   FG-MOBILE-BAR — bottom tab bar
+   ------------------------------------------------------------ */
+.fg-mobile-bar {
+  position: sticky; bottom: 0;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  background: var(--fg-ink);
+  border-top: 3px solid var(--fg-paper);
+  z-index: 50;
+}
+.fg-mobile-bar__item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; padding: 8px 4px 10px;
+  font-family: var(--fg-font-mono);
+  font-size: .5625rem; font-weight: 700; letter-spacing: .12em;
+  color: var(--color-text-muted);
+  text-decoration: none; text-transform: uppercase;
+}
+.fg-mobile-bar__item .ic { font-size: 1.25rem; line-height: 1; }
+.fg-mobile-bar__item.active { color: var(--fg-paper); }
+.fg-mobile-bar__item.active .ic {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 6px rgba(255,61,166,.4));
+}
+
+/* ------------------------------------------------------------
+   FG-MOBILE-APP-BAR — top app bar (logo + avatar)
+   ------------------------------------------------------------ */
+.fg-mobile-app-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--fg-ink);
+  border-bottom: 3px solid var(--fg-paper);
+  position: sticky; top: 0; z-index: 30;
+}
+.fg-mobile-app-bar__title {
+  font-family: var(--fg-font-display);
+  font-size: .9375rem; letter-spacing: -.005em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------
+   FG-MOBILE-HSCROLL — horizontal scroll strip for chips
+   ------------------------------------------------------------ */
+.fg-mobile-hscroll {
+  display: flex; gap: 6px;
+  overflow-x: auto;
+  padding: 8px 16px;
+  scrollbar-width: none;
+}
+.fg-mobile-hscroll::-webkit-scrollbar { display: none; }
+.fg-mobile-hscroll > * { flex-shrink: 0; }
+
+/* ------------------------------------------------------------
+   FG-MOBILE-SHEET — bottom-sheet style modal
+   ------------------------------------------------------------ */
+.fg-mobile-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: var(--fg-ink-2);
+  border-top: 3px solid var(--fg-paper);
+  z-index: 100;
+}
+.fg-mobile-sheet__handle {
+  width: 36px; height: 4px;
+  background: var(--fg-paper);
+  margin: 12px auto;
+  opacity: .4;
+}
+
+/* ------------------------------------------------------------
+   FG-MOBILE-STAT-STACK — stat blocks stacked w/ hairlines
+   replaces the desktop multi-column inline stat rows
+   ------------------------------------------------------------ */
+.fg-mobile-stat-stack { display: flex; flex-direction: column; }
+.fg-mobile-stat-stack > * {
+  padding: 14px 16px;
+}
+.fg-mobile-stat-stack > * + * {
+  border-top: 1.5px solid var(--fg-hairline-color);
+}
+
+/* ------------------------------------------------------------
+   FG-MOBILE-COLLAPSE — accordion section
+   ------------------------------------------------------------ */
+.fg-mobile-collapse summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 16px;
+  background: var(--fg-ink-2);
+  font-family: var(--fg-font-display);
+  font-size: .875rem; letter-spacing: -.005em;
+  text-transform: uppercase;
+}
+.fg-mobile-collapse summary::-webkit-details-marker { display: none; }
+.fg-mobile-collapse summary::after {
+  content: '+';
+  font-family: var(--fg-font-display);
+  font-size: 1.125rem;
+  transition: transform .15s ease;
+}
+.fg-mobile-collapse[open] summary::after { content: '−'; }
+.fg-mobile-collapse + .fg-mobile-collapse { border-top: 1.5px solid var(--fg-hairline-color); }
+
+/* ============================================================
+   Landing Page — Pipeline Preview Hero (lp-*)
+   Page-specific classes for pages/index.html live pipeline preview.
+   ============================================================ */
+
+/* Scoped hero layout for the landing page only */
+.lp-hero {
+  padding-top: 0 !important;
+  min-height: calc(100vh - 65px);
+  align-items: stretch;
+}
+.lp-hero .hero-split {
+  grid-template-columns: 1.1fr 1fr;
+  gap: 0;
+  max-width: none;
+  padding: 0;
+  align-items: stretch;
+}
+.lp-hero .hero-split > .hero-text {
+  padding: 3rem 3rem 2.25rem;
+  border-right: var(--fg-rule-thin);
+}
+.lp-hero .hero-split > .hero-visual {
+  padding: 3rem 3rem 2.25rem;
+  background: linear-gradient(135deg,
+    rgba(255,61,166,0.08),
+    rgba(139,92,246,0.06) 50%,
+    rgba(34,211,238,0.08));
+}
+
+@media (max-width: 768px) {
+  .lp-hero .hero-split {
+    grid-template-columns: 1fr;
+  }
+  .lp-hero .hero-split > .hero-text {
+    border-right: 0;
+    border-bottom: var(--fg-rule-thin);
+    padding: 2rem 1.5rem;
+  }
+  .lp-hero .hero-split > .hero-visual {
+    padding: 1.5rem;
+  }
+}
+
+/* Pipeline preview widget */
+.lp-pipeline {
+  display: flex;
+  flex-direction: column;
+  background: var(--fg-ink-2);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+}
+.lp-pipeline__head {
+  padding: .625rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--fg-ink);
+  border-bottom: var(--fg-rule-thin);
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+.lp-pipeline__src {
+  padding: .875rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: .875rem;
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+}
+.lp-pipeline__src-emoji { font-size: 1.375rem; }
+.lp-pipeline__src-title {
+  font-family: var(--fg-font-display);
+  font-size: 1.125rem;
+  letter-spacing: -.01em;
+}
+.lp-pipeline__src-sub {
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  font-weight: 600;
+}
+.lp-pipeline__chips {
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .375rem;
+}
+.lp-pipeline__dests {
+  padding: .875rem 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .625rem;
+}
+.lp-dest {
+  padding: .75rem;
+  background: var(--fg-ink-3);
+  text-align: center;
+}
+.lp-dest__emoji { font-size: 1.25rem; }
+.lp-dest__name {
+  font-family: var(--fg-font-display);
+  font-size: .8125rem;
+  letter-spacing: -.01em;
+  margin-top: .25rem;
+}
+.lp-dest__status {
+  font-family: var(--fg-font-mono);
+  font-size: .5625rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  color: var(--color-text-subtle);
+  margin-top: .25rem;
+}
+
+/* Stat trio strip */
+.lp-trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: var(--fg-rule-thin);
+}
+.lp-trio > * {
+  padding: 1rem 1.5rem;
+}
+.lp-trio > * + * {
+  border-left: var(--fg-rule-thin);
+}
+
+/* Platform strip below hero */
+.lp-platforms {
+  background: var(--fg-ink);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.875rem;
+  border-top: var(--fg-rule-thick);
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+.lp-platforms__intro {
+  font-family: var(--fg-font-mono);
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+.lp-platform {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--fg-font-display);
+  font-size: .8125rem;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+/* Hero meta stamps row */
+.hero-meta {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+/* Hero trust line */
+.hero-trust {
+  margin-top: 1.25rem;
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  letter-spacing: .1em;
+  color: var(--color-text-subtle);
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   AUTH SPLIT LAYOUT — login.html / register.html
+   ============================================================ */
+.auth-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+.auth-side {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.auth-side > * { position: relative; z-index: 1; }
+.auth-side--brand {
+  background: var(--fg-ink);
+  border-right: var(--fg-rule-thick);
+}
+.auth-side--brand::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 50% at 30% 30%, rgba(255,61,166,0.20), transparent 70%),
+    radial-gradient(50% 50% at 80% 80%, rgba(34,211,238,0.16), transparent 70%);
+  pointer-events: none;
+}
+.auth-side--form {
+  background: var(--fg-ink-2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: .625rem;
+  font-family: var(--fg-font-display);
+  font-size: 1.25rem;
+  letter-spacing: .04em;
+  text-decoration: none;
+  color: var(--fg-paper);
+}
+.auth-brand-quote {
+  font-family: var(--fg-font-display);
+  font-size: clamp(2.5rem, 4.5vw, 4rem);
+  line-height: .92;
+  letter-spacing: -.035em;
+  text-transform: uppercase;
+  max-width: 520px;
+}
+.auth-trust { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.auth-brand-footer {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  font-family: var(--fg-font-mono);
+  font-size: .75rem;
+  letter-spacing: .12em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+.auth-brand-footer a { color: inherit; text-decoration: none; }
+.auth-form {
+  max-width: 440px;
+  margin: 0 auto;
+  width: 100%;
+}
+.auth-eyebrow {
+  font-family: var(--fg-font-mono);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+.auth-form h1 {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  line-height: .9;
+  margin-bottom: .75rem;
+}
+.auth-form p.lead {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: .375rem;
+  margin-bottom: 1.125rem;
+}
+.auth-field label {
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.auth-field input {
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+  border: 0;
+  box-shadow: inset 0 0 0 2px var(--fg-paper);
+  padding: .875rem 1rem;
+  font-family: var(--fg-font-body);
+  font-size: 1rem;
+  outline: none;
+  transition: box-shadow var(--transition-fast);
+}
+.auth-field input:focus { box-shadow: inset 0 0 0 2px var(--fg-pink); }
+.auth-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: -.5rem 0 1.5rem;
+  font-family: var(--fg-font-mono);
+  font-size: .75rem;
+}
+.auth-row a { color: var(--fg-cyan); text-decoration: none; }
+.auth-submit {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  border: 0;
+  font-family: var(--fg-font-display);
+  font-size: 1rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+.auth-submit:hover { opacity: .9; }
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  letter-spacing: .14em;
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+}
+.auth-divider::before,
+.auth-divider::after { content: ''; flex: 1; border-top: var(--fg-rule-thin); }
+.auth-oauth { display: flex; gap: .625rem; }
+.auth-oauth__btn {
+  flex: 1;
+  padding: .75rem;
+  text-align: center;
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+  border: 0;
+  box-shadow: inset 0 0 0 2px var(--fg-paper);
+  font-family: var(--fg-font-display);
+  font-size: .8125rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.auth-oauth__btn:hover { background: var(--fg-paper); color: var(--fg-ink); }
+.auth-oauth__btn svg path[fill="currentColor"] { fill: var(--fg-paper); }
+.auth-oauth__btn:hover svg path[fill="currentColor"] { fill: var(--fg-ink); }
+.auth-footer-note {
+  margin-top: 1.5rem;
+  font-family: var(--fg-font-body);
+  font-size: .875rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+.auth-footer-note a { color: var(--fg-cyan); text-decoration: none; }
+@media (max-width: 900px) {
+  .auth-split { grid-template-columns: 1fr; }
+  .auth-side--brand { display: none; }
+  .auth-side--form { padding: 2rem 1.5rem; justify-content: flex-start; padding-top: 3rem; }
 }

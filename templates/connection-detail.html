@@ -32,13 +32,15 @@
   <section class="section">
     <div class="container" style="max-width: 800px;">
       {{#if marketingHtml}}
-        <div class="markdown-content animate-on-scroll">
+        <div class="markdown-content fg-prose animate-on-scroll">
           {{{marketingHtml}}}
         </div>
       {{/if}}
 
       {{#if features.length}}
-        <h2 class="text-center mb-md mt-xl animate-on-scroll">Features</h2>
+        <div class="fg-band fg-band--sm fg-band--ink animate-on-scroll" style="margin: var(--space-lg) 0 var(--space-md)">
+          <span class="fg-band__label">Features</span>
+        </div>
         <ul class="feature-list animate-on-scroll">
           {{#each features}}
             <li>{{this}}</li>
@@ -46,7 +48,9 @@
         </ul>
       {{/if}}
 
-      <h2 class="text-center mb-md mt-xl animate-on-scroll">How to Connect</h2>
+      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: var(--space-lg) 0 var(--space-md)">
+        <span class="fg-band__label">How to Connect</span>
+      </div>
       {{#if hasSetupSteps}}
         <div class="setup-steps-list animate-on-scroll">
           {{#each setupSteps}}
@@ -68,7 +72,9 @@
           app.</p>
       {{/if}}
 
-      <h2 class="text-center mb-md mt-xl animate-on-scroll">Privacy & Security</h2>
+      <div class="fg-band fg-band--sm fg-band--ink animate-on-scroll" style="margin: var(--space-lg) 0 var(--space-md)">
+        <span class="fg-band__label">Privacy & Security</span>
+      </div>
       <p class="text-center animate-on-scroll">
         Your connection is secured with industry-standard encryption.
         {{#if isOAuth}}

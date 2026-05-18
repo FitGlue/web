@@ -28,7 +28,7 @@
             /* iOS-style rounded square ratio */
 
             /* The beautiful pink/purple gradient from FitGlue */
-            background: linear-gradient(135deg, #FF006E 0%, #8338EC 100%);
+            background: linear-gradient(135deg, #ff3da6 0%, #8b5cf6 50%, #22d3ee 100%);
 
             /* Center content */
             display: flex;
@@ -60,8 +60,8 @@
             /* Light peachy-pink color for F */
             color: #FFD4E5;
             text-shadow:
-                0 0 40px rgba(255, 77, 148, 0.8),
-                0 0 80px rgba(255, 0, 110, 0.5),
+                0 0 40px rgba(255, 61, 166, 0.8),
+                0 0 80px rgba(255, 61, 166, 0.5),
                 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
@@ -69,8 +69,8 @@
             /* Light lavender color for G */
             color: #E8D4FF;
             text-shadow:
-                0 0 40px rgba(157, 92, 245, 0.8),
-                0 0 80px rgba(131, 56, 236, 0.5),
+                0 0 40px rgba(139, 92, 246, 0.8),
+                0 0 80px rgba(139, 92, 246, 0.5),
                 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
@@ -200,9 +200,8 @@
         .download-btn {
             margin-top: 12px;
             padding: 10px 20px;
-            background: linear-gradient(135deg, #FF006E 0%, #8338EC 100%);
+            background: linear-gradient(135deg, #ff3da6 0%, #8b5cf6 50%, #22d3ee 100%);
             border: none;
-            border-radius: 25px;
             color: white;
             font-family: 'Inter', sans-serif;
             font-weight: 700;
@@ -213,7 +212,7 @@
 
         .download-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(255, 0, 110, 0.4);
+            box-shadow: 0 0 30px rgba(255, 61, 166, 0.4);
         }
 
         .download-btn:active {
@@ -335,7 +334,7 @@
                 <div class="logo-wrapper logo-wrapper--72 logo-wrapper--badge">
                     <div class="logo-container" style="background: white; box-shadow: none;">
                         <div class="logo-text" style="text-shadow: none;">
-                            <span style="color: #FF006E;">F</span><span style="color: #8338EC;">G</span>
+                            <span style="color: #ff3da6;">F</span><span style="color: #8b5cf6;">G</span>
                         </div>
                     </div>
                 </div>
@@ -395,12 +394,12 @@
             const startX = (size - totalWidth) / 2;
 
             // Draw F in pink
-            ctx.fillStyle = '#FF006E';
+            ctx.fillStyle = '#ff3da6';
             ctx.textAlign = 'left';
             ctx.fillText('F', startX, size / 2);
 
-            // Draw G in purple
-            ctx.fillStyle = '#8338EC';
+            // Draw G in violet
+            ctx.fillStyle = '#8b5cf6';
             ctx.fillText('G', startX + fWidth, size / 2);
 
             triggerDownload(canvas, `badge-${size}.png`);
@@ -423,8 +422,9 @@
             ctx.beginPath();
             roundedRect(ctx, 0, 0, size, size, radius);
             const gradient = ctx.createLinearGradient(0, 0, size, size);
-            gradient.addColorStop(0, '#FF006E');
-            gradient.addColorStop(1, '#8338EC');
+            gradient.addColorStop(0, '#ff3da6');
+            gradient.addColorStop(0.5, '#8b5cf6');
+            gradient.addColorStop(1, '#22d3ee');
             ctx.fillStyle = gradient;
             ctx.fill();
 

@@ -46,13 +46,15 @@
   <section class="section">
     <div class="container" style="max-width: 800px;">
       {{#if marketingHtml}}
-        <div class="markdown-content animate-on-scroll">
+        <div class="markdown-content fg-prose animate-on-scroll">
           {{{marketingHtml}}}
         </div>
       {{/if}}
 
       {{#if hasTransformations}}
-        <h2 class="text-center mb-md animate-on-scroll">What It Does</h2>
+        <div class="fg-band fg-band--sm animate-on-scroll" style="margin: var(--space-lg) 0 var(--space-md)">
+          <span class="fg-band__label">What It Does</span>
+        </div>
         <div class="showcase-grid stagger-children">
           {{#each transformations}}
             <div class="showcase-card">
@@ -138,7 +140,9 @@
       {{/if}}
 
       {{#if features.length}}
-        <h2 class="text-center mb-md mt-xl animate-on-scroll">Features</h2>
+        <div class="fg-band fg-band--sm fg-band--ink animate-on-scroll" style="margin: var(--space-lg) 0 var(--space-md)">
+          <span class="fg-band__label">Features</span>
+        </div>
         <ul class="feature-list animate-on-scroll">
           {{#each features}}
             <li>{{this}}</li>
@@ -147,7 +151,9 @@
       {{/if}}
 
       {{#if hasUseCases}}
-        <h2 class="text-center mb-md mt-xl animate-on-scroll">Perfect For</h2>
+        <div class="fg-band fg-band--sm animate-on-scroll" style="margin: var(--space-lg) 0 var(--space-md)">
+          <span class="fg-band__label">Perfect For</span>
+        </div>
         <ul class="feature-list animate-on-scroll">
           {{#each useCases}}
             <li>🎯 {{this}}</li>
@@ -156,8 +162,10 @@
       {{/if}}
 
       {{#if hasConfig}}
-        <h2 class="text-center mb-md mt-xl animate-on-scroll">Configuration</h2>
-        <p class="text-center text-muted animate-on-scroll">Customize this booster with the following options:</p>
+        <div class="fg-band fg-band--sm fg-band--ink animate-on-scroll" style="margin: var(--space-lg) 0 var(--space-md)">
+          <span class="fg-band__label">Configuration</span>
+          <span class="fg-band__right">CUSTOMIZE THIS BOOSTER</span>
+        </div>
         <div class="config-list animate-on-scroll">
           {{#each configItems}}
             <div class="config-item">
@@ -191,8 +199,9 @@
       {{/if}}
 
       {{#if hasRequiredConnections}}
-        <h2 class="text-center mb-md mt-xl animate-on-scroll">Required Connection</h2>
-        <p class="text-center text-muted animate-on-scroll">This Booster requires the following Connection:</p>
+        <div class="fg-band fg-band--sm animate-on-scroll" style="margin: var(--space-lg) 0 var(--space-md)">
+          <span class="fg-band__label">Required Connection</span>
+        </div>
         <div class="required-connections-grid animate-on-scroll">
           {{#each requiredConnectionObjects}}
             <a href="/connections/{{id}}" class="connection-card">
