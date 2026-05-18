@@ -307,7 +307,7 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
         )}
 
         {/* Stats */}
-        {session && <ActivityStats session={session} />}
+        {session && <ActivityStats session={session} activityType={data.activityType} />}
 
         {/* Hybrid Race Breakdown */}
         {hasHybridRace && hybridRace?.segments && (

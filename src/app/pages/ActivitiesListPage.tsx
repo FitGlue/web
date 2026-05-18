@@ -26,7 +26,7 @@ const ActivitiesListPage: React.FC = () => {
 
     // Load stats on mount (still needed for totals)
     const [statsLoading, setStatsLoading] = useState(true);
-    const [initialStats, setInitialStats] = useState<{ totalSynced?: number; monthlySynced?: number } | null>(null);
+    const [initialStats, setInitialStats] = useState<{ totalSynced: number; uploadsThisMonth: number } | null>(null);
 
     useEffect(() => {
         const loadStats = async () => {
@@ -56,8 +56,8 @@ const ActivitiesListPage: React.FC = () => {
 
     const stats = useMemo(() => {
         return {
-            totalSynced: initialStats?.totalSynced || 0,
-            activitiesThisMonth: initialStats?.monthlySynced || 0,
+            totalSynced: initialStats?.totalSynced ?? 0,
+            uploadsThisMonth: initialStats?.uploadsThisMonth ?? 0,
             creditsUsedThisMonth: profile?.syncCountThisMonth ?? 0,
         };
     }, [initialStats, profile]);
@@ -86,13 +86,13 @@ const ActivitiesListPage: React.FC = () => {
                 <Stack direction="horizontal" gap="md" responsive>
                     <StatInline
                         value={stats.totalSynced}
-                        label="Total Synced"
+                        label="Total Uploads"
                         subLabel="All Time"
                         loading={statsLoading}
                     />
                     <StatInline
-                        value={stats.activitiesThisMonth}
-                        label="Activities"
+                        value={stats.uploadsThisMonth}
+                        label="Uploads"
                         subLabel="This Month"
                         loading={statsLoading}
                     />

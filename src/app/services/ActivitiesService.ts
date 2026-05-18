@@ -57,10 +57,8 @@ export interface RepostResponse {
 
 export interface IActivitiesService {
   getStats(): Promise<{
-    synchronizedCount: number;
     totalSynced: number;
-    monthlySynced: number;
-    weeklySynced: number;
+    uploadsThisMonth: number;
   }>;
   get(id: string): Promise<SynchronizedActivity | null>;
   listUnsynchronized(limit?: number, offset?: number): Promise<UnsynchronizedEntry[]>;
@@ -76,16 +74,13 @@ export const ActivitiesService: IActivitiesService = {
   async getStats() {
     try {
       const { data } = await client.GET('/users/me/activities/stats');
-      const d = data as Record<string, unknown>;
       return {
-        synchronizedCount: (d?.synchronizedCount as number) || 0,
-        totalSynced: (d?.totalSynced as number) || 0,
-        monthlySynced: (d?.monthlySynced as number) || 0,
-        weeklySynced: (d?.weeklySynced as number) || 0,
+        totalSynced: data?.totalActivities ?? 0,
+        uploadsThisMonth: data?.uploadsThisMonth ?? 0,
       };
     } catch (err) {
       console.error('Failed to fetch activity stats', err);
-      return { synchronizedCount: 0, totalSynced: 0, monthlySynced: 0, weeklySynced: 0 };
+      return { totalSynced: 0, uploadsThisMonth: 0 };
     }
   },
 
