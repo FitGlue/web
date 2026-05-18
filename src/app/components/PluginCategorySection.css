@@ -11,7 +11,7 @@
     gap: var(--spacing-sm, 0.5rem);
     width: 100%;
     padding: var(--spacing-sm, 0.5rem) var(--spacing-md, 1rem);
-    border-radius: 8px;
+    border-radius: 0;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
     cursor: pointer;
@@ -37,7 +37,7 @@
     display: inline-flex;
     align-items: center;
     padding: 0.125rem 0.5rem;
-    border-radius: 999px;
+    border-radius: 0;
     background: var(--color-primary-subtle, rgba(168, 85, 247, 0.15));
     color: var(--color-primary-light, #c084fc);
     font-size: 0.75rem;

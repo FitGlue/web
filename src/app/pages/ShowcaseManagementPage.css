@@ -385,7 +385,7 @@
     transform: translateX(-50%);
     width: 20px;
     height: 4px;
-    border-radius: 2px;
+    border-radius: 0;
 }
 
 .showcase-mgmt__theme-swatch-name {

@@ -27,7 +27,7 @@
 .ui-modal__content {
   background: rgb(20, 20, 30);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  border-radius: 0;
   max-height: 90vh;
   overflow-y: auto;
   display: flex;
@@ -90,7 +90,7 @@
   line-height: 1;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 0;
   transition: all 0.15s ease;
 }
 

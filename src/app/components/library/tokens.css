@@ -65,13 +65,45 @@
    /* 48px */
 
    /* ========================================
-     BORDER RADIUS
+     BORDER RADIUS — Brutal × Aurora: hard edges everywhere
      ======================================== */
-   --radius-sm: 6px;
-   --radius-md: 10px;
-   --radius-lg: 14px;
-   --radius-xl: 20px;
-   --radius-full: 9999px;
+   --radius-sm: 0;
+   --radius-md: 0;
+   --radius-lg: 0;
+   --radius-xl: 0;
+   --radius-full: 9999px;   /* preserved for status dots / avatar only */
+
+   /* ========================================
+     FG DESIGN TOKENS — Brutal × Aurora system
+     ======================================== */
+
+   /* Surfaces */
+   --fg-ink:        #070710;
+   --fg-ink-2:      #0d0c18;
+   --fg-ink-3:      #16142a;
+   --fg-paper:      #f5f3eb;
+   --fg-paper-dim:  #cfcdc4;
+
+   /* Aurora stops */
+   --fg-pink:    #ff3da6;
+   --fg-violet:  #8b5cf6;
+   --fg-cyan:    #22d3ee;
+
+   /* Status / punctuation colors */
+   --fg-green:   #a3ff3d;
+   --fg-rose:    #ff5d6c;
+   --fg-gold:    #ffd60a;
+
+   /* Rule system */
+   --fg-rule-thick:     3px solid var(--fg-paper, #f5f3eb);
+   --fg-rule-thin:      1.5px solid rgba(245, 243, 235, 0.16);
+   --fg-rule-dashed:    1.5px dashed rgba(245, 243, 235, 0.16);
+   --fg-hairline-color: rgba(245, 243, 235, 0.16);
+
+   /* Typography */
+   --fg-font-display: 'Archivo Black', 'Arial Black', system-ui, sans-serif;
+   --fg-font-body:    'Archivo', 'Inter', system-ui, sans-serif;
+   --fg-font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
    /* ========================================
      SHADOWS - Dark Mode Optimized

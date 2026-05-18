@@ -53,7 +53,7 @@
 }
 
 .ui-badge--premium {
-  background: linear-gradient(135deg, #8b5cf6, #ff3da6);
+  background: var(--gradient-primary);
   color: #ffffff;
   font-weight: 600;
   position: relative;

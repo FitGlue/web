@@ -67,7 +67,7 @@
 
 /* Checkbox style for multi select - rounded square */
 .wizard-selection-indicator.checkbox {
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .wizard-selection-indicator.checkbox.selected {

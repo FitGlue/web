@@ -42,7 +42,7 @@
   color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   font-weight: 500;
   padding: 0.5rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 0;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
