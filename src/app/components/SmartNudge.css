@@ -85,7 +85,7 @@
     cursor: pointer;
     padding: 4px;
     line-height: 1;
-    border-radius: 4px;
+    border-radius: 0;
     transition: color 0.15s ease;
 }
 

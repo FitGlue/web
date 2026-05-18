@@ -4,13 +4,13 @@
   background: rgba(0, 0, 0, 0.3);
   color: var(--color-primary, #6366f1);
   padding: 0.15em 0.4em;
-  border-radius: 4px;
+  border-radius: 0;
   white-space: nowrap;
 }
 
 .ui-code-block {
   position: relative;
-  border-radius: 8px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -19,7 +19,7 @@
   padding: 1rem;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border-radius: 0;
   overflow-x: auto;
   font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
   font-size: 0.875rem;
@@ -33,7 +33,7 @@
   right: 0.5rem;
   background: rgba(255, 255, 255, 0.1);
   border: none;
-  border-radius: 4px;
+  border-radius: 0;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
   font-size: 0.875rem;

@@ -36,7 +36,7 @@
   margin-bottom: 1rem;
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 8px;
+  border-radius: 0;
   color: var(--color-error, #ef4444);
   font-size: 0.875rem;
   line-height: 1.5;

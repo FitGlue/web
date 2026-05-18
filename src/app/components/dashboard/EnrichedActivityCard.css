@@ -82,7 +82,7 @@
 /* Source Node */
 .enriched-activity-card__source {
   flex-shrink: 0;
-  border-left: 3px solid var(--color-primary, #ff1b8d);
+  border-left: 3px solid var(--color-primary, #ff3da6);
   padding-left: 0.75rem;
 }
 

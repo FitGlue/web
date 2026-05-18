@@ -6,7 +6,7 @@
   background: transparent;
   color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 0;
   transition: all 0.15s ease;
 }
 

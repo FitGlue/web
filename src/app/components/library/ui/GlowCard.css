@@ -7,7 +7,7 @@
   position: relative;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  border-radius: 0;
   overflow: hidden;
   transition: all 0.25s ease;
 }
@@ -45,10 +45,10 @@
 /* Variant: Success - pink/purple shimmer header (Synced status) */
 .glow-card--success .glow-card__header {
   background: linear-gradient(90deg,
-      #ff1b8d 0%,
-      #9d4edd 33%,
+      #ff3da6 0%,
+      #8b5cf6 33%,
       #c026d3 66%,
-      #ff1b8d 100%);
+      #ff3da6 100%);
   background-size: 200% 100%;
   animation: header-shimmer-success 4s ease-in-out infinite;
 }
@@ -116,7 +116,7 @@
 /* Focus state for accessibility */
 .glow-card--clickable:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-primary, #ff1b8d);
+  box-shadow: 0 0 0 2px var(--color-primary, #ff3da6);
 }
 
 /* Header text styling - make text visible on gradient */
@@ -163,10 +163,10 @@
 /* Variant: Needs Input - pink gradient header */
 .glow-card--needs-input .glow-card__header {
   background: linear-gradient(90deg,
-      #ff1b8d 0%,
+      #ff3da6 0%,
       #f472b6 33%,
       #db2777 66%,
-      #ff1b8d 100%);
+      #ff3da6 100%);
   background-size: 200% 100%;
   animation: header-shimmer-needs-input 4s ease-in-out infinite;
 }

@@ -54,7 +54,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border-radius: 999px;
+  border-radius: 0;
   font-size: 0.875rem;
   transition: all 0.2s ease;
 }

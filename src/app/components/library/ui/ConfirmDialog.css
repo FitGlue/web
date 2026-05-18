@@ -13,7 +13,7 @@
 
 .confirm-dialog {
   background: var(--color-surface, #fff);
-  border-radius: 12px;
+  border-radius: 0;
   padding: 1.5rem;
   max-width: 400px;
   width: 100%;

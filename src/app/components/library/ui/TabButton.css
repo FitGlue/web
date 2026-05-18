@@ -24,7 +24,7 @@
 .tab-button--active {
   color: #ffffff;
   background: linear-gradient(180deg, rgba(255, 61, 166, 0.15) 0%, transparent 100%);
-  border-bottom-color: var(--color-primary, #ff1b8d);
+  border-bottom-color: var(--color-primary, #ff3da6);
 }
 
 .tab-button--active::after {
@@ -34,8 +34,8 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--color-primary, #ff1b8d), var(--color-secondary, #9d4edd));
-  border-radius: 3px 3px 0 0;
+  background: var(--gradient-primary);
+  border-radius: 0;
 }
 
 .tab-button--warning.tab-button--active {
@@ -55,12 +55,12 @@
   font-size: 0.75rem;
   padding: 0.125rem 0.5rem;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 9999px;
+  border-radius: 0;
   font-weight: 600;
 }
 
 .tab-button--active .tab-button__count {
-  background: linear-gradient(135deg, var(--color-primary, #ff1b8d), var(--color-secondary, #9d4edd));
+  background: var(--gradient-primary);
   color: white;
 }
 

@@ -22,7 +22,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #ff006e 0%, #8338ec 50%, #ff006e 100%);
+  background: linear-gradient(90deg, #ff3da6 0%, #8b5cf6 50%, #ff3da6 100%);
   background-size: 200% 100%;
   animation: shimmer-bar 3s ease-in-out infinite;
 }
@@ -275,7 +275,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #ff006e 0%, #8338ec 100%);
+  background: var(--gradient-primary, linear-gradient(95deg, #ff3da6, #8b5cf6, #22d3ee));
   color: white;
   font-weight: 700;
   font-size: 0.875rem;
