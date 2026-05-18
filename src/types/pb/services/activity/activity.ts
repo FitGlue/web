@@ -185,6 +185,7 @@ export interface GetActivityStatsResponse {
   totalActivities: number;
   totalShowcases: number;
   lastActivityAt: string;
+  uploadsThisMonth: number;
 }
 
 export interface ActivityService {

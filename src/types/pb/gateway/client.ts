@@ -215,6 +215,7 @@ export interface GetActivityStatsGatewayResponse {
   totalActivities: number;
   totalShowcases: number;
   lastActivityAt: string;
+  uploadsThisMonth: number;
 }
 
 /** Showcases */

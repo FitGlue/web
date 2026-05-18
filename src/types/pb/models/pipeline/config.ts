@@ -11,7 +11,7 @@ export const protobufPackage = "fitglue.models.pipeline";
 
 export interface PipelineConfig {
   id: string;
-  /** e.g. "SOURCE_HEVY" */
+  /** deprecated: use sources. kept for backward-compat with existing Firestore docs. */
   source: string;
   enrichers: EnricherConfig[];
   destinations: DestinationType[];
@@ -19,6 +19,8 @@ export interface PipelineConfig {
   disabled: boolean;
   sourceConfig: { [key: string]: string };
   destinationConfigs: { [key: string]: DestinationConfig };
+  /** e.g. ["SOURCE_HEVY", "SOURCE_STRAVA"] */
+  sources: string[];
 }
 
 export interface PipelineConfig_SourceConfigEntry {
