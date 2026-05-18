@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.13.1](https://github.com/fitglue/web/compare/v11.13.0...v11.13.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* **intervals:** two-field setup form (API key + athlete ID), surface server error messages ([cf78e62](https://github.com/fitglue/web/commit/cf78e62b83a58ffb49c0a51e9e8c2344690de26f))
+
 ## [11.13.0](https://github.com/fitglue/web/compare/v11.12.0...v11.13.0) (2026-05-14)
 
 
