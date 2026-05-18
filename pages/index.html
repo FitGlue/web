@@ -2,31 +2,118 @@
 
 <main>
   <!-- Hero Section -->
-  <section class="hero">
-    <canvas class="hero-particles" id="hero-particles"></canvas>
+  <section class="hero lp-hero">
     <div class="hero-split">
       <!-- Left: Text + CTAs -->
       <div class="hero-text">
+        <div class="hero-meta">
+          <span class="fg-stamp fg-stamp--ink">
+            <span style="width:6px;height:6px;background:var(--fg-green);border-radius:999px;display:inline-block;flex-shrink:0"></span>
+            v{{version}} · LIVE
+          </span>
+          <span class="fg-stamp fg-stamp--paper">9 SOURCES · 25 BOOSTERS · 5 DESTINATIONS</span>
+        </div>
+
         <h1 class="hero-title">
-          <span class="fit">Fit</span><span class="glue">Glue</span>
+          ONE<br>
+          SWEAT.<br>
+          <span class="text-gradient">EVERY<br>PLACE.</span>
         </h1>
-        <p class="hero-tagline">Your fitness apps, <span class="hero-highlight">finally connected</span> ✨</p>
-        <p class="hero-subtitle">FitGlue bridges the gaps between your fitness apps so your workouts look
-          amazing <span class="hero-highlight">everywhere</span>—with <span class="hero-highlight">rich
-            descriptions</span>,
-          <span class="hero-highlight">heart rate data</span>, and <span class="hero-highlight">muscle heatmaps</span>
-          synced automatically to Strava, Showcase, and more.
-        </p>
+        <p class="hero-subtitle">FitGlue pulls workouts from Strava, Hevy, Fitbit, Health Connect, Parkrun &amp; six more — runs them through 25 boosters, then ships polished activities to wherever your training really lives.</p>
         <div class="hero-cta">
           <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg">Get Started Free</a>
-          <a href="/how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
+          <a href="/how-it-works" class="btn btn-ghost btn-lg">See a pipeline →</a>
+        </div>
+        <div class="hero-trust">
+          <span>★ NO CARD</span>
+          <span>★ 50 ACTIVITIES / MO FREE</span>
+          <span>★ CANCEL ANY TIME</span>
         </div>
       </div>
 
-      <!-- Right: Rotating Showcase Carousel -->
+      <!-- Right: Live Pipeline Preview -->
       <div class="hero-visual">
-        <div class="hero-carousel" id="hero-carousel"></div>
+        <div class="lp-pipeline">
+          <div class="lp-pipeline__head">
+            <span style="display:flex;gap:.625rem;align-items:center">
+              <span style="width:8px;height:8px;background:var(--fg-green);border-radius:999px;box-shadow:0 0 8px var(--fg-green);display:inline-block"></span>
+              LIVE PIPELINE · NON-HYBRID
+            </span>
+            <span style="color:var(--color-text-subtle)">RUN #4012 · 07:42:18</span>
+          </div>
+
+          <div class="fg-band fg-band--sm">
+            <span class="fg-band__label">01 · Source</span>
+            <span class="fg-band__right">1 OF 9</span>
+          </div>
+          <div style="padding:.875rem 1rem">
+            <div class="lp-pipeline__src">
+              <span class="lp-pipeline__src-emoji">📤</span>
+              <div style="flex:1">
+                <div class="lp-pipeline__src-title">FILE UPLOAD · STRAVA</div>
+                <div class="lp-pipeline__src-sub">tower-pilates.fit · 4.2 MB · 50:00</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fg-band fg-band--sm fg-band--ink">
+            <span class="fg-band__label">02 · Boosters</span>
+            <span class="fg-band__right">20 DONE · 1 RUN · 4 QUEUED</span>
+          </div>
+          <div class="lp-pipeline__chips">
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🎯</span>CONDITION</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏃</span>PARKRUN</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🔢</span>AUTO INCREMENT</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏆</span>PRS</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">📅</span>GOAL</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⭐</span>STREAK</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏅</span>MILESTONES</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">❤️</span>HR SUMMARY</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💗</span>HR ZONES</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🔋</span>CALORIES</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💥</span>EFFORT SCORE</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💪</span>TRAINING LOAD</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💤</span>RECOVERY</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">👟</span>DYNAMICS</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⚡</span>POWER</span>
+            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⛰️</span>ELEV</span>
+            <span class="fg-booster-chip fg-booster-chip--run fg-booster-chip--sm"><span class="fg-booster-chip__emoji">📍</span>LOCATION</span>
+            <span class="fg-booster-chip fg-booster-chip--queued fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🌤️</span>WEATHER</span>
+            <span class="fg-booster-chip fg-booster-chip--queued fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🎨</span>AI BANNER</span>
+            <span class="fg-booster-chip fg-booster-chip--queued fg-booster-chip--sm"><span class="fg-booster-chip__emoji">✨</span>AI COMPANION</span>
+          </div>
+
+          <div class="fg-band fg-band--sm">
+            <span class="fg-band__label">03 · Destinations</span>
+            <span class="fg-band__right">3 PLATFORMS · FAN-OUT</span>
+          </div>
+          <div class="lp-pipeline__dests">
+            <div class="lp-dest"><div class="lp-dest__emoji">🚴</div><div class="lp-dest__name">STRAVA</div><div class="lp-dest__status">● QUEUED</div></div>
+            <div class="lp-dest"><div class="lp-dest__emoji">🔗</div><div class="lp-dest__name">SHOWCASE</div><div class="lp-dest__status">● QUEUED</div></div>
+            <div class="lp-dest"><div class="lp-dest__emoji">🏋️</div><div class="lp-dest__name">HEVY</div><div class="lp-dest__status">● QUEUED</div></div>
+          </div>
+
+          <div class="lp-trio fg-panel--ink">
+            <div class="fg-inline-stat" style="border-left:0"><span class="fg-inline-stat__n">{{activitiesBoostedCount}}</span><span class="fg-inline-stat__l">Activities Boosted</span></div>
+            <div class="fg-inline-stat fg-inline-stat--gradient"><span class="fg-inline-stat__n">25</span><span class="fg-inline-stat__l">Boosters</span></div>
+            <div class="fg-inline-stat"><span class="fg-inline-stat__n">{{athleteCount}}</span><span class="fg-inline-stat__l">Athletes</span></div>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <!-- Platform strip -->
+    <div class="lp-platforms">
+      <span class="lp-platforms__intro">SPEAKS FLUENTLY TO ↓</span>
+      <span class="lp-platform"><span>🚴</span><span>STRAVA</span></span>
+      <span class="lp-platform"><span>🏋️</span><span>HEVY</span></span>
+      <span class="lp-platform"><span>💗</span><span>FITBIT</span></span>
+      <span class="lp-platform"><span>🍎</span><span>APPLE</span></span>
+      <span class="lp-platform"><span>🤖</span><span>HEALTH CONNECT</span></span>
+      <span class="lp-platform"><span>🏃</span><span>PARKRUN</span></span>
+      <span class="lp-platform"><span>🔵</span><span>GOOGLE</span></span>
+      <span class="lp-platform"><span>📊</span><span>INTERVALS.ICU</span></span>
+      <span class="lp-platform"><span>🐙</span><span>GITHUB</span></span>
     </div>
   </section>
 

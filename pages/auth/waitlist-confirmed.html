@@ -67,7 +67,6 @@
   .checkmark {
     width: 80px;
     height: 80px;
-    border-radius: 50%;
     display: block;
     stroke-width: 2;
     stroke: var(--color-success, #06FFA5);
@@ -142,8 +141,8 @@
   }
 
   .next-steps {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
+    background: var(--fg-ink-2);
+    border: var(--fg-rule-thin);
     padding: 1.25rem;
     margin-bottom: 1.5rem;
     text-align: left;
@@ -169,7 +168,7 @@
     align-items: flex-start;
     gap: 0.75rem;
     padding: 0.75rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: var(--fg-rule-thin);
   }
 
   .next-steps li:last-child {
@@ -196,7 +195,7 @@
     padding: 1.5rem 0 0 0;
     margin-top: 0.5rem;
     margin-bottom: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: var(--fg-rule-thin);
     position: relative;
     z-index: 2;
     background: transparent;
@@ -227,7 +226,7 @@
 
   .login-prompt .btn.primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 0, 110, 0.4);
+    box-shadow: 0 6px 20px rgba(255, 61, 166, 0.4);
   }
 </style>
 

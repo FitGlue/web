@@ -13,7 +13,7 @@
 
   <!-- Changelog Content -->
   <section class="section">
-    <div class="container changelog-content">
+    <div class="container changelog-content fg-prose">
       {{{changelogContent}}}
     </div>
   </section>
@@ -34,7 +34,7 @@
     margin-top: var(--space-xl);
     margin-bottom: var(--space-md);
     padding-bottom: var(--space-sm);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: var(--fg-rule-thin);
   }
 
   .changelog-content h2:first-of-type {
@@ -44,7 +44,7 @@
   .changelog-content h3 {
     font-size: 1.1rem;
     margin: var(--space-md) 0 var(--space-sm);
-    color: var(--text-secondary);
+    color: var(--color-text-subtle);
   }
 
   .changelog-content ul {
@@ -64,7 +64,7 @@
   .changelog-content hr {
     margin: var(--space-xl) 0;
     border: none;
-    border-top: 1px solid var(--border-color);
+    border-top: var(--fg-rule-thin);
   }
 </style>
 
