@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.14.0](https://github.com/fitglue/web/compare/v11.13.1...v11.14.0) (2026-05-18)
+
+
+### Features
+
+* **activity:** add uploadsThisMonth field to GetActivityStatsResponse ([2cab08d](https://github.com/fitglue/web/commit/2cab08d0746fa39afa57c292f1e4c9736f8bb946))
+* **pipeline:** support multiple source selection in wizard and edit flow ([a530a85](https://github.com/fitglue/web/commit/a530a85db5f3cc028d3814c88fb0dcae15926fc1))
+
+
+### Bug Fixes
+
+* **showcase:** filter distance stat by activity type; update stats to billing counts ([55ab913](https://github.com/fitglue/web/commit/55ab91300760c4dbf5730b884f902072f1e007cd))
+
 ### [11.13.1](https://github.com/fitglue/web/compare/v11.13.0...v11.13.1) (2026-05-18)
 
 
