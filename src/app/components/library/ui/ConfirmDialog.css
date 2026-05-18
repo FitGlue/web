@@ -12,25 +12,29 @@
 }
 
 .confirm-dialog {
-  background: var(--color-surface, #fff);
-  border-radius: 0;
+  background: var(--fg-ink-2, #0d0c18);
+  border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
+  border-top: var(--fg-rule-thick, 3px solid #f5f3eb);
   padding: 1.5rem;
   max-width: 400px;
   width: 100%;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,.4));
   animation: slideUp 0.2s ease;
 }
 
 .confirm-dialog__title {
   margin: 0 0 0.75rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-text, #1a1a2e);
+  font-family: var(--fg-font-display, 'Archivo Black', sans-serif);
+  font-size: .875rem;
+  font-weight: 400;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--fg-paper, #f5f3eb);
 }
 
 .confirm-dialog__message {
   margin: 0 0 1.5rem;
-  color: var(--color-text-secondary, #6b7280);
+  color: var(--color-text-muted, rgba(245,243,235,.62));
   line-height: 1.5;
 }
 

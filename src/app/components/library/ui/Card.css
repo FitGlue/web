@@ -4,10 +4,10 @@
    ========================================================================== */
 @import '../tokens.css';
 
-/* Base Card - Subtle gradient background, clean borders */
+/* Base Card - Subtle ink-2 surface, rule-thin border */
 .card {
-  background: var(--gradient-card);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--fg-ink-2, #0d0c18);
+  border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
   border-radius: 0;
   padding: 1.5rem;
   text-align: left;
@@ -79,22 +79,17 @@
 .card-footer {
   margin-top: 1rem;
   padding-top: 0.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
 }
 
-/* Highlighted Variant - Premium content with glow */
+/* Highlighted Variant - Premium content with violet rule accent */
 .card.card-highlighted {
   border-color: rgba(139, 92, 246, 0.5);
-  box-shadow:
-    0 0 20px rgba(139, 92, 246, 0.2),
-    0 0 40px rgba(255, 61, 166, 0.1);
+  border-top: 2px solid var(--fg-violet, #8b5cf6);
 }
 
 .card.card-highlighted:hover {
   border-color: rgba(139, 92, 246, 0.7);
-  box-shadow:
-    0 0 25px rgba(139, 92, 246, 0.3),
-    0 0 50px rgba(255, 61, 166, 0.15);
 }
 
 /* Mobile: Reduce padding for compact layout */
