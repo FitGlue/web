@@ -37,6 +37,7 @@ const SmartNudgeBanner: React.FC<SmartNudgeBannerProps> = ({ nudge, onNavigate }
     <div className="smart-nudge" role="status" aria-live="polite">
         <span className="smart-nudge__icon">{nudge.icon}</span>
         <div className="smart-nudge__body">
+            <div className="smart-nudge__label">Nudge</div>
             <p className="smart-nudge__title">{nudge.title}</p>
             <p className="smart-nudge__description">{nudge.description}</p>
         </div>

@@ -1,108 +1,120 @@
-/* ============================================================
-   SmartNudge — contextual tip banner
-   ============================================================ */
+/* ==========================================================================
+   SmartNudge — Brutal × Aurora
+   Ink-3 surface, aurora-cyan 3px left accent, mono "NUDGE" label
+   ========================================================================== */
 
 .smart-nudge {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md, 1rem);
-    padding: var(--spacing-md, 1rem) var(--spacing-lg, 1.5rem);
-    border-radius: var(--radius-lg, 12px);
-    background: linear-gradient(135deg,
-            rgba(76, 201, 240, 0.08) 0%,
-            rgba(139, 92, 246, 0.08) 100%);
-    border: 1px solid rgba(76, 201, 240, 0.15);
-    animation: nudge-slide-in 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  background: var(--fg-ink-3);
+  box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+  border-left: 3px solid var(--fg-cyan);
+  padding: 0.875rem 1rem;
+  animation: nudge-slide-in 0.25s ease-out;
 }
 
 @keyframes nudge-slide-in {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .smart-nudge__icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-    line-height: 1;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 .smart-nudge__body {
-    flex: 1;
-    min-width: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.smart-nudge__label {
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-cyan);
+  margin-bottom: 0.1875rem;
 }
 
 .smart-nudge__title {
-    font-size: var(--font-size-sm, 0.875rem);
-    font-weight: 600;
-    color: var(--color-text, #fff);
-    margin: 0 0 2px 0;
+  font-family: var(--fg-font-display);
+  font-size: 0.875rem;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
+  margin: 0 0 0.125rem;
 }
 
 .smart-nudge__description {
-    font-size: var(--font-size-xs, 0.75rem);
-    color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
-    margin: 0;
-    line-height: 1.4;
+  font-family: var(--fg-font-body);
+  font-size: 0.8125rem;
+  color: var(--fg-paper-dim);
+  margin: 0;
+  line-height: 1.4;
 }
 
 .smart-nudge__actions {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm, 0.5rem);
-    flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .smart-nudge__cta {
-    font-size: var(--font-size-xs, 0.75rem);
-    font-weight: 600;
-    color: var(--color-accent, #22d3ee);
-    background: rgba(76, 201, 240, 0.12);
-    border: 1px solid rgba(76, 201, 240, 0.2);
-    border-radius: var(--radius-sm, 6px);
-    padding: 6px 12px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.15s ease, color 0.15s ease;
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-ink);
+  background: var(--fg-cyan);
+  border: 0;
+  padding: 0.375rem 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter var(--transition-fast);
 }
 
 .smart-nudge__cta:hover {
-    background: rgba(76, 201, 240, 0.2);
-    color: #fff;
+  filter: brightness(1.1);
 }
 
 .smart-nudge__dismiss {
-    background: none;
-    border: none;
-    color: var(--color-text-muted, rgba(255, 255, 255, 0.4));
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 4px;
-    line-height: 1;
-    border-radius: 0;
-    transition: color 0.15s ease;
+  background: transparent;
+  border: none;
+  color: var(--fg-paper-dim);
+  font-family: var(--fg-font-mono);
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.25rem 0.375rem;
+  line-height: 1;
+  transition: color var(--transition-fast);
 }
 
 .smart-nudge__dismiss:hover {
-    color: var(--color-text, #fff);
+  color: var(--fg-paper);
 }
 
-/* Mobile: stack vertically */
+/* Mobile */
 @media (max-width: 640px) {
-    .smart-nudge {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-sm, 0.5rem);
-    }
+  .smart-nudge {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 
-    .smart-nudge__actions {
-        width: 100%;
-        justify-content: space-between;
-    }
+  .smart-nudge__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
