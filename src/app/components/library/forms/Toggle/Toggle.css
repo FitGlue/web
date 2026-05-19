@@ -1,74 +1,89 @@
+/* ==========================================================================
+   Toggle — Brutal × Aurora square switch
+   Square track (no pill), aurora cyan when on, ink-3 when off
+   ========================================================================== */
 @import '../../tokens.css';
 
-/* Toggle switch container */
 .toggle {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
 }
 
 .toggle__info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .toggle__label {
-    font-weight: var(--font-weight-medium);
-    color: var(--color-text-primary);
-    font-size: 0.9rem;
+  font-family: var(--fg-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--fg-paper);
 }
 
 .toggle__description {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
+  font-family: var(--fg-font-body);
+  font-size: 0.75rem;
+  color: var(--fg-paper-dim);
 }
 
-/* Switch track */
+/* Switch track — square, no border-radius */
 .toggle__switch {
-    position: relative;
-    width: 44px;
-    height: 24px;
-    flex-shrink: 0;
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
 .toggle__switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
 }
 
 .toggle__track {
-    position: absolute;
-    cursor: pointer;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-full);
-    transition: all var(--transition-normal);
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  /* OFF state: ink-3 with paper hairline */
+  background: var(--fg-ink-3);
+  box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+  border-radius: 0;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
+/* Square thumb — no border-radius */
 .toggle__track::before {
-    content: '';
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    left: 3px;
-    bottom: 3px;
-    background: var(--color-text-primary);
-    border-radius: 50%;
-    transition: all var(--transition-normal);
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--fg-paper);
+  border-radius: 0;
+  transition: left var(--transition-fast), background var(--transition-fast);
 }
 
-.toggle__switch input:checked+.toggle__track {
-    background: var(--color-primary);
+/* ON state: aurora cyan track, ink thumb */
+.toggle__switch input:checked + .toggle__track {
+  background: var(--fg-cyan);
+  box-shadow: none;
 }
 
-.toggle__switch input:checked+.toggle__track::before {
-    transform: translateX(20px);
+.toggle__switch input:checked + .toggle__track::before {
+  left: 24px;
+  background: var(--fg-ink);
 }
 
-.toggle__switch input:disabled+.toggle__track {
-    opacity: 0.5;
-    cursor: not-allowed;
+/* Disabled */
+.toggle__switch input:disabled + .toggle__track {
+  opacity: 0.4;
+  cursor: not-allowed;
 }

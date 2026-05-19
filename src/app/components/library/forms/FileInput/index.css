@@ -1,4 +1,7 @@
-/* FileInput Component Styles */
+/* ==========================================================================
+   FileInput — dashed hairline, ink-2 bg, aurora hover (Brutal × Aurora)
+   ========================================================================== */
+@import '../../tokens.css';
 
 .form-file-input {
   position: relative;
@@ -8,42 +11,51 @@
   display: none;
 }
 
+/* Dashed hairline dropzone — no border-radius */
 .form-file-input__dropzone {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-xs);
-  padding: var(--space-lg);
-  border: 2px dashed var(--color-border);
-  border-radius: var(--radius-sm);
-  background: rgba(0, 0, 0, 0.2);
+  gap: 0.5rem;
+  padding: 2rem 1.5rem;
+  /* Dashed hairline border via box-shadow */
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+  border-radius: 0;
+  background: var(--fg-ink-2);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
   min-height: 120px;
+  text-align: center;
+  /* Dashed effect via CSS outline trick — use border so dashes render */
+  border: 1.5px dashed var(--fg-hairline-color);
+  box-shadow: none;
 }
 
 .form-file-input__dropzone:hover {
-  border-color: var(--color-primary);
-  background: rgba(131, 56, 236, 0.1);
+  background: var(--fg-ink-3);
+  border-color: var(--fg-cyan);
 }
 
+/* Has file — solid aurora cyan border */
 .form-file-input__dropzone--has-file {
-  border-color: var(--color-accent);
   border-style: solid;
-  background: rgba(0, 255, 136, 0.05);
+  border-color: var(--fg-cyan);
+  background: rgba(34, 211, 238, 0.05);
 }
 
+/* Disabled */
 .form-file-input__dropzone--disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .form-file-input__dropzone--disabled:hover {
-  border-color: var(--color-border);
-  background: rgba(0, 0, 0, 0.2);
+  border-color: var(--fg-hairline-color);
+  background: var(--fg-ink-2);
 }
 
+/* Error state */
 .form-file-input__dropzone--error {
-  border-color: var(--color-danger);
+  border-color: var(--fg-rose);
 }
