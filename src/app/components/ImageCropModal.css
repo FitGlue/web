@@ -1,14 +1,18 @@
+/* ==========================================================================
+   ImageCropModal — Brutal × Aurora
+   Ink-black crop region, sharp edges
+   ========================================================================== */
+
 .image-crop-modal__container {
-    position: relative;
-    width: 100%;
-    height: 350px;
-    background: rgba(0, 0, 0, 0.9);
-    border-radius: 0;
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 350px;
+  background: var(--fg-ink);
+  overflow: hidden;
 }
 
 @media (max-width: 768px) {
-    .image-crop-modal__container {
-        height: 280px;
-    }
+  .image-crop-modal__container {
+    height: 280px;
+  }
 }
