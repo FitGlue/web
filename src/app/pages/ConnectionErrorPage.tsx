@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { PageLayout, Stack } from '../components/library/layout';
-import { Button, CardSkeleton, Heading, Paragraph } from '../components/library/ui';
+import { PageLayout } from '../components/library/layout';
+import { CardSkeleton } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 
@@ -32,49 +32,111 @@ const ConnectionErrorPage: React.FC = () => {
     if (registryLoading) {
         return (
             <PageLayout title="Connection Failed" backTo="/connections" backLabel="Connections">
-                <Stack gap="lg" align="center">
+                <div className="fg-band">
+                    <span className="fg-band__label">CONNECTION FAILED</span>
+                    <span className="fg-band__right">✕ ERROR</span>
+                </div>
+                <div style={{ padding: '1.5rem' }}>
                     <CardSkeleton variant="integration" />
-                </Stack>
+                </div>
             </PageLayout>
         );
     }
 
     return (
         <PageLayout title="Connection Failed" backTo="/connections" backLabel="Connections">
-            <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
+            {/* Error band — rose accent */}
+            <div className="fg-band" style={{ background: 'var(--fg-rose)' }}>
                 <span className="fg-band__label">CONNECTION · {displayName.toUpperCase()}</span>
                 <span className="fg-band__right">✕ FAILED</span>
             </div>
-            <Stack gap="lg" align="center">
-                <Paragraph size="lg">
-                    ⚠️
-                </Paragraph>
 
-                <Heading level={1} centered>Connection Failed</Heading>
+            {/* Error state hero */}
+            <div style={{
+                padding: '3rem 2rem',
+                background: 'var(--fg-ink-2)',
+                borderBottom: 'var(--fg-rule-thin)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '1rem',
+                textAlign: 'center',
+            }}>
+                {/* Error icon */}
+                <div style={{
+                    width: '64px',
+                    height: '64px',
+                    background: 'rgba(255, 93, 108, 0.12)',
+                    boxShadow: 'inset 0 0 0 2px var(--fg-rose)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '2rem',
+                }}>
+                    ✕
+                </div>
 
-                <Paragraph centered>
+                <h1 style={{
+                    fontFamily: 'var(--fg-font-display)',
+                    fontSize: '2.5rem',
+                    letterSpacing: '-0.025em',
+                    textTransform: 'uppercase',
+                    margin: 0,
+                    color: 'var(--fg-rose)',
+                }}>
+                    CONNECTION FAILED
+                </h1>
+
+                {/* Error reason stamp */}
+                <span className="fg-stamp fg-stamp--rose">
+                    {reason.replace(/_/g, ' ').toUpperCase()}
+                </span>
+
+                {/* Error message */}
+                <p style={{
+                    fontFamily: 'var(--fg-font-body)',
+                    fontSize: '1.0625rem',
+                    color: 'var(--color-text-muted)',
+                    maxWidth: '520px',
+                    margin: 0,
+                    lineHeight: 1.6,
+                }}>
                     {getErrorMessage(reason)}
-                </Paragraph>
+                </p>
 
-                <Paragraph muted centered>
-                    Please try again or contact support if the issue persists.
-                </Paragraph>
+                <p style={{
+                    fontFamily: 'var(--fg-font-mono)',
+                    fontSize: '0.6875rem',
+                    letterSpacing: '0.1em',
+                    color: 'var(--color-text-muted)',
+                    textTransform: 'uppercase',
+                    margin: 0,
+                }}>
+                    PLEASE TRY AGAIN OR CONTACT SUPPORT IF THE ISSUE PERSISTS
+                </p>
+            </div>
 
-                <Stack direction="horizontal" gap="md">
-                    <Button
-                        variant="primary"
-                        onClick={() => navigate(`/connections/${id}/setup`)}
-                    >
-                        Try Again
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        onClick={() => navigate('/connections')}
-                    >
-                        Back to Connections
-                    </Button>
-                </Stack>
-            </Stack>
+            {/* Actions */}
+            <div style={{
+                padding: '1.25rem 2rem',
+                background: 'var(--fg-ink-2)',
+                display: 'flex',
+                gap: '0.75rem',
+                justifyContent: 'center',
+            }}>
+                <button
+                    className="fg-button fg-button--sm"
+                    onClick={() => navigate(`/connections/${id}/setup`)}
+                >
+                    TRY AGAIN →
+                </button>
+                <button
+                    className="fg-button fg-button--sm fg-button--ink"
+                    onClick={() => navigate('/connections')}
+                >
+                    BACK TO CONNECTIONS
+                </button>
+            </div>
         </PageLayout>
     );
 };

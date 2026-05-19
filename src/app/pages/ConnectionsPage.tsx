@@ -1,14 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PageLayout, Stack, Grid } from '../components/library/layout';
+import { PageLayout } from '../components/library/layout';
 import { SmartNudge } from '../components/SmartNudge';
-import { Button, PluginIcon, Card, CardSkeleton, Badge, Heading, Paragraph, GlowCard } from '../components/library/ui';
+import { CardSkeleton } from '../components/library/ui';
+import { PluginIcon } from '../components/library/ui/PluginIcon';
 
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useNerdMode } from '../state/NerdModeContext';
 import '../components/library/ui/CardSkeleton.css';
 import { IntegrationManifest } from '../types/plugin';
+import './ConnectionsPage.css';
 
 interface IntegrationStatus {
     connected: boolean;
@@ -17,14 +19,14 @@ interface IntegrationStatus {
     additionalDetails?: Record<string, string>;
 }
 
-interface ConnectionCardProps {
+interface ConnectionTileProps {
     integration: IntegrationManifest;
     status: IntegrationStatus | undefined;
     onConnect: () => void;
     onView: () => void;
 }
 
-const ConnectionCard: React.FC<ConnectionCardProps> = ({
+const ConnectionTile: React.FC<ConnectionTileProps> = ({
     integration,
     status,
     onConnect,
@@ -33,11 +35,9 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
     const isConnected = status?.connected ?? false;
     const { isNerdMode } = useNerdMode();
 
-    // Format last synced date nicely
     const formatLastSynced = (dateStr?: string) => {
         if (!dateStr) return null;
         const date = new Date(dateStr);
-        // Check for invalid date
         if (isNaN(date.getTime())) return null;
         return date.toLocaleString(undefined, {
             month: 'short',
@@ -49,91 +49,60 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
 
     const lastSynced = formatLastSynced(status?.lastUsedAt);
 
-    // Header content with integration name and status badge
-    const headerContent = (
-        <Stack direction="horizontal" align="center" justify="between">
-            <Stack direction="horizontal" gap="sm" align="center">
-                <PluginIcon
-                    icon={integration.icon}
-                    iconType={integration.iconType}
-                    iconPath={integration.iconPath}
-                    size="medium"
-                />
-                <Heading level={4}>{integration.name}</Heading>
-            </Stack>
-            <Badge variant={isConnected ? 'success' : 'default'} size="sm">
-                <Stack direction="horizontal" gap="xs" align="center">
-                    <Paragraph inline size="sm">{isConnected ? '✓' : '○'}</Paragraph>
-                    <Paragraph inline size="sm">{isConnected ? 'Connected' : 'Not Connected'}</Paragraph>
-                </Stack>
-            </Badge>
-        </Stack>
-    );
-
     return (
-        <GlowCard
-            variant={isConnected ? 'success' : 'default'}
-            header={headerContent}
-        >
-            <Stack gap="md">
-                {/* Description */}
-                <Paragraph muted size="sm">{integration.description}</Paragraph>
+        <div className={`conn-tile${isConnected ? ' conn-tile--connected' : ''}`}>
+            {/* Header: icon + name + status badge */}
+            <div className="conn-tile__head">
+                <div className="conn-tile__identity">
+                    <div className="conn-tile__icon">
+                        <PluginIcon
+                            icon={integration.icon}
+                            iconType={integration.iconType}
+                            iconPath={integration.iconPath}
+                            size="medium"
+                        />
+                    </div>
+                    <span className="conn-tile__name">{integration.name}</span>
+                </div>
+                <span className={`conn-tile__status ${isConnected ? 'conn-tile__status--connected' : 'conn-tile__status--disconnected'}`}>
+                    {isConnected ? '✓ CONNECTED' : 'NOT CONNECTED'}
+                </span>
+            </div>
 
-                {/* Connection metadata - only when connected */}
-                {isConnected && (
-                    <Stack gap="xs">
-                        {isNerdMode && status?.externalUserId && (
-                            <Stack direction="horizontal" gap="xs" align="center">
-                                <Paragraph size="sm" muted>ID:</Paragraph>
-                                <Paragraph size="sm">{status.externalUserId}</Paragraph>
-                            </Stack>
-                        )}
-                        {lastSynced && (
-                            <Stack direction="horizontal" gap="xs" align="center">
-                                <Paragraph size="sm" muted>Last synced:</Paragraph>
-                                <Paragraph size="sm">{lastSynced}</Paragraph>
-                            </Stack>
-                        )}
-                        {isNerdMode && status?.additionalDetails && Object.keys(status.additionalDetails).length > 0 && (
-                            <>
-                                {Object.entries(status.additionalDetails).map(([key, value]) => (
-                                    <Stack key={key} direction="horizontal" gap="xs" align="center">
-                                        <Paragraph size="sm" muted>{key}:</Paragraph>
-                                        <Paragraph size="sm">{value}</Paragraph>
-                                    </Stack>
-                                ))}
-                            </>
-                        )}
-                        {integration.actions && integration.actions.length > 0 && (
-                            <Paragraph size="sm" muted>
-                                ⚡ {integration.actions.length} {integration.actions.length === 1 ? 'action' : 'actions'} available
-                            </Paragraph>
-                        )}
-                    </Stack>
-                )}
+            {/* Description */}
+            <p className="conn-tile__desc">{integration.description}</p>
 
-                {/* Action button */}
-                <Stack direction="horizontal" justify="end">
-                    {isConnected ? (
-                        <Button
-                            variant="secondary"
-                            size="small"
-                            onClick={onView}
-                        >
-                            View →
-                        </Button>
-                    ) : (
-                        <Button
-                            variant="primary"
-                            size="small"
-                            onClick={onConnect}
-                        >
-                            Connect
-                        </Button>
+            {/* Connected metadata */}
+            {isConnected && (
+                <div className="conn-tile__meta">
+                    {isNerdMode && status?.externalUserId && (
+                        <span>ID: <b>{status.externalUserId}</b></span>
                     )}
-                </Stack>
-            </Stack>
-        </GlowCard>
+                    {lastSynced && (
+                        <span>SYNCED: <b>{lastSynced}</b></span>
+                    )}
+                    {isNerdMode && status?.additionalDetails && Object.entries(status.additionalDetails).map(([key, value]) => (
+                        <span key={key}>{key}: <b>{value}</b></span>
+                    ))}
+                    {integration.actions && integration.actions.length > 0 && (
+                        <span>⚡ {integration.actions.length} {integration.actions.length === 1 ? 'ACTION' : 'ACTIONS'}</span>
+                    )}
+                </div>
+            )}
+
+            {/* Action */}
+            <div className="conn-tile__foot">
+                {isConnected ? (
+                    <button className="fg-button fg-button--sm fg-button--ink" onClick={onView}>
+                        VIEW →
+                    </button>
+                ) : (
+                    <button className="fg-button fg-button--sm" onClick={onConnect}>
+                        CONNECT
+                    </button>
+                )}
+            </div>
+        </div>
     );
 };
 
@@ -141,6 +110,7 @@ const ConnectionsPage: React.FC = () => {
     const navigate = useNavigate();
     const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { integrations, loading, refresh: refreshIntegrations } = useRealtimeIntegrations();
+
     const handleConnect = (integration: IntegrationManifest) => {
         navigate(`/connections/${integration.id}/setup`);
     };
@@ -149,9 +119,6 @@ const ConnectionsPage: React.FC = () => {
         navigate(`/connections/${integration.id}`);
     };
 
-
-
-    // Count connected integrations
     const connectedCount = registryIntegrations.filter(i => {
         const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[i.id];
         return status?.connected;
@@ -169,24 +136,15 @@ const ConnectionsPage: React.FC = () => {
     if (loading || registryLoading) {
         return (
             <PageLayout title="Connections" backTo="/" backLabel="Dashboard">
-                <Card>
-                    <Stack gap="lg">
-                        {/* Header skeleton */}
-                        <Stack direction="horizontal" justify="between" align="center">
-                            <Stack gap="xs">
-                                <Heading level={3}>🔗 Your Connections</Heading>
-                                <Paragraph muted size="sm">Connect your fitness apps and devices to sync your data with FitGlue</Paragraph>
-                            </Stack>
-                        </Stack>
-
-                        {/* Skeleton cards */}
-                        <Grid>
-                            <CardSkeleton variant="integration" />
-                            <CardSkeleton variant="integration" />
-                            <CardSkeleton variant="integration" />
-                        </Grid>
-                    </Stack>
-                </Card>
+                <div className="fg-band">
+                    <span className="fg-band__label">CONNECTIONS</span>
+                    <span className="fg-band__right">LOADING…</span>
+                </div>
+                <div className="conn-grid">
+                    <div style={{ padding: '1.5rem' }}><CardSkeleton variant="integration" /></div>
+                    <div style={{ padding: '1.5rem' }}><CardSkeleton variant="integration" /></div>
+                    <div style={{ padding: '1.5rem' }}><CardSkeleton variant="integration" /></div>
+                </div>
             </PageLayout>
         );
     }
@@ -198,41 +156,50 @@ const ConnectionsPage: React.FC = () => {
             backLabel="Dashboard"
             onRefresh={refreshIntegrations}
         >
-            <Stack gap="lg">
-                <SmartNudge page="connections" />
+            <SmartNudge page="connections" />
 
-                {connectedIntegrations.length > 0 && (
-                    <>
-                        <div className="fg-band">
-                            <span className="fg-band__label">CONNECTED</span>
-                            <span className="fg-band__right">{connectedCount} ACTIVE</span>
-                        </div>
-                        <Grid>
-                            {connectedIntegrations.map(integration => {
-                                const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
-                                return (
-                                    <ConnectionCard
-                                        key={integration.id}
-                                        integration={integration}
-                                        status={status}
-                                        onConnect={() => handleConnect(integration)}
-                                        onView={() => handleView(integration)}
-                                    />
-                                );
-                            })}
-                        </Grid>
-                    </>
-                )}
+            {/* Connected section */}
+            {connectedIntegrations.length > 0 && (
+                <>
+                    <div className="fg-band">
+                        <span className="fg-band__label">CONNECTED</span>
+                        <span className="fg-band__right">{connectedCount} ACTIVE</span>
+                    </div>
+                    <div className="conn-grid">
+                        {connectedIntegrations.map(integration => {
+                            const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
+                            return (
+                                <ConnectionTile
+                                    key={integration.id}
+                                    integration={integration}
+                                    status={status}
+                                    onConnect={() => handleConnect(integration)}
+                                    onView={() => handleView(integration)}
+                                />
+                            );
+                        })}
+                    </div>
+                </>
+            )}
 
-                <div className="fg-band fg-band--ink">
-                    <span className="fg-band__label">AVAILABLE CONNECTIONS</span>
-                    <span className="fg-band__right">{availableIntegrations.length} SERVICES</span>
+            {/* Available section */}
+            <div className="fg-band fg-band--ink">
+                <span className="fg-band__label">AVAILABLE CONNECTIONS</span>
+                <span className="fg-band__right">{availableIntegrations.length} SERVICES</span>
+            </div>
+
+            {availableIntegrations.length === 0 ? (
+                <div className="conn-empty">
+                    <div className="conn-empty__icon">🔗</div>
+                    <div className="conn-empty__title">ALL CONNECTED</div>
+                    <p className="conn-empty__sub">You have connected all available services.</p>
                 </div>
-                <Grid>
+            ) : (
+                <div className="conn-grid">
                     {availableIntegrations.map(integration => {
                         const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
                         return (
-                            <ConnectionCard
+                            <ConnectionTile
                                 key={integration.id}
                                 integration={integration}
                                 status={status}
@@ -241,8 +208,8 @@ const ConnectionsPage: React.FC = () => {
                             />
                         );
                     })}
-                </Grid>
-            </Stack>
+                </div>
+            )}
         </PageLayout>
     );
 };
