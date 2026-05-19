@@ -1,167 +1,112 @@
 {{> header}}
 
 <main>
-  <section class="error-hero">
-    <div class="container">
-      <div class="error-content">
-        <!-- Fun gym rep counter display -->
-        <div class="rep-counter animate-on-scroll">
-          <span class="rep-number">40</span>
-          <span class="rep-separator">×</span>
-          <span class="rep-number">4</span>
-        </div>
-
-        <p class="error-quip animate-on-scroll">reps? Even we couldn't do that.</p>
-
-        <h1 class="error-title animate-on-scroll">
-          Page <span class="fit">Not</span> <span class="glue">Found</span>
-        </h1>
-
-        <p class="error-description animate-on-scroll">
-          Looks like this page took an unscheduled rest day.<br>
-          Let's get you back to your workout.
-        </p>
-
-        <div class="error-actions animate-on-scroll">
-          <a href="/" class="btn btn-primary btn-lg">Return Home</a>
-          <a href="/features" class="btn btn-secondary">Explore Features</a>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
-
 <style>
-  .error-hero {
-    min-height: 100vh;
+  .error-wrap {
+    min-height: 80vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: var(--gradient-hero);
-    position: relative;
-    overflow: hidden;
-    padding: var(--space-xl) 0;
+    padding: 80px 32px;
   }
 
-  .error-hero::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 150%;
-    height: 150%;
-    transform: translate(-50%, -50%);
-    background: var(--gradient-glow);
-    pointer-events: none;
-  }
-
-  .error-content {
-    position: relative;
-    z-index: 1;
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 0 var(--space-md);
-  }
-
-  .rep-counter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-md);
-  }
-
-  .rep-number {
-    font-size: clamp(5rem, 15vw, 10rem);
-    font-weight: 900;
-    line-height: 1;
-    letter-spacing: -0.05em;
+  .error-404 {
+    font-family: var(--fg-font-display);
+    font-size: clamp(8rem, 20vw, 22rem);
+    line-height: .85;
+    letter-spacing: -.06em;
+    text-transform: uppercase;
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: pulse-glow 3s ease-in-out infinite;
+    margin-bottom: 0;
   }
 
-  .rep-separator {
-    font-size: clamp(3rem, 10vw, 6rem);
-    font-weight: 900;
+  .error-heading {
+    font-family: var(--fg-font-display);
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    letter-spacing: -.025em;
+    text-transform: uppercase;
+    margin: 16px 0 20px;
+    line-height: 1;
+  }
+
+  .error-body {
+    font-family: var(--fg-font-body);
+    font-size: 1.0625rem;
     color: var(--color-text-muted);
-    animation: pulse-glow 3s ease-in-out infinite 0.5s;
-  }
-
-  @keyframes pulse-glow {
-
-    0%,
-    100% {
-      opacity: 1;
-      filter: drop-shadow(0 0 20px rgba(255, 61, 166, 0.5));
-    }
-
-    50% {
-      opacity: 0.85;
-      filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.6));
-    }
-  }
-
-  .error-quip {
-    font-size: var(--font-size-xl);
-    color: var(--color-text-muted);
-    margin-bottom: var(--space-lg);
-    font-style: italic;
-  }
-
-  .error-title {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    margin-bottom: var(--space-md);
-  }
-
-  .error-title .fit {
-    color: var(--color-primary);
-  }
-
-  .error-title .glue {
-    color: var(--color-secondary);
-  }
-
-  .error-description {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-muted);
-    margin-bottom: var(--space-lg);
-    line-height: 1.8;
+    line-height: 1.6;
+    max-width: 480px;
+    margin-bottom: 40px;
   }
 
   .error-actions {
     display: flex;
-    gap: var(--space-sm);
+    gap: 12px;
     justify-content: center;
     flex-wrap: wrap;
   }
 
-  @media (max-width: 640px) {
-    .rep-counter {
-      gap: var(--space-sm);
-    }
+  .btn-aurora {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 28px;
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+    font-family: var(--fg-font-display);
+    font-size: .875rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    border: 0;
+    cursor: pointer;
+  }
 
-    .error-quip {
-      font-size: var(--font-size-lg);
-    }
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 28px;
+    background: transparent;
+    color: var(--fg-paper);
+    box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+    font-family: var(--fg-font-display);
+    font-size: .875rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    border: 0;
+    cursor: pointer;
+  }
 
-    .error-description br {
-      display: none;
-    }
+  .error-mono {
+    font-family: var(--fg-font-mono);
+    font-size: .75rem;
+    letter-spacing: .12em;
+    color: var(--color-text-subtle);
+    text-transform: uppercase;
+    margin-top: 48px;
+  }
 
-    .error-actions {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .error-actions .btn {
-      width: 100%;
-      max-width: 280px;
-    }
+  @media (max-width: 600px) {
+    .error-wrap { padding: 60px 16px; }
+    .error-actions { flex-direction: column; align-items: center; }
+    .btn-aurora, .btn-ghost { width: 100%; max-width: 280px; justify-content: center; }
   }
 </style>
+
+  <div class="error-wrap">
+    <div class="error-404">404</div>
+    <h1 class="error-heading">Lost the thread.</h1>
+    <p class="error-body">This page doesn't exist — or it moved when we weren't looking. Either way, let's get you back to something useful.</p>
+    <div class="error-actions">
+      <a href="/" class="btn-aurora">→ HOME</a>
+      <a href="javascript:history.back()" class="btn-ghost">← BACK</a>
+    </div>
+    <p class="error-mono">HTTP 404 · PAGE NOT FOUND</p>
+  </div>
+</main>
 
 {{> footer}}

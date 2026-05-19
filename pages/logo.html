@@ -1,524 +1,160 @@
-<!DOCTYPE html>
-<html lang="en">
+{{> header}}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitGlue Logo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<main>
+<style>
+  /* ── Page heading ── */
+  .ph { padding: 56px 32px; max-width: 1280px; margin: 0 auto; }
+  .ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .ph__title { font-family: var(--fg-font-display); font-size: clamp(2rem, 5vw, 3rem); line-height: .95; letter-spacing: -.025em; text-transform: uppercase; margin: 14px 0; }
+  .ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-        html,
-        body {
-            background: transparent;
-        }
+  /* ── Logo bed ── */
+  .logo-bed { padding: 0 32px 80px; max-width: 1280px; margin: 0 auto; }
+  .logo-bed__section-title { font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; margin: 48px 0 16px; }
+  .logo-bed__section-title:first-child { margin-top: 0; }
+  .logo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .logo-cell { padding: 60px 32px; display: flex; flex-direction: column; align-items: center; gap: 18px; background: var(--fg-ink-2); }
+  .logo-cell--paper { background: var(--fg-paper); color: var(--fg-ink); }
+  .logo-cell--aurora { background: var(--gradient-primary); color: var(--fg-ink); }
+  .logo-cell__caption { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; opacity: .6; text-transform: uppercase; }
 
-        .logo-container {
-            /* Fixed 1:1 square - adjust this size for your needs */
-            width: 512px;
-            height: 512px;
+  /* ── Logo components ── */
+  .logo-lk { display: flex; align-items: center; gap: 12px; }
+  .logo-lk__wordmark { font-family: var(--fg-font-display); font-size: 2rem; letter-spacing: -.035em; text-transform: uppercase; line-height: 1; }
+  .logo-mk { width: 48px; height: 48px; background: var(--gradient-primary); color: var(--fg-ink); display: flex; align-items: center; justify-content: center; font-family: var(--fg-font-display); font-size: 1.5rem; letter-spacing: -.04em; flex-shrink: 0; }
+  .logo-mk--inv { background: var(--fg-ink); color: var(--fg-paper); }
+  .logo-mk--paper-bg { background: var(--gradient-primary); color: var(--fg-ink); }
 
-            /* Rounded square */
-            border-radius: 22.37%;
-            /* iOS-style rounded square ratio */
+  /* ── On-paper cell overrides ── */
+  .logo-cell--paper .logo-lk__wordmark { color: var(--fg-ink); }
 
-            /* The beautiful pink/purple gradient from FitGlue */
-            background: linear-gradient(135deg, #ff3da6 0%, #8b5cf6 50%, #22d3ee 100%);
+  /* ── On-aurora cell overrides ── */
+  .logo-cell--aurora .logo-mk { background: var(--fg-ink); color: var(--fg-paper); }
+  .logo-cell--aurora .logo-lk__wordmark { color: var(--fg-ink); }
 
-            /* Center content */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+  /* ── Size variants ── */
+  .logo-lk--lg .logo-mk { width: 72px; height: 72px; font-size: 2.25rem; }
+  .logo-lk--lg .logo-lk__wordmark { font-size: 3rem; }
+  .logo-lk--sm .logo-mk { width: 32px; height: 32px; font-size: 1rem; }
+  .logo-lk--sm .logo-lk__wordmark { font-size: 1.25rem; }
 
-            position: relative;
-            overflow: hidden;
+  /* ── Dark band ── */
+  .dark-band { padding: 14px 32px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); border-top: var(--fg-rule-thin); display: flex; justify-content: space-between; align-items: center; margin-bottom: 0; }
+  .dark-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-paper); text-transform: uppercase; }
+  .dark-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
 
-            /* Subtle inner shadow for depth */
-            box-shadow: inset 0 -4px 20px rgba(0, 0, 0, 0.2),
-                inset 0 4px 20px rgba(255, 255, 255, 0.1);
-        }
+  @media (max-width: 900px) {
+    .logo-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .logo-grid { grid-template-columns: 1fr; }
+    .ph { padding: 40px 16px; }
+    .logo-bed { padding: 0 16px 48px; }
+  }
+</style>
 
-        .logo-text {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 280px;
-            font-weight: 900;
-            letter-spacing: -0.04em;
+  <!-- Hero -->
+  <div class="ph">
+    <div class="ph__eyebrow">BRAND</div>
+    <h1 class="ph__title">Logo <span class="gr">lockups.</span></h1>
+  </div>
 
-            display: flex;
-            gap: 0;
-            user-select: none;
-            position: relative;
-            z-index: 2;
-        }
+  <!-- Full lockups on 3 backgrounds -->
+  <div class="dark-band">
+    <span class="dark-band__label">FULL LOCKUP · 3 BACKGROUNDS</span>
+    <span class="dark-band__right">MARK + WORDMARK</span>
+  </div>
 
-        .logo-f {
-            /* Light peachy-pink color for F */
-            color: #FFD4E5;
-            text-shadow:
-                0 0 40px rgba(255, 61, 166, 0.8),
-                0 0 80px rgba(255, 61, 166, 0.5),
-                0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .logo-g {
-            /* Light lavender color for G */
-            color: #E8D4FF;
-            text-shadow:
-                0 0 40px rgba(139, 92, 246, 0.8),
-                0 0 80px rgba(139, 92, 246, 0.5),
-                0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Diagonal gloss/shine effect */
-        .logo-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(135deg,
-                    transparent 0%,
-                    transparent 40%,
-                    rgba(255, 255, 255, 0.15) 45%,
-                    rgba(255, 255, 255, 0.25) 50%,
-                    rgba(255, 255, 255, 0.15) 55%,
-                    transparent 60%,
-                    transparent 100%);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* Subtle top-left highlight */
-        .logo-container::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at 20% 15%, rgba(255, 255, 255, 0.2) 0%, transparent 40%);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* Alternative sizes - use scale transform for pixel-perfect consistency */
-        .logo-wrapper {
-            display: inline-block;
-        }
-
-        .logo-wrapper--1024 {
-            transform: scale(2);
-            transform-origin: top center;
-            margin-bottom: 512px;
-            /* Account for scaled height */
-        }
-
-        .logo-wrapper--256 {
-            transform: scale(0.5);
-            transform-origin: top center;
-            margin-bottom: -256px;
-            /* Account for scaled height */
-        }
-
-        .logo-wrapper--192 {
-            transform: scale(0.375);
-            transform-origin: top center;
-            margin-bottom: -320px;
-            /* Account for scaled height */
-        }
-
-        .logo-wrapper--128 {
-            transform: scale(0.25);
-            transform-origin: top center;
-            margin-bottom: -384px;
-            /* Account for scaled height */
-        }
-
-        .logo-wrapper--72 {
-            transform: scale(0.140625);
-            transform-origin: top center;
-            margin-bottom: -440px;
-            /* Account for scaled height */
-        }
-
-        .logo-wrapper--64 {
-            transform: scale(0.125);
-            transform-origin: top center;
-            margin-bottom: -448px;
-            /* Account for scaled height */
-        }
-
-        /* Page layout for viewing all sizes */
-        .page {
-            min-height: 100vh;
-            padding: 40px;
-            background: #0A0A0A;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 40px;
-        }
-
-        .size-label {
-            color: #666;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        .logo-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            justify-content: center;
-            align-items: flex-end;
-        }
-
-        .logo-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
-            margin-bottom: 10px;
-        }
-
-        p {
-            color: #666;
-            font-family: 'Inter', sans-serif;
-            margin-bottom: 30px;
-        }
-
-        .download-btn {
-            margin-top: 12px;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #ff3da6 0%, #8b5cf6 50%, #22d3ee 100%);
-            border: none;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(255, 61, 166, 0.4);
-        }
-
-        .download-btn:active {
-            transform: translateY(0);
-        }
-    </style>
-</head>
-
-<body>
-    <div class="page">
-        <h1>FitGlue Logo</h1>
-        <p>Click to download the logo at each size as a PNG.</p>
-
-        <div class="logo-row">
-            <!-- Main 512px logo (base size) -->
-            <div class="logo-item">
-                <div class="size-label">512 × 512px</div>
-                <div class="logo-wrapper">
-                    <div class="logo-container" id="logo-512">
-                        <div class="logo-text">
-                            <span class="logo-f">F</span><span class="logo-g">G</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="downloadLogo(512)">Download PNG</button>
-            </div>
+  <div class="logo-bed">
+    <div class="logo-grid">
+      <!-- On ink (dark bg) -->
+      <div class="logo-cell">
+        <span class="logo-cell__caption">ON INK</span>
+        <div class="logo-lk">
+          <div class="logo-mk">FG</div>
+          <span class="logo-lk__wordmark">FITGLUE</span>
         </div>
+      </div>
 
-        <div class="logo-row">
-            <!-- Smaller sizes using scale -->
-            <div class="logo-item">
-                <div class="size-label">256 × 256px</div>
-                <div class="logo-wrapper logo-wrapper--256">
-                    <div class="logo-container">
-                        <div class="logo-text">
-                            <span class="logo-f">F</span><span class="logo-g">G</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="downloadLogo(256)">Download PNG</button>
-            </div>
-
-            <div class="logo-item">
-                <div class="size-label">128 × 128px</div>
-                <div class="logo-wrapper logo-wrapper--128">
-                    <div class="logo-container">
-                        <div class="logo-text">
-                            <span class="logo-f">F</span><span class="logo-g">G</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="downloadLogo(128)">Download PNG</button>
-            </div>
-
-            <div class="logo-item">
-                <div class="size-label">64 × 64px</div>
-                <div class="logo-wrapper logo-wrapper--64">
-                    <div class="logo-container">
-                        <div class="logo-text">
-                            <span class="logo-f">F</span><span class="logo-g">G</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="downloadLogo(64)">Download PNG</button>
-            </div>
+      <!-- On paper (light bg) -->
+      <div class="logo-cell logo-cell--paper">
+        <span class="logo-cell__caption">ON PAPER</span>
+        <div class="logo-lk">
+          <div class="logo-mk logo-mk--paper-bg">FG</div>
+          <span class="logo-lk__wordmark">FITGLUE</span>
         </div>
+      </div>
 
-        <!-- Extra large for high-res export -->
-        <div class="logo-row">
-            <div class="logo-item">
-                <div class="size-label">1024 × 1024px (for high-res export)</div>
-                <div class="logo-wrapper logo-wrapper--1024">
-                    <div class="logo-container">
-                        <div class="logo-text">
-                            <span class="logo-f">F</span><span class="logo-g">G</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="downloadLogo(1024)">Download PNG</button>
-            </div>
+      <!-- On aurora gradient -->
+      <div class="logo-cell logo-cell--aurora">
+        <span class="logo-cell__caption">ON AURORA</span>
+        <div class="logo-lk">
+          <div class="logo-mk logo-mk--inv">FG</div>
+          <span class="logo-lk__wordmark">FITGLUE</span>
         </div>
-
-        <!-- Manifest Icons Section -->
-        <hr style="width: 100%; max-width: 800px; border: none; border-top: 1px solid #333; margin: 40px 0;">
-        <h2 style="color: white; font-family: 'Inter', sans-serif; font-weight: 900; margin-bottom: 10px;">📱 PWA
-            Manifest Icons</h2>
-        <p style="color: #666; font-family: 'Inter', sans-serif; margin-bottom: 30px;">Download icons for
-            /public/app/icons/ directory</p>
-
-        <div class="logo-row">
-            <div class="logo-item">
-                <div class="size-label">icon-512.png (512×512)</div>
-                <div class="logo-wrapper">
-                    <div class="logo-container">
-                        <div class="logo-text">
-                            <span class="logo-f">F</span><span class="logo-g">G</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="downloadManifestIcon(512)">Download icon-512.png</button>
-            </div>
-
-            <div class="logo-item">
-                <div class="size-label">icon-192.png (192×192)</div>
-                <div class="logo-wrapper logo-wrapper--192">
-                    <div class="logo-container">
-                        <div class="logo-text">
-                            <span class="logo-f">F</span><span class="logo-g">G</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="downloadManifestIcon(192)">Download icon-192.png</button>
-            </div>
-        </div>
-
-        <div class="logo-row" style="margin-top: 30px;">
-            <div class="logo-item">
-                <div class="size-label">badge-72.png (72×72 monochrome)</div>
-                <div class="logo-wrapper logo-wrapper--72 logo-wrapper--badge">
-                    <div class="logo-container" style="background: white; box-shadow: none;">
-                        <div class="logo-text" style="text-shadow: none;">
-                            <span style="color: #ff3da6;">F</span><span style="color: #8b5cf6;">G</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="downloadBadge(72)">Download badge-72.png</button>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <script>
-        /**
-         * Render the FitGlue logo to a canvas and trigger download as PNG
-         * @param {number} size - The size in pixels (width and height)
-         * @param {string} [filename] - Optional custom filename
-         */
-        function downloadLogo(size, filename) {
-            const canvas = renderLogo(size);
-            triggerDownload(canvas, filename || `fitglue-logo-${size}x${size}.png`);
-        }
+    <!-- Size scale -->
+    <div class="logo-bed__section-title">SIZE SCALE</div>
+    <div class="logo-grid">
+      <div class="logo-cell">
+        <span class="logo-cell__caption">LARGE · 72PX MARK</span>
+        <div class="logo-lk logo-lk--lg">
+          <div class="logo-mk">FG</div>
+          <span class="logo-lk__wordmark">FITGLUE</span>
+        </div>
+      </div>
+      <div class="logo-cell">
+        <span class="logo-cell__caption">DEFAULT · 48PX MARK</span>
+        <div class="logo-lk">
+          <div class="logo-mk">FG</div>
+          <span class="logo-lk__wordmark">FITGLUE</span>
+        </div>
+      </div>
+      <div class="logo-cell">
+        <span class="logo-cell__caption">SMALL · 32PX MARK</span>
+        <div class="logo-lk logo-lk--sm">
+          <div class="logo-mk">FG</div>
+          <span class="logo-lk__wordmark">FITGLUE</span>
+        </div>
+      </div>
+    </div>
 
-        /**
-         * Download manifest icon with correct naming
-         * @param {number} size - The size in pixels
-         */
-        function downloadManifestIcon(size) {
-            const canvas = renderLogo(size);
-            triggerDownload(canvas, `icon-${size}.png`);
-        }
+    <!-- Mark only + wordmark only -->
+    <div class="logo-bed__section-title">MARK ONLY + WORDMARK ONLY</div>
+    <div class="logo-grid">
+      <div class="logo-cell">
+        <span class="logo-cell__caption">MARK ONLY · 80PX</span>
+        <div class="logo-mk" style="width:80px;height:80px;font-size:2.25rem">FG</div>
+      </div>
+      <div class="logo-cell">
+        <span class="logo-cell__caption">WORDMARK ONLY</span>
+        <span style="font-family:var(--fg-font-display);font-size:2.5rem;letter-spacing:-.035em;text-transform:uppercase;line-height:1">FITGLUE</span>
+      </div>
+      <div class="logo-cell">
+        <span class="logo-cell__caption">FAVICON · 48PX</span>
+        <div class="logo-mk" style="width:48px;height:48px;font-size:1.25rem">FG</div>
+      </div>
+    </div>
 
-        /**
-         * Download monochrome badge
-         * @param {number} size - The size in pixels
-         */
-        function downloadBadge(size) {
-            const canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size;
-            const ctx = canvas.getContext('2d');
+    <!-- Aurora mark variants -->
+    <div class="logo-bed__section-title">MARK VARIANTS</div>
+    <div class="logo-grid">
+      <div class="logo-cell">
+        <span class="logo-cell__caption">AURORA FILL</span>
+        <div class="logo-mk" style="width:80px;height:80px;font-size:2.25rem">FG</div>
+      </div>
+      <div class="logo-cell logo-cell--paper">
+        <span class="logo-cell__caption">ON LIGHT · AURORA FILL</span>
+        <div class="logo-mk" style="width:80px;height:80px;font-size:2.25rem">FG</div>
+      </div>
+      <div class="logo-cell logo-cell--aurora">
+        <span class="logo-cell__caption">ON AURORA · INK FILL</span>
+        <div class="logo-mk logo-mk--inv" style="width:80px;height:80px;font-size:2.25rem">FG</div>
+      </div>
+    </div>
+  </div>
+</main>
 
-            const radius = size * 0.2237;
-
-            // White background
-            ctx.beginPath();
-            roundedRect(ctx, 0, 0, size, size, radius);
-            ctx.fillStyle = 'white';
-            ctx.fill();
-
-            // Draw "FG" text in gradient colors
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            const fontSize = size * 0.36;
-            ctx.font = `900 ${fontSize}px Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-
-            // Measure text to position F and G separately
-            const fWidth = ctx.measureText('F').width;
-            const gWidth = ctx.measureText('G').width;
-            const totalWidth = fWidth + gWidth;
-            const startX = (size - totalWidth) / 2;
-
-            // Draw F in pink
-            ctx.fillStyle = '#ff3da6';
-            ctx.textAlign = 'left';
-            ctx.fillText('F', startX, size / 2);
-
-            // Draw G in violet
-            ctx.fillStyle = '#8b5cf6';
-            ctx.fillText('G', startX + fWidth, size / 2);
-
-            triggerDownload(canvas, `badge-${size}.png`);
-        }
-
-        /**
-         * Render the full logo with all effects
-         * @param {number} size - The size in pixels
-         * @returns {HTMLCanvasElement}
-         */
-        function renderLogo(size) {
-            const canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size;
-            const ctx = canvas.getContext('2d');
-
-            const radius = size * 0.2237;
-
-            // Draw rounded rectangle with gradient fill
-            ctx.beginPath();
-            roundedRect(ctx, 0, 0, size, size, radius);
-            const gradient = ctx.createLinearGradient(0, 0, size, size);
-            gradient.addColorStop(0, '#ff3da6');
-            gradient.addColorStop(0.5, '#8b5cf6');
-            gradient.addColorStop(1, '#22d3ee');
-            ctx.fillStyle = gradient;
-            ctx.fill();
-
-            // Top-left radial highlight
-            ctx.beginPath();
-            roundedRect(ctx, 0, 0, size, size, radius);
-            ctx.clip();
-            const highlightGradient = ctx.createRadialGradient(
-                size * 0.2, size * 0.15, 0,
-                size * 0.2, size * 0.15, size * 0.4
-            );
-            highlightGradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-            highlightGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-            ctx.fillStyle = highlightGradient;
-            ctx.fillRect(0, 0, size, size);
-
-            // Diagonal shine stripe
-            ctx.save();
-            ctx.beginPath();
-            roundedRect(ctx, 0, 0, size, size, radius);
-            ctx.clip();
-            const shineGradient = ctx.createLinearGradient(0, 0, size, size);
-            shineGradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
-            shineGradient.addColorStop(0.4, 'rgba(255, 255, 255, 0)');
-            shineGradient.addColorStop(0.45, 'rgba(255, 255, 255, 0.15)');
-            shineGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.25)');
-            shineGradient.addColorStop(0.55, 'rgba(255, 255, 255, 0.15)');
-            shineGradient.addColorStop(0.6, 'rgba(255, 255, 255, 0)');
-            shineGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-            ctx.fillStyle = shineGradient;
-            ctx.fillRect(0, 0, size, size);
-            ctx.restore();
-
-            // Draw "FG" text - larger size (55% of container)
-            const fontSize = size * 0.55;
-            ctx.font = `900 ${fontSize}px Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-            ctx.textBaseline = 'middle';
-
-            // Measure text to position F and G separately
-            const fWidth = ctx.measureText('F').width;
-            const gWidth = ctx.measureText('G').width;
-            const gap = -size * 0.02; // Tight tracking
-            const totalWidth = fWidth + gWidth + gap;
-            const startX = (size - totalWidth) / 2;
-
-            // Draw F with pink glow
-            ctx.save();
-            ctx.shadowColor = 'rgba(255, 77, 148, 0.8)';
-            ctx.shadowBlur = size * 0.08;
-            ctx.fillStyle = '#FFD4E5';
-            ctx.textAlign = 'left';
-            ctx.fillText('F', startX, size / 2);
-            ctx.restore();
-
-            // Draw G with purple glow
-            ctx.save();
-            ctx.shadowColor = 'rgba(157, 92, 245, 0.8)';
-            ctx.shadowBlur = size * 0.08;
-            ctx.fillStyle = '#E8D4FF';
-            ctx.textAlign = 'left';
-            ctx.fillText('G', startX + fWidth + gap, size / 2);
-            ctx.restore();
-
-            return canvas;
-        }
-
-        /**
-         * Trigger download of a canvas as PNG
-         * @param {HTMLCanvasElement} canvas
-         * @param {string} filename
-         */
-        function triggerDownload(canvas, filename) {
-            const link = document.createElement('a');
-            link.download = filename;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }
-
-        /**
-         * Draw a rounded rectangle path
-         */
-        function roundedRect(ctx, x, y, width, height, radius) {
-            ctx.moveTo(x + radius, y);
-            ctx.lineTo(x + width - radius, y);
-            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-            ctx.lineTo(x + width, y + height - radius);
-            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-            ctx.lineTo(x + radius, y + height);
-            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-            ctx.lineTo(x, y + radius);
-            ctx.quadraticCurveTo(x, y, x + radius, y);
-            ctx.closePath();
-        }
-    </script>
-</body>
-
-</html>
+{{> footer}}
