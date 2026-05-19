@@ -136,6 +136,60 @@ const extractGeneratedAssets = (providerExecutions: ProviderExecution[]): Genera
     return assets;
 };
 
+interface EnrichmentMetric {
+    label: string;
+    value: string;
+    icon: string;
+}
+
+const extractEnrichmentMetrics = (executions: ProviderExecution[]): EnrichmentMetric[] => {
+    const merged: Record<string, unknown> = {};
+    for (const e of executions) {
+        if (getEffectiveStatus(e) === 'SUCCESS' && e.Metadata) {
+            Object.assign(merged, e.Metadata);
+        }
+    }
+
+    const metrics: EnrichmentMetric[] = [];
+    const n = (key: string) => {
+        const v = merged[key];
+        return typeof v === 'number' ? v : (typeof v === 'string' ? parseFloat(v) : undefined);
+    };
+    const s = (key: string) => {
+        const v = merged[key];
+        return typeof v === 'string' ? v : undefined;
+    };
+
+    const avgHr = n('avg_heart_rate');
+    if (avgHr !== undefined && !isNaN(avgHr)) metrics.push({ label: 'AVG HR', value: `${Math.round(avgHr)} bpm`, icon: '❤️' });
+
+    const maxHr = n('max_heart_rate');
+    if (maxHr !== undefined && !isNaN(maxHr)) metrics.push({ label: 'MAX HR', value: `${Math.round(maxHr)} bpm`, icon: '🔺' });
+
+    const minHr = n('min_heart_rate');
+    if (minHr !== undefined && !isNaN(minHr)) metrics.push({ label: 'MIN HR', value: `${Math.round(minHr)} bpm`, icon: '🔻' });
+
+    const effort = n('effort_score');
+    if (effort !== undefined && !isNaN(effort)) {
+        const band = s('effort_band');
+        metrics.push({ label: 'EFFORT', value: band ? `${Math.round(effort)}/100 · ${band}` : `${Math.round(effort)}/100`, icon: '⚡' });
+    }
+
+    const trimp = n('trimp');
+    if (trimp !== undefined && !isNaN(trimp)) metrics.push({ label: 'TRIMP', value: String(Math.round(trimp)), icon: '📈' });
+
+    const hoursRecover = n('hours_to_recover');
+    if (hoursRecover !== undefined && !isNaN(hoursRecover)) metrics.push({ label: 'RECOVER', value: `${Math.round(hoursRecover)}h`, icon: '🔄' });
+
+    const calories = n('calories_burned') ?? n('calories_kcal');
+    if (calories !== undefined && !isNaN(calories)) metrics.push({ label: 'CALORIES', value: `${Math.round(calories)} kcal`, icon: '🔥' });
+
+    const streak = n('current_streak_days');
+    if (streak !== undefined && !isNaN(streak)) metrics.push({ label: 'STREAK', value: `${Math.round(streak)}d`, icon: '🔥' });
+
+    return metrics;
+};
+
 const formatAssetType = (type: string): string => {
     const typeMap: Record<string, string> = {
         'ai_banner': 'AI Banner',
@@ -670,6 +724,28 @@ const ActivityDetailPage: React.FC = () => {
                         )}
                     </Stack>
                 )}
+
+                {/* Enrichment Metrics Slab */}
+                {(() => {
+                    const metrics = extractEnrichmentMetrics(providerExecutions);
+                    if (metrics.length === 0) return null;
+                    return (
+                        <>
+                            <div className="fg-band">
+                                <span className="fg-band__label">ENRICHMENT DATA</span>
+                                <span className="fg-band__right">{metrics.length} METRICS</span>
+                            </div>
+                            <div className="fg-hero-stats">
+                                {metrics.map((m) => (
+                                    <div key={m.label} className="fg-hero-stat">
+                                        <span className="fg-hero-stat__value" style={{ fontSize: '1.1rem' }}>{m.icon} {m.value}</span>
+                                        <span className="fg-hero-stat__label">{m.label}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    );
+                })()}
 
                 {/* Booster Details - Accordion */}
                 {providerExecutions.length > 0 && (
