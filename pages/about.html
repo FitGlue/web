@@ -1,86 +1,102 @@
 {{> header}}
 
 <main>
+<style>
+  /* ── Page heading ── */
+  .ph { padding: 56px 32px; max-width: 1280px; margin: 0 auto; }
+  .ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .ph__title { font-family: var(--fg-font-display); font-size: clamp(2.5rem, 7vw, 5rem); line-height: .9; letter-spacing: -.04em; text-transform: uppercase; margin: 14px 0; }
+  .ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* ── About prose block ── */
+  .about-wrap { padding: 0 32px 64px; max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 48px; }
+  .about__lede { font-family: var(--fg-font-display); font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -.015em; text-transform: uppercase; }
+  .about__lede .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .about__body { font-family: var(--fg-font-body); font-size: 1.0625rem; line-height: 1.65; color: var(--fg-paper); max-width: 720px; }
+  .about__body p { margin: 0 0 1rem; }
+  .about__body p:last-child { margin: 0; }
+  .about__body b { font-weight: 700; }
+  .about__body a { color: var(--fg-cyan); }
+
+  /* ── Dark band divider ── */
+  .dark-band { padding: 14px 32px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); border-top: var(--fg-rule-thin); display: flex; justify-content: space-between; align-items: center; }
+  .dark-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-paper); text-transform: uppercase; }
+  .dark-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+
+  /* ── Values grid ── */
+  .values-grid { padding: 0 32px 64px; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .value-card { padding: 28px; background: var(--fg-ink-2); display: flex; flex-direction: column; gap: 12px; }
+  .value-card__icon { font-size: 2rem; line-height: 1; }
+  .value-card__title { font-family: var(--fg-font-display); font-size: 1.25rem; letter-spacing: -.015em; text-transform: uppercase; }
+  .value-card__body { font-family: var(--fg-font-body); font-size: .9375rem; line-height: 1.55; color: var(--color-text-muted); }
+
+  /* ── CTA ── */
+  .about-cta { padding: 64px 32px; text-align: center; border-top: var(--fg-rule-thin); }
+  .about-cta__title { font-family: var(--fg-font-display); font-size: clamp(1.75rem, 4vw, 2.5rem); letter-spacing: -.025em; text-transform: uppercase; margin-bottom: 24px; }
+  .about-cta__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn-aurora { display: inline-flex; align-items: center; gap: 6px; padding: 14px 24px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; }
+
+  @media (max-width: 900px) {
+    .values-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .ph { padding: 40px 16px; }
+    .about-wrap { padding: 0 16px 48px; }
+    .values-grid { padding: 0 16px 48px; }
+    .about-cta { padding: 48px 16px; }
+  }
+</style>
+
   <!-- Hero -->
-  <section class="about-hero">
-    <div class="container">
-      <h1 class="text-center animate-on-scroll">About <span class="text-gradient">FitGlue</span></h1>
-      <p class="text-center tagline flow-caption-magic" style="font-size: 1.3rem; margin: var(--space-md) auto 0;">
-        ✨ Connect your apps. Make your data shine. ✨
-      </p>
-    </div>
-  </section>
+  <div class="ph">
+    <div class="ph__eyebrow">ABOUT FITGLUE</div>
+    <h1 class="ph__title">Built by athletes, <span class="gr">for athletes.</span></h1>
+  </div>
 
-  <!-- Mission -->
-  <section class="section">
-    <div class="fg-band fg-band--sm animate-on-scroll" style="margin-bottom:0">
-      <span class="fg-band__label">Our Mission</span>
-    </div>
-    <div class="container about-content fg-prose" style="padding-top:var(--space-lg)">
-      <div class="animate-on-scroll">
-        <p>We believe your fitness data should work for you, not against you. Too many athletes and fitness enthusiasts
-          spend precious time manually exporting, converting, and uploading their workout data between platforms.</p>
-        <p>FitGlue was born from frustration. Why should a Hevy strength workout require manual exports to appear on
-          Strava? Why can't heart rate data from Fitbit automatically enrich your activities? Why is everything so...
-          disconnected?</p>
-      </div>
-    </div>
-  </section>
+  <!-- Lede + story -->
+  <div class="about-wrap">
+    <p class="about__lede">FitGlue exists because <span class="gr">every fitness app holds your data hostage.</span> Hevy doesn't talk to Strava. Strava doesn't talk to Intervals. Garmin won't push to TrainingPeaks the way you want it. We were tired of copy-paste.</p>
 
-  <!-- What We're Building -->
-  <section class="section section-alt">
-    <div class="fg-band fg-band--sm fg-band--ink animate-on-scroll" style="margin-bottom:0">
-      <span class="fg-band__label">What We're Building</span>
+    <div class="about__body">
+      <p>Built in the open by two engineers who train too much and care about the receipts. We started because we wanted a single feed of every workout — from the gym, the trail, the road, the parkrun — annotated with everything we cared about. AI summaries that don't sound like spam. HR zones that match our own thresholds. Posts on Strava that actually said something.</p>
+      <p>FitGlue is the platform we couldn't find. <b>You connect anything. Boosters enrich it. Destinations get it.</b> No vendor lock-in — your data stays exportable forever, the architecture is documented, and the proto schemas are public.</p>
+      <p>We're not VC-backed. We're paid by the people on the Athlete plan. That keeps us honest. We don't sell your data anywhere — we don't need to. The business model is simple: if we make something useful enough, people will pay for it. That's all.</p>
     </div>
-    <div class="container about-content fg-prose" style="padding-top:var(--space-lg)">
-      <div class="animate-on-scroll">
-        <p>FitGlue connects the fitness apps that don't talk to each other. We bridge the gaps between
-          your workout tracker, your smartwatch, and the platforms where you share your achievements—making sure your
-          data is complete, enriched, and looking its best wherever it goes.</p>
-        <p>Think of it as the glue between your fitness apps—and the polish that makes everything shine.</p>
-      </div>
+
+    <div class="about__body">
+      <p>We believe the best fitness tools get out of the way. You train. We quietly move the data where it needs to go and add the context that makes it meaningful. You shouldn't need to think about which app talks to which, or export a CSV every Monday morning, or manually paste your heart rate zones into a Strava description.</p>
+      <p>That's the whole point of FitGlue. Set it once. Forget about it. Train harder.</p>
     </div>
-  </section>
+  </div>
 
   <!-- Values -->
-  <section class="section">
-    <div class="fg-band fg-band--sm animate-on-scroll" style="margin-bottom:0">
-      <span class="fg-band__label">Our Values</span>
+  <div class="dark-band">
+    <span class="dark-band__label">OUR VALUES</span>
+    <span class="dark-band__right">WHAT WE STAND FOR</span>
+  </div>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-card__icon">🔐</div>
+      <div class="value-card__title">Privacy First</div>
+      <div class="value-card__body">Your data is yours. We never store your passwords. We never sell your health data. You can disconnect and delete at any time — full stop.</div>
     </div>
-    <div class="container about-content" style="padding-top:var(--space-lg)">
-      <div class="animate-on-scroll">
-        <div class="feature-grid" style="grid-template-columns: 1fr;">
-          <div class="feature-card">
-            <h3>🔐 Privacy First</h3>
-            <p>Your data is yours. We never store your passwords. You can disconnect and delete at any
-              time.</p>
-          </div>
-
-          <div class="feature-card">
-            <h3>⚡ Automation That Works</h3>
-            <p>Set it up once, forget about it forever. Your activities flow automatically—no daily logins required.</p>
-          </div>
-
-          <div class="feature-card">
-            <h3>🎨 Thoughtful Design</h3>
-            <p>Fitness is fun. Your tools should be too. We obsess over the details so your experience is delightful.
-            </p>
-          </div>
-        </div>
-      </div>
+    <div class="value-card">
+      <div class="value-card__icon">⚡</div>
+      <div class="value-card__title">Automation That Works</div>
+      <div class="value-card__body">Set it up once, forget about it forever. Your activities flow automatically — no daily logins required, no babysitting, no surprises.</div>
     </div>
-  </section>
+    <div class="value-card">
+      <div class="value-card__icon">🔓</div>
+      <div class="value-card__title">No Lock-In</div>
+      <div class="value-card__body">The proto schemas are public. The architecture is documented. You can export everything. We earn your trust every month, or you leave — that's the deal.</div>
+    </div>
+  </div>
 
   <!-- CTA -->
-  <section class="cta-section">
-    <div class="container">
-      <div class="cta-content">
-        <h2 class="cta-title animate-on-scroll">Join Our <span class="text-gradient">Journey</span></h2>
-        <p class="cta-subtitle animate-on-scroll">Start your 30-day free Athlete trial. No credit card required.</p>
-        <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg animate-on-scroll">Get Started Free →</a>
-      </div>
-    </div>
-  </section>
+  <div class="about-cta">
+    <p class="about-cta__title">Join us on the <span class="gr">journey.</span></p>
+    <a href="/auth/register" class="btn-aurora">START FREE →</a>
+  </div>
 </main>
 
 {{> footer}}
