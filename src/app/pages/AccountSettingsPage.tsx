@@ -499,7 +499,6 @@ const AccountSettingsPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
-            </div>
 
             {/* Re-authentication Modal */}
             {firebaseUser && hasPasswordProvider && (

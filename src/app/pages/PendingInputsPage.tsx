@@ -4,14 +4,14 @@ import { InputsService } from '../services/InputsService';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { usePluginLookup } from '../hooks/usePluginLookup';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
-import { DataList } from '../components/data/DataList';
-import { Button, Pill, Paragraph, Heading, EmptyState, GlowCard, DashboardSummaryCard, useToast } from '../components/library/ui';
+import { Button, CountdownRing, useToast } from '../components/library/ui';
 import { Select, Textarea, Input, FormField, FileInput } from '../components/library/forms';
-import { Stack, PageLayout } from '../components/library/layout';
+import { PageLayout } from '../components/library/layout';
 import { PipelineConfig } from '../state/pipelinesState';
 import { HybridRaceTaggerInput } from '../components/forms/HybridRaceTaggerInput';
 import { PhotoUploadInput } from '../components/forms/PhotoUploadInput';
 import { WorkoutEntryInput } from '../components/forms/WorkoutEntryInput';
+import './PendingInputsPage.css';
 
 
 interface ParsedInputInfo {
@@ -38,8 +38,6 @@ const getInputDisplayInfo = (
     sourceId = sourceId.replace('source_', '');
 
     const sourceInfo = getSourceInfo(sourceId);
-    const sourceName = sourceInfo.name;
-    const sourceIcon = sourceInfo.icon;
     const pipelineName = pipeline?.name || pipeline?.id || '';
 
     let timestamp = '';
@@ -53,7 +51,7 @@ const getInputDisplayInfo = (
         });
     }
 
-    return { sourceName, sourceIcon, pipelineName, timestamp };
+    return { sourceName: sourceInfo.name, sourceIcon: sourceInfo.icon, pipelineName, timestamp };
 };
 
 const ACTIVITY_TYPE_ICONS: Record<string, string> = {
@@ -85,6 +83,20 @@ const formatSourceStartTime = (value: Date | undefined): string => {
     });
 };
 
+const isUrgent = (deadline?: Date | null): boolean => {
+    if (!deadline) return false;
+    return deadline.getTime() - Date.now() < 3600 * 1000;
+};
+
+const formatAutoDeadline = (deadline?: Date | null): string | null => {
+    if (!deadline) return null;
+    return deadline.toLocaleString(undefined, {
+        weekday: 'short',
+        hour: 'numeric',
+        minute: '2-digit',
+    });
+};
+
 
 const PendingInputsPage: React.FC = () => {
     const { inputs, loading, refresh } = useRealtimeInputs();
@@ -100,89 +112,50 @@ const PendingInputsPage: React.FC = () => {
     const handleInputChange = (activityId: string, field: string, value: string) => {
         setFormValues((prev) => ({
             ...prev,
-            [activityId]: {
-                ...(prev[activityId] || {}),
-                [field]: value,
-            },
+            [activityId]: { ...(prev[activityId] || {}), [field]: value },
         }));
     };
 
-    const getFieldValue = (activityId: string, field: string) => {
-        return formValues[activityId]?.[field] || '';
-    };
+    const getFieldValue = (activityId: string, field: string) =>
+        formValues[activityId]?.[field] || '';
 
     const handleSubmit = async (input: PendingInput) => {
         const activityId = input.activityId;
         const values = formValues[activityId] || {};
-
         const missingFields = input.requiredFields?.filter((f: string) => !values[f] || values[f].trim() === '');
         if (missingFields && missingFields.length > 0) {
             toast.warning('Missing Fields', `Please fill in: ${missingFields.map(f => formatLabel(f, input)).join(', ')}`);
             return;
         }
-
-        setSubmittingIds((prev) => {
-            const next = new Set(prev);
-            next.add(activityId);
-            return next;
-        });
-
+        setSubmittingIds(prev => { const next = new Set(prev); next.add(activityId); return next; });
         try {
-            const success = await InputsService.resolveInput({
-                activityId: input.activityId,
-                inputData: values,
-            });
-
+            const success = await InputsService.resolveInput({ activityId, inputData: values });
             if (success) {
                 toast.success('Input Resolved', 'Activity details submitted successfully');
                 refresh();
-                setFormValues((prev) => {
-                    const next = { ...prev };
-                    delete next[activityId];
-                    return next;
-                });
+                setFormValues(prev => { const next = { ...prev }; delete next[activityId]; return next; });
             }
         } catch (error) {
             toast.error('Submission Failed', 'Failed to submit details. Please try again.');
             console.error(error);
         } finally {
-            setSubmittingIds((prev) => {
-                const next = new Set(prev);
-                next.delete(activityId);
-                return next;
-            });
+            setSubmittingIds(prev => { const next = new Set(prev); next.delete(activityId); return next; });
         }
     };
 
     const handleNoExercises = async (activityId: string) => {
-        setSubmittingIds((prev) => {
-            const next = new Set(prev);
-            next.add(activityId);
-            return next;
-        });
-
+        setSubmittingIds(prev => { const next = new Set(prev); next.add(activityId); return next; });
         try {
-            const success = await InputsService.resolveInput({
-                activityId,
-                inputData: { workout_data: '[]' },
-            });
+            const success = await InputsService.resolveInput({ activityId, inputData: { workout_data: '[]' } });
             if (success) {
                 toast.success('Got it', 'Activity synced without exercise data');
                 refresh();
-                setFormValues((prev) => {
-                    const next = { ...prev };
-                    delete next[activityId];
-                    return next;
-                });
+                setFormValues(prev => { const next = { ...prev }; delete next[activityId]; return next; });
             }
         } catch {
             toast.error('Failed', 'Failed to submit. Please try again.');
         } finally {
-            setSubmittingIds((prev) => {
-                const next = new Set(prev);
-                next.delete(activityId);
-                return next;
-            });
+            setSubmittingIds(prev => { const next = new Set(prev); next.delete(activityId); return next; });
         }
     };
 
@@ -190,32 +163,18 @@ const PendingInputsPage: React.FC = () => {
         if (!confirm('Are you sure you want to dismiss this input request? The activity might remain unsynchronized.')) {
             return;
         }
-
-        setSubmittingIds((prev) => {
-            const next = new Set(prev);
-            next.add(activityId);
-            return next;
-        });
-
+        setSubmittingIds(prev => { const next = new Set(prev); next.add(activityId); return next; });
         try {
             const success = await InputsService.dismissInput(activityId);
             if (success) {
                 toast.success('Input Dismissed', 'The pending input has been dismissed');
                 refresh();
-                setFormValues((prev) => {
-                    const next = { ...prev };
-                    delete next[activityId];
-                    return next;
-                });
+                setFormValues(prev => { const next = { ...prev }; delete next[activityId]; return next; });
             }
         } catch {
             toast.error('Dismiss Failed', 'Failed to dismiss input. Please try again.');
         } finally {
-            setSubmittingIds((prev) => {
-                const next = new Set(prev);
-                next.delete(activityId);
-                return next;
-            });
+            setSubmittingIds(prev => { const next = new Set(prev); next.delete(activityId); return next; });
         }
     };
 
@@ -323,22 +282,41 @@ const PendingInputsPage: React.FC = () => {
     const formatLabel = (field: string, input?: PendingInput) => {
         const serverLabel = input?.displayConfig?.fieldLabels?.[field];
         if (serverLabel) return serverLabel;
-        return field
-            .split('_')
-            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(' ');
+        return field.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     };
+
+    const urgentCount = inputs.filter(i => isUrgent(i.autoDeadline)).length;
+
+    const headerStats = inputs.length > 0 ? (
+        <>
+            <div className="page-header-stat">
+                <span className="page-header-stat__value page-header-stat__value--gradient">
+                    {inputs.length}
+                </span>
+                <span className="page-header-stat__label">Pending</span>
+            </div>
+            {urgentCount > 0 && (
+                <div className="page-header-stat">
+                    <span className="page-header-stat__value" style={{ color: 'var(--fg-rose)' }}>
+                        {urgentCount}
+                    </span>
+                    <span className="page-header-stat__label">Urgent</span>
+                </div>
+            )}
+        </>
+    ) : undefined;
 
     return (
         <PageLayout
             title="Action Required"
+            headerStats={headerStats}
+            headerSubtitle="These activities are waiting on you. Fill in the missing info, or let the deadline tick down and we'll auto-populate where we can."
             headerActions={
                 <Button variant="ghost" size="sm" onClick={refresh} disabled={loading}>
                     {loading ? '…' : '⟲ REFRESH'}
                 </Button>
             }
         >
-            {/* Band */}
             <div className="fg-band">
                 <span className="fg-band__label">PENDING INPUTS</span>
                 <span className="fg-band__right">
@@ -346,185 +324,141 @@ const PendingInputsPage: React.FC = () => {
                 </span>
             </div>
 
-            {/* Content */}
-            <div style={{ padding: '1.5rem 2rem' }}>
-                <DashboardSummaryCard
-                    title="Pending Items"
-                    icon="⏳"
-                    showLink={false}
-                    footerText={inputs.length > 0 ? `${inputs.length} pending` : undefined}
-                >
-                    <DataList
-                        items={inputs}
-                        loading={loading}
-                        loadingMessage="Checking for pending items..."
-                        keyExtractor={(input) => input.id || input.activityId}
-                        renderItem={(input) => {
-                            const displayInfo = getInputDisplayInfo(input, pipelines, getSourceInfo);
-                            const isAutoPopulated = input.autoPopulated === true;
-                            const autoDeadline = input.autoDeadline ?? null;
-                            const enricherId = input.enricherProviderId || '';
-                            const enricherInfo = enrichers.find(e => e.id === enricherId.toLowerCase());
-                            const enricherName = enricherInfo?.name || (enricherId ? enricherId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'Unknown Enricher');
+            {!loading && inputs.length === 0 && (
+                <div className="pi-empty">
+                    <div className="pi-empty__icon">🎉</div>
+                    <div className="pi-empty__title">ALL CAUGHT UP</div>
+                    <p className="pi-empty__sub">No activities waiting for your input right now.</p>
+                    <Button variant="ghost" size="sm" onClick={refresh}>CHECK AGAIN</Button>
+                </div>
+            )}
 
-                            const getTimeRemaining = () => {
-                                if (!autoDeadline) return null;
-                                const now = new Date();
-                                const diff = autoDeadline.getTime() - now.getTime();
-                                if (diff <= 0) return 'Overdue';
-                                const hours = Math.floor(diff / (1000 * 60 * 60));
-                                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                                if (hours > 24) return `${Math.floor(hours / 24)}d ${hours % 24}h remaining`;
-                                if (hours > 0) return `${hours}h ${minutes}m remaining`;
-                                return `${minutes}m remaining`;
-                            };
+            {inputs.length > 0 && (
+                <div className="pi-grid">
+                    {inputs.map((input) => {
+                        const displayInfo = getInputDisplayInfo(input, pipelines, getSourceInfo);
+                        const isAutoPopulated = input.autoPopulated === true;
+                        const autoDeadline = input.autoDeadline ?? null;
+                        const urgent = isUrgent(autoDeadline);
+                        const enricherId = input.enricherProviderId || '';
+                        const enricherInfo = enrichers.find(e => e.id === enricherId.toLowerCase());
+                        const enricherName = enricherInfo?.name || (enricherId
+                            ? enricherId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+                            : 'Unknown Enricher');
+                        const isSubmitting = submittingIds.has(input.activityId);
+                        const deadlineLabel = formatAutoDeadline(autoDeadline);
+                        const deadlinePassed = autoDeadline ? new Date() > autoDeadline : false;
+                        const activityTypeRaw = input.sourceActivityType?.replace(/^ACTIVITY_TYPE_/, '') || '';
+                        const activityIcon = ACTIVITY_TYPE_ICONS[activityTypeRaw] || '🏅';
+                        const stampLabel = urgent ? '⚠ URGENT' : (activityTypeRaw || 'INPUT');
 
-                            return (
-                                <GlowCard
-                                    variant={isAutoPopulated ? 'awaiting' : 'needs-input'}
-                                    header={
-                                        <Stack direction="horizontal" align="center" justify="between">
-                                            <Stack direction="horizontal" align="center" gap="sm">
-                                                <Paragraph inline>{displayInfo.sourceIcon}</Paragraph>
-                                                <Stack gap="xs">
-                                                    <Paragraph inline>{displayInfo.sourceName}</Paragraph>
-                                                    {displayInfo.pipelineName && (
-                                                        <Paragraph inline muted size="sm">via {displayInfo.pipelineName}</Paragraph>
-                                                    )}
-                                                    {input.sourceDisplayName && (
-                                                        <Paragraph inline bold size="sm">
-                                                            {input.sourceActivityType
-                                                                ? (ACTIVITY_TYPE_ICONS[input.sourceActivityType.replace(/^ACTIVITY_TYPE_/, '')] || '🏅') + ' '
-                                                                : '🏅 '}
-                                                            {input.sourceDisplayName}
-                                                            {input.sourceStartTime && (
-                                                                <span style={{ fontWeight: 'normal', opacity: 0.7 }}>{' · '}{formatSourceStartTime(input.sourceStartTime)}</span>
-                                                            )}
-                                                        </Paragraph>
-                                                    )}
-                                                </Stack>
-                                            </Stack>
-                                            {isAutoPopulated ? (
-                                                <Pill variant="info">
-                                                    Awaiting {enricherName.charAt(0).toUpperCase() + enricherName.slice(1)} Results
-                                                </Pill>
-                                            ) : (
-                                                <Pill variant="warning">
-                                                    Needs Info
-                                                </Pill>
-                                            )}
-                                        </Stack>
-                                    }
-                                >
-                                    {isAutoPopulated && (
-                                        <Stack direction="horizontal" gap="sm">
-                                            <Paragraph inline>⏳</Paragraph>
-                                            <Stack gap="xs">
-                                                <Paragraph bold>Waiting for official results</Paragraph>
-                                                <Paragraph muted size="sm">
-                                                    Your activity was synced successfully. We&apos;re waiting for official {enricherName} results to be published.
-                                                </Paragraph>
-                                                {autoDeadline && (
-                                                    <Paragraph size="sm">
-                                                        {getTimeRemaining()}
-                                                    </Paragraph>
-                                                )}
-                                            </Stack>
-                                        </Stack>
-                                    )}
+                        const titleText = input.sourceDisplayName || input.activityId;
+                        const metaSource = displayInfo.sourceName;
+                        const metaTime = input.sourceStartTime ? formatSourceStartTime(input.sourceStartTime) : '';
+                        const metaPipeline = displayInfo.pipelineName;
 
-                                    {!isAutoPopulated && (
-                                        <Stack gap="md">
-                                            <Heading level={4}>
-                                                ✨ Complete the magic
-                                            </Heading>
-                                            {input.requiredFields?.map((field) => (
-                                                <FormField key={field} label={formatLabel(field)} htmlFor={`field-${field}`}>
-                                                    {renderField(input.activityId, field)}
-                                                </FormField>
-                                            ))}
-                                        </Stack>
-                                    )}
+                        const showForm = !isAutoPopulated || deadlinePassed;
 
-                                    {isAutoPopulated && autoDeadline && new Date() > autoDeadline && (
-                                        <Stack gap="md">
-                                            <Heading level={4}>
-                                                📝 Enter results manually
-                                            </Heading>
-                                            <Paragraph muted size="sm">
-                                                Automatic results weren&apos;t found. You can enter your results manually below.
-                                            </Paragraph>
-                                            {input.requiredFields?.map((field) => (
-                                                <FormField key={field} label={formatLabel(field)} htmlFor={`field-${field}`}>
-                                                    {renderField(input.activityId, field)}
-                                                </FormField>
-                                            ))}
-                                        </Stack>
-                                    )}
+                        return (
+                            <article key={input.id || input.activityId} className={`pi${urgent ? ' pi--urgent' : ''}`}>
+                                <div className="pi__head">
+                                    <CountdownRing
+                                        deadline={autoDeadline}
+                                        createdAt={input.createdAt}
+                                        size={80}
+                                    />
+                                    <div>
+                                        <div className="pi__title">
+                                            {activityIcon} {titleText}
+                                        </div>
+                                        {(metaSource || metaTime || metaPipeline) && (
+                                            <div className="pi__meta">
+                                                {metaSource}
+                                                {metaTime && ` · ${metaTime}`}
+                                                {metaPipeline && <> · VIA <b>{metaPipeline}</b></>}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <span className={`pi__stamp${urgent ? ' pi__stamp--urgent' : ''}`}>
+                                        {stampLabel}
+                                    </span>
+                                </div>
 
-                                    <Stack gap="sm">
-                                        {!isAutoPopulated || (autoDeadline && new Date() > autoDeadline) ? (
+                                <div className="pi__why">
+                                    <span className="pi__why-icon">
+                                        {isAutoPopulated ? '⏸' : '✨'}
+                                    </span>
+                                    <div>
+                                        {isAutoPopulated && !deadlinePassed ? (
                                             <>
-                                                <Button
-                                                    variant="primary"
-                                                    fullWidth
-                                                    onClick={() => handleSubmit(input)}
-                                                    disabled={submittingIds.has(input.activityId)}
-                                                >
-                                                    {submittingIds.has(input.activityId) ? '✨ Syncing...' : '✨ Complete & Sync'}
-                                                </Button>
-                                                {input.requiredFields?.some(f =>
-                                                    (input.displayConfig?.fieldTypes?.[f] ?? '') === 'workout_entry'
-                                                ) && (
-                                                    <Button
-                                                        variant="secondary"
-                                                        fullWidth
-                                                        onClick={() => handleNoExercises(input.activityId)}
-                                                        disabled={submittingIds.has(input.activityId)}
-                                                    >
-                                                        No exercises in this workout
-                                                    </Button>
-                                                )}
-                                                <Button
-                                                    variant="secondary"
-                                                    onClick={() => handleDismiss(input.activityId)}
-                                                    disabled={submittingIds.has(input.activityId)}
-                                                >
-                                                    Dismiss
-                                                </Button>
+                                                <b>{enricherName}</b> booster is waiting on official results.
+                                                We auto-poll — usually posted within a few hours.
+                                                {autoDeadline && <> Auto-populates by <b>{deadlineLabel}</b>.</>}
+                                            </>
+                                        ) : isAutoPopulated && deadlinePassed ? (
+                                            <>
+                                                Automatic results weren&apos;t found for <b>{enricherName}</b>.
+                                                Enter your results manually below.
                                             </>
                                         ) : (
-                                            <Button
-                                                variant="secondary"
-                                                onClick={() => handleDismiss(input.activityId)}
-                                                disabled={submittingIds.has(input.activityId)}
-                                            >
-                                                Don&apos;t wait - dismiss this
-                                            </Button>
+                                            <>
+                                                <b>Complete the missing info</b> so the pipeline can finish syncing this activity.
+                                            </>
                                         )}
-                                    </Stack>
+                                    </div>
+                                </div>
 
-                                    {input.createdAt && (
-                                        <Paragraph muted size="sm" centered>
-                                            Created: {input.createdAt.toLocaleString()}
-                                        </Paragraph>
+                                {showForm && (
+                                    <div className="pi__form">
+                                        {input.requiredFields?.map((field) => (
+                                            <FormField key={field} label={formatLabel(field, input)} htmlFor={`field-${field}-${input.activityId}`}>
+                                                {renderField(input.activityId, field)}
+                                            </FormField>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <div className="pi__cta">
+                                    {deadlineLabel && !deadlinePassed && (
+                                        <span className="pi__cta-meta">
+                                            Auto-populates {deadlineLabel} →
+                                        </span>
                                     )}
-                                </GlowCard>
-                            );
-                        }}
-
-                        emptyState={
-                            <EmptyState
-                                icon="🎉"
-                                title="All Caught Up!"
-                                description="There are no activities waiting for your input right now."
-                                actionLabel="Check Again"
-                                onAction={refresh}
-                            />
-                        }
-                    />
-                </DashboardSummaryCard>
-            </div>
+                                    {showForm && input.requiredFields?.some(f =>
+                                        (input.displayConfig?.fieldTypes?.[f] ?? '') === 'workout_entry'
+                                    ) && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleNoExercises(input.activityId)}
+                                            disabled={isSubmitting}
+                                        >
+                                            ⊘ NO EXERCISES
+                                        </Button>
+                                    )}
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleDismiss(input.activityId)}
+                                        disabled={isSubmitting}
+                                    >
+                                        {isAutoPopulated && !deadlinePassed ? "DON'T WAIT →" : '⊘ SKIP'}
+                                    </Button>
+                                    {showForm && (
+                                        <Button
+                                            size="sm"
+                                            onClick={() => handleSubmit(input)}
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? '…' : 'SUBMIT →'}
+                                        </Button>
+                                    )}
+                                </div>
+                            </article>
+                        );
+                    })}
+                </div>
+            )}
         </PageLayout>
     );
 };

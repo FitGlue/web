@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Stack, PageLayout } from '../components/library/layout';
 import { Button, Paragraph, Card, Heading, Link, CardSkeleton, Avatar, Pagination } from '../components/library/ui';
 import { FormField, Input, Textarea, Toggle } from '../components/library/forms';
@@ -7,6 +8,8 @@ import { useToast } from '../components/library/ui/Toast/Toast';
 import { ImageCropModal } from '../components/ImageCropModal';
 import { formatActivityType, formatActivitySource } from '../../types/pb/enum-formatters';
 import './ShowcaseManagementPage.css';
+
+type ShowcaseSection = 'profile' | 'activities' | 'theme' | 'links' | 'danger';
 
 interface ShowcaseActivity {
     showcaseId: string;
@@ -76,8 +79,23 @@ const CARD_STYLE_OPTIONS = [
 
 
 
+const NAV_ITEMS: { id: ShowcaseSection; icon: string; label: string }[] = [
+    { id: 'profile', icon: '👤', label: 'PROFILE' },
+    { id: 'activities', icon: '🏃', label: 'ACTIVITIES' },
+    { id: 'theme', icon: '🎨', label: 'THEME' },
+    { id: 'links', icon: '🔗', label: 'LINKS' },
+    { id: 'danger', icon: '⊗', label: 'DANGER ZONE' },
+];
+
 const ShowcaseManagementPage: React.FC = () => {
     const { success: showSuccess, error: showError } = useToast();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const activeSection = (searchParams.get('section') as ShowcaseSection) || 'profile';
+
+    const setSection = (section: ShowcaseSection) => {
+        searchParams.set('section', section);
+        setSearchParams(searchParams, { replace: true });
+    };
 
     // Profile state
     const [profile, setProfile] = useState<ShowcaseProfile | null>(null);
@@ -522,437 +540,469 @@ const ShowcaseManagementPage: React.FC = () => {
             backTo="/settings/account"
             backLabel="← ACCOUNT"
         >
-            <Stack gap="lg" style={{ padding: '0 0 2rem' }}>
-                <div className="fg-band">
-                    <span className="fg-band__label">SHOWCASE · PUBLIC PROFILE</span>
-                </div>
+            <div className="fg-band">
+                <span className="fg-band__label">SHOWCASE · PUBLIC PROFILE</span>
+            </div>
 
-                {/* Profile Picture & Basic Info */}
-                <Card className="showcase-mgmt__section">
-                    <Stack gap="md">
-                        <Heading level={3} className="showcase-mgmt__section-title">
-                            👤 Profile
-                        </Heading>
-                        <Stack direction="horizontal" className="showcase-mgmt__avatar-section" gap="md" align="center">
-                            <Avatar
-                                initial={profile.displayName?.charAt(0) || '?'}
-                                src={profile.profilePictureUrl || undefined}
-                                size="lg"
-                            />
-                            <Stack className="showcase-mgmt__avatar-actions" gap="xs">
-                                <Button variant="secondary" size="small" onClick={handlePictureUpload} disabled={uploading}>
-                                    {uploading ? '⏳ Uploading…' : 'Upload Photo'}
-                                </Button>
-                                <Paragraph size="sm" muted className="showcase-mgmt__avatar-hint">
-                                    {uploadStatus || 'WebP recommended • Max 5MB'}
-                                </Paragraph>
-                            </Stack>
-                        </Stack>
+            <div className="sm-layout">
+                <aside className="sm-subnav">
+                    {NAV_ITEMS.map(item => (
+                        <button
+                            key={item.id}
+                            className={`sm-subnav__link${activeSection === item.id ? ' sm-subnav__link--active' : ''}`}
+                            onClick={() => setSection(item.id)}
+                        >
+                            <span className="sm-subnav__icon">{item.icon}</span>
+                            {item.label}
+                        </button>
+                    ))}
+                </aside>
 
-                        <FormField label="Subtitle">
-                            <Input
-                                value={subtitle}
-                                onChange={(e) => setSubtitle(e.target.value.slice(0, 100))}
-                                placeholder="e.g. Marathon runner & trail enthusiast"
-                                maxLength={100}
-                            />
-                            <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{subtitle.length}/100</Paragraph>
-                        </FormField>
+                <div className="sm-panel">
 
-                        <FormField label="Bio">
-                            <Textarea
-                                value={bio}
-                                onChange={(e) => setBio(e.target.value.slice(0, 500))}
-                                placeholder="Tell visitors about your fitness journey..."
-                                maxLength={500}
-                            />
-                            <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{bio.length}/500</Paragraph>
-                        </FormField>
-
-                        <Stack className="showcase-mgmt__actions">
-                            <Button variant="primary" size="small" onClick={handleSaveProfile} disabled={saving}>
-                                {saving ? 'Saving…' : 'Save Profile'}
-                            </Button>
-                        </Stack>
-                    </Stack>
-                </Card>
-
-                {/* Links */}
-                <Card className="showcase-mgmt__section">
-                    <Stack gap="md">
-                        <Heading level={3} className="showcase-mgmt__section-title">
-                            🔗 Links ({links.length}/10)
-                        </Heading>
-
-                        {links.length > 0 && (
-                            <Stack gap="xs" className="showcase-mgmt__links-list">
-                                {links.map((link, i) => (
-                                    <Stack key={i} direction="horizontal" align="center" justify="between" className="showcase-mgmt__link-item">
-                                        <Stack gap="xs">
-                                            <Paragraph className="showcase-mgmt__link-label">{link.label}</Paragraph>
-                                            <Paragraph size="sm" muted className="showcase-mgmt__link-url">{link.url}</Paragraph>
-                                        </Stack>
-                                        <Button
-                                            variant="danger"
-                                            size="small"
-                                            onClick={() => handleRemoveLink(i)}
-                                            disabled={savingLinks}
-                                        >
-                                            ×
-                                        </Button>
-                                    </Stack>
-                                ))}
-                            </Stack>
-                        )}
-
-                        {links.length < 10 && (
-                            <Stack gap="sm" className="showcase-mgmt__add-link">
-                                <FormField label="Label">
-                                    <Input
-                                        value={newLinkLabel}
-                                        onChange={(e) => setNewLinkLabel(e.target.value.slice(0, 50))}
-                                        placeholder="e.g. My Strava"
-                                        maxLength={50}
-                                    />
-                                    <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{newLinkLabel.length}/50</Paragraph>
-                                </FormField>
-                                <FormField label="URL">
-                                    <Input
-                                        value={newLinkUrl}
-                                        onChange={(e) => setNewLinkUrl(e.target.value.slice(0, 200))}
-                                        placeholder="https://..."
-                                        maxLength={200}
-                                    />
-                                    <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{newLinkUrl.length}/200</Paragraph>
-                                </FormField>
-                                {linkError && (
-                                    <Paragraph className="showcase-mgmt__slug-error">{linkError}</Paragraph>
-                                )}
-                                <Stack className="showcase-mgmt__actions">
-                                    <Button
-                                        variant="primary"
-                                        size="small"
-                                        onClick={handleAddLink}
-                                        disabled={savingLinks || !newLinkLabel.trim() || !newLinkUrl.trim()}
-                                    >
-                                        {savingLinks ? 'Saving…' : 'Add Link'}
-                                    </Button>
-                                </Stack>
-                            </Stack>
-                        )}
-                    </Stack>
-                </Card>
-
-                {/* Bio Callouts */}
-                <Card className="showcase-mgmt__section">
-                    <Stack gap="md">
-                        <Heading level={3} className="showcase-mgmt__section-title">
-                            💬 Bio Callouts ({callouts.length}/10)
-                        </Heading>
-                        <Paragraph size="sm" muted>
-                            Short stat-chip lines shown under your bio. Great for quick facts like your location, height, or personal bests.
-                        </Paragraph>
-
-                        {callouts.length > 0 && (
-                            <Stack gap="xs" className="showcase-mgmt__links-list">
-                                {callouts.map((callout, i) => (
-                                    <Stack key={i} direction="horizontal" align="center" justify="between" className="showcase-mgmt__link-item">
-                                        <Paragraph className="showcase-mgmt__link-label">{callout.text}</Paragraph>
-                                        <Button
-                                            variant="danger"
-                                            size="small"
-                                            onClick={() => handleRemoveCallout(i)}
-                                            disabled={savingCallouts}
-                                        >
-                                            ×
-                                        </Button>
-                                    </Stack>
-                                ))}
-                            </Stack>
-                        )}
-
-                        {callouts.length < 10 && (
-                            <Stack gap="sm" className="showcase-mgmt__add-link">
-                                <FormField label="Callout text">
-                                    <Input
-                                        value={newCalloutText}
-                                        onChange={(e) => { setNewCalloutText(e.target.value.slice(0, 150)); setCalloutError(''); }}
-                                        placeholder="e.g. 🇬🇧 Nottinghamshire, UK"
-                                        maxLength={150}
-                                    />
-                                    <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{newCalloutText.length}/150</Paragraph>
-                                </FormField>
-                                {calloutError && (
-                                    <Paragraph className="showcase-mgmt__slug-error">{calloutError}</Paragraph>
-                                )}
-                                <Stack className="showcase-mgmt__actions">
-                                    <Button
-                                        variant="primary"
-                                        size="small"
-                                        onClick={handleAddCallout}
-                                        disabled={savingCallouts || !newCalloutText.trim()}
-                                    >
-                                        {savingCallouts ? 'Saving…' : 'Add Callout'}
-                                    </Button>
-                                </Stack>
-                            </Stack>
-                        )}
-                    </Stack>
-                </Card>
-
-                {/* Slug Management */}
-                <Card className="showcase-mgmt__section">
-                    <Stack gap="sm">
-                        <Heading level={3} className="showcase-mgmt__section-title">
-                            🔗 Public URL
-                        </Heading>
-                        <Stack direction="horizontal" className="showcase-mgmt__slug-row" gap="sm" align="center">
-                            <FormField label="">
-                                <Stack direction="horizontal" gap="xs" align="center">
-                                    <Paragraph inline className="showcase-mgmt__slug-prefix">fitglue.tech/showcase/profile/</Paragraph>
-                                    <Input
-                                        value={slug}
-                                        onChange={(e) => {
-                                            setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''));
-                                            setSlugError('');
-                                        }}
-                                        placeholder="your-slug"
-                                    />
-                                </Stack>
-                            </FormField>
-                            <Button
-                                variant="secondary"
-                                size="small"
-                                onClick={handleSaveSlug}
-                                disabled={savingSlug || slug === profile.slug}
-                            >
-                                {savingSlug ? 'Updating…' : 'Update Slug'}
-                            </Button>
-                        </Stack>
-                        {slugError && <Paragraph className="showcase-mgmt__slug-error">{slugError}</Paragraph>}
-                        {profileVisible ? (
-                            <Link
-                                href={`/showcase/profile/${encodeURIComponent(profile.slug)}`}
-                                external
-                                className="showcase-mgmt__view-link"
-                            >
-                                View public profile →
-                            </Link>
-                        ) : (
-                            <Paragraph inline className="showcase-mgmt__view-link showcase-mgmt__view-link--hidden">
-                                🔒 Profile is hidden — enable visibility in Preferences to share
-                            </Paragraph>
-                        )}
-                    </Stack>
-                </Card>
-
-                {/* Appearance / Theme */}
-                <Card className="showcase-mgmt__section">
-                    <Stack gap="md">
-                        <Heading level={3} className="showcase-mgmt__section-title">
-                            🎨 Appearance
-                        </Heading>
-
-                        {/* Theme Presets */}
-                        <FormField label="Theme">
-                            <Stack className="showcase-mgmt__theme-grid">
-                                {THEME_PRESETS.map(t => (
-                                    <button
-                                        key={t.id}
-                                        className={`showcase-mgmt__theme-swatch ${themeId === t.id ? 'showcase-mgmt__theme-swatch--active' : ''}`}
-                                        onClick={() => setThemeId(t.id)}
-                                        type="button"
-                                    >
-                                        <Stack
-                                            className="showcase-mgmt__theme-swatch-preview"
-                                            style={{ background: t.gradient }}
-                                        >
-                                            <Stack
-                                                className="showcase-mgmt__theme-swatch-accent"
-                                                style={{ background: t.accent }}
-                                            />
-                                        </Stack>
-                                        <Paragraph inline className="showcase-mgmt__theme-swatch-name">{t.name}</Paragraph>
-                                    </button>
-                                ))}
-                            </Stack>
-                        </FormField>
-
-                        {/* Custom Accent Colour */}
-                        <FormField label="Custom accent colour">
-                            <Stack direction="horizontal" gap="sm" align="center">
-                                <input
-                                    type="color"
-                                    value={customAccentColor || THEME_PRESETS.find(t => t.id === themeId)?.accent || '#ff3da6'}
-                                    onChange={(e) => setCustomAccentColor(e.target.value)}
-                                    className="showcase-mgmt__color-picker"
-                                />
-                                <Input
-                                    value={customAccentColor}
-                                    onChange={(e) => setCustomAccentColor(e.target.value)}
-                                    placeholder="Leave empty for theme default"
-                                    maxLength={7}
-                                />
-                                {customAccentColor && (
-                                    <Button variant="text" size="small" onClick={() => setCustomAccentColor('')}>
-                                        Reset
-                                    </Button>
-                                )}
-                            </Stack>
-                        </FormField>
-
-                        {/* Background Animation */}
-                        <FormField label="Background animation">
-                            <Stack className="showcase-mgmt__option-grid">
-                                {ANIMATION_OPTIONS.map(opt => (
-                                    <button
-                                        key={opt.id}
-                                        className={`showcase-mgmt__option-btn ${animationId === opt.id ? 'showcase-mgmt__option-btn--active' : ''}`}
-                                        onClick={() => setAnimationId(opt.id)}
-                                        type="button"
-                                    >
-                                        <Paragraph inline className="showcase-mgmt__option-icon">{opt.icon}</Paragraph>
-                                        <Paragraph inline className="showcase-mgmt__option-name">{opt.name}</Paragraph>
-                                    </button>
-                                ))}
-                            </Stack>
-                        </FormField>
-
-                        {/* Card Style */}
-                        <FormField label="Card style">
-                            <Stack className="showcase-mgmt__option-grid">
-                                {CARD_STYLE_OPTIONS.map(opt => (
-                                    <button
-                                        key={opt.id}
-                                        className={`showcase-mgmt__option-btn ${cardStyle === opt.id ? 'showcase-mgmt__option-btn--active' : ''}`}
-                                        onClick={() => setCardStyle(opt.id)}
-                                        type="button"
-                                    >
-                                        <Paragraph inline className="showcase-mgmt__option-name">{opt.name}</Paragraph>
-                                        <Paragraph size="sm" muted>{opt.desc}</Paragraph>
-                                    </button>
-                                ))}
-                            </Stack>
-                        </FormField>
-
-                        <Stack className="showcase-mgmt__actions">
-                            <Button variant="primary" size="small" onClick={handleSaveTheme} disabled={savingTheme}>
-                                {savingTheme ? 'Saving…' : 'Save Theme'}
-                            </Button>
-                        </Stack>
-                    </Stack>
-                </Card>
-
-                {/* Showcased Activities */}
-                <Card className="showcase-mgmt__section">
-                    <Stack gap="md">
-                        <Heading level={3} className="showcase-mgmt__section-title">
-                            🏆 Showcased Activities ({activities.filter(a => a.inProfile).length})
-                        </Heading>
-
-                        {activities.length === 0 ? (
-                            <Stack className="showcase-mgmt__empty" align="center">
-                                <Paragraph size="sm">
-                                    No activities have been showcased yet. Set up a pipeline with the Showcase destination to get started.
-                                </Paragraph>
-                            </Stack>
-                        ) : (
-                            <>
-                                <Stack className="showcase-mgmt__activity-list" gap="sm">
-                                    {paginatedActivities.map(activity => (
-                                        <Card key={activity.showcaseId} className="showcase-mgmt__activity-item">
-                                            <Stack direction="horizontal" align="center" justify="between">
-                                                <Stack className="showcase-mgmt__activity-info" gap="xs">
-                                                    <Paragraph className="showcase-mgmt__activity-title">
-                                                        {activity.title || 'Untitled Activity'}
-                                                    </Paragraph>
-                                                    <Paragraph size="sm" muted className="showcase-mgmt__activity-meta">
-                                                        {formatActivityType(activity.activityType)} • {formatActivitySource(activity.source)}
-                                                        {activity.startTime && ` • ${new Date(activity.startTime).toLocaleDateString()}`}
-                                                    </Paragraph>
-                                                </Stack>
-                                                <Stack className="showcase-mgmt__activity-actions">
-                                                    {activity.inProfile ? (
-                                                        <Button
-                                                            variant="danger"
-                                                            size="small"
-                                                            onClick={() => handleRemoveEntry(activity.showcaseId)}
-                                                        >
-                                                            Remove
-                                                        </Button>
-                                                    ) : (
-                                                        <Button
-                                                            variant="secondary"
-                                                            size="small"
-                                                            onClick={() => handleAddEntry(activity.showcaseId)}
-                                                        >
-                                                            Add to Profile
-                                                        </Button>
-                                                    )}
-                                                </Stack>
-                                            </Stack>
-                                        </Card>
-                                    ))}
-                                </Stack>
-                                {totalPages > 1 && (
-                                    <Stack className="showcase-mgmt__pagination">
-                                        <Pagination
-                                            currentPage={currentPage}
-                                            totalPages={totalPages}
-                                            totalItems={activities.length}
-                                            pageSize={pageSize}
-                                            onPageChange={setCurrentPage}
-                                            onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
-                                            showPageSize
-                                            pageSizeOptions={[10, 25, 50]}
-                                            compact
+                    {/* ── PROFILE ── */}
+                    {activeSection === 'profile' && (
+                        <>
+                            <Card className="showcase-mgmt__section">
+                                <Stack gap="md">
+                                    <Heading level={3} className="showcase-mgmt__section-title">
+                                        👤 Profile
+                                    </Heading>
+                                    <Stack direction="horizontal" className="showcase-mgmt__avatar-section" gap="md" align="center">
+                                        <Avatar
+                                            initial={profile.displayName?.charAt(0) || '?'}
+                                            src={profile.profilePictureUrl || undefined}
+                                            size="lg"
                                         />
+                                        <Stack className="showcase-mgmt__avatar-actions" gap="xs">
+                                            <Button variant="secondary" size="small" onClick={handlePictureUpload} disabled={uploading}>
+                                                {uploading ? '⏳ Uploading…' : 'Upload Photo'}
+                                            </Button>
+                                            <Paragraph size="sm" muted className="showcase-mgmt__avatar-hint">
+                                                {uploadStatus || 'WebP recommended • Max 5MB'}
+                                            </Paragraph>
+                                        </Stack>
                                     </Stack>
+
+                                    <FormField label="Subtitle">
+                                        <Input
+                                            value={subtitle}
+                                            onChange={(e) => setSubtitle(e.target.value.slice(0, 100))}
+                                            placeholder="e.g. Marathon runner & trail enthusiast"
+                                            maxLength={100}
+                                        />
+                                        <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{subtitle.length}/100</Paragraph>
+                                    </FormField>
+
+                                    <FormField label="Bio">
+                                        <Textarea
+                                            value={bio}
+                                            onChange={(e) => setBio(e.target.value.slice(0, 500))}
+                                            placeholder="Tell visitors about your fitness journey..."
+                                            maxLength={500}
+                                        />
+                                        <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{bio.length}/500</Paragraph>
+                                    </FormField>
+
+                                    <Stack className="showcase-mgmt__actions">
+                                        <Button variant="primary" size="small" onClick={handleSaveProfile} disabled={saving}>
+                                            {saving ? 'Saving…' : 'Save Profile'}
+                                        </Button>
+                                    </Stack>
+                                </Stack>
+                            </Card>
+
+                            <Card className="showcase-mgmt__section">
+                                <Stack gap="sm">
+                                    <Heading level={3} className="showcase-mgmt__section-title">
+                                        🔗 Public URL
+                                    </Heading>
+                                    <Stack direction="horizontal" className="showcase-mgmt__slug-row" gap="sm" align="center">
+                                        <FormField label="">
+                                            <Stack direction="horizontal" gap="xs" align="center">
+                                                <Paragraph inline className="showcase-mgmt__slug-prefix">fitglue.tech/showcase/profile/</Paragraph>
+                                                <Input
+                                                    value={slug}
+                                                    onChange={(e) => {
+                                                        setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''));
+                                                        setSlugError('');
+                                                    }}
+                                                    placeholder="your-slug"
+                                                />
+                                            </Stack>
+                                        </FormField>
+                                        <Button
+                                            variant="secondary"
+                                            size="small"
+                                            onClick={handleSaveSlug}
+                                            disabled={savingSlug || slug === profile.slug}
+                                        >
+                                            {savingSlug ? 'Updating…' : 'Update Slug'}
+                                        </Button>
+                                    </Stack>
+                                    {slugError && <Paragraph className="showcase-mgmt__slug-error">{slugError}</Paragraph>}
+                                    {profileVisible ? (
+                                        <Link
+                                            href={`/showcase/profile/${encodeURIComponent(profile.slug)}`}
+                                            external
+                                            className="showcase-mgmt__view-link"
+                                        >
+                                            View public profile →
+                                        </Link>
+                                    ) : (
+                                        <Paragraph inline className="showcase-mgmt__view-link showcase-mgmt__view-link--hidden">
+                                            🔒 Profile is hidden — enable visibility to share
+                                        </Paragraph>
+                                    )}
+                                </Stack>
+                            </Card>
+
+                            <Card className="showcase-mgmt__section">
+                                <Stack gap="md">
+                                    <Heading level={3} className="showcase-mgmt__section-title">
+                                        ⚡ Preferences
+                                    </Heading>
+                                    <Toggle
+                                        label="Default destination for new pipelines"
+                                        description="Automatically add Showcase as a destination when creating new pipelines"
+                                        checked={defaultDestination}
+                                        onChange={handleToggleDefaultDestination}
+                                        disabled={loadingPrefs}
+                                    />
+                                    <Toggle
+                                        label="Show photo gallery on public profile"
+                                        description="Display a gallery of activity route images on your public showcase profile page"
+                                        checked={showPhotoGallery}
+                                        onChange={handleTogglePhotoGallery}
+                                    />
+                                </Stack>
+                            </Card>
+                        </>
+                    )}
+
+                    {/* ── ACTIVITIES ── */}
+                    {activeSection === 'activities' && (
+                        <Card className="showcase-mgmt__section">
+                            <Stack gap="md">
+                                <Heading level={3} className="showcase-mgmt__section-title">
+                                    🏆 Showcased Activities ({activities.filter(a => a.inProfile).length})
+                                </Heading>
+
+                                {activities.length === 0 ? (
+                                    <Stack className="showcase-mgmt__empty" align="center">
+                                        <Paragraph size="sm">
+                                            No activities have been showcased yet. Set up a pipeline with the Showcase destination to get started.
+                                        </Paragraph>
+                                    </Stack>
+                                ) : (
+                                    <>
+                                        <Stack className="showcase-mgmt__activity-list" gap="sm">
+                                            {paginatedActivities.map(activity => (
+                                                <Card key={activity.showcaseId} className="showcase-mgmt__activity-item">
+                                                    <Stack direction="horizontal" align="center" justify="between">
+                                                        <Stack className="showcase-mgmt__activity-info" gap="xs">
+                                                            <Paragraph className="showcase-mgmt__activity-title">
+                                                                {activity.title || 'Untitled Activity'}
+                                                            </Paragraph>
+                                                            <Paragraph size="sm" muted className="showcase-mgmt__activity-meta">
+                                                                {formatActivityType(activity.activityType)} • {formatActivitySource(activity.source)}
+                                                                {activity.startTime && ` • ${new Date(activity.startTime).toLocaleDateString()}`}
+                                                            </Paragraph>
+                                                        </Stack>
+                                                        <Stack className="showcase-mgmt__activity-actions">
+                                                            {activity.inProfile ? (
+                                                                <Button
+                                                                    variant="danger"
+                                                                    size="small"
+                                                                    onClick={() => handleRemoveEntry(activity.showcaseId)}
+                                                                >
+                                                                    Remove
+                                                                </Button>
+                                                            ) : (
+                                                                <Button
+                                                                    variant="secondary"
+                                                                    size="small"
+                                                                    onClick={() => handleAddEntry(activity.showcaseId)}
+                                                                >
+                                                                    Add to Profile
+                                                                </Button>
+                                                            )}
+                                                        </Stack>
+                                                    </Stack>
+                                                </Card>
+                                            ))}
+                                        </Stack>
+                                        {totalPages > 1 && (
+                                            <Stack className="showcase-mgmt__pagination">
+                                                <Pagination
+                                                    currentPage={currentPage}
+                                                    totalPages={totalPages}
+                                                    totalItems={activities.length}
+                                                    pageSize={pageSize}
+                                                    onPageChange={setCurrentPage}
+                                                    onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
+                                                    showPageSize
+                                                    pageSizeOptions={[10, 25, 50]}
+                                                    compact
+                                                />
+                                            </Stack>
+                                        )}
+                                    </>
                                 )}
-                            </>
-                        )}
-                    </Stack>
-                </Card>
+                            </Stack>
+                        </Card>
+                    )}
 
-                {/* Default Destination Preference */}
-                <Card className="showcase-mgmt__section">
-                    <Stack gap="md">
-                        <Heading level={3} className="showcase-mgmt__section-title">
-                            ⚡ Preferences
-                        </Heading>
-                        <Toggle
-                            label="Profile visibility"
-                            description={profileVisible
-                                ? 'Your profile is publicly visible. Changes may take up to 5 minutes to reflect.'
-                                : 'Your profile is hidden — visitors will see a 404. Changes may take up to 5 minutes to reflect.'}
-                            checked={profileVisible}
-                            onChange={handleToggleVisibility}
-                        />
-                        <Toggle
-                            label="Default destination for new pipelines"
-                            description="Automatically add Showcase as a destination when creating new pipelines"
-                            checked={defaultDestination}
-                            onChange={handleToggleDefaultDestination}
-                            disabled={loadingPrefs}
-                        />
-                        <Toggle
-                            label="Show photo gallery on public profile"
-                            description="Display a gallery of activity route images on your public showcase profile page"
-                            checked={showPhotoGallery}
-                            onChange={handleTogglePhotoGallery}
-                        />
-                    </Stack>
-                </Card>
+                    {/* ── THEME ── */}
+                    {activeSection === 'theme' && (
+                        <Card className="showcase-mgmt__section">
+                            <Stack gap="md">
+                                <Heading level={3} className="showcase-mgmt__section-title">
+                                    🎨 Appearance
+                                </Heading>
 
-                {/* Image Crop Modal */}
-                {cropImage && (
-                    <ImageCropModal
-                        imageSrc={cropImage}
-                        onCropComplete={handleCropComplete}
-                        onClose={handleCropCancel}
-                    />
-                )}
-            </Stack>
+                                <FormField label="Theme">
+                                    <Stack className="showcase-mgmt__theme-grid">
+                                        {THEME_PRESETS.map(t => (
+                                            <button
+                                                key={t.id}
+                                                className={`showcase-mgmt__theme-swatch ${themeId === t.id ? 'showcase-mgmt__theme-swatch--active' : ''}`}
+                                                onClick={() => setThemeId(t.id)}
+                                                type="button"
+                                            >
+                                                <Stack
+                                                    className="showcase-mgmt__theme-swatch-preview"
+                                                    style={{ background: t.gradient }}
+                                                >
+                                                    <Stack
+                                                        className="showcase-mgmt__theme-swatch-accent"
+                                                        style={{ background: t.accent }}
+                                                    />
+                                                </Stack>
+                                                <Paragraph inline className="showcase-mgmt__theme-swatch-name">{t.name}</Paragraph>
+                                            </button>
+                                        ))}
+                                    </Stack>
+                                </FormField>
+
+                                <FormField label="Custom accent colour">
+                                    <Stack direction="horizontal" gap="sm" align="center">
+                                        <input
+                                            type="color"
+                                            value={customAccentColor || THEME_PRESETS.find(t => t.id === themeId)?.accent || '#ff3da6'}
+                                            onChange={(e) => setCustomAccentColor(e.target.value)}
+                                            className="showcase-mgmt__color-picker"
+                                        />
+                                        <Input
+                                            value={customAccentColor}
+                                            onChange={(e) => setCustomAccentColor(e.target.value)}
+                                            placeholder="Leave empty for theme default"
+                                            maxLength={7}
+                                        />
+                                        {customAccentColor && (
+                                            <Button variant="text" size="small" onClick={() => setCustomAccentColor('')}>
+                                                Reset
+                                            </Button>
+                                        )}
+                                    </Stack>
+                                </FormField>
+
+                                <FormField label="Background animation">
+                                    <Stack className="showcase-mgmt__option-grid">
+                                        {ANIMATION_OPTIONS.map(opt => (
+                                            <button
+                                                key={opt.id}
+                                                className={`showcase-mgmt__option-btn ${animationId === opt.id ? 'showcase-mgmt__option-btn--active' : ''}`}
+                                                onClick={() => setAnimationId(opt.id)}
+                                                type="button"
+                                            >
+                                                <Paragraph inline className="showcase-mgmt__option-icon">{opt.icon}</Paragraph>
+                                                <Paragraph inline className="showcase-mgmt__option-name">{opt.name}</Paragraph>
+                                            </button>
+                                        ))}
+                                    </Stack>
+                                </FormField>
+
+                                <FormField label="Card style">
+                                    <Stack className="showcase-mgmt__option-grid">
+                                        {CARD_STYLE_OPTIONS.map(opt => (
+                                            <button
+                                                key={opt.id}
+                                                className={`showcase-mgmt__option-btn ${cardStyle === opt.id ? 'showcase-mgmt__option-btn--active' : ''}`}
+                                                onClick={() => setCardStyle(opt.id)}
+                                                type="button"
+                                            >
+                                                <Paragraph inline className="showcase-mgmt__option-name">{opt.name}</Paragraph>
+                                                <Paragraph size="sm" muted>{opt.desc}</Paragraph>
+                                            </button>
+                                        ))}
+                                    </Stack>
+                                </FormField>
+
+                                <Stack className="showcase-mgmt__actions">
+                                    <Button variant="primary" size="small" onClick={handleSaveTheme} disabled={savingTheme}>
+                                        {savingTheme ? 'Saving…' : 'Save Theme'}
+                                    </Button>
+                                </Stack>
+                            </Stack>
+                        </Card>
+                    )}
+
+                    {/* ── LINKS ── */}
+                    {activeSection === 'links' && (
+                        <>
+                            <Card className="showcase-mgmt__section">
+                                <Stack gap="md">
+                                    <Heading level={3} className="showcase-mgmt__section-title">
+                                        🔗 Links ({links.length}/10)
+                                    </Heading>
+
+                                    {links.length > 0 && (
+                                        <Stack gap="xs" className="showcase-mgmt__links-list">
+                                            {links.map((link, i) => (
+                                                <Stack key={i} direction="horizontal" align="center" justify="between" className="showcase-mgmt__link-item">
+                                                    <Stack gap="xs">
+                                                        <Paragraph className="showcase-mgmt__link-label">{link.label}</Paragraph>
+                                                        <Paragraph size="sm" muted className="showcase-mgmt__link-url">{link.url}</Paragraph>
+                                                    </Stack>
+                                                    <Button
+                                                        variant="danger"
+                                                        size="small"
+                                                        onClick={() => handleRemoveLink(i)}
+                                                        disabled={savingLinks}
+                                                    >
+                                                        ×
+                                                    </Button>
+                                                </Stack>
+                                            ))}
+                                        </Stack>
+                                    )}
+
+                                    {links.length < 10 && (
+                                        <Stack gap="sm" className="showcase-mgmt__add-link">
+                                            <FormField label="Label">
+                                                <Input
+                                                    value={newLinkLabel}
+                                                    onChange={(e) => setNewLinkLabel(e.target.value.slice(0, 50))}
+                                                    placeholder="e.g. My Strava"
+                                                    maxLength={50}
+                                                />
+                                                <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{newLinkLabel.length}/50</Paragraph>
+                                            </FormField>
+                                            <FormField label="URL">
+                                                <Input
+                                                    value={newLinkUrl}
+                                                    onChange={(e) => setNewLinkUrl(e.target.value.slice(0, 200))}
+                                                    placeholder="https://..."
+                                                    maxLength={200}
+                                                />
+                                                <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{newLinkUrl.length}/200</Paragraph>
+                                            </FormField>
+                                            {linkError && (
+                                                <Paragraph className="showcase-mgmt__slug-error">{linkError}</Paragraph>
+                                            )}
+                                            <Stack className="showcase-mgmt__actions">
+                                                <Button
+                                                    variant="primary"
+                                                    size="small"
+                                                    onClick={handleAddLink}
+                                                    disabled={savingLinks || !newLinkLabel.trim() || !newLinkUrl.trim()}
+                                                >
+                                                    {savingLinks ? 'Saving…' : 'Add Link'}
+                                                </Button>
+                                            </Stack>
+                                        </Stack>
+                                    )}
+                                </Stack>
+                            </Card>
+
+                            <Card className="showcase-mgmt__section">
+                                <Stack gap="md">
+                                    <Heading level={3} className="showcase-mgmt__section-title">
+                                        💬 Bio Callouts ({callouts.length}/10)
+                                    </Heading>
+                                    <Paragraph size="sm" muted>
+                                        Short stat-chip lines shown under your bio. Great for quick facts like your location, height, or personal bests.
+                                    </Paragraph>
+
+                                    {callouts.length > 0 && (
+                                        <Stack gap="xs" className="showcase-mgmt__links-list">
+                                            {callouts.map((callout, i) => (
+                                                <Stack key={i} direction="horizontal" align="center" justify="between" className="showcase-mgmt__link-item">
+                                                    <Paragraph className="showcase-mgmt__link-label">{callout.text}</Paragraph>
+                                                    <Button
+                                                        variant="danger"
+                                                        size="small"
+                                                        onClick={() => handleRemoveCallout(i)}
+                                                        disabled={savingCallouts}
+                                                    >
+                                                        ×
+                                                    </Button>
+                                                </Stack>
+                                            ))}
+                                        </Stack>
+                                    )}
+
+                                    {callouts.length < 10 && (
+                                        <Stack gap="sm" className="showcase-mgmt__add-link">
+                                            <FormField label="Callout text">
+                                                <Input
+                                                    value={newCalloutText}
+                                                    onChange={(e) => { setNewCalloutText(e.target.value.slice(0, 150)); setCalloutError(''); }}
+                                                    placeholder="e.g. 🇬🇧 Nottinghamshire, UK"
+                                                    maxLength={150}
+                                                />
+                                                <Paragraph inline size="sm" muted className="showcase-mgmt__char-count">{newCalloutText.length}/150</Paragraph>
+                                            </FormField>
+                                            {calloutError && (
+                                                <Paragraph className="showcase-mgmt__slug-error">{calloutError}</Paragraph>
+                                            )}
+                                            <Stack className="showcase-mgmt__actions">
+                                                <Button
+                                                    variant="primary"
+                                                    size="small"
+                                                    onClick={handleAddCallout}
+                                                    disabled={savingCallouts || !newCalloutText.trim()}
+                                                >
+                                                    {savingCallouts ? 'Saving…' : 'Add Callout'}
+                                                </Button>
+                                            </Stack>
+                                        </Stack>
+                                    )}
+                                </Stack>
+                            </Card>
+                        </>
+                    )}
+
+                    {/* ── DANGER ZONE ── */}
+                    {activeSection === 'danger' && (
+                        <Card className="showcase-mgmt__section">
+                            <Stack gap="md">
+                                <Heading level={3} className="showcase-mgmt__section-title">
+                                    ⊗ Danger Zone
+                                </Heading>
+                                <Toggle
+                                    label="Profile visibility"
+                                    description={profileVisible
+                                        ? 'Your profile is publicly visible. Changes may take up to 5 minutes to reflect.'
+                                        : 'Your profile is hidden — visitors will see a 404. Changes may take up to 5 minutes to reflect.'}
+                                    checked={profileVisible}
+                                    onChange={handleToggleVisibility}
+                                />
+                            </Stack>
+                        </Card>
+                    )}
+
+                </div>
+            </div>
+
+            {cropImage && (
+                <ImageCropModal
+                    imageSrc={cropImage}
+                    onCropComplete={handleCropComplete}
+                    onClose={handleCropCancel}
+                />
+            )}
         </PageLayout>
     );
 };

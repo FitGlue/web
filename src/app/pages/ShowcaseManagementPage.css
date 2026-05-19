@@ -453,10 +453,99 @@
     color: var(--color-text);
 }
 
+/* ———————————————————— Sub-nav + panel layout ———————————————————— */
+
+.sm-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 600px;
+    border-top: var(--fg-rule-thin);
+}
+
+.sm-subnav {
+    border-right: var(--fg-rule-thin);
+    display: flex;
+    flex-direction: column;
+    background: var(--fg-ink);
+    padding: 16px 0;
+}
+
+.sm-subnav__link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    font-family: var(--fg-font-mono);
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    border-left: 3px solid transparent;
+    text-align: left;
+    cursor: pointer;
+    transition: color .15s, background .15s;
+    width: 100%;
+}
+
+.sm-subnav__link:hover {
+    color: var(--fg-paper);
+    background: var(--fg-ink-2);
+}
+
+.sm-subnav__link--active {
+    color: var(--fg-paper);
+    background: var(--fg-ink-2);
+    border-left: 3px solid;
+    border-image: var(--gradient-primary) 1;
+}
+
+.sm-subnav__icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.sm-panel {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
 /* ———————————————————— Responsive ———————————————————— */
 
-/* Mobile responsiveness */
 @media (max-width: 768px) {
+    .sm-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sm-subnav {
+        flex-direction: row;
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: var(--fg-rule-thin);
+        padding: 0;
+    }
+
+    .sm-subnav__link {
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .sm-subnav__link--active {
+        border-left: none;
+        border-image: none;
+        border-bottom: 3px solid var(--fg-pink);
+    }
+
+    .sm-panel {
+        padding: 20px;
+    }
+
     .showcase-mgmt__slug-row {
         flex-direction: column;
     }

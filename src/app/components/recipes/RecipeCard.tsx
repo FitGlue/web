@@ -1,17 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    ExpandableCard,
-    TransformationPreview,
-    Heading,
-    Paragraph,
-    Button,
-    Badge,
-    BoosterGrid,
-    FlowVisualization,
-    ConnectionStatusItem,
-} from '../library/ui';
-import { Stack } from '../library/layout';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 import type { Recipe } from '../../data/recipes';
 import type { IntegrationsSummary } from '../../state/integrationsState';
@@ -21,6 +9,8 @@ interface RecipeCardProps {
     recipe: Recipe;
     integrations: IntegrationsSummary | null;
 }
+
+const MAX_BOOSTERS_SHOWN = 4;
 
 export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, integrations }) => {
     const navigate = useNavigate();
@@ -34,138 +24,101 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, integrations }) 
 
     const allConnectionsReady = recipe.requiredConnections.length === 0 ||
         recipe.requiredConnections.every(isConnectionReady);
-
     const missingConnections = recipe.requiredConnections.filter(c => !isConnectionReady(c));
 
-    // Resolve from registry
     const sourcePlugin = sources.find(s => s.id === recipe.recommendedSource);
     const destPlugins = recipe.destinations.map(dId => destinations.find(d => d.id === dId));
+    const resolvedEnrichers = recipe.enricherProviderTypes.map(ept =>
+        enrichers.find(e => e.enricherProviderType === ept)
+    );
+    const shownEnrichers = resolvedEnrichers.slice(0, MAX_BOOSTERS_SHOWN);
+    const extraCount = resolvedEnrichers.length - MAX_BOOSTERS_SHOWN;
 
-    const handleImport = () => {
-        navigate(`/settings/pipelines?code=${recipe.importCode}`);
+    const handleUse = () => {
+        if (allConnectionsReady) {
+            navigate(`/settings/pipelines?code=${recipe.importCode}`);
+        } else {
+            navigate('/connections');
+        }
     };
 
-    const header = (
-        <Stack direction="horizontal" gap="md" align="center" className="recipe-card__header-content">
-            <Paragraph className="recipe-card__icon">{recipe.icon}</Paragraph>
-            <Stack gap="xs" className="recipe-card__titles">
-                <Heading level={3} className="recipe-card__title">{recipe.title}</Heading>
-                <Paragraph className="recipe-card__tagline">{recipe.tagline}</Paragraph>
-            </Stack>
-        </Stack>
-    );
-
-    // Source badge — same as EnrichedActivityCard
-    const sourceNode = (
-        <Badge variant="source" size="sm">
-            <Stack direction="horizontal" gap="xs" align="center">
-                <Paragraph inline>{sourcePlugin?.icon ?? '📱'}</Paragraph>
-                <Paragraph inline size="sm">{sourcePlugin?.name ?? recipe.recommendedSource}</Paragraph>
-            </Stack>
-        </Badge>
-    );
-
-    // Booster badges — same pattern as EnricherBadge
-    const boostersNode = (
-        <BoosterGrid emptyText="No boosters">
-            {recipe.enricherProviderTypes.map(ept => {
-                const enricher = enrichers.find(e => e.enricherProviderType === ept);
-                return (
-                    <Badge key={ept} variant="booster">
-                        <Stack direction="horizontal" gap="xs" align="center">
-                            <Paragraph inline>{enricher?.icon ?? '⚡'}</Paragraph>
-                            <Paragraph inline size="sm">{enricher?.name ?? `Booster #${ept}`}</Paragraph>
-                        </Stack>
-                    </Badge>
-                );
-            })}
-        </BoosterGrid>
-    );
-
-    // Destination badges — same as EnrichedActivityCard
-    const destinationNode = (
-        <Stack direction="horizontal" gap="xs">
-            {destPlugins.map((dp, idx) => (
-                <Badge key={recipe.destinations[idx]} variant="destination" size="sm">
-                    <Stack direction="horizontal" gap="xs" align="center">
-                        <Paragraph inline>{dp?.icon ?? '🚀'}</Paragraph>
-                        <Paragraph inline size="sm">{dp?.name ?? recipe.destinations[idx]}</Paragraph>
-                    </Stack>
-                </Badge>
-            ))}
-        </Stack>
+    const missingNames = missingConnections.map(c =>
+        registryIntegrations.find(i => i.id === c)?.name ?? c
     );
 
     return (
-        <ExpandableCard header={header} className="recipe-card">
-            <Stack gap="md">
-                {/* Before/After */}
-                <TransformationPreview
-                    before={recipe.transformation.before}
-                    after={recipe.transformation.after}
-                />
+        <article className={`rc${recipe.includesAthleteFeatures ? ' rc--featured' : ''}`}>
+            <div className="rc__head">
+                <div className="rc__head-grain" />
+                {recipe.includesAthleteFeatures && (
+                    <span className="rc__badge">✦ ATHLETE</span>
+                )}
+                <div className="rc__emoji">{recipe.icon}</div>
+                <div className="rc__name">{recipe.title}</div>
+                <div className="rc__sub">{recipe.tagline}</div>
+            </div>
 
-                {/* Pipeline flow: Source → Boosters → Destinations */}
-                <FlowVisualization
-                    source={sourceNode}
-                    center={boostersNode}
-                    destination={destinationNode}
-                />
+            <div className="rc__list">
+                <div className="rc__sep">SOURCE</div>
+                <div className="rc__row">
+                    <span className="rc__row-icon">{sourcePlugin?.icon ?? '📱'}</span>
+                    <span>
+                        {sourcePlugin?.name ?? recipe.recommendedSource}
+                        {recipe.sourceNote && <span className="dim"> · {recipe.sourceNote}</span>}
+                    </span>
+                </div>
 
-                {/* Footer: connections + CTA */}
-                <Stack gap="sm" align="center" className="recipe-card__footer">
-                    {recipe.includesAthleteFeatures && (
-                        <Badge className="recipe-card__athlete-badge">Includes Athlete features</Badge>
-                    )}
+                <div className="rc__sep">
+                    GLUE WITH <b>{recipe.enricherProviderTypes.length} BOOSTERS</b>
+                </div>
+                {shownEnrichers.map((e, i) => (
+                    <div key={recipe.enricherProviderTypes[i]} className="rc__row">
+                        <span className="rc__row-icon">{e?.icon ?? '⚡'}</span>
+                        <span><b>{e?.name ?? `Booster #${recipe.enricherProviderTypes[i]}`}</b></span>
+                    </div>
+                ))}
+                {extraCount > 0 && (
+                    <div className="rc__row rc__row--dim">
+                        <span className="rc__row-icon">+</span>
+                        <span>{extraCount} more boosters…</span>
+                    </div>
+                )}
 
-                    {recipe.requiredConnections.length > 0 && (
-                        <Stack direction="horizontal" gap="sm" wrap align="center">
-                            {recipe.requiredConnections.map(cId => {
-                                const integration = registryIntegrations.find(i => i.id === cId);
-                                return (
-                                    <ConnectionStatusItem
-                                        key={cId}
-                                        name={integration?.name ?? cId}
-                                        connected={isConnectionReady(cId)}
-                                        icon={integration?.icon}
-                                        iconType={integration?.iconType}
-                                        iconPath={integration?.iconPath}
-                                    />
-                                );
-                            })}
-                        </Stack>
-                    )}
+                <div className="rc__sep">↓ FAN OUT TO</div>
+                {destPlugins.map((dp, idx) => (
+                    <div key={recipe.destinations[idx]} className="rc__row">
+                        <span className="rc__row-icon">{dp?.icon ?? '🚀'}</span>
+                        <span>{dp?.name ?? recipe.destinations[idx]}</span>
+                    </div>
+                ))}
+            </div>
 
-                    {allConnectionsReady ? (
-                        <Button variant="primary" onClick={handleImport}>
-                            Add to My Pipelines →
-                        </Button>
-                    ) : (
-                        <Button variant="secondary" onClick={() => navigate('/connections')}>
-                            Connect {missingConnections.map(c =>
-                                registryIntegrations.find(i => i.id === c)?.name ?? c
-                            ).join(' & ')} first
-                        </Button>
-                    )}
+            <div className="rc__count">
+                <span className="rc__count-l">BOOSTERS INCLUDED</span>
+                <span className="rc__count-n">
+                    <span className="gr">{recipe.enricherProviderTypes.length}</span>
+                </span>
+            </div>
 
-                    <Paragraph size="sm" muted centered>
-                        {allConnectionsReady
-                            ? 'You can customise boosters and targets after importing.'
-                            : 'Set up the required connections, then come back to import.'}
-                    </Paragraph>
+            <button className={`rc__cta${!allConnectionsReady ? ' rc__cta--blocked' : ''}`} onClick={handleUse}>
+                <span>
+                    {allConnectionsReady
+                        ? 'USE THIS RECIPE'
+                        : `CONNECT ${missingNames.join(' & ')} FIRST`}
+                </span>
+                <span className="rc__cta-arrow">→</span>
+            </button>
 
-                    {recipe.guideSlug && (
-                        <a
-                            href={`/guides/${recipe.guideSlug}`}
-                            className="recipe-card__guide-link"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            📖 Read the full guide →
-                        </a>
-                    )}
-                </Stack>
-            </Stack>
-        </ExpandableCard>
+            {recipe.guideSlug && (
+                <a
+                    href={`/guides/${recipe.guideSlug}`}
+                    className="rc__guide"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    📖 READ THE GUIDE →
+                </a>
+            )}
+        </article>
     );
 };
