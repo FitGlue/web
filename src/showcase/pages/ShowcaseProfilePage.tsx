@@ -14,7 +14,6 @@ import {
 type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
 type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
 type ShowcaseLink = components['schemas']['ShowcaseLink'];
-type ShowcaseBioCallout = components['schemas']['ShowcaseBioCallout'];
 
 function getLinkEmoji(url: string | undefined): string {
   if (!url) return '🔗';
@@ -26,17 +25,6 @@ function getLinkEmoji(url: string | undefined): string {
   if (url.includes('tiktok.com')) return '🎵';
   if (url.includes('facebook.com')) return '👥';
   return '🔗';
-}
-
-function ProfileCallouts({ callouts }: { callouts: ShowcaseBioCallout[] }) {
-  if (!callouts || callouts.length === 0) return null;
-  return (
-    <div className="profile-callouts">
-      {callouts.filter(c => c.text).map((c, i) => (
-        <span key={i} className="profile-callout-chip">{c.text}</span>
-      ))}
-    </div>
-  );
 }
 
 function ProfileLinks({ links }: { links: ShowcaseLink[] }) {
@@ -180,105 +168,156 @@ export default function ShowcaseProfilePage() {
   const displayName = profile.displayName ?? 'Unknown Athlete';
   const initial = displayName.charAt(0).toUpperCase();
 
+  const sideStats = stats.slice(0, 4);
+  const summaryStats = stats;
+
   return (
     <div className="showcase-page">
       <ThemeProvider theme={profile.theme} />
       <canvas className="showcase-particles" id="showcase-particles" />
 
-      <div className="profile-content">
-        <div className="profile-container">
-          {/* Hero */}
-          <div className="profile-hero">
-            {profile.profilePictureUrl ? (
-              <div
-                className="profile-avatar profile-avatar--clickable"
-                onClick={() => setLightboxSrc(profile.profilePictureUrl!)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && setLightboxSrc(profile.profilePictureUrl!)}
-                aria-label={`View ${displayName}'s photo`}
-              >
-                <img src={profile.profilePictureUrl} alt={displayName} />
-              </div>
-            ) : (
-              <div className="profile-avatar" style={{ display: 'flex' }}>{initial}</div>
-            )}
-            <h1 className="profile-display-name">{displayName}</h1>
-            <p className="profile-subtitle">{profile.subtitle ?? 'FitGlue Athlete'}</p>
-            {profile.bio && (
-              <div className="profile-bio">{renderBio(profile.bio)}</div>
-            )}
-            {profile.callouts && profile.callouts.length > 0 && (
-              <ProfileCallouts callouts={profile.callouts} />
-            )}
-            {profile.links && profile.links.length > 0 && (
-              <ProfileLinks links={profile.links} />
-            )}
-          </div>
+      {/* ── Top bar ── */}
+      <div className="sp-bar">
+        <a href="/" className="sp-bar__logo">
+          <span style={{ background: 'linear-gradient(135deg,#ff3da6,#8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Fit</span>Glue
+        </a>
+        <div className="sp-bar__crumb">SHOWCASE · <b>{displayName.toUpperCase()}</b></div>
+        <div className="sp-bar__actions">
+          <button
+            className="fg-button fg-button--ghost fg-button--sm"
+            onClick={() => navigator.share?.({ title: displayName, url: window.location.href }).catch(() => {})}
+          >
+            SHARE PROFILE
+          </button>
+        </div>
+      </div>
 
-          {/* Stats */}
-          {stats.length > 0 && (
-            <div className="profile-stats">
-              {stats.map((s, i) => (
-                <div key={i} className="stat-card">
-                  <div className={`stat-value gradient-${s.gradient}`}>{s.value}</div>
-                  <div className="stat-label">{s.label}</div>
-                </div>
+      {/* ── Hero 2-column ── */}
+      <section className="sp-hero">
+        {/* Main: avatar + name + bio + links */}
+        <div className="sp-hero__main">
+          {profile.profilePictureUrl ? (
+            <div
+              className="sp-avatar-sq"
+              onClick={() => setLightboxSrc(profile.profilePictureUrl!)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && setLightboxSrc(profile.profilePictureUrl!)}
+              aria-label={`View ${displayName}'s photo`}
+            >
+              <img src={profile.profilePictureUrl} alt={displayName} />
+            </div>
+          ) : (
+            <div className="sp-avatar-sq">{initial}</div>
+          )}
+
+          <h1 className="sp-name">{displayName}</h1>
+          {profile.subtitle && (
+            <div className="sp-name__handle">{profile.subtitle}</div>
+          )}
+
+          {profile.bio && (
+            <div className="sp-bio">{renderBio(profile.bio)}</div>
+          )}
+
+          {profile.callouts && profile.callouts.length > 0 && (
+            <div className="sp-stamps">
+              {profile.callouts.filter(c => c.text).map((c, i) => (
+                <span key={i} className="sp-stamp">{c.text}</span>
               ))}
             </div>
           )}
 
-          {/* Photo Gallery — shown when enabled and entries have route thumbnails */}
-          {profile.showPhotoGallery && (() => {
-            const thumbEntries = entries.filter((e) => e.routeThumbnailUrl);
-            if (thumbEntries.length === 0) return null;
-            return (
-              <div className="profile-photo-gallery">
-                <h2 className="section-title">📷 Activity Gallery</h2>
-                <div className="profile-photo-gallery-grid">
-                  {thumbEntries.slice(0, 12).map((entry) => (
-                    <a
-                      key={entry.showcaseId}
-                      href={`/showcase/activity/${entry.showcaseId}`}
-                      className="profile-photo-gallery-item"
-                    >
-                      <img src={entry.routeThumbnailUrl!} alt={entry.title ?? 'Activity'} loading="lazy" />
-                      <div className="profile-photo-gallery-caption">{entry.title}</div>
-                    </a>
-                  ))}
+          {profile.links && profile.links.length > 0 && (
+            <div className="sp-actions">
+              <ProfileLinks links={profile.links} />
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar: mini stats 2×2 */}
+        {sideStats.length > 0 && (
+          <div className="sp-hero__side">
+            <div className="sp-mini-stats">
+              {sideStats.map((s, i) => (
+                <div key={i} className="sp-mini-stat">
+                  <div className="sp-mini-stat__n">{s.value}</div>
+                  <div className="sp-mini-stat__l">{s.label}</div>
                 </div>
-              </div>
-            );
-          })()}
-
-          {/* Activity List */}
-          <ProfileActivityList
-            entries={entries}
-            hasMore={hasMore}
-            loadingMore={loadingMore}
-            onLoadMore={loadMore}
-          />
-
-          {/* CTA */}
-          <div className="showcase-cta glass-card">
-            <div className="cta-content">
-              <h3>Want to enhance your own activities?</h3>
-              <p>
-                FitGlue automatically enriches your workouts with muscle heatmaps, heart rate
-                analysis, and beautiful shareable summaries.
-              </p>
-              <a href="/" className="btn-gradient">Try FitGlue Free →</a>
+              ))}
             </div>
           </div>
+        )}
+      </section>
 
-          {/* Attribution */}
-          <div className="showcase-attribution">
-            <span>Powered by</span>
-            <a href="/" className="fitglue-logo">
-              <span className="fit">Fit</span><span className="glue">Glue</span>
-            </a>
-          </div>
+      {/* ── Summary stat bar ── */}
+      {summaryStats.length > 0 && (
+        <div className="sp-summary" style={{ gridTemplateColumns: `repeat(${Math.min(summaryStats.length, 5)}, 1fr)` }}>
+          {summaryStats.map((s, i) => (
+            <div key={i}>
+              <div className="sp-summary__n">{s.value}</div>
+              <div className="sp-summary__l">{s.label}</div>
+            </div>
+          ))}
         </div>
+      )}
+
+      {/* ── Photo gallery ── */}
+      {profile.showPhotoGallery && (() => {
+        const thumbEntries = entries.filter((e) => e.routeThumbnailUrl);
+        if (thumbEntries.length === 0) return null;
+        return (
+          <>
+            <div className="sp-section-head">
+              <h2>📷 Activity Gallery</h2>
+              <span className="sp-section-head__right">{thumbEntries.length} PHOTOS</span>
+            </div>
+            <div className="sp-acts">
+              {thumbEntries.slice(0, 12).map((entry) => (
+                <a
+                  key={entry.showcaseId}
+                  href={`/showcase/activity/${entry.showcaseId}`}
+                  className="sp-act"
+                >
+                  <img
+                    src={entry.routeThumbnailUrl!}
+                    alt={entry.title ?? 'Activity'}
+                    loading="lazy"
+                    className="sp-act__thumb"
+                  />
+                  <div className="sp-act__title">{entry.title}</div>
+                </a>
+              ))}
+            </div>
+          </>
+        );
+      })()}
+
+      {/* ── Activity list ── */}
+      <div className="sp-section-head">
+        <h2>🏆 Activities</h2>
+        <span className="sp-section-head__right">{profile.totalActivities ?? 0} TOTAL</span>
+      </div>
+      <ProfileActivityList
+        entries={entries}
+        hasMore={hasMore}
+        loadingMore={loadingMore}
+        onLoadMore={loadMore}
+      />
+
+      {/* ── CTA ── */}
+      <div className="sp-cta">
+        <div>
+          <h3>Want to enhance your own activities?</h3>
+          <p>FitGlue automatically enriches your workouts with AI banners, heart rate analysis, and beautiful shareable summaries.</p>
+        </div>
+        <a href="/" className="sp-cta__btn">START YOUR SHOWCASE →</a>
+      </div>
+
+      {/* ── Attribution ── */}
+      <div className="sp-attr">
+        <span>Powered by</span>
+        <a href="/">FitGlue</a>
       </div>
 
       {/* Lightbox */}

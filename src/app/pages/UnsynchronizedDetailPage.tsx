@@ -1,17 +1,20 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { pipelineRunsAtom } from '../state/activitiesState';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout } from '../components/library/layout/PageLayout';
-import { Card } from '../components/library/ui/Card';
-import { KeyValue } from '../components/library/ui/KeyValue';
-import { Text } from '../components/library/ui/Text';
+import { Code, IdBadge } from '../components/library/ui';
 import { ExecutionStepTrace } from '../components/ExecutionStepTrace';
+import { ExecutionStepStatus } from '../../types/pb/models/pipeline/execution';
+import { useNerdMode } from '../state/NerdModeContext';
 import '../components/ExecutionStepTrace.css';
+import './RunDetail.css';
 
 const UnsynchronizedDetailPage: React.FC = () => {
     const { pipelineExecutionId } = useParams<{ pipelineExecutionId: string }>();
+    const { isNerdMode, toggleNerdMode } = useNerdMode();
+    const [activeTab, setActiveTab] = useState<'trace' | 'json'>('trace');
 
     const { loading } = useRealtimePipelineRuns(true, 50);
     const [pipelineRuns] = useAtom(pipelineRunsAtom);
@@ -24,38 +27,198 @@ const UnsynchronizedDetailPage: React.FC = () => {
     if (!loading && !run) {
         return (
             <PageLayout title="Not Found" backTo="/activities?tab=unsynchronized" backLabel="Unsynchronized Activities">
-                <Text variant="muted">Pipeline execution not found</Text>
+                <div style={{ padding: '3rem 2rem', textAlign: 'center' }}>
+                    Pipeline execution not found.
+                </div>
             </PageLayout>
         );
     }
 
+    const steps = run?.steps ?? [];
+    const stepCount = steps.length;
+    const errorCount = steps.filter(s => s.status === ExecutionStepStatus.EXECUTION_STEP_STATUS_FAILED).length;
+    const okCount = steps.filter(s =>
+        s.status === ExecutionStepStatus.EXECUTION_STEP_STATUS_OK ||
+        s.status === ExecutionStepStatus.EXECUTION_STEP_STATUS_PASS
+    ).length;
+    const totalMs = steps.reduce((sum, s) => sum + (s.durationMs ?? 0), 0);
+    const sourceLabel = run?.source?.replace(/^SOURCE_/, '').replace(/_/g, ' ').toLowerCase() ?? '—';
+
     return (
-        <PageLayout
-            title="Unsynchronized Execution"
-            backTo="/activities?tab=unsynchronized"
-            backLabel="Unsynchronized Activities"
-        >
-            <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
-                <span className="fg-band__label">PIPELINE TRACE</span>
-                <span className="fg-band__right">UNSYNCHRONIZED</span>
+        <PageLayout backTo="/activities?tab=unsynchronized" backLabel="← UNSYNCHRONIZED">
+            {/* ── Heading slab ── */}
+            <div className="rd-head">
+                <div>
+                    <div className="rd-head__crumb">
+                        <a href="/app/activities?tab=unsynchronized">ACTIVITIES</a>
+                        <span>›</span>
+                        <b>PIPELINE TRACE</b>
+                    </div>
+                    <div className="rd-head__title">
+                        {run?.title || 'Unsynchronized Execution'}{' '}
+                        <span className="gr">⚠</span>
+                    </div>
+                    <div className="rd-head__sub">
+                        {sourceLabel && <>{sourceLabel} · </>}
+                        <code>{pipelineExecutionId}</code>
+                    </div>
+                </div>
+                <div className="rd-head__actions">
+                    {/* placeholder for future replay/skip actions */}
+                </div>
             </div>
 
-            <Card>
-                <KeyValue label="Execution ID" value={pipelineExecutionId} format="code" />
-                {run?.title && <KeyValue label="Activity" value={run.title} />}
-                {run?.source && (
-                    <KeyValue
-                        label="Source"
-                        value={run.source.replace(/^SOURCE_/, '').replace(/_/g, ' ').toLowerCase()}
-                    />
-                )}
-                <Text variant="muted">
-                    This pipeline execution did not result in a synchronized activity.
-                    Review the trace below to understand why.
-                </Text>
-            </Card>
+            {/* ── Summary stat bar ── */}
+            <div className="rd-summary" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+                <div>
+                    <div className={`rd-summary__n${errorCount > 0 ? ' rd-summary__n--err' : ' rd-summary__n--ok'}`}>
+                        {errorCount > 0 ? '✗ FAILED' : '— TRACE'}
+                    </div>
+                    <div className="rd-summary__l">Final Status</div>
+                </div>
+                <div>
+                    <div className="rd-summary__n rd-summary__n--gr">{stepCount}</div>
+                    <div className="rd-summary__l">Steps</div>
+                </div>
+                <div>
+                    <div className={`rd-summary__n${errorCount > 0 ? ' rd-summary__n--err' : ''}`}>{errorCount}</div>
+                    <div className="rd-summary__l">Errors</div>
+                </div>
+                <div>
+                    <div className="rd-summary__n" style={{ fontSize: '1.25rem' }}>
+                        {totalMs > 0 ? (totalMs < 1000 ? `${totalMs}ms` : `${(totalMs / 1000).toFixed(1)}s`) : '—'}
+                    </div>
+                    <div className="rd-summary__l">Total Runtime</div>
+                </div>
+            </div>
 
-            <ExecutionStepTrace steps={run?.steps ?? []} isLoading={loading && !run} />
+            {/* ── Toolbar ── */}
+            <div className="rd-tools">
+                <button
+                    className={`rd-tools__tab${activeTab === 'trace' ? ' rd-tools__tab--active' : ''}`}
+                    onClick={() => setActiveTab('trace')}
+                >
+                    TRACE
+                    <span className="count">{stepCount} STEPS</span>
+                </button>
+                {isNerdMode && (
+                    <button
+                        className={`rd-tools__tab${activeTab === 'json' ? ' rd-tools__tab--active' : ''}`}
+                        onClick={() => setActiveTab('json')}
+                    >
+                        RAW JSON
+                    </button>
+                )}
+                <div className="rd-tools__spacer" />
+                <button
+                    className={`rd-tools__toggle${isNerdMode ? ' on' : ''}`}
+                    onClick={toggleNerdMode}
+                >
+                    NERD MODE
+                    <span className="rd-tools__switch" />
+                </button>
+            </div>
+
+            {/* ── Main 2-column layout ── */}
+            <div className="rd-main">
+                {/* Left rail: step list */}
+                <aside className="rd-rail">
+                    <div className="rd-rail__head">
+                        STEPS <b>{stepCount}</b>
+                    </div>
+                    {[...steps]
+                        .sort((a, b) => a.ordinal - b.ordinal)
+                        .map(step => {
+                            const isOk = step.status === ExecutionStepStatus.EXECUTION_STEP_STATUS_OK
+                                || step.status === ExecutionStepStatus.EXECUTION_STEP_STATUS_PASS;
+                            const isFailed = step.status === ExecutionStepStatus.EXECUTION_STEP_STATUS_FAILED;
+                            const isSkipped = step.status === ExecutionStepStatus.EXECUTION_STEP_STATUS_SKIPPED;
+                            const pillClass = isOk ? 'rd-step-row__pill--ok'
+                                : isFailed ? 'rd-step-row__pill--err'
+                                : isSkipped ? 'rd-step-row__pill--skip'
+                                : 'rd-step-row__pill--queue';
+                            const pillLabel = isOk ? 'OK' : isFailed ? 'ERR' : isSkipped ? 'SKIP' : '···';
+                            const ms = step.durationMs && step.durationMs > 0
+                                ? step.durationMs < 1000 ? `${step.durationMs}ms` : `${(step.durationMs / 1000).toFixed(1)}s`
+                                : '';
+                            return (
+                                <div key={step.id} className={`rd-step-row${isFailed ? ' active' : ''}`}>
+                                    <span className="rd-step-row__n">{String(step.ordinal).padStart(2, '0')}</span>
+                                    <div>
+                                        <div className="rd-step-row__title">{step.displayName || `Step ${step.ordinal}`}</div>
+                                        {ms && <div className="rd-step-row__time">{ms}</div>}
+                                    </div>
+                                    <span className={`rd-step-row__pill ${pillClass}`}>{pillLabel}</span>
+                                </div>
+                            );
+                        })}
+                </aside>
+
+                {/* Right body */}
+                <div className="rd-body">
+                    {activeTab === 'trace' && (
+                        <>
+                            {/* Execution IDs */}
+                            <div className="rd-providers-head">EXECUTION DETAILS</div>
+                            <div className="rd-ids">
+                                <div className="rd-ids__row">
+                                    <span className="rd-ids__label">EXECUTION ID</span>
+                                    <IdBadge id={pipelineExecutionId ?? ''} showChars={16} copyable />
+                                </div>
+                                {run?.title && (
+                                    <div className="rd-ids__row">
+                                        <span className="rd-ids__label">ACTIVITY</span>
+                                        <span style={{ fontFamily: 'var(--fg-font-body)', color: 'var(--fg-paper)' }}>{run.title}</span>
+                                    </div>
+                                )}
+                                {run?.source && (
+                                    <div className="rd-ids__row">
+                                        <span className="rd-ids__label">SOURCE</span>
+                                        <span style={{ fontFamily: 'var(--fg-font-mono)', color: 'var(--fg-paper)', fontSize: '0.8125rem' }}>
+                                            {sourceLabel}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Summary stats */}
+                            <div className="rd-kvgrid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+                                <div>
+                                    <div className="rd-kvgrid__l">OK STEPS</div>
+                                    <div className="rd-kvgrid__v" style={{ color: 'var(--fg-green)' }}>{okCount}</div>
+                                </div>
+                                <div>
+                                    <div className="rd-kvgrid__l">FAILED STEPS</div>
+                                    <div className="rd-kvgrid__v" style={{ color: errorCount > 0 ? 'var(--fg-rose)' : undefined }}>{errorCount}</div>
+                                </div>
+                                <div>
+                                    <div className="rd-kvgrid__l">TOTAL RUNTIME</div>
+                                    <div className="rd-kvgrid__v">
+                                        {totalMs > 0 ? (totalMs < 1000 ? `${totalMs}ms` : `${(totalMs / 1000).toFixed(1)}s`) : '—'}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Full trace */}
+                            <div className="rd-providers-head">
+                                STEP TRACE <b>{stepCount} STEPS</b>
+                            </div>
+                            <div style={{ padding: '16px 32px' }}>
+                                <ExecutionStepTrace steps={steps} isLoading={loading && !run} />
+                            </div>
+                        </>
+                    )}
+
+                    {activeTab === 'json' && isNerdMode && (
+                        <>
+                            <div className="rd-providers-head">RAW JSON</div>
+                            <div className="rd-json">
+                                <Code>{JSON.stringify(run, null, 2)}</Code>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
         </PageLayout>
     );
 };
