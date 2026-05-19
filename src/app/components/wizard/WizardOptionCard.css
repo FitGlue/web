@@ -1,108 +1,113 @@
+/* ==========================================================================
+   WizardOptionCard — Brutal × Aurora
+   Selectable tile: ink-3 bg, hairline border, selected = 2px aurora-cyan
+   inset box-shadow. No border-radius.
+   ========================================================================== */
+
 .wizard-option-card {
-  position: relative;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 160px;
-  flex: 1;
-  max-width: 280px;
-  height: 100%;
+    position: relative;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    min-width: 160px;
+    flex: 1;
+    max-width: 280px;
+    height: 100%;
 }
 
-.wizard-option-card:hover:not(.disabled) {
-  transform: translateY(-2px);
+/* Card inner via Card component — override to match BA */
+.wizard-option-card .card {
+    padding: 1.25rem;
+    position: relative;
+    height: 100%;
+    box-sizing: border-box;
+    background: var(--fg-ink-3);
+    border-radius: 0;
+    box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+    transition: box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
-/* Selected state */
+.wizard-option-card:hover:not(.disabled) .card {
+    background: var(--fg-ink-2);
+    box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+}
+
+/* Selected state: aurora-cyan 2px inset */
 .wizard-option-card.selected .card {
-  border-color: var(--color-primary, #a855f7);
+    background: var(--fg-ink-2);
+    box-shadow: inset 0 0 0 2px var(--aurora-cyan, var(--fg-cyan));
 }
 
 .wizard-option-card.disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
-/* Card inner content - more breathing room */
-.wizard-option-card .card {
-  padding: var(--spacing-lg, 1.25rem);
-  position: relative;
-  height: 100%;
-  box-sizing: border-box;
-}
-
-/* Selection indicator - positioned top-right */
+/* Selection indicator — top-right corner, square */
 .wizard-selection-indicator {
-  position: absolute;
-  top: var(--spacing-sm, 0.5rem);
-  right: var(--spacing-sm, 0.5rem);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--color-border, rgba(255, 255, 255, 0.3));
-  background: transparent;
-  transition: all 0.2s ease;
-  font-size: 0.75rem;
+    position: absolute;
+    top: 0.625rem;
+    right: 0.625rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+    transition: background var(--transition-fast), box-shadow var(--transition-fast);
+    font-size: 0.75rem;
+    font-family: var(--fg-font-display);
 }
 
-/* Radio style for single select - always circle */
+/* Radio: no round — BA uses square for everything */
 .wizard-selection-indicator.radio {
-  border-radius: 50%;
+    border-radius: 0;
 }
 
 .wizard-selection-indicator.radio.selected {
-  border-color: var(--color-primary, #a855f7);
-  background: var(--color-primary, #a855f7);
+    background: var(--fg-cyan);
+    box-shadow: none;
+    color: var(--fg-ink);
 }
 
-/* Inner dot for selected radio */
-.wizard-selection-indicator.radio.selected::after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: white;
-}
-
-/* Checkbox style for multi select - rounded square */
-.wizard-selection-indicator.checkbox {
-  border-radius: 0;
-}
-
+/* Checkbox */
 .wizard-selection-indicator.checkbox.selected {
-  border-color: var(--color-primary, #a855f7);
-  background: var(--color-primary, #a855f7);
-  color: white;
-  font-weight: bold;
-}
-
-/* Hover state for unselected indicators */
-.wizard-option-card:hover:not(.selected):not(.disabled) .wizard-selection-indicator {
-  border-color: var(--color-primary-light, #c084fc);
+    background: var(--fg-cyan);
+    box-shadow: none;
+    color: var(--fg-ink);
 }
 
 /* Config badge */
 .wizard-config-badge {
-  font-size: 0.875rem;
-  opacity: 0.7;
+    font-size: 0.875rem;
+    opacity: 0.7;
+    margin: 0;
 }
 
-/* Card content text spacing */
+/* Title and description text */
 .wizard-option-card h4 {
-  margin: 0;
-  line-height: 1.3;
+    margin: 0;
+    line-height: 1.3;
+    font-family: var(--fg-font-display);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
 }
 
 .wizard-option-card p {
-  margin: 0;
-  line-height: 1.5;
+    margin: 0;
+    line-height: 1.5;
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
 }
 
-/* Mobile responsive */
+/* Mobile */
 @media (max-width: 640px) {
-  .wizard-option-card {
-    min-width: 140px;
-    max-width: 100%;
-  }
+    .wizard-option-card {
+        min-width: 140px;
+        max-width: 100%;
+    }
 }
