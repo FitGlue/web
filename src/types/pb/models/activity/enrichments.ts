@@ -38,6 +38,17 @@ export interface ActivityEnrichments {
   cadence?: CadenceSummary | undefined;
   power?: PowerSummary | undefined;
   elevation?: ElevationSummary | undefined;
+  speed?: SpeedSummary | undefined;
+  parkrun?: ParkrunSummary | undefined;
+  weather?: WeatherSummary | undefined;
+  location?: LocationSummary | undefined;
+  runningDynamics?: RunningDynamicsSummary | undefined;
+  personalRecords?: PersonalRecordsSummary | undefined;
+  distanceMilestone?: DistanceMilestoneSummary | undefined;
+  goalTracker?: GoalTrackerSummary | undefined;
+  spotify?: SpotifyTracksSummary | undefined;
+  intervals?: IntervalsSummary | undefined;
+  muscleHeatmap?: MuscleHeatmapSummary | undefined;
 }
 
 export interface HeartRateSummary {
@@ -162,4 +173,133 @@ export interface PowerSummary {
 export interface ElevationSummary {
   totalGainM: number;
   totalLossM: number;
+}
+
+export interface SpeedSummary {
+  avgSpeedKmh: number;
+  maxSpeedKmh: number;
+}
+
+export interface WeatherSummary {
+  tempC: number;
+  /** "Clear", "Rain", "Partly Cloudy", etc. */
+  weatherDescription: string;
+  windSpeedKph: number;
+  /** "N", "NE", "SW", etc. */
+  windDirection: string;
+  /** WMO weather code */
+  weatherCode: number;
+}
+
+export interface LocationSummary {
+  /** e.g. "Bushy Park, London" */
+  locationName: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface RunningDynamicsSummary {
+  avgGroundContactMs: number;
+  avgVerticalOscillationCm: number;
+  avgStepLengthM: number;
+}
+
+export interface ParkrunSummary {
+  /** e.g. "Bushy parkrun" */
+  eventName: string;
+  position: number;
+  /** e.g. "19:42" */
+  finishTime: string;
+  /** e.g. "76.2%" */
+  ageGrade: string;
+  /** all-time run count */
+  totalParkruns: number;
+  isTimePb: boolean;
+  isAgeGradePb: boolean;
+}
+
+export interface PersonalRecord {
+  /** e.g. "5k", "bench_press_1rm" */
+  recordType: string;
+  newValue: number;
+  /** "seconds", "kg" */
+  unit: string;
+  previousValue?:
+    | number
+    | undefined;
+  /** percentage */
+  improvement?:
+    | number
+    | undefined;
+  /** formatted human-readable summary */
+  displayMessage: string;
+}
+
+export interface PersonalRecordsSummary {
+  records: PersonalRecord[];
+}
+
+export interface DistanceMilestoneSummary {
+  milestoneKm: number;
+  lifetimeDistanceKm: number;
+  nextMilestoneKm?:
+    | number
+    | undefined;
+  /** e.g. "running" */
+  activityTypeLabel: string;
+}
+
+export interface GoalEntry {
+  /** e.g. "Run · 2,500 km" */
+  label: string;
+  /** accumulated progress this period */
+  current: number;
+  target: number;
+  /** "km", "hours", "activities" */
+  unit: string;
+  onPace: boolean;
+  daysRemaining: number;
+}
+
+export interface GoalTrackerSummary {
+  goals: GoalEntry[];
+}
+
+export interface SpotifyTrack {
+  title: string;
+  artist: string;
+  durationSeconds: number;
+}
+
+export interface SpotifyTracksSummary {
+  tracks: SpotifyTrack[];
+  totalCount: number;
+}
+
+export interface IntervalSegment {
+  /** "warmup", "active", "recovery", "cooldown" */
+  type: string;
+  /** e.g. "Interval 1", "Recovery 2" */
+  label: string;
+  durationSeconds: number;
+  distanceMeters: number;
+  avgHr: number;
+  /** m/s — derive pace/speed from activity category */
+  avgSpeedMs: number;
+}
+
+export interface IntervalsSummary {
+  segments: IntervalSegment[];
+  /** e.g. "4×400m" if structured workout */
+  workoutName: string;
+}
+
+export interface MuscleHeatmapSummary {
+  /** e.g. ["chest", "triceps"] */
+  primary: string[];
+  /** e.g. ["shoulders"] */
+  secondary: string[];
+  /** populated by MUSCLE_HEATMAP_IMAGE if it ran */
+  imageUrl: string;
 }

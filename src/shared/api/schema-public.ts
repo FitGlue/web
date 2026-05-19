@@ -141,6 +141,17 @@ export interface components {
             cadence?: components["schemas"]["CadenceSummary"];
             power?: components["schemas"]["PowerSummary"];
             elevation?: components["schemas"]["ElevationSummary"];
+            speed?: components["schemas"]["SpeedSummary"];
+            parkrun?: components["schemas"]["ParkrunSummary"];
+            weather?: components["schemas"]["WeatherSummary"];
+            location?: components["schemas"]["LocationSummary"];
+            runningDynamics?: components["schemas"]["RunningDynamicsSummary"];
+            personalRecords?: components["schemas"]["PersonalRecordsSummary"];
+            distanceMilestone?: components["schemas"]["DistanceMilestoneSummary"];
+            goalTracker?: components["schemas"]["GoalTrackerSummary"];
+            spotify?: components["schemas"]["SpotifyTracksSummary"];
+            intervals?: components["schemas"]["IntervalsSummary"];
+            muscleHeatmap?: components["schemas"]["MuscleHeatmapSummary"];
         };
         AiBanner: {
             imageUrl?: string;
@@ -202,6 +213,15 @@ export interface components {
             /** Format: double */
             maxValue?: number;
         };
+        DistanceMilestoneSummary: {
+            /** Format: double */
+            milestoneKm?: number;
+            /** Format: double */
+            lifetimeDistanceKm?: number;
+            /** Format: double */
+            nextMilestoneKm?: number;
+            activityTypeLabel?: string;
+        };
         EffortFactor: {
             label?: string;
             /** Format: double */
@@ -231,6 +251,20 @@ export interface components {
             totalPages?: number;
             /** Format: int32 */
             currentPage?: number;
+        };
+        GoalEntry: {
+            label?: string;
+            /** Format: double */
+            current?: number;
+            /** Format: double */
+            target?: number;
+            unit?: string;
+            onPace?: boolean;
+            /** Format: int32 */
+            daysRemaining?: number;
+        };
+        GoalTrackerSummary: {
+            goals?: components["schemas"]["GoalEntry"][];
         };
         /** @description Contains an arbitrary serialized message along with a @type that describes the type of the serialized message. */
         GoogleProtobufAny: {
@@ -305,6 +339,22 @@ export interface components {
             isTemporarilyUnavailable?: boolean;
             actions?: components["schemas"]["IntegrationAction"][];
         };
+        IntervalSegment: {
+            type?: string;
+            label?: string;
+            /** Format: double */
+            durationSeconds?: number;
+            /** Format: double */
+            distanceMeters?: number;
+            /** Format: double */
+            avgHr?: number;
+            /** Format: double */
+            avgSpeedMs?: number;
+        };
+        IntervalsSummary: {
+            segments?: components["schemas"]["IntervalSegment"][];
+            workoutName?: string;
+        };
         Lap: {
             /** Format: date-time */
             startTime?: string;
@@ -332,6 +382,19 @@ export interface components {
         ListSourcesPublicResponse: {
             sources?: components["schemas"]["PluginManifest"][];
         };
+        LocationSummary: {
+            locationName?: string;
+            country?: string;
+            /** Format: double */
+            latitude?: number;
+            /** Format: double */
+            longitude?: number;
+        };
+        MuscleHeatmapSummary: {
+            primary?: string[];
+            secondary?: string[];
+            imageUrl?: string;
+        };
         PaceSplit: {
             /** Format: int32 */
             km?: number;
@@ -344,6 +407,31 @@ export interface components {
             /** Format: double */
             bestSplitSecondsPerKm?: number;
             splits?: components["schemas"]["PaceSplit"][];
+        };
+        ParkrunSummary: {
+            eventName?: string;
+            /** Format: int32 */
+            position?: number;
+            finishTime?: string;
+            ageGrade?: string;
+            /** Format: int32 */
+            totalParkruns?: number;
+            isTimePb?: boolean;
+            isAgeGradePb?: boolean;
+        };
+        PersonalRecord: {
+            recordType?: string;
+            /** Format: double */
+            newValue?: number;
+            unit?: string;
+            /** Format: double */
+            previousValue?: number;
+            /** Format: double */
+            improvement?: number;
+            displayMessage?: string;
+        };
+        PersonalRecordsSummary: {
+            records?: components["schemas"]["PersonalRecord"][];
         };
         PluginManifest: {
             id?: string;
@@ -439,6 +527,14 @@ export interface components {
             hoursToRecover?: number;
             alert?: boolean;
             alertText?: string;
+        };
+        RunningDynamicsSummary: {
+            /** Format: double */
+            avgGroundContactMs?: number;
+            /** Format: double */
+            avgVerticalOscillationCm?: number;
+            /** Format: double */
+            avgStepLengthM?: number;
         };
         Session: {
             /** Format: date-time */
@@ -581,6 +677,23 @@ export interface components {
             photoUrls?: string[];
             enrichments?: components["schemas"]["ActivityEnrichments"];
         };
+        SpeedSummary: {
+            /** Format: double */
+            avgSpeedKmh?: number;
+            /** Format: double */
+            maxSpeedKmh?: number;
+        };
+        SpotifyTrack: {
+            title?: string;
+            artist?: string;
+            /** Format: int32 */
+            durationSeconds?: number;
+        };
+        SpotifyTracksSummary: {
+            tracks?: components["schemas"]["SpotifyTrack"][];
+            /** Format: int32 */
+            totalCount?: number;
+        };
         StandardizedActivity: {
             /**
              * Format: enum
@@ -675,6 +788,16 @@ export interface components {
             after?: string;
             visualType?: string;
             afterHtml?: string;
+        };
+        WeatherSummary: {
+            /** Format: double */
+            tempC?: number;
+            weatherDescription?: string;
+            /** Format: double */
+            windSpeedKph?: number;
+            windDirection?: string;
+            /** Format: int32 */
+            weatherCode?: number;
         };
         WeeklyStreakHistory: {
             /** Format: int32 */
