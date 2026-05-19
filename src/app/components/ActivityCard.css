@@ -1,0 +1,131 @@
+/* ==========================================================================
+   ActivityCard — Brutal × Aurora
+   Flat ink-2 run-row card with fg-band top strip, display title, mono stats
+   ========================================================================== */
+
+.activity-card {
+  background: var(--fg-ink-2);
+  box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+  cursor: pointer;
+  transition: box-shadow var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-card:hover {
+  box-shadow: inset 0 0 0 1px var(--fg-paper);
+}
+
+/* Top strip — type stamp + date */
+.activity-card__band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.4375rem 0.875rem;
+  background: var(--fg-ink-3);
+  border-bottom: var(--fg-rule-thin);
+}
+
+.activity-card__type {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
+  padding: 0.1875rem 0.5rem;
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+}
+
+.activity-card__date {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--fg-paper-dim);
+  text-transform: uppercase;
+}
+
+/* Main body */
+.activity-card__body {
+  padding: 0.875rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.activity-card__title {
+  font-family: var(--fg-font-display);
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  color: var(--fg-paper);
+  margin: 0;
+}
+
+/* Stats row */
+.activity-card__stats {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--fg-paper-dim);
+  text-transform: uppercase;
+}
+
+.activity-card__stat {
+  padding: 0 0.625rem;
+  border-right: 1px solid var(--fg-hairline-color);
+}
+
+.activity-card__stat:first-child {
+  padding-left: 0;
+}
+
+.activity-card__stat:last-child {
+  border-right: none;
+}
+
+/* Status / sync dot */
+.activity-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-top: var(--fg-rule-thin);
+  background: var(--fg-ink);
+}
+
+.activity-card__status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.activity-card__status-dot--synced   { background: var(--fg-green); }
+.activity-card__status-dot--pending  { background: var(--fg-gold); }
+.activity-card__status-dot--error    { background: var(--fg-rose); }
+.activity-card__status-dot--unknown  { background: var(--fg-paper-dim); opacity: 0.4; }
+
+.activity-card__status-label {
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
+}
+
+.activity-card__error {
+  font-family: var(--fg-font-body);
+  font-size: 0.8125rem;
+  color: var(--fg-rose);
+  padding: 0 1rem 0.625rem;
+}
