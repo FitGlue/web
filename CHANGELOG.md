@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.15.0](https://github.com/fitglue/web/compare/v11.14.0...v11.15.0) (2026-05-19)
+
+
+### Features
+
+* **web/app:** Brutal × Aurora reskin — AppHeader + design tokens ([b4debce](https://github.com/fitglue/web/commit/b4debce59b73fa14ae851d54f5f905ed2eeba600)), closes [#ff3da6](https://github.com/fitglue/web/issues/ff3da6) [#8b5cf6](https://github.com/fitglue/web/issues/8b5cf6)
+* **web/app:** Brutal × Aurora reskin — Badge, form inputs ([cab6656](https://github.com/fitglue/web/commit/cab665651f5dc17e2623f3e24f3f6ce6b5945188))
+* **web/app:** Brutal × Aurora reskin — core UI components ([fcfafb8](https://github.com/fitglue/web/commit/fcfafb84e6040e4bdeb73e913e39b5645d581554))
+* **web/app:** Brutal × Aurora reskin — dashboard component CSS ([681fe7b](https://github.com/fitglue/web/commit/681fe7b38c98d4d083288fe8017a3c717426bd1f))
+* **web/app:** Brutal × Aurora reskin — FilterBar and TabbedCard ([6d5995b](https://github.com/fitglue/web/commit/6d5995be73ebfcb9d9d2fa054e9120693762e5fb))
+* **web/app:** Brutal × Aurora reskin — full CSS sweep across app components ([b8fa6ed](https://github.com/fitglue/web/commit/b8fa6ed7d199f5739202f6f6386551d76fb97ced)), closes [#ff1b8](https://github.com/fitglue/web/issues/ff1b8) [#9d4](https://github.com/fitglue/web/issues/9d4) [#4cc9f0](https://github.com/fitglue/web/issues/4cc9f0) [#ff006](https://github.com/fitglue/web/issues/ff006) [#8338](https://github.com/fitglue/web/issues/8338)
+* **web/app:** Brutal × Aurora reskin — layout components + color sweep ([ba5edf4](https://github.com/fitglue/web/commit/ba5edf42c97038bfe19214e670165064c307d9d9)), closes [#FF1B8](https://github.com/fitglue/web/issues/FF1B8) [#ff3da6](https://github.com/fitglue/web/issues/ff3da6) [#9D4](https://github.com/fitglue/web/issues/9D4) [#8b5cf6](https://github.com/fitglue/web/issues/8b5cf6) [#4CC9F0](https://github.com/fitglue/web/issues/4CC9F0) [#22d3](https://github.com/fitglue/web/issues/22d3)
+* **web/app:** Brutal × Aurora reskin — page CSS cleanup ([f9c0269](https://github.com/fitglue/web/commit/f9c0269f89b6c9798880117b510433cccd9f1cf5))
+* **web:** Brutal × Aurora reskin — all pages and app-components CSS ([350fbed](https://github.com/fitglue/web/commit/350fbed564911587b37dcdcda0ba98f0b82f4ece)), closes [#3A86](https://github.com/fitglue/web/issues/3A86) [#22d3](https://github.com/fitglue/web/issues/22d3)
+* **web:** Brutal × Aurora reskin — marketing site complete ([4ecb807](https://github.com/fitglue/web/commit/4ecb8074bfe936a013902a578b4175d9ebc9ed3d))
+
 ## [11.14.0](https://github.com/fitglue/web/compare/v11.13.1...v11.14.0) (2026-05-18)
 
 
