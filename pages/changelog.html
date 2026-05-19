@@ -13,13 +13,57 @@
 
   <!-- Changelog Content -->
   <section class="section">
-    <div class="container changelog-content fg-prose">
-      {{{changelogContent}}}
+    <div class="container">
+      <div class="changelog-layout">
+        <!-- Sticky version sidebar -->
+        <aside class="changelog-sidebar animate-on-scroll">
+          <div class="fg-band fg-band--sm" style="margin-bottom:1rem">
+            <span class="fg-band__label">Versions</span>
+          </div>
+          <div class="changelog-version-list">
+            <span class="fg-stamp" style="margin-bottom:.5rem">LATEST</span>
+            <span class="fg-stamp fg-stamp--paper" style="margin-bottom:.5rem">v{{version}}</span>
+            <p class="changelog-sidebar-note">Scroll to explore all releases below.</p>
+          </div>
+        </aside>
+        <!-- Changelog prose -->
+        <div class="changelog-content fg-prose">
+          {{{changelogContent}}}
+        </div>
+      </div>
     </div>
   </section>
 </main>
 
 <style>
+  .changelog-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  .changelog-sidebar {
+    position: sticky;
+    top: 5rem;
+  }
+
+  .changelog-version-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .25rem;
+  }
+
+  .changelog-sidebar-note {
+    font-family: var(--fg-font-mono);
+    font-size: .625rem;
+    letter-spacing: .1em;
+    color: var(--color-text-subtle);
+    text-transform: uppercase;
+    margin-top: .5rem;
+  }
+
   .changelog-content {
     max-width: 800px;
   }
@@ -35,10 +79,19 @@
     margin-bottom: var(--space-md);
     padding-bottom: var(--space-sm);
     border-bottom: var(--fg-rule-thin);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
   .changelog-content h2:first-of-type {
     margin-top: 0;
+  }
+
+  /* Auto-add fg-stamp styling to version headings */
+  .changelog-content h2::before {
+    content: attr(data-version);
   }
 
   .changelog-content h3 {
@@ -65,6 +118,15 @@
     margin: var(--space-xl) 0;
     border: none;
     border-top: var(--fg-rule-thin);
+  }
+
+  @media (max-width: 768px) {
+    .changelog-layout {
+      grid-template-columns: 1fr;
+    }
+    .changelog-sidebar {
+      position: static;
+    }
   }
 </style>
 
