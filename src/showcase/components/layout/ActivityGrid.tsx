@@ -88,7 +88,7 @@ export default function ActivityGrid({ entries }: Props): React.ReactElement {
               return (
                 <a
                   key={e.showcaseId}
-                  href={`/showcase/${e.showcaseId}`}
+                  href={`/showcase/activity/${e.showcaseId}`}
                   className="feed-card"
                 >
                   <div
