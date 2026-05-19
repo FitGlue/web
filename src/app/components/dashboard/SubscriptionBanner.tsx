@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../hooks/useUser';
 import { getEffectiveTier, TIER_ATHLETE, HOBBYIST_TIER_LIMITS } from '../../utils/tier';
-import { CardSkeleton, SkeletonLoading } from '../library/ui';
+import { CardSkeleton, SkeletonLoading, Badge, Button } from '../library/ui';
 import '../library/ui/CardSkeleton.css';
 
 /**
@@ -33,11 +33,11 @@ export const SubscriptionBanner: React.FC = () => {
                     className={isAthlete ? 'fg-band' : 'fg-band fg-band--ink'}
                     style={{ gap: '1rem' }}
                 >
-                    {/* Left: tier stamp + label */}
+                    {/* Left: tier badge + label */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flex: 1 }}>
-                        <span className={`fg-stamp${isAthlete ? '' : isAtLimit ? ' fg-stamp--rose' : ' fg-stamp--ink'}`}>
+                        <Badge variant={isAthlete ? 'default' : isAtLimit ? 'error' : 'default'}>
                             {isAthlete ? '✦ ATHLETE' : isAtLimit ? '⚠ HOBBYIST' : 'HOBBYIST'}
-                        </span>
+                        </Badge>
                         {isAtLimit && !isAthlete && (
                             <span className="fg-band__right" style={{ opacity: 1 }}>Monthly limit reached</span>
                         )}
@@ -53,24 +53,25 @@ export const SubscriptionBanner: React.FC = () => {
                         {isAthlete ? (
                             <>
                                 <span className="fg-band__right" style={{ opacity: 1 }}>Unlimited syncs</span>
-                                <button
-                                    className="fg-button fg-button--sm fg-button--ink"
+                                <Button
+                                    size="sm"
+                                    variant="ink"
                                     onClick={() => navigate('/settings/subscription')}
                                 >
                                     Manage →
-                                </button>
+                                </Button>
                             </>
                         ) : (
                             <>
                                 <span className="fg-band__right" style={{ opacity: 1 }}>
                                     {user.syncCountThisMonth || 0}/{HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH} syncs
                                 </span>
-                                <button
-                                    className="fg-button fg-button--sm"
+                                <Button
+                                    size="sm"
                                     onClick={() => navigate('/settings/subscription')}
                                 >
                                     {isAtLimit ? 'Upgrade Now →' : 'Upgrade →'}
-                                </button>
+                                </Button>
                             </>
                         )}
                     </div>

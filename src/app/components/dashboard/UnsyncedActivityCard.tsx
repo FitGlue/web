@@ -1,6 +1,7 @@
 import React from 'react';
 import { UnsynchronizedEntry } from '../../services/ActivitiesService';
 import { formatActivityType, formatActivitySource } from '../../../types/pb/enum-formatters';
+import { Badge } from '../library/ui/Badge';
 
 interface UnsyncedActivityCardProps {
     entry: UnsynchronizedEntry;
@@ -11,12 +12,11 @@ const formatSourceName = (source?: string): string => {
     return formatActivitySource(source);
 };
 
-/** Status → stamp class mapping */
-const getStatusStamp = (status?: string): { cls: string; label: string } => {
+/** Status → badge variant + label */
+const getStatusStamp = (status?: string): { variant: 'error' | 'warning'; label: string } => {
     const s = status?.toUpperCase() || '';
-    if (s === 'FAILED') return { cls: 'fg-stamp fg-stamp--rose', label: '✕ FAILED' };
-    if (s.includes('PENDING')) return { cls: 'fg-stamp fg-stamp--gold', label: '⏳ PENDING' };
-    return { cls: 'fg-stamp fg-stamp--gold', label: status?.replace(/_/g, ' ').toUpperCase() || 'PENDING' };
+    if (s === 'FAILED') return { variant: 'error', label: '✕ FAILED' };
+    return { variant: 'warning', label: status?.replace(/_/g, ' ').toUpperCase() || 'PENDING' };
 };
 
 /**
@@ -74,8 +74,8 @@ export const UnsyncedActivityCard: React.FC<UnsyncedActivityCardProps> = ({
                 flexWrap: 'wrap',
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: 0, flexWrap: 'wrap' }}>
-                    {/* Activity type stamp */}
-                    <span className="fg-stamp">{activityType}</span>
+                    {/* Activity type badge */}
+                    <Badge>{activityType}</Badge>
                     {/* Title — display font */}
                     <span style={{
                         fontFamily: 'var(--fg-font-display)',
@@ -92,8 +92,8 @@ export const UnsyncedActivityCard: React.FC<UnsyncedActivityCardProps> = ({
                     </span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-                    {/* Status stamp */}
-                    <span className={stamp.cls}>{stamp.label}</span>
+                    {/* Status badge */}
+                    <Badge variant={stamp.variant}>{stamp.label}</Badge>
                     {/* Date mono */}
                     {attemptDate && (
                         <span style={{

@@ -6,6 +6,8 @@ import { usePluginRegistry } from '../../hooks/usePluginRegistry';
 import { PluginManifest } from '../../types/plugin';
 import { BoosterExecution, PipelineRun, PipelineRunStatus } from '../../../types/pb/user';
 import { formatActivityType, formatActivitySource, formatDestination, formatDestinationStatus } from '../../../types/pb/enum-formatters';
+import { Button } from '../library/ui/Button';
+import { Badge } from '../library/ui/Badge';
 import './EnrichedActivityCard.css';
 
 interface EnrichedActivityCardProps {
@@ -52,25 +54,25 @@ const getDestinationInfo = (
     };
 };
 
-/** Map status → stamp modifier for the status pill */
-const getStatusStamp = (status?: PipelineRunStatus): { cls: string; label: string } => {
+/** Map status → badge variant + label */
+const getStatusStamp = (status?: PipelineRunStatus): { variant: 'success' | 'warning' | 'error' | 'info' | 'default'; label: string } => {
     switch (status) {
         case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED:
-            return { cls: 'fg-stamp fg-stamp--green', label: '✓ SYNCED' };
+            return { variant: 'success', label: '✓ SYNCED' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL:
-            return { cls: 'fg-stamp fg-stamp--gold', label: '⚠ PARTIAL' };
+            return { variant: 'warning', label: '⚠ PARTIAL' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED:
-            return { cls: 'fg-stamp fg-stamp--rose', label: '✕ FAILED' };
+            return { variant: 'error', label: '✕ FAILED' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_RUNNING:
-            return { cls: 'fg-stamp fg-stamp--violet', label: '⟳ RUNNING' };
+            return { variant: 'info', label: '⟳ RUNNING' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING:
-            return { cls: 'fg-stamp fg-stamp--gold', label: '⏳ PENDING' };
+            return { variant: 'warning', label: '⏳ PENDING' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED:
-            return { cls: 'fg-stamp fg-stamp--ink', label: '⏭ SKIPPED' };
+            return { variant: 'default', label: '⏭ SKIPPED' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED:
-            return { cls: 'fg-stamp fg-stamp--rose', label: '🔒 UPGRADE' };
+            return { variant: 'error', label: '🔒 UPGRADE' };
         default:
-            return { cls: 'fg-stamp fg-stamp--ink', label: 'UNKNOWN' };
+            return { variant: 'default', label: 'UNKNOWN' };
     }
 };
 
@@ -135,7 +137,7 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
             <div className="enriched-activity-card__header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
                     {/* Activity type stamp */}
-                    <span className="fg-stamp">{activityType}</span>
+                    <Badge>{activityType}</Badge>
                     {/* Title */}
                     <span className="enriched-activity-card__title">{activityTitle}</span>
                     {/* Pipeline name */}
@@ -144,8 +146,8 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
                     )}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-                    {/* Status stamp */}
-                    <span className={stamp.cls}>{stamp.label}</span>
+                    {/* Status badge */}
+                    <Badge variant={stamp.variant}>{stamp.label}</Badge>
                     {/* Date in mono */}
                     {syncDate && <span className="enriched-activity-card__date">{syncDate}</span>}
                 </div>
@@ -232,13 +234,13 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
                 <div className="enriched-activity-card__status-msg">
                     🔒 {pipelineRun.statusMessage || 'Monthly sync limit reached.'}
                     {' '}
-                    <button
-                        className="fg-button fg-button--sm"
+                    <Button
+                        size="sm"
                         onClick={(e) => { e.stopPropagation(); navigate('/settings/subscription'); }}
                         style={{ marginLeft: '0.75rem' }}
                     >
                         Upgrade →
-                    </button>
+                    </Button>
                 </div>
             )}
 
