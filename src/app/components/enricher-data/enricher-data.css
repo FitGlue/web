@@ -1,0 +1,234 @@
+/* ==========================================================================
+   Enricher Data Sections — Brutal × Aurora reskin
+   Shared styles for CountersSection, DistanceMilestonesSection,
+   GoalTrackersSection, PersonalRecordsSection, StreakTrackersSection
+   ========================================================================== */
+@import '../library/tokens.css';
+
+/* Section wrapper */
+.ba-enricher-section {
+  background: var(--fg-ink-2);
+  box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+}
+
+/* Section header — fg-band--sm style */
+.ba-enricher-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.875rem;
+  padding: 0.4375rem 0.875rem;
+  background: var(--fg-ink-3);
+  border-bottom: var(--fg-rule-thin);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.ba-enricher-section__head:hover {
+  background: var(--fg-ink-2);
+}
+
+.ba-enricher-section__head-left {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 1;
+}
+
+/* Section label — display font */
+.ba-enricher-section__label {
+  font-family: var(--fg-font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
+}
+
+/* Count badge — mono */
+.ba-enricher-section__count {
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: var(--fg-ink);
+  color: var(--fg-paper-dim);
+  padding: 0.125rem 0.4375rem;
+  box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+}
+
+/* Add button — right-slotted in header */
+.ba-enricher-section__add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3125rem 0.625rem;
+  background: transparent;
+  color: var(--fg-paper-dim);
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.ba-enricher-section__add-btn:hover {
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+}
+
+/* Expanded body */
+.ba-enricher-section__body {
+  padding: 0;
+}
+
+/* New-entry form panel */
+.ba-enricher-section__new-form {
+  padding: 1rem 1rem;
+  background: rgba(139, 92, 246, 0.05);
+  border-bottom: var(--fg-rule-thin);
+  border-left: 3px solid var(--fg-violet);
+}
+
+/* Data rows — flat ink-2 panels with hairlines */
+.ba-enricher-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border-bottom: var(--fg-rule-thin);
+  transition: background var(--transition-fast);
+}
+
+.ba-enricher-row:last-child {
+  border-bottom: none;
+}
+
+.ba-enricher-row:hover {
+  background: var(--fg-ink-3);
+}
+
+/* Row left — label + meta */
+.ba-enricher-row__left {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Row label — display font */
+.ba-enricher-row__label {
+  font-family: var(--fg-font-display);
+  font-size: 0.875rem;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
+  margin-bottom: 0.1875rem;
+}
+
+/* Row meta — mono, aurora accent for key values */
+.ba-enricher-row__meta {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
+}
+
+.ba-enricher-row__meta-value {
+  color: var(--fg-cyan);
+}
+
+/* Row actions — right slot */
+.ba-enricher-row__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Edit form inline */
+.ba-enricher-edit-form {
+  padding: 0.875rem 1rem;
+  background: var(--fg-ink-3);
+  border-bottom: var(--fg-rule-thin);
+}
+
+.ba-enricher-edit-form__label {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
+  margin-bottom: 0.375rem;
+  display: block;
+}
+
+/* Progress bar — aurora gradient fill, ink-3 track, no border-radius */
+.ba-progress {
+  width: 100%;
+  height: 4px;
+  background: var(--fg-ink-3);
+  margin-top: 0.4375rem;
+  overflow: hidden;
+}
+
+.ba-progress__fill {
+  height: 100%;
+  background: var(--gradient-primary);
+  transition: width var(--transition-normal);
+}
+
+/* Empty state text */
+.ba-enricher-empty {
+  padding: 1rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
+}
+
+/* Loading text */
+.ba-enricher-loading {
+  padding: 1rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
+  animation: ba-enricher-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes ba-enricher-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* DurationInput styling */
+.ba-duration-input {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ba-duration-sep {
+  font-family: var(--fg-font-mono);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--fg-paper-dim);
+}
+
+.ba-duration-hint {
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
+  margin-left: 0.25rem;
+}

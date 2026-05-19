@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Stack, Grid } from '../library/layout';
 import { Card, Button, Heading, Paragraph, Badge, AccordionTrigger } from '../library/ui';
 import { Input, FormField, Select } from '../library/forms';
+import './enricher-data.css';
 import { client } from '../../../shared/api/client';
 import { PersonalRecord } from './types';
 import { CARDIO_RECORDS, STRENGTH_SUFFIXES, HYBRID_RACE_TYPES, HYBRID_STATIONS } from './constants';
