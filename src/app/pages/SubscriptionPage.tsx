@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Card, Paragraph, CardSkeleton, Button, Badge } from '../components/library/ui';
+import { Card, Paragraph, CardSkeleton, Button, Badge, PlanBand, UsageGrid } from '../components/library/ui';
 import { FeatureItem, Stack, Grid, PageLayout } from '../components/library/layout';
 import { client } from '../../shared/api/client';
 import { useUser } from '../hooks/useUser';
-import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
+import { getEffectiveTier, TIER_ATHLETE, HOBBYIST_TIER_LIMITS } from '../utils/tier';
 import { ATHLETE_BENEFITS, PLAN_FEATURES, DOWNGRADE_ITEMS } from '../utils/tierBenefits';
 import '../components/library/ui/CardSkeleton.css';
 import './SubscriptionPage.css';
@@ -76,26 +76,36 @@ const SubscriptionPage: React.FC = () => {
     const trialExpired = user?.trialEndsAt && trialDaysRemaining <= 0 && !(user as { stripeCustomerId?: string })?.stripeCustomerId && !user?.isAdmin;
     const countdownProgress = Math.max(0, Math.min(100, (trialDaysRemaining / 30) * 100));
 
+    const syncUsed = user?.syncCountThisMonth ?? 0;
+    const syncLimit = isAthlete ? '∞' : String(HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH);
+
     // ATHLETE VIEW
     if (isAthlete) {
+        const usageCells = [
+            { value: syncUsed, label: 'Syncs This Month', gradient: true },
+            { value: '∞', label: 'Sync Limit', sub: 'Unlimited on Athlete' },
+            { value: user?.isAdmin ? 'ADMIN' : 'ACTIVE', label: 'Status', sub: user?.isAdmin ? 'Admin access' : 'Paid subscription' },
+            { value: trialDaysRemaining > 0 ? trialDaysRemaining : '—', label: 'Trial Days Left', sub: trialDaysRemaining > 0 ? 'Days remaining' : 'Not on trial' },
+            { value: '8+', label: 'Sources', sub: 'Available integrations' },
+            { value: '25', label: 'Boosters', sub: 'All boosters unlocked' },
+        ];
+
         return (
             <PageLayout
                 title="Your Subscription"
                 backTo="/settings/account"
                 backLabel="← ACCOUNT"
             >
-                {/* Plan banner */}
-                <div className="stx-plan">
-                    <span className="stx-plan__icon">✦</span>
-                    <div>
-                        <div className="stx-plan__title">ATHLETE · UNLIMITED SYNCS</div>
-                        {user?.isAdmin ? (
-                            <div className="stx-plan__meta">ADMIN ACCESS · ALL FEATURES</div>
-                        ) : (
-                            <div className="stx-plan__meta">£5/MONTH · ACTIVE</div>
-                        )}
-                    </div>
-                </div>
+                {/* Plan band with aurora gradient */}
+                <PlanBand
+                    planName="Athlete"
+                    price="£5"
+                    period="/month"
+                    badge={user?.isAdmin ? 'ADMIN ACCESS · ALL FEATURES' : 'UNLIMITED SYNCS · ACTIVE'}
+                />
+
+                {/* Usage grid */}
+                <UsageGrid cells={usageCells} />
 
                 <div style={{ padding: '0 2rem 2rem' }}>
                     {status && (
@@ -211,14 +221,13 @@ const SubscriptionPage: React.FC = () => {
             backTo="/settings/account"
             backLabel="← ACCOUNT"
         >
-            {/* Upgrade banner */}
-            <div className="stx-plan">
-                <span className="stx-plan__icon">✦</span>
-                <div>
-                    <div className="stx-plan__title">UNLOCK ATHLETE</div>
-                    <div className="stx-plan__meta">UNLIMITED SYNCS · £5/MONTH · CANCEL ANYTIME</div>
-                </div>
-            </div>
+            {/* Plan band */}
+            <PlanBand
+                planName="Hobbyist"
+                price="£0"
+                period="/month"
+                badge={`${syncUsed} / ${syncLimit} SYNCS THIS MONTH · CANCEL ANYTIME`}
+            />
 
             <div style={{ padding: '1.5rem 2rem 2rem' }}>
                 {status && (

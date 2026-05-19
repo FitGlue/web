@@ -136,7 +136,43 @@ const DashboardPageInner: React.FC = () => {
             fullWidth
         >
             {/* Pre-chrome system messages */}
-            {!onboardingComplete && !isLoading && !allOnboardingComplete && (
+            {!onboardingComplete && !isLoading && !allOnboardingComplete && !hasConnections && (
+                <>
+                    <div className="dashboard-first-run">
+                        <div className="dashboard-first-run__banner">
+                            <div>
+                                <div className="dashboard-first-run__step">✦ WELCOME · STEP 1 OF 4</div>
+                                <div className="dashboard-first-run__heading">Pick a source to start.</div>
+                                <div className="dashboard-first-run__sub">CONNECT → BUILD A PIPELINE → SYNC ONCE → SHARE OR SIT ON IT</div>
+                            </div>
+                            <button className="fg-button" onClick={() => navigate('/connections')}>
+                                CONNECT FIRST SOURCE →
+                            </button>
+                        </div>
+                        <div className="dashboard-first-run__grid">
+                            <div className="dashboard-first-run__card">
+                                <div className="dashboard-first-run__card-icon">🔗</div>
+                                <div className="dashboard-first-run__card-title">No connections yet</div>
+                                <div className="dashboard-first-run__card-body">Hook in Strava, Hevy, Fitbit, Garmin — wherever your activities live.</div>
+                                <button className="fg-button" onClick={() => navigate('/connections')}>CONNECT A SOURCE →</button>
+                            </div>
+                            <div className="dashboard-first-run__card dashboard-first-run__card--dim">
+                                <div className="dashboard-first-run__card-icon">🔀</div>
+                                <div className="dashboard-first-run__card-title">No pipelines yet</div>
+                                <div className="dashboard-first-run__card-body">Pipelines route activities through boosters into destinations.</div>
+                                <div className="dashboard-first-run__card-hint">DO STEP 1 FIRST →</div>
+                            </div>
+                            <div className="dashboard-first-run__card dashboard-first-run__card--dim">
+                                <div className="dashboard-first-run__card-icon">✨</div>
+                                <div className="dashboard-first-run__card-title">No activities yet</div>
+                                <div className="dashboard-first-run__card-body">Your enriched activity feed shows up here once syncs start.</div>
+                                <div className="dashboard-first-run__card-hint">UPLOAD A .FIT FILE TO TRY →</div>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+            {!onboardingComplete && !isLoading && !allOnboardingComplete && hasConnections && (
                 <WelcomeBanner
                     hasConnections={hasConnections}
                     hasPipelines={hasPipelines}

@@ -84,6 +84,7 @@ export const ReauthModal: React.FC<ReauthModalProps> = ({
             onClose={handleClose}
             title={title}
             size="sm"
+            danger={true}
             closeOnBackdrop={false}
             footer={
                 <Stack direction="horizontal" gap="sm" justify="end">

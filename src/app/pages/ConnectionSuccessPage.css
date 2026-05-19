@@ -1,0 +1,156 @@
+/* ==========================================================================
+   ConnectionSuccessPage — state card pattern
+   ========================================================================== */
+
+.success-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 60vh;
+  justify-content: center;
+  padding: 60px 48px;
+  text-align: center;
+}
+
+/* State card pattern */
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.state__stamp {
+  padding: 6px 12px;
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.state__stamp--green {
+  background: var(--fg-green);
+  color: var(--fg-ink);
+}
+
+.state__stamp--rose {
+  background: var(--fg-rose);
+  color: var(--fg-paper);
+}
+
+.state__stamp--gold {
+  background: var(--fg-gold);
+  color: var(--fg-ink);
+}
+
+.state__icon {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.state__h {
+  font-family: var(--fg-font-display);
+  font-size: 3rem;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.state__h-gr {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.state__body {
+  font-family: var(--fg-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.state__body strong,
+.state__body b {
+  color: var(--fg-paper);
+}
+
+.state__detail {
+  padding: 14px 18px;
+  background: var(--fg-ink-2);
+  font-family: var(--fg-font-mono);
+  font-size: 0.8125rem;
+  color: var(--fg-paper);
+  letter-spacing: 0.04em;
+  max-width: 520px;
+  line-height: 1.55;
+  width: 100%;
+}
+
+.state__detail-l {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.state__cta {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* Copy row inside detail block */
+.success-copy-row {
+  display: flex;
+  align-items: stretch;
+  box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+  margin-bottom: 4px;
+}
+
+.success-copy-value {
+  flex: 1;
+  background: var(--fg-ink);
+  padding: 0.75rem 1rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.8125rem;
+  color: var(--fg-cyan);
+  word-break: break-all;
+}
+
+.success-warning {
+  padding: 0.875rem 1rem;
+  background: rgba(255, 214, 10, 0.08);
+  box-shadow: inset 0 0 0 1.5px var(--fg-gold);
+  font-family: var(--fg-font-body);
+  font-size: 0.875rem;
+  color: var(--fg-paper);
+  margin-top: 8px;
+}
+
+/* Action row inside detail block */
+.success-action-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: var(--fg-rule-thin);
+  align-items: center;
+}
+
+.success-action-icon {
+  font-size: 1.5rem;
+  width: 36px;
+  text-align: center;
+}

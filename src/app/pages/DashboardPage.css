@@ -49,3 +49,111 @@
         border-bottom: var(--fg-rule-thin);
     }
 }
+
+/* ==========================================================================
+   First-run empty state — aurora welcome banner + 3-col card grid
+   ========================================================================== */
+
+.dashboard-first-run {
+    padding: 32px;
+    border-bottom: var(--fg-rule-thick);
+    background: var(--fg-ink);
+}
+
+.dashboard-first-run__banner {
+    padding: 24px 28px;
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.dashboard-first-run__step {
+    font-family: var(--fg-font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.dashboard-first-run__heading {
+    font-family: var(--fg-font-display);
+    font-size: 2rem;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    line-height: 1;
+}
+
+.dashboard-first-run__sub {
+    font-family: var(--fg-font-mono);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-top: 6px;
+    text-transform: uppercase;
+}
+
+.dashboard-first-run__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+}
+
+.dashboard-first-run__card {
+    padding: 36px 28px;
+    background: var(--fg-ink-2);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    min-height: 300px;
+    justify-content: center;
+}
+
+.dashboard-first-run__card--dim {
+    opacity: 0.5;
+}
+
+.dashboard-first-run__card-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.dashboard-first-run__card-title {
+    font-family: var(--fg-font-display);
+    font-size: 1.25rem;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+}
+
+.dashboard-first-run__card-body {
+    font-family: var(--fg-font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+    line-height: 1.55;
+}
+
+.dashboard-first-run__card-hint {
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+    .dashboard-first-run__banner {
+        grid-template-columns: 1fr;
+    }
+    .dashboard-first-run__grid {
+        grid-template-columns: 1fr;
+    }
+}

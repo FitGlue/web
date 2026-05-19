@@ -1,0 +1,72 @@
+/* ==========================================================================
+   NotFoundPage — 404 state page
+   ========================================================================== */
+
+.nf-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 60px 48px;
+  text-align: center;
+  background: var(--fg-ink);
+  gap: 18px;
+}
+
+.nf__big {
+  font-family: var(--fg-font-display);
+  font-size: 18rem;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.nf__h {
+  font-family: var(--fg-font-display);
+  font-size: 3rem;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.nf__h-gr {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.nf__sub {
+  font-family: var(--fg-font-body);
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  max-width: 520px;
+  margin: 0;
+}
+
+.nf__cta {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.nf__hint {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.14em;
+  margin-top: 8px;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .nf__big { font-size: 8rem; }
+  .nf__h { font-size: 2rem; }
+}
