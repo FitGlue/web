@@ -1,238 +1,355 @@
+/* ==========================================================================
+   WorkoutEntryInput — Brutal × Aurora
+   Inputs: ink-3 bg, paper hairline box-shadow, mono labels, no border-radius.
+   Active/focus: aurora-pink inset glow. Tags/chips: fg-stamp style.
+   ========================================================================== */
+
 .wei-root {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
+/* Exercise block */
 .wei-exercise {
-  border: 1px solid var(--color-border, #333);
-  border-radius: 0;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: var(--color-bg-secondary, #111);
+    background: var(--fg-ink-2);
+    box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+    border-radius: 0;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
+/* Superset: aurora-pink left accent */
 .wei-exercise--superset {
-  border-color: var(--color-primary, #ff3da6);
-  border-left-width: 3px;
+    box-shadow: inset 3px 0 0 0 var(--fg-pink),
+                inset 0 0 0 1px var(--fg-hairline-color);
 }
 
-/* Exercise header */
+/* Exercise header row */
 .wei-exercise-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
 }
 
 .wei-exercise-num {
-  font-size: 0.7rem;
-  color: var(--color-text-muted, #888);
-  min-width: 16px;
-  text-align: center;
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--color-text-muted);
+    min-width: 16px;
+    text-align: center;
+    text-transform: uppercase;
 }
 
-/* Autocomplete */
+/* Autocomplete wrapper */
 .wei-autocomplete {
-  position: relative;
-  flex: 1;
+    position: relative;
+    flex: 1;
 }
 
+/* Suggestions dropdown */
 .wei-suggestions {
-  position: absolute;
-  top: calc(100% + 2px);
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background: var(--color-bg-elevated, #1e1e2e);
-  border: 1px solid var(--color-border, #444);
-  border-radius: 0;
-  list-style: none;
-  margin: 0;
-  padding: 4px 0;
-  max-height: 240px;
-  overflow-y: auto;
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    z-index: var(--z-dropdown, 100);
+    background: var(--fg-ink-2);
+    box-shadow: inset 0 0 0 1.5px var(--fg-paper),
+                0 8px 24px rgba(0, 0, 0, 0.4);
+    border-radius: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 240px;
+    overflow-y: auto;
 }
 
 .wei-suggestion {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 7px 10px;
-  cursor: pointer;
-  gap: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    gap: 0.5rem;
+    border-bottom: var(--fg-rule-thin);
 }
 
 .wei-suggestion:hover {
-  background: rgba(255,255,255,0.06);
+    background: var(--fg-ink-3);
 }
 
 .wei-suggestion-name {
-  font-size: 0.875rem;
+    font-family: var(--fg-font-display);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
 }
 
 .wei-suggestion-cat {
-  font-size: 0.7rem;
-  color: var(--color-text-muted, #888);
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
 }
 
 /* Mode picker */
 .wei-mode-picker {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-bottom: var(--fg-rule-thin);
+    padding-bottom: 0.375rem;
 }
 
 .wei-mode-btn {
-  background: transparent;
-  border: 1px solid var(--color-border, #444);
-  border-radius: 0;
-  padding: 3px 7px;
-  cursor: pointer;
-  font-size: 1rem;
-  line-height: 1.2;
-  transition: background 0.15s, border-color 0.15s;
+    background: transparent;
+    border: 0;
+    box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+    border-radius: 0;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    line-height: 1.2;
+    transition: background var(--transition-fast), box-shadow var(--transition-fast);
+    color: var(--fg-paper-dim);
 }
 
+.wei-mode-btn:hover {
+    background: var(--fg-ink-3);
+    box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+    color: var(--fg-paper);
+}
+
+/* Active mode: aurora-pink accent */
 .wei-mode-btn--active {
-  background: rgba(var(--color-primary-rgb, 255,27,141), 0.15);
-  border-color: var(--color-primary, #ff3da6);
+    background: rgba(255, 61, 166, 0.15);
+    box-shadow: inset 0 0 0 1.5px var(--fg-pink);
+    color: var(--fg-paper);
 }
 
 .wei-mode-label {
-  font-size: 0.72rem;
-  color: var(--color-text-muted, #888);
-  margin-left: 4px;
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    margin-left: 0.25rem;
+    text-transform: uppercase;
 }
 
 /* Sets table */
 .wei-sets {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
 }
 
 .wei-set-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-bottom: var(--fg-rule-thin);
+    padding: 0.25rem 0;
 }
 
+.wei-set-row:last-child {
+    border-bottom: 0;
+}
+
+/* Header row */
 .wei-set-row--header {
-  font-size: 0.68rem;
-  color: var(--color-text-muted, #888);
-  padding-left: 2px;
-}
-
-.wei-set-row--header .wei-input {
-  display: none;
+    font-family: var(--fg-font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    padding-bottom: 0.25rem;
 }
 
 .wei-col-num {
-  min-width: 20px;
-  text-align: center;
-  font-size: 0.72rem;
-  color: var(--color-text-muted, #888);
-  flex-shrink: 0;
+    min-width: 20px;
+    text-align: center;
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    letter-spacing: 0.1em;
 }
 
 .wei-col {
-  flex: 1;
-  min-width: 0;
+    flex: 1;
+    min-width: 0;
 }
 
 .wei-col-remove {
-  width: 28px;
-  flex-shrink: 0;
+    width: 28px;
+    flex-shrink: 0;
 }
 
 .wei-set-type {
-  max-width: 90px;
+    max-width: 90px;
 }
 
-/* Inputs */
+/* Inputs — BA style: ink-3 bg, hairline, no border-radius */
 .wei-input {
-  background: var(--color-bg, #0d0d1a);
-  border: 1px solid var(--color-border, #333);
-  border-radius: 0;
-  color: var(--color-text, #fff);
-  padding: 4px 6px;
-  font-size: 0.85rem;
-  width: 100%;
-  box-sizing: border-box;
+    background: var(--fg-ink-3);
+    box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+    border: 0;
+    border-radius: 0;
+    color: var(--fg-paper);
+    padding: 0.25rem 0.375rem;
+    font-family: var(--fg-font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    width: 100%;
+    box-sizing: border-box;
+    transition: box-shadow var(--transition-fast);
 }
 
 .wei-input:focus {
-  outline: none;
-  border-color: var(--color-primary, #ff3da6);
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--fg-pink);
 }
 
 .wei-exercise-name {
-  font-weight: 600;
-  font-size: 0.9rem;
+    font-family: var(--fg-font-display);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
 }
 
-/* Buttons */
+/* select matching input */
+.wei-input select,
+select.wei-input {
+    background: var(--fg-ink-3);
+    color: var(--fg-paper);
+    cursor: pointer;
+}
+
+/* Superset button */
 .wei-superset-btn {
-  background: transparent;
-  border: 1px solid var(--color-border, #444);
-  border-radius: 0;
-  color: var(--color-text-muted, #888);
-  cursor: pointer;
-  font-size: 0.75rem;
-  padding: 3px 6px;
-  flex-shrink: 0;
-  min-width: 28px;
-  text-align: center;
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+    border: 0;
+    border-radius: 0;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-family: var(--fg-font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.25rem 0.375rem;
+    flex-shrink: 0;
+    min-width: 28px;
+    text-align: center;
+    transition: background var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
 }
 
+/* Active superset: aurora-pink */
 .wei-superset-btn--active {
-  background: rgba(var(--color-primary-rgb, 255,27,141), 0.15);
-  border-color: var(--color-primary, #ff3da6);
-  color: var(--color-primary, #ff3da6);
+    background: rgba(255, 61, 166, 0.15);
+    box-shadow: inset 0 0 0 1.5px var(--fg-pink);
+    color: var(--fg-pink);
 }
 
+/* Remove buttons */
 .wei-remove-btn {
-  background: transparent;
-  border: none;
-  color: var(--color-text-muted, #888);
-  cursor: pointer;
-  font-size: 0.8rem;
-  padding: 2px 4px;
-  line-height: 1;
+    background: transparent;
+    border: 0;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.25rem;
+    line-height: 1;
+    font-family: var(--fg-font-display);
+    transition: color var(--transition-fast);
 }
 
 .wei-remove-btn:hover {
-  color: var(--color-error, #f44);
+    color: var(--fg-rose);
 }
 
+/* Add set CTA — dashed hairline */
 .wei-add-set-btn {
-  background: transparent;
-  border: 1px dashed var(--color-border, #444);
-  border-radius: 0;
-  color: var(--color-text-muted, #888);
-  cursor: pointer;
-  font-size: 0.78rem;
-  padding: 4px 10px;
-  align-self: flex-start;
+    background: transparent;
+    border: 0;
+    box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+    /* dashed effect via background-image */
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--fg-hairline-color) 0,
+        var(--fg-hairline-color) 6px,
+        transparent 6px,
+        transparent 12px
+    ),
+    repeating-linear-gradient(
+        0deg,
+        var(--fg-hairline-color) 0,
+        var(--fg-hairline-color) 6px,
+        transparent 6px,
+        transparent 12px
+    ),
+    repeating-linear-gradient(
+        90deg,
+        var(--fg-hairline-color) 0,
+        var(--fg-hairline-color) 6px,
+        transparent 6px,
+        transparent 12px
+    ),
+    repeating-linear-gradient(
+        0deg,
+        var(--fg-hairline-color) 0,
+        var(--fg-hairline-color) 6px,
+        transparent 6px,
+        transparent 12px
+    );
+    background-size: 12px 1.5px, 1.5px 12px, 12px 1.5px, 1.5px 12px;
+    background-position: 0 0, 0 0, 0 100%, 100% 0;
+    background-repeat: repeat-x, repeat-y, repeat-x, repeat-y;
+    border-radius: 0;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-family: var(--fg-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.375rem 0.75rem;
+    align-self: flex-start;
+    transition: color var(--transition-fast);
 }
 
 .wei-add-set-btn:hover {
-  border-color: var(--color-primary, #ff3da6);
-  color: var(--color-primary, #ff3da6);
+    color: var(--fg-cyan);
 }
 
+/* Add exercise CTA — full-width dashed panel */
 .wei-add-exercise-btn {
-  padding: 10px 16px;
-  border-radius: 0;
-  border: 1px dashed var(--color-border, #444);
-  background: transparent;
-  color: var(--color-text, #fff);
-  cursor: pointer;
-  font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+    border: 0;
+    /* dashed outline via box-shadow trick */
+    outline: 1.5px dashed var(--fg-hairline-color);
+    outline-offset: -1px;
+    background: transparent;
+    color: var(--fg-paper);
+    cursor: pointer;
+    font-family: var(--fg-font-display);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: outline-color var(--transition-fast), color var(--transition-fast);
 }
 
 .wei-add-exercise-btn:hover {
-  border-color: var(--color-primary, #ff3da6);
+    outline-color: var(--fg-cyan);
+    color: var(--fg-cyan);
 }
