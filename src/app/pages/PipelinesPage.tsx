@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { PageLayout, Stack } from '../components/library/layout';
-import { Card, Button, Heading, Paragraph, CardSkeleton, ConfirmDialog, IdBadge, Badge, GlowCard, FlowVisualization, BoosterGrid, Pill, useToast } from '../components/library/ui';
+import { PageLayout } from '../components/library/layout';
+import { CardSkeleton, ConfirmDialog, IdBadge, useToast } from '../components/library/ui';
 
 import { client } from '../../shared/api/client';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
@@ -12,6 +12,7 @@ import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { useNerdMode } from '../state/NerdModeContext';
 import { ImportPipelineModal } from '../components/ImportPipelineModal';
 import '../components/library/ui/CardSkeleton.css';
+import './PipelinesPage.css';
 
 
 interface EnricherConfig {
@@ -54,99 +55,103 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
 
     const boosterCount = pipeline.enrichers?.length ?? 0;
 
-    // Header content for GlowCard - matches EnrichedActivityCard style
-    const headerContent = (
-        <Stack direction="horizontal" align="center" justify="between">
-            <Stack direction="horizontal" gap="sm" align="center" wrap>
-                <Heading level={4}>{pipeline.name || 'Unnamed Pipeline'}</Heading>
-                {isNerdMode && <IdBadge id={pipeline.id} stripPrefix="pipe_" showChars={8} copyable />}
-                {boosterCount > 0 && (
-                    <Pill variant="gradient" size="small">{boosterCount} Booster{boosterCount !== 1 ? 's' : ''}</Pill>
-                )}
-            </Stack>
-            {pipeline.disabled && <Badge variant="default">Disabled</Badge>}
-        </Stack>
-    );
-
-    // Source node for FlowVisualization
-    const sourceNode = (
-        <Badge variant="source" size="sm">
-            <Stack direction="horizontal" gap="xs" align="center">
-                <Paragraph inline>{getSourceIcon(pipeline.source)}</Paragraph>
-                <Paragraph inline size="sm">{getSourceName(pipeline.source)}</Paragraph>
-            </Stack>
-        </Badge>
-    );
-
-    // Enrichers/boosters in the center - horizontal wrapped badges like EnrichedActivityCard
-    const centerNode = (
-        <BoosterGrid emptyText="No boosters">
-            {(pipeline.enrichers ?? []).map((e, i) => (
-                <Badge key={i} variant="booster" size="sm">
-                    <Stack direction="horizontal" gap="xs" align="center">
-                        <Paragraph inline>{getEnricherIcon(e.providerType)}</Paragraph>
-                        <Paragraph inline size="sm">{getEnricherName(e.providerType)}</Paragraph>
-                    </Stack>
-                </Badge>
-            ))}
-        </BoosterGrid>
-    );
-
-    // Destination node(s) for FlowVisualization
-    const destinationNode = pipeline.destinations.length > 0 ? (
-        <Stack direction="horizontal" gap="xs" wrap>
-            {pipeline.destinations.map((dest, i) => (
-                <Badge key={i} variant="destination" size="sm">
-                    <Stack direction="horizontal" gap="xs" align="center">
-                        <Paragraph inline>{getDestinationIcon(dest)}</Paragraph>
-                        <Paragraph inline size="sm">{getDestinationName(dest)}</Paragraph>
-                    </Stack>
-                </Badge>
-            ))}
-        </Stack>
-    ) : (
-        <Badge variant="default" size="sm">
-            <Stack direction="horizontal" gap="xs" align="center">
-                <Paragraph inline>🚀</Paragraph>
-                <Paragraph inline size="sm">No destinations</Paragraph>
-            </Stack>
-        </Badge>
-    );
-
     return (
-        <GlowCard
-            variant="premium"
-            header={headerContent}
-            disabled={pipeline.disabled}
-        >
-            {/* Flow Visualization: Source → Boosters → Destination */}
-            <FlowVisualization
-                source={sourceNode}
-                center={centerNode}
-                destination={destinationNode}
-            />
+        <div className={`pipe-card${pipeline.disabled ? ' pipe-card--disabled' : ''}`}>
+            {/* Header */}
+            <div className="pipe-card__head">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', minWidth: 0 }}>
+                    <span className="pipe-card__name">{pipeline.name || 'UNNAMED PIPELINE'}</span>
+                    {isNerdMode && <IdBadge id={pipeline.id} stripPrefix="pipe_" showChars={8} copyable />}
+                    {boosterCount > 0 && (
+                        <span className="fg-stamp fg-stamp--ink">{boosterCount} BOOSTER{boosterCount !== 1 ? 'S' : ''}</span>
+                    )}
+                </div>
+                <div className="pipe-card__head-right">
+                    {pipeline.disabled && <span className="fg-stamp fg-stamp--paper">DISABLED</span>}
+                </div>
+            </div>
 
-            {/* Actions footer */}
-            <Stack direction="horizontal" align="center" justify="end" gap="sm">
-                <Button
-                    variant={pipeline.disabled ? 'primary' : 'secondary'}
-                    size="small"
+            {/* Flow: source → boosters → destinations */}
+            <div className="pipe-card__flow">
+                {/* Source */}
+                <div>
+                    <div className="pipe-card__flow-label">SOURCE</div>
+                    <div className="pipe-card__chips">
+                        <span className="fg-booster-chip fg-booster-chip--done">
+                            <span className="fg-booster-chip__emoji">{getSourceIcon(pipeline.source)}</span>
+                            {getSourceName(pipeline.source)}
+                        </span>
+                    </div>
+                </div>
+
+                <span className="pipe-card__flow-arrow">→</span>
+
+                {/* Boosters */}
+                <div>
+                    <div className="pipe-card__flow-label">BOOSTERS</div>
+                    <div className="pipe-card__chips">
+                        {(pipeline.enrichers ?? []).length === 0 ? (
+                            <span className="fg-booster-chip" style={{ color: 'var(--color-text-muted)' }}>NONE</span>
+                        ) : (
+                            (pipeline.enrichers ?? []).map((e, i) => (
+                                <span key={i} className="fg-booster-chip">
+                                    <span className="fg-booster-chip__emoji">{getEnricherIcon(e.providerType)}</span>
+                                    {getEnricherName(e.providerType)}
+                                </span>
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                <span className="pipe-card__flow-arrow">→</span>
+
+                {/* Destinations */}
+                <div>
+                    <div className="pipe-card__flow-label">DESTINATIONS</div>
+                    <div className="pipe-card__chips">
+                        {pipeline.destinations.length === 0 ? (
+                            <span className="fg-booster-chip" style={{ color: 'var(--color-text-muted)' }}>NONE</span>
+                        ) : (
+                            pipeline.destinations.map((dest, i) => (
+                                <span key={i} className="fg-booster-chip">
+                                    <span className="fg-booster-chip__emoji">{getDestinationIcon(dest)}</span>
+                                    {getDestinationName(dest)}
+                                </span>
+                            ))
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Footer actions */}
+            <div className="pipe-card__foot">
+                <button
+                    className={`fg-button fg-button--sm${pipeline.disabled ? '' : ' fg-button--ink'}`}
                     onClick={() => onToggleDisabled(!pipeline.disabled)}
                     disabled={toggling}
                 >
-                    {toggling ? 'Updating...' : (pipeline.disabled ? 'Enable' : 'Disable')}
-                </Button>
-                <Button variant="secondary" size="small" onClick={onEdit}>
-                    Edit
-                </Button>
-                <Button variant="secondary" size="small" onClick={onDuplicate} disabled={duplicating}>
-                    {duplicating ? 'Duplicating...' : 'Duplicate'}
-                </Button>
-                <Button variant="danger" size="small" onClick={onDelete} disabled={deleting}>
-                    {deleting ? 'Deleting...' : 'Delete'}
-                </Button>
-            </Stack>
-        </GlowCard>
+                    {toggling ? 'UPDATING…' : (pipeline.disabled ? 'ENABLE' : 'DISABLE')}
+                </button>
+                <button className="fg-button fg-button--sm fg-button--ink" onClick={onEdit}>
+                    EDIT
+                </button>
+                <button
+                    className="fg-button fg-button--sm fg-button--ink"
+                    onClick={onDuplicate}
+                    disabled={duplicating}
+                >
+                    {duplicating ? 'DUPLICATING…' : 'DUPLICATE'}
+                </button>
+                <button
+                    className="fg-button fg-button--sm"
+                    style={{ background: 'var(--fg-rose)', color: 'var(--fg-paper)' }}
+                    onClick={onDelete}
+                    disabled={deleting}
+                >
+                    {deleting ? 'DELETING…' : 'DELETE'}
+                </button>
+            </div>
+        </div>
     );
 };
 
@@ -157,7 +162,6 @@ const PipelinesPage: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { loading: registryLoading } = usePluginRegistry();
     const { pipelines, loading, refresh: refreshPipelines } = useRealtimePipelines();
-    // Realtime integrations auto-subscribes - no manual fetch needed
     useRealtimeIntegrations();
     const [deleting, setDeleting] = useState<string | null>(null);
     const [toggling, setToggling] = useState<string | null>(null);
@@ -166,17 +170,14 @@ const PipelinesPage: React.FC = () => {
     const [importCode, setImportCode] = useState<string | undefined>(undefined);
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-    // Check for ?code= query param on mount
     useEffect(() => {
         const code = searchParams.get('code');
         if (code) {
             setImportCode(code);
             setShowImportModal(true);
-            // Clear the query param from URL
             setSearchParams({}, { replace: true });
         }
     }, [searchParams, setSearchParams]);
-
 
     const handleDeleteConfirm = async () => {
         if (!deleteConfirm) return;
@@ -239,31 +240,14 @@ const PipelinesPage: React.FC = () => {
     if (loading || registryLoading) {
         return (
             <PageLayout title="Pipelines" backTo="/" backLabel="Dashboard">
-                <Card>
-                    <Stack gap="lg">
-                        {/* Skeleton header */}
-                        <Stack direction="horizontal" justify="between" align="center">
-                            <Stack gap="xs">
-                                <Heading level={3}>🔀 Your Pipelines</Heading>
-                                <Paragraph muted size="sm">Configure how your activities flow from sources to destinations</Paragraph>
-                            </Stack>
-                            <Stack direction="horizontal" gap="sm">
-                                <Button variant="secondary" size="small" disabled>
-                                    📥 Import
-                                </Button>
-                                <Button variant="primary" size="small" disabled>
-                                    + New Pipeline
-                                </Button>
-                            </Stack>
-                        </Stack>
-
-                        {/* Skeleton pipeline cards */}
-                        <Stack gap="md">
-                            <CardSkeleton variant="pipeline-full" />
-                            <CardSkeleton variant="pipeline-full" />
-                        </Stack>
-                    </Stack>
-                </Card>
+                <div className="fg-band">
+                    <span className="fg-band__label">YOUR PIPELINES</span>
+                    <span className="fg-band__right">LOADING…</span>
+                </div>
+                <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <CardSkeleton variant="pipeline-full" />
+                    <CardSkeleton variant="pipeline-full" />
+                </div>
             </PageLayout>
         );
     }
@@ -275,57 +259,56 @@ const PipelinesPage: React.FC = () => {
             backLabel="Dashboard"
             onRefresh={refreshPipelines}
         >
-            <Stack gap="lg">
-                <SmartNudge page="pipelines" />
+            <SmartNudge page="pipelines" />
 
-                <div className="fg-band">
-                    <span className="fg-band__label">YOUR PIPELINES</span>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button
-                            className="fg-button fg-button--ink fg-button--sm"
-                            onClick={() => { setImportCode(undefined); setShowImportModal(true); }}
-                        >
-                            📥 IMPORT
-                        </button>
-                        <button
-                            className="fg-button fg-button--sm"
-                            onClick={() => navigate('/settings/pipelines/new')}
-                        >
-                            + NEW PIPELINE
-                        </button>
-                    </div>
+            {/* Header band */}
+            <div className="fg-band">
+                <span className="fg-band__label">YOUR PIPELINES</span>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button
+                        className="fg-button fg-button--sm fg-button--ink"
+                        onClick={() => { setImportCode(undefined); setShowImportModal(true); }}
+                    >
+                        📥 IMPORT
+                    </button>
+                    <button
+                        className="fg-button fg-button--sm"
+                        onClick={() => navigate('/settings/pipelines/new')}
+                    >
+                        + NEW PIPELINE
+                    </button>
                 </div>
+            </div>
 
-                {/* Pipeline list */}
-                {pipelines.length === 0 ? (
-                    <Card>
-                        <Stack align="center" gap="md">
-                            <Paragraph size="lg">🔀</Paragraph>
-                            <Heading level={4}>No Pipelines Configured</Heading>
-                            <Paragraph centered muted>Create your first pipeline to start automating your fitness data.</Paragraph>
-                            <Button variant="primary" onClick={() => navigate('/settings/pipelines/new')}>
-                                Create Your First Pipeline
-                            </Button>
-                        </Stack>
-                    </Card>
-                ) : (
-                    <Stack gap="md">
-                        {pipelines.map(pipeline => (
-                            <PipelineCard
-                                key={pipeline.id}
-                                pipeline={pipeline}
-                                onEdit={() => navigate(`/settings/pipelines/${pipeline.id}/edit`)}
-                                onDelete={() => setDeleteConfirm(pipeline.id)}
-                                onDuplicate={() => handleDuplicate(pipeline)}
-                                onToggleDisabled={(disabled) => handleToggleDisabled(pipeline.id, disabled)}
-                                deleting={deleting === pipeline.id}
-                                toggling={toggling === pipeline.id}
-                                duplicating={duplicating === pipeline.id}
-                            />
-                        ))}
-                    </Stack>
-                )}
-            </Stack>
+            {/* Pipeline list or empty state */}
+            {pipelines.length === 0 ? (
+                <div className="pipe-empty">
+                    <div className="pipe-empty__icon">🔀</div>
+                    <div className="pipe-empty__title">NO PIPELINES CONFIGURED</div>
+                    <p className="pipe-empty__sub">
+                        Create your first pipeline to start automating your fitness data.
+                    </p>
+                    <button className="fg-button" onClick={() => navigate('/settings/pipelines/new')}>
+                        CREATE YOUR FIRST PIPELINE →
+                    </button>
+                </div>
+            ) : (
+                <div>
+                    {pipelines.map(pipeline => (
+                        <PipelineCard
+                            key={pipeline.id}
+                            pipeline={pipeline}
+                            onEdit={() => navigate(`/settings/pipelines/${pipeline.id}/edit`)}
+                            onDelete={() => setDeleteConfirm(pipeline.id)}
+                            onDuplicate={() => handleDuplicate(pipeline)}
+                            onToggleDisabled={(disabled) => handleToggleDisabled(pipeline.id, disabled)}
+                            deleting={deleting === pipeline.id}
+                            toggling={toggling === pipeline.id}
+                            duplicating={duplicating === pipeline.id}
+                        />
+                    ))}
+                </div>
+            )}
 
             {showImportModal && (
                 <ImportPipelineModal

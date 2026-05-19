@@ -1,0 +1,161 @@
+/* ==========================================================================
+   PipelineWizardPage — Brutal × Aurora reskin
+   Uses wiz__* classes from app-components.css for the wizard pattern
+   ========================================================================== */
+
+/* Full-height wizard layout */
+.pipe-wiz {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 70vh;
+}
+
+/* Step rail */
+.pipe-wiz__rail {
+  background: var(--fg-ink-2);
+  border-right: var(--fg-rule-thin);
+  padding: 1.5rem 0;
+}
+
+.pipe-wiz__rail-title {
+  font-family: var(--fg-font-display);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0 1.5rem 1rem;
+  border-bottom: var(--fg-rule-thin);
+  margin-bottom: 1rem;
+  color: var(--fg-paper);
+}
+
+/* Wizard body */
+.pipe-wiz__body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Step header */
+.pipe-wiz__body-head {
+  padding: 1.5rem 2rem 1rem;
+  border-bottom: var(--fg-rule-thin);
+  background: var(--fg-ink);
+}
+
+.pipe-wiz__step-label {
+  font-family: var(--fg-font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.pipe-wiz__step-title {
+  font-family: var(--fg-font-display);
+  font-size: 2rem;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
+  margin-bottom: 0.5rem;
+}
+
+.pipe-wiz__step-help {
+  font-family: var(--fg-font-body);
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  max-width: 600px;
+  line-height: 1.55;
+}
+
+/* Content area */
+.pipe-wiz__content {
+  padding: 1.5rem 2rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Section within content */
+.pipe-wiz__section {
+  margin-bottom: 1.75rem;
+}
+
+.pipe-wiz__section-label {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+/* Search bar */
+.pipe-wiz__search {
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+  border: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+  padding: 0.625rem 1rem;
+  font-family: var(--fg-font-body);
+  font-size: 0.9375rem;
+  outline: none;
+  width: 100%;
+  max-width: 400px;
+  transition: box-shadow var(--transition-fast);
+}
+.pipe-wiz__search:focus {
+  box-shadow: inset 0 0 0 2px var(--fg-pink);
+}
+
+/* Footer actions */
+.pipe-wiz__actions {
+  padding: 1.125rem 2rem;
+  border-top: var(--fg-rule-thin);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--fg-ink-2);
+}
+
+/* Error state */
+.pipe-wiz__error {
+  padding: 0.875rem 1rem;
+  background: rgba(255, 93, 108, 0.1);
+  box-shadow: inset 0 0 0 1.5px var(--fg-rose);
+  font-family: var(--fg-font-body);
+  font-size: 0.875rem;
+  color: var(--fg-rose);
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .pipe-wiz {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .pipe-wiz__rail {
+    border-right: none;
+    border-bottom: var(--fg-rule-thin);
+    padding: 0;
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .pipe-wiz__rail-title {
+    display: none;
+  }
+
+  .pipe-wiz__body-head,
+  .pipe-wiz__content {
+    padding: 1rem 1.25rem;
+  }
+
+  .pipe-wiz__actions {
+    padding: 1rem 1.25rem;
+  }
+}
