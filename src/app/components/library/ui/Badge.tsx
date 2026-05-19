@@ -1,44 +1,54 @@
 import React, { ReactNode } from 'react';
-import './Badge.css';
 
-export type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'premium' | 'light' | 'booster' | 'booster-skipped' | 'booster-error' | 'source' | 'destination';
+// Maps to fg-stamp + fg-stamp--{color} classes in app-components.css.
+export type BadgeVariant =
+    | 'default' | 'success' | 'warning' | 'error' | 'info'
+    | 'premium' | 'light' | 'booster' | 'booster-skipped' | 'booster-error'
+    | 'source' | 'destination';
+
 export type BadgeSize = 'sm' | 'md';
 
 export interface BadgeProps {
-  /** Visual variant */
-  variant?: BadgeVariant;
-  /** Size */
-  size?: BadgeSize;
-  /** Optional icon before text */
-  icon?: ReactNode;
-  /** Additional CSS class names */
-  className?: string;
-  /** Badge content */
-  children: ReactNode;
+    variant?: BadgeVariant;
+    size?: BadgeSize;
+    icon?: ReactNode;
+    className?: string;
+    children: ReactNode;
 }
 
-/**
- * Badge provides status/label indicators.
- * Replaces various ad-hoc badge/tag patterns.
- */
-export const Badge: React.FC<BadgeProps> = ({
-  variant = 'default',
-  size = 'md',
-  icon,
-  className,
-  children,
-}) => {
-  const classes = [
-    'ui-badge',
-    `ui-badge--${variant}`,
-    `ui-badge--${size}`,
-    className,
-  ].filter(Boolean).join(' ');
+const VARIANT_CLASS: Record<BadgeVariant, string> = {
+    default:          '',
+    success:          'fg-stamp--green',
+    warning:          'fg-stamp--gold',
+    error:            'fg-stamp--rose',
+    info:             'fg-stamp--violet',
+    premium:          'fg-stamp--violet',
+    light:            'fg-stamp--paper',
+    booster:          '',
+    'booster-skipped': 'fg-stamp--ink',
+    'booster-error':   'fg-stamp--rose',
+    source:           'fg-stamp--cyan',
+    destination:      'fg-stamp--outline',
+};
 
-  return (
-    <span className={classes}>
-      {icon && <span>{icon}</span>}
-      {children}
-    </span>
-  );
+export const Badge: React.FC<BadgeProps> = ({
+    variant = 'default',
+    size,
+    icon,
+    className,
+    children,
+}) => {
+    const classes = [
+        'fg-stamp',
+        VARIANT_CLASS[variant],
+        size === 'sm' ? 'fg-stamp--sm' : '',
+        className,
+    ].filter(Boolean).join(' ');
+
+    return (
+        <span className={classes}>
+            {icon && <span>{icon}</span>}
+            {children}
+        </span>
+    );
 };

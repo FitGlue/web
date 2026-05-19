@@ -1,23 +1,30 @@
 import React, { ReactNode, ButtonHTMLAttributes } from 'react';
-import './Button.css';
 
-type ButtonVariant = 'primary' | 'secondary' | 'secondary-light' | 'text' | 'danger';
-type ButtonSize = 'small' | 'default' | 'large';
+// Variants map to fg-button modifier classes in app-components.css.
+// 'secondary' and 'secondary-light' are legacy aliases for 'outline'.
+// 'text' is a legacy alias for 'ghost'.
+type ButtonVariant = 'primary' | 'outline' | 'ghost' | 'danger' | 'ink' | 'paper' | 'secondary' | 'secondary-light' | 'text';
+type ButtonSize = 'sm' | 'default' | 'small' | 'large';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    /** Button style variant */
     variant?: ButtonVariant;
-    /** Button size */
     size?: ButtonSize;
-    /** Button content */
     children: ReactNode;
-    /** Full width button */
     fullWidth?: boolean;
 }
 
-/**
- * Button component with consistent styling variants.
- */
+const VARIANT_CLASS: Record<ButtonVariant, string> = {
+    primary:         '',
+    outline:         'fg-button--outline',
+    ghost:           'fg-button--ghost',
+    danger:          'fg-button--danger',
+    ink:             'fg-button--ink',
+    paper:           'fg-button--paper',
+    secondary:       'fg-button--outline',
+    'secondary-light': 'fg-button--ghost',
+    text:            'fg-button--ghost',
+};
+
 export const Button: React.FC<ButtonProps> = ({
     variant = 'primary',
     size = 'default',
@@ -26,14 +33,16 @@ export const Button: React.FC<ButtonProps> = ({
     className = '',
     ...props
 }) => {
-    const sizeClass = size !== 'default' ? size : '';
-    const widthClass = fullWidth ? 'full-width' : '';
+    const modifiers = [
+        VARIANT_CLASS[variant],
+        (size === 'sm' || size === 'small') ? 'fg-button--sm' : '',
+        (size === 'large') ? 'fg-button--lg' : '',
+        fullWidth ? 'fg-button--full' : '',
+        className,
+    ].filter(Boolean).join(' ');
 
     return (
-        <button
-            className={`btn ${variant} ${sizeClass} ${widthClass} ${className}`.trim()}
-            {...props}
-        >
+        <button className={`fg-button ${modifiers}`.trimEnd()} {...props}>
             {children}
         </button>
     );
