@@ -1,26 +1,32 @@
+/* ==========================================================================
+   BackLink — mono, ← prefix, paper-dim color, aurora cyan on hover (BA)
+   ========================================================================== */
+@import '../tokens.css';
+
 .ui-back-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  gap: 0.375rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
   text-decoration: none;
-  font-size: 0.875rem;
-  transition: color 0.15s ease;
+  transition: color var(--transition-fast);
 }
 
 .ui-back-link:hover {
-  color: var(--color-text-primary, #ffffff);
+  color: var(--fg-cyan);
 }
 
+/* Arrow — part of the text, no separate transition */
 .ui-back-link__arrow {
-  font-size: 1.125rem;
-  transition: transform 0.15s ease;
-}
-
-.ui-back-link:hover .ui-back-link__arrow {
-  transform: translateX(-2px);
+  font-style: normal;
+  line-height: 1;
 }
 
 .ui-back-link__label {
-  font-weight: 500;
+  /* inherits font from parent */
 }
