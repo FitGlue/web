@@ -5678,7 +5678,7 @@ h4 {
 }
 
 .connection-card--connected::before {
-  background: linear-gradient(90deg, var(--color-success), #3A86FF);
+  background: linear-gradient(90deg, var(--color-success), #22d3ee);
   opacity: 1;
 }
 

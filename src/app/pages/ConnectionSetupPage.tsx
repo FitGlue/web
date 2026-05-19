@@ -397,6 +397,9 @@ const ConnectionSetupPage: React.FC = () => {
             backTo="/connections"
             backLabel="Connections"
         >
+            <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
+                <span className="fg-band__label">CONNECT · {integration.name.toUpperCase()}</span>
+            </div>
             {authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_API_KEY && renderApiKeySetup()}
             {authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_OAUTH && renderOAuthSetup()}
             {authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_APP_SYNC && renderAppSyncSetup()}

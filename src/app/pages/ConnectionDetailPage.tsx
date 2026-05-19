@@ -181,6 +181,10 @@ const ConnectionDetailPage: React.FC = () => {
             backTo="/connections"
             backLabel="Connections"
         >
+            <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
+                <span className="fg-band__label">CONNECTION · {integration.name.toUpperCase()}</span>
+                <span className="fg-band__right">{isConnected ? '● ACTIVE' : '○ INACTIVE'}</span>
+            </div>
             <Card variant="elevated">
                 <Stack gap="lg">
                     {/* Header with icon and status */}

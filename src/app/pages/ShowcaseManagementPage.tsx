@@ -519,7 +519,9 @@ const ShowcaseManagementPage: React.FC = () => {
     return (
         <PageLayout title="Manage Showcase" backTo="/" backLabel="Dashboard">
             <Stack gap="lg">
-
+                <div className="fg-band">
+                    <span className="fg-band__label">SHOWCASE · PUBLIC PROFILE</span>
+                </div>
 
                 {/* Profile Picture & Basic Info */}
                 <Card className="showcase-mgmt__section">

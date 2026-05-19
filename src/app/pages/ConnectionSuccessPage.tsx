@@ -88,6 +88,10 @@ const ConnectionSuccessPage: React.FC = () => {
 
     return (
         <PageLayout title="Connected!" backTo="/connections" backLabel="Connections">
+            <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
+                <span className="fg-band__label">CONNECTED · {displayName.toUpperCase()}</span>
+                <span className="fg-band__right">✓ SUCCESS</span>
+            </div>
             <Stack gap="lg" align="center">
                 <Paragraph size="lg">
                     {icon}

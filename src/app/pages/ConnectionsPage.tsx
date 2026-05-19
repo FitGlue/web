@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout, Stack, Grid } from '../components/library/layout';
 import { SmartNudge } from '../components/SmartNudge';
-import { Button, PluginIcon, CardSkeleton, Badge, Heading, Paragraph, Card, GlowCard } from '../components/library/ui';
+import { Button, PluginIcon, Card, CardSkeleton, Badge, Heading, Paragraph, GlowCard } from '../components/library/ui';
 
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
@@ -157,6 +157,15 @@ const ConnectionsPage: React.FC = () => {
         return status?.connected;
     }).length;
 
+    const connectedIntegrations = registryIntegrations.filter(i => {
+        const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[i.id];
+        return status?.connected;
+    });
+    const availableIntegrations = registryIntegrations.filter(i => {
+        const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[i.id];
+        return !status?.connected;
+    });
+
     if (loading || registryLoading) {
         return (
             <PageLayout title="Connections" backTo="/" backLabel="Dashboard">
@@ -189,40 +198,51 @@ const ConnectionsPage: React.FC = () => {
             backLabel="Dashboard"
             onRefresh={refreshIntegrations}
         >
-            <Card>
-                <Stack gap="lg">
-                    {/* Header with title and stats */}
-                    <Stack direction="horizontal" justify="between" align="center">
-                        <Stack gap="xs">
-                            <Heading level={3}>🔗 Your Connections</Heading>
-                            <Paragraph muted size="sm">Connect your fitness apps and devices to sync your data with FitGlue</Paragraph>
-                        </Stack>
-                        {connectedCount > 0 && (
-                            <Badge variant="success" size="sm">
-                                {connectedCount} Connected
-                            </Badge>
-                        )}
-                    </Stack>
+            <Stack gap="lg">
+                <SmartNudge page="connections" />
 
-                    <SmartNudge page="connections" />
+                {connectedIntegrations.length > 0 && (
+                    <>
+                        <div className="fg-band">
+                            <span className="fg-band__label">CONNECTED</span>
+                            <span className="fg-band__right">{connectedCount} ACTIVE</span>
+                        </div>
+                        <Grid>
+                            {connectedIntegrations.map(integration => {
+                                const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
+                                return (
+                                    <ConnectionCard
+                                        key={integration.id}
+                                        integration={integration}
+                                        status={status}
+                                        onConnect={() => handleConnect(integration)}
+                                        onView={() => handleView(integration)}
+                                    />
+                                );
+                            })}
+                        </Grid>
+                    </>
+                )}
 
-                    {/* Connection cards grid */}
-                    <Grid>
-                        {registryIntegrations.map(integration => {
-                            const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
-                            return (
-                                <ConnectionCard
-                                    key={integration.id}
-                                    integration={integration}
-                                    status={status}
-                                    onConnect={() => handleConnect(integration)}
-                                    onView={() => handleView(integration)}
-                                />
-                            );
-                        })}
-                    </Grid>
-                </Stack>
-            </Card>
+                <div className="fg-band fg-band--ink">
+                    <span className="fg-band__label">AVAILABLE CONNECTIONS</span>
+                    <span className="fg-band__right">{availableIntegrations.length} SERVICES</span>
+                </div>
+                <Grid>
+                    {availableIntegrations.map(integration => {
+                        const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
+                        return (
+                            <ConnectionCard
+                                key={integration.id}
+                                integration={integration}
+                                status={status}
+                                onConnect={() => handleConnect(integration)}
+                                onView={() => handleView(integration)}
+                            />
+                        );
+                    })}
+                </Grid>
+            </Stack>
         </PageLayout>
     );
 };

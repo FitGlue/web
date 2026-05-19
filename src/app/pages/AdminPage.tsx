@@ -50,6 +50,10 @@ const AdminPage: React.FC = () => {
 
   return (
     <PageLayout title="Admin Console" fullWidth>
+      <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
+        <span className="fg-band__label">ADMIN CONSOLE</span>
+        <span className="fg-band__right">PLATFORM</span>
+      </div>
       <Container size="full" centered={false}>
         <TabbedCard
           tabs={tabs}

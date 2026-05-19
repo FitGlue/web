@@ -4,7 +4,7 @@ import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { useUser } from '../hooks/useUser';
 import { PageLayout, Stack } from '../components/library/layout';
 import { PipelineRunsList, FilterMode } from '../components/dashboard/PipelineRunsList';
-import { StatInline, LiveToggle, Heading, Paragraph } from '../components/library/ui';
+import { StatInline, LiveToggle } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { ActivitiesService } from '../services/ActivitiesService';
 
@@ -72,16 +72,10 @@ const ActivitiesListPage: React.FC = () => {
             headerActions={liveToggle}
         >
             <Stack gap="lg">
-                <Stack gap="sm">
-                    <Stack direction="horizontal" align="center" gap="sm">
-                        <Heading level={2}>
-                            🚀 Pipeline Runs
-                        </Heading>
-                    </Stack>
-                    <Paragraph muted>
-                        Track all your activity pipeline executions in real-time
-                    </Paragraph>
-                </Stack>
+                <div className="fg-band">
+                    <span className="fg-band__label">PIPELINE RUNS</span>
+                    <span className="fg-band__right">REAL-TIME</span>
+                </div>
 
                 <Stack direction="horizontal" gap="md" responsive>
                     <StatInline

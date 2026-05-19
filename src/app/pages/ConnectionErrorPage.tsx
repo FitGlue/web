@@ -41,6 +41,10 @@ const ConnectionErrorPage: React.FC = () => {
 
     return (
         <PageLayout title="Connection Failed" backTo="/connections" backLabel="Connections">
+            <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
+                <span className="fg-band__label">CONNECTION · {displayName.toUpperCase()}</span>
+                <span className="fg-band__right">✕ FAILED</span>
+            </div>
             <Stack gap="lg" align="center">
                 <Paragraph size="lg">
                     ⚠️

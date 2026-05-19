@@ -36,6 +36,10 @@ const UnsynchronizedDetailPage: React.FC = () => {
         backTo="/activities?tab=unsynchronized"
         backLabel="Unsynchronized Activities"
     >
+        <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
+            <span className="fg-band__label">PIPELINE TRACE</span>
+            <span className="fg-band__right">UNSYNCHRONIZED</span>
+        </div>
         <Card>
             <KeyValue label="Pipeline ID" value={pipelineExecutionId} format="code" />
             <Text variant="muted">

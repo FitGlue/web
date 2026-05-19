@@ -275,31 +275,30 @@ const PipelinesPage: React.FC = () => {
             backLabel="Dashboard"
             onRefresh={refreshPipelines}
         >
-            <Card>
-                <Stack gap="lg">
-                    {/* Header with title and actions */}
-                    <Stack direction="horizontal" justify="between" align="center">
-                        <Stack gap="xs">
-                            <Heading level={3}>🔀 Your Pipelines</Heading>
-                            <Paragraph muted size="sm">Configure how your activities flow from sources to destinations</Paragraph>
-                        </Stack>
-                        <Stack direction="horizontal" gap="sm">
-                            <Button variant="secondary" size="small" onClick={() => {
-                                setImportCode(undefined);
-                                setShowImportModal(true);
-                            }}>
-                                📥 Import
-                            </Button>
-                            <Button variant="primary" size="small" onClick={() => navigate('/settings/pipelines/new')}>
-                                + New Pipeline
-                            </Button>
-                        </Stack>
-                    </Stack>
+            <Stack gap="lg">
+                <SmartNudge page="pipelines" />
 
-                    <SmartNudge page="pipelines" />
+                <div className="fg-band">
+                    <span className="fg-band__label">YOUR PIPELINES</span>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                            className="fg-button fg-button--ink fg-button--sm"
+                            onClick={() => { setImportCode(undefined); setShowImportModal(true); }}
+                        >
+                            📥 IMPORT
+                        </button>
+                        <button
+                            className="fg-button fg-button--sm"
+                            onClick={() => navigate('/settings/pipelines/new')}
+                        >
+                            + NEW PIPELINE
+                        </button>
+                    </div>
+                </div>
 
-                    {/* Pipeline list */}
-                    {pipelines.length === 0 ? (
+                {/* Pipeline list */}
+                {pipelines.length === 0 ? (
+                    <Card>
                         <Stack align="center" gap="md">
                             <Paragraph size="lg">🔀</Paragraph>
                             <Heading level={4}>No Pipelines Configured</Heading>
@@ -308,25 +307,25 @@ const PipelinesPage: React.FC = () => {
                                 Create Your First Pipeline
                             </Button>
                         </Stack>
-                    ) : (
-                        <Stack gap="md">
-                            {pipelines.map(pipeline => (
-                                <PipelineCard
-                                    key={pipeline.id}
-                                    pipeline={pipeline}
-                                    onEdit={() => navigate(`/settings/pipelines/${pipeline.id}/edit`)}
-                                    onDelete={() => setDeleteConfirm(pipeline.id)}
-                                    onDuplicate={() => handleDuplicate(pipeline)}
-                                    onToggleDisabled={(disabled) => handleToggleDisabled(pipeline.id, disabled)}
-                                    deleting={deleting === pipeline.id}
-                                    toggling={toggling === pipeline.id}
-                                    duplicating={duplicating === pipeline.id}
-                                />
-                            ))}
-                        </Stack>
-                    )}
-                </Stack>
-            </Card>
+                    </Card>
+                ) : (
+                    <Stack gap="md">
+                        {pipelines.map(pipeline => (
+                            <PipelineCard
+                                key={pipeline.id}
+                                pipeline={pipeline}
+                                onEdit={() => navigate(`/settings/pipelines/${pipeline.id}/edit`)}
+                                onDelete={() => setDeleteConfirm(pipeline.id)}
+                                onDuplicate={() => handleDuplicate(pipeline)}
+                                onToggleDisabled={(disabled) => handleToggleDisabled(pipeline.id, disabled)}
+                                deleting={deleting === pipeline.id}
+                                toggling={toggling === pipeline.id}
+                                duplicating={duplicating === pipeline.id}
+                            />
+                        ))}
+                    </Stack>
+                )}
+            </Stack>
 
             {showImportModal && (
                 <ImportPipelineModal

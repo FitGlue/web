@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PageLayout, Stack, Grid, FeatureItem } from '../components/library/layout';
-import { Card, Button, Heading, Paragraph, CardSkeleton, Badge, GlowCard } from '../components/library/ui';
+import { Card, Button, Heading, Paragraph, CardSkeleton, Badge } from '../components/library/ui';
 import { client } from '../../shared/api/client';
 import { useUser } from '../hooks/useUser';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
@@ -91,38 +91,34 @@ const SubscriptionPage: React.FC = () => {
                         </Card>
                     )}
 
-                    {/* Premium Athlete Card */}
-                    <GlowCard
-                        variant="success"
-                        header={
-                            <Stack direction="horizontal" align="center" justify="between">
-                                <Heading level={2}>✨ ATHLETE</Heading>
-                                {user?.isAdmin ? (
-                                    <Badge className="subscription-admin-badge">
-                                        🛡️ Admin Access
-                                    </Badge>
-                                ) : (
-                                    <Stack className="subscription-athlete-card__price" direction="horizontal" align="baseline">
-                                        <Paragraph inline>£5</Paragraph>
-                                        <Paragraph inline className="subscription-athlete-card__price-period">/month</Paragraph>
-                                    </Stack>
-                                )}
-                            </Stack>
-                        }
-                    >
-                        <Heading level={4}>Your Athlete Benefits</Heading>
-                        <Grid cols={2} gap="md">
-                            {ATHLETE_BENEFITS.map((feature) => (
-                                <Card key={feature.title} className="subscription-feature-card">
-                                    <FeatureItem
-                                        icon={feature.icon}
-                                        title={feature.title}
-                                        description={feature.desc}
-                                    />
-                                </Card>
-                            ))}
-                        </Grid>
-                    </GlowCard>
+                    {/* Aurora plan banner */}
+                    <div className="stx-plan">
+                        <span className="stx-plan__icon">✦</span>
+                        <div>
+                            <div className="stx-plan__title">ATHLETE · UNLIMITED SYNCS</div>
+                            {user?.isAdmin ? (
+                                <div className="stx-plan__meta">🛡️ ADMIN ACCESS · ALL FEATURES</div>
+                            ) : (
+                                <div className="stx-plan__meta">£5/MONTH · ACTIVE</div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Athlete Benefits */}
+                    <div className="fg-band fg-band--ink">
+                        <span className="fg-band__label">YOUR ATHLETE BENEFITS</span>
+                    </div>
+                    <Grid cols={2} gap="md">
+                        {ATHLETE_BENEFITS.map((feature) => (
+                            <Card key={feature.title} className="subscription-feature-card">
+                                <FeatureItem
+                                    icon={feature.icon}
+                                    title={feature.title}
+                                    description={feature.desc}
+                                />
+                            </Card>
+                        ))}
+                    </Grid>
 
                     {/* Trial Countdown - Only for trial users */}
                     {isOnTrial && (
@@ -234,13 +230,14 @@ const SubscriptionPage: React.FC = () => {
                     </Card>
                 )}
 
-                {/* Hero Section */}
-                <Stack className="subscription-hero" align="center" gap="sm">
-                    <Heading level={1} className="subscription-hero__title">Unlock Your Full Potential</Heading>
-                    <Paragraph className="subscription-hero__subtitle">
-                        Upgrade to Athlete and automate your fitness data without limits.
-                    </Paragraph>
-                </Stack>
+                {/* Aurora plan teaser */}
+                <div className="stx-plan">
+                    <span className="stx-plan__icon">✦</span>
+                    <div>
+                        <div className="stx-plan__title">UNLOCK ATHLETE</div>
+                        <div className="stx-plan__meta">UNLIMITED SYNCS · £5/MONTH · CANCEL ANYTIME</div>
+                    </div>
+                </div>
 
                 {/* Plan Comparison Grid */}
                 <Stack className="subscription-plans-grid" direction="horizontal" gap="lg">
