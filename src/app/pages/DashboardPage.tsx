@@ -70,6 +70,24 @@ const DashboardPageInner: React.FC = () => {
     // Real-time stats listener
     useRealtimeStats(true);
 
+    // Hero stats (activity counts + streak) from REST API
+    const [heroStats, setHeroStats] = useState<{
+        activitiesThisMonth: number;
+        activitiesThisWeek: number;
+        currentStreakDays: number;
+    } | null>(null);
+
+    useEffect(() => {
+        client.GET('/users/me/activities/stats').then(({ data }) => {
+            if (!data) return;
+            setHeroStats({
+                activitiesThisMonth: data.activitiesThisMonth ?? 0,
+                activitiesThisWeek: data.activitiesThisWeek ?? 0,
+                currentStreakDays: data.currentStreakDays ?? 0,
+            });
+        }).catch(() => {/* non-critical */});
+    }, []);
+
     useEffect(() => {
         if (searchParams.get('redirected') === 'true') {
             info('Page Not Found', "The page you visited doesn't exist — we've brought you back home.");
@@ -117,6 +135,23 @@ const DashboardPageInner: React.FC = () => {
                 <SubscriptionBanner />
 
                 <SmartNudge page="dashboard" />
+
+                {heroStats && (
+                    <div className="fg-hero-stats">
+                        <div className="fg-hero-stat">
+                            <span className="fg-hero-stat__value">{heroStats.activitiesThisMonth}</span>
+                            <span className="fg-hero-stat__label">THIS MONTH</span>
+                        </div>
+                        <div className="fg-hero-stat">
+                            <span className="fg-hero-stat__value">{heroStats.activitiesThisWeek}</span>
+                            <span className="fg-hero-stat__label">THIS WEEK</span>
+                        </div>
+                        <div className="fg-hero-stat">
+                            <span className="fg-hero-stat__value">{heroStats.currentStreakDays}</span>
+                            <span className="fg-hero-stat__label">DAY STREAK</span>
+                        </div>
+                    </div>
+                )}
 
                 <div className="fg-band">
                     <span className="fg-band__label">
