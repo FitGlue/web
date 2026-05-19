@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from './library/ui/Modal';
 import { Button } from './library/ui/Button';
 import { Stack } from './library/layout/Stack';
-import { Heading } from './library/ui/Heading';
 import { Paragraph } from './library/ui/Paragraph';
 import { List, ListItem } from './library/ui/List';
 import { useToast } from './library/ui/Toast';
+import { ModalSection } from './library/layout/ModalSection';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { client } from '../../shared/api/client';
@@ -99,13 +99,34 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initi
     };
 
     return (
-        <Modal isOpen={true} onClose={onClose} title="Import Pipeline">
-            <Stack gap="md">
-                <Stack direction="horizontal" gap="sm" align="center">
-                    <Paragraph inline>📥</Paragraph>
-                    <Heading level={2}>Import Pipeline</Heading>
+        <Modal
+            isOpen={true}
+            onClose={onClose}
+            title="📥 Import Pipeline"
+            footer={
+                <Stack direction="horizontal" gap="sm" justify="end">
+                    <Button variant="secondary" onClick={onClose}>Cancel</Button>
+                    {!validation?.valid ? (
+                        <Button
+                            variant="primary"
+                            onClick={handleValidate}
+                            disabled={!code.trim()}
+                        >
+                            Validate
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="primary"
+                            onClick={handleImport}
+                            disabled={importing}
+                        >
+                            {importing ? 'Importing...' : '✓ Import Pipeline'}
+                        </Button>
+                    )}
                 </Stack>
-
+            }
+        >
+            <Stack gap="md">
                 <Paragraph>
                     Paste a pipeline code to import someone else&apos;s configuration.
                 </Paragraph>
@@ -122,35 +143,35 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initi
                 )}
 
                 {decoded && validation && !validation.valid && (
-                    <Stack gap="sm">
-                        <Heading level={4}>Missing Connections</Heading>
-                        <Paragraph>Connect these services before importing:</Paragraph>
-                        <List>
-                            {validation.missingConnections.map(connId => {
-                                const info = getMissingConnectionInfo(connId, registry!);
-                                return (
-                                    <ListItem key={connId}>
-                                        <Stack direction="horizontal" gap="sm" align="center">
-                                            <Paragraph inline>{info?.icon}</Paragraph>
-                                            <Paragraph inline>{info?.name}</Paragraph>
-                                            <Button
-                                                variant="secondary"
-                                                size="small"
-                                                onClick={() => navigate(`/connections`)}
-                                            >
-                                                Connect
-                                            </Button>
-                                        </Stack>
-                                    </ListItem>
-                                );
-                            })}
-                        </List>
-                    </Stack>
+                    <ModalSection title="Missing Connections">
+                        <Stack gap="sm">
+                            <Paragraph>Connect these services before importing:</Paragraph>
+                            <List>
+                                {validation.missingConnections.map(connId => {
+                                    const info = getMissingConnectionInfo(connId, registry!);
+                                    return (
+                                        <ListItem key={connId}>
+                                            <Stack direction="horizontal" gap="sm" align="center">
+                                                <Paragraph inline>{info?.icon}</Paragraph>
+                                                <Paragraph inline>{info?.name}</Paragraph>
+                                                <Button
+                                                    variant="secondary"
+                                                    size="small"
+                                                    onClick={() => navigate(`/connections`)}
+                                                >
+                                                    Connect
+                                                </Button>
+                                            </Stack>
+                                        </ListItem>
+                                    );
+                                })}
+                            </List>
+                        </Stack>
+                    </ModalSection>
                 )}
 
                 {decoded && validation?.valid && (
-                    <Stack gap="sm">
-                        <Heading level={4}>Pipeline Preview</Heading>
+                    <ModalSection title="Pipeline Preview">
                         <Stack gap="xs">
                             <Stack direction="horizontal" gap="sm">
                                 <Paragraph inline bold>Name</Paragraph>
@@ -175,29 +196,8 @@ export const ImportPipelineModal: React.FC<Props> = ({ onClose, onSuccess, initi
                                 </Paragraph>
                             </Stack>
                         </Stack>
-                    </Stack>
+                    </ModalSection>
                 )}
-
-                <Stack direction="horizontal" gap="sm" justify="end">
-                    <Button variant="secondary" onClick={onClose}>Cancel</Button>
-                    {!validation?.valid ? (
-                        <Button
-                            variant="primary"
-                            onClick={handleValidate}
-                            disabled={!code.trim()}
-                        >
-                            Validate
-                        </Button>
-                    ) : (
-                        <Button
-                            variant="primary"
-                            onClick={handleImport}
-                            disabled={importing}
-                        >
-                            {importing ? 'Importing...' : '✓ Import Pipeline'}
-                        </Button>
-                    )}
-                </Stack>
             </Stack>
         </Modal>
     );

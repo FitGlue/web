@@ -2,6 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from './library/ui';
 import { Checkbox } from './library/forms';
 import { client } from '../../shared/api/client';
+import { SettingsSection } from './library/layout/SettingsSection';
+import { FieldRow } from './library/layout/FieldRow';
+import { Stack } from './library/layout/Stack';
+import { Paragraph } from './library/ui/Paragraph';
+import { LoadingState } from './library/ui/LoadingState';
 import './NotificationPreferencesCard.css';
 
 interface NotificationPreferences {
@@ -58,50 +63,40 @@ export const NotificationPreferencesCard: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="notification-prefs-card">
-                <div className="notification-prefs-card__header">
-                    <span className="notification-prefs-card__heading">🔔 Notifications</span>
-                </div>
-                <div style={{ padding: '0.875rem', fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', color: 'var(--fg-paper-dim)' }}>
-                    Loading preferences…
-                </div>
-            </div>
+            <SettingsSection title="🔔 Notifications">
+                <LoadingState message="Loading preferences…" />
+            </SettingsSection>
         );
     }
 
     return (
-        <div className="notification-prefs-card">
-            <div className="notification-prefs-card__header">
-                <span className="notification-prefs-card__heading">🔔 Notifications</span>
-            </div>
-            <div className="notification-prefs-card__sub">
-                Push notification preferences
-            </div>
+        <SettingsSection title="🔔 Notifications" description="Push notification preferences">
+            <Stack gap="none">
+                <PreferenceToggle
+                    label="Action Required"
+                    description="When a pipeline needs your input (e.g., file upload)"
+                    checked={preferences.notifyPendingInput}
+                    disabled={updating === 'notifyPendingInput'}
+                    onChange={(checked) => updatePreference('notifyPendingInput', checked)}
+                />
 
-            <PreferenceToggle
-                label="Action Required"
-                description="When a pipeline needs your input (e.g., file upload)"
-                checked={preferences.notifyPendingInput}
-                disabled={updating === 'notifyPendingInput'}
-                onChange={(checked) => updatePreference('notifyPendingInput', checked)}
-            />
+                <PreferenceToggle
+                    label="Activity Synced"
+                    description="When activities have finished syncing to all destinations"
+                    checked={preferences.notifyPipelineSuccess}
+                    disabled={updating === 'notifyPipelineSuccess'}
+                    onChange={(checked) => updatePreference('notifyPipelineSuccess', checked)}
+                />
 
-            <PreferenceToggle
-                label="Activity Synced"
-                description="When activities have finished syncing to all destinations"
-                checked={preferences.notifyPipelineSuccess}
-                disabled={updating === 'notifyPipelineSuccess'}
-                onChange={(checked) => updatePreference('notifyPipelineSuccess', checked)}
-            />
-
-            <PreferenceToggle
-                label="Pipeline Failures"
-                description="When a pipeline fails to process an activity"
-                checked={preferences.notifyPipelineFailure}
-                disabled={updating === 'notifyPipelineFailure'}
-                onChange={(checked) => updatePreference('notifyPipelineFailure', checked)}
-            />
-        </div>
+                <PreferenceToggle
+                    label="Pipeline Failures"
+                    description="When a pipeline fails to process an activity"
+                    checked={preferences.notifyPipelineFailure}
+                    disabled={updating === 'notifyPipelineFailure'}
+                    onChange={(checked) => updatePreference('notifyPipelineFailure', checked)}
+                />
+            </Stack>
+        </SettingsSection>
     );
 };
 
@@ -124,18 +119,20 @@ const PreferenceToggle: React.FC<PreferenceToggleProps> = ({
     const id = `pref-${label.toLowerCase().replace(/\s+/g, '-')}`;
 
     return (
-        <div className="notification-prefs-row">
-            <div className="notification-prefs-row__info">
-                <span className="notification-prefs-row__label">{label}</span>
-                <span className="notification-prefs-row__desc">{description}</span>
-            </div>
-            <Checkbox
-                id={id}
-                checked={checked}
-                disabled={disabled}
-                onChange={(e) => onChange(e.target.checked)}
-            />
-        </div>
+        <FieldRow
+            label={label}
+            direction="horizontal"
+            action={
+                <Checkbox
+                    id={id}
+                    checked={checked}
+                    disabled={disabled}
+                    onChange={(e) => onChange(e.target.checked)}
+                />
+            }
+        >
+            <Paragraph size="sm" muted>{description}</Paragraph>
+        </FieldRow>
     );
 };
 

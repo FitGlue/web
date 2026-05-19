@@ -2,6 +2,9 @@ import React from 'react';
 import { ExecutionRecord } from '../services/ActivitiesService';
 import { TraceItem } from './TraceItem';
 import { LoadingState, EmptyState } from './library/ui';
+import { Stack } from './library/layout/Stack';
+import { SettingsSection } from './library/layout/SettingsSection';
+import { Badge } from './library/ui/Badge';
 import './PipelineTrace.css';
 
 interface PipelineTraceProps {
@@ -26,18 +29,17 @@ export const PipelineTrace: React.FC<PipelineTraceProps> = ({ trace, pipelineExe
   }
 
   return (
-    <div className="pipeline-trace">
-      <div className="pipeline-trace__header">
-        <span className="pipeline-trace__heading">Pipeline Execution Trace</span>
+    <SettingsSection title="Pipeline Execution Trace">
+      <Stack gap="none">
         {pipelineExecutionId && (
-          <span className="pipeline-trace__id">{pipelineExecutionId}</span>
+          <Badge variant="default" className="pipeline-trace__id">{pipelineExecutionId}</Badge>
         )}
-      </div>
-      <div className="pipeline-trace__list">
-        {trace.map((exec, index) => (
-          <TraceItem key={exec.executionId || index} execution={exec} index={index} />
-        ))}
-      </div>
-    </div>
+        <Stack gap="none" className="pipeline-trace__list">
+          {trace.map((exec, index) => (
+            <TraceItem key={exec.executionId || index} execution={exec} index={index} />
+          ))}
+        </Stack>
+      </Stack>
+    </SettingsSection>
   );
 };

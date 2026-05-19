@@ -2,6 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSmartNudges, ActiveNudge } from '../hooks/useSmartNudges';
 import { NudgePage } from '../data/smartNudges';
+import { Card } from './library/ui/Card';
+import { Stack } from './library/layout/Stack';
+import { Paragraph } from './library/ui/Paragraph';
+import { Button } from './library/ui/Button';
 import './SmartNudge.css';
 
 interface SmartNudgeProps {
@@ -34,30 +38,36 @@ interface SmartNudgeBannerProps {
 }
 
 const SmartNudgeBanner: React.FC<SmartNudgeBannerProps> = ({ nudge, onNavigate }) => (
-    <div className="smart-nudge" role="status" aria-live="polite">
-        <span className="smart-nudge__icon">{nudge.icon}</span>
-        <div className="smart-nudge__body">
-            <div className="smart-nudge__label">Nudge</div>
-            <p className="smart-nudge__title">{nudge.title}</p>
-            <p className="smart-nudge__description">{nudge.description}</p>
-        </div>
-        <div className="smart-nudge__actions">
-            <button
-                className="smart-nudge__cta"
-                onClick={() => onNavigate(nudge.route)}
-            >
-                {nudge.cta} →
-            </button>
-            <button
-                className="smart-nudge__dismiss"
-                onClick={nudge.dismiss}
-                aria-label="Dismiss suggestion"
-                title="Dismiss"
-            >
-                ✕
-            </button>
-        </div>
-    </div>
+    <Card className="smart-nudge" variant="elevated">
+        <Stack direction="horizontal" gap="sm" align="center" role="status" aria-live="polite">
+            <Paragraph inline className="smart-nudge__icon">{nudge.icon}</Paragraph>
+            <Stack gap="xs" className="smart-nudge__body">
+                <Paragraph inline size="sm" muted className="smart-nudge__label">Nudge</Paragraph>
+                <Paragraph inline bold className="smart-nudge__title">{nudge.title}</Paragraph>
+                <Paragraph inline size="sm" className="smart-nudge__description">{nudge.description}</Paragraph>
+            </Stack>
+            <Stack direction="horizontal" gap="xs" className="smart-nudge__actions">
+                <Button
+                    variant="primary"
+                    size="sm"
+                    className="smart-nudge__cta"
+                    onClick={() => onNavigate(nudge.route)}
+                >
+                    {nudge.cta} →
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="smart-nudge__dismiss"
+                    onClick={nudge.dismiss}
+                    aria-label="Dismiss suggestion"
+                    title="Dismiss"
+                >
+                    ✕
+                </Button>
+            </Stack>
+        </Stack>
+    </Card>
 );
 
 export default SmartNudge;

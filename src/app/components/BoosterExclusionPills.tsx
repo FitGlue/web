@@ -2,6 +2,7 @@ import React from 'react';
 import { Stack } from './library/layout/Stack';
 import { Paragraph } from './library/ui/Paragraph';
 import { PluginIcon } from './library/ui/PluginIcon';
+import { Button } from './library/ui/Button';
 import './BoosterExclusionPills.css';
 
 interface EnricherInfo {
@@ -60,9 +61,11 @@ export const BoosterExclusionPills: React.FC<BoosterExclusionPillsProps> = ({
                 {enrichers.map(enricher => {
                     const isExcluded = excludedProviderTypes.includes(enricher.providerType);
                     return (
-                        <button
+                        <Button
                             key={enricher.id}
                             type="button"
+                            variant={isExcluded ? 'outline' : 'ghost'}
+                            size="sm"
                             className={`booster-exclusion__pill ${isExcluded ? 'booster-exclusion__pill--excluded' : ''}`}
                             onClick={() => toggleExclusion(enricher.providerType)}
                             title={isExcluded ? `Include ${enricher.name} for ${destinationName}` : `Exclude ${enricher.name} from ${destinationName}`}
@@ -79,7 +82,7 @@ export const BoosterExclusionPills: React.FC<BoosterExclusionPillsProps> = ({
                             <Paragraph inline size="sm" className="booster-exclusion__indicator">
                                 {isExcluded ? '✕' : '✓'}
                             </Paragraph>
-                        </button>
+                        </Button>
                     );
                 })}
             </Stack>

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Modal } from './library/ui/Modal';
 import { Button } from './library/ui/Button';
 import { Stack } from './library/layout/Stack';
-import { Heading } from './library/ui/Heading';
 import { Paragraph } from './library/ui/Paragraph';
 
 interface Props {
@@ -25,13 +24,20 @@ export const SharePipelineModal: React.FC<Props> = ({ encodedPipeline, pipelineN
     };
 
     return (
-        <Modal isOpen={true} onClose={onClose} title="Share Pipeline">
-            <Stack gap="md">
-                <Stack direction="horizontal" gap="sm" align="center">
-                    <Paragraph inline>📤</Paragraph>
-                    <Heading level={2}>Share Pipeline</Heading>
+        <Modal
+            isOpen={true}
+            onClose={onClose}
+            title="📤 Share Pipeline"
+            footer={
+                <Stack direction="horizontal" gap="sm" justify="end">
+                    <Button variant="secondary" onClick={onClose}>Cancel</Button>
+                    <Button variant="primary" onClick={handleCopy}>
+                        {copied ? '✓ Copied!' : '📋 Copy Code'}
+                    </Button>
                 </Stack>
-
+            }
+        >
+            <Stack gap="md">
                 <Paragraph>
                     Share this code with others to let them import your <strong>{pipelineName}</strong> pipeline.
                 </Paragraph>
@@ -42,13 +48,6 @@ export const SharePipelineModal: React.FC<Props> = ({ encodedPipeline, pipelineN
                     rows={4}
                     onClick={(e) => e.currentTarget.select()}
                 />
-
-                <Stack direction="horizontal" gap="sm" justify="end">
-                    <Button variant="secondary" onClick={onClose}>Cancel</Button>
-                    <Button variant="primary" onClick={handleCopy}>
-                        {copied ? '✓ Copied!' : '📋 Copy Code'}
-                    </Button>
-                </Stack>
             </Stack>
         </Modal>
     );

@@ -3,7 +3,6 @@ import './SyncHistoricalModal.css';
 import { Modal } from './library/ui/Modal';
 import { Button } from './library/ui/Button';
 import { Stack } from './library/layout/Stack';
-import { Heading } from './library/ui/Heading';
 import { Paragraph } from './library/ui/Paragraph';
 import { TabButton } from './library/ui/TabButton';
 import { PluginIcon } from './library/ui/PluginIcon';
@@ -190,7 +189,7 @@ export const SyncHistoricalModal: React.FC<Props> = ({
                                 <PluginIcon icon={manifest.icon} iconType={manifest.iconType} iconPath={manifest.iconPath} size="small" />
                             ) : null;
                         })()}
-                        <Heading level={3}>{sourceManifest(activeSource)?.name ?? activeSource}</Heading>
+                        <Paragraph inline bold>{sourceManifest(activeSource)?.name ?? activeSource}</Paragraph>
                     </Stack>
                 )}
 
