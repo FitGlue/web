@@ -1,8 +1,5 @@
 import React from 'react';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
-import { Badge } from '../library/ui/Badge';
-import { Stack } from '../library/layout/Stack';
-import { Paragraph } from '../library/ui/Paragraph';
 
 interface EnricherBadgeProps {
     /** Enricher provider name (e.g., 'muscle-heatmap', 'fitbit-heart-rate') */
@@ -23,15 +20,11 @@ const humanizeProviderName = (name: string): string => {
 
 /**
  * Determine effective status by checking metadata for status override.
- * Enrichers may complete successfully at the execution level but report
- * their own internal status (error, skipped) in metadata.
  */
 const getEffectiveStatus = (executionStatus: string, metadata?: Record<string, unknown>): string => {
     let status = executionStatus?.toUpperCase() || 'UNKNOWN';
-    
     if (!metadata) return status;
-    
-    // Find status from metadata - check for any key that is exactly "status" or ends with "_status"
+
     let metadataStatus: string | null = null;
     for (const [key, val] of Object.entries(metadata)) {
         if ((key === 'status' || key.endsWith('_status')) && typeof val === 'string') {
@@ -39,75 +32,68 @@ const getEffectiveStatus = (executionStatus: string, metadata?: Record<string, u
             break;
         }
     }
-    
-    // Override execution status with metadata status if more specific
+
     if (status === 'SUCCESS' && metadataStatus) {
-        if (metadataStatus === 'error') {
-            status = 'ERROR';
-        } else if (metadataStatus === 'skipped') {
-            status = 'SKIPPED';
-        }
+        if (metadataStatus === 'error') status = 'ERROR';
+        else if (metadataStatus === 'skipped') status = 'SKIPPED';
     }
-    
+
     return status;
 };
 
 /**
- * Map status to badge variant following GlowCard color scheme:
- * - Success: pink/purple (booster)
- * - Skipped: orange/yellow (booster-skipped)
- * - Error/Failed: red (booster-error)
+ * Map status → fg-booster-chip modifier class
  */
-const getStatusVariant = (status: string): 'booster' | 'booster-skipped' | 'booster-error' | 'default' => {
+const getChipClass = (status: string): string => {
     switch (status) {
-        case 'SUCCESS':
-            return 'booster';
-        case 'SKIPPED':
-            return 'booster-skipped';
+        case 'SUCCESS': return 'fg-booster-chip--run';
+        case 'SKIPPED': return 'fg-booster-chip--queued';
         case 'ERROR':
-        case 'FAILED':
-            return 'booster-error';
-        default:
-            return 'default';
+        case 'FAILED': return '';  // base chip with rose override
+        default: return '';
     }
 };
 
 /**
- * EnricherBadge displays a pill-style badge for an enricher that was applied to an activity.
+ * EnricherBadge — Brutal × Aurora reskin
+ * Uses fg-booster-chip classes for pill-style display
  */
 export const EnricherBadge: React.FC<EnricherBadgeProps> = ({
     providerName,
     status,
     metadata,
 }) => {
-    // Get icon from registry (centralized in registry.ts)
     const { enrichers } = usePluginRegistry();
-    const enricherPlugin = enrichers.find(e => e.id === providerName || e.id === providerName.replace(/_/g, '-'));
+    const enricherPlugin = enrichers.find(
+        e => e.id === providerName || e.id === providerName.replace(/_/g, '-')
+    );
     const icon = enricherPlugin?.icon || '✨';
     const displayName = enricherPlugin?.name || humanizeProviderName(providerName);
-    
-    // Get effective status (honors metadata status override)
+
     const effectiveStatus = getEffectiveStatus(status, metadata);
-    const statusVariant = getStatusVariant(effectiveStatus);
+    const chipMod = getChipClass(effectiveStatus);
 
     // Extract key metric from metadata if available
     const metricDisplay = React.useMemo(() => {
         if (!metadata) return null;
-        if (metadata.muscles_tracked) return `${metadata.muscles_tracked} muscles`;
-        if (metadata.hr_points_merged) return `${metadata.hr_points_merged} HR pts`;
-        if (metadata.segments_matched) return `${metadata.segments_matched} segments`;
+        if (metadata.muscles_tracked) return `${metadata.muscles_tracked}m`;
+        if (metadata.hr_points_merged) return `${metadata.hr_points_merged}hr`;
+        if (metadata.segments_matched) return `${metadata.segments_matched}s`;
         return null;
     }, [metadata]);
 
+    const isError = effectiveStatus === 'ERROR' || effectiveStatus === 'FAILED';
+
     return (
-        <Badge variant={statusVariant}>
-            <Stack direction="horizontal" gap="xs" align="center">
-                <Paragraph inline>{icon}</Paragraph>
-                <Paragraph inline size="sm">{displayName}</Paragraph>
-                {metricDisplay && effectiveStatus === 'SUCCESS' && (
-                    <Paragraph inline size="sm" muted>{metricDisplay}</Paragraph>
-                )}
-            </Stack>
-        </Badge>
+        <span
+            className={`fg-booster-chip fg-booster-chip--sm${chipMod ? ` ${chipMod}` : ''}`}
+            style={isError ? { background: 'var(--fg-rose)', color: 'var(--fg-paper)' } : undefined}
+        >
+            <span className="fg-booster-chip__emoji">{icon}</span>
+            {displayName}
+            {metricDisplay && effectiveStatus === 'SUCCESS' && (
+                <span style={{ opacity: 0.65, marginLeft: '0.125rem' }}>{metricDisplay}</span>
+            )}
+        </span>
     );
 };

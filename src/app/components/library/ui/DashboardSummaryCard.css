@@ -1,5 +1,6 @@
 /* ==========================================================================
-   DashboardSummaryCard - Consistent Dashboard Card Layout
+   DashboardSummaryCard — Brutal × Aurora
+   Flat ink-2 surface, display title, mono link, hairline rows.
    ========================================================================== */
 @import '../tokens.css';
 
@@ -7,50 +8,54 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 1.25rem;
-  background: var(--fg-ink-2, #0d0c18);
-  border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
+  background: var(--fg-ink-2);
+  box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
 }
 
-/* Header Row - Title left, Action right */
+/* Header strip — fg-band--sm style */
 .dashboard-summary-card__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
+  padding: 0.4375rem 0.875rem;
+  background: var(--fg-ink-3);
+  border-bottom: var(--fg-rule-thin);
 }
 
 .dashboard-summary-card__title {
   margin: 0;
-  font-family: var(--fg-font-display, 'Archivo Black', sans-serif);
-  font-size: .875rem;
+  font-family: var(--fg-font-display);
+  font-size: 0.75rem;
   font-weight: 400;
-  letter-spacing: .04em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--fg-paper, #f5f3eb);
+  color: var(--fg-paper);
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .dashboard-summary-card__icon {
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
+/* "View All" link — aurora-cyan mono */
 .dashboard-summary-card__link {
-  font-family: var(--fg-font-mono, 'JetBrains Mono', monospace);
-  font-size: .625rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
   font-weight: 700;
-  letter-spacing: .1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--fg-pink, #ff3da6);
+  color: var(--fg-cyan);
   text-decoration: none;
-  transition: opacity var(--transition-fast, .15s ease);
+  transition: opacity var(--transition-fast);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .dashboard-summary-card__link:hover {
-  opacity: .75;
+  opacity: 0.75;
 }
 
 /* Content Area - Grows to fill space */
@@ -58,19 +63,25 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0;
+  padding: 0.75rem 0.875rem;
 }
 
-/* Footer - Always at bottom */
+/* Footer — mono dim text */
 .dashboard-summary-card__footer {
   margin-top: auto;
-  padding-top: 1rem;
-  font-size: 0.8125rem;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+  padding: 0.4375rem 0.875rem;
+  border-top: var(--fg-rule-thin);
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
 }
 
 .dashboard-summary-card__footer strong {
-  color: var(--color-text-primary, #ffffff);
+  color: var(--fg-paper);
 }
 
 /* ========================================================================
@@ -112,15 +123,19 @@
 .summary-item__title {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-text-primary, #ffffff);
+  color: var(--fg-paper);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .summary-item__subtitle {
-  font-size: 0.75rem;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
 }
 
 .summary-item__status {
@@ -128,13 +143,8 @@
   font-size: 0.75rem;
 }
 
-.summary-item__status--connected {
-  color: var(--color-success, #22c55e);
-}
-
-.summary-item__status--disconnected {
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.5));
-}
+.summary-item__status--connected   { color: var(--fg-green); }
+.summary-item__status--disconnected { color: var(--fg-paper-dim); }
 
 /* ========================================================================
    Pending Input Item - Compact card style for action items
@@ -145,22 +155,27 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.625rem 0.75rem;
-  background: var(--fg-ink-2, #0d0c18);
-  border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
+  background: var(--fg-ink-2);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+  border: none;
   cursor: pointer;
-  transition: background var(--transition-fast, .15s ease);
+  transition: background var(--transition-fast);
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
 }
 
 .pending-input-item:hover {
-  background: var(--fg-ink-3, #16142a);
+  background: var(--fg-ink-3);
 }
 
 .pending-input-item--awaiting {
-  border-left: 3px solid var(--fg-gold, #ffd60a);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color), inset 3px 0 0 0 var(--fg-gold);
 }
 
 .pending-input-item--needs-input {
-  border-left: 3px solid var(--fg-pink, #ff3da6);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color), inset 3px 0 0 0 var(--fg-pink);
 }
 
 .pending-input-item__icon {
@@ -181,17 +196,21 @@
 .pending-input-item__title {
   font-size: 0.8125rem;
   font-weight: 500;
-  color: var(--color-text-primary, #ffffff);
+  color: var(--fg-paper);
 }
 
 .pending-input-item__subtitle {
-  font-size: 0.75rem;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
 }
 
 .pending-input-item__arrow {
   flex-shrink: 0;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.5));
+  color: var(--fg-paper-dim);
   font-size: 0.875rem;
 }
 
@@ -223,9 +242,12 @@
 
 .pipeline-summary-item__title {
   flex: 1;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-text-primary, #ffffff);
+  font-family: var(--fg-font-display);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -234,17 +256,10 @@
 
 .pipeline-summary-item__status {
   flex-shrink: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
 }
 
-.pipeline-summary-item__status.active {
-  color: var(--color-success, #22c55e);
-}
-
-.pipeline-summary-item__status.inactive {
-  color: var(--color-text-muted, rgba(255, 255, 255, 0.4));
-}
+.pipeline-summary-item__status.active   { color: var(--fg-green); }
+.pipeline-summary-item__status.inactive { color: var(--fg-paper-dim); }
 
 .pipeline-summary-item__meta {
   display: flex;
@@ -254,8 +269,12 @@
 }
 
 .pipeline-summary-item__source {
-  font-size: 0.75rem;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
 }
 
 .pipeline-summary-item__destinations {
@@ -267,14 +286,15 @@
 }
 
 .pipeline-summary-item__dest {
-  font-family: var(--fg-font-mono, 'JetBrains Mono', monospace);
-  font-size: .625rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
   font-weight: 700;
-  letter-spacing: .06em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 0.125rem 0.5rem;
-  background: rgba(245,243,235,.06);
-  color: var(--color-text-muted, rgba(245,243,235,.62));
+  padding: 0.125rem 0.4375rem;
+  background: var(--fg-ink-3);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+  color: var(--fg-paper-dim);
 }
 
 /* ========================================================================
@@ -295,42 +315,16 @@
    Mobile: Compact layout for smaller screens
    ======================================================================== */
 @media (max-width: 768px) {
-  .dashboard-summary-card {
-    padding: 1rem;
-  }
+  .summary-item { gap: 0.5rem; }
+  .summary-item__title { font-size: 0.8125rem; }
 
-  .dashboard-summary-card__header {
-    margin-bottom: 0.75rem;
-  }
-
-  .dashboard-summary-card__title {
-    font-size: 1rem;
-    gap: 0.375rem;
-  }
-
-  .dashboard-summary-card__link {
-    font-size: 0.75rem;
-  }
-
-  .summary-item {
-    gap: 0.5rem;
-  }
-
-  .summary-item__title {
-    font-size: 0.8125rem;
-  }
-
-  /* Pending input items - more compact */
   .pending-input-item {
     gap: 0.5rem;
     padding: 0.5rem 0.625rem;
   }
 
-  .pending-input-item__title {
-    font-size: 0.75rem;
-  }
+  .pending-input-item__title { font-size: 0.75rem; }
 
-  /* Pipeline summary items */
   .pipeline-summary-item {
     gap: 0.25rem;
     padding: 0.5rem 0;
