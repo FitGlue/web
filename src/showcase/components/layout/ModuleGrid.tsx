@@ -2,6 +2,7 @@ import React from 'react';
 import type { ModuleKey } from '../../utils/enricherModules';
 import type { components } from '../../../shared/api/schema-public';
 import type { ActivityEnrichments } from '../../../types/pb/models/activity/enrichments';
+import { parseDescriptionSections } from '../DescriptionSections';
 
 // Lazy imports for each module — only import what's needed
 import HeartRateModule from '../modules/HeartRateModule';
@@ -47,6 +48,16 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
     }
   }
 
+  // Extract user-written description preamble (text before any AI-generated emoji: sections)
+  const userDescription = activity.description
+    ? parseDescriptionSections(activity.description).find((s) => s.title === 'Description')?.content ?? null
+    : null;
+
+  // Strip leading heading tag from AI summary HTML (e.g. <h2>AI Summary</h2>)
+  const aiSummaryHtml = enrichments?.aiSummary?.html
+    ? enrichments.aiSummary.html.replace(/^<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>\s*/i, '')
+    : null;
+
   const photoUrls = activity.photoUrls ?? [];
   const tags = activity.tags ?? [];
   const prTypes = new Set(
@@ -75,11 +86,11 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
           case 'parkrun':
             return <ParkrunModule key={key} data={enrichments?.parkrun} />;
           case 'ai-story':
-            return enrichments?.aiSummary?.html ? (
+            return aiSummaryHtml ? (
               <div key={key} className="ai-story">
                 <p
                   className="ai-story__quote"
-                  dangerouslySetInnerHTML={{ __html: enrichments.aiSummary.html }}
+                  dangerouslySetInnerHTML={{ __html: aiSummaryHtml }}
                 />
               </div>
             ) : null;
@@ -88,8 +99,8 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
           case 'pr-callout':
             return <PersonalRecordsCallout key={key} data={enrichments?.personalRecords} />;
           case 'description':
-            return activity.description ? (
-              <div key={key} className="activity-description">{activity.description}</div>
+            return userDescription ? (
+              <div key={key} className="activity-description">{userDescription}</div>
             ) : null;
           case 'tags':
             return tags.length > 0 ? (

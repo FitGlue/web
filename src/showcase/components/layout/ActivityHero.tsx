@@ -66,8 +66,6 @@ export default function ActivityHero({ activity }: Props): React.ReactElement {
   const calories = enrichments?.calories?.kcal ?? 0;
   const locationName = enrichments?.location?.locationName;
   const prCount = enrichments?.personalRecords?.records?.length ?? 0;
-  const appliedEnrichments = new Set(activity.appliedEnrichments ?? []);
-
   const hasBanner = !!enrichments?.aiBanner?.imageUrl;
   const boosterCount = (activity.appliedEnrichments ?? []).length;
 
@@ -88,7 +86,7 @@ export default function ActivityHero({ activity }: Props): React.ReactElement {
           <span>{new Date(activity.startTime).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</span>
         )}
         {prCount > 0 && <span className="stamp stamp--pr">+{prCount} PR</span>}
-        {appliedEnrichments.has('ENRICHER_PROVIDER_PARKRUN') && (
+        {enrichments?.parkrun?.eventName && (
           <span className="stamp">🎽 Parkrun</span>
         )}
       </div>
