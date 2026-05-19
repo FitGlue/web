@@ -171,3 +171,21 @@ export type { RunRowProps } from './RunRow';
 // Countdown ring (SVG circular timer with aurora gradient)
 export { CountdownRing } from './CountdownRing';
 export type { CountdownRingProps } from './CountdownRing';
+
+// Source / Destination / Booster pickers (wizard + pipeline steps)
+export { SourcePicker } from './SourcePicker';
+export type { SourcePickerProps, SourceTile } from './SourcePicker';
+export { DestinationPicker } from './DestinationPicker';
+export type { DestinationPickerProps, DestinationChip } from './DestinationPicker';
+export { BoosterPicker } from './BoosterPicker';
+export type { BoosterPickerProps, BoosterChip } from './BoosterPicker';
+
+// Plan + usage display
+export { PlanBand } from './PlanBand';
+export type { PlanBandProps } from './PlanBand';
+export { UsageGrid } from './UsageGrid';
+export type { UsageGridProps, UsageCell } from './UsageGrid';
+
+// Changelog
+export { ChangelogEntry, ChangelogTagRow } from './ChangelogEntry';
+export type { ChangelogEntryProps, ChangelogTag, ChangelogTagVariant } from './ChangelogEntry';

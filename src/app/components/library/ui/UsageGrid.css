@@ -1,0 +1,54 @@
+/* ==========================================================================
+   UsageGrid — Brutal × Aurora
+   3×2 grid of stats cells separated by thin rules.
+   ========================================================================== */
+
+.usage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+
+.usage-cell {
+  padding: 22px 24px;
+  border-right: var(--fg-rule-thin);
+  border-bottom: var(--fg-rule-thin);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.usage-cell:nth-child(3n) {
+  border-right: 0;
+}
+
+.usage-cell__n {
+  font-family: var(--fg-font-display);
+  font-size: 2.25rem;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+.usage-cell__n--gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.usage-cell__l {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+
+.usage-cell__sub {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}

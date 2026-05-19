@@ -1,0 +1,84 @@
+/* ==========================================================================
+   LegalProse — Brutal × Aurora
+   Comfortable legal / long-form reading layout. NOT all-caps body.
+   ========================================================================== */
+
+.legal-prose {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+
+.legal-prose__title {
+  font-family: var(--fg-font-display);
+  font-size: 2.5rem;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+  line-height: 1;
+}
+
+.legal-prose__updated {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 36px;
+  display: block;
+}
+
+.legal-prose__body {
+  font-family: var(--fg-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+.legal-prose__body h2 {
+  font-family: var(--fg-font-display);
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
+  margin: 2.5rem 0 0.75rem;
+}
+
+.legal-prose__body h3 {
+  font-family: var(--fg-font-display);
+  font-size: 1rem;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
+  margin: 1.5rem 0 0.5rem;
+}
+
+.legal-prose__body p {
+  margin: 0 0 1rem;
+  color: var(--color-text-secondary);
+}
+
+.legal-prose__body a {
+  color: var(--fg-cyan);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.legal-prose__body ul,
+.legal-prose__body ol {
+  padding-left: 1.5rem;
+  margin: 0 0 1rem;
+}
+
+.legal-prose__body li {
+  margin-bottom: 0.375rem;
+}
+
+.legal-prose__body code {
+  font-family: var(--fg-font-mono);
+  font-size: 0.875rem;
+  background: var(--fg-ink-2);
+  color: var(--fg-cyan);
+  padding: 1px 6px;
+}

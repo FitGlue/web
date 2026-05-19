@@ -1,0 +1,87 @@
+/* ==========================================================================
+   BoosterPicker — Brutal × Aurora
+   Category tabs + 3-col chip grid. Selected = aurora gradient.
+   ========================================================================== */
+
+.booster-picker { max-width: 720px; }
+
+.booster-picker__tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: var(--fg-rule-thin);
+  margin-bottom: 10px;
+}
+
+.booster-picker__tab {
+  padding: 6px 10px;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.booster-picker__tab:hover {
+  color: var(--fg-paper);
+}
+
+.booster-picker__tab--active {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+}
+
+.booster-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.booster-chip {
+  padding: 8px 10px;
+  background: var(--fg-ink);
+  display: grid;
+  grid-template-columns: 20px 1fr 16px;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  color: var(--fg-paper);
+  text-align: left;
+}
+
+.booster-chip:hover {
+  background: var(--fg-ink-2);
+}
+
+.booster-chip--on {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+}
+
+.booster-chip__icon {
+  font-size: 0.9375rem;
+  line-height: 1;
+}
+
+.booster-chip__name {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.booster-chip__add {
+  font-family: var(--fg-font-display);
+  color: var(--fg-cyan);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.booster-chip--on .booster-chip__add {
+  color: var(--fg-ink);
+}

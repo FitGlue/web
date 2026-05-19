@@ -1,0 +1,94 @@
+/* ==========================================================================
+   SourcePicker — Brutal × Aurora
+   4-col grid of source tiles. Selected = aurora gradient.
+   ========================================================================== */
+
+.source-picker { max-width: 720px; }
+
+.source-picker__label {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.source-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.source-tile {
+  padding: 16px 12px;
+  background: var(--fg-ink);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  position: relative;
+  border: 0;
+  color: var(--fg-paper);
+  transition: background var(--transition-fast);
+}
+
+.source-tile:hover {
+  background: var(--fg-ink-2);
+}
+
+.source-tile--selected {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+}
+
+.source-tile--connected::after {
+  content: '✓';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 16px;
+  height: 16px;
+  background: var(--fg-green);
+  color: var(--fg-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--fg-font-display);
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+.source-tile--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.source-tile__icon {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.source-tile__name {
+  font-family: var(--fg-font-display);
+  font-size: 0.75rem;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.source-tile__meta {
+  font-family: var(--fg-font-mono);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.source-tile--selected .source-tile__meta {
+  color: rgba(7, 7, 16, 0.6);
+}

@@ -24,3 +24,7 @@ export { FieldRow } from './FieldRow';
 export { ModalSection } from './ModalSection';
 export { SettingsSection } from './SettingsSection';
 export { FeatureItem } from './FeatureItem';
+
+// Long-form / legal prose wrapper
+export { LegalProse } from './LegalProse';
+export type { LegalProseProps } from './LegalProse';
