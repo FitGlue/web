@@ -85,14 +85,23 @@ export const AppHeader: React.FC = () => {
         [profilePictureUrl]
     );
 
+    const displayName = firebaseUser?.displayName || firebaseUser?.email || 'User';
+    const shortDisplayName = firebaseUser?.displayName
+        ? firebaseUser.displayName.toUpperCase()
+        : (firebaseUser?.email?.split('@')[0] || 'USER').toUpperCase();
+
     return (
         <header className="app-header">
+            {/* Brand — .app-bar__brand pattern */}
             <Link to="/" className="app-header__logo-link">
+                <span className="app-header__logo-icon" aria-hidden="true" />
                 <h1 className="app-header__logo">
                     <span className="app-header__logo-fit">FIT</span>
                     <span className="app-header__logo-glue">GLUE</span>
                 </h1>
             </Link>
+
+            {/* Primary nav — .app-bar__nav / .app-bar__link pattern */}
             <nav className="app-header__nav">
                 <NavLink to="/" end className={({ isActive }) => `app-header__nav-link${isActive ? ' active' : ''}`}>
                     Dashboard
@@ -112,6 +121,8 @@ export const AppHeader: React.FC = () => {
                     </NavLink>
                 )}
             </nav>
+
+            {/* User section — .app-bar__user pattern */}
             <div ref={menuRef} className="app-header__user-menu">
                 <button
                     className={`app-header__avatar${profilePictureUrl ? ' app-header__avatar--has-image' : ''}`}
@@ -122,19 +133,25 @@ export const AppHeader: React.FC = () => {
                 >
                     {!profilePictureUrl && getInitial()}
                     {isAthlete && (
-                        <span className="app-header__tier-badge">ATHLETE</span>
+                        <span className="app-header__tier-badge">✦</span>
                     )}
                 </button>
 
+                {/* User name + tier — visible on wider screens */}
+                <div className="app-header__user-info" aria-hidden="true">
+                    <span className="app-header__user-name">{shortDisplayName}</span>
+                    {isAthlete && (
+                        <span className="app-header__user-tier">✦ ATHLETE</span>
+                    )}
+                </div>
 
                 {showMenu && (
                     <div className="app-header__dropdown">
                         <div className="app-header__dropdown-header">
                             <span className="app-header__dropdown-email">
-                                {firebaseUser?.displayName || firebaseUser?.email || 'User'}
+                                {displayName}
                             </span>
                         </div>
-                        <div className="app-header__dropdown-divider" />
                         <Link
                             to="/settings/account"
                             className="app-header__dropdown-item"
