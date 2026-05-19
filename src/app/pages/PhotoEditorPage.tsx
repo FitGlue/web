@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { PageLayout, Stack } from '../components/library/layout';
+import { Stack } from '../components/library/layout';
 import { Button, Heading, Paragraph } from '../components/library/ui';
 import { FormField, Input } from '../components/library/forms';
 import { client } from '../../shared/api/client';
@@ -202,16 +202,31 @@ const PhotoEditorPage: React.FC = () => {
     const canvasPreviewHeight = format === 'square' ? 480 : 480;
 
     return (
-        <PageLayout title="Photo Editor" backTo="/settings/showcase" backLabel="Manage Showcase">
-            <Stack gap="lg">
-                <div className="fg-band">
-                    <span className="fg-band__label">PHOTO EDITOR</span>
-                    <span className="fg-band__right">SOCIAL POSTS</span>
+        <div>
+            <div className="page-head">
+                <div>
+                    <div className="page-head__eyebrow">SHOWCASE / PHOTO EDITOR</div>
+                    <h1>Photo Editor</h1>
                 </div>
-                <Paragraph muted>
+                <div className="page-head__actions">
+                    <a href="/app/settings/showcase" className="fg-button fg-button--ghost fg-button--sm">← SHOWCASE</a>
+                </div>
+            </div>
+
+            <div className="fg-band">
+                <span className="fg-band__label">PHOTO EDITOR</span>
+                <span className="fg-band__right">SOCIAL POSTS</span>
+            </div>
+
+            <div style={{ padding: '1.5rem 2rem' }}>
+                {activityId && loadingActivity && (
+                    <p style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em', color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: '1rem' }}>
+                        Loading activity photos…
+                    </p>
+                )}
+                <p style={{ fontFamily: 'var(--fg-font-body)', fontSize: '0.9375rem', color: 'var(--color-text-muted)', marginBottom: '1.5rem' }}>
                     Create shareable social media posts from your activity data.
-                    {activityId && loadingActivity && ' Loading activity photos…'}
-                </Paragraph>
+                </p>
 
                 <Stack direction="horizontal" gap="lg" className="photo-editor__layout">
                     {/* Left Panel: Controls */}
@@ -273,8 +288,7 @@ const PhotoEditorPage: React.FC = () => {
                                                 style={{
                                                     width: 40,
                                                     height: 40,
-                                                    borderRadius: 8,
-                                                    border: gradientColors[0] === preset.colors[0] ? '3px solid white' : '2px solid rgba(255,255,255,0.2)',
+                                                    border: gradientColors[0] === preset.colors[0] ? '3px solid var(--fg-paper)' : '2px solid rgba(245,243,235,0.2)',
                                                     background: `linear-gradient(135deg, ${preset.colors[0]}, ${preset.colors[1]})`,
                                                     cursor: 'pointer',
                                                 }}
@@ -316,9 +330,8 @@ const PhotoEditorPage: React.FC = () => {
                                                     width: 64,
                                                     height: 64,
                                                     objectFit: 'cover',
-                                                    borderRadius: 8,
                                                     cursor: 'pointer',
-                                                    border: selectedPhoto === url ? '3px solid white' : '2px solid rgba(255,255,255,0.2)',
+                                                    border: selectedPhoto === url ? '3px solid var(--fg-paper)' : '2px solid rgba(245,243,235,0.2)',
                                                 }}
                                             />
                                         ))}
@@ -380,7 +393,7 @@ const PhotoEditorPage: React.FC = () => {
                     {/* Right Panel: Preview */}
                     <Stack gap="md" className="photo-editor__preview" align="center">
                         <Heading level={4}>Preview</Heading>
-                        <div style={{ width: canvasPreviewWidth, height: canvasPreviewHeight, overflow: 'hidden', borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)' }}>
+                        <div style={{ width: canvasPreviewWidth, height: canvasPreviewHeight, overflow: 'hidden', border: 'var(--fg-rule-thin)' }}>
                             <canvas
                                 ref={canvasRef}
                                 style={{
@@ -390,16 +403,16 @@ const PhotoEditorPage: React.FC = () => {
                                 }}
                             />
                         </div>
-                        <Paragraph size="sm" muted>
+                        <p style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
                             {format === 'square' ? '1080×1080' : '1080×1920'} — actual output is full resolution
-                        </Paragraph>
-                        <Button variant="primary" onClick={handleDownload}>
-                            Download PNG
-                        </Button>
+                        </p>
+                        <button className="fg-button fg-button--sm" onClick={handleDownload}>
+                            DOWNLOAD PNG
+                        </button>
                     </Stack>
                 </Stack>
-            </Stack>
-        </PageLayout>
+            </div>
+        </div>
     );
 };
 

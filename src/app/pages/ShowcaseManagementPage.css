@@ -10,8 +10,9 @@
 }
 
 .showcase-mgmt__title {
+    font-family: var(--fg-font-display);
     font-size: 1.75rem;
-    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -20,8 +21,11 @@
 }
 
 .showcase-mgmt__subtitle {
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    font-family: var(--fg-font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
 /* Section cards */
@@ -37,9 +41,11 @@
 }
 
 .showcase-mgmt__section-title {
-    font-size: 1.1rem;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
+    font-family: var(--fg-font-display);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+    color: var(--fg-paper);
     margin-bottom: var(--spacing-md);
     display: flex;
     align-items: center;
@@ -124,10 +130,10 @@
 .showcase-mgmt__avatar-preview {
     width: 80px;
     height: 80px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     object-fit: cover;
-    border: 3px solid rgba(139, 92, 246, 0.4);
-    background: rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 0 0 2px var(--fg-violet);
+    background: var(--fg-ink-2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -273,10 +279,12 @@
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-xs);
-    color: var(--color-primary);
-    font-size: 0.85rem;
+    color: var(--fg-cyan);
+    font-family: var(--fg-font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     text-decoration: none;
-    font-weight: var(--font-weight-medium);
     transition: opacity var(--transition-fast);
 }
 
@@ -286,7 +294,7 @@
 
 .showcase-mgmt__view-link--hidden {
     color: var(--color-text-muted);
-    font-style: italic;
+    opacity: 0.6;
 }
 
 /* Empty state */
@@ -353,24 +361,21 @@
     padding: var(--spacing-xs);
     background: none;
     border: 2px solid transparent;
-    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: border-color 0.2s, transform 0.15s;
+    transition: border-color 0.2s;
 }
 
 .showcase-mgmt__theme-swatch:hover {
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+    border-color: rgba(245, 243, 235, 0.2);
 }
 
 .showcase-mgmt__theme-swatch--active {
-    border-color: var(--color-primary);
+    border-color: var(--fg-pink);
 }
 
 .showcase-mgmt__theme-swatch-preview {
     width: 100%;
     aspect-ratio: 16 / 9;
-    border-radius: var(--radius-sm);
     position: relative;
     overflow: hidden;
 }
@@ -382,7 +387,6 @@
     transform: translateX(-50%);
     width: 20px;
     height: 4px;
-    border-radius: 0;
 }
 
 .showcase-mgmt__theme-swatch-name {
@@ -395,8 +399,7 @@
     width: 40px;
     height: 40px;
     padding: 2px;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: var(--radius-sm);
+    border: 2px solid rgba(245, 243, 235, 0.15);
     background: transparent;
     cursor: pointer;
     flex-shrink: 0;
@@ -408,7 +411,6 @@
 
 .showcase-mgmt__color-picker::-webkit-color-swatch {
     border: none;
-    border-radius: var(--radius-xs);
 }
 
 .showcase-mgmt__option-grid {
