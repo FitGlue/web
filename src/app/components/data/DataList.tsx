@@ -1,7 +1,5 @@
 import React, { ReactNode } from 'react';
-import { CardSkeleton } from '../library/ui/CardSkeleton';
-import '../library/ui/CardSkeleton.css';
-import { Stack } from '../library/layout';
+import './DataList.css';
 
 interface DataListProps<T> {
     items: T[];
@@ -14,6 +12,10 @@ interface DataListProps<T> {
     skeletonCount?: number;
 }
 
+/**
+ * DataList — Brutal × Aurora reskin
+ * Flat row list with hairline dividers, ink-2 surface
+ */
 export function DataList<T>({
     items,
     renderItem,
@@ -24,11 +26,11 @@ export function DataList<T>({
 }: DataListProps<T>) {
     if (loading && items.length === 0) {
         return (
-            <Stack gap="md">
+            <div className="ba-data-list">
                 {Array.from({ length: skeletonCount }).map((_, i) => (
-                    <CardSkeleton key={i} variant="activity" />
+                    <div key={i} className="ba-data-list__skeleton" />
                 ))}
-            </Stack>
+            </div>
         );
     }
 
@@ -37,12 +39,12 @@ export function DataList<T>({
     }
 
     return (
-        <Stack gap="sm">
+        <div className="ba-data-list">
             {items.map((item, index) => (
-                <React.Fragment key={keyExtractor ? keyExtractor(item, index) : index}>
+                <div key={keyExtractor ? keyExtractor(item, index) : index} className="ba-data-list__row">
                     {renderItem(item, index)}
-                </React.Fragment>
+                </div>
             ))}
-        </Stack>
+        </div>
     );
 }

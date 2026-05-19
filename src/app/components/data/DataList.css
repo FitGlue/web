@@ -1,0 +1,57 @@
+/* ==========================================================================
+   DataList — Brutal × Aurora reskin
+   ========================================================================== */
+@import '../library/tokens.css';
+
+/* Flat row list with hairline dividers */
+.ba-data-list {
+  display: flex;
+  flex-direction: column;
+  background: var(--fg-ink-2);
+  box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+}
+
+.ba-data-list__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: var(--fg-rule-thin);
+  transition: background var(--transition-fast);
+}
+
+.ba-data-list__row:last-child {
+  border-bottom: none;
+}
+
+.ba-data-list__row--clickable {
+  cursor: pointer;
+}
+
+.ba-data-list__row--clickable:hover {
+  background: var(--fg-ink-3);
+}
+
+/* Skeleton rows while loading */
+.ba-data-list__skeleton {
+  height: 52px;
+  background: linear-gradient(
+    90deg,
+    var(--fg-ink-2) 0%,
+    var(--fg-ink-3) 50%,
+    var(--fg-ink-2) 100%
+  );
+  background-size: 200% 100%;
+  animation: ba-shimmer 1.5s ease-in-out infinite;
+  border-bottom: var(--fg-rule-thin);
+}
+
+.ba-data-list__skeleton:last-child {
+  border-bottom: none;
+}
+
+@keyframes ba-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
