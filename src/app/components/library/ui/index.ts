@@ -163,3 +163,11 @@ export { TransformationPreview } from './TransformationPreview';
 // Link
 export { Link } from './Link';
 export type { LinkProps } from './Link';
+
+// Run row (pipeline run feed row)
+export { RunRow } from './RunRow';
+export type { RunRowProps } from './RunRow';
+
+// Countdown ring (SVG circular timer with aurora gradient)
+export { CountdownRing } from './CountdownRing';
+export type { CountdownRingProps } from './CountdownRing';

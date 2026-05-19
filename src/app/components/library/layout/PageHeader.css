@@ -76,12 +76,65 @@
   color: var(--fg-paper);
 }
 
+/* Subtitle line below title */
+.page-header-subtitle {
+  font-family: var(--fg-font-mono);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+  margin: 0;
+  max-width: 600px;
+}
+
 /* Right slot: actions or mono metadata */
 .page-header-actions {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  align-items: flex-end;
+  gap: 1.75rem;
   flex-shrink: 0;
+}
+
+/* Inline stats group (right side of header) */
+.page-header-stats {
+  display: flex;
+  gap: 1.75rem;
+  align-items: flex-end;
+}
+
+.page-header-stat {
+  padding-left: 1.125rem;
+  border-left: var(--fg-rule-thin);
+}
+
+.page-header-stat:first-child {
+  padding-left: 0;
+  border-left: none;
+}
+
+.page-header-stat__value {
+  display: block;
+  font-family: var(--fg-font-display);
+  font-size: 2.25rem;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+.page-header-stat__value--gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.page-header-stat__label {
+  display: block;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  margin-top: 0.375rem;
+  text-transform: uppercase;
 }
 
 @media (max-width: 640px) {

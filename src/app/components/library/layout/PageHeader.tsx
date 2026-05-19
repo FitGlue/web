@@ -9,9 +9,13 @@ interface PageHeaderProps {
     backLabel?: string;
     /** Mono text shown on the right side of the gradient band (e.g. breadcrumb) */
     eyebrow?: string;
+    /** Optional subtitle shown below the title in mono style */
+    subtitle?: string;
+    /** Optional inline stats group aligned to the right of the title row */
+    stats?: ReactNode;
 }
 
-export const PageHeader: React.FC<PageHeaderProps> = ({ title, actions, backTo, backLabel, eyebrow }) => {
+export const PageHeader: React.FC<PageHeaderProps> = ({ title, actions, backTo, backLabel, eyebrow, subtitle, stats }) => {
     // Derive eyebrow from backLabel when not explicitly provided
     const bandRight = eyebrow || (backLabel ? backLabel.toUpperCase() : undefined);
 
@@ -40,8 +44,12 @@ export const PageHeader: React.FC<PageHeaderProps> = ({ title, actions, backTo, 
                     <div className="page-header-title">
                         {typeof title === 'string' ? <h2>{title}</h2> : title}
                     </div>
+                    {subtitle && (
+                        <p className="page-header-subtitle">{subtitle}</p>
+                    )}
                 </div>
                 <div className="page-header-actions">
+                    {stats && <div className="page-header-stats">{stats}</div>}
                     {actions}
                 </div>
             </div>

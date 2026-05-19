@@ -20,6 +20,10 @@ interface PageLayoutProps {
     lastUpdated?: Date | null;
     /** Additional actions to show in header */
     headerActions?: ReactNode;
+    /** Optional inline stats rendered right-side in the page header */
+    headerStats?: ReactNode;
+    /** Optional subtitle shown below the title in the page header */
+    headerSubtitle?: string;
     /** Use full width layout (no max-width constraint) */
     fullWidth?: boolean;
     /** Page content */
@@ -38,6 +42,8 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
     loading = false,
     lastUpdated = null,
     headerActions,
+    headerStats,
+    headerSubtitle,
     fullWidth = false,
     children,
 }) => {
@@ -54,6 +60,8 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
                     title={title}
                     backTo={backTo}
                     backLabel={backLabel}
+                    subtitle={headerSubtitle}
+                    stats={headerStats}
                     actions={(title || onRefresh || headerActions) ? (
                         <>
                             {onRefresh && (

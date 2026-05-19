@@ -11,6 +11,7 @@ export { SettingsLayout } from './SettingsLayout';
 export { PageHeader } from './PageHeader';
 export { Section } from './Section';
 export { AppHeader } from './AppHeader';
+export { AppHeader as AppBar } from './AppHeader';
 export { Footer } from './Footer';
 
 // Layout primitives
