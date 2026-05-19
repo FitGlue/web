@@ -56,16 +56,14 @@
 
 /* Feature Card (inside Grid) */
 .subscription-feature-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    background: var(--fg-ink-2);
+    border: var(--fg-rule-thin);
     padding: var(--spacing-md);
     transition: all var(--transition-normal);
 }
 
 .subscription-feature-card:hover {
-    border-color: var(--color-border-hover);
-    background: var(--color-surface-hover);
+    background: var(--fg-ink-3);
 }
 
 /* Trial Countdown Ring */
@@ -132,15 +130,17 @@
 
 /* What You'll Lose Section */
 .subscription-lose-section {
-    background: rgba(239, 68, 68, 0.08);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: var(--radius-lg);
+    background: rgba(255, 93, 108, 0.08);
+    border: var(--fg-rule-thin);
+    box-shadow: inset 0 0 0 1.5px var(--fg-rose);
     padding: var(--spacing-lg);
 }
 
 .subscription-lose-section__title {
-    color: var(--color-error);
+    color: var(--fg-rose);
+    font-family: var(--fg-font-display);
     font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
     margin-bottom: var(--spacing-md);
     display: flex;
     align-items: center;
@@ -152,7 +152,7 @@
     align-items: center;
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: var(--fg-rule-thin);
 }
 
 .subscription-lose-item:last-child {
@@ -160,7 +160,7 @@
 }
 
 .subscription-lose-item__icon {
-    color: var(--color-error);
+    color: var(--fg-rose);
     font-size: 0.875rem;
 }
 
@@ -228,9 +228,8 @@
 }
 
 .subscription-plan-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    background: var(--fg-ink-2);
+    border: var(--fg-rule-thin);
     padding: var(--spacing-lg);
     transition: all var(--transition-normal);
 }
@@ -240,11 +239,8 @@
 }
 
 .subscription-plan-card--recommended {
-    border-color: rgba(139, 92, 246, 0.5);
+    box-shadow: inset 0 0 0 2px var(--fg-violet);
     background: rgba(139, 92, 246, 0.05);
-    box-shadow:
-        0 0 20px rgba(139, 92, 246, 0.15),
-        0 0 40px rgba(255, 61, 166, 0.08);
     position: relative;
 }
 
@@ -255,12 +251,12 @@
     left: 50%;
     transform: translateX(-50%);
     background: var(--gradient-primary);
-    color: #ffffff;
+    color: var(--fg-ink);
+    font-family: var(--fg-font-mono);
     font-size: 0.625rem;
     font-weight: var(--font-weight-bold);
     padding: 0.25rem 0.75rem;
-    border-radius: var(--radius-full);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
 }
 
 .subscription-plan-card__header {
