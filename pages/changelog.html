@@ -1,133 +1,210 @@
 {{> header}}
 
 <main>
-  <!-- Hero -->
-  <section class="about-hero">
-    <div class="container">
-      <h1 class="text-center animate-on-scroll">What's <span class="text-gradient">New</span></h1>
-      <p class="text-center tagline flow-caption-magic" style="font-size: 1.3rem; margin: var(--space-md) auto 0;">
-        ✨ All the latest updates and improvements ✨
-      </p>
-    </div>
-  </section>
+<style>
+  /* ── Page heading ── */
+  .ph { padding: 56px 32px; max-width: 1280px; margin: 0 auto; }
+  .ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .ph__title { font-family: var(--fg-font-display); font-size: clamp(2.5rem, 7vw, 5rem); line-height: .9; letter-spacing: -.04em; text-transform: uppercase; margin: 14px 0; }
+  .ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-  <!-- Changelog Content -->
-  <section class="section">
-    <div class="container">
-      <div class="changelog-layout">
-        <!-- Sticky version sidebar -->
-        <aside class="changelog-sidebar animate-on-scroll">
-          <div class="fg-band fg-band--sm" style="margin-bottom:1rem">
-            <span class="fg-band__label">Versions</span>
-          </div>
-          <div class="changelog-version-list">
-            <span class="fg-stamp" style="margin-bottom:.5rem">LATEST</span>
-            <span class="fg-stamp fg-stamp--paper" style="margin-bottom:.5rem">v{{version}}</span>
-            <p class="changelog-sidebar-note">Scroll to explore all releases below.</p>
-          </div>
-        </aside>
-        <!-- Changelog prose -->
-        <div class="changelog-content fg-prose">
-          {{{changelogContent}}}
+  /* ── Changelog 2-col layout ── */
+  .clog { padding: 0 32px 80px; max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 220px 1fr; gap: 56px; align-items: start; }
+
+  /* ── Sticky rail ── */
+  .clog__rail { position: sticky; top: 80px; padding: 8px 0; display: flex; flex-direction: column; gap: 0; }
+  .clog__rail-h { font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); margin-bottom: 8px; text-transform: uppercase; }
+  .clog__rail-h + .clog__rail-h { margin-top: 20px; }
+  .clog__rail-link { display: block; padding: 8px 0 8px 12px; font-family: var(--fg-font-display); font-size: .9375rem; letter-spacing: -.005em; text-transform: uppercase; color: var(--color-text-muted); border-left: 3px solid transparent; transition: color .15s, border-color .15s; }
+  .clog__rail-link:hover { color: var(--fg-paper); }
+  .clog__rail-link.on { color: var(--fg-paper); border-left: 3px solid var(--fg-cyan); }
+
+  /* ── Entries ── */
+  .clog__entry { padding: 28px 0; border-bottom: var(--fg-rule-thin); }
+  .clog__entry:first-child { border-top: var(--fg-rule-thin); }
+  .clog__ver { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; }
+  .clog__ver-n { font-family: var(--fg-font-display); font-size: 2.5rem; letter-spacing: -.025em; line-height: 1; }
+  .clog__ver-date { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .12em; color: var(--color-text-muted); text-transform: uppercase; }
+  .clog__row { padding: 7px 0; font-family: var(--fg-font-body); font-size: .9375rem; line-height: 1.55; display: grid; grid-template-columns: 74px 1fr; gap: 16px; align-items: baseline; }
+  .clog__row-tag { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; padding: 3px 6px; align-self: start; text-transform: uppercase; text-align: center; display: inline-block; }
+  .clog__row-tag--new     { background: #22c55e; color: var(--fg-ink); }
+  .clog__row-tag--fix     { background: var(--fg-cyan); color: var(--fg-ink); }
+  .clog__row-tag--brk     { background: var(--fg-rose); color: #fff; }
+  .clog__row-tag--change  { background: var(--fg-gold); color: var(--fg-ink); }
+  .clog__row-body { color: var(--fg-paper); }
+  .clog__row-body code { font-family: var(--fg-font-mono); font-size: .875em; color: var(--fg-cyan); background: var(--fg-ink-2); padding: 1px 5px; }
+
+  @media (max-width: 800px) {
+    .clog { grid-template-columns: 1fr; gap: 32px; padding: 0 16px 48px; }
+    .clog__rail { position: static; flex-direction: row; flex-wrap: wrap; gap: 4px 16px; }
+    .clog__rail-h { width: 100%; margin-bottom: 2px; }
+    .clog__rail-link { padding: 4px 0; border-left: 0; border-bottom: 2px solid transparent; }
+    .clog__rail-link.on { border-left: 0; border-bottom: 2px solid var(--fg-cyan); }
+    .ph { padding: 40px 16px; }
+  }
+</style>
+
+  <!-- Hero -->
+  <div class="ph">
+    <div class="ph__eyebrow">CHANGELOG · WEEKLY-ISH</div>
+    <h1 class="ph__title">What we <span class="gr">shipped.</span></h1>
+  </div>
+
+  <!-- Changelog layout -->
+  <div class="clog">
+    <!-- Sticky rail -->
+    <aside class="clog__rail" aria-label="Version navigation">
+      <div class="clog__rail-h">VERSIONS · 2026</div>
+      <a class="clog__rail-link on" href="#v3-4">v3.4 · MAY</a>
+      <a class="clog__rail-link" href="#v3-3">v3.3 · APR</a>
+      <a class="clog__rail-link" href="#v3-2">v3.2 · MAR</a>
+      <a class="clog__rail-link" href="#v3-1">v3.1 · FEB</a>
+      <div class="clog__rail-h">2025</div>
+      <a class="clog__rail-link" href="#v3-0">v3.0 · DEC</a>
+      <a class="clog__rail-link" href="#v2-x">v2.x · NOV</a>
+    </aside>
+
+    <!-- Entries -->
+    <div>
+      <div class="clog__entry" id="v3-4">
+        <div class="clog__ver">
+          <div class="clog__ver-n">v3.4</div>
+          <div class="clog__ver-date">19 MAY 2026 · "BRUTAL × AURORA"</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--new">NEW</span>
+          <div class="clog__row-body">Complete visual redesign. New colour system, new typography (Archivo Black + JetBrains Mono), tighter information density across all marketing pages.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--new">NEW</span>
+          <div class="clog__row-body">Pipeline Run Detail rebuilt with scrubable horizontal step timeline and side-by-side input/output diff view.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--new">NEW</span>
+          <div class="clog__row-body">Showcase Activity becomes cinematic — AI banner is now the full-page hero, modules align to a 12-column grid.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--fix">FIX</span>
+          <div class="clog__row-body">Source and destination selectors styled correctly across all pipeline wizard flows. They were inheriting old chrome styles.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--fix">FIX</span>
+          <div class="clog__row-body">Streak Tracker now correctly resets midnight boundary in UTC+1 and BST. Previously off by one hour in summer.</div>
+        </div>
+      </div>
+
+      <div class="clog__entry" id="v3-3">
+        <div class="clog__ver">
+          <div class="clog__ver-n">v3.3</div>
+          <div class="clog__ver-date">14 APR 2026</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--new">NEW</span>
+          <div class="clog__row-body">Typed enricher outputs land in proto schema — <code>ActivityEnrichments</code> sibling message replaces the generic map.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--brk">BRK</span>
+          <div class="clog__row-body"><code>enrichment_metadata</code> map deprecated — readers should switch to typed fields. Will be removed in v4.0.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--new">NEW</span>
+          <div class="clog__row-body">Streak Tracker booster now writes <code>current_streak_days</code> to the profile aggregate in real time.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--change">CHANGE</span>
+          <div class="clog__row-body">Athlete plan price increased from £5/mo to £8/mo. Existing subscribers locked at old rate until renewal or plan change.</div>
+        </div>
+      </div>
+
+      <div class="clog__entry" id="v3-2">
+        <div class="clog__ver">
+          <div class="clog__ver-n">v3.2</div>
+          <div class="clog__ver-date">21 MAR 2026</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--new">NEW</span>
+          <div class="clog__row-body">Parkrun Results booster: auto-detects Saturday morning activities, fetches official time + age grade + position from the results page.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--new">NEW</span>
+          <div class="clog__row-body">Weather Context booster now supports historic lookups — FIT file upload workouts get accurate conditions at the recorded time.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--fix">FIX</span>
+          <div class="clog__row-body">Garmin FIT upload: fixed elevation data extraction for Fenix 7 series devices where elevation field ordering differs.</div>
+        </div>
+      </div>
+
+      <div class="clog__entry" id="v3-1">
+        <div class="clog__ver">
+          <div class="clog__ver-n">v3.1</div>
+          <div class="clog__ver-date">7 FEB 2026</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--new">NEW</span>
+          <div class="clog__row-body">Apple Health sync in the mobile app. Workouts, heart rate samples, and active energy now sync automatically in background.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--new">NEW</span>
+          <div class="clog__row-body">Recovery Advisor booster: acute-to-chronic workload ratio + estimated hours-to-recover. Catches over-reaching before it bites.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--fix">FIX</span>
+          <div class="clog__row-body">Fitbit OAuth token refresh now retries with exponential backoff. Tokens expiring at 3am no longer silently fail until morning.</div>
+        </div>
+      </div>
+
+      <div class="clog__entry" id="v3-0">
+        <div class="clog__ver">
+          <div class="clog__ver-n">v3.0</div>
+          <div class="clog__ver-date">1 DEC 2025 · "GLUE"</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--new">NEW</span>
+          <div class="clog__row-body">Full pipeline architecture rewrite. Sources, enrichers, and destinations are now independent plugin packages — hot-swappable at runtime.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--new">NEW</span>
+          <div class="clog__row-body">Showcase profiles go live — public activity pages with 8 themes, shareable by URL, no Strava account required to view.</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--brk">BRK</span>
+          <div class="clog__row-body">Legacy v2 pipeline configs are not forward-compatible. Run the migration tool in Account Settings before upgrading.</div>
+        </div>
+      </div>
+
+      <div class="clog__entry" id="v2-x">
+        <div class="clog__ver">
+          <div class="clog__ver-n">v2.x</div>
+          <div class="clog__ver-date">NOV 2025 AND EARLIER</div>
+        </div>
+        <div class="clog__row">
+          <span class="clog__row-tag clog__row-tag--change">CHANGE</span>
+          <div class="clog__row-body">v2.x release series archived. See the GitHub repository for historical release notes going back to initial launch in June 2024.</div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+
+  <script>
+    // Highlight active rail link on scroll
+    (function () {
+      const entries = document.querySelectorAll('.clog__entry[id]');
+      const links = document.querySelectorAll('.clog__rail-link');
+      if (!entries.length || !links.length) return;
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            links.forEach(function (l) {
+              l.classList.toggle('on', l.getAttribute('href') === '#' + id);
+            });
+          }
+        });
+      }, { rootMargin: '-20% 0px -70% 0px' });
+      entries.forEach(function (el) { observer.observe(el); });
+    })();
+  </script>
 </main>
-
-<style>
-  .changelog-layout {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: var(--space-lg);
-    align-items: start;
-  }
-
-  .changelog-sidebar {
-    position: sticky;
-    top: 5rem;
-  }
-
-  .changelog-version-list {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: .25rem;
-  }
-
-  .changelog-sidebar-note {
-    font-family: var(--fg-font-mono);
-    font-size: .625rem;
-    letter-spacing: .1em;
-    color: var(--color-text-subtle);
-    text-transform: uppercase;
-    margin-top: .5rem;
-  }
-
-  .changelog-content {
-    max-width: 800px;
-  }
-
-  .changelog-content h1 {
-    display: none;
-    /* Hide the "FitGlue Changelog" header since we have our own hero */
-  }
-
-  .changelog-content h2 {
-    font-size: 1.5rem;
-    margin-top: var(--space-xl);
-    margin-bottom: var(--space-md);
-    padding-bottom: var(--space-sm);
-    border-bottom: var(--fg-rule-thin);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .changelog-content h2:first-of-type {
-    margin-top: 0;
-  }
-
-  /* Auto-add fg-stamp styling to version headings */
-  .changelog-content h2::before {
-    content: attr(data-version);
-  }
-
-  .changelog-content h3 {
-    font-size: 1.1rem;
-    margin: var(--space-md) 0 var(--space-sm);
-    color: var(--color-text-subtle);
-  }
-
-  .changelog-content ul {
-    margin: 0 0 var(--space-md) 0;
-    padding-left: 1.5rem;
-  }
-
-  .changelog-content li {
-    margin-bottom: var(--space-xs);
-    line-height: 1.6;
-  }
-
-  .changelog-content p {
-    margin: var(--space-sm) 0;
-  }
-
-  .changelog-content hr {
-    margin: var(--space-xl) 0;
-    border: none;
-    border-top: var(--fg-rule-thin);
-  }
-
-  @media (max-width: 768px) {
-    .changelog-layout {
-      grid-template-columns: 1fr;
-    }
-    .changelog-sidebar {
-      position: static;
-    }
-  }
-</style>
 
 {{> footer}}
