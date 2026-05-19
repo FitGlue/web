@@ -28,6 +28,7 @@ import PersonalRecordsCallout from '../modules/PersonalRecordsCallout';
 import MilestoneCallout from '../modules/MilestoneCallout';
 
 type Session = components['schemas']['Session'];
+type Rec = components['schemas']['Record'];
 
 interface Props {
   moduleOrder: ModuleKey[];
@@ -37,6 +38,15 @@ interface Props {
 
 export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props): React.ReactElement {
   const sessions = activity.activityData?.sessions as Session[] | undefined;
+
+  // Flat records for sparkline charts
+  const flatRecords: Rec[] = [];
+  for (const s of sessions ?? []) {
+    for (const lap of s.laps ?? []) {
+      for (const r of lap.records ?? []) flatRecords.push(r);
+    }
+  }
+
   const photoUrls = activity.photoUrls ?? [];
   const tags = activity.tags ?? [];
   const prTypes = new Set(
@@ -118,7 +128,7 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
           {gridModules.map((key) => {
             switch (key) {
               case 'heart-rate':
-                return <HeartRateModule key={key} data={enrichments?.heartRate} />;
+                return <HeartRateModule key={key} data={enrichments?.heartRate} records={flatRecords} />;
               case 'zones':
                 return <HRZonesModule key={key} data={enrichments?.heartRateZones} />;
               case 'pace':
@@ -126,11 +136,11 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
               case 'speed':
                 return <SpeedModule key={key} data={enrichments?.speed} />;
               case 'cadence':
-                return <CadenceModule key={key} data={enrichments?.cadence} />;
+                return <CadenceModule key={key} data={enrichments?.cadence} records={flatRecords} />;
               case 'power':
                 return <PowerModule key={key} data={enrichments?.power} />;
               case 'elevation':
-                return <ElevationModule key={key} data={enrichments?.elevation} />;
+                return <ElevationModule key={key} data={enrichments?.elevation} records={flatRecords} />;
               case 'effort':
                 return <EffortModule key={key} data={enrichments?.effort} />;
               case 'calories':

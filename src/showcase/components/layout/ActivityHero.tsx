@@ -69,6 +69,7 @@ export default function ActivityHero({ activity }: Props): React.ReactElement {
   const appliedEnrichments = new Set(activity.appliedEnrichments ?? []);
 
   const hasBanner = !!enrichments?.aiBanner?.imageUrl;
+  const boosterCount = (activity.appliedEnrichments ?? []).length;
 
   return (
     <div className="activity-hero">
@@ -93,6 +94,17 @@ export default function ActivityHero({ activity }: Props): React.ReactElement {
       </div>
 
       <h1 className="activity-hero__title">{activity.title ?? 'Activity'}</h1>
+
+      {(activity.ownerDisplayName || boosterCount > 0) && (
+        <div className="activity-hero__byline">
+          {activity.ownerDisplayName && (
+            <span>BY <b>{activity.ownerDisplayName.toUpperCase()}</b></span>
+          )}
+          {boosterCount > 0 && (
+            <span>ENRICHED BY <b>{boosterCount} BOOSTER{boosterCount !== 1 ? 'S' : ''}</b></span>
+          )}
+        </div>
+      )}
 
       <div className="activity-hero__stat-row">
         {category === 'cardio-distance' && distanceM > 0 && (
