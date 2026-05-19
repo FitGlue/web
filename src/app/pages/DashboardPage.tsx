@@ -118,6 +118,13 @@ const DashboardPageInner: React.FC = () => {
 
                 <SmartNudge page="dashboard" />
 
+                <div className="fg-band">
+                    <span className="fg-band__label">
+                        {isAthlete ? '✦ ATHLETE' : 'HOBBYIST'} · OVERVIEW
+                    </span>
+                    <span className="fg-band__right">{connectedCount} CONNECTED</span>
+                </div>
+
                 <Grid cols={3} gap="md">
                     <ConnectionsSummaryCard />
                     <PipelinesSummaryCard />
@@ -126,9 +133,13 @@ const DashboardPageInner: React.FC = () => {
 
                 <FileUploadPanel />
 
+                <div className="fg-band fg-band--ink">
+                    <span className="fg-band__label">RECENT RUNS</span>
+                </div>
+
                 <PipelineRunsList
                     variant="dashboard"
-                    title="Recent Runs"
+                    title=""
                     defaultFilter="all"
                     limit={6}
                     onRunClick={(run) => run.activityId && navigate(`/activities/${run.activityId}`)}

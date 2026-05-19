@@ -252,6 +252,9 @@ const AccountSettingsPage: React.FC = () => {
         >
             <Stack gap="lg">
                 {/* Profile Card */}
+                <div className="fg-band">
+                    <span className="fg-band__label">PROFILE</span>
+                </div>
                 <Card>
                     <Stack gap="md">
                         <Heading level={3}>Profile</Heading>
@@ -326,6 +329,10 @@ const AccountSettingsPage: React.FC = () => {
 
                 {/* Security Card - Change Password */}
                 {hasPasswordProvider && (
+                    <>
+                    <div className="fg-band fg-band--ink">
+                        <span className="fg-band__label">SECURITY</span>
+                    </div>
                     <Card>
                         <Stack gap="md">
                             <Stack direction="horizontal" gap="sm" align="center">
@@ -377,9 +384,16 @@ const AccountSettingsPage: React.FC = () => {
                             </Stack>
                         </Stack>
                     </Card>
+                    </>
                 )}
 
                 {/* Subscription Card - Premium Styling */}
+                <div className="fg-band">
+                    <span className="fg-band__label">SUBSCRIPTION</span>
+                    <span className="fg-band__right">
+                        {isAthlete ? '✦ ATHLETE' : 'HOBBYIST'}
+                    </span>
+                </div>
                 <Card highlighted={isAthlete}>
                     <Stack gap="md">
                         <Stack direction="horizontal" justify="between" align="center">
@@ -459,9 +473,15 @@ const AccountSettingsPage: React.FC = () => {
                 </GlowCard>
 
                 {/* Notification Preferences Card */}
+                <div className="fg-band fg-band--ink">
+                    <span className="fg-band__label">NOTIFICATIONS</span>
+                </div>
                 <NotificationPreferencesCard />
 
                 {/* Data Rights - Always Visible (GDPR) */}
+                <div className="fg-band fg-band--ink">
+                    <span className="fg-band__label">DATA RIGHTS</span>
+                </div>
                 <Card>
                     <Stack gap="md">
                         <Heading level={3}>📋 Data Rights</Heading>
@@ -527,6 +547,9 @@ const AccountSettingsPage: React.FC = () => {
                 )}
 
                 {/* Danger Zone */}
+                <div className="stx-danger">
+                    <h3>DANGER ZONE</h3>
+                </div>
                 <Card>
                     <Stack gap="md">
                         <Stack direction="horizontal" gap="sm" align="center">

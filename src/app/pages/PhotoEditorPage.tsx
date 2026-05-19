@@ -204,6 +204,10 @@ const PhotoEditorPage: React.FC = () => {
     return (
         <PageLayout title="Photo Editor" backTo="/settings/showcase" backLabel="Manage Showcase">
             <Stack gap="lg">
+                <div className="fg-band">
+                    <span className="fg-band__label">PHOTO EDITOR</span>
+                    <span className="fg-band__right">SOCIAL POSTS</span>
+                </div>
                 <Paragraph muted>
                     Create shareable social media posts from your activity data.
                     {activityId && loadingActivity && ' Loading activity photos…'}

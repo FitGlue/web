@@ -660,6 +660,9 @@ const PipelineWizardPage: React.FC = () => {
         <>
             <PageLayout title="Create Pipeline" backTo="/settings/pipelines" backLabel="Pipelines">
                 <Stack>
+                    <div className="fg-band">
+                        <span className="fg-band__label">NEW PIPELINE</span>
+                    </div>
                     {renderStepIndicator()}
                     {renderCurrentStep()}
                     <Stack direction="horizontal" justify="end">

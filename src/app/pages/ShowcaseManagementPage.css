@@ -26,15 +26,14 @@
 
 /* Section cards */
 .showcase-mgmt__section {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    background: var(--fg-ink-2, #0d0c18);
+    border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
     padding: var(--spacing-lg);
     transition: border-color var(--transition-normal);
 }
 
 .showcase-mgmt__section:hover {
-    border-color: var(--color-border-hover);
+    border-color: rgba(245, 243, 235, 0.3);
 }
 
 .showcase-mgmt__section-title {
@@ -67,19 +66,18 @@
 }
 
 .showcase-mgmt__input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    background: var(--fg-ink, #070710);
+    border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
     padding: var(--spacing-sm) var(--spacing-md);
-    color: var(--color-text-primary);
+    color: var(--fg-paper, #f5f3eb);
     font-size: 0.9rem;
     transition: all var(--transition-fast);
 }
 
 .showcase-mgmt__input:focus {
-    border-color: var(--color-primary);
+    border-color: var(--fg-pink, #ff3da6);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 79, 70, 229), 0.15);
+    box-shadow: inset 0 0 0 1.5px var(--fg-pink, #ff3da6);
 }
 
 .showcase-mgmt__textarea {
@@ -166,15 +164,14 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-sm) var(--spacing-md);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-md);
+    background: var(--fg-ink-2, #0d0c18);
+    border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
     transition: all var(--transition-fast);
 }
 
 .showcase-mgmt__activity-item:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: var(--color-border);
+    background: var(--fg-ink-3, #16142a);
+    border-color: rgba(245, 243, 235, 0.3);
 }
 
 .showcase-mgmt__activity-info {
@@ -426,21 +423,20 @@
     align-items: center;
     gap: var(--spacing-xs);
     padding: var(--spacing-sm) var(--spacing-md);
-    background: rgba(255, 255, 255, 0.03);
-    border: 2px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-md);
+    background: var(--fg-ink-2, #0d0c18);
+    border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
     text-align: center;
 }
 
 .showcase-mgmt__option-btn:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--fg-ink-3, #16142a);
+    border-color: rgba(245, 243, 235, 0.3);
 }
 
 .showcase-mgmt__option-btn--active {
-    border-color: var(--color-primary);
+    border-color: var(--fg-pink, #ff3da6);
     background: rgba(255, 61, 166, 0.08);
 }
 

@@ -442,6 +442,12 @@ const ActivityDetailPage: React.FC = () => {
             backLabel="Activities"
         >
             <Stack gap="lg">
+                <div className="fg-band">
+                    <span className="fg-band__label">ACTIVITY DETAIL</span>
+                    <span className="fg-band__right" style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.625rem', letterSpacing: '0.14em' }}>
+                        {statusInfo.statusLabel || 'DETAIL'}
+                    </span>
+                </div>
                 {/* Hero Card with Flow Visualization */}
                 <GlowCard variant={statusInfo.cardVariant} header={heroHeader}>
                     <Stack gap="md">

@@ -346,6 +346,10 @@ const PendingInputsPage: React.FC = () => {
             onRefresh={refresh}
             loading={loading}
         >
+            <div className="fg-band">
+                <span className="fg-band__label">PENDING INPUTS</span>
+                <span className="fg-band__right">AWAITING YOUR INPUT</span>
+            </div>
             <DashboardSummaryCard
                 title="Pending Items"
                 icon="⏳"

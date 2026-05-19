@@ -47,6 +47,11 @@ const EnricherDataPage: React.FC = () => {
             backLabel="Dashboard"
         >
             <Stack gap="lg">
+                <div className="fg-band">
+                    <span className="fg-band__label">BOOSTER DATA</span>
+                    <span className="fg-band__right">MANUAL EDIT</span>
+                </div>
+
                 {/* Info Banner */}
                 <Card>
                     <Stack direction="horizontal" gap="sm" align="center">

@@ -268,6 +268,9 @@ const PipelineEditPage: React.FC = () => {
                 {error && (
                     <Card onClick={() => setError(null)}>{error}</Card>
                 )}
+                <div className="fg-band">
+                    <span className="fg-band__label">EDIT PIPELINE</span>
+                </div>
                 <Stack>
                     {/* Pipeline Name Section */}
                     <Card>
