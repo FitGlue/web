@@ -119,6 +119,8 @@
   justify-content: space-between;
   align-items: center;
   background: var(--fg-ink-2);
+  position: sticky;
+  bottom: 0;
 }
 
 /* Error state */

@@ -12,7 +12,9 @@ export interface SourceTile {
 
 export interface SourcePickerProps {
   sources: SourceTile[];
-  selected: string | null;
+  selected?: string | null;
+  selectedIds?: string[];
+  multiSelect?: boolean;
   onSelect: (id: string) => void;
   label?: string;
 }
@@ -20,6 +22,8 @@ export interface SourcePickerProps {
 export const SourcePicker: React.FC<SourcePickerProps> = ({
   sources,
   selected,
+  selectedIds,
+  multiSelect = false,
   onSelect,
   label,
 }) => {
@@ -28,7 +32,9 @@ export const SourcePicker: React.FC<SourcePickerProps> = ({
       {label && <div className="source-picker__label">{label}</div>}
       <div className="source-picker__grid">
         {sources.map((source) => {
-          const isSelected = selected === source.id;
+          const isSelected = multiSelect
+            ? (selectedIds ?? []).includes(source.id)
+            : selected === source.id;
           const classes = [
             'source-tile',
             isSelected ? 'source-tile--selected' : '',

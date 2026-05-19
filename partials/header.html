@@ -64,53 +64,33 @@
     </head>
 
     <body>
-        <header class="header">
-            <div class="container">
-                <div class="header-inner">
-                    <a href="/" class="logo">
-                        <span class="logo-fit">Fit</span><span class="logo-glue">Glue</span>
-                    </a>
-
-                    <nav class="nav">
-                        <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav()">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </button>
-
-                        <ul class="nav-links" id="nav-links">
-                            <li><a href="/features" class="nav-link {{#if isFeatures}}active{{/if}}">Features</a></li>
-                            <li><a href="/how-it-works" class="nav-link {{#if isHowItWorks}}active{{/if}}">How It
-                                    Works</a></li>
-                            <li><a href="/pricing" class="nav-link {{#if isPricing}}active{{/if}}">Pricing</a></li>
-                            <li class="nav-auth" id="nav-auth-login"><a href="/auth/login"
-                                    class="nav-link nav-link-ghost">Login</a></li>
-                            <li class="nav-auth" id="nav-auth-cta"><a href="/auth/register"
-                                    class="nav-link nav-link-cta">Get Started</a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </header>
-
-        <script>
-            function toggleNav() {
-                document.getElementById('nav-links').classList.toggle('active');
-            }
-
-            // Apply cached auth state immediately to prevent flash
-            (function () {
-                if (localStorage.getItem('fitglue_auth_state') === 'logged_in') {
-                    var loginItem = document.getElementById('nav-auth-login');
-                    var ctaItem = document.getElementById('nav-auth-cta');
-                    if (loginItem) loginItem.style.display = 'none';
-                    if (ctaItem) {
-                        var ctaLink = ctaItem.querySelector('a');
-                        if (ctaLink) {
-                            ctaLink.href = '/app';
-                            ctaLink.textContent = 'Go to Dashboard';
-                        }
-                    }
-                }
-            })();
-        </script>
+<header class="mh">
+  <a href="/" class="mh__brand">
+    <span class="mh__brand-mk">FG</span>
+    <span>FITGLUE</span>
+  </a>
+  <nav class="mh__nav">
+    <a href="/features" {{#if isFeatures}}class="on"{{/if}}>FEATURES</a>
+    <a href="/how-it-works" {{#if isHowItWorks}}class="on"{{/if}}>HOW IT WORKS</a>
+    <a href="/pricing" {{#if isPricing}}class="on"{{/if}}>PRICING</a>
+    <a href="/guides">GUIDES</a>
+    <a href="/help">HELP</a>
+  </nav>
+  <div class="mh__cta">
+    <span id="nav-auth-login"><a href="/auth/login" class="btn--ghost">LOG IN</a></span>
+    <span id="nav-auth-cta"><a href="/auth/register" class="btn--aurora">START FREE →</a></span>
+  </div>
+</header>
+<script>
+  (function () {
+    if (localStorage.getItem('fitglue_auth_state') === 'logged_in') {
+      var loginItem = document.getElementById('nav-auth-login');
+      var ctaItem = document.getElementById('nav-auth-cta');
+      if (loginItem) loginItem.style.display = 'none';
+      if (ctaItem) {
+        var ctaLink = ctaItem.querySelector('a');
+        if (ctaLink) { ctaLink.href = '/app'; ctaLink.textContent = 'GO TO DASHBOARD →'; }
+      }
+    }
+  })();
+</script>

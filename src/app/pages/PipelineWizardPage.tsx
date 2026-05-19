@@ -19,6 +19,8 @@ import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginCategorySection } from '../components/PluginCategorySection';
 import { BoosterExclusionPills } from '../components/BoosterExclusionPills';
 import { WizardOptionGrid, WizardExcludedSection, PipelineReviewFlow } from '../components/wizard';
+import { SourcePicker } from '../components/library/ui/SourcePicker';
+import { DestinationPicker } from '../components/library/ui/DestinationPicker';
 import { useShowcasePreferences } from '../hooks/useShowcasePreferences';
 import { useNerdMode } from '../state/NerdModeContext';
 import { EnricherProviderType } from '../../types/pb/user';
@@ -358,6 +360,16 @@ const PipelineWizardPage: React.FC = () => {
         const availableSources = sources.filter(isPluginAvailable);
         const excludedSources = sources.filter(s => !isPluginAvailable(s));
 
+        const sourceTiles = availableSources.map(s => ({
+            id: s.id,
+            name: s.name,
+            icon: s.icon,
+            connected: s.requiredIntegrations?.every(reqId => {
+                const integration = (userIntegrations as Record<string, { connected?: boolean } | undefined> | null)?.[reqId];
+                return integration?.connected ?? false;
+            }) ?? true,
+        }));
+
         return (
             <>
                 <div className="pipe-wiz__body-head">
@@ -370,13 +382,13 @@ const PipelineWizardPage: React.FC = () => {
                         <Paragraph>Loading sources...</Paragraph>
                     ) : (
                         <>
-                            <WizardOptionGrid
-                                options={availableSources}
+                            <SourcePicker
+                                sources={sourceTiles}
+                                multiSelect
                                 selectedIds={selectedSources}
-                                onSelect={(source) => setSelectedSources(prev =>
-                                    prev.includes(source.id) ? prev.filter(id => id !== source.id) : [...prev, source.id]
+                                onSelect={(id) => setSelectedSources(prev =>
+                                    prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
                                 )}
-                                selectionMode="multi"
                             />
                             <WizardExcludedSection
                                 items={excludedSources}
@@ -525,6 +537,13 @@ const PipelineWizardPage: React.FC = () => {
         const availableDestinations = destinations.filter(isPluginAvailable);
         const excludedDestinations = destinations.filter(d => !isPluginAvailable(d));
 
+        const selectedDestChips = selectedDestinations
+            .map(id => destinations.find(d => d.id === id))
+            .filter((d): d is NonNullable<typeof d> => !!d)
+            .map(d => ({ id: d.id, name: d.name, icon: d.icon }));
+
+        const unselectedAvailable = availableDestinations.filter(d => !selectedDestinations.includes(d.id));
+
         return (
             <>
                 <div className="pipe-wiz__body-head">
@@ -537,12 +556,22 @@ const PipelineWizardPage: React.FC = () => {
                         <Paragraph>Loading destinations...</Paragraph>
                     ) : (
                         <>
-                            <WizardOptionGrid
-                                options={availableDestinations}
-                                selectedIds={selectedDestinations}
-                                onSelect={(dest) => toggleDestination(dest.id)}
-                                selectionMode="multi"
-                            />
+                            {selectedDestChips.length > 0 && (
+                                <DestinationPicker
+                                    destinations={selectedDestChips}
+                                    onRemove={toggleDestination}
+                                    onAdd={() => {}}
+                                    onConfigure={() => {}}
+                                />
+                            )}
+                            {unselectedAvailable.length > 0 && (
+                                <WizardOptionGrid
+                                    options={unselectedAvailable}
+                                    selectedIds={selectedDestinations}
+                                    onSelect={(dest) => toggleDestination(dest.id)}
+                                    selectionMode="multi"
+                                />
+                            )}
                             <WizardExcludedSection
                                 items={excludedDestinations}
                                 getKey={d => d.id}

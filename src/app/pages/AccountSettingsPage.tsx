@@ -237,8 +237,8 @@ const AccountSettingsPage: React.FC = () => {
                         </div>
                         <div className="stx-section__body">
                             {/* Avatar */}
-                            <div className="stx-field">
-                                <div className="stx-field__label">Avatar</div>
+                            <div className="settings-field">
+                                <div><div className="settings-field__label-name">Avatar</div></div>
                                 <div className="stx-field__input">
                                     <div className="stx-avatar-row">
                                         <div className="stx-avatar">{getInitial()}</div>
@@ -252,8 +252,8 @@ const AccountSettingsPage: React.FC = () => {
                             </div>
 
                             {/* Display Name */}
-                            <div className="stx-field">
-                                <div className="stx-field__label">Display Name</div>
+                            <div className="settings-field">
+                                <div><div className="settings-field__label-name">Display Name</div><div className="settings-field__label-hint">How you appear on Showcase pages.</div></div>
                                 <div className="stx-field__input">
                                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', maxWidth: 480 }}>
                                         <Input
@@ -278,8 +278,8 @@ const AccountSettingsPage: React.FC = () => {
                             </div>
 
                             {/* Email */}
-                            <div className="stx-field">
-                                <div className="stx-field__label">Email</div>
+                            <div className="settings-field">
+                                <div><div className="settings-field__label-name">Email</div><div className="settings-field__label-hint">Change requires re-verification.</div></div>
                                 <div className="stx-field__input">
                                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', maxWidth: 480 }}>
                                         <Input
@@ -328,8 +328,8 @@ const AccountSettingsPage: React.FC = () => {
                                 </div>
                             </div>
                             <div className="stx-section__body">
-                                <div className="stx-field">
-                                    <div className="stx-field__label">Current Password</div>
+                                <div className="settings-field">
+                                    <div><div className="settings-field__label-name">Current Password</div></div>
                                     <div className="stx-field__input">
                                         <Input
                                             type="password"
@@ -340,8 +340,8 @@ const AccountSettingsPage: React.FC = () => {
                                         />
                                     </div>
                                 </div>
-                                <div className="stx-field">
-                                    <div className="stx-field__label">New Password</div>
+                                <div className="settings-field">
+                                    <div><div className="settings-field__label-name">New Password</div><div className="settings-field__label-hint">Min 6 characters.</div></div>
                                     <div className="stx-field__input">
                                         <Input
                                             type="password"
@@ -352,8 +352,8 @@ const AccountSettingsPage: React.FC = () => {
                                         />
                                     </div>
                                 </div>
-                                <div className="stx-field">
-                                    <div className="stx-field__label">Confirm Password</div>
+                                <div className="settings-field">
+                                    <div><div className="settings-field__label-name">Confirm Password</div></div>
                                     <div className="stx-field__input">
                                         <Input
                                             type="password"
@@ -398,8 +398,8 @@ const AccountSettingsPage: React.FC = () => {
                             </div>
                         </div>
                         <div className="stx-section__body">
-                            <div className="stx-field">
-                                <div className="stx-field__label">Export Data</div>
+                            <div className="settings-field">
+                                <div><div className="settings-field__label-name">Export Data</div><div className="settings-field__label-hint">GDPR right to portability.</div></div>
                                 <div className="stx-field__input">
                                     {exportStatus === 'idle' && (
                                         <Button variant="ink" size="sm" onClick={handleExportData}>
@@ -445,8 +445,8 @@ const AccountSettingsPage: React.FC = () => {
                                 </div>
                             </div>
                             <div className="stx-section__body">
-                                <div className="stx-field">
-                                    <div className="stx-field__label">User ID</div>
+                                <div className="settings-field">
+                                    <div><div className="settings-field__label-name">User ID</div><div className="settings-field__label-hint">Firebase UID — nerd mode only.</div></div>
                                     <div className="stx-field__input">
                                         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                                             <code style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', color: 'var(--fg-cyan)', background: 'var(--fg-ink)', padding: '0.5rem 0.75rem' }}>
@@ -469,8 +469,8 @@ const AccountSettingsPage: React.FC = () => {
                     {/* Danger Zone */}
                     <div className="stx-danger">
                         <h3>DANGER ZONE</h3>
-                        <div className="stx-field" style={{ borderBottom: 0 }}>
-                            <div className="stx-field__label">Delete Account</div>
+                        <div className="settings-field" style={{ borderBottom: 0 }}>
+                            <div><div className="settings-field__label-name">Delete Account</div><div className="settings-field__label-hint">Permanent and irreversible.</div></div>
                             <div className="stx-field__input">
                                 <p className="stx-field__help" style={{ marginBottom: '0.75rem' }}>
                                     This action is <strong style={{ color: 'var(--fg-paper)' }}>permanent and irreversible</strong>.

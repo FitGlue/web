@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Card, Paragraph, CardSkeleton, Button, Badge, PlanBand, UsageGrid } from '../components/library/ui';
-import { FeatureItem, Stack, Grid, PageLayout } from '../components/library/layout';
+import { FeatureItem, Stack, Grid, SettingsLayout } from '../components/library/layout';
 import { client } from '../../shared/api/client';
 import { useUser } from '../hooks/useUser';
 import { getEffectiveTier, TIER_ATHLETE, HOBBYIST_TIER_LIMITS } from '../utils/tier';
@@ -59,12 +59,12 @@ const SubscriptionPage: React.FC = () => {
 
     if (loading && !user) {
         return (
-            <PageLayout title="Subscription" backTo="/settings/account" backLabel="← ACCOUNT">
+            <SettingsLayout title="Subscription">
                 <div style={{ padding: '2rem' }}>
                     <CardSkeleton variant="integration" />
                     <CardSkeleton variant="integration" />
                 </div>
-            </PageLayout>
+            </SettingsLayout>
         );
     }
 
@@ -91,11 +91,7 @@ const SubscriptionPage: React.FC = () => {
         ];
 
         return (
-            <PageLayout
-                title="Your Subscription"
-                backTo="/settings/account"
-                backLabel="← ACCOUNT"
-            >
+            <SettingsLayout title="Your Subscription">
                 {/* Plan band with aurora gradient */}
                 <PlanBand
                     planName="Athlete"
@@ -210,17 +206,13 @@ const SubscriptionPage: React.FC = () => {
                         </div>
                     )}
                 </div>
-            </PageLayout>
+            </SettingsLayout>
         );
     }
 
     // HOBBYIST VIEW
     return (
-        <PageLayout
-            title="Choose Your Plan"
-            backTo="/settings/account"
-            backLabel="← ACCOUNT"
-        >
+        <SettingsLayout title="Choose Your Plan">
             {/* Plan band */}
             <PlanBand
                 planName="Hobbyist"
@@ -315,7 +307,7 @@ const SubscriptionPage: React.FC = () => {
                     ))}
                 </Grid>
             </div>
-        </PageLayout>
+        </SettingsLayout>
     );
 };
 

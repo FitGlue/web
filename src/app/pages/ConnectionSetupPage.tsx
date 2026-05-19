@@ -10,6 +10,7 @@ import { client } from '../../shared/api/client';
 import { useUser } from '../hooks/useUser';
 import { IntegrationAuthType } from '../types/plugin';
 import { resolveEnum } from '../utils/resolveEnum';
+import './ConnectionSetupPage.css';
 
 const ConnectionSetupPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -148,8 +149,7 @@ const ConnectionSetupPage: React.FC = () => {
                 </div>
 
                 <div className="wiz__content">
-                    {/* Integration icon + name */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                    <div className="conn-setup-oauth__brand-row">
                         <div className="wiz__source-emoji">
                             <PluginIcon
                                 icon={integration.icon}
@@ -164,13 +164,12 @@ const ConnectionSetupPage: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Steps */}
                     {steps.length > 0 && (
                         <div className="wiz__section">
                             <span className="wiz__section-label">Setup Steps</span>
-                            <ol style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <ol className="conn-setup-steps">
                                 {steps.map((step, i) => (
-                                    <li key={i} style={{ fontFamily: 'var(--fg-font-body)', fontSize: '0.9375rem', color: 'var(--fg-paper)', lineHeight: 1.55 }}>
+                                    <li key={i} className="conn-setup-step-item">
                                         {renderInlineMarkdown(step)}
                                     </li>
                                 ))}
@@ -182,24 +181,15 @@ const ConnectionSetupPage: React.FC = () => {
                     <form onSubmit={handleApiKeySubmit}>
                         <div className="wiz__section">
                             <span className="wiz__section-label">{integration.apiKeyLabel || 'API Key'}</span>
-                            <div style={{ boxShadow: 'inset 0 0 0 2px rgba(245,243,235,0.2)', display: 'flex' }}>
+                            <div className="conn-setup-input-wrap">
                                 <input
                                     id="apiKey"
                                     type="text"
+                                    className="conn-setup-input"
                                     value={apiKey}
                                     onChange={e => setApiKey(e.target.value)}
                                     placeholder={`Enter your ${integration.apiKeyLabel || 'API key'}`}
                                     disabled={submitting}
-                                    style={{
-                                        flex: 1,
-                                        background: 'var(--fg-ink)',
-                                        color: 'var(--fg-paper)',
-                                        border: 0,
-                                        padding: '0.75rem 1rem',
-                                        fontFamily: 'var(--fg-font-mono)',
-                                        fontSize: '0.875rem',
-                                        outline: 'none',
-                                    }}
                                 />
                             </div>
                         </div>
@@ -207,39 +197,22 @@ const ConnectionSetupPage: React.FC = () => {
                         {requiresAthleteId && (
                             <div className="wiz__section">
                                 <span className="wiz__section-label">Athlete ID</span>
-                                <div style={{ boxShadow: 'inset 0 0 0 2px rgba(245,243,235,0.2)', display: 'flex' }}>
+                                <div className="conn-setup-input-wrap">
                                     <input
                                         id="athleteId"
                                         type="text"
+                                        className="conn-setup-input"
                                         value={athleteId}
                                         onChange={e => setAthleteId(e.target.value)}
                                         placeholder="e.g. i12345"
                                         disabled={submitting}
-                                        style={{
-                                            flex: 1,
-                                            background: 'var(--fg-ink)',
-                                            color: 'var(--fg-paper)',
-                                            border: 0,
-                                            padding: '0.75rem 1rem',
-                                            fontFamily: 'var(--fg-font-mono)',
-                                            fontSize: '0.875rem',
-                                            outline: 'none',
-                                        }}
                                     />
                                 </div>
                             </div>
                         )}
 
                         {error && (
-                            <div style={{
-                                padding: '0.875rem 1rem',
-                                background: 'rgba(255, 93, 108, 0.1)',
-                                boxShadow: 'inset 0 0 0 1.5px var(--fg-rose)',
-                                marginBottom: '1rem',
-                                fontFamily: 'var(--fg-font-body)',
-                                fontSize: '0.875rem',
-                                color: 'var(--fg-rose)',
-                            }}>
+                            <div className="conn-setup-error">
                                 {error}
                             </div>
                         )}
@@ -281,7 +254,7 @@ const ConnectionSetupPage: React.FC = () => {
                 </div>
 
                 <div className="wiz__content">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                    <div className="conn-setup-oauth__brand-row">
                         <div className="wiz__source-emoji">
                             <PluginIcon
                                 icon={integration.icon}
@@ -298,68 +271,35 @@ const ConnectionSetupPage: React.FC = () => {
 
                     <div className="wiz__section">
                         <span className="wiz__section-label">What will happen</span>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 0, boxShadow: 'inset 0 0 0 1.5px var(--fg-hairline-color)' }}>
+                        <div className="conn-setup-oauth__scope-list">
                             {[
                                 `Sign in to your ${integration.name} account`,
                                 'Review the permissions FitGlue needs',
                                 'Click "Authorize" to connect',
                                 "You'll be redirected back here automatically",
                             ].map((step, i) => (
-                                <div key={i} style={{
-                                    padding: '0.875rem 1rem',
-                                    borderBottom: 'var(--fg-rule-thin)',
-                                    display: 'flex',
-                                    gap: '0.75rem',
-                                    alignItems: 'center',
-                                    fontFamily: 'var(--fg-font-body)',
-                                    fontSize: '0.9375rem',
-                                    color: 'var(--fg-paper)',
-                                }}>
-                                    <span style={{
-                                        fontFamily: 'var(--fg-font-mono)',
-                                        fontSize: '0.625rem',
-                                        fontWeight: 700,
-                                        color: 'var(--fg-green)',
-                                        letterSpacing: '0.1em',
-                                        flexShrink: 0,
-                                    }}>✓</span>
+                                <div key={i} className="conn-setup-oauth__scope">
+                                    <span className="conn-setup-oauth__scope-icon">✓</span>
                                     {step}
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Security note */}
-                    <div style={{
-                        padding: '0.875rem 1rem',
-                        background: 'rgba(34, 211, 238, 0.06)',
-                        boxShadow: 'inset 0 0 0 1.5px rgba(34, 211, 238, 0.2)',
-                        display: 'flex',
-                        gap: '0.75rem',
-                        alignItems: 'flex-start',
-                        marginBottom: '1rem',
-                    }}>
+                    <div className="conn-setup-oauth__security">
                         <span>🔒</span>
                         <div>
-                            <div style={{ fontFamily: 'var(--fg-font-display)', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '-0.005em', marginBottom: '0.25rem' }}>
+                            <div className="conn-setup-oauth__security-title">
                                 SECURE OAUTH CONNECTION
                             </div>
-                            <p style={{ fontFamily: 'var(--fg-font-body)', fontSize: '0.8125rem', color: 'var(--color-text-muted)', margin: 0 }}>
+                            <p className="conn-setup-oauth__security-body">
                                 Your {integration.name} password is never shared with FitGlue.
                             </p>
                         </div>
                     </div>
 
                     {error && (
-                        <div style={{
-                            padding: '0.875rem 1rem',
-                            background: 'rgba(255, 93, 108, 0.1)',
-                            boxShadow: 'inset 0 0 0 1.5px var(--fg-rose)',
-                            marginBottom: '1rem',
-                            fontFamily: 'var(--fg-font-body)',
-                            fontSize: '0.875rem',
-                            color: 'var(--fg-rose)',
-                        }}>
+                        <div className="conn-setup-error">
                             {error}
                         </div>
                     )}
@@ -403,7 +343,7 @@ const ConnectionSetupPage: React.FC = () => {
                 </div>
 
                 <div className="wiz__content">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                    <div className="conn-setup-oauth__brand-row">
                         <div className="wiz__source-emoji">
                             <PluginIcon
                                 icon={integration.icon}
@@ -420,30 +360,15 @@ const ConnectionSetupPage: React.FC = () => {
 
                     <div className="wiz__section">
                         <span className="wiz__section-label">📱 Get the FitGlue App</span>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 0, boxShadow: 'inset 0 0 0 1.5px var(--fg-hairline-color)' }}>
+                        <div className="conn-setup-oauth__scope-list">
                             {[
                                 `Download FitGlue from the ${storeName}`,
                                 'Sign in with your FitGlue account',
                                 `Grant ${healthName} permissions`,
                                 'Workouts sync automatically!',
                             ].map((step, i) => (
-                                <div key={i} style={{
-                                    padding: '0.875rem 1rem',
-                                    borderBottom: 'var(--fg-rule-thin)',
-                                    display: 'flex',
-                                    gap: '0.75rem',
-                                    alignItems: 'center',
-                                    fontFamily: 'var(--fg-font-body)',
-                                    fontSize: '0.9375rem',
-                                    color: 'var(--fg-paper)',
-                                }}>
-                                    <span style={{
-                                        fontFamily: 'var(--fg-font-display)',
-                                        fontSize: '0.75rem',
-                                        color: 'var(--color-text-muted)',
-                                        width: '20px',
-                                        flexShrink: 0,
-                                    }}>{i + 1}</span>
+                                <div key={i} className="conn-setup-app-step">
+                                    <span className="conn-setup-app-step-num">{i + 1}</span>
                                     {step}
                                 </div>
                             ))}
@@ -457,7 +382,7 @@ const ConnectionSetupPage: React.FC = () => {
                         <Badge variant="warning">COMING SOON</Badge>
                     </div>
 
-                    <p style={{ fontFamily: 'var(--fg-font-body)', fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginTop: '1rem' }}>
+                    <p className="conn-setup-app-note">
                         <strong>Note:</strong> {integration.name} data can only be accessed from your {isApple ? 'iOS' : 'Android'} device.
                     </p>
                 </div>
@@ -489,7 +414,7 @@ const ConnectionSetupPage: React.FC = () => {
                 </div>
 
                 <div className="wiz__content">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                    <div className="conn-setup-oauth__brand-row">
                         <div className="wiz__source-emoji">
                             <PluginIcon
                                 icon={integration.icon}
@@ -507,9 +432,9 @@ const ConnectionSetupPage: React.FC = () => {
                     {steps.length > 0 && (
                         <div className="wiz__section">
                             <span className="wiz__section-label">Setup Steps</span>
-                            <ol style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <ol className="conn-setup-steps">
                                 {steps.map((step, i) => (
-                                    <li key={i} style={{ fontFamily: 'var(--fg-font-body)', fontSize: '0.9375rem', color: 'var(--fg-paper)', lineHeight: 1.55 }}>
+                                    <li key={i} className="conn-setup-step-item">
                                         {renderInlineMarkdown(step)}
                                     </li>
                                 ))}
@@ -520,38 +445,21 @@ const ConnectionSetupPage: React.FC = () => {
                     <form onSubmit={handleApiKeySubmit}>
                         <div className="wiz__section">
                             <span className="wiz__section-label">{integration.apiKeyLabel || 'ID'}</span>
-                            <div style={{ boxShadow: 'inset 0 0 0 2px rgba(245,243,235,0.2)', display: 'flex' }}>
+                            <div className="conn-setup-input-wrap">
                                 <input
                                     id="apiKey"
                                     type="text"
+                                    className="conn-setup-input"
                                     value={apiKey}
                                     onChange={e => setApiKey(e.target.value)}
                                     placeholder={`Enter your ${integration.apiKeyLabel || 'ID'}`}
                                     disabled={submitting}
-                                    style={{
-                                        flex: 1,
-                                        background: 'var(--fg-ink)',
-                                        color: 'var(--fg-paper)',
-                                        border: 0,
-                                        padding: '0.75rem 1rem',
-                                        fontFamily: 'var(--fg-font-mono)',
-                                        fontSize: '0.875rem',
-                                        outline: 'none',
-                                    }}
                                 />
                             </div>
                         </div>
 
                         {error && (
-                            <div style={{
-                                padding: '0.875rem 1rem',
-                                background: 'rgba(255, 93, 108, 0.1)',
-                                boxShadow: 'inset 0 0 0 1.5px var(--fg-rose)',
-                                marginBottom: '1rem',
-                                fontFamily: 'var(--fg-font-body)',
-                                fontSize: '0.875rem',
-                                color: 'var(--fg-rose)',
-                            }}>
+                            <div className="conn-setup-error">
                                 {error}
                             </div>
                         )}

@@ -469,6 +469,30 @@
   max-width: 480px;
 }
 
+/* SETTINGS FIELD — archetype 2-col pattern */
+.settings-field {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--fg-hairline-color);
+  align-items: start;
+}
+
+.settings-field__label-name {
+  font-family: var(--fg-font-display);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+}
+
+.settings-field__label-hint {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
 /* SETTINGS TOGGLE */
 .stx-toggle {
   display: inline-flex;

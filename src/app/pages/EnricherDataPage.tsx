@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { PageLayout, Stack } from '../components/library/layout';
-import { Card, Paragraph } from '../components/library/ui';
 import { client } from '../../shared/api/client';
 import { BoosterDataEntry } from '../components/enricher-data/types';
 import CountersSection from '../components/enricher-data/CountersSection';
@@ -8,6 +7,7 @@ import PersonalRecordsSection from '../components/enricher-data/PersonalRecordsS
 import GoalTrackersSection from '../components/enricher-data/GoalTrackersSection';
 import StreakTrackersSection from '../components/enricher-data/StreakTrackersSection';
 import DistanceMilestonesSection from '../components/enricher-data/DistanceMilestonesSection';
+import './EnricherDataPage.css';
 
 const EnricherDataPage: React.FC = () => {
 
@@ -47,22 +47,20 @@ const EnricherDataPage: React.FC = () => {
             backLabel="Dashboard"
         >
             <Stack gap="lg">
-                <div className="fg-band">
+                <div className="fg-band fg-band--ink">
                     <span className="fg-band__label">BOOSTER DATA</span>
                     <span className="fg-band__right">MANUAL EDIT</span>
                 </div>
 
-                {/* Info Banner */}
-                <Card>
-                    <Stack direction="horizontal" gap="sm" align="center">
-                        <Paragraph inline>ℹ️</Paragraph>
-                        <Paragraph size="sm">
-                            This page allows you to view and modify data stored by boosters.
-                            <strong> Be careful when editing</strong> — manual changes may cause inconsistencies
-                            with your actual activity data.
-                        </Paragraph>
-                    </Stack>
-                </Card>
+                <div className="enricher-page-intro">
+                    <div className="enricher-page-intro__icon">ℹ️</div>
+                    <div className="enricher-page-intro__text">
+                        View and modify data stored by boosters — personal records, counters, goal
+                        trackers, streaks, and distance milestones.{' '}
+                        <strong>Be careful when editing</strong> — manual changes may cause
+                        inconsistencies with your actual activity data.
+                    </div>
+                </div>
 
                 <CountersSection />
                 <PersonalRecordsSection />
