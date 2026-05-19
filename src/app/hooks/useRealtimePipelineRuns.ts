@@ -6,6 +6,7 @@ import { pipelineRunsAtom } from '../state/activitiesState';
 import { getFirebaseFirestore } from '../../shared/firebase';
 import { PipelineRun, PipelineRunStatus, DestinationStatus } from '../../types/pb/user';
 import { Destination } from '../../types/pb/events';
+import { ExecutionStep, ExecutionStepKind, ExecutionStepStatus } from '../../types/pb/models/pipeline/execution';
 
 // Helper to convert Firestore Timestamp to Date
 const toDate = (value: unknown): Date | undefined => {
@@ -67,6 +68,19 @@ const mapFirestoreToPipelineRun = (docId: string, data: Record<string, unknown>)
         originalPayloadUri: (data.original_payload_uri || data.originalPayloadUri || '') as string,
         enrichedEventUri: (data.enriched_event_uri || data.enrichedEventUri || '') as string,
         pendingInputId: (data.pending_input_id || data.pendingInputId) as string | undefined,
+        steps: ((data.steps || []) as Array<Record<string, unknown>>).map((s): ExecutionStep => ({
+            id: (s.id || '') as string,
+            ordinal: (s.ordinal || 0) as number,
+            kind: (s.kind || 0) as ExecutionStepKind,
+            displayName: (s.display_name || s.displayName || '') as string,
+            service: (s.service || '') as string,
+            status: (s.status || 0) as ExecutionStepStatus,
+            offsetMs: Number(s.offset_ms ?? s.offsetMs ?? 0),
+            durationMs: Number(s.duration_ms ?? s.durationMs ?? 0),
+            statusLabel: (s.status_label || s.statusLabel) as string | undefined,
+            error: s.error as string | undefined,
+            metadata: (s.metadata || {}) as Record<string, string>,
+        })),
     };
 };
 

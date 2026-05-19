@@ -225,9 +225,9 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
     [allRecords]
   );
 
-  const bannerUrl = data.enrichmentMetadata?.['asset_ai_banner'];
-  const routeThumbnailUrl = data.enrichmentMetadata?.['asset_route_thumbnail'];
-  const heatmapImageUrl = data.enrichmentMetadata?.['asset_muscle_heatmap'];
+  const bannerUrl = data.enrichments?.aiBanner?.imageUrl;
+  const routeThumbnailUrl: string | undefined = undefined;
+  const heatmapImageUrl: string | undefined = undefined;
 
   const description = data.description ?? activity?.description ?? '';
   const sections = parseDescriptionSections(description);
@@ -254,7 +254,7 @@ const ShowcaseContent: React.FC<{ data: ShowcasedActivity }> = ({ data }) => {
 
   return (
     <div className="showcase-page">
-      <ThemeProvider theme={data.enrichmentMetadata?.['theme'] as never} />
+      <ThemeProvider theme={undefined} />
       <canvas className="showcase-particles" id="showcase-particles" />
 
       <div className="showcase-content">

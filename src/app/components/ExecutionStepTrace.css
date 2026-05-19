@@ -1,0 +1,82 @@
+.execution-step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    padding: 0.625rem 0.75rem;
+    background: var(--fg-surface, rgba(255,255,255,0.04));
+    border: 1px solid var(--fg-border, rgba(255,255,255,0.08));
+    border-radius: var(--fg-radius-sm, 4px);
+    font-family: var(--fg-font-mono, monospace);
+    font-size: 0.75rem;
+}
+
+.execution-step-ordinal {
+    color: var(--fg-muted, #666);
+    min-width: 1.25rem;
+    text-align: right;
+    font-size: 0.625rem;
+    padding-top: 0.125rem;
+}
+
+.execution-step-icon {
+    font-size: 0.875rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.execution-step-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.execution-step-kind {
+    color: var(--fg-muted, #888);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.execution-step-name {
+    color: var(--fg-text, #fff);
+    font-size: 0.75rem;
+}
+
+.execution-step-error {
+    color: var(--fg-error, #f87171);
+    font-size: 0.6875rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.execution-step-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.execution-step-dur {
+    color: var(--fg-muted, #888);
+    font-size: 0.625rem;
+}
+
+.step-pill {
+    display: inline-block;
+    padding: 0.125rem 0.375rem;
+    border-radius: 999px;
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.step-pill--ok     { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
+.step-pill--failed { background: rgba(248, 113, 113, 0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+.step-pill--skipped { background: rgba(251, 191, 36, 0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+.step-pill--running { background: rgba(96, 165, 250, 0.15); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); }
+.step-pill--queued  { background: rgba(156, 163, 175, 0.12); color: #9ca3af; border: 1px solid rgba(156,163,175,0.2); }
+.step-pill--retried { background: rgba(167, 139, 250, 0.15); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
