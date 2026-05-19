@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { updateProfile } from 'firebase/auth';
 import { client } from '../../shared/api/client';
@@ -10,7 +11,7 @@ import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST, HOBBYIST_TIER_LIMITS } f
 import { NotificationPreferencesCard } from '../components/NotificationPreferencesCard';
 import { ReauthModal } from '../components/ReauthModal';
 import { useToast, Button, Badge } from '../components/library/ui';
-import { PageLayout } from '../components/library/layout';
+import { SettingsLayout } from '../components/library/layout';
 import { Input } from '../components/library/forms';
 
 const AccountSettingsPage: React.FC = () => {
@@ -19,6 +20,7 @@ const AccountSettingsPage: React.FC = () => {
     const toast = useToast();
     const { isNerdMode } = useNerdMode();
     const { changePassword } = useAuth();
+    const navigate = useNavigate();
 
     // Name editing
     const [editedName, setEditedName] = useState('');
@@ -207,24 +209,8 @@ const AccountSettingsPage: React.FC = () => {
     };
 
     return (
-        <PageLayout title="Account" backLabel="SETTINGS / ACCOUNT">
-            {/* Settings layout */}
-            <div className="settings">
-                {/* Rail */}
-                <aside className="settings__rail">
-                    <div className="settings__rail-section">PROFILE</div>
-                    <a href="/app/settings/account" className="active">Account</a>
-                    <a href="/app/settings/showcase">Showcase</a>
-
-                    <div className="settings__rail-section">BILLING</div>
-                    <a href="/app/settings/subscription">Subscription</a>
-
-                    <div className="settings__rail-section">DATA</div>
-                    <a href="/app/settings/enricher-data">Booster Data</a>
-                </aside>
-
-                {/* Body */}
-                <div>
+        <SettingsLayout title="Account" backLabel="SETTINGS / ACCOUNT">
+            <div>
                     {/* Plan banner */}
                     <div className="stx-plan">
                         <span className="stx-plan__icon">✦</span>
@@ -236,7 +222,7 @@ const AccountSettingsPage: React.FC = () => {
                                 {syncsUsed} / {maxSyncs} SYNCS THIS MONTH
                             </span>
                         </div>
-                        <Button variant="ink" size="sm" onClick={() => { window.location.href = '/app/settings/subscription'; }}>
+                        <Button variant="ink" size="sm" onClick={() => navigate('/settings/subscription')}>
                             {isAthlete ? 'MANAGE →' : 'UPGRADE →'}
                         </Button>
                     </div>
@@ -525,7 +511,7 @@ const AccountSettingsPage: React.FC = () => {
                     description="Your session has expired. Please enter your password to continue changing your email."
                 />
             )}
-        </PageLayout>
+        </SettingsLayout>
     );
 };
 

@@ -181,12 +181,13 @@
 /* Dropdown panel */
 .app-header__dropdown {
   position: absolute;
-  top: calc(100% + 2px);
+  top: calc(100% + 4px);
   right: 0;
   min-width: 240px;
   background: var(--fg-ink-2);
-  box-shadow: inset 0 0 0 1.5px var(--fg-paper), 0 16px 48px rgba(0, 0, 0, .6);
-  z-index: var(--z-dropdown);
+  border: 1.5px solid var(--fg-paper);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .7);
+  z-index: calc(var(--z-dropdown) + 1);
 }
 
 .app-header__dropdown-header {

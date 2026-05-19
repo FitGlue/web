@@ -7,6 +7,7 @@
 
 // Page structure
 export { PageLayout } from './PageLayout';
+export { SettingsLayout } from './SettingsLayout';
 export { PageHeader } from './PageHeader';
 export { Section } from './Section';
 export { AppHeader } from './AppHeader';
