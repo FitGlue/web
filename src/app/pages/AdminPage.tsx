@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { PageLayout, Container } from '../components/library/layout';
+import { Container } from '../components/library/layout';
 import { TabbedCard } from '../components/library/ui';
 import { useUser } from '../hooks/useUser';
 import { adminActiveTabAtom, AdminTabId } from '../state/adminState';
@@ -31,13 +31,19 @@ const AdminPage: React.FC = () => {
   // Access check (AdminRoute wrapper should handle this, but double-check)
   if (!loading && !currentUser?.isAdmin) {
     return (
-      <PageLayout title="Admin Access Denied">
-        <Container>
-          <p style={{ textAlign: 'center', padding: 'var(--spacing-2xl)' }}>
+      <div>
+        <div className="page-head">
+          <div>
+            <div className="page-head__eyebrow">ADMIN</div>
+            <h1>Access Denied</h1>
+          </div>
+        </div>
+        <div style={{ padding: '3rem 2rem', textAlign: 'center' }}>
+          <span style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', letterSpacing: '0.14em', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
             You do not have permission to view this page.
-          </p>
-        </Container>
-      </PageLayout>
+          </span>
+        </div>
+      </div>
     );
   }
 
@@ -49,11 +55,21 @@ const AdminPage: React.FC = () => {
   ];
 
   return (
-    <PageLayout title="Admin Console" fullWidth>
-      <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
+    <div>
+      {/* Page head */}
+      <div className="page-head">
+        <div>
+          <div className="page-head__eyebrow">PLATFORM</div>
+          <h1>Admin Console</h1>
+        </div>
+      </div>
+
+      {/* Band */}
+      <div className="fg-band">
         <span className="fg-band__label">ADMIN CONSOLE</span>
         <span className="fg-band__right">PLATFORM</span>
       </div>
+
       <Container size="full" centered={false}>
         <TabbedCard
           tabs={tabs}
@@ -70,7 +86,7 @@ const AdminPage: React.FC = () => {
       {/* Modals */}
       <UserDetailModal />
       <PipelineRunDetailModal />
-    </PageLayout>
+    </div>
   );
 };
 
