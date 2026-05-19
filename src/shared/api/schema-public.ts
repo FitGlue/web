@@ -122,6 +122,48 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * @description ActivityEnrichments holds typed outputs from the enricher pipeline.
+         *      Each sub-message is optional — only present if the corresponding enricher
+         *      was configured and ran. Replaces enrichment_metadata map<string,string>.
+         */
+        ActivityEnrichments: {
+            heartRate?: components["schemas"]["HeartRateSummary"];
+            heartRateZones?: components["schemas"]["HeartRateZonesSummary"];
+            effort?: components["schemas"]["EffortScoreSummary"];
+            calories?: components["schemas"]["CaloriesSummary"];
+            trainingLoad?: components["schemas"]["TrainingLoadSummary"];
+            recovery?: components["schemas"]["RecoverySummary"];
+            streak?: components["schemas"]["StreakSummary"];
+            aiSummary?: components["schemas"]["AiSummary"];
+            aiBanner?: components["schemas"]["AiBanner"];
+            pace?: components["schemas"]["PaceSummary"];
+            cadence?: components["schemas"]["CadenceSummary"];
+            power?: components["schemas"]["PowerSummary"];
+            elevation?: components["schemas"]["ElevationSummary"];
+        };
+        AiBanner: {
+            imageUrl?: string;
+            promptHash?: string;
+            generatorVersion?: string;
+        };
+        AiSummary: {
+            html?: string;
+            model?: string;
+            /** Format: date-time */
+            generatedAt?: string;
+        };
+        CadenceSummary: {
+            /** Format: int32 */
+            avgRpm?: number;
+            /** Format: int32 */
+            maxRpm?: number;
+        };
+        CaloriesSummary: {
+            /** Format: int32 */
+            kcal?: number;
+            comparisonText?: string;
+        };
         ConfigFieldDependency: {
             fieldKey?: string;
             values?: string[];
@@ -160,6 +202,28 @@ export interface components {
             /** Format: double */
             maxValue?: number;
         };
+        EffortFactor: {
+            label?: string;
+            /** Format: double */
+            ratioVsBaseline?: number;
+        };
+        EffortScoreSummary: {
+            /** Format: int32 */
+            score?: number;
+            band?: string;
+            factors?: components["schemas"]["EffortFactor"][];
+        };
+        ElevationSummary: {
+            /** Format: double */
+            totalGainM?: number;
+            /** Format: double */
+            totalLossM?: number;
+        };
+        /** @description EntrySparkline is a downsampled timeseries for card-level sparklines. */
+        EntrySparkline: {
+            metric?: string;
+            values?: number[];
+        };
         GetPublicShowcaseProfileResponse: {
             profile?: components["schemas"]["ShowcaseProfile"];
             showcases?: components["schemas"]["ShowcasedActivity"][];
@@ -174,6 +238,31 @@ export interface components {
             "@type"?: string;
         } & {
             [key: string]: unknown;
+        };
+        HeartRateSummary: {
+            /** Format: int32 */
+            minBpm?: number;
+            /** Format: int32 */
+            avgBpm?: number;
+            /** Format: int32 */
+            maxBpm?: number;
+            /** Format: int32 */
+            driftBpm?: number;
+            driftWarning?: boolean;
+        };
+        HeartRateZoneBucket: {
+            /** Format: int32 */
+            zoneIndex?: number;
+            name?: string;
+            /** Format: int32 */
+            minutes?: number;
+            /** Format: double */
+            percentage?: number;
+        };
+        HeartRateZonesSummary: {
+            zones?: components["schemas"]["HeartRateZoneBucket"][];
+            /** Format: int32 */
+            totalMinutes?: number;
         };
         HybridRaceSegment: {
             /** Format: date-time */
@@ -228,6 +317,12 @@ export interface components {
             intensity?: string;
             isTelemetryContainerOnly?: boolean;
         };
+        LifetimeZoneSplit: {
+            zones?: components["schemas"]["HeartRateZoneBucket"][];
+            /** Format: date-time */
+            computedAt?: string;
+            label?: string;
+        };
         ListCategoriesPublicResponse: {
             categories?: string[];
         };
@@ -236,6 +331,19 @@ export interface components {
         };
         ListSourcesPublicResponse: {
             sources?: components["schemas"]["PluginManifest"][];
+        };
+        PaceSplit: {
+            /** Format: int32 */
+            km?: number;
+            /** Format: double */
+            seconds?: number;
+        };
+        PaceSummary: {
+            /** Format: double */
+            avgPaceSecondsPerKm?: number;
+            /** Format: double */
+            bestSplitSecondsPerKm?: number;
+            splits?: components["schemas"]["PaceSplit"][];
         };
         PluginManifest: {
             id?: string;
@@ -270,12 +378,29 @@ export interface components {
             iconPath?: string;
             isTemporarilyUnavailable?: boolean;
             allowMultipleInstances?: boolean;
+            /**
+             * Format: enum
+             * @description PipelineStage groups boosters in the pipeline editor UI.
+             *      Only meaningful for type == PLUGIN_TYPE_ENRICHER.
+             * @enum {string}
+             */
+            stage?: "PIPELINE_STAGE_UNSPECIFIED" | "PIPELINE_STAGE_GATE" | "PIPELINE_STAGE_ENRICHMENT" | "PIPELINE_STAGE_METRICS" | "PIPELINE_STAGE_CONTEXT_AI" | "PIPELINE_STAGE_INPUT" | "PIPELINE_STAGE_VIZ";
         };
         PluginRegistryResponse: {
             sources?: components["schemas"]["PluginManifest"][];
             enrichers?: components["schemas"]["PluginManifest"][];
             destinations?: components["schemas"]["PluginManifest"][];
             integrations?: components["schemas"]["IntegrationManifest"][];
+        };
+        PowerSummary: {
+            /** Format: int32 */
+            avgWatts?: number;
+            /** Format: int32 */
+            normalizedPower?: number;
+            /** Format: double */
+            intensityFactor?: number;
+            /** Format: int32 */
+            kilojoules?: number;
         };
         Record: {
             /** Format: date-time */
@@ -305,6 +430,16 @@ export interface components {
             /** Format: double */
             distance?: number;
         };
+        RecoverySummary: {
+            /** Format: int32 */
+            sessionLoad?: number;
+            /** Format: double */
+            acuteChronicRatio?: number;
+            /** Format: int32 */
+            hoursToRecover?: number;
+            alert?: boolean;
+            alertText?: string;
+        };
         Session: {
             /** Format: date-time */
             startTime?: string;
@@ -320,6 +455,8 @@ export interface components {
             avgHeartRate?: number;
             /** Format: int32 */
             maxHeartRate?: number;
+            /** Format: int32 */
+            minHeartRate?: number;
         };
         ShowcaseBioCallout: {
             text?: string;
@@ -360,6 +497,9 @@ export interface components {
             showPhotoGallery?: boolean;
             links?: components["schemas"]["ShowcaseLink"][];
             callouts?: components["schemas"]["ShowcaseBioCallout"][];
+            /** @description Lifetime aggregates — written by a daily rollup job. Optional; absent means not yet computed. */
+            zoneSplit?: components["schemas"]["LifetimeZoneSplit"];
+            streakHistory?: components["schemas"]["WeeklyStreakHistory"];
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;
@@ -387,6 +527,18 @@ export interface components {
             totalReps?: number;
             /** Format: double */
             totalWeightKg?: number;
+            /**
+             * Format: int32
+             * @description Reskin additions — populated on each activity sync
+             */
+            boosterCount?: number;
+            /** Format: int32 */
+            destinationCount?: number;
+            sparkline?: components["schemas"]["EntrySparkline"];
+            /** Format: int32 */
+            avgHeartRate?: number;
+            /** Format: int32 */
+            caloriesKcal?: number;
         };
         ShowcaseTheme: {
             themeId?: string;
@@ -416,9 +568,6 @@ export interface components {
             activityData?: components["schemas"]["StandardizedActivity"];
             fitFileUri?: string;
             appliedEnrichments?: string[];
-            enrichmentMetadata?: {
-                [key: string]: string;
-            };
             tags?: string[];
             pipelineExecutionId?: string;
             /** Format: date-time */
@@ -430,6 +579,7 @@ export interface components {
             ownerProfilePictureUrl?: string;
             ownerProfileSlug?: string;
             photoUrls?: string[];
+            enrichments?: components["schemas"]["ActivityEnrichments"];
         };
         StandardizedActivity: {
             /**
@@ -467,6 +617,21 @@ export interface components {
             /** @description A list of messages that carry the error details.  There is a common set of message types for APIs to use. */
             details?: components["schemas"]["GoogleProtobufAny"][];
         };
+        StreakDay: {
+            date?: string;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            state?: "STREAK_DAY_STATE_UNSPECIFIED" | "STREAK_DAY_STATE_OFF" | "STREAK_DAY_STATE_ACTIVE" | "STREAK_DAY_STATE_REST";
+        };
+        StreakSummary: {
+            /** Format: int32 */
+            currentDays?: number;
+            /** Format: int32 */
+            longestDays?: number;
+            calendar?: components["schemas"]["StreakDay"][];
+        };
         StrengthSet: {
             exerciseName?: string;
             /** Format: int32 */
@@ -497,6 +662,12 @@ export interface components {
             /** Format: int32 */
             durationSeconds?: number;
         };
+        TrainingLoadSummary: {
+            /** Format: int32 */
+            trimp?: number;
+            bucket?: string;
+            hint?: string;
+        };
         Transformation: {
             field?: string;
             label?: string;
@@ -504,6 +675,13 @@ export interface components {
             after?: string;
             visualType?: string;
             afterHtml?: string;
+        };
+        WeeklyStreakHistory: {
+            /** Format: int32 */
+            weeksTracked?: number;
+            /** Format: int32 */
+            missedWeeks?: number;
+            weeklyActive?: boolean[];
         };
         WorkoutDefinition: {
             name?: string;

@@ -23,6 +23,35 @@ export enum PipelineRunStatus {
   UNRECOGNIZED = -1,
 }
 
+export enum ExecutionStepKind {
+  EXECUTION_STEP_KIND_UNSPECIFIED = 0,
+  /** EXECUTION_STEP_KIND_SOURCE - webhook ingestion */
+  EXECUTION_STEP_KIND_SOURCE = 1,
+  /** EXECUTION_STEP_KIND_PARSE - FIT parse */
+  EXECUTION_STEP_KIND_PARSE = 2,
+  /** EXECUTION_STEP_KIND_GATE - condition matcher / activity filter */
+  EXECUTION_STEP_KIND_GATE = 3,
+  /** EXECUTION_STEP_KIND_ENRICHER_BATCH - the enricher chain as one step */
+  EXECUTION_STEP_KIND_ENRICHER_BATCH = 4,
+  EXECUTION_STEP_KIND_ROUTER = 5,
+  EXECUTION_STEP_KIND_DESTINATION = 6,
+  UNRECOGNIZED = -1,
+}
+
+export enum ExecutionStepStatus {
+  EXECUTION_STEP_STATUS_UNSPECIFIED = 0,
+  EXECUTION_STEP_STATUS_QUEUED = 1,
+  EXECUTION_STEP_STATUS_RUNNING = 2,
+  EXECUTION_STEP_STATUS_OK = 3,
+  /** EXECUTION_STEP_STATUS_PASS - gate passed */
+  EXECUTION_STEP_STATUS_PASS = 4,
+  EXECUTION_STEP_STATUS_SKIPPED = 5,
+  EXECUTION_STEP_STATUS_FAILED = 6,
+  /** EXECUTION_STEP_STATUS_RETRIED - re-run via Repost* */
+  EXECUTION_STEP_STATUS_RETRIED = 7,
+  UNRECOGNIZED = -1,
+}
+
 export enum DestinationStatus {
   DESTINATION_STATUS_UNSPECIFIED = 0,
   DESTINATION_STATUS_PENDING = 1,
@@ -63,14 +92,46 @@ export interface PipelineRun {
   pendingInputId?: string | undefined;
   originalPayloadUri: string;
   enrichedEventUri: string;
+  /**
+   * Unified record of every step in a pipeline run — source, parse, gate,
+   * enricher batch, router, and per-destination uploaders.
+   * boosters[] is preserved for existing documents; new clients should prefer steps[].
+   */
+  steps: ExecutionStep[];
+}
+
+/** ExecutionStep is the unified record for a single step in a pipeline run. */
+export interface ExecutionStep {
+  /** stable per-step ID for deep-linking */
+  id: string;
+  /** 1-indexed display order */
+  ordinal: number;
+  kind: ExecutionStepKind;
+  /** "File Upload", "Parse FIT", "Strava Upload" */
+  displayName: string;
+  /** e.g. "webhook · strava" */
+  service: string;
+  status: ExecutionStepStatus;
+  /** ms from run start */
+  offsetMs: number;
+  durationMs: number;
+  /** override pill text, e.g. "✓ 25/25" */
+  statusLabel?: string | undefined;
+  error?: string | undefined;
+  metadata: { [key: string]: string };
+}
+
+export interface ExecutionStep_MetadataEntry {
+  key: string;
+  value: string;
 }
 
 export interface BoosterExecution {
   providerName: string;
-  status: string;
   durationMs: number;
   metadata: { [key: string]: string };
   error?: string | undefined;
+  status: ExecutionStepStatus;
 }
 
 export interface BoosterExecution_MetadataEntry {

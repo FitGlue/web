@@ -110,12 +110,16 @@ export interface components {
         AdminEmptyResponse: Record<string, never>;
         BoosterExecution: {
             providerName?: string;
-            status?: string;
             durationMs?: string;
             metadata?: {
                 [key: string]: string;
             };
             error?: string;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            status?: "EXECUTION_STEP_STATUS_UNSPECIFIED" | "EXECUTION_STEP_STATUS_QUEUED" | "EXECUTION_STEP_STATUS_RUNNING" | "EXECUTION_STEP_STATUS_OK" | "EXECUTION_STEP_STATUS_PASS" | "EXECUTION_STEP_STATUS_SKIPPED" | "EXECUTION_STEP_STATUS_FAILED" | "EXECUTION_STEP_STATUS_RETRIED";
         };
         DestinationConfig: {
             config?: {
@@ -146,6 +150,31 @@ export interface components {
              */
             providerType?: "ENRICHER_PROVIDER_UNSPECIFIED" | "ENRICHER_PROVIDER_FITBIT_HEART_RATE" | "ENRICHER_PROVIDER_WORKOUT_SUMMARY" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP" | "ENRICHER_PROVIDER_SOURCE_LINK" | "ENRICHER_PROVIDER_VIRTUAL_GPS" | "ENRICHER_PROVIDER_TYPE_MAPPER" | "ENRICHER_PROVIDER_PARKRUN" | "ENRICHER_PROVIDER_CONDITION_MATCHER" | "ENRICHER_PROVIDER_AUTO_INCREMENT" | "ENRICHER_PROVIDER_USER_INPUT" | "ENRICHER_PROVIDER_ACTIVITY_FILTER" | "ENRICHER_PROVIDER_LOGIC_GATE" | "ENRICHER_PROVIDER_HEART_RATE_SUMMARY" | "ENRICHER_PROVIDER_AI_COMPANION" | "ENRICHER_PROVIDER_PACE_SUMMARY" | "ENRICHER_PROVIDER_CADENCE_SUMMARY" | "ENRICHER_PROVIDER_POWER_SUMMARY" | "ENRICHER_PROVIDER_SPEED_SUMMARY" | "ENRICHER_PROVIDER_PERSONAL_RECORDS" | "ENRICHER_PROVIDER_TRAINING_LOAD" | "ENRICHER_PROVIDER_SPOTIFY_TRACKS" | "ENRICHER_PROVIDER_WEATHER" | "ENRICHER_PROVIDER_ELEVATION_SUMMARY" | "ENRICHER_PROVIDER_LOCATION_NAMING" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP_IMAGE" | "ENRICHER_PROVIDER_ROUTE_THUMBNAIL" | "ENRICHER_PROVIDER_AI_BANNER" | "ENRICHER_PROVIDER_FIT_FILE_HEART_RATE" | "ENRICHER_PROVIDER_HYBRID_RACE_TAGGER" | "ENRICHER_PROVIDER_RUNNING_DYNAMICS" | "ENRICHER_PROVIDER_HEART_RATE_ZONES" | "ENRICHER_PROVIDER_CALORIES_BURNED" | "ENRICHER_PROVIDER_GOAL_TRACKER" | "ENRICHER_PROVIDER_STREAK_TRACKER" | "ENRICHER_PROVIDER_DISTANCE_MILESTONES" | "ENRICHER_PROVIDER_RECOVERY_ADVISOR" | "ENRICHER_PROVIDER_EFFORT_SCORE" | "ENRICHER_PROVIDER_INTERVALS" | "ENRICHER_PROVIDER_PHOTO_UPLOAD" | "ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY" | "ENRICHER_PROVIDER_AI_ACTIVITY_TYPE" | "ENRICHER_PROVIDER_MOCK";
             typedConfig?: {
+                [key: string]: string;
+            };
+        };
+        /** @description ExecutionStep is the unified record for a single step in a pipeline run. */
+        ExecutionStep: {
+            id?: string;
+            /** Format: int32 */
+            ordinal?: number;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            kind?: "EXECUTION_STEP_KIND_UNSPECIFIED" | "EXECUTION_STEP_KIND_SOURCE" | "EXECUTION_STEP_KIND_PARSE" | "EXECUTION_STEP_KIND_GATE" | "EXECUTION_STEP_KIND_ENRICHER_BATCH" | "EXECUTION_STEP_KIND_ROUTER" | "EXECUTION_STEP_KIND_DESTINATION";
+            displayName?: string;
+            service?: string;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            status?: "EXECUTION_STEP_STATUS_UNSPECIFIED" | "EXECUTION_STEP_STATUS_QUEUED" | "EXECUTION_STEP_STATUS_RUNNING" | "EXECUTION_STEP_STATUS_OK" | "EXECUTION_STEP_STATUS_PASS" | "EXECUTION_STEP_STATUS_SKIPPED" | "EXECUTION_STEP_STATUS_FAILED" | "EXECUTION_STEP_STATUS_RETRIED";
+            offsetMs?: string;
+            durationMs?: string;
+            statusLabel?: string;
+            error?: string;
+            metadata?: {
                 [key: string]: string;
             };
         };
@@ -228,6 +257,12 @@ export interface components {
             pendingInputId?: string;
             originalPayloadUri?: string;
             enrichedEventUri?: string;
+            /**
+             * @description Unified record of every step in a pipeline run — source, parse, gate,
+             *      enricher batch, router, and per-destination uploaders.
+             *      boosters[] is preserved for existing documents; new clients should prefer steps[].
+             */
+            steps?: components["schemas"]["ExecutionStep"][];
         };
         RecentPipelineRunCounts: {
             /** Format: int32 */
@@ -285,6 +320,15 @@ export interface components {
             trialEndsAt?: string;
             email?: string;
             displayName?: string;
+            /**
+             * Format: int32
+             * @description Streak aggregates — written by streak-tracker enricher rollup on every activity sync.
+             *      A "streak day" is any calendar day with at least one qualifying activity.
+             *      Optional; absent means not yet computed.
+             */
+            currentStreakDays?: number;
+            /** Format: int32 */
+            longestStreakDays?: number;
         };
     };
     responses: never;

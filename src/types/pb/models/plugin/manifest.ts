@@ -16,6 +16,24 @@ export enum PluginType {
   UNRECOGNIZED = -1,
 }
 
+/** PipelineStage is the display grouping for enricher boosters in the pipeline editor. */
+export enum PipelineStage {
+  PIPELINE_STAGE_UNSPECIFIED = 0,
+  /** PIPELINE_STAGE_GATE - condition matcher, activity filter, logic gate */
+  PIPELINE_STAGE_GATE = 1,
+  /** PIPELINE_STAGE_ENRICHMENT - trackers + achievements (parkrun, PRs, goals, streaks, milestones) */
+  PIPELINE_STAGE_ENRICHMENT = 2,
+  /** PIPELINE_STAGE_METRICS - computed metrics (pace, HR, power, zones, effort, training load, recovery, cadence, speed, elevation, intervals, running dynamics, calories) */
+  PIPELINE_STAGE_METRICS = 3,
+  /** PIPELINE_STAGE_CONTEXT_AI - LLM + external APIs (location naming, weather, AI banner, type mapper, AI companion, AI activity type) */
+  PIPELINE_STAGE_CONTEXT_AI = 4,
+  /** PIPELINE_STAGE_INPUT - user input prompts (user input, manual workout entry, photo upload) */
+  PIPELINE_STAGE_INPUT = 5,
+  /** PIPELINE_STAGE_VIZ - visual outputs (muscle heatmap, muscle heatmap image, route thumbnail, workout summary) */
+  PIPELINE_STAGE_VIZ = 6,
+  UNRECOGNIZED = -1,
+}
+
 export enum ConfigFieldType {
   CONFIG_FIELD_TYPE_UNSPECIFIED = 0,
   CONFIG_FIELD_TYPE_STRING = 1,
@@ -61,7 +79,14 @@ export interface PluginManifest {
   iconType?: string | undefined;
   iconPath?: string | undefined;
   isTemporarilyUnavailable?: boolean | undefined;
-  allowMultipleInstances?: boolean | undefined;
+  allowMultipleInstances?:
+    | boolean
+    | undefined;
+  /**
+   * PipelineStage groups boosters in the pipeline editor UI.
+   * Only meaningful for type == PLUGIN_TYPE_ENRICHER.
+   */
+  stage?: PipelineStage | undefined;
 }
 
 export interface Transformation {

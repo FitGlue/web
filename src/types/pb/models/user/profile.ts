@@ -37,6 +37,13 @@ export interface UserProfile {
   trialEndsAt?: Date | undefined;
   email: string;
   displayName: string;
+  /**
+   * Streak aggregates — written by streak-tracker enricher rollup on every activity sync.
+   * A "streak day" is any calendar day with at least one qualifying activity.
+   * Optional; absent means not yet computed.
+   */
+  currentStreakDays?: number | undefined;
+  longestStreakDays?: number | undefined;
 }
 
 export interface NotificationPreferences {

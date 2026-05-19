@@ -99,11 +99,44 @@ export interface ListPipelineRunsRequest {
   pipelineId: string;
   limit: number;
   pageToken: string;
+  since?: Date | undefined;
+  until?: Date | undefined;
 }
 
 export interface ListPipelineRunsResponse {
   runs: PipelineRun[];
   nextPageToken: string;
+}
+
+export interface SourceActivityItem {
+  sourceActivityId: string;
+  title: string;
+  type: string;
+  startTime?: Date | undefined;
+  alreadySynced: boolean;
+}
+
+export interface ListSourceActivitiesRequest {
+  userId: string;
+  pipelineId: string;
+  source: string;
+  pageToken: string;
+}
+
+export interface ListSourceActivitiesResponse {
+  activities: SourceActivityItem[];
+  nextPageToken: string;
+}
+
+export interface BackfillActivitiesRequest {
+  userId: string;
+  pipelineId: string;
+  source: string;
+  sourceActivityIds: string[];
+}
+
+export interface BackfillActivitiesResponse {
+  queuedCount: number;
 }
 
 export interface PipelineService {
@@ -119,4 +152,6 @@ export interface PipelineService {
   GetPipelineRun(request: GetPipelineRunRequest): Promise<PipelineRun>;
   ListPipelineRuns(request: ListPipelineRunsRequest): Promise<ListPipelineRunsResponse>;
   AdminListPipelineRuns(request: AdminListPipelineRunsRequest): Promise<AdminListPipelineRunsResponse>;
+  ListSourceActivities(request: ListSourceActivitiesRequest): Promise<ListSourceActivitiesResponse>;
+  BackfillActivities(request: BackfillActivitiesRequest): Promise<BackfillActivitiesResponse>;
 }
