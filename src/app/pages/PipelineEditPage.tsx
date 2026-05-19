@@ -11,6 +11,7 @@ import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginConfigForm } from '../components/EnricherConfigForm';
 import { SharePipelineModal } from '../components/SharePipelineModal';
+import { SyncHistoricalModal } from '../components/SyncHistoricalModal';
 import { WizardOptionGrid, WizardExcludedSection } from '../components/wizard';
 import { PluginCategorySection } from '../components/PluginCategorySection';
 import { BoosterExclusionPills } from '../components/BoosterExclusionPills';
@@ -99,6 +100,7 @@ const PipelineEditPage: React.FC = () => {
     const [editingEnrichers, setEditingEnrichers] = useState(false);
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
     const [showShareModal, setShowShareModal] = useState(false);
+    const [showSyncModal, setShowSyncModal] = useState(false);
     const [enricherSearchQuery, setEnricherSearchQuery] = useState('');
     const [expandAllCategories, setExpandAllCategories] = useState(false);
 
@@ -450,7 +452,12 @@ const PipelineEditPage: React.FC = () => {
 
                     {/* Actions */}
                     <Stack direction="horizontal" justify="between">
-                        <Button variant="secondary" onClick={() => setShowShareModal(true)}>📤 Share</Button>
+                        <Stack direction="horizontal" gap="sm">
+                            <Button variant="secondary" onClick={() => setShowShareModal(true)}>📤 Share</Button>
+                            {selectedSources.some(s => ['hevy', 'strava', 'fitbit', 'intervals'].includes(s)) && (
+                                <Button variant="secondary" onClick={() => setShowSyncModal(true)}>🕐 Sync historical</Button>
+                            )}
+                        </Stack>
                         <Stack direction="horizontal" gap="sm">
                             <Button variant="secondary" onClick={() => navigate('/settings/pipelines')}>Cancel</Button>
                             <Button variant="primary" onClick={handleSave}
@@ -485,6 +492,15 @@ const PipelineEditPage: React.FC = () => {
                     })}
                     pipelineName={pipelineName || 'Unnamed Pipeline'}
                     onClose={() => setShowShareModal(false)}
+                />
+            )}
+
+            {showSyncModal && pipelineId && (
+                <SyncHistoricalModal
+                    pipelineId={pipelineId}
+                    selectedSources={selectedSources}
+                    sourceManifests={sources}
+                    onClose={() => setShowSyncModal(false)}
                 />
             )}
         </>
