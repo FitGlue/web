@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout';
 import { SmartNudge } from '../components/SmartNudge';
-import { CardSkeleton } from '../components/library/ui';
+import { CardSkeleton, Button, EmptyState } from '../components/library/ui';
 import { PluginIcon } from '../components/library/ui/PluginIcon';
 
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
@@ -93,13 +93,13 @@ const ConnectionTile: React.FC<ConnectionTileProps> = ({
             {/* Action */}
             <div className="conn-tile__foot">
                 {isConnected ? (
-                    <button className="fg-button fg-button--sm fg-button--ink" onClick={onView}>
+                    <Button variant="ink" size="sm" onClick={onView}>
                         VIEW →
-                    </button>
+                    </Button>
                 ) : (
-                    <button className="fg-button fg-button--sm" onClick={onConnect}>
+                    <Button size="sm" onClick={onConnect}>
                         CONNECT
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>
@@ -189,11 +189,11 @@ const ConnectionsPage: React.FC = () => {
             </div>
 
             {availableIntegrations.length === 0 ? (
-                <div className="conn-empty">
-                    <div className="conn-empty__icon">🔗</div>
-                    <div className="conn-empty__title">ALL CONNECTED</div>
-                    <p className="conn-empty__sub">You have connected all available services.</p>
-                </div>
+                <EmptyState
+                    icon="🔗"
+                    title="ALL CONNECTED"
+                    description="You have connected all available services."
+                />
             ) : (
                 <div className="conn-grid">
                     {availableIntegrations.map(integration => {

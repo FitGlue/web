@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout';
-import { CardSkeleton } from '../components/library/ui';
+import { CardSkeleton, Button, Badge } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { PluginIcon } from '../components/library/ui/PluginIcon';
 import { renderInlineMarkdown } from '../utils/markdown';
@@ -54,9 +54,9 @@ const ConnectionSetupPage: React.FC = () => {
                     <p style={{ fontFamily: 'var(--fg-font-body)', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
                         This connection type does not exist.
                     </p>
-                    <button className="fg-button fg-button--sm" onClick={() => navigate('/connections')}>
+                    <Button size="sm" onClick={() => navigate('/connections')}>
                         BACK TO CONNECTIONS
-                    </button>
+                    </Button>
                 </div>
             </PageLayout>
         );
@@ -253,13 +253,12 @@ const ConnectionSetupPage: React.FC = () => {
                             >
                                 ← CANCEL
                             </button>
-                            <button
+                            <Button
                                 type="submit"
-                                className="fg-button"
                                 disabled={submitting || !apiKey.trim() || (requiresAthleteId && !athleteId.trim())}
                             >
                                 {submitting ? 'CONNECTING…' : `CONNECT ${integration.name.toUpperCase()} →`}
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </div>
@@ -374,13 +373,12 @@ const ConnectionSetupPage: React.FC = () => {
                     >
                         ← CANCEL
                     </button>
-                    <button
-                        className="fg-button"
+                    <Button
                         onClick={handleOAuthConnect}
                         disabled={submitting}
                     >
                         {submitting ? 'REDIRECTING…' : `CONTINUE TO ${integration.name.toUpperCase()} →`}
-                    </button>
+                    </Button>
                 </div>
             </div>
         );
@@ -453,10 +451,10 @@ const ConnectionSetupPage: React.FC = () => {
                     </div>
 
                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <button className="fg-button fg-button--sm" disabled>
+                        <Button size="sm" disabled>
                             DOWNLOAD ON {storeName.toUpperCase()}
-                        </button>
-                        <span className="fg-stamp fg-stamp--gold">COMING SOON</span>
+                        </Button>
+                        <Badge variant="warning">COMING SOON</Badge>
                     </div>
 
                     <p style={{ fontFamily: 'var(--fg-font-body)', fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginTop: '1rem' }}>
@@ -567,13 +565,12 @@ const ConnectionSetupPage: React.FC = () => {
                             >
                                 ← CANCEL
                             </button>
-                            <button
+                            <Button
                                 type="submit"
-                                className="fg-button"
                                 disabled={submitting || !apiKey.trim()}
                             >
                                 {submitting ? 'CONNECTING…' : `CONNECT ${integration.name.toUpperCase()} →`}
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </div>
@@ -606,9 +603,9 @@ const ConnectionSetupPage: React.FC = () => {
                             <p style={{ fontFamily: 'var(--fg-font-body)', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
                                 This connection type is not configured correctly.
                             </p>
-                            <button className="fg-button fg-button--sm" onClick={() => navigate('/connections')}>
+                            <Button size="sm" onClick={() => navigate('/connections')}>
                                 BACK TO CONNECTIONS
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 )}

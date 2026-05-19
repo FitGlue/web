@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout';
-import { CardSkeleton } from '../components/library/ui';
+import { CardSkeleton, Button, Badge } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 
@@ -88,9 +88,9 @@ const ConnectionErrorPage: React.FC = () => {
                 </h1>
 
                 {/* Error reason stamp */}
-                <span className="fg-stamp fg-stamp--rose">
+                <Badge variant="error">
                     {reason.replace(/_/g, ' ').toUpperCase()}
-                </span>
+                </Badge>
 
                 {/* Error message */}
                 <p style={{
@@ -124,18 +124,12 @@ const ConnectionErrorPage: React.FC = () => {
                 gap: '0.75rem',
                 justifyContent: 'center',
             }}>
-                <button
-                    className="fg-button fg-button--sm"
-                    onClick={() => navigate(`/connections/${id}/setup`)}
-                >
+                <Button size="sm" onClick={() => navigate(`/connections/${id}/setup`)}>
                     TRY AGAIN →
-                </button>
-                <button
-                    className="fg-button fg-button--sm fg-button--ink"
-                    onClick={() => navigate('/connections')}
-                >
+                </Button>
+                <Button variant="ink" size="sm" onClick={() => navigate('/connections')}>
                     BACK TO CONNECTIONS
-                </button>
+                </Button>
             </div>
         </PageLayout>
     );

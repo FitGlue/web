@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout/PageLayout';
 import { Card } from '../components/library/ui/Card';
+import { Button } from '../components/library/ui/Button';
 import { Paragraph } from '../components/library/ui/Paragraph';
 import { useToast } from '../components/library/ui/Toast';
 import { client } from '../../shared/api/client';
@@ -451,12 +452,13 @@ const PipelineWizardPage: React.FC = () => {
                                     value={enricherSearchQuery}
                                     onChange={(e) => setEnricherSearchQuery(e.target.value)}
                                 />
-                                <button
-                                    className="fg-button fg-button--sm fg-button--ink"
+                                <Button
+                                    variant="ink"
+                                    size="sm"
                                     onClick={() => setExpandAllCategories(!expandAllCategories)}
                                 >
                                     {expandAllCategories ? 'COLLAPSE ALL' : 'EXPAND ALL'}
-                                </button>
+                                </Button>
                             </div>
                             {Array.from(groupedEnrichers.entries()).map(([category, plugins]) => (
                                 <PluginCategorySection
@@ -736,7 +738,7 @@ const PipelineWizardPage: React.FC = () => {
                     <p style={{ fontFamily: 'var(--fg-font-body)', color: 'var(--fg-rose)', marginBottom: '1rem' }}>
                         Failed to load plugin registry: {registryError}
                     </p>
-                    <button className="fg-button fg-button--sm" onClick={() => window.location.reload()}>RETRY</button>
+                    <Button size="sm" onClick={() => window.location.reload()}>RETRY</Button>
                 </div>
             </PageLayout>
         );
@@ -749,12 +751,13 @@ const PipelineWizardPage: React.FC = () => {
                 <div className="fg-band">
                     <span className="fg-band__label">NEW PIPELINE</span>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button
-                            className="fg-button fg-button--sm fg-button--ink"
+                        <Button
+                            variant="ink"
+                            size="sm"
                             onClick={() => navigate('/settings/pipelines')}
                         >
                             CANCEL ✕
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -780,21 +783,19 @@ const PipelineWizardPage: React.FC = () => {
                             </span>
 
                             {step !== 'review' ? (
-                                <button
-                                    className="fg-button"
+                                <Button
                                     onClick={handleNext}
                                     disabled={!canProceed() || loading}
                                 >
                                     NEXT →
-                                </button>
+                                </Button>
                             ) : (
-                                <button
-                                    className="fg-button"
+                                <Button
                                     onClick={handleCreate}
                                     disabled={creating}
                                 >
                                     {creating ? 'CREATING…' : 'CREATE PIPELINE →'}
-                                </button>
+                                </Button>
                             )}
                         </div>
                     </div>

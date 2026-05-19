@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout';
-import { CardSkeleton, ConfirmDialog, IdBadge, useToast } from '../components/library/ui';
+import { CardSkeleton, Button, Badge, EmptyState, ConfirmDialog, IdBadge, useToast } from '../components/library/ui';
 
 import { client } from '../../shared/api/client';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
@@ -63,11 +63,11 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
                     <span className="pipe-card__name">{pipeline.name || 'UNNAMED PIPELINE'}</span>
                     {isNerdMode && <IdBadge id={pipeline.id} stripPrefix="pipe_" showChars={8} copyable />}
                     {boosterCount > 0 && (
-                        <span className="fg-stamp fg-stamp--ink">{boosterCount} BOOSTER{boosterCount !== 1 ? 'S' : ''}</span>
+                        <Badge>{boosterCount} BOOSTER{boosterCount !== 1 ? 'S' : ''}</Badge>
                     )}
                 </div>
                 <div className="pipe-card__head-right">
-                    {pipeline.disabled && <span className="fg-stamp fg-stamp--paper">DISABLED</span>}
+                    {pipeline.disabled && <Badge variant="light">DISABLED</Badge>}
                 </div>
             </div>
 
@@ -125,31 +125,33 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
 
             {/* Footer actions */}
             <div className="pipe-card__foot">
-                <button
-                    className={`fg-button fg-button--sm${pipeline.disabled ? '' : ' fg-button--ink'}`}
+                <Button
+                    variant={pipeline.disabled ? 'primary' : 'ink'}
+                    size="sm"
                     onClick={() => onToggleDisabled(!pipeline.disabled)}
                     disabled={toggling}
                 >
                     {toggling ? 'UPDATING…' : (pipeline.disabled ? 'ENABLE' : 'DISABLE')}
-                </button>
-                <button className="fg-button fg-button--sm fg-button--ink" onClick={onEdit}>
+                </Button>
+                <Button variant="ink" size="sm" onClick={onEdit}>
                     EDIT
-                </button>
-                <button
-                    className="fg-button fg-button--sm fg-button--ink"
+                </Button>
+                <Button
+                    variant="ink"
+                    size="sm"
                     onClick={onDuplicate}
                     disabled={duplicating}
                 >
                     {duplicating ? 'DUPLICATING…' : 'DUPLICATE'}
-                </button>
-                <button
-                    className="fg-button fg-button--sm"
-                    style={{ background: 'var(--fg-rose)', color: 'var(--fg-paper)' }}
+                </Button>
+                <Button
+                    variant="danger"
+                    size="sm"
                     onClick={onDelete}
                     disabled={deleting}
                 >
                     {deleting ? 'DELETING…' : 'DELETE'}
-                </button>
+                </Button>
             </div>
         </div>
     );
@@ -265,33 +267,31 @@ const PipelinesPage: React.FC = () => {
             <div className="fg-band">
                 <span className="fg-band__label">YOUR PIPELINES</span>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button
-                        className="fg-button fg-button--sm fg-button--ink"
+                    <Button
+                        variant="ink"
+                        size="sm"
                         onClick={() => { setImportCode(undefined); setShowImportModal(true); }}
                     >
                         📥 IMPORT
-                    </button>
-                    <button
-                        className="fg-button fg-button--sm"
+                    </Button>
+                    <Button
+                        size="sm"
                         onClick={() => navigate('/settings/pipelines/new')}
                     >
                         + NEW PIPELINE
-                    </button>
+                    </Button>
                 </div>
             </div>
 
             {/* Pipeline list or empty state */}
             {pipelines.length === 0 ? (
-                <div className="pipe-empty">
-                    <div className="pipe-empty__icon">🔀</div>
-                    <div className="pipe-empty__title">NO PIPELINES CONFIGURED</div>
-                    <p className="pipe-empty__sub">
-                        Create your first pipeline to start automating your fitness data.
-                    </p>
-                    <button className="fg-button" onClick={() => navigate('/settings/pipelines/new')}>
-                        CREATE YOUR FIRST PIPELINE →
-                    </button>
-                </div>
+                <EmptyState
+                    icon="🔀"
+                    title="NO PIPELINES CONFIGURED"
+                    description="Create your first pipeline to start automating your fitness data."
+                    actionLabel="CREATE YOUR FIRST PIPELINE →"
+                    onAction={() => navigate('/settings/pipelines/new')}
+                />
             ) : (
                 <div>
                     {pipelines.map(pipeline => (

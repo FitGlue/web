@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
+import { PageLayout } from '../components/library/layout';
 import { RecipeCard } from '../components/recipes/RecipeCard';
 import { RECIPES } from '../data/recipes';
 import './RecipesPage.css';
@@ -8,15 +9,7 @@ const RecipesPage: React.FC = () => {
     const { integrations } = useRealtimeIntegrations();
 
     return (
-        <div className="recipes-page">
-            {/* Page head */}
-            <div className="page-head">
-                <div>
-                    <div className="page-head__eyebrow">SETUP</div>
-                    <h1>Recipes</h1>
-                </div>
-            </div>
-
+        <PageLayout title="Recipes" backTo="/" backLabel="Dashboard">
             {/* Band */}
             <div className="fg-band">
                 <span className="fg-band__label">PIPELINE RECIPES</span>
@@ -33,7 +26,7 @@ const RecipesPage: React.FC = () => {
                     />
                 ))}
             </div>
-        </div>
+        </PageLayout>
     );
 };
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout';
-import { CardSkeleton, Badge, useToast } from '../components/library/ui';
+import { CardSkeleton, Badge, Button, useToast } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
@@ -149,9 +149,9 @@ const ConnectionSuccessPage: React.FC = () => {
                                 <span style={{ flex: 1, background: 'var(--fg-ink)', padding: '0.75rem 1rem', fontFamily: 'var(--fg-font-mono)', fontSize: '0.8125rem', color: 'var(--fg-cyan)', wordBreak: 'break-all' }}>
                                     {webhookUrl}
                                 </span>
-                                <button className="fg-button fg-button--sm" onClick={handleCopyUrl} style={{ flexShrink: 0 }}>
+                                <Button size="sm" onClick={handleCopyUrl} style={{ flexShrink: 0 }}>
                                     {copiedUrl ? '✓ COPIED' : 'COPY'}
-                                </button>
+                                </Button>
                             </div>
                         </div>
 
@@ -167,9 +167,9 @@ const ConnectionSuccessPage: React.FC = () => {
                                 <span style={{ flex: 1, background: 'var(--fg-ink)', padding: '0.75rem 1rem', fontFamily: 'var(--fg-font-mono)', fontSize: '0.8125rem', color: 'var(--fg-cyan)', wordBreak: 'break-all' }}>
                                     {ingressApiKey}
                                 </span>
-                                <button className="fg-button fg-button--sm" onClick={handleCopyKey} style={{ flexShrink: 0 }}>
+                                <Button size="sm" onClick={handleCopyKey} style={{ flexShrink: 0 }}>
                                     {copiedKey ? '✓ COPIED' : 'COPY'}
-                                </button>
+                                </Button>
                             </div>
                         </div>
 
@@ -314,8 +314,9 @@ const ConnectionSuccessPage: React.FC = () => {
                                             <Badge variant="error">{error}</Badge>
                                         )}
                                     </div>
-                                    <button
-                                        className={`fg-button fg-button--sm${completed ? ' fg-button--ink' : ''}`}
+                                    <Button
+                                        variant={completed ? 'ink' : 'primary'}
+                                        size="sm"
                                         disabled={running}
                                         onClick={async () => {
                                             try {
@@ -330,7 +331,7 @@ const ConnectionSuccessPage: React.FC = () => {
                                         }}
                                     >
                                         {running ? 'RUNNING…' : completed ? '✓ DONE' : 'RUN'}
-                                    </button>
+                                    </Button>
                                 </div>
                             );
                         })}
@@ -346,12 +347,12 @@ const ConnectionSuccessPage: React.FC = () => {
                 gap: '0.75rem',
                 justifyContent: 'center',
             }}>
-                <button className="fg-button fg-button--sm" onClick={() => navigate('/connections')}>
+                <Button size="sm" onClick={() => navigate('/connections')}>
                     VIEW CONNECTIONS
-                </button>
-                <button className="fg-button fg-button--sm fg-button--ink" onClick={() => navigate('/')}>
+                </Button>
+                <Button variant="ink" size="sm" onClick={() => navigate('/')}>
                     GO TO DASHBOARD
-                </button>
+                </Button>
             </div>
         </PageLayout>
     );

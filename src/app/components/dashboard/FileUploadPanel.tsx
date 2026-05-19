@@ -258,9 +258,9 @@ export const FileUploadPanel: React.FC = () => {
                   )}
                 </Stack>
               </div>
-              <button className="upload-link-btn" onClick={clearQueue} disabled={uploading}>
+              <Button variant="ghost" size="sm" onClick={clearQueue} disabled={uploading}>
                 Change file
-              </button>
+              </Button>
             </Stack>
 
             <Stack gap="sm">
@@ -297,20 +297,22 @@ export const FileUploadPanel: React.FC = () => {
             <div className="upload-queue-header">
               <Paragraph bold inline>{queue.length} files selected</Paragraph>
               <div className="upload-queue-header-actions">
-                <button
-                  className="upload-link-btn"
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={handleDropzoneClick}
                   disabled={uploading}
                 >
                   + Add more
-                </button>
-                <button
-                  className="upload-link-btn upload-link-btn--danger"
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
                   onClick={clearQueue}
                   disabled={uploading}
                 >
                   Clear all
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -322,13 +324,15 @@ export const FileUploadPanel: React.FC = () => {
                   <span className="upload-queue-item__size">{formatSize(item.file.size)}</span>
                   <span className="upload-queue-item__status">{STATUS_LABEL[item.status]}</span>
                   {item.status === 'pending' && !uploading && (
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="upload-queue-item__remove"
                       onClick={() => removeItem(item.id)}
                       title="Remove"
                     >
                       ×
-                    </button>
+                    </Button>
                   )}
                   {item.status === 'error' && item.errorMessage && (
                     <span className="upload-queue-item__error" title={item.errorMessage}>ⓘ</span>
@@ -343,7 +347,7 @@ export const FileUploadPanel: React.FC = () => {
                 {successCount > 0 && errorCount > 0 && ' · '}
                 {errorCount > 0 && `✕ ${errorCount} failed`}
                 {errorCount > 0 && (
-                  <> · <button className="upload-link-btn" onClick={retryFailed}>Retry failed</button></>
+                  <> · <Button variant="ghost" size="sm" onClick={retryFailed}>Retry failed</Button></>
                 )}
               </Paragraph>
             )}

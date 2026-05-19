@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout';
 import {
-    CardSkeleton, Badge, ConfirmDialog, useToast
+    CardSkeleton, Badge, Button, ConfirmDialog, useToast
 } from '../components/library/ui';
 import { PluginIcon } from '../components/library/ui/PluginIcon';
 import { client } from '../../shared/api/client';
@@ -133,9 +133,9 @@ const ConnectionDetailPage: React.FC = () => {
                     <p style={{ fontFamily: 'var(--fg-font-body)', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
                         This connection type does not exist.
                     </p>
-                    <button className="fg-button fg-button--sm" onClick={() => navigate('/connections')}>
+                    <Button size="sm" onClick={() => navigate('/connections')}>
                         BACK TO CONNECTIONS
-                    </button>
+                    </Button>
                 </div>
             </PageLayout>
         );
@@ -163,15 +163,15 @@ const ConnectionDetailPage: React.FC = () => {
                             <div className="conn-detail__hero-name">{integration.name}</div>
                             <div className="conn-detail__hero-sub">{integration.description}</div>
                         </div>
-                        <span className="fg-stamp fg-stamp--ink">NOT CONNECTED</span>
+                        <Badge>NOT CONNECTED</Badge>
                     </div>
                     <div className="conn-detail__actions">
-                        <button className="fg-button fg-button--sm fg-button--ink" onClick={() => navigate('/connections')}>
+                        <Button variant="ink" size="sm" onClick={() => navigate('/connections')}>
                             ← BACK
-                        </button>
-                        <button className="fg-button fg-button--sm" onClick={() => navigate(`/connections/${id}/setup`)}>
+                        </Button>
+                        <Button size="sm" onClick={() => navigate(`/connections/${id}/setup`)}>
                             CONNECT {integration.name.toUpperCase()} →
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </PageLayout>
@@ -209,7 +209,7 @@ const ConnectionDetailPage: React.FC = () => {
                         <div className="conn-detail__hero-name">{integration.name}</div>
                         <div className="conn-detail__hero-sub">{integration.description}</div>
                     </div>
-                    <span className="fg-stamp fg-stamp--green">✓ CONNECTED</span>
+                    <Badge variant="success">✓ CONNECTED</Badge>
                 </div>
 
                 {/* Connection Details section */}
@@ -224,12 +224,9 @@ const ConnectionDetailPage: React.FC = () => {
                                     {integration.apiKeyLabel || 'ID'}
                                 </span>
                                 <span className="conn-detail__field-value">{status.externalUserId}</span>
-                                <button
-                                    className="fg-button fg-button--sm fg-button--ghost"
-                                    onClick={handleCopyId}
-                                >
+                                <Button variant="ghost" size="sm" onClick={handleCopyId}>
                                     {copied ? '✓ COPIED' : 'COPY'}
-                                </button>
+                                </Button>
                             </div>
                         )}
 
@@ -288,9 +285,9 @@ const ConnectionDetailPage: React.FC = () => {
                             <div className="conn-detail__field">
                                 <span className="conn-detail__field-label">Webhook URL</span>
                                 <span className="conn-detail__field-value">{webhookUrl}</span>
-                                <button className="fg-button fg-button--sm fg-button--ghost" onClick={handleCopyWebhookUrl}>
+                                <Button variant="ghost" size="sm" onClick={handleCopyWebhookUrl}>
                                     {copiedWebhook ? '✓ COPIED' : 'COPY'}
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </div>
@@ -319,8 +316,9 @@ const ConnectionDetailPage: React.FC = () => {
                                                 <Badge variant="error">{error}</Badge>
                                             )}
                                         </div>
-                                        <button
-                                            className={`fg-button fg-button--sm${completed ? ' fg-button--ink' : ''}`}
+                                        <Button
+                                            variant={completed ? 'ink' : 'primary'}
+                                            size="sm"
                                             disabled={running}
                                             onClick={async () => {
                                                 try {
@@ -335,7 +333,7 @@ const ConnectionDetailPage: React.FC = () => {
                                             }}
                                         >
                                             {running ? 'RUNNING…' : completed ? 'RUN AGAIN' : 'RUN'}
-                                        </button>
+                                        </Button>
                                     </div>
                                 );
                             })}
@@ -346,18 +344,18 @@ const ConnectionDetailPage: React.FC = () => {
                 {/* Actions footer */}
                 <div className="conn-detail__actions">
                     {isOAuth && (
-                        <button className="fg-button fg-button--sm fg-button--ink" onClick={handleReconnect}>
+                        <Button variant="ink" size="sm" onClick={handleReconnect}>
                             RECONNECT
-                        </button>
+                        </Button>
                     )}
-                    <button
-                        className="fg-button fg-button--sm"
-                        style={{ background: 'var(--fg-rose)', color: 'var(--fg-paper)' }}
+                    <Button
+                        variant="danger"
+                        size="sm"
                         onClick={() => setShowDisconnectConfirm(true)}
                         disabled={disconnecting}
                     >
                         {disconnecting ? 'DISCONNECTING…' : 'DISCONNECT'}
-                    </button>
+                    </Button>
                 </div>
             </div>
 
