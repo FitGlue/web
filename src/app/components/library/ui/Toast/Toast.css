@@ -1,5 +1,6 @@
 /* ==========================================================================
-   Toast Component Styles
+   Toast — Brutal × Aurora
+   Ink-2 surface, hairline border, status accent via fg-stamp token colors.
    ========================================================================== */
 
 .ui-toast-container {
@@ -18,10 +19,8 @@
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  background: var(--fg-ink-2);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
   pointer-events: auto;
   min-width: 280px;
   max-width: 400px;
@@ -29,59 +28,46 @@
 }
 
 .ui-toast--success {
-  border-color: var(--color-success);
-  background: var(--color-success-bg);
+  box-shadow: inset 0 0 0 1.5px var(--fg-green), inset 3px 0 0 0 var(--fg-green);
 }
 
 .ui-toast--error {
-  border-color: var(--color-error);
-  background: var(--color-error-bg);
+  box-shadow: inset 0 0 0 1.5px var(--fg-rose), inset 3px 0 0 0 var(--fg-rose);
 }
 
 .ui-toast--warning {
-  border-color: var(--color-warning);
-  background: var(--color-warning-bg);
+  box-shadow: inset 0 0 0 1.5px var(--fg-gold), inset 3px 0 0 0 var(--fg-gold);
 }
 
 .ui-toast--info {
-  border-color: var(--color-info);
-  background: var(--color-info-bg);
+  box-shadow: inset 0 0 0 1.5px var(--fg-cyan), inset 3px 0 0 0 var(--fg-cyan);
 }
 
 .ui-toast__icon {
   flex-shrink: 0;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
 }
 
-.ui-toast--success .ui-toast__icon {
-  color: var(--color-success);
-}
+.ui-toast--success .ui-toast__icon { color: var(--fg-green); }
+.ui-toast--error   .ui-toast__icon { color: var(--fg-rose); }
+.ui-toast--warning .ui-toast__icon { color: var(--fg-gold); }
+.ui-toast--info    .ui-toast__icon { color: var(--fg-cyan); }
 
-.ui-toast--error .ui-toast__icon {
-  color: var(--color-error);
-}
-
-.ui-toast--warning .ui-toast__icon {
-  color: var(--color-warning);
-}
-
-.ui-toast--info .ui-toast__icon {
-  color: var(--color-info);
-}
-
-.ui-toast__content {
-  flex: 1;
-}
+.ui-toast__content { flex: 1; }
 
 .ui-toast__title {
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  font-size: 0.875rem;
+  font-family: var(--fg-font-display);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
 }
 
 .ui-toast__message {
-  color: var(--color-text-secondary);
+  font-family: var(--fg-font-body);
   font-size: 0.8125rem;
+  color: var(--fg-paper-dim);
   margin-top: 2px;
 }
 
@@ -89,7 +75,7 @@
   flex-shrink: 0;
   background: none;
   border: none;
-  color: var(--color-text-secondary);
+  color: var(--fg-paper-dim);
   cursor: pointer;
   padding: var(--spacing-xs);
   font-size: 1rem;
@@ -97,34 +83,18 @@
   transition: opacity var(--transition-fast);
 }
 
-.ui-toast__close:hover {
-  opacity: 1;
-}
+.ui-toast__close:hover { opacity: 1; }
 
 .ui-toast--exiting {
   animation: toast-slide-out 0.2s ease forwards;
 }
 
 @keyframes toast-slide-in {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
 }
 
 @keyframes toast-slide-out {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-
-  to {
-    transform: translateX(100%);
-    opacity: 0;
-  }
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(100%); opacity: 0; }
 }

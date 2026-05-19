@@ -1,5 +1,6 @@
 /* ==========================================================================
-   SummaryListItem - Consistent Row Item for Dashboard Cards
+   SummaryListItem — Brutal × Aurora
+   Hairline dividers, display title, mono subtitle.
    ========================================================================== */
 @import '../tokens.css';
 
@@ -8,7 +9,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: var(--fg-rule-thin);
   background: none;
   border-left: none;
   border-right: none;
@@ -25,11 +26,11 @@
 
 .summary-list-item--clickable {
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background var(--transition-fast);
 }
 
 .summary-list-item--clickable:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(245, 243, 235, 0.03);
 }
 
 .summary-list-item__icon {
@@ -59,15 +60,19 @@
 .summary-list-item__title {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-text-primary, #ffffff);
+  color: var(--fg-paper);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .summary-list-item__subtitle {
-  font-size: 0.75rem;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
@@ -76,14 +81,12 @@
 
 .summary-list-item__status {
   flex-shrink: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.summary-list-item__status--active {
-  color: var(--color-success);
-}
-
-.summary-list-item__status--inactive {
-  color: var(--color-text-muted);
-}
+.summary-list-item__status--active   { color: var(--fg-green); }
+.summary-list-item__status--inactive { color: var(--fg-paper-dim); }

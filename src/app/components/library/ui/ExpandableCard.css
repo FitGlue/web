@@ -1,54 +1,36 @@
-/* ============================================================
-   ExpandableCard
-   ============================================================ */
+/* ==========================================================================
+   ExpandableCard — Brutal × Aurora
+   Hairline border, no shadows or radius.
+   ========================================================================== */
 
 .expandable-card {
-    overflow: hidden;
-    transition: box-shadow 0.2s ease;
-    /* Override Card's default padding — each section manages its own spacing */
-    padding: 0 !important;
+  overflow: hidden;
+  padding: 0 !important;
 }
 
-.expandable-card:hover {
-    box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.15));
+.expandable-card > .accordion-trigger {
+  padding: var(--spacing-lg);
 }
 
-.expandable-card--expanded {
-    box-shadow: var(--shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.2));
-}
-
-/* The accordion trigger (header) needs its own padding since Card's is zeroed */
-.expandable-card>.accordion-trigger {
-    padding: var(--spacing-lg);
-}
-
-/* Expanded body */
 .expandable-card__body {
-    margin: 0 var(--spacing-lg) var(--spacing-lg);
-    padding-top: var(--spacing-lg);
-    border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
-    animation: expandableCardReveal 0.25s ease;
+  margin: 0 var(--spacing-lg) var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: var(--fg-rule-thin);
+  animation: expandableCardReveal 0.2s ease;
 }
 
 @keyframes expandableCardReveal {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 640px) {
-    .expandable-card>.accordion-trigger {
-        padding: var(--spacing-md);
-    }
+  .expandable-card > .accordion-trigger {
+    padding: var(--spacing-md);
+  }
 
-    .expandable-card__body {
-        margin: 0 var(--spacing-md) var(--spacing-md);
-        padding-top: var(--spacing-md);
-    }
+  .expandable-card__body {
+    margin: 0 var(--spacing-md) var(--spacing-md);
+    padding-top: var(--spacing-md);
+  }
 }

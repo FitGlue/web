@@ -1,31 +1,42 @@
-/* EmptyState component styles */
+/* ==========================================================================
+   EmptyState — Brutal × Aurora
+   Centered, mono descriptor, display heading, no radius.
+   ========================================================================== */
+
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 2.5rem 2rem;
   text-align: center;
 }
 
 .empty-state__icon {
-  font-size: 3rem;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
-  opacity: 0.7;
+  opacity: 0.5;
 }
 
 .empty-state__title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--color-text, #1a1a2e);
+  font-family: var(--fg-font-display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
   margin: 0 0 0.5rem;
 }
 
 .empty-state__description {
-  font-size: 0.875rem;
-  color: var(--color-text-secondary, #6b7280);
-  margin: 0 0 1rem;
-  max-width: 280px;
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
+  margin: 0 0 1.5rem;
+  max-width: 320px;
 }
 
 .empty-state__actions {
@@ -37,7 +48,7 @@
 
 /* Mini variant */
 .empty-state--mini {
-  padding: 1rem;
+  padding: 1.25rem;
 }
 
 .empty-state--mini .empty-state__icon {
@@ -46,10 +57,10 @@
 }
 
 .empty-state--mini .empty-state__title {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .empty-state--mini .empty-state__description {
-  font-size: 0.8rem;
-  margin-bottom: 0.75rem;
+  font-size: 0.625rem;
+  margin-bottom: 0.875rem;
 }

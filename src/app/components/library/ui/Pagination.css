@@ -1,5 +1,6 @@
 /* ==========================================================================
-   Pagination Component Styles
+   Pagination — Brutal × Aurora
+   Mono text, hairline selects, token colors.
    ========================================================================== */
 
 .ui-pagination {
@@ -12,8 +13,12 @@
 }
 
 .ui-pagination__info {
-  color: var(--color-text-secondary);
-  font-size: 0.875rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
 }
 
 .ui-pagination__controls {
@@ -23,8 +28,12 @@
 }
 
 .ui-pagination__page-info {
-  color: var(--color-text-secondary);
-  font-size: 0.875rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
   min-width: 100px;
   text-align: center;
 }
@@ -36,27 +45,34 @@
 }
 
 .ui-pagination__page-size-label {
-  color: var(--color-text-secondary);
-  font-size: 0.875rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
 }
 
 .ui-pagination__page-size-select {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-primary);
+  background: var(--fg-ink);
+  border: none;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+  color: var(--fg-paper);
   padding: var(--spacing-xs) var(--spacing-sm);
-  font-size: 0.875rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   cursor: pointer;
 }
 
 .ui-pagination__page-size-select:hover {
-  border-color: var(--color-border-hover);
+  box-shadow: inset 0 0 0 1.5px rgba(245, 243, 235, 0.3);
 }
 
 .ui-pagination__page-size-select:focus {
   outline: none;
-  border-color: var(--color-primary);
+  box-shadow: inset 0 0 0 2px var(--fg-pink);
 }
 
 /* Compact variant */
@@ -65,12 +81,7 @@
   gap: var(--spacing-sm);
 }
 
-.ui-pagination--compact .ui-pagination__info,
-.ui-pagination--compact .ui-pagination__page-info {
-  font-size: 0.8125rem;
-}
-
-/* Mobile responsive */
+/* Mobile */
 @media (max-width: 768px) {
   .ui-pagination {
     flex-direction: column;
@@ -78,19 +89,8 @@
     gap: var(--spacing-sm);
   }
 
-  .ui-pagination__info {
-    text-align: center;
-  }
-
-  .ui-pagination__page-size {
-    justify-content: center;
-  }
-
-  .ui-pagination__controls {
-    justify-content: center;
-  }
-
-  .ui-pagination__page-info {
-    min-width: auto;
-  }
+  .ui-pagination__info    { text-align: center; }
+  .ui-pagination__page-size { justify-content: center; }
+  .ui-pagination__controls  { justify-content: center; }
+  .ui-pagination__page-info { min-width: auto; }
 }

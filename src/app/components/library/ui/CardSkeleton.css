@@ -4,9 +4,8 @@
 
 .card-skeleton {
   padding: 1.25rem;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 0;
+  background: var(--fg-ink-2);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
 }
 
 /* Shimmer Animation */

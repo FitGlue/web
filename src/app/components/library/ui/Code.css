@@ -1,44 +1,53 @@
+/* ==========================================================================
+   Code — Brutal × Aurora
+   JetBrains Mono, ink background, cyan accent.
+   ========================================================================== */
+
 .ui-code {
-  font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+  font-family: var(--fg-font-mono);
   font-size: 0.875em;
-  background: rgba(0, 0, 0, 0.3);
-  color: var(--color-primary, #6366f1);
+  font-weight: 700;
+  background: var(--fg-ink);
+  color: var(--fg-cyan);
   padding: 0.15em 0.4em;
-  border-radius: 0;
-  white-space: nowrap;
+  letter-spacing: 0.04em;
 }
 
 .ui-code-block {
   position: relative;
-  border-radius: 0;
   overflow: hidden;
 }
 
 .ui-code-block__pre {
   margin: 0;
   padding: 1rem;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0;
+  background: var(--fg-ink);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
   overflow-x: auto;
-  font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+  font-family: var(--fg-font-mono);
   font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--color-text-primary, #ffffff);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--fg-paper);
 }
 
 .ui-code-block__copy {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--fg-ink-3);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
   border: none;
-  border-radius: 0;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
-  font-size: 0.875rem;
-  opacity: 0.7;
-  transition: opacity 0.15s ease;
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
+  opacity: 0.8;
+  transition: opacity var(--transition-fast);
 }
 
 .ui-code-block__copy:hover {

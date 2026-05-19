@@ -1,105 +1,93 @@
 /* ==========================================================================
-   DestinationBadge – Celebratory card for successful destinations
-   Bigger than a pill, smaller than a full GlowCard. Gradient background
-   with real plugin images when available.
+   DestinationBadge — Brutal × Aurora
+   Aurora wash panel, hairline border, display name, sharp corners.
    ========================================================================== */
 
 .destination-badge {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.25rem;
-    border-radius: 0;
-    background: linear-gradient(135deg,
-            rgba(255, 61, 166, 0.18) 0%,
-            rgba(139, 92, 246, 0.22) 50%,
-            rgba(192, 38, 211, 0.18) 100%);
-    border: 1px solid rgba(255, 61, 166, 0.3);
-    transition: all 0.25s ease;
-    min-width: 180px;
-    flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 61, 166, 0.06);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 61, 166, 0.25);
+  transition: box-shadow var(--transition-fast), background var(--transition-fast);
+  min-width: 180px;
+  flex: 1 1 auto;
 }
 
 .destination-badge--clickable {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .destination-badge--clickable:hover {
-    transform: translateY(-2px);
-    border-color: rgba(255, 61, 166, 0.5);
-    box-shadow:
-        0 6px 20px rgba(255, 61, 166, 0.18),
-        0 0 40px rgba(139, 92, 246, 0.08);
-    background: linear-gradient(135deg,
-            rgba(255, 61, 166, 0.26) 0%,
-            rgba(139, 92, 246, 0.3) 50%,
-            rgba(192, 38, 211, 0.26) 100%);
+  background: rgba(255, 61, 166, 0.1);
+  box-shadow: inset 0 0 0 2px var(--fg-pink);
 }
 
 .destination-badge--clickable:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 61, 166, 0.4);
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--fg-pink);
 }
 
 .destination-badge__icon {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    font-size: 2rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
 }
 
-/* Override PluginIcon image styles inside badge context — slightly larger */
 .destination-badge__icon .plugin-icon-svg,
 .destination-badge__icon .plugin-icon-png,
 .destination-badge__icon .plugin-icon-jpg {
-    height: 36px;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 0.25rem;
-    border-radius: 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  height: 36px;
+  background: rgba(245, 243, 235, 0.95);
+  padding: 0.25rem;
 }
 
 .destination-badge__info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
 }
 
 .destination-badge__name {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text, #f3f4f6);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-family: var(--fg-font-display);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .destination-badge__status {
-    font-size: 0.8rem;
-    color: rgba(255, 61, 166, 0.9);
-    font-weight: 500;
-    letter-spacing: 0.02em;
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-pink);
 }
 
 .destination-badge__arrow {
-    margin-left: auto;
-    flex-shrink: 0;
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.4);
-    transition: color 0.2s ease, transform 0.2s ease;
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  color: var(--fg-paper-dim);
+  transition: color var(--transition-fast);
 }
 
 .destination-badge--clickable:hover .destination-badge__arrow {
-    color: rgba(255, 255, 255, 0.8);
-    transform: translateX(2px);
+  color: var(--fg-paper);
 }
 
-/* Mobile: slightly less padding */
 @media (max-width: 640px) {
-    .destination-badge {
-        padding: 0.75rem 1rem;
-        gap: 0.75rem;
-        min-width: 0;
-    }
+  .destination-badge {
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+    min-width: 0;
+  }
 }

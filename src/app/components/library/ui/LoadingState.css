@@ -1,20 +1,30 @@
 /* ==========================================================================
-   LoadingState - Container for spinner with optional message
+   LoadingState — Brutal × Aurora
+   Aurora spinner, mono text pulse.
    ========================================================================== */
 
 .loading-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: var(--spacing-xl, 2rem);
-    gap: var(--spacing-md, 1rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl, 2rem);
+  gap: var(--spacing-md, 1rem);
 }
 
 .loading-state__message {
-    font-size: 0.9rem;
-    color: var(--color-text-muted, rgba(255, 255, 255, 0.5));
-    font-weight: 500;
-    margin: 0;
-    text-align: center;
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
+  margin: 0;
+  text-align: center;
+  animation: loading-state-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes loading-state-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
 }
