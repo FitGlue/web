@@ -30,6 +30,7 @@ import AdminPage from './pages/AdminPage';
 import ShowcaseManagementPage from './pages/ShowcaseManagementPage';
 import RecipesPage from './pages/RecipesPage';
 import NotFoundPage from './pages/NotFoundPage';
+import ComponentLibraryPage from './pages/ComponentLibraryPage';
 
 
 import { useFCM } from './hooks/useFCM';
@@ -176,6 +177,8 @@ const App: React.FC = () => {
               <Route path="/settings/upgrade" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
               <Route path="/recipes" element={<ProtectedRoute><RecipesPage /></ProtectedRoute>} />
               <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
+              {/* Dev tool — component library gallery (no auth required) */}
+              <Route path="/dev/library" element={<ComponentLibraryPage />} />
 
 
 

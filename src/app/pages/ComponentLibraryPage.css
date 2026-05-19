@@ -1,0 +1,101 @@
+/* ==========================================================================
+   ComponentLibraryPage — Dev tool gallery
+   Dark bg, gradient section numbers, specimen cards.
+   ========================================================================== */
+
+.cl-page {
+    background: var(--fg-ink);
+    min-height: 100vh;
+}
+
+.cl-header {
+    padding: 48px 48px 32px;
+    border-bottom: var(--fg-rule-thick);
+}
+
+.cl-header__title {
+    font-family: var(--fg-font-display);
+    font-size: 3rem;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1;
+}
+
+.cl-header__sub {
+    font-family: var(--fg-font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    margin-top: 8px;
+}
+
+/* Section */
+.cl-section {
+    padding: 40px 48px;
+    border-bottom: var(--fg-rule-thin);
+}
+
+.cl-section__head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.cl-section__num {
+    font-family: var(--fg-font-display);
+    font-size: 3rem;
+    letter-spacing: -0.04em;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1;
+    opacity: 0.5;
+}
+
+.cl-section__title {
+    font-family: var(--fg-font-display);
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* Specimen card */
+.cl-specimen {
+    background: var(--fg-ink-2);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cl-specimen__label {
+    font-family: var(--fg-font-mono);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+
+.cl-specimen__content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+/* Row of specimens */
+.cl-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
