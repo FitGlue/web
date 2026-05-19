@@ -2,6 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { Stack, Grid } from '../library/layout';
 import { Modal, Badge, Code, Card, Text, Heading, KeyValue, Paragraph } from '../library/ui';
+import './admin.css';
 import { selectedPipelineRunIdAtom, selectedPipelineRunDetailAtom } from '../../state/adminState';
 
 // Status badge variant mapping — keys match schema enum strings.
@@ -18,6 +19,15 @@ const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 
   'DESTINATION_STATUS_FAILED': 'error',
   'DESTINATION_STATUS_PENDING': 'warning',
   'DESTINATION_STATUS_SKIPPED': 'default',
+};
+
+// BA badge class mapping
+const statusBadgeClass: Record<string, string> = {
+  'success': 'admin-badge--ok',
+  'error': 'admin-badge--failed',
+  'warning': 'admin-badge--warn',
+  'info': 'admin-badge--warn',
+  'default': 'admin-badge--muted',
 };
 
 /**
@@ -54,9 +64,14 @@ export const PipelineRunDetailModal: React.FC = () => {
             <KeyValue label="Activity ID" value={selectedRun.activityId} format="code" />
             <Stack direction="horizontal" gap="sm" align="center">
               <Paragraph><strong>Status:</strong></Paragraph>
-              <Badge variant={statusVariants[selectedRun.status ?? ''] || 'default'}>
-                {selectedRun.status}
-              </Badge>
+              {(() => {
+                const v = statusVariants[selectedRun.status ?? ''] || 'default';
+                return (
+                  <Badge variant={v} className={statusBadgeClass[v]}>
+                    {selectedRun.status}
+                  </Badge>
+                );
+              })()}
             </Stack>
             <KeyValue label="Created" value={selectedRun.createdAt} format="datetime" />
           </Grid>
@@ -80,22 +95,25 @@ export const PipelineRunDetailModal: React.FC = () => {
             <Text variant="muted">No boosters executed</Text>
           ) : (
             <Stack gap="sm">
-              {(selectedRun.boosters ?? []).map((booster, index) => (
-                <Card key={index} variant="elevated">
-                  <Stack direction="horizontal" justify="between" align="center">
-                    <Stack gap="xs">
-                      <Paragraph><strong>{booster.providerName}</strong></Paragraph>
-                      <Text variant="small">{booster.durationMs}ms</Text>
+              {(selectedRun.boosters ?? []).map((booster, index) => {
+                const v = statusVariants[booster.status ?? ''] || 'default';
+                return (
+                  <Card key={index} variant="elevated">
+                    <Stack direction="horizontal" justify="between" align="center">
+                      <Stack gap="xs">
+                        <Paragraph><strong>{booster.providerName}</strong></Paragraph>
+                        <Text variant="small">{booster.durationMs}ms</Text>
+                      </Stack>
+                      <Badge variant={v} className={statusBadgeClass[v]}>
+                        {booster.status}
+                      </Badge>
                     </Stack>
-                    <Badge variant={statusVariants[booster.status ?? ''] || 'default'}>
-                      {booster.status}
-                    </Badge>
-                  </Stack>
-                  {booster.error && (
-                    <Code>{booster.error}</Code>
-                  )}
-                </Card>
-              ))}
+                    {booster.error && (
+                      <Code>{booster.error}</Code>
+                    )}
+                  </Card>
+                );
+              })}
             </Stack>
           )}
         </Stack>
@@ -107,24 +125,29 @@ export const PipelineRunDetailModal: React.FC = () => {
             <Text variant="muted">No destination outcomes</Text>
           ) : (
             <Stack gap="sm">
-              {(selectedRun.destinations ?? []).map((dest, index) => (
-                <Card key={index} variant="elevated">
-                  <Stack direction="horizontal" justify="between" align="center">
-                    <Stack gap="xs">
-                      <Paragraph><strong>{dest.destination}</strong></Paragraph>
-                      {dest.externalId && (
-                        <Text variant="small">External ID: {dest.externalId}</Text>
-                      )}
+              {(selectedRun.destinations ?? []).map((dest, index) => {
+                const v = statusVariants[dest.status ?? ''] || 'default';
+                return (
+                  <Card key={index} variant="elevated">
+                    <Stack direction="horizontal" justify="between" align="center">
+                      <Stack gap="xs">
+                        <Paragraph><strong>{dest.destination}</strong></Paragraph>
+                        {dest.externalId && (
+                          <Text variant="small">External ID: {dest.externalId}</Text>
+                        )}
+                      </Stack>
+                      <Badge variant={v} className={statusBadgeClass[v]}>
+                        {dest.status === 'DESTINATION_STATUS_SUCCESS' ? 'Success'
+                          : dest.status === 'DESTINATION_STATUS_FAILED' ? 'Failed'
+                          : dest.status}
+                      </Badge>
                     </Stack>
-                    <Badge variant={statusVariants[dest.status ?? ''] || 'default'}>
-                      {dest.status === 'DESTINATION_STATUS_SUCCESS' ? 'Success' : dest.status === 'DESTINATION_STATUS_FAILED' ? 'Failed' : dest.status}
-                    </Badge>
-                  </Stack>
-                  {dest.error && (
-                    <Code>{dest.error}</Code>
-                  )}
-                </Card>
-              ))}
+                    {dest.error && (
+                      <Code>{dest.error}</Code>
+                    )}
+                  </Card>
+                );
+              })}
             </Stack>
           )}
         </Stack>

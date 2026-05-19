@@ -1,7 +1,10 @@
-/* ========================================
-   Guided Tour Overlay & Spotlight
-   ======================================== */
+/* ==========================================================================
+   GuidedTour — Brutal × Aurora
+   Tooltip: ink-2 panel with 2px paper inset hairline. fg-band--sm step header.
+   Aurora-cyan connector dot / spotlight ring. No border-radius.
+   ========================================================================== */
 
+/* Full-viewport overlay wrapper */
 .guided-tour-overlay {
     position: fixed;
     inset: 0;
@@ -9,44 +12,43 @@
     pointer-events: none;
 }
 
+/* Dark backdrop with clip-path cutout for spotlight */
 .guided-tour-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(7, 7, 16, 0.82);
     pointer-events: all;
-    transition: clip-path 0.3s ease;
+    transition: clip-path 0.25s ease;
 }
 
+/* Spotlight highlight ring — aurora-cyan inset, no border-radius */
 .guided-tour-spotlight {
     position: fixed;
-    border: 2px solid rgba(255, 0, 110, 0.5);
+    box-shadow: inset 0 0 0 2px var(--fg-cyan), 0 0 0 3000px rgba(7, 7, 16, 0.82);
     border-radius: 0;
-    box-shadow: 0 0 0 4px rgba(255, 0, 110, 0.15);
     pointer-events: none;
-    transition: all 0.3s ease;
+    transition: left 0.25s ease, top 0.25s ease, width 0.25s ease, height 0.25s ease;
 }
 
-/* Tour Tooltip */
+/* Tooltip panel — ink-2 surface, paper inset hairline */
 .tour-tooltip {
     position: fixed;
-    background: var(--color-bg-elevated, #1a1a2e);
-    border: 1px solid rgba(255, 0, 110, 0.3);
+    background: var(--fg-ink-2);
+    box-shadow: inset 0 0 0 2px var(--fg-paper), 0 16px 48px rgba(0, 0, 0, 0.5);
     border-radius: 0;
-    padding: 1.25rem;
-    width: 320px;
+    width: 300px;
     max-width: calc(100vw - 2rem);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 0, 110, 0.1);
     pointer-events: all;
-    animation: tour-tooltip-in 0.3s ease;
+    animation: tour-tooltip-in 0.2s ease;
     z-index: 10001;
+    overflow: hidden;
 }
 
 @keyframes tour-tooltip-in {
     from {
         opacity: 0;
-        transform: translateY(-50%) scale(0.95);
+        transform: translateY(-50%) scale(0.97);
     }
-
     to {
         opacity: 1;
         transform: translateY(-50%) scale(1);
@@ -60,121 +62,144 @@
 @keyframes tour-tooltip-in-bottom {
     from {
         opacity: 0;
-        transform: translateX(-50%) translateY(8px);
+        transform: translateX(-50%) translateY(6px);
     }
-
     to {
         opacity: 1;
         transform: translateX(-50%) translateY(0);
     }
 }
 
+/* Header band — fg-band--sm style */
 .tour-tooltip-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
+    padding: 0.4375rem 0.875rem;
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+    gap: 0.5rem;
 }
 
 .tour-tooltip-title {
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--color-text, #f5f5f5);
+    font-family: var(--fg-font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--fg-ink);
+    flex: 1;
+    min-width: 0;
 }
 
 .tour-tooltip-close {
-    background: none;
-    border: none;
-    color: var(--color-text-muted, #999);
+    background: transparent;
+    border: 0;
+    color: var(--fg-ink);
     cursor: pointer;
-    font-size: 0.875rem;
-    padding: 0.25rem;
+    font-family: var(--fg-font-display);
+    font-size: 1rem;
+    padding: 0;
     line-height: 1;
-    transition: color 0.2s;
+    opacity: 0.7;
+    flex-shrink: 0;
+    transition: opacity var(--transition-fast);
 }
 
 .tour-tooltip-close:hover {
-    color: var(--color-text, #f5f5f5);
+    opacity: 1;
 }
 
+/* Body */
 .tour-tooltip-description {
-    color: var(--color-text-muted, #bbb);
+    padding: 1rem 0.875rem;
+    font-family: var(--fg-font-body);
+    color: var(--fg-paper-dim);
     font-size: 0.875rem;
     line-height: 1.6;
-    margin: 0 0 1rem;
+    margin: 0;
+    border-bottom: var(--fg-rule-thin);
 }
 
+/* Footer */
 .tour-tooltip-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    background: var(--fg-ink);
 }
 
-/* Progress Dots */
+/* Progress dots — flat squares per BA */
 .tour-tooltip-progress {
     display: flex;
-    gap: 6px;
+    gap: 4px;
+    align-items: center;
 }
 
 .tour-progress-dot {
     width: 8px;
     height: 8px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    transition: all 0.2s ease;
+    border-radius: 0;
+    background: var(--fg-hairline-color);
+    transition: background var(--transition-fast), transform var(--transition-fast);
 }
 
 .tour-progress-dot.active {
-    background: var(--color-primary, #ff3da6);
-    box-shadow: 0 0 8px rgba(255, 0, 110, 0.4);
-    transform: scale(1.2);
+    background: var(--fg-cyan);
+    transform: scale(1.25);
 }
 
 .tour-progress-dot.completed {
-    background: rgba(255, 0, 110, 0.4);
+    background: rgba(34, 211, 238, 0.4);
 }
 
-/* Tour Buttons */
+/* Action buttons */
 .tour-tooltip-actions {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.375rem;
+    align-items: center;
 }
 
 .tour-btn-skip {
-    background: none;
-    border: none;
-    color: var(--color-text-muted, #999);
-    font-size: 0.8125rem;
+    background: transparent;
+    border: 0;
+    color: var(--color-text-muted);
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     cursor: pointer;
-    padding: 0.375rem 0.75rem;
+    padding: 0.3125rem 0.625rem;
     border-radius: 0;
-    transition: all 0.2s;
+    transition: color var(--transition-fast);
 }
 
 .tour-btn-skip:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--color-text, #f5f5f5);
+    color: var(--fg-paper);
 }
 
+/* Next button — fg-button--sm */
 .tour-btn-next {
-    background: var(--gradient-primary, linear-gradient(95deg, #ff3da6, #8b5cf6, #22d3ee));
-    color: white;
-    border: none;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0.375rem 1rem;
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+    border: 0;
     border-radius: 0;
-    transition: all 0.2s;
+    font-family: var(--fg-font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.4375rem 0.875rem;
+    transition: filter var(--transition-fast);
 }
 
 .tour-btn-next:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 0, 110, 0.3);
+    filter: brightness(1.08);
 }
 
-/* Mobile Responsive */
+/* Mobile: pin to bottom */
 @media (max-width: 768px) {
     .tour-tooltip {
         position: fixed !important;
@@ -189,9 +214,8 @@
     @keyframes tour-tooltip-in {
         from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(16px);
         }
-
         to {
             opacity: 1;
             transform: translateY(0);

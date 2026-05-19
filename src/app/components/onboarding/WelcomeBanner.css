@@ -1,411 +1,317 @@
-/* Welcome Banner Container */
+/* ==========================================================================
+   WelcomeBanner — Brutal × Aurora
+   Aurora gradient fg-band header with "WELCOME TO FITGLUE" in display font.
+   Onboarding step cards sit in ink-2 rows with hairline dividers.
+   Dismiss × button is ghost/paper-dim.
+   ========================================================================== */
+
+/* Override Card component wrapper */
 .welcome-banner {
-  background: linear-gradient(135deg,
-      rgba(255, 0, 110, 0.12) 0%,
-      rgba(131, 56, 236, 0.08) 50%,
-      rgba(255, 0, 110, 0.05) 100%);
-  border: 1px solid rgba(255, 0, 110, 0.2);
-  border-radius: var(--radius-lg);
-  position: relative;
-  overflow: hidden;
-  padding: 0 !important;
-  box-shadow:
-    0 4px 24px rgba(255, 0, 110, 0.15),
-    0 1px 4px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    background: var(--fg-ink-2);
+    box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+    border-radius: 0;
+    padding: 0 !important;
+    overflow: hidden;
+    position: relative;
 }
 
-.welcome-banner::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #ff3da6 0%, #8b5cf6 50%, #ff3da6 100%);
-  background-size: 200% 100%;
-  animation: shimmer-bar 3s ease-in-out infinite;
-}
-
-@keyframes shimmer-bar {
-
-  0%,
-  100% {
-    background-position: 0% 0%;
-  }
-
-  50% {
-    background-position: 100% 0%;
-  }
-}
-
-.welcome-banner::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(ellipse at top left, rgba(255, 0, 110, 0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at bottom right, rgba(131, 56, 236, 0.08) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-/* Header */
+/* Top aurora band — replaces old pink wash */
 .welcome-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 2rem 2rem 1.25rem;
-  position: relative;
-  z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.875rem 1.375rem;
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+    position: relative;
+    z-index: 1;
 }
 
 .welcome-header-content {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 0;
 }
 
+/* Welcome icon — no animation, BA is static */
 .welcome-icon {
-  font-size: 3rem;
-  line-height: 1;
-  filter: drop-shadow(0 2px 8px rgba(255, 0, 110, 0.3));
-  animation: wave 2.5s ease-in-out infinite;
+    font-size: 1.75rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin: 0 !important;
 }
 
-@keyframes wave {
-
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-
-  15% {
-    transform: rotate(14deg);
-  }
-
-  30% {
-    transform: rotate(-8deg);
-  }
-
-  40% {
-    transform: rotate(14deg);
-  }
-
-  50% {
-    transform: rotate(-4deg);
-  }
-
-  60% {
-    transform: rotate(10deg);
-  }
-
-  70%,
-  100% {
-    transform: rotate(0deg);
-  }
+.welcome-text {
+    flex: 1;
+    min-width: 0;
 }
 
+/* Heading override — display font caps */
 .welcome-text h2 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.75rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--color-text);
+    margin: 0;
+    font-family: var(--fg-font-display);
+    font-size: 1.125rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--fg-ink);
+    line-height: 1.1;
 }
-
-
 
 .welcome-text p {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 1rem;
-  letter-spacing: 0.01em;
+    margin: 0;
+    font-family: var(--fg-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-ink);
+    opacity: 0.75;
+    margin-top: 0.25rem;
 }
 
-/* Dismiss Button */
-.dismiss-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-muted);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.dismiss-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--color-text);
-}
-
-/* Header Actions */
+/* Header action buttons */
 .welcome-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-shrink: 0;
 }
 
-/* Install App Button */
+/* Tour / install buttons — fg-button--sm style in ink color */
+.tour-btn,
 .install-app-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg,
-      rgba(255, 0, 110, 0.2) 0%,
-      rgba(131, 56, 236, 0.2) 100%);
-  border: 1px solid rgba(255, 0, 110, 0.3);
-  border-radius: var(--radius-sm);
-  color: white;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    background: var(--fg-ink);
+    color: var(--fg-paper);
+    border: 0;
+    border-radius: 0;
+    font-family: var(--fg-font-display);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter var(--transition-fast);
+    font-weight: 400;
 }
 
+.tour-btn:hover,
 .install-app-btn:hover {
-  background: linear-gradient(135deg,
-      rgba(255, 0, 110, 0.3) 0%,
-      rgba(131, 56, 236, 0.3) 100%);
-  border-color: rgba(255, 0, 110, 0.45);
-  transform: translateY(-1px);
-}
-
-.install-app-btn:active {
-  transform: translateY(0);
+    filter: brightness(1.15);
 }
 
 .install-app-btn svg {
-  opacity: 0.9;
+    flex-shrink: 0;
 }
 
-/* Onboarding Steps */
+/* Dismiss button — paper ghost */
+.dismiss-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: inset 0 0 0 1.5px var(--fg-ink);
+    color: var(--fg-ink);
+    cursor: pointer;
+    font-family: var(--fg-font-display);
+    font-size: 0.875rem;
+    flex-shrink: 0;
+    transition: background var(--transition-fast);
+}
+
+.dismiss-btn:hover {
+    background: rgba(10, 10, 15, 0.15);
+}
+
+/* Steps list */
 .onboarding-steps {
-  display: flex;
-  flex-direction: column;
-  padding: 0 1rem 1rem;
-  gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    gap: 0;
 }
 
-/* Step Card */
+/* Step card — ink-2 row with hairline dividers */
 .step-card {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-align: left;
-  width: 100%;
-  font-family: inherit;
-  color: inherit;
-  animation: step-slide-in 0.4s ease-out backwards;
-  animation-delay: calc(var(--step-index, 0) * 0.08s);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 1.375rem;
+    background: transparent;
+    border: 0;
+    border-bottom: var(--fg-rule-thin);
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+    color: var(--fg-paper);
+    transition: background var(--transition-fast);
 }
 
-@keyframes step-slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.step-card:last-child {
+    border-bottom: 0;
 }
 
 .step-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 0, 110, 0.25);
-  transform: translateX(4px);
+    background: var(--fg-ink-3);
 }
 
 .step-card:active {
-  transform: translateX(2px);
+    background: var(--fg-ink-3);
 }
 
-/* Completed Step Styles */
+/* Completed step: dimmed */
 .step-card.completed {
-  opacity: 0.7;
-  cursor: default;
+    opacity: 0.6;
+    cursor: default;
 }
 
 .step-card.completed:hover {
-  transform: none;
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.06);
+    background: transparent;
+}
+
+/* Step number — square badge (no circle) */
+.step-number {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+    font-family: var(--fg-font-display);
+    font-size: 0.8125rem;
+    border-radius: 0;
+    flex-shrink: 0;
 }
 
 .step-number.completed {
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
-  font-size: 1rem;
+    background: var(--fg-cyan);
+    color: var(--fg-ink);
+    box-shadow: none;
 }
 
-.step-complete-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  background: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  border-radius: var(--radius-sm);
-  color: #22c55e;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-/* Step Number */
-.step-number {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--gradient-primary, linear-gradient(95deg, #ff3da6, #8b5cf6, #22d3ee));
-  color: white;
-  font-weight: 700;
-  font-size: 0.875rem;
-  border-radius: 50%;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(255, 0, 110, 0.3);
-}
-
-/* Step Content */
+/* Step content */
 .step-content {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    min-width: 0;
 }
 
 .step-icon {
-  font-size: 1.5rem;
-  line-height: 1;
-  flex-shrink: 0;
+    font-size: 1.125rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin: 0 !important;
 }
 
 .step-info {
-  min-width: 0;
+    min-width: 0;
 }
 
 .step-info h4 {
-  margin: 0 0 0.125rem 0;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--color-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    margin: 0 0 0.125rem;
+    font-family: var(--fg-font-display);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .step-info p {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
-  line-height: 1.4;
+    margin: 0;
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    line-height: 1.4;
 }
 
-/* Step Action */
+/* Step action — right side */
 .step-action {
-  flex-shrink: 0;
+    flex-shrink: 0;
 }
 
+/* CTA — fg-stamp outline */
 .step-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg,
-      rgba(255, 0, 110, 0.15) 0%,
-      rgba(131, 56, 236, 0.15) 100%);
-  border: 1px solid rgba(255, 0, 110, 0.2);
-  border-radius: var(--radius-sm);
-  color: white;
-  font-size: 0.8rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.step-cta svg {
-  opacity: 0.8;
-  transition: transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.3125rem 0.625rem;
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--fg-paper);
+    border-radius: 0;
+    color: var(--fg-paper);
+    font-family: var(--fg-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 !important;
+    transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .step-card:hover .step-cta {
-  background: linear-gradient(135deg,
-      rgba(255, 0, 110, 0.25) 0%,
-      rgba(131, 56, 236, 0.25) 100%);
-  border-color: rgba(255, 0, 110, 0.35);
+    background: var(--fg-paper);
+    color: var(--fg-ink);
+    box-shadow: none;
 }
 
-.step-card:hover .step-cta svg {
-  transform: translateX(2px);
+.step-cta svg {
+    opacity: 0.8;
+}
+
+/* Done badge */
+.step-complete-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3125rem 0.625rem;
+    background: var(--fg-cyan);
+    color: var(--fg-ink);
+    font-family: var(--fg-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 0;
 }
 
 /* Responsive */
 @media (max-width: 640px) {
-  .welcome-header {
-    padding: 1.5rem 1.25rem 1rem;
-  }
+    .welcome-header {
+        padding: 0.75rem 1rem;
+    }
 
-  .welcome-icon {
-    font-size: 2.25rem;
-  }
+    .welcome-icon {
+        display: none;
+    }
 
-  .welcome-text h2 {
-    font-size: 1.25rem;
-  }
+    .step-card {
+        padding: 0.75rem 1rem;
+        grid-template-columns: auto 1fr;
+        gap: 0.75rem;
+    }
 
+    .step-action {
+        display: none;
+    }
 
-  .welcome-text p {
-    font-size: 0.9rem;
-  }
-
-  .onboarding-steps {
-    padding: 0 0.75rem 1rem;
-  }
-
-  .step-card {
-    grid-template-columns: auto 1fr;
-    grid-template-rows: auto auto;
-    gap: 0.75rem 1rem;
-    padding: 1rem;
-  }
-
-  .step-number {
-    grid-row: span 2;
-    align-self: start;
-    margin-top: 0.125rem;
-  }
-
-  .step-content {
-    grid-column: 2;
-  }
-
-  .step-action {
-    grid-column: 2;
-    justify-self: start;
-  }
-
-  .step-info p {
-    white-space: normal;
-  }
-
-  .step-icon {
-    display: none;
-  }
+    .step-icon {
+        display: none;
+    }
 }
