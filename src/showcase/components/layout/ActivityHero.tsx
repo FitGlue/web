@@ -98,7 +98,23 @@ export default function ActivityHero({ activity }: Props): React.ReactElement {
       {(activity.ownerDisplayName || boosterCount > 0) && (
         <div className="activity-hero__byline">
           {activity.ownerDisplayName && (
-            <span>BY <b>{activity.ownerDisplayName.toUpperCase()}</b></span>
+            <a
+              href={activity.ownerProfileSlug ? `/showcase/profile/${activity.ownerProfileSlug}` : undefined}
+              className="activity-hero__owner-link"
+            >
+              {activity.ownerProfilePictureUrl ? (
+                <img
+                  src={activity.ownerProfilePictureUrl}
+                  alt={activity.ownerDisplayName}
+                  className="activity-hero__owner-avatar"
+                />
+              ) : (
+                <span className="activity-hero__owner-avatar activity-hero__owner-avatar--initials">
+                  {activity.ownerDisplayName.charAt(0).toUpperCase()}
+                </span>
+              )}
+              <span>BY <b>{activity.ownerDisplayName.toUpperCase()}</b></span>
+            </a>
           )}
           {boosterCount > 0 && (
             <span>ENRICHED BY <b>{boosterCount} BOOSTER{boosterCount !== 1 ? 'S' : ''}</b></span>
