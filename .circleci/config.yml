@@ -188,6 +188,64 @@ jobs:
             # Note: Site must be created first (done by bootstrap script)
             firebase deploy --only hosting,firestore --project fitglue-server-<< parameters.target >> --non-interactive --force
 
+  firebase-preview:
+    executor: node-executor
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install gcloud SDK
+          command: |
+            curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
+            tar -xf google-cloud-cli-linux-x86_64.tar.gz
+            ./google-cloud-sdk/install.sh --quiet
+            echo "export PATH=\$PATH:$(pwd)/google-cloud-sdk/bin" >> $BASH_ENV
+      - run:
+          name: Authenticate with GCP via OIDC (dev)
+          command: |
+            echo $CIRCLE_OIDC_TOKEN > /tmp/oidc_token.txt
+            gcloud iam workload-identity-pools create-cred-config \
+              "projects/911679924866/locations/global/workloadIdentityPools/circleci-pool/providers/circleci-provider" \
+              --service-account=circleci-web-deployer@fitglue-server-dev.iam.gserviceaccount.com \
+              --output-file=/tmp/gcp_cred_config.json \
+              --credential-source-file=/tmp/oidc_token.txt
+            gcloud auth login --brief --cred-file=/tmp/gcp_cred_config.json
+            echo "export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_cred_config.json" >> $BASH_ENV
+      - run:
+          name: Set Version
+          command: |
+            WEB_VERSION=$(node -p "require('./package.json').version")
+            source $BASH_ENV
+            SERVER_VERSION=$(gcloud storage cat gs://fitglue-server-prod-version-config/version.json 2>/dev/null | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version" || echo "0.0.0")
+            echo "VITE_APP_VERSION=vS${SERVER_VERSION}-W${WEB_VERSION}" >> .env
+      - run:
+          name: Build for Dev Environment
+          command: |
+            mkdir -p .cache
+            cp data/registry-snapshot.json .cache/registry.json
+            export REGISTRY_API_URL="https://dev.fitglue.tech/api/v2/registry"
+            npm run build:dev
+      - run:
+          name: Configure Robots.txt
+          command: cp robots.disallow.txt dist/robots.txt
+      - run:
+          name: Install Firebase CLI
+          command: sudo npm install -g firebase-tools
+      - run:
+          name: Deploy Preview Channel
+          command: |
+            export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_cred_config.json
+            # Sanitize branch name → valid Firebase channel ID (lowercase, alphanumeric + hyphens, max 36 chars)
+            CHANNEL_ID=$(echo "$CIRCLE_BRANCH" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//' | cut -c1-36)
+            CHANNEL_ID=${CHANNEL_ID:-"preview"}
+            echo "Deploying preview channel: $CHANNEL_ID"
+            firebase hosting:channel:deploy "$CHANNEL_ID" \
+              --project fitglue-server-dev \
+              --expires 7d \
+              --non-interactive
+            echo ""
+            echo "Preview URL: https://fitglue-server-dev--${CHANNEL_ID}.web.app"
+
   create-release:
     executor: node-executor
     steps:
@@ -254,6 +312,12 @@ workflows:
       not: << pipeline.parameters.triggered_by_server >>
     jobs:
       - build-and-test
+      - firebase-preview:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              ignore: main
       - terraform-apply:
           name: terraform-apply-dev
           target: dev
