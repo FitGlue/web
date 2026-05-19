@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout';
 import { SmartNudge } from '../components/SmartNudge';
@@ -11,6 +11,8 @@ import { useNerdMode } from '../state/NerdModeContext';
 import '../components/library/ui/CardSkeleton.css';
 import { IntegrationManifest } from '../types/plugin';
 import './ConnectionsPage.css';
+
+const RECIPE_DISMISSED_KEY = 'fitglue_recipe_band_dismissed';
 
 interface IntegrationStatus {
     connected: boolean;
@@ -51,7 +53,6 @@ const ConnectionTile: React.FC<ConnectionTileProps> = ({
 
     return (
         <div className={`conn-tile${isConnected ? ' conn-tile--connected' : ''}`}>
-            {/* Header: icon + name + status badge */}
             <div className="conn-tile__head">
                 <div className="conn-tile__identity">
                     <div className="conn-tile__icon">
@@ -69,10 +70,8 @@ const ConnectionTile: React.FC<ConnectionTileProps> = ({
                 </span>
             </div>
 
-            {/* Description */}
             <p className="conn-tile__desc">{integration.description}</p>
 
-            {/* Connected metadata */}
             {isConnected && (
                 <div className="conn-tile__meta">
                     {isNerdMode && status?.externalUserId && (
@@ -90,7 +89,6 @@ const ConnectionTile: React.FC<ConnectionTileProps> = ({
                 </div>
             )}
 
-            {/* Action */}
             <div className="conn-tile__foot">
                 {isConnected ? (
                     <Button variant="ink" size="sm" onClick={onView}>
@@ -106,10 +104,51 @@ const ConnectionTile: React.FC<ConnectionTileProps> = ({
     );
 };
 
+interface TileGroupProps {
+    label: string;
+    count: number;
+    integrations: IntegrationManifest[];
+    statuses: Record<string, IntegrationStatus | undefined> | null;
+    onConnect: (i: IntegrationManifest) => void;
+    onView: (i: IntegrationManifest) => void;
+}
+
+const TileGroup: React.FC<TileGroupProps> = ({ label, count, integrations, statuses, onConnect, onView }) => {
+    if (integrations.length === 0) return null;
+    return (
+        <>
+            <div className="fg-band">
+                <span className="fg-band__label">{label}</span>
+                <span className="fg-band__right">{count} AVAILABLE</span>
+            </div>
+            <div className="conn-grid">
+                {integrations.map(integration => (
+                    <ConnectionTile
+                        key={integration.id}
+                        integration={integration}
+                        status={statuses?.[integration.id]}
+                        onConnect={() => onConnect(integration)}
+                        onView={() => onView(integration)}
+                    />
+                ))}
+            </div>
+        </>
+    );
+};
+
 const ConnectionsPage: React.FC = () => {
     const navigate = useNavigate();
-    const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
+    const { integrations: registryIntegrations, sources, destinations, loading: registryLoading } = usePluginRegistry();
     const { integrations, loading, refresh: refreshIntegrations } = useRealtimeIntegrations();
+
+    const [recipeDismissed, setRecipeDismissed] = useState(() =>
+        localStorage.getItem(RECIPE_DISMISSED_KEY) === 'true'
+    );
+
+    const dismissRecipe = () => {
+        localStorage.setItem(RECIPE_DISMISSED_KEY, 'true');
+        setRecipeDismissed(true);
+    };
 
     const handleConnect = (integration: IntegrationManifest) => {
         navigate(`/connections/${integration.id}/setup`);
@@ -119,19 +158,39 @@ const ConnectionsPage: React.FC = () => {
         navigate(`/connections/${integration.id}`);
     };
 
-    const connectedCount = registryIntegrations.filter(i => {
-        const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[i.id];
-        return status?.connected;
-    }).length;
+    const sourceIds = useMemo(() => new Set(sources.map(s => s.id)), [sources]);
+    const destinationIds = useMemo(() => new Set(destinations.map(d => d.id)), [destinations]);
 
-    const connectedIntegrations = registryIntegrations.filter(i => {
-        const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[i.id];
-        return status?.connected;
-    });
-    const availableIntegrations = registryIntegrations.filter(i => {
-        const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[i.id];
-        return !status?.connected;
-    });
+    const { sourceIntegrations, destinationIntegrations, accountIntegrations } = useMemo(() => {
+        const sourceList: IntegrationManifest[] = [];
+        const destinationList: IntegrationManifest[] = [];
+        const accountList: IntegrationManifest[] = [];
+
+        for (const integration of registryIntegrations) {
+            if (sourceIds.has(integration.id)) {
+                sourceList.push(integration);
+            } else if (destinationIds.has(integration.id)) {
+                destinationList.push(integration);
+            } else {
+                accountList.push(integration);
+            }
+        }
+
+        return {
+            sourceIntegrations: sourceList,
+            destinationIntegrations: destinationList,
+            accountIntegrations: accountList,
+        };
+    }, [registryIntegrations, sourceIds, destinationIds]);
+
+    const statuses = integrations as Record<string, IntegrationStatus | undefined> | null;
+
+    const connectedCount = registryIntegrations.filter(i => statuses?.[i.id]?.connected).length;
+
+    // Find a good recipe suggestion — first unconnected source + first unconnected destination
+    const suggestedSource = sourceIntegrations.find(i => !statuses?.[i.id]?.connected);
+    const suggestedDest = destinationIntegrations.find(i => !statuses?.[i.id]?.connected);
+    const showRecipeBand = !recipeDismissed && !!suggestedSource && !!suggestedDest && connectedCount > 0;
 
     if (loading || registryLoading) {
         return (
@@ -149,6 +208,18 @@ const ConnectionsPage: React.FC = () => {
         );
     }
 
+    if (registryIntegrations.length === 0) {
+        return (
+            <PageLayout title="Connections" backTo="/" backLabel="Dashboard">
+                <EmptyState
+                    icon="🔗"
+                    title="NO CONNECTIONS AVAILABLE"
+                    description="No integrations are available right now. Check back soon."
+                />
+            </PageLayout>
+        );
+    }
+
     return (
         <PageLayout
             title="Connections"
@@ -158,58 +229,51 @@ const ConnectionsPage: React.FC = () => {
         >
             <SmartNudge page="connections" />
 
-            {/* Connected section */}
-            {connectedIntegrations.length > 0 && (
-                <>
-                    <div className="fg-band">
-                        <span className="fg-band__label">CONNECTED</span>
-                        <span className="fg-band__right">{connectedCount} ACTIVE</span>
-                    </div>
-                    <div className="conn-grid">
-                        {connectedIntegrations.map(integration => {
-                            const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
-                            return (
-                                <ConnectionTile
-                                    key={integration.id}
-                                    integration={integration}
-                                    status={status}
-                                    onConnect={() => handleConnect(integration)}
-                                    onView={() => handleView(integration)}
-                                />
-                            );
-                        })}
-                    </div>
-                </>
-            )}
-
-            {/* Available section */}
-            <div className="fg-band fg-band--ink">
-                <span className="fg-band__label">AVAILABLE CONNECTIONS</span>
-                <span className="fg-band__right">{availableIntegrations.length} SERVICES</span>
-            </div>
-
-            {availableIntegrations.length === 0 ? (
-                <EmptyState
-                    icon="🔗"
-                    title="ALL CONNECTED"
-                    description="You have connected all available services."
-                />
-            ) : (
-                <div className="conn-grid">
-                    {availableIntegrations.map(integration => {
-                        const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[integration.id];
-                        return (
-                            <ConnectionTile
-                                key={integration.id}
-                                integration={integration}
-                                status={status}
-                                onConnect={() => handleConnect(integration)}
-                                onView={() => handleView(integration)}
-                            />
-                        );
-                    })}
+            {/* Suggested recipe band */}
+            {showRecipeBand && (
+                <div className="conn-recipe-band">
+                    <span className="conn-recipe-band__label">✦ SUGGESTED</span>
+                    <span className="conn-recipe-band__text">
+                        Connect <b>{suggestedSource!.name}</b> → <b>{suggestedDest!.name}</b> to start syncing automatically
+                    </span>
+                    <button
+                        className="conn-recipe-band__cta"
+                        onClick={() => navigate(`/connections/${suggestedSource!.id}/setup`)}
+                    >
+                        SET UP →
+                    </button>
+                    <button className="conn-recipe-band__dismiss" onClick={dismissRecipe} aria-label="Dismiss suggestion">
+                        ✕
+                    </button>
                 </div>
             )}
+
+            <TileGroup
+                label="SOURCES"
+                count={sourceIntegrations.length}
+                integrations={sourceIntegrations}
+                statuses={statuses}
+                onConnect={handleConnect}
+                onView={handleView}
+            />
+
+            <TileGroup
+                label="DESTINATIONS"
+                count={destinationIntegrations.length}
+                integrations={destinationIntegrations}
+                statuses={statuses}
+                onConnect={handleConnect}
+                onView={handleView}
+            />
+
+            <TileGroup
+                label="ACCOUNTS"
+                count={accountIntegrations.length}
+                integrations={accountIntegrations}
+                statuses={statuses}
+                onConnect={handleConnect}
+                onView={handleView}
+            />
         </PageLayout>
     );
 };

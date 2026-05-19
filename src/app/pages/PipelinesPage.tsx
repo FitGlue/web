@@ -158,6 +158,15 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
 };
 
 
+type PipelineFilter = 'all' | 'active' | 'disabled' | 'archived';
+
+const PIPELINE_FILTER_LABELS: Record<PipelineFilter, string> = {
+    all: 'ALL',
+    active: 'ACTIVE',
+    disabled: 'DISABLED',
+    archived: 'ARCHIVED',
+};
+
 const PipelinesPage: React.FC = () => {
     const navigate = useNavigate();
     const toast = useToast();
@@ -171,6 +180,7 @@ const PipelinesPage: React.FC = () => {
     const [showImportModal, setShowImportModal] = useState(false);
     const [importCode, setImportCode] = useState<string | undefined>(undefined);
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+    const activeFilter = (searchParams.get('filter') as PipelineFilter) || 'all';
 
     useEffect(() => {
         const code = searchParams.get('code');
@@ -239,6 +249,26 @@ const PipelinesPage: React.FC = () => {
         }
     };
 
+    const setFilter = (f: PipelineFilter) => {
+        setSearchParams(f === 'all' ? {} : { filter: f });
+    };
+
+    const filteredPipelines = pipelines.filter(p => {
+        switch (activeFilter) {
+            case 'active': return !p.disabled;
+            case 'disabled': return !!p.disabled;
+            case 'archived': return false; // archived not yet in proto; show empty
+            default: return true;
+        }
+    });
+
+    const counts: Record<PipelineFilter, number> = {
+        all: pipelines.length,
+        active: pipelines.filter(p => !p.disabled).length,
+        disabled: pipelines.filter(p => !!p.disabled).length,
+        archived: 0,
+    };
+
     if (loading || registryLoading) {
         return (
             <PageLayout title="Pipelines" backTo="/" backLabel="Dashboard">
@@ -283,6 +313,22 @@ const PipelinesPage: React.FC = () => {
                 </div>
             </div>
 
+            {/* Filter strip — only show when there are pipelines */}
+            {pipelines.length > 0 && (
+                <div className="pipelines-filter">
+                    {(Object.keys(PIPELINE_FILTER_LABELS) as PipelineFilter[]).map(f => (
+                        <button
+                            key={f}
+                            className={`pipelines-filter__chip${activeFilter === f ? ' pipelines-filter__chip--active' : ''}`}
+                            onClick={() => setFilter(f)}
+                        >
+                            {PIPELINE_FILTER_LABELS[f]}
+                            <span className="pipelines-filter__chip-count">{counts[f]}</span>
+                        </button>
+                    ))}
+                </div>
+            )}
+
             {/* Pipeline list or empty state */}
             {pipelines.length === 0 ? (
                 <EmptyState
@@ -292,9 +338,15 @@ const PipelinesPage: React.FC = () => {
                     actionLabel="CREATE YOUR FIRST PIPELINE →"
                     onAction={() => navigate('/settings/pipelines/new')}
                 />
+            ) : filteredPipelines.length === 0 ? (
+                <EmptyState
+                    icon="🔍"
+                    title={`NO ${PIPELINE_FILTER_LABELS[activeFilter]} PIPELINES`}
+                    description={`No pipelines match the "${PIPELINE_FILTER_LABELS[activeFilter]}" filter.`}
+                />
             ) : (
                 <div>
-                    {pipelines.map(pipeline => (
+                    {filteredPipelines.map(pipeline => (
                         <PipelineCard
                             key={pipeline.id}
                             pipeline={pipeline}
