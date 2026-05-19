@@ -80,6 +80,9 @@
     <span id="nav-auth-login"><a href="/auth/login" class="btn--ghost">LOG IN</a></span>
     <span id="nav-auth-cta"><a href="/auth/register" class="btn--aurora">START FREE →</a></span>
   </div>
+  <button class="mh__ham" id="nav-toggle" aria-label="Toggle navigation">
+    <span></span><span></span><span></span>
+  </button>
 </header>
 <script>
   (function () {
@@ -91,6 +94,12 @@
         var ctaLink = ctaItem.querySelector('a');
         if (ctaLink) { ctaLink.href = '/app'; ctaLink.textContent = 'GO TO DASHBOARD →'; }
       }
+    }
+    var toggle = document.getElementById('nav-toggle');
+    if (toggle) {
+      toggle.addEventListener('click', function () {
+        document.querySelector('.mh__nav').classList.toggle('open');
+      });
     }
   })();
 </script>

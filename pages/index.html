@@ -20,44 +20,8 @@
   .lp-platforms__intro { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; flex-shrink: 0; }
   .lp-platform { display: flex; align-items: center; gap: 6px; font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .1em; color: var(--color-text-muted); text-transform: uppercase; white-space: nowrap; }
 
-  .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  .feat { padding: 24px; background: var(--fg-ink-2); display: flex; flex-direction: column; gap: 12px; min-height: 200px; }
-  .feat--premium { box-shadow: inset 0 0 0 2px var(--fg-paper); }
-  .feat__icon { font-size: 2rem; line-height: 1; }
-  .feat__title { font-family: var(--fg-font-display); font-size: 1.25rem; letter-spacing: -.015em; text-transform: uppercase; }
-  .feat__body { font-family: var(--fg-font-body); font-size: .9375rem; line-height: 1.5; color: var(--color-text-muted); }
-  .feat__tag { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; padding: 2px 8px; display: inline-block; text-transform: uppercase; margin-top: auto; align-self: flex-start; }
-  .feat__tag--free { background: var(--fg-paper); color: var(--fg-ink); }
-  .feat__tag--athlete { background: var(--gradient-primary); color: var(--fg-ink); }
-
-  .steps { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid rgba(240,238,230,0.08); border-bottom: 1px solid rgba(240,238,230,0.08); }
-  .step { padding: 28px 22px; border-right: 1px solid rgba(240,238,230,0.08); }
-  .step:last-child { border-right: 0; }
-  .step__n { font-family: var(--fg-font-display); font-size: 5rem; line-height: 1; letter-spacing: -.04em; background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .step__t { font-family: var(--fg-font-display); font-size: 1.5rem; letter-spacing: -.015em; margin-top: 8px; text-transform: uppercase; }
-  .step__d { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); line-height: 1.55; margin-top: 8px; }
-
-  .lp-pricing { padding: 48px 32px; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-  .lp-price-card { padding: 32px; display: flex; flex-direction: column; gap: 18px; background: var(--fg-ink-2); }
-  .lp-price-card--featured { background: var(--gradient-primary); color: var(--fg-ink); }
-  .lp-price-card__tier { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; opacity: .7; text-transform: uppercase; }
-  .lp-price-card__name { font-family: var(--fg-font-display); font-size: 2.5rem; letter-spacing: -.025em; line-height: 1; text-transform: uppercase; }
-  .lp-price-card__price { font-family: var(--fg-font-display); font-size: 2rem; letter-spacing: -.025em; }
-  .lp-price-card__price span { font-size: .875rem; opacity: .7; font-family: var(--fg-font-mono); }
-
-  @media (max-width: 900px) {
-    .lp-pricing { grid-template-columns: 1fr; padding: 32px 16px; }
-    .feat-grid { grid-template-columns: 1fr 1fr; }
-    .steps { grid-template-columns: 1fr 1fr; }
-    .step:nth-child(2) { border-right: 0; }
-    .step:nth-child(3) { border-top: 1px solid rgba(240,238,230,0.08); }
-    .step:nth-child(4) { border-top: 1px solid rgba(240,238,230,0.08); border-right: 0; }
-  }
   @media (max-width: 600px) {
-    .feat-grid { grid-template-columns: 1fr; }
-    .steps { grid-template-columns: 1fr; }
-    .step { border-right: 0; border-bottom: 1px solid rgba(240,238,230,0.08); }
-    .step:last-child { border-bottom: 0; }
+    .lp-platforms { padding: 14px 16px; gap: 14px; }
   }
 </style>
 
@@ -151,58 +115,36 @@
     <span class="lp-platform"><span>⌚</span><span>GARMIN</span></span>
   </div>
 
-  <!-- Aurora band -->
-  <div class="band band--aurora"><span class="band__label">⚡ 25 BOOSTERS · 8+ SOURCES · 5 DESTINATIONS</span><span class="band__right">ALL INCLUDED ON HOBBYIST</span></div>
-
-  <!-- Features grid -->
-  <div class="lp-section">
-    <div class="lp-section-h">Everything <span class="gr">in one chain.</span></div>
-    <div class="feat-grid">
-      <div class="feat"><div class="feat__icon">❤️</div><div class="feat__title">Heart Rate Zones</div><div class="feat__body">Time in Z0–Z5 per activity. Custom thresholds. Use the breakdown in your Strava description or Showcase.</div><span class="feat__tag feat__tag--free">FREE</span></div>
-      <div class="feat"><div class="feat__icon">💥</div><div class="feat__title">Effort Score</div><div class="feat__body">A weighted score 0–100 combining HR drift, duration, and intensity. Tells you how hard it really was.</div><span class="feat__tag feat__tag--free">FREE</span></div>
-      <div class="feat"><div class="feat__icon">🏆</div><div class="feat__title">Personal Records</div><div class="feat__body">Auto-tracks PRs across cardio (fastest 5K, longest ride) and strength (1RM per lift). Stamps activities that set them.</div><span class="feat__tag feat__tag--free">FREE</span></div>
-      <div class="feat feat--premium"><div class="feat__icon">✨</div><div class="feat__title">AI Companion</div><div class="feat__body">A natural-language paragraph that summarises the activity — best moment, hardest moment, surprise. Reads like a coach.</div><span class="feat__tag feat__tag--athlete">✦ ATHLETE</span></div>
-      <div class="feat feat--premium"><div class="feat__icon">🎨</div><div class="feat__title">AI Banner</div><div class="feat__body">Generated cover image for each activity, captioned with a one-line AI poem. Drops straight into your Strava description.</div><span class="feat__tag feat__tag--athlete">✦ ATHLETE</span></div>
-      <div class="feat"><div class="feat__icon">⭐</div><div class="feat__title">Streak Tracker</div><div class="feat__body">Consecutive-active-days counter, week-streak history, and a 28-day visual calendar.</div><span class="feat__tag feat__tag--free">FREE</span></div>
+  <!-- Three pillars -->
+  <div class="band band--aurora"><span class="band__label">HOW FITGLUE WORKS</span><span class="band__right">~5 MIN FROM ZERO TO ENRICHED</span></div>
+  <div class="lp-pillars">
+    <div class="lp-pillar">
+      <div class="lp-pillar__n">1</div>
+      <div class="lp-pillar__title">Connect</div>
+      <p class="lp-pillar__body">Hook in 30+ sources — Strava, Hevy, Garmin, Fitbit, Apple Health, Parkrun and more. OAuth or API key, 30 seconds each. Connect once and every new activity flows in automatically.</p>
+      <a href="/how-it-works" class="lp-pillar__link">SEE HOW IT WORKS →</a>
     </div>
-    <div style="margin-top:24px"><a href="/features" class="btn--ghost">ALL 25 BOOSTERS →</a></div>
-  </div>
-
-  <!-- How it works steps -->
-  <div class="band"><span class="band__label">HOW IT WORKS</span><span class="band__right">~5 MINUTES FROM ZERO TO ENRICHED</span></div>
-  <div class="steps">
-    <div class="step"><div class="step__n">1</div><div class="step__t">Connect</div><div class="step__d">Hook in Strava, Hevy, Garmin, Fitbit, Apple Health — 30+ integrations. OAuth or API key, 30 seconds each.</div></div>
-    <div class="step"><div class="step__n">2</div><div class="step__t">Build</div><div class="step__d">Pick a source, stack boosters in the middle, choose destinations. Save. Each pipeline takes ~2 minutes.</div></div>
-    <div class="step"><div class="step__n">3</div><div class="step__t">Sync</div><div class="step__d">Every new activity flows through. AI summary, HR zones, training load, PRs — added automatically.</div></div>
-    <div class="step"><div class="step__n">4</div><div class="step__t">Share</div><div class="step__d">Public showcase profile, Strava posts that don't suck, personal feed, fan-out to multiple platforms.</div></div>
-  </div>
-
-  <!-- Pricing teaser -->
-  <div class="band"><span class="band__label">PRICING · NO HIDDEN TIERS</span><span class="band__right">CANCEL ANY TIME</span></div>
-  <div class="lp-pricing">
-    <div class="lp-price-card">
-      <div class="lp-price-card__tier">FREE FOREVER</div>
-      <div class="lp-price-card__name">Hobbyist</div>
-      <div class="lp-price-card__price">£0 <span>/ MONTH</span></div>
-      <div style="font-family:var(--fg-font-mono);font-size:.8125rem;color:var(--color-text-muted)">50 syncs/mo · 3 pipelines · 15 boosters · Public showcase</div>
-      <a href="/auth/register" class="btn--ghost" style="align-self:flex-start;margin-top:auto">START FREE →</a>
+    <div class="lp-pillar">
+      <div class="lp-pillar__n">2</div>
+      <div class="lp-pillar__title">Enrich</div>
+      <p class="lp-pillar__body">Stack 25 boosters in the middle of your pipeline. HR zones, effort score, training load, streak tracking, personal records, AI summaries, AI banners. Pick the ones that matter to you.</p>
+      <a href="/features" class="lp-pillar__link">BROWSE ALL 25 BOOSTERS →</a>
     </div>
-    <div class="lp-price-card lp-price-card--featured">
-      <div class="lp-price-card__tier">✦ POPULAR</div>
-      <div class="lp-price-card__name">Athlete</div>
-      <div class="lp-price-card__price">£5 <span>/ MONTH</span></div>
-      <div style="font-family:var(--fg-font-mono);font-size:.8125rem;opacity:.8">Unlimited syncs · All 25 boosters · AI features · All themes</div>
-      <a href="/auth/register" class="btn--ink" style="align-self:flex-start;margin-top:auto;background:var(--fg-ink);color:var(--fg-paper)">GO ATHLETE →</a>
+    <div class="lp-pillar">
+      <div class="lp-pillar__n">3</div>
+      <div class="lp-pillar__title">Share</div>
+      <p class="lp-pillar__body">Your enriched activity lands wherever you point it — Strava with a real description, your public Showcase profile, TrainingPeaks, Intervals.icu. Fan-out to all of them at once.</p>
+      <a href="/pricing" class="lp-pillar__link">SEE PLANS & PRICING →</a>
     </div>
   </div>
 
   <!-- Final CTA -->
   <div class="lp-cta-wrap">
     <div class="lp-cta-wrap__title">One sweat.<br><span class="gr">Every place.</span></div>
-    <div class="lp-cta-wrap__sub">30-DAY TRIAL · NO CREDIT CARD · CANCEL ANY TIME</div>
+    <div class="lp-cta-wrap__sub">30-DAY TRIAL · NO CREDIT CARD · CANCEL ANY TIME · FREE FOREVER ON HOBBYIST</div>
     <div class="lp-cta-wrap__btns">
       <a href="{{waitlistUrl}}" class="btn--aurora">START FREE →</a>
-      <a href="/how-it-works" class="btn--ghost">SEE HOW IT WORKS</a>
+      <a href="/pricing" class="btn--ghost">SEE PRICING</a>
     </div>
   </div>
 

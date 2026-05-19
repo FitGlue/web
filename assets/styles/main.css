@@ -7758,12 +7758,31 @@ h4 {
 .band--aurora { background: var(--gradient-primary); border: 0; }
 .band--aurora .band__label, .band--aurora .band__right { color: var(--fg-ink); }
 
+/* ===== HOMEPAGE PILLARS ===== */
+.lp-pillars { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(240,238,230,0.08); border-bottom: 1px solid rgba(240,238,230,0.08); }
+.lp-pillar { padding: 48px 36px; border-right: 1px solid rgba(240,238,230,0.08); display: flex; flex-direction: column; }
+.lp-pillar:last-child { border-right: 0; }
+.lp-pillar__n { font-family: var(--fg-font-display); font-size: 6rem; line-height: 1; letter-spacing: -.04em; background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lp-pillar__title { font-family: var(--fg-font-display); font-size: 2rem; letter-spacing: -.025em; text-transform: uppercase; margin-top: 8px; }
+.lp-pillar__body { font-family: var(--fg-font-body); font-size: 1rem; color: var(--color-text-muted); line-height: 1.6; margin-top: 14px; flex: 1; }
+.lp-pillar__link { display: inline-flex; align-items: center; gap: 4px; font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .12em; color: var(--fg-cyan); text-transform: uppercase; margin-top: 24px; text-decoration: none; transition: opacity .15s; }
+.lp-pillar__link:hover { opacity: .7; }
+
+/* ===== MOBILE NAV HAMBURGER ===== */
+.mh__ham { display: none; background: none; border: 0; padding: 4px; cursor: pointer; flex-direction: column; gap: 5px; }
+.mh__ham span { display: block; width: 22px; height: 2px; background: var(--fg-paper); transition: opacity .15s; }
+
 @media (max-width: 900px) {
   .lp-hero { grid-template-columns: 1fr; padding: 40px 16px 32px; }
-  .mh { padding: 14px 16px; }
-  .mh__nav { display: none; }
+  .mh { padding: 14px 16px; position: relative; }
+  .mh__ham { display: flex; }
+  .mh__nav { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--fg-ink); border-bottom: 1px solid rgba(240,238,230,0.08); flex-direction: column; padding: 16px 24px; gap: 16px; z-index: 99; }
+  .mh__nav.open { display: flex; }
   .mf__main { grid-template-columns: 1fr; gap: 32px; padding: 32px 16px; }
   .mf__links { grid-template-columns: repeat(2, 1fr); }
   .lp-section { padding: 0 16px 48px; }
   .lp-cta-wrap { padding: 48px 16px; }
+  .lp-pillars { grid-template-columns: 1fr; }
+  .lp-pillar { border-right: 0; border-bottom: 1px solid rgba(240,238,230,0.08); padding: 36px 20px; }
+  .lp-pillar:last-child { border-bottom: 0; }
 }
