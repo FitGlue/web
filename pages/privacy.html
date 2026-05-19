@@ -1,9 +1,38 @@
 {{> header}}
 
-<main class="legal-page">
-  <div class="container legal-content fg-prose">
-    <h1>Privacy Policy</h1>
-    <p class="legal-last-updated">Last updated: February 2026</p>
+<main>
+<style>
+  .legal-ph { padding: 48px 32px 32px; max-width: 760px; margin: 0 auto; }
+  .legal-ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 14px; }
+  .legal-ph__title { font-family: var(--fg-font-display); font-size: clamp(2rem, 5vw, 3rem); line-height: .95; letter-spacing: -.025em; text-transform: uppercase; }
+  .legal-ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  .legal { padding: 0 32px 80px; max-width: 760px; margin: 0 auto; font-family: var(--fg-font-body); font-size: 1.0625rem; line-height: 1.7; color: var(--fg-paper); }
+  .legal-last-updated { font-family: var(--fg-font-mono); font-size: .75rem; letter-spacing: .1em; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 32px; display: block; }
+  .legal h2 { font-family: var(--fg-font-display); font-size: 1.5rem; letter-spacing: -.015em; text-transform: uppercase; margin: 40px 0 12px; line-height: 1.1; }
+  .legal h2:first-of-type { margin-top: 0; }
+  .legal h3 { font-family: var(--fg-font-display); font-size: 1.125rem; letter-spacing: -.01em; text-transform: uppercase; margin: 24px 0 8px; line-height: 1.1; }
+  .legal p { margin: 0 0 1rem; color: var(--color-text-muted); }
+  .legal p:last-child { margin: 0; }
+  .legal p strong, .legal p b { color: var(--fg-paper); font-weight: 700; }
+  .legal ul { padding-left: 1.5rem; color: var(--color-text-muted); margin: 0 0 1rem; }
+  .legal li { margin: 6px 0; }
+  .legal li strong, .legal li b { color: var(--fg-paper); font-weight: 700; }
+  .legal a { color: var(--fg-cyan); }
+
+  @media (max-width: 600px) {
+    .legal-ph { padding: 40px 16px 24px; }
+    .legal { padding: 0 16px 48px; }
+  }
+</style>
+
+  <div class="legal-ph">
+    <div class="legal-ph__eyebrow">PRIVACY POLICY · LAST UPDATED FEBRUARY 2026</div>
+    <h1 class="legal-ph__title">Your data, <span class="gr">protected.</span></h1>
+  </div>
+
+  <div class="legal">
+    <span class="legal-last-updated">Last updated: February 2026</span>
 
     <p>This Privacy Policy describes how FitGlue ("we", "us", or "our") collects, uses, and protects information about
       you when you use our website, web application, mobile application, and related services (collectively, the
@@ -11,8 +40,7 @@
 
     <h2>Our Commitment to You</h2>
     <p><strong>We will never sell, rent, or trade your personal data to anyone.</strong> Your fitness and health data
-      belongs to you, and we only access it with your explicit permission to provide the services you have requested.
-    </p>
+      belongs to you, and we only access it with your explicit permission to provide the services you have requested.</p>
 
     <h2>Information We Collect</h2>
     <p>We collect information you provide directly to us, such as when you create an account, connect a fitness
@@ -50,10 +78,9 @@
 
     <h3>Subscription &amp; Billing Data</h3>
     <p>If you subscribe to a paid plan, billing is handled by <a href="https://stripe.com/privacy"
-        style="color: var(--color-primary);" target="_blank" rel="noopener">Stripe</a>. We do not store your credit card
+        target="_blank" rel="noopener">Stripe</a>. We do not store your credit card
       details. We receive only basic subscription status information (plan type, billing period, subscription state)
-      from
-      Stripe.</p>
+      from Stripe.</p>
 
     <h3>Push Notification Tokens</h3>
     <p>If you enable push notifications, we collect a device token via Firebase Cloud Messaging (FCM) to deliver
@@ -61,9 +88,7 @@
 
     <h3>Usage Data</h3>
     <p>Basic information about how you use our Service, and error reporting data via
-      <a href="https://sentry.io/privacy/" style="color: var(--color-primary);" target="_blank"
-        rel="noopener">Sentry</a> to help us identify and fix issues.
-    </p>
+      <a href="https://sentry.io/privacy/" target="_blank" rel="noopener">Sentry</a> to help us identify and fix issues.</p>
 
     <h2>How We Use Your Information</h2>
     <p>We use the information we collect solely to:</p>
@@ -71,8 +96,7 @@
       <li>Provide, maintain, and improve our services</li>
       <li>Process and sync your fitness data between the platforms you connect</li>
       <li>Enhance your activities with additional insights (boosters) such as heart rate zones, weather context,
-        personal
-        records, and AI-generated descriptions</li>
+        personal records, and AI-generated descriptions</li>
       <li>Generate Showcase pages when you choose to share an activity publicly</li>
       <li>Send you push notifications about activity processing status</li>
       <li>Send you essential technical notices and support messages</li>
@@ -109,13 +133,11 @@
     <h2>Data Security</h2>
     <p>We implement robust technical and organisational measures to protect your data, including encryption in transit
       and at rest, hashed API keys, and strict access controls. For full details, see our
-      <a href="/security" style="color: var(--color-primary);">Data Security</a> page.
-    </p>
+      <a href="/security">Data Security</a> page.</p>
 
     <h2>Data Retention</h2>
     <p>We retain your data only for as long as necessary to provide our services. When you disconnect an integration,
-      all associated connection data (tokens, credentials, and metadata) is immediately and permanently deleted. When
-      you
+      all associated connection data (tokens, credentials, and metadata) is immediately and permanently deleted. When you
       delete your account, we remove all associated data from our systems within 30 days.</p>
 
     <h2>Your Rights (GDPR &amp; Data Protection)</h2>
@@ -131,9 +153,7 @@
       <li><strong>Right to Restrict Processing:</strong> You can request we limit how we use your data</li>
       <li><strong>Right to Object:</strong> You can object to certain types of processing</li>
     </ul>
-    <p>To exercise any of these rights, please contact us at <a href="mailto:privacy@fitglue.tech"
-        style="color: var(--color-primary);">privacy@fitglue.tech</a>. We will respond to all requests within 30 days.
-    </p>
+    <p>To exercise any of these rights, please contact us at <a href="mailto:privacy@fitglue.tech">privacy@fitglue.tech</a>. We will respond to all requests within 30 days.</p>
 
     <h2>Account Deletion</h2>
     <p>You can disconnect any integration and delete your account at any time from within the application. Upon account
@@ -155,12 +175,10 @@
       <li>We never write false or inaccurate data to HealthKit or Health Connect</li>
       <li>Push notifications never contain sensitive health information</li>
     </ul>
-    <p>For more detail on our health data handling, see our <a href="/security"
-        style="color: var(--color-primary);">Data Security</a> page.</p>
+    <p>For more detail on our health data handling, see our <a href="/security">Data Security</a> page.</p>
 
     <h2>Children's Privacy</h2>
-    <p>FitGlue is not intended for children under 16 years of age. We do not knowingly collect personal information from
-      children.</p>
+    <p>FitGlue is not intended for children under 16 years of age. We do not knowingly collect personal information from children.</p>
 
     <h2>Changes to This Policy</h2>
     <p>We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the
@@ -168,9 +186,7 @@
 
     <h2>Contact Us</h2>
     <p>If you have questions about this Privacy Policy, wish to exercise your data rights, or have concerns about how we
-      handle your data, please contact us at <a href="mailto:privacy@fitglue.tech"
-        style="color: var(--color-primary);">privacy@fitglue.tech</a>.</p>
-
+      handle your data, please contact us at <a href="mailto:privacy@fitglue.tech">privacy@fitglue.tech</a>.</p>
   </div>
 </main>
 

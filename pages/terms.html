@@ -1,18 +1,44 @@
 {{> header}}
 
-<main class="legal-page">
-  <div class="container legal-content fg-prose">
-    <h1>Terms of Service</h1>
-    <p class="legal-last-updated">Last updated: February 2026</p>
+<main>
+<style>
+  .legal-ph { padding: 48px 32px 32px; max-width: 760px; margin: 0 auto; }
+  .legal-ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 14px; }
+  .legal-ph__title { font-family: var(--fg-font-display); font-size: clamp(2rem, 5vw, 3rem); line-height: .95; letter-spacing: -.025em; text-transform: uppercase; }
+  .legal-ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  .legal { padding: 0 32px 80px; max-width: 760px; margin: 0 auto; font-family: var(--fg-font-body); font-size: 1.0625rem; line-height: 1.7; color: var(--fg-paper); }
+  .legal-last-updated { font-family: var(--fg-font-mono); font-size: .75rem; letter-spacing: .1em; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 32px; display: block; }
+  .legal h2 { font-family: var(--fg-font-display); font-size: 1.5rem; letter-spacing: -.015em; text-transform: uppercase; margin: 40px 0 12px; line-height: 1.1; }
+  .legal h2:first-of-type { margin-top: 0; }
+  .legal h3 { font-family: var(--fg-font-display); font-size: 1.125rem; letter-spacing: -.01em; text-transform: uppercase; margin: 24px 0 8px; line-height: 1.1; }
+  .legal p { margin: 0 0 1rem; color: var(--color-text-muted); }
+  .legal p:last-child { margin: 0; }
+  .legal p strong, .legal p b { color: var(--fg-paper); font-weight: 700; }
+  .legal ul { padding-left: 1.5rem; color: var(--color-text-muted); margin: 0 0 1rem; }
+  .legal li { margin: 6px 0; }
+  .legal li strong, .legal li b { color: var(--fg-paper); font-weight: 700; }
+  .legal a { color: var(--fg-cyan); }
+
+  @media (max-width: 600px) {
+    .legal-ph { padding: 40px 16px 24px; }
+    .legal { padding: 0 16px 48px; }
+  }
+</style>
+
+  <div class="legal-ph">
+    <div class="legal-ph__eyebrow">TERMS OF SERVICE · LAST UPDATED FEBRUARY 2026</div>
+    <h1 class="legal-ph__title">Terms of <span class="gr">service.</span></h1>
+  </div>
+
+  <div class="legal">
+    <span class="legal-last-updated">Last updated: February 2026</span>
 
     <p>These Terms of Service ("Terms") govern your use of FitGlue's website, web application, mobile application, and
       related services (collectively, the "Service"). By using our Service, you agree to these Terms.</p>
 
     <h2>1. Acceptance of Terms</h2>
-    <p>By accessing or using FitGlue, you agree to be bound by these Terms, our <a href="/privacy"
-        style="color: var(--color-primary);">Privacy Policy</a>, and our <a href="/security"
-        style="color: var(--color-primary);">Data Security</a> practices. If you do not agree, please do not use our
-      Service.</p>
+    <p>By accessing or using FitGlue, you agree to be bound by these Terms, our <a href="/privacy">Privacy Policy</a>, and our <a href="/security">Data Security</a> practices. If you do not agree, please do not use our Service.</p>
 
     <h2>2. Description of Service</h2>
     <p>FitGlue is a fitness data orchestration platform available as a web application and mobile app (iOS and Android).
@@ -44,8 +70,7 @@
       <li><strong>Athlete (Paid):</strong> Full access to all features, boosters, and integrations</li>
     </ul>
     <p>New accounts receive a 30-day free trial of the Athlete tier. No credit card is required to start.</p>
-    <p>Paid subscriptions are billed through <a href="https://stripe.com" style="color: var(--color-primary);"
-        target="_blank" rel="noopener">Stripe</a>. You can cancel your subscription at any time from within the
+    <p>Paid subscriptions are billed through <a href="https://stripe.com" target="_blank" rel="noopener">Stripe</a>. You can cancel your subscription at any time from within the
       application or by contacting us. Upon cancellation, you retain access until the end of your current billing
       period, after which your account reverts to the Hobbyist tier.</p>
 
@@ -54,7 +79,7 @@
       limited, non-exclusive license to access, process, transform, and transfer your data solely as necessary to
       provide the services you have requested. We do not claim any ownership rights over your data.</p>
     <p>When you disconnect an integration or delete your account, all associated data is permanently removed from our
-      systems in accordance with our <a href="/privacy" style="color: var(--color-primary);">Privacy Policy</a>.</p>
+      systems in accordance with our <a href="/privacy">Privacy Policy</a>.</p>
 
     <h2>6. Showcase &amp; Public Content</h2>
     <p>When you create a Showcase page, the enriched activity data for that specific activity becomes publicly
@@ -88,20 +113,18 @@
 
     <h2>9. Health Data</h2>
     <p>FitGlue may access health and biometric data from Apple HealthKit, Google Health Connect, Fitbit, and uploaded
-      FIT files. We handle this data in compliance with the health data guidelines of Apple and Google. Specifically:
-    </p>
+      FIT files. We handle this data in compliance with the health data guidelines of Apple and Google. Specifically:</p>
     <ul>
       <li>Health data is never used for advertising, data mining, or any purpose beyond providing the Service</li>
       <li>Health data is not stored in iCloud</li>
       <li>Health data is accessed only with your explicit permission</li>
       <li>We never write false or inaccurate data to HealthKit or Health Connect</li>
     </ul>
-    <p>For full details, see our <a href="/security" style="color: var(--color-primary);">Data Security</a> page.</p>
+    <p>For full details, see our <a href="/security">Data Security</a> page.</p>
 
     <h2>10. Open Source</h2>
     <p>FitGlue is open-source software. The source code is available on
-      <a href="https://github.com/FitGlue" style="color: var(--color-primary);" target="_blank"
-        rel="noopener">GitHub</a>. Use of the source code is subject to the applicable open-source license. These Terms
+      <a href="https://github.com/FitGlue" target="_blank" rel="noopener">GitHub</a>. Use of the source code is subject to the applicable open-source license. These Terms
       govern your use of the hosted Service, which may include features, infrastructure, and configurations not present
       in the open-source code.
     </p>
@@ -155,7 +178,7 @@
       <li>If required by law</li>
     </ul>
     <p>You may terminate your account at any time through the application settings. Upon termination, your data will be
-      deleted in accordance with our <a href="/privacy" style="color: var(--color-primary);">Privacy Policy</a>.</p>
+      deleted in accordance with our <a href="/privacy">Privacy Policy</a>.</p>
 
     <h2>17. Changes to Terms</h2>
     <p>We may update these Terms from time to time. We will notify you of material changes by:</p>
@@ -171,9 +194,7 @@
       and Wales.</p>
 
     <h2>19. Contact</h2>
-    <p>For questions about these Terms, contact us at <a href="mailto:legal@fitglue.tech"
-        style="color: var(--color-primary);">legal@fitglue.tech</a>.</p>
-
+    <p>For questions about these Terms, contact us at <a href="mailto:legal@fitglue.tech">legal@fitglue.tech</a>.</p>
   </div>
 </main>
 
