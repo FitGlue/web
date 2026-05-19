@@ -1,36 +1,51 @@
 {{> auth-head}}
 
-<div class="auth-container">
-    <h1 class="title">
-        <a href="/" class="logo-link">
-            <span class="fit">Fit</span><span class="glue">Glue</span>
-        </a>
-    </h1>
-    <h2>Confirm Email Change</h2>
-
-    <div class="auth-box">
-        <div id="auth-error" class="auth-message error" style="display: none;"></div>
-        <div id="auth-success" class="auth-message success" style="display: none;"></div>
-
-        <div id="processing" class="verification-content">
-            <p class="auth-description">Confirming your new email address...</p>
-            <div class="spinner-container">
-                <span class="spinner"></span>
-            </div>
-        </div>
-
-        <div id="success-view" style="display: none;">
-            <p class="auth-description">Your email address has been updated successfully. Please log in with your new
-                email.</p>
-            <a href="/auth/login" class="btn primary" style="display:inline-block;text-align:center;">Go to Login</a>
-        </div>
-
-        <div id="invalid-link" style="display: none;">
-            <p class="auth-description">This email change link is invalid or has expired.</p>
-            <a href="/app/settings" class="btn primary" style="display:inline-block;text-align:center;">Go to
-                Settings</a>
-        </div>
+<div class="auth-split">
+  <!-- LEFT: brand panel -->
+  <div class="auth-side auth-side--brand">
+    <a href="/" class="auth-logo">FITGLUE</a>
+    <div>
+      <div class="auth-eyebrow" style="color: var(--fg-cyan); margin-bottom: 1.5rem">✦ EMAIL CHANGE</div>
+      <div class="auth-brand-quote">
+        CONFIRMING<br>YOUR NEW<br><span class="text-gradient">ADDRESS.</span>
+      </div>
     </div>
+    <div class="auth-brand-footer">
+      <span>© 2026 FitGlue</span><span>—</span>
+      <a href="/privacy">PRIVACY</a>
+      <a href="/terms">TERMS</a>
+    </div>
+  </div>
+
+  <!-- RIGHT: state card -->
+  <div class="auth-side auth-side--form">
+    <div class="auth-form">
+      <div class="auth-eyebrow">Confirm Email Change</div>
+
+      <div id="auth-error" class="auth-message error" style="display: none;"></div>
+      <div id="auth-success" class="auth-message success" style="display: none;"></div>
+
+      <div id="processing" class="verification-content">
+        <h1>UPDATING<br><span class="text-gradient">EMAIL...</span></h1>
+        <p class="lead">Confirming your new email address. Please wait.</p>
+        <div class="spinner-container">
+          <span class="spinner"></span>
+        </div>
+      </div>
+
+      <div id="success-view" style="display: none;">
+        <h1>EMAIL<br><span class="text-gradient">UPDATED.</span></h1>
+        <p class="lead">Your email address has been updated successfully. Please log in with your new email.</p>
+        <a href="/auth/login" class="auth-submit" style="display:block;text-align:center;text-decoration:none;margin-top:1.5rem">Go to Login →</a>
+      </div>
+
+      <div id="invalid-link" style="display: none;">
+        <h1>LINK<br><span class="text-gradient">EXPIRED.</span></h1>
+        <p class="lead">This email change link is invalid or has expired.</p>
+        <a href="/app/settings" class="auth-submit" style="display:block;text-align:center;text-decoration:none;margin-top:1.5rem">Go to Settings →</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -43,8 +58,8 @@
         display: inline-block;
         width: 32px;
         height: 32px;
-        border: 3px solid rgba(255, 27, 141, 0.2);
-        border-top-color: #FF1B8D;
+        border: 3px solid rgba(34, 211, 238, 0.2);
+        border-top-color: var(--fg-cyan);
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
     }

@@ -271,3 +271,27 @@
 .verification-content strong {
   color: #f5f3eb;
 }
+
+/* -----------------------------------------------
+   SPLIT-PANEL STATE PAGES — shared .lead style
+   ----------------------------------------------- */
+
+.auth-form p.lead,
+.auth-form .lead {
+  color: var(--color-text-muted);
+  font-family: var(--fg-font-body);
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.55;
+}
+
+.auth-form h1 {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  line-height: 0.9;
+  margin-bottom: 0.75rem;
+}
+
+/* Make the auth-split fill full viewport height */
+.auth-split {
+  min-height: 100vh;
+}

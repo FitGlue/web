@@ -1,44 +1,51 @@
 {{> auth-head}}
 
-<div class="auth-container">
-  <h1 class="title">
-    <a href="/" class="logo-link">
-      <span class="fit">Fit</span><span class="glue">Glue</span>
-    </a>
-  </h1>
-
-  <div class="auth-box" style="text-align: center;">
-    <p class="auth-description" style="text-align: center; margin-bottom: 2rem; font-size: 1.1rem;">
-      Thanks for joining the <strong style="color: var(--fg-pink);">Fit</strong><strong style="color: var(--fg-violet);">Glue</strong>
-      waitlist! We're rolling out access in waves and will email you as soon as your spot is ready.
-    </p>
-
-    <div
-      style="background: var(--fg-ink-2); border: 1px solid var(--fg-hairline-color); padding: 1.5rem; margin-bottom: 2rem; text-align: left;">
-      <h3
-        style="color: #a5a5a5; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em; margin: 0 0 1.25rem 0; text-transform: uppercase;">
-        What Happens Next</h3>
-
-      <div style="display: flex; flex-direction: column; gap: 1rem;">
-        <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-          <span style="font-size: 1.25rem;">📧</span>
-          <span style="color: #f5f5f5; font-size: 0.95rem;">Check your email to verify your address</span>
-        </div>
-        <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-          <span style="font-size: 1.25rem;">⏳</span>
-          <span style="color: #f5f5f5; font-size: 0.95rem;">We'll review your registration</span>
-        </div>
-        <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-          <span style="font-size: 1.25rem;">🚀</span>
-          <span style="color: #f5f5f5; font-size: 0.95rem;">You'll get an email when access is enabled</span>
-        </div>
+<div class="auth-split">
+  <!-- LEFT: brand panel -->
+  <div class="auth-side auth-side--brand">
+    <a href="/" class="auth-logo">FITGLUE</a>
+    <div>
+      <div class="auth-eyebrow" style="color: var(--fg-gold); margin-bottom: 1.5rem">✦ ACCESS PENDING</div>
+      <div class="auth-brand-quote">
+        ALMOST<br>IN THE<br><span class="text-gradient">DOOR.</span>
+      </div>
+      <div class="auth-trust">
+        <span class="fg-stamp" style="background:var(--fg-gold);color:var(--fg-ink)">PENDING REVIEW</span>
       </div>
     </div>
+    <div class="auth-brand-footer">
+      <span>© 2026 FitGlue</span><span>—</span>
+      <a href="/privacy">PRIVACY</a>
+      <a href="/terms">TERMS</a>
+    </div>
+  </div>
 
-    <div style="border-top: var(--fg-rule-thin); padding-top: 1.5rem;">
-      <p style="color: #a5a5a5; margin-bottom: 1rem; font-size: 0.9rem;">Already received access?</p>
-      <a href="/auth/login" class="btn primary" id="btn-login"
-        style="display: block; width: 100%; text-align: center; text-decoration: none;">Login Now</a>
+  <!-- RIGHT: state card -->
+  <div class="auth-side auth-side--form">
+    <div class="auth-form">
+      <div class="auth-eyebrow">Access Pending</div>
+      <h1>YOU'RE ON<br><span class="text-gradient">THE LIST.</span></h1>
+      <p class="lead">Thanks for joining the FitGlue waitlist! We're rolling out access in waves and will email you as soon as your spot is ready.</p>
+
+      <div class="auth-steps" style="margin:1.5rem 0;display:flex;flex-direction:column;gap:.875rem">
+        <div style="display:flex;align-items:flex-start;gap:.875rem">
+          <span style="font-size:1.25rem;flex-shrink:0">📧</span>
+          <span style="font-family:var(--fg-font-body);color:var(--color-text-muted)">Check your email to verify your address</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:.875rem">
+          <span style="font-size:1.25rem;flex-shrink:0">⏳</span>
+          <span style="font-family:var(--fg-font-body);color:var(--color-text-muted)">We'll review your registration</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:.875rem">
+          <span style="font-size:1.25rem;flex-shrink:0">🚀</span>
+          <span style="font-family:var(--fg-font-body);color:var(--color-text-muted)">You'll get an email when access is enabled</span>
+        </div>
+      </div>
+
+      <div style="border-top:var(--fg-rule-thin);padding-top:1.5rem;margin-top:.5rem">
+        <p class="auth-footer-note" style="margin-bottom:1rem">Already received access?</p>
+        <a href="/auth/login" class="auth-submit" id="btn-login" style="display:block;text-align:center;text-decoration:none">Login Now →</a>
+      </div>
     </div>
   </div>
 </div>

@@ -1,233 +1,56 @@
 {{> auth-head}}
 
-<div class="auth-container waitlist-confirmed">
-  <div class="confirmation-animation">
-    <div class="check-circle">
-      <svg viewBox="0 0 52 52" class="checkmark">
-        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
-        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-      </svg>
+<div class="auth-split">
+  <!-- LEFT: brand panel -->
+  <div class="auth-side auth-side--brand">
+    <a href="/" class="auth-logo">FITGLUE</a>
+    <div>
+      <div class="auth-eyebrow" style="color: var(--fg-green); margin-bottom: 1.5rem">✓ YOU'RE IN</div>
+      <div class="auth-brand-quote">
+        YOU'RE ON<br>THE<br><span class="text-gradient">LIST.</span>
+      </div>
+      <div class="auth-trust">
+        <span class="fg-stamp fg-stamp--green">WAITLIST CONFIRMED</span>
+      </div>
+    </div>
+    <div class="auth-brand-footer">
+      <span>© 2026 FitGlue</span><span>—</span>
+      <a href="/privacy">PRIVACY</a>
+      <a href="/terms">TERMS</a>
     </div>
   </div>
 
-  <h1 class="title">
-    <a href="/" class="logo-link">
-      <span class="fit">Fit</span><span class="glue">Glue</span>
-    </a>
-  </h1>
+  <!-- RIGHT: state card -->
+  <div class="auth-side auth-side--form">
+    <div class="auth-form">
+      <div class="auth-eyebrow" style="color:var(--fg-green)">✓ REGISTRATION COMPLETE</div>
+      <h1>YOU'RE ON<br><span class="text-gradient">THE LIST! 🎉</span></h1>
+      <p class="lead">Thanks for joining the FitGlue waitlist! We're rolling out access in waves and will email you as soon as your spot is ready.</p>
 
-  <h2 class="success-title">You're on the list! 🎉</h2>
+      <div class="auth-steps" style="margin:1.5rem 0;background:var(--fg-ink);box-shadow:inset 0 0 0 1.5px var(--fg-hairline-color);padding:1.25rem">
+        <div class="auth-eyebrow" style="margin-bottom:1rem">What Happens Next</div>
+        <div style="display:flex;flex-direction:column;gap:.875rem">
+          <div style="display:flex;align-items:flex-start;gap:.875rem;padding-bottom:.875rem;border-bottom:var(--fg-rule-thin)">
+            <span style="font-size:1.25rem;flex-shrink:0">📧</span>
+            <span style="font-family:var(--fg-font-body);color:var(--color-text-muted)">Check your email to verify your address</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:.875rem;padding-bottom:.875rem;border-bottom:var(--fg-rule-thin)">
+            <span style="font-size:1.25rem;flex-shrink:0">⏳</span>
+            <span style="font-family:var(--fg-font-body);color:var(--color-text-muted)">We'll review your registration</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:.875rem">
+            <span style="font-size:1.25rem;flex-shrink:0">🚀</span>
+            <span style="font-family:var(--fg-font-body);color:var(--color-text-muted)">You'll get an email when access is enabled</span>
+          </div>
+        </div>
+      </div>
 
-  <div class="auth-box confirmation-box">
-    <p class="confirmation-message">
-      Thanks for joining the FitGlue waitlist! We're rolling out access in waves and will email you as soon as your spot
-      is ready.
-    </p>
-
-    <div class="next-steps">
-      <h3>What happens next</h3>
-      <ol>
-        <li>
-          <span class="step-icon">📧</span>
-          <span class="step-text">Check your email to verify your address</span>
-        </li>
-        <li>
-          <span class="step-icon">⏳</span>
-          <span class="step-text">We'll review your registration</span>
-        </li>
-        <li>
-          <span class="step-icon">🚀</span>
-          <span class="step-text">You'll get an email when access is enabled</span>
-        </li>
-      </ol>
-    </div>
-
-    <div class="login-prompt">
-      <p>Already received access?</p>
-      <a href="/auth/login" class="btn primary">Login Now</a>
+      <div style="border-top:var(--fg-rule-thin);padding-top:1.5rem">
+        <p class="auth-footer-note" style="margin-bottom:1rem">Already received access?</p>
+        <a href="/auth/login" class="auth-submit" style="display:block;text-align:center;text-decoration:none">Login Now →</a>
+      </div>
     </div>
   </div>
 </div>
-
-<style>
-  .waitlist-confirmed {
-    text-align: center;
-  }
-
-  .confirmation-animation {
-    margin-bottom: 1.5rem;
-  }
-
-  .check-circle {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto;
-  }
-
-  .checkmark {
-    width: 80px;
-    height: 80px;
-    display: block;
-    stroke-width: 2;
-    stroke: var(--color-success, #06FFA5);
-    stroke-miterlimit: 10;
-    animation: scale 0.3s ease-in-out 0.9s both;
-  }
-
-  .checkmark-circle {
-    stroke-dasharray: 166;
-    stroke-dashoffset: 166;
-    stroke-width: 2;
-    stroke-miterlimit: 10;
-    stroke: var(--color-success, #06FFA5);
-    fill: none;
-    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-  }
-
-  .checkmark-check {
-    transform-origin: 50% 50%;
-    stroke-dasharray: 48;
-    stroke-dashoffset: 48;
-    stroke-width: 3;
-    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
-  }
-
-  @keyframes stroke {
-    100% {
-      stroke-dashoffset: 0;
-    }
-  }
-
-  @keyframes scale {
-
-    0%,
-    100% {
-      transform: none;
-    }
-
-    50% {
-      transform: scale3d(1.1, 1.1, 1);
-    }
-  }
-
-  .success-title {
-    color: var(--color-success, #06FFA5);
-    font-size: 1.75rem;
-    margin-bottom: 1rem;
-    animation: fadeIn 0.5s ease-out 0.5s both;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .confirmation-box {
-    animation: fadeIn 0.5s ease-out 0.7s both;
-  }
-
-  .confirmation-message {
-    font-size: 1rem;
-    color: var(--color-text, #fff);
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-  }
-
-  .next-steps {
-    background: var(--fg-ink-2);
-    border: var(--fg-rule-thin);
-    padding: 1.25rem;
-    margin-bottom: 1.5rem;
-    text-align: left;
-  }
-
-  .next-steps h3 {
-    font-size: 0.9rem;
-    color: var(--color-text-muted, #AAA);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0 0 1rem 0;
-  }
-
-  .next-steps ol {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    counter-reset: step;
-  }
-
-  .next-steps li {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0.75rem 0;
-    border-bottom: var(--fg-rule-thin);
-  }
-
-  .next-steps li:last-child {
-    border-bottom: none;
-  }
-
-  .step-icon {
-    font-size: 1.25rem;
-    flex-shrink: 0;
-  }
-
-  .step-text {
-    color: var(--color-text, #fff);
-    font-size: 0.95rem;
-    line-height: 1.4;
-  }
-
-  .confirmation-box {
-    animation: fadeIn 0.5s ease-out 0.7s both;
-    padding-bottom: 1.5rem;
-  }
-
-  .login-prompt {
-    padding: 1.5rem 0 0 0;
-    margin-top: 0.5rem;
-    margin-bottom: 0;
-    border-top: var(--fg-rule-thin);
-    position: relative;
-    z-index: 2;
-    background: transparent;
-    text-align: center;
-  }
-
-  .login-prompt::before {
-    display: none;
-  }
-
-  .login-prompt p {
-    color: var(--color-text-muted, #AAA);
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-  }
-
-  .login-prompt .btn {
-    min-width: 150px;
-    text-decoration: none;
-    position: relative;
-    z-index: 3;
-  }
-
-  .login-prompt .btn.primary {
-    display: inline-flex;
-    cursor: pointer;
-  }
-
-  .login-prompt .btn.primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 61, 166, 0.4);
-  }
-</style>
 
 {{> auth-footer}}
