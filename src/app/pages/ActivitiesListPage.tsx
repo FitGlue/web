@@ -2,11 +2,11 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { useUser } from '../hooks/useUser';
-import { PageLayout, Stack } from '../components/library/layout';
 import { PipelineRunsList, FilterMode } from '../components/dashboard/PipelineRunsList';
 import { StatInline, LiveToggle } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { ActivitiesService } from '../services/ActivitiesService';
+import './ActivitiesListPage.css';
 
 const ActivitiesListPage: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -16,15 +16,11 @@ const ActivitiesListPage: React.FC = () => {
         setSearchParams({ tab: mode });
     };
 
-    // Get loading/listening state from hook for header indicators
-    // The hook uses singleton pattern, so calling it here shares the listener with PipelineRunsList
     const { loading, isListening, forceRefresh } = useRealtimePipelineRuns(true, 50);
     const [liveEnabled, setLiveEnabled] = useState(true);
 
-    // Get user profile for sync credits (billing counter)
     const { user: profile, loading: profileLoading } = useUser();
 
-    // Load stats on mount (still needed for totals)
     const [statsLoading, setStatsLoading] = useState(true);
     const [initialStats, setInitialStats] = useState<{ totalSynced: number; uploadsThisMonth: number } | null>(null);
 
@@ -42,14 +38,6 @@ const ActivitiesListPage: React.FC = () => {
         loadStats();
     }, []);
 
-    const liveToggle = (
-        <LiveToggle
-            isEnabled={liveEnabled}
-            isListening={isListening}
-            onToggle={() => setLiveEnabled(prev => !prev)}
-        />
-    );
-
     const handleRefresh = async () => {
         await forceRefresh();
     };
@@ -63,41 +51,55 @@ const ActivitiesListPage: React.FC = () => {
     }, [initialStats, profile]);
 
     return (
-        <PageLayout
-            title="Pipeline Runs"
-            backTo="/"
-            backLabel="Dashboard"
-            onRefresh={handleRefresh}
-            loading={loading || statsLoading || profileLoading}
-            headerActions={liveToggle}
-        >
-            <Stack gap="lg">
-                <div className="fg-band">
-                    <span className="fg-band__label">PIPELINE RUNS</span>
-                    <span className="fg-band__right">REAL-TIME</span>
+        <div className="activities-page">
+            {/* Page head */}
+            <div className="page-head">
+                <div>
+                    <div className="page-head__eyebrow">ACTIVITIES</div>
+                    <h1>Pipeline Runs</h1>
                 </div>
+                <div className="page-head__actions">
+                    <LiveToggle
+                        isEnabled={liveEnabled}
+                        isListening={isListening}
+                        onToggle={() => setLiveEnabled(prev => !prev)}
+                    />
+                    <button className="fg-button fg-button--ghost fg-button--sm" onClick={handleRefresh} disabled={loading}>
+                        {loading ? '…' : '⟲ REFRESH'}
+                    </button>
+                </div>
+            </div>
 
-                <Stack direction="horizontal" gap="md" responsive>
-                    <StatInline
-                        value={stats.totalSynced}
-                        label="Total Uploads"
-                        subLabel="All Time"
-                        loading={statsLoading}
-                    />
-                    <StatInline
-                        value={stats.uploadsThisMonth}
-                        label="Uploads"
-                        subLabel="This Month"
-                        loading={statsLoading}
-                    />
-                    <StatInline
-                        value={stats.creditsUsedThisMonth}
-                        label="Credits Used"
-                        subLabel="This Month"
-                        loading={profileLoading}
-                    />
-                </Stack>
+            {/* Stats band */}
+            <div className="fg-band">
+                <span className="fg-band__label">PIPELINE RUNS</span>
+                <span className="fg-band__right">REAL-TIME</span>
+            </div>
 
+            {/* Stat slabs */}
+            <div className="activities-page__stats">
+                <StatInline
+                    value={stats.totalSynced}
+                    label="Total Uploads"
+                    subLabel="All Time"
+                    loading={statsLoading}
+                />
+                <StatInline
+                    value={stats.uploadsThisMonth}
+                    label="Uploads"
+                    subLabel="This Month"
+                    loading={statsLoading}
+                />
+                <StatInline
+                    value={stats.creditsUsedThisMonth}
+                    label="Credits Used"
+                    subLabel="This Month"
+                    loading={profileLoading}
+                />
+            </div>
+
+            {/* Runs list */}
+            <div className="activities-page__list">
                 <PipelineRunsList
                     showTabs={true}
                     variant="tabbed"
@@ -105,8 +107,8 @@ const ActivitiesListPage: React.FC = () => {
                     initialTab={initialTab}
                     onTabChange={handleTabChange}
                 />
-            </Stack>
-        </PageLayout>
+            </div>
+        </div>
     );
 };
 

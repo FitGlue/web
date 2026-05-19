@@ -1,0 +1,39 @@
+/* ==========================================================================
+   ActivitiesListPage — Brutal × Aurora layout
+   ========================================================================== */
+
+.activities-page__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: var(--fg-rule-thin);
+    background: var(--fg-ink);
+}
+
+.activities-page__stats > * {
+    padding: 1.125rem 1.375rem;
+}
+
+.activities-page__stats > * + * {
+    border-left: var(--fg-rule-thin);
+}
+
+.activities-page__list {
+    padding: 0;
+}
+
+@media (max-width: 768px) {
+    .activities-page__stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .activities-page__stats {
+        grid-template-columns: 1fr;
+    }
+
+    .activities-page__stats > * + * {
+        border-left: none;
+        border-top: var(--fg-rule-thin);
+    }
+}
