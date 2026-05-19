@@ -1,61 +1,37 @@
+/* ==========================================================================
+   Container — layout-only centering shell (Brutal × Aurora)
+   No visual chrome. Side padding only. Max-width 1440px.
+   ========================================================================== */
+
 .ui-container {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
+  /* No background, no border, no border-radius */
 }
 
 /* Size variants */
-.ui-container--sm {
-  max-width: 640px;
-}
+.ui-container--sm  { max-width: 640px; }
+.ui-container--md  { max-width: 768px; }
+.ui-container--lg  { max-width: 1024px; }
+.ui-container--xl  { max-width: 1280px; }
+.ui-container--2xl { max-width: 1440px; }
+.ui-container--full { max-width: 100%; }
 
-.ui-container--md {
-  max-width: 768px;
-}
+/* Side padding only — top/bottom padding is the page's responsibility */
+.ui-container--padding-none { padding-left: 0;      padding-right: 0; }
+.ui-container--padding-sm   { padding-left: 0.5rem; padding-right: 0.5rem; }
+.ui-container--padding-md   { padding-left: 1rem;   padding-right: 1rem; }
+.ui-container--padding-lg   { padding-left: 2rem;   padding-right: 2rem; }
 
-.ui-container--lg {
-  max-width: 1024px;
-}
-
-.ui-container--xl {
-  max-width: 1280px;
-}
-
-.ui-container--full {
-  max-width: 100%;
-}
-
-/* Padding variants */
-.ui-container--padding-none {
-  padding: 0;
-}
-
-.ui-container--padding-sm {
-  padding: 0.5rem;
-}
-
-.ui-container--padding-md {
-  padding: 1rem;
-}
-
-.ui-container--padding-lg {
-  padding: 1.5rem;
-}
-
-/* Centering */
+/* Centering helper */
 .ui-container--centered {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .ui-container--padding-lg {
-    padding: 1rem;
-  }
-
-  .ui-container--padding-md {
-    padding: 0.75rem;
-  }
+  .ui-container--padding-lg { padding-left: 1rem; padding-right: 1rem; }
+  .ui-container--padding-md { padding-left: 0.75rem; padding-right: 0.75rem; }
 }

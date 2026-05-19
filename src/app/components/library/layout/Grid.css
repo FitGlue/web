@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Grid Component - CSS Grid Layout Utility
+   Grid — CSS grid layout utility, no visual chrome (Brutal × Aurora)
    ========================================================================== */
 @import '../tokens.css';
 
@@ -15,50 +15,31 @@
 }
 
 /* Fixed column counts */
-.ui-grid--cols-1 {
-  grid-template-columns: 1fr;
-}
+.ui-grid--cols-1 { grid-template-columns: 1fr; }
+.ui-grid--cols-2 { grid-template-columns: repeat(2, 1fr); }
+.ui-grid--cols-3 { grid-template-columns: repeat(3, 1fr); }
+.ui-grid--cols-4 { grid-template-columns: repeat(4, 1fr); }
+.ui-grid--cols-5 { grid-template-columns: repeat(5, 1fr); }
+.ui-grid--cols-6 { grid-template-columns: repeat(6, 1fr); }
 
-.ui-grid--cols-2 {
-  grid-template-columns: repeat(2, 1fr);
-}
+/* Gap variants */
+.ui-grid--gap-none { gap: 0; }
+.ui-grid--gap-sm   { gap: var(--spacing-sm); }
+.ui-grid--gap-md   { gap: var(--spacing-md); }
+.ui-grid--gap-lg   { gap: var(--spacing-lg); }
 
-.ui-grid--cols-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.ui-grid--cols-4 {
-  grid-template-columns: repeat(4, 1fr);
-}
-
-.ui-grid--cols-5 {
-  grid-template-columns: repeat(5, 1fr);
-}
-
-.ui-grid--cols-6 {
-  grid-template-columns: repeat(6, 1fr);
-}
-
-/* Gap variants using tokens */
-.ui-grid--gap-none {
+/* Hairline-divided grid (no gap, use box-shadow rules) */
+.ui-grid--divided {
   gap: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
 }
 
-.ui-grid--gap-sm {
-  gap: var(--spacing-sm);
-}
-
-.ui-grid--gap-md {
-  gap: var(--spacing-md);
-}
-
-.ui-grid--gap-lg {
-  gap: var(--spacing-lg);
+.ui-grid--divided > * {
+  box-shadow: 1.5px 0 0 0 var(--fg-hairline-color), 0 1.5px 0 0 var(--fg-hairline-color);
 }
 
 /* Responsive: collapse to single column on mobile */
 @media (max-width: 768px) {
-
   .ui-grid--responsive.ui-grid--cols-2,
   .ui-grid--responsive.ui-grid--cols-3,
   .ui-grid--responsive.ui-grid--cols-4,
@@ -70,7 +51,6 @@
 
 /* Tablet: 2-col max for larger grids */
 @media (min-width: 769px) and (max-width: 1024px) {
-
   .ui-grid--responsive.ui-grid--cols-4,
   .ui-grid--responsive.ui-grid--cols-5,
   .ui-grid--responsive.ui-grid--cols-6 {

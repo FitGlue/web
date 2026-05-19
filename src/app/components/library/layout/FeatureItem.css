@@ -1,51 +1,47 @@
+/* ==========================================================================
+   FeatureItem — layout-only feature list row (Brutal × Aurora)
+   ========================================================================== */
+@import '../tokens.css';
+
 .feature-item {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-sm);
+  gap: 0.875rem;
 }
 
-.feature-item--sm {
-  gap: var(--space-xs);
-}
-
-.feature-item--lg {
-  gap: var(--space-md);
-}
+.feature-item--sm { gap: 0.5rem; }
+.feature-item--lg { gap: 1.125rem; }
 
 .feature-item__icon {
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   flex-shrink: 0;
+  line-height: 1;
 }
 
-.feature-item--sm .feature-item__icon {
-  font-size: 1.25rem;
-}
-
-.feature-item--lg .feature-item__icon {
-  font-size: 2rem;
-}
+.feature-item--sm .feature-item__icon { font-size: 1.125rem; }
+.feature-item--lg .feature-item__icon { font-size: 1.75rem; }
 
 .feature-item__content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: 0.25rem;
 }
 
 .feature-item__title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--color-text);
+  font-family: var(--fg-font-display);
+  font-size: 0.875rem;
+  font-weight: 900;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
 }
 
-.feature-item--sm .feature-item__title {
-  font-size: 0.85rem;
-}
-
-.feature-item--lg .feature-item__title {
-  font-size: 1.1rem;
-}
+.feature-item--sm .feature-item__title { font-size: 0.75rem; }
+.feature-item--lg .feature-item__title { font-size: 1rem; }
 
 .feature-item__description {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
+  font-family: var(--fg-font-body);
+  font-size: 0.8125rem;
+  color: var(--fg-paper-dim);
+  line-height: 1.5;
 }

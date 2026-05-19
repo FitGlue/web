@@ -1,6 +1,11 @@
+/* ==========================================================================
+   FieldRow — settings field grid row (Brutal × Aurora)
+   ========================================================================== */
+@import '../tokens.css';
+
 .field-row {
   display: flex;
-  gap: var(--space-xs);
+  gap: 0.75rem;
 }
 
 .field-row--vertical {
@@ -13,32 +18,28 @@
   justify-content: space-between;
 }
 
+/* Mono-caps label — matches stx-field__label pattern */
 .field-row__label {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  font-weight: 500;
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
 }
 
 .field-row__value {
-  font-size: 0.95rem;
-  color: var(--color-text);
+  font-family: var(--fg-font-body);
+  font-size: 0.9375rem;
+  color: var(--fg-paper);
 }
 
-.field-row--sm .field-row__label {
-  font-size: 0.75rem;
-}
+/* Size modifiers */
+.field-row--sm .field-row__label { font-size: 0.5625rem; }
+.field-row--sm .field-row__value { font-size: 0.8125rem; }
 
-.field-row--sm .field-row__value {
-  font-size: 0.85rem;
-}
-
-.field-row--lg .field-row__label {
-  font-size: 0.95rem;
-}
-
-.field-row--lg .field-row__value {
-  font-size: 1.1rem;
-}
+.field-row--lg .field-row__label { font-size: 0.75rem; }
+.field-row--lg .field-row__value { font-size: 1.0625rem; }
 
 .field-row__action {
   margin-left: auto;
@@ -47,5 +48,4 @@
 
 .field-row--vertical .field-row__action {
   margin-left: 0;
-  margin-top: var(--space-xs);
 }
