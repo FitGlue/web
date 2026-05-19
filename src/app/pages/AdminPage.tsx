@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { Container } from '../components/library/layout';
+import { Container, PageLayout } from '../components/library/layout';
 import { TabbedCard } from '../components/library/ui';
 import { useUser } from '../hooks/useUser';
 import { adminActiveTabAtom, AdminTabId } from '../state/adminState';
@@ -31,19 +31,13 @@ const AdminPage: React.FC = () => {
   // Access check (AdminRoute wrapper should handle this, but double-check)
   if (!loading && !currentUser?.isAdmin) {
     return (
-      <div>
-        <div className="page-head">
-          <div>
-            <div className="page-head__eyebrow">ADMIN</div>
-            <h1>Access Denied</h1>
-          </div>
-        </div>
+      <PageLayout title="Access Denied">
         <div style={{ padding: '3rem 2rem', textAlign: 'center' }}>
           <span style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', letterSpacing: '0.14em', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
             You do not have permission to view this page.
           </span>
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
@@ -55,15 +49,7 @@ const AdminPage: React.FC = () => {
   ];
 
   return (
-    <div>
-      {/* Page head */}
-      <div className="page-head">
-        <div>
-          <div className="page-head__eyebrow">PLATFORM</div>
-          <h1>Admin Console</h1>
-        </div>
-      </div>
-
+    <PageLayout title="Admin Console" fullWidth>
       {/* Band */}
       <div className="fg-band">
         <span className="fg-band__label">ADMIN CONSOLE</span>
@@ -86,7 +72,7 @@ const AdminPage: React.FC = () => {
       {/* Modals */}
       <UserDetailModal />
       <PipelineRunDetailModal />
-    </div>
+    </PageLayout>
   );
 };
 

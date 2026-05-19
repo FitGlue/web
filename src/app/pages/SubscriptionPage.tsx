@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Card, Paragraph, CardSkeleton } from '../components/library/ui';
-import { FeatureItem, Stack, Grid } from '../components/library/layout';
+import { Card, Paragraph, CardSkeleton, Button, Badge } from '../components/library/ui';
+import { FeatureItem, Stack, Grid, PageLayout } from '../components/library/layout';
 import { client } from '../../shared/api/client';
 import { useUser } from '../hooks/useUser';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
@@ -59,18 +59,12 @@ const SubscriptionPage: React.FC = () => {
 
     if (loading && !user) {
         return (
-            <div>
-                <div className="page-head">
-                    <div>
-                        <div className="page-head__eyebrow">SETTINGS / SUBSCRIPTION</div>
-                        <h1>Subscription</h1>
-                    </div>
-                </div>
+            <PageLayout title="Subscription" backTo="/settings/account" backLabel="← ACCOUNT">
                 <div style={{ padding: '2rem' }}>
                     <CardSkeleton variant="integration" />
                     <CardSkeleton variant="integration" />
                 </div>
-            </div>
+            </PageLayout>
         );
     }
 
@@ -85,17 +79,11 @@ const SubscriptionPage: React.FC = () => {
     // ATHLETE VIEW
     if (isAthlete) {
         return (
-            <div>
-                <div className="page-head">
-                    <div>
-                        <div className="page-head__eyebrow">SETTINGS / SUBSCRIPTION</div>
-                        <h1>Your Subscription</h1>
-                    </div>
-                    <div className="page-head__actions">
-                        <a href="/app/settings/account" className="fg-button fg-button--ghost fg-button--sm">← ACCOUNT</a>
-                    </div>
-                </div>
-
+            <PageLayout
+                title="Your Subscription"
+                backTo="/settings/account"
+                backLabel="← ACCOUNT"
+            >
                 {/* Plan banner */}
                 <div className="stx-plan">
                     <span className="stx-plan__icon">✦</span>
@@ -169,13 +157,13 @@ const SubscriptionPage: React.FC = () => {
                             </div>
 
                             <div className="subscription-cta-wrapper">
-                                <button
-                                    className="fg-button subscription-cta"
+                                <Button
+                                    className="subscription-cta"
                                     onClick={handleCheckout}
                                     disabled={processing}
                                 >
                                     {processing ? 'PROCESSING…' : 'SUBSCRIBE NOW — KEEP YOUR ATHLETE FEATURES'}
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     )}
@@ -186,13 +174,13 @@ const SubscriptionPage: React.FC = () => {
                             <Paragraph className="subscription-lose-section__title">⚠️ Your Trial Has Ended</Paragraph>
                             <Paragraph>Subscribe now to restore your unlimited features and keep your Athlete benefits.</Paragraph>
                             <div className="subscription-cta-wrapper">
-                                <button
-                                    className="fg-button subscription-cta"
+                                <Button
+                                    className="subscription-cta"
                                     onClick={handleCheckout}
                                     disabled={processing}
                                 >
                                     {processing ? 'PROCESSING…' : 'SUBSCRIBE TO ATHLETE — £5/MONTH'}
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     )}
@@ -206,29 +194,23 @@ const SubscriptionPage: React.FC = () => {
                             <p style={{ fontFamily: 'var(--fg-font-body)', fontSize: '0.875rem', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
                                 Manage your payment method, view invoices, or update your subscription through the Stripe portal.
                             </p>
-                            <button className="fg-button fg-button--ink fg-button--sm" onClick={handleOpenPortal} disabled={processing}>
+                            <Button variant="ink" size="sm" onClick={handleOpenPortal} disabled={processing}>
                                 {processing ? 'OPENING…' : 'MANAGE BILLING →'}
-                            </button>
+                            </Button>
                         </div>
                     )}
                 </div>
-            </div>
+            </PageLayout>
         );
     }
 
     // HOBBYIST VIEW
     return (
-        <div>
-            <div className="page-head">
-                <div>
-                    <div className="page-head__eyebrow">SETTINGS / SUBSCRIPTION</div>
-                    <h1>Choose Your Plan</h1>
-                </div>
-                <div className="page-head__actions">
-                    <a href="/app/settings/account" className="fg-button fg-button--ghost fg-button--sm">← ACCOUNT</a>
-                </div>
-            </div>
-
+        <PageLayout
+            title="Choose Your Plan"
+            backTo="/settings/account"
+            backLabel="← ACCOUNT"
+        >
             {/* Upgrade banner */}
             <div className="stx-plan">
                 <span className="stx-plan__icon">✦</span>
@@ -250,7 +232,7 @@ const SubscriptionPage: React.FC = () => {
                     {/* Hobbyist */}
                     <div className="subscription-plan-card subscription-plan-card--current" style={{ padding: '1.5rem', background: 'var(--fg-ink-2)', border: 'var(--fg-rule-thin)' }}>
                         <div className="subscription-plan-card__header">
-                            <span className="fg-stamp fg-stamp--ink">CURRENT PLAN</span>
+                            <Badge variant="default">CURRENT PLAN</Badge>
                             <div className="subscription-plan-card__name" style={{ fontFamily: 'var(--fg-font-display)', fontSize: '1.5rem', textTransform: 'uppercase', marginTop: '0.75rem' }}>HOBBYIST</div>
                             <div className="subscription-plan-card__price" style={{ fontFamily: 'var(--fg-font-display)' }}>
                                 £0<span className="subscription-plan-card__period">/month</span>
@@ -268,15 +250,15 @@ const SubscriptionPage: React.FC = () => {
                                 </div>
                             ))}
                         </div>
-                        <button className="fg-button fg-button--ghost fg-button--sm" disabled style={{ width: '100%', marginTop: '1rem' }}>
+                        <Button variant="ghost" size="sm" disabled style={{ width: '100%', marginTop: '1rem' }}>
                             CURRENTLY ACTIVE
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Athlete */}
                     <div className="subscription-plan-card subscription-plan-card--recommended" style={{ padding: '1.5rem', background: 'var(--fg-ink-2)', border: 'var(--fg-rule-thin)', position: 'relative' }}>
                         <div className="subscription-plan-card__header">
-                            <span className="fg-stamp">✦ ATHLETE</span>
+                            <Badge>✦ ATHLETE</Badge>
                             <div className="subscription-plan-card__name" style={{ fontFamily: 'var(--fg-font-display)', fontSize: '1.5rem', textTransform: 'uppercase', marginTop: '0.75rem' }}>ATHLETE</div>
                             <div className="subscription-plan-card__price subscription-plan-card--recommended" style={{ fontFamily: 'var(--fg-font-display)' }}>
                                 £5<span className="subscription-plan-card__period">/month</span>
@@ -290,14 +272,14 @@ const SubscriptionPage: React.FC = () => {
                                 </div>
                             ))}
                         </div>
-                        <button
-                            className="fg-button subscription-cta"
+                        <Button
+                            className="subscription-cta"
                             onClick={handleCheckout}
                             disabled={processing}
                             style={{ width: '100%', marginTop: '1rem' }}
                         >
                             {processing ? 'CONNECTING TO STRIPE…' : 'UPGRADE TO ATHLETE'}
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -324,7 +306,7 @@ const SubscriptionPage: React.FC = () => {
                     ))}
                 </Grid>
             </div>
-        </div>
+        </PageLayout>
     );
 };
 

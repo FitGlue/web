@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Stack } from '../components/library/layout';
+import { Stack, PageLayout } from '../components/library/layout';
 import { Button, Paragraph, Card, Heading, Link, CardSkeleton, Avatar, Pagination } from '../components/library/ui';
 import { FormField, Input, Textarea, Toggle } from '../components/library/forms';
 import { client } from '../../shared/api/client';
@@ -492,31 +492,19 @@ const ShowcaseManagementPage: React.FC = () => {
 
     if (loading) {
         return (
-            <div>
-                <div className="page-head">
-                    <div>
-                        <div className="page-head__eyebrow">SETTINGS / SHOWCASE</div>
-                        <h1>Manage Showcase</h1>
-                    </div>
-                </div>
+            <PageLayout title="Manage Showcase" backLabel="SETTINGS / SHOWCASE">
                 <div style={{ padding: '2rem' }}>
                     <CardSkeleton variant="integration" />
                     <CardSkeleton variant="integration" />
                     <CardSkeleton variant="integration" />
                 </div>
-            </div>
+            </PageLayout>
         );
     }
 
     if (!profile) {
         return (
-            <div>
-                <div className="page-head">
-                    <div>
-                        <div className="page-head__eyebrow">SETTINGS / SHOWCASE</div>
-                        <h1>Manage Showcase</h1>
-                    </div>
-                </div>
+            <PageLayout title="Manage Showcase" backLabel="SETTINGS / SHOWCASE">
                 <Stack className="showcase-mgmt__empty" align="center" gap="md" style={{ padding: '3rem 2rem' }}>
                     <Paragraph className="showcase-mgmt__empty-icon">🌟</Paragraph>
                     <Paragraph>No showcase profile found.</Paragraph>
@@ -524,21 +512,16 @@ const ShowcaseManagementPage: React.FC = () => {
                         Showcase activities from your pipeline runs to create your public profile.
                     </Paragraph>
                 </Stack>
-            </div>
+            </PageLayout>
         );
     }
 
     return (
-        <div>
-            <div className="page-head">
-                <div>
-                    <div className="page-head__eyebrow">SETTINGS / SHOWCASE</div>
-                    <h1>Manage Showcase</h1>
-                </div>
-                <div className="page-head__actions">
-                    <a href="/app/settings/account" className="fg-button fg-button--ghost fg-button--sm">← ACCOUNT</a>
-                </div>
-            </div>
+        <PageLayout
+            title="Manage Showcase"
+            backTo="/settings/account"
+            backLabel="← ACCOUNT"
+        >
             <Stack gap="lg" style={{ padding: '0 0 2rem' }}>
                 <div className="fg-band">
                     <span className="fg-band__label">SHOWCASE · PUBLIC PROFILE</span>
@@ -564,9 +547,6 @@ const ShowcaseManagementPage: React.FC = () => {
                                     {uploadStatus || 'WebP recommended • Max 5MB'}
                                 </Paragraph>
                             </Stack>
-                            <Button variant="secondary" size="small" onClick={() => window.location.href = '/app/settings/photo-editor'}>
-                                🎨 Create Post
-                            </Button>
                         </Stack>
 
                         <FormField label="Subtitle">
@@ -973,7 +953,7 @@ const ShowcaseManagementPage: React.FC = () => {
                     />
                 )}
             </Stack>
-        </div>
+        </PageLayout>
     );
 };
 

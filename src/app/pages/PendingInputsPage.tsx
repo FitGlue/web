@@ -7,7 +7,7 @@ import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { DataList } from '../components/data/DataList';
 import { Button, Pill, Paragraph, Heading, EmptyState, GlowCard, DashboardSummaryCard, useToast } from '../components/library/ui';
 import { Select, Textarea, Input, FormField, FileInput } from '../components/library/forms';
-import { Stack } from '../components/library/layout';
+import { Stack, PageLayout } from '../components/library/layout';
 import { PipelineConfig } from '../state/pipelinesState';
 import { HybridRaceTaggerInput } from '../components/forms/HybridRaceTaggerInput';
 import { PhotoUploadInput } from '../components/forms/PhotoUploadInput';
@@ -330,20 +330,14 @@ const PendingInputsPage: React.FC = () => {
     };
 
     return (
-        <div>
-            {/* Page head */}
-            <div className="page-head">
-                <div>
-                    <div className="page-head__eyebrow">INPUTS</div>
-                    <h1>Action Required</h1>
-                </div>
-                <div className="page-head__actions">
-                    <button className="fg-button fg-button--ghost fg-button--sm" onClick={refresh} disabled={loading}>
-                        {loading ? '…' : '⟲ REFRESH'}
-                    </button>
-                </div>
-            </div>
-
+        <PageLayout
+            title="Action Required"
+            headerActions={
+                <Button variant="ghost" size="sm" onClick={refresh} disabled={loading}>
+                    {loading ? '…' : '⟲ REFRESH'}
+                </Button>
+            }
+        >
             {/* Band */}
             <div className="fg-band">
                 <span className="fg-band__label">PENDING INPUTS</span>
@@ -531,7 +525,7 @@ const PendingInputsPage: React.FC = () => {
                     />
                 </DashboardSummaryCard>
             </div>
-        </div>
+        </PageLayout>
     );
 };
 

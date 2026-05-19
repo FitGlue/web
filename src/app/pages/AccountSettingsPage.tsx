@@ -9,7 +9,9 @@ import { useNerdMode } from '../state/NerdModeContext';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST, HOBBYIST_TIER_LIMITS } from '../utils/tier';
 import { NotificationPreferencesCard } from '../components/NotificationPreferencesCard';
 import { ReauthModal } from '../components/ReauthModal';
-import { useToast } from '../components/library/ui';
+import { useToast, Button, Badge } from '../components/library/ui';
+import { PageLayout } from '../components/library/layout';
+import { Input } from '../components/library/forms';
 
 const AccountSettingsPage: React.FC = () => {
     const [firebaseUser] = useAtom(userAtom);
@@ -205,15 +207,7 @@ const AccountSettingsPage: React.FC = () => {
     };
 
     return (
-        <div>
-            {/* Page Head */}
-            <div className="page-head">
-                <div>
-                    <div className="page-head__eyebrow">SETTINGS / ACCOUNT</div>
-                    <h1>Account</h1>
-                </div>
-            </div>
-
+        <PageLayout title="Account" backLabel="SETTINGS / ACCOUNT">
             {/* Settings layout */}
             <div className="settings">
                 {/* Rail */}
@@ -242,9 +236,9 @@ const AccountSettingsPage: React.FC = () => {
                                 {syncsUsed} / {maxSyncs} SYNCS THIS MONTH
                             </span>
                         </div>
-                        <a href="/app/settings/subscription" className="fg-button fg-button--ink fg-button--sm">
+                        <Button variant="ink" size="sm" onClick={() => { window.location.href = '/app/settings/subscription'; }}>
                             {isAthlete ? 'MANAGE →' : 'UPGRADE →'}
-                        </a>
+                        </Button>
                     </div>
 
                     {/* Profile section */}
@@ -276,7 +270,7 @@ const AccountSettingsPage: React.FC = () => {
                                 <div className="stx-field__label">Display Name</div>
                                 <div className="stx-field__input">
                                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', maxWidth: 480 }}>
-                                        <input
+                                        <Input
                                             type="text"
                                             value={editedName}
                                             onChange={(e) => setEditedName(e.target.value)}
@@ -285,13 +279,13 @@ const AccountSettingsPage: React.FC = () => {
                                             style={{ flex: 1 }}
                                         />
                                         {isNameDirty && (
-                                            <button
-                                                className="fg-button fg-button--sm"
+                                            <Button
+                                                size="sm"
                                                 onClick={handleSaveName}
                                                 disabled={savingName || !editedName.trim()}
                                             >
                                                 {savingName ? 'SAVING…' : 'SAVE'}
-                                            </button>
+                                            </Button>
                                         )}
                                     </div>
                                 </div>
@@ -302,7 +296,7 @@ const AccountSettingsPage: React.FC = () => {
                                 <div className="stx-field__label">Email</div>
                                 <div className="stx-field__input">
                                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', maxWidth: 480 }}>
-                                        <input
+                                        <Input
                                             type="email"
                                             value={editedEmail}
                                             onChange={(e) => {
@@ -315,18 +309,18 @@ const AccountSettingsPage: React.FC = () => {
                                             style={{ flex: 1 }}
                                         />
                                         {isEmailDirty && !emailSent && (
-                                            <button
-                                                className="fg-button fg-button--sm"
+                                            <Button
+                                                size="sm"
                                                 onClick={handleSaveEmail}
                                                 disabled={savingEmail || !editedEmail.trim()}
                                             >
                                                 {savingEmail ? 'SENDING…' : 'SAVE'}
-                                            </button>
+                                            </Button>
                                         )}
                                     </div>
                                     {emailSent && (
                                         <p className="stx-field__help">
-                                            <span className="fg-stamp fg-stamp--green" style={{ marginRight: '0.5rem' }}>✓ SENT</span>
+                                            <span style={{ marginRight: '0.5rem' }}><Badge variant="success">✓ SENT</Badge></span>
                                             Check {editedEmail} for the verification link.
                                         </p>
                                     )}
@@ -351,7 +345,7 @@ const AccountSettingsPage: React.FC = () => {
                                 <div className="stx-field">
                                     <div className="stx-field__label">Current Password</div>
                                     <div className="stx-field__input">
-                                        <input
+                                        <Input
                                             type="password"
                                             value={currentPassword}
                                             onChange={(e) => { setCurrentPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
@@ -363,7 +357,7 @@ const AccountSettingsPage: React.FC = () => {
                                 <div className="stx-field">
                                     <div className="stx-field__label">New Password</div>
                                     <div className="stx-field__input">
-                                        <input
+                                        <Input
                                             type="password"
                                             value={newPassword}
                                             onChange={(e) => { setNewPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
@@ -375,7 +369,7 @@ const AccountSettingsPage: React.FC = () => {
                                 <div className="stx-field">
                                     <div className="stx-field__label">Confirm Password</div>
                                     <div className="stx-field__input">
-                                        <input
+                                        <Input
                                             type="password"
                                             value={confirmPassword}
                                             onChange={(e) => { setConfirmPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
@@ -385,13 +379,13 @@ const AccountSettingsPage: React.FC = () => {
                                         {passwordError && <p className="stx-field__help" style={{ color: 'var(--fg-rose)' }}>{passwordError}</p>}
                                         {passwordSuccess && <p className="stx-field__help" style={{ color: 'var(--fg-green)' }}>{passwordSuccess}</p>}
                                         <div style={{ marginTop: '0.75rem' }}>
-                                            <button
-                                                className="fg-button fg-button--sm"
+                                            <Button
+                                                size="sm"
                                                 onClick={handleChangePassword}
                                                 disabled={changingPassword || !currentPassword || !newPassword || !confirmPassword}
                                             >
                                                 {changingPassword ? 'CHANGING…' : 'CHANGE PASSWORD'}
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
@@ -422,15 +416,15 @@ const AccountSettingsPage: React.FC = () => {
                                 <div className="stx-field__label">Export Data</div>
                                 <div className="stx-field__input">
                                     {exportStatus === 'idle' && (
-                                        <button className="fg-button fg-button--ink fg-button--sm" onClick={handleExportData}>
+                                        <Button variant="ink" size="sm" onClick={handleExportData}>
                                             DOWNLOAD MY DATA
-                                        </button>
+                                        </Button>
                                     )}
                                     {(exportStatus === 'pending' || exportStatus === 'running') && (
                                         <>
-                                            <button className="fg-button fg-button--ink fg-button--sm" disabled>
+                                            <Button variant="ink" size="sm" disabled>
                                                 {exportStatus === 'pending' ? '⏳ STARTING…' : '⏳ PREPARING…'}
-                                            </button>
+                                            </Button>
                                             <p className="stx-field__help">This may take a few minutes. You&apos;ll also receive an email.</p>
                                         </>
                                     )}
@@ -445,9 +439,9 @@ const AccountSettingsPage: React.FC = () => {
                                     {exportStatus === 'failed' && (
                                         <>
                                             <p className="stx-field__help" style={{ color: 'var(--fg-rose)' }}>{exportError}</p>
-                                            <button className="fg-button fg-button--ink fg-button--sm" onClick={handleExportData}>
+                                            <Button variant="ink" size="sm" onClick={handleExportData}>
                                                 TRY AGAIN
-                                            </button>
+                                            </Button>
                                         </>
                                     )}
                                 </div>
@@ -472,12 +466,13 @@ const AccountSettingsPage: React.FC = () => {
                                             <code style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', color: 'var(--fg-cyan)', background: 'var(--fg-ink)', padding: '0.5rem 0.75rem' }}>
                                                 {firebaseUser?.uid || 'N/A'}
                                             </code>
-                                            <button
-                                                className="fg-button fg-button--ghost fg-button--sm"
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
                                                 onClick={handleCopyUserId}
                                             >
                                                 {copied ? '✓ COPIED' : 'COPY'}
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
@@ -495,7 +490,7 @@ const AccountSettingsPage: React.FC = () => {
                                     This action is <strong style={{ color: 'var(--fg-paper)' }}>permanent and irreversible</strong>.
                                     Removes your profile, pipelines, run history and all synced activities.
                                 </p>
-                                <input
+                                <Input
                                     type="text"
                                     value={deleteConfirmation}
                                     onChange={(e) => setDeleteConfirmation(e.target.value)}
@@ -505,14 +500,14 @@ const AccountSettingsPage: React.FC = () => {
                                 />
                                 {deleteError && <p className="stx-field__help" style={{ color: 'var(--fg-rose)', marginBottom: '0.75rem' }}>{deleteError}</p>}
                                 <div>
-                                    <button
-                                        className="fg-button fg-button--sm"
-                                        style={{ background: 'var(--fg-rose)', color: 'var(--fg-paper)' }}
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
                                         onClick={handleDeleteAccount}
                                         disabled={deleteConfirmation !== 'DELETE' || deleting}
                                     >
                                         {deleting ? 'DELETING…' : 'DELETE ACCOUNT & ALL DATA'}
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -530,7 +525,7 @@ const AccountSettingsPage: React.FC = () => {
                     description="Your session has expired. Please enter your password to continue changing your email."
                 />
             )}
-        </div>
+        </PageLayout>
     );
 };
 
