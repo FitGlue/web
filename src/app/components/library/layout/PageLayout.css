@@ -1,5 +1,5 @@
 /* ==========================================================================
-   PageLayout Component - App-wide Layout Structure
+   PageLayout — Brutal × Aurora app shell
    ========================================================================== */
 @import '../tokens.css';
 
@@ -8,15 +8,22 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--fg-ink, #070710);
+  background: var(--fg-ink);
+  color: var(--fg-paper);
 }
 
+/* Content area: no max-width by default — full-bleed layout
+   Page components own their own container sizing */
 .app-page-content {
   flex: 1;
   width: 100%;
-  max-width: 1200px;
+}
+
+/* Narrow constrained variant (legacy pages that need centring) */
+.app-page-content--constrained {
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 2rem;
 }
 
 .app-page-content--full-width {
@@ -24,29 +31,8 @@
   padding: 0;
 }
 
-.app-page-content main {
-  animation: fade-in 0.5s ease-out;
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .app-page-content {
-    padding: 0 0.5rem;
-  }
-
-  .app-page-content--full-width {
-    padding: 0 0.75rem;
+  .app-page-content--constrained {
+    padding: 0 1rem;
   }
 }

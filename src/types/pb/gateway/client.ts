@@ -17,6 +17,14 @@ import type { Counter, NotificationPreferences, PersonalRecord, UserProfile, Use
 
 export const protobufPackage = "fitglue.gateway";
 
+/** Pipeline run payload (signed-URL access) */
+export enum PayloadKind {
+  PAYLOAD_KIND_UNSPECIFIED = 0,
+  PAYLOAD_KIND_ORIGINAL = 1,
+  PAYLOAD_KIND_ENRICHED = 2,
+  UNRECOGNIZED = -1,
+}
+
 /** Shared simple request shapes */
 export interface EmptyRequest {
 }
@@ -172,6 +180,8 @@ export interface ListPipelineRunsGatewayRequest {
   id: string;
   limit: number;
   pageToken: string;
+  since?: Date | undefined;
+  until?: Date | undefined;
 }
 
 export interface ListPipelineRunsGatewayResponse {
@@ -183,6 +193,37 @@ export interface GetPipelineRunGatewayRequest {
   /** pipeline_id from path */
   id: string;
   runId: string;
+}
+
+export interface SourceActivityItemGateway {
+  sourceActivityId: string;
+  title: string;
+  type: string;
+  startTime?: Date | undefined;
+  alreadySynced: boolean;
+}
+
+export interface ListSourceActivitiesGatewayRequest {
+  /** pipeline_id from path */
+  id: string;
+  source: string;
+  pageToken: string;
+}
+
+export interface ListSourceActivitiesGatewayResponse {
+  activities: SourceActivityItemGateway[];
+  nextPageToken: string;
+}
+
+export interface BackfillActivitiesGatewayRequest {
+  /** pipeline_id from path */
+  id: string;
+  source: string;
+  sourceActivityIds: string[];
+}
+
+export interface BackfillActivitiesGatewayResponse {
+  queuedCount: number;
 }
 
 export interface SubmitInputGatewayRequest {
@@ -215,7 +256,12 @@ export interface GetActivityStatsGatewayResponse {
   totalActivities: number;
   totalShowcases: number;
   lastActivityAt: string;
+  /** DEPRECATED — prefer activities_this_month */
   uploadsThisMonth: number;
+  activitiesThisMonth: number;
+  activitiesThisWeek: number;
+  currentStreakDays: number;
+  longestStreakDays: number;
 }
 
 /** Showcases */
@@ -355,6 +401,20 @@ export interface CreateBillingPortalGatewayResponse {
   url: string;
 }
 
+export interface GetPipelineRunPayloadGatewayRequest {
+  runId: string;
+  which: PayloadKind;
+}
+
+export interface GetPipelineRunPayloadGatewayResponse {
+  /** short-lived signed GCS URL */
+  downloadUrl: string;
+  sizeBytes: number;
+  /** "application/json" */
+  contentType: string;
+  expiresAt?: Date | undefined;
+}
+
 /** Registry */
 export interface GetPluginIconGatewayResponse {
   iconData: Uint8Array;
@@ -425,6 +485,8 @@ export interface ClientGatewayService {
   DeletePipeline(request: PipelineIdRequest): Promise<Empty>;
   ListPipelineRuns(request: ListPipelineRunsGatewayRequest): Promise<ListPipelineRunsGatewayResponse>;
   GetPipelineRun(request: GetPipelineRunGatewayRequest): Promise<PipelineRun>;
+  ListSourceActivities(request: ListSourceActivitiesGatewayRequest): Promise<ListSourceActivitiesGatewayResponse>;
+  BackfillActivities(request: BackfillActivitiesGatewayRequest): Promise<BackfillActivitiesGatewayResponse>;
   SubmitInput(request: SubmitInputGatewayRequest): Promise<Empty>;
   RepostActivity(request: RepostActivityGatewayRequest): Promise<Empty>;
   /** ===================== Activities ===================== */
@@ -470,6 +532,8 @@ export interface ClientGatewayService {
   GetTierStatus(request: EmptyRequest): Promise<GetTierStatusGatewayResponse>;
   StartTrial(request: EmptyRequest): Promise<SubscriptionState>;
   CreateBillingPortal(request: CreateBillingPortalGatewayRequest): Promise<CreateBillingPortalGatewayResponse>;
+  /** ===================== Pipeline Run Payloads ===================== */
+  GetPipelineRunPayload(request: GetPipelineRunPayloadGatewayRequest): Promise<GetPipelineRunPayloadGatewayResponse>;
   /** ===================== Registry (Unauthenticated, but on api-client) ===================== */
   GetPluginRegistry(request: EmptyRequest): Promise<PluginRegistryResponse>;
   GetPluginRegistryPlugins(request: EmptyRequest): Promise<PluginRegistryResponse>;

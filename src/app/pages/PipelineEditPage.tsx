@@ -11,6 +11,7 @@ import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginConfigForm } from '../components/EnricherConfigForm';
 import { SharePipelineModal } from '../components/SharePipelineModal';
+import { SyncHistoricalModal } from '../components/SyncHistoricalModal';
 import { WizardOptionGrid, WizardExcludedSection } from '../components/wizard';
 import { PluginCategorySection } from '../components/PluginCategorySection';
 import { BoosterExclusionPills } from '../components/BoosterExclusionPills';
@@ -27,7 +28,7 @@ import '../components/library/ui/CardSkeleton.css';
 import { PluginManifest } from '../types/plugin';
 import { Input } from '../components/library/forms';
 import { encodePipeline } from '../../shared/pipeline-sharing';
-import { ENRICHER_CATEGORIES, groupPluginsByCategory } from '../utils/pluginCategories';
+import { groupPluginsByStage } from '../utils/pluginCategories';
 import { resolveEnum } from '../utils/resolveEnum';
 import { DestinationType, EnricherProviderType as SchemaEnricherProviderType } from '../../shared/api/schema-enums';
 
@@ -99,8 +100,10 @@ const PipelineEditPage: React.FC = () => {
     const [editingEnrichers, setEditingEnrichers] = useState(false);
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
     const [showShareModal, setShowShareModal] = useState(false);
+    const [showSyncModal, setShowSyncModal] = useState(false);
     const [enricherSearchQuery, setEnricherSearchQuery] = useState('');
     const [expandAllCategories, setExpandAllCategories] = useState(false);
+    const [runsLast7d, setRunsLast7d] = useState<number | null>(null);
 
     const fetchPipeline = useCallback(async () => {
         if (!pipelineId) return;
@@ -164,6 +167,16 @@ const PipelineEditPage: React.FC = () => {
             fetchPipeline();
         }
     }, [fetchPipeline, registryLoading, enrichers]);
+
+    useEffect(() => {
+        if (!pipelineId) return;
+        const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+        client.GET('/users/me/pipelines/{id}/runs', {
+            params: { path: { id: pipelineId }, query: { since, limit: 100 } },
+        }).then(({ data }) => {
+            setRunsLast7d((data as { runs?: unknown[] })?.runs?.length ?? 0);
+        }).catch(() => {});
+    }, [pipelineId]);
 
     const handleSave = async () => {
         if (!pipelineId) return;
@@ -258,7 +271,7 @@ const PipelineEditPage: React.FC = () => {
             e.name.toLowerCase().includes(enricherSearchQuery.toLowerCase()) ||
             (e.description ?? '').toLowerCase().includes(enricherSearchQuery.toLowerCase()))
         : availableEnrichers;
-    const groupedEnrichers = groupPluginsByCategory(filteredEnrichers, ENRICHER_CATEGORIES);
+    const groupedEnrichers = groupPluginsByStage(filteredEnrichers);
     const availableDestinations = destinations.filter(d => d.enabled && isPluginAvailable(d));
     const excludedDestinations = destinations.filter(d => d.enabled && !isPluginAvailable(d));
 
@@ -270,6 +283,9 @@ const PipelineEditPage: React.FC = () => {
                 )}
                 <div className="fg-band">
                     <span className="fg-band__label">EDIT PIPELINE</span>
+                    {runsLast7d !== null && (
+                        <span className="fg-band__right">{runsLast7d} RUNS / 7D</span>
+                    )}
                 </div>
                 <Stack>
                     {/* Pipeline Name Section */}
@@ -450,7 +466,12 @@ const PipelineEditPage: React.FC = () => {
 
                     {/* Actions */}
                     <Stack direction="horizontal" justify="between">
-                        <Button variant="secondary" onClick={() => setShowShareModal(true)}>📤 Share</Button>
+                        <Stack direction="horizontal" gap="sm">
+                            <Button variant="secondary" onClick={() => setShowShareModal(true)}>📤 Share</Button>
+                            {selectedSources.some(s => ['hevy', 'strava', 'fitbit', 'intervals'].includes(s)) && (
+                                <Button variant="secondary" onClick={() => setShowSyncModal(true)}>🕐 Sync historical</Button>
+                            )}
+                        </Stack>
                         <Stack direction="horizontal" gap="sm">
                             <Button variant="secondary" onClick={() => navigate('/settings/pipelines')}>Cancel</Button>
                             <Button variant="primary" onClick={handleSave}
@@ -485,6 +506,15 @@ const PipelineEditPage: React.FC = () => {
                     })}
                     pipelineName={pipelineName || 'Unnamed Pipeline'}
                     onClose={() => setShowShareModal(false)}
+                />
+            )}
+
+            {showSyncModal && pipelineId && (
+                <SyncHistoricalModal
+                    pipelineId={pipelineId}
+                    selectedSources={selectedSources}
+                    sourceManifests={sources}
+                    onClose={() => setShowSyncModal(false)}
                 />
             )}
         </>

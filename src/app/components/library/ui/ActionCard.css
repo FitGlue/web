@@ -1,66 +1,62 @@
 /* ==========================================================================
-   ActionCard - Action Required Card with Variant Tinting
-   Extends Card component with variant-based styling
+   ActionCard — Brutal × Aurora
+   Variant-based accent tinting using aurora tokens.
    ========================================================================== */
 @import '../tokens.css';
 
-/* Wrapper applies variant-based styling to the contained Card */
 .action-card-wrapper {
-  transition: all 0.2s ease;
+  transition: box-shadow var(--transition-fast);
 }
 
-/* Override Card styles based on variant */
 .action-card-wrapper .card {
-  transition: all 0.2s ease;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-/* Header section - prominent top area */
 .action-card__header {
-  padding: 1rem 1.25rem;
-  margin: -1rem -1rem 1rem -1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.875rem 1.25rem;
+  margin: -1.5rem -1.5rem 1rem;
+  border-bottom: var(--fg-rule-thin);
 }
 
-/* Content section */
 .action-card__content {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-/* Variant: Awaiting - orange tint */
+/* Variant: Awaiting — gold accent */
 .action-card-wrapper--awaiting .card {
-  background: rgba(245, 158, 11, 0.06);
-  border-color: rgba(245, 158, 11, 0.2);
+  background: rgba(255, 214, 10, 0.05);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 214, 10, 0.25);
 }
 
 .action-card-wrapper--awaiting .card:hover {
-  background: rgba(245, 158, 11, 0.1);
-  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(255, 214, 10, 0.08);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 214, 10, 0.35);
 }
 
 .action-card-wrapper--awaiting .action-card__header {
-  background: rgba(245, 158, 11, 0.08);
-  border-bottom-color: rgba(245, 158, 11, 0.15);
+  background: rgba(255, 214, 10, 0.08);
+  border-bottom-color: rgba(255, 214, 10, 0.2);
 }
 
-/* Variant: Needs Input - pink tint */
+/* Variant: Needs Input — pink accent */
 .action-card-wrapper--needs-input .card {
-  background: rgba(255, 61, 166, 0.06);
-  border-color: rgba(255, 61, 166, 0.2);
+  background: rgba(255, 61, 166, 0.05);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 61, 166, 0.25);
 }
 
 .action-card-wrapper--needs-input .card:hover {
-  background: rgba(255, 61, 166, 0.1);
-  border-color: rgba(255, 61, 166, 0.3);
+  background: rgba(255, 61, 166, 0.08);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 61, 166, 0.35);
 }
 
 .action-card-wrapper--needs-input .action-card__header {
   background: rgba(255, 61, 166, 0.08);
-  border-bottom-color: rgba(255, 61, 166, 0.15);
+  border-bottom-color: rgba(255, 61, 166, 0.2);
 }
 
 /* Default variant */
 .action-card-wrapper--default .action-card__header {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--fg-ink-3);
 }

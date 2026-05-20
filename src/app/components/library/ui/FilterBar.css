@@ -1,5 +1,6 @@
 /* ==========================================================================
-   FilterBar Component Styles
+   FilterBar — Brutal × Aurora
+   Monochrome hairline strip, mono labels, ink-2 surface.
    ========================================================================== */
 
 .ui-filter-bar {
@@ -7,9 +8,10 @@
   flex-wrap: wrap;
   align-items: flex-end;
   gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  background: var(--fg-ink-2, #0d0c18);
-  border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--fg-ink-2);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+  border: none;
 }
 
 .ui-filter-bar__fields {
@@ -34,44 +36,48 @@
 }
 
 .ui-filter-field__label {
-  font-size: 0.75rem;
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-secondary);
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--fg-paper-dim);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.12em;
 }
 
-/* Filter inputs - shared styles */
+/* Filter inputs */
 .ui-filter-bar select,
 .ui-filter-bar input[type="text"],
 .ui-filter-bar input[type="search"] {
-  background: var(--fg-ink, #070710);
-  border: var(--fg-rule-thin, 1.5px solid rgba(245,243,235,.16));
-  color: var(--fg-paper, #f5f3eb);
+  background: var(--fg-ink);
+  border: none;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+  color: var(--fg-paper);
   padding: var(--spacing-xs) var(--spacing-sm);
+  font-family: var(--fg-font-body);
   font-size: 0.875rem;
   min-width: 140px;
-  transition: border-color var(--transition-fast);
+  transition: box-shadow var(--transition-fast);
 }
 
 .ui-filter-bar select:hover,
 .ui-filter-bar input:hover {
-  border-color: var(--color-border-hover);
+  box-shadow: inset 0 0 0 1.5px rgba(245, 243, 235, 0.3);
 }
 
 .ui-filter-bar select:focus,
 .ui-filter-bar input:focus {
   outline: none;
-  border-color: var(--color-primary);
+  box-shadow: inset 0 0 0 2px var(--fg-pink);
 }
 
 .ui-filter-bar input::placeholder {
-  color: var(--color-text-muted);
+  color: var(--fg-paper-dim);
+  opacity: 0.6;
 }
 
 /* Inline variant */
 .ui-filter-bar--inline {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-md);
 }
 
 .ui-filter-bar--inline .ui-filter-field {

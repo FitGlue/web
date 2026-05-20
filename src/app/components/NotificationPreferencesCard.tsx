@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Heading, Paragraph, useToast } from './library/ui';
-import { Stack } from './library/layout';
+import { useToast } from './library/ui';
 import { Checkbox } from './library/forms';
 import { client } from '../../shared/api/client';
+import { SettingsSection } from './library/layout/SettingsSection';
+import { FieldRow } from './library/layout/FieldRow';
+import { Stack } from './library/layout/Stack';
+import { Paragraph } from './library/ui/Paragraph';
+import { LoadingState } from './library/ui/LoadingState';
+import './NotificationPreferencesCard.css';
 
 interface NotificationPreferences {
     notifyPendingInput: boolean;
@@ -23,7 +28,6 @@ export const NotificationPreferencesCard: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState<string | null>(null);
 
-    // Fetch current preferences on mount
     useEffect(() => {
         const fetchPreferences = async () => {
             try {
@@ -35,7 +39,6 @@ export const NotificationPreferencesCard: React.FC = () => {
                 });
             } catch (err) {
                 console.error('Failed to fetch notification preferences:', err);
-                // Use defaults on error
             } finally {
                 setLoading(false);
             }
@@ -46,15 +49,11 @@ export const NotificationPreferencesCard: React.FC = () => {
     const updatePreference = useCallback(async (key: keyof NotificationPreferences, value: boolean) => {
         setUpdating(key);
         const oldValue = preferences[key];
-
-        // Optimistic update
         setPreferences(prev => ({ ...prev, [key]: value }));
-
         try {
             await client.PUT('/users/me/notification-prefs', { body: { [key]: value } as never });
         } catch (err) {
             console.error('Failed to update preference:', err);
-            // Revert on error
             setPreferences(prev => ({ ...prev, [key]: oldValue }));
             toast.error('Update Failed', 'Failed to save notification preference');
         } finally {
@@ -64,54 +63,44 @@ export const NotificationPreferencesCard: React.FC = () => {
 
     if (loading) {
         return (
-            <Card>
-                <Stack gap="md">
-                    <Heading level={3}>🔔 Notifications</Heading>
-                    <Paragraph muted>Loading preferences...</Paragraph>
-                </Stack>
-            </Card>
+            <SettingsSection title="🔔 Notifications">
+                <LoadingState message="Loading preferences…" />
+            </SettingsSection>
         );
     }
 
     return (
-        <Card>
-            <Stack gap="md">
-                <Heading level={3}>🔔 Notifications</Heading>
-                <Paragraph size="sm" muted>
-                    Control which push notifications you receive from FitGlue.
-                </Paragraph>
+        <SettingsSection title="🔔 Notifications" description="Push notification preferences">
+            <Stack gap="none">
+                <PreferenceToggle
+                    label="Action Required"
+                    description="When a pipeline needs your input (e.g., file upload)"
+                    checked={preferences.notifyPendingInput}
+                    disabled={updating === 'notifyPendingInput'}
+                    onChange={(checked) => updatePreference('notifyPendingInput', checked)}
+                />
 
-                <Stack gap="sm">
-                    <PreferenceToggle
-                        label="Action Required"
-                        description="When a pipeline needs your input (e.g., file upload)"
-                        checked={preferences.notifyPendingInput}
-                        disabled={updating === 'notifyPendingInput'}
-                        onChange={(checked) => updatePreference('notifyPendingInput', checked)}
-                    />
+                <PreferenceToggle
+                    label="Activity Synced"
+                    description="When activities have finished syncing to all destinations"
+                    checked={preferences.notifyPipelineSuccess}
+                    disabled={updating === 'notifyPipelineSuccess'}
+                    onChange={(checked) => updatePreference('notifyPipelineSuccess', checked)}
+                />
 
-                    <PreferenceToggle
-                        label="Activity Synced"
-                        description="When activities have finished syncing to all destinations"
-                        checked={preferences.notifyPipelineSuccess}
-                        disabled={updating === 'notifyPipelineSuccess'}
-                        onChange={(checked) => updatePreference('notifyPipelineSuccess', checked)}
-                    />
-
-                    <PreferenceToggle
-                        label="Pipeline Failures"
-                        description="When a pipeline fails to process an activity"
-                        checked={preferences.notifyPipelineFailure}
-                        disabled={updating === 'notifyPipelineFailure'}
-                        onChange={(checked) => updatePreference('notifyPipelineFailure', checked)}
-                    />
-                </Stack>
+                <PreferenceToggle
+                    label="Pipeline Failures"
+                    description="When a pipeline fails to process an activity"
+                    checked={preferences.notifyPipelineFailure}
+                    disabled={updating === 'notifyPipelineFailure'}
+                    onChange={(checked) => updatePreference('notifyPipelineFailure', checked)}
+                />
             </Stack>
-        </Card>
+        </SettingsSection>
     );
 };
 
-// Helper component for consistent toggle styling
+// Helper — toggle row
 interface PreferenceToggleProps {
     label: string;
     description: string;
@@ -130,20 +119,20 @@ const PreferenceToggle: React.FC<PreferenceToggleProps> = ({
     const id = `pref-${label.toLowerCase().replace(/\s+/g, '-')}`;
 
     return (
-        <Card variant="elevated">
-            <Stack direction="horizontal" justify="between" align="center">
-                <Stack gap="xs">
-                    <Paragraph bold>{label}</Paragraph>
-                    <Paragraph size="sm" muted>{description}</Paragraph>
-                </Stack>
+        <FieldRow
+            label={label}
+            direction="horizontal"
+            action={
                 <Checkbox
                     id={id}
                     checked={checked}
                     disabled={disabled}
                     onChange={(e) => onChange(e.target.checked)}
                 />
-            </Stack>
-        </Card>
+            }
+        >
+            <Paragraph size="sm" muted>{description}</Paragraph>
+        </FieldRow>
     );
 };
 

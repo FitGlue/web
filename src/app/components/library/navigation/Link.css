@@ -1,59 +1,71 @@
 /* ==========================================================================
-   Link Component - Beautiful Pink Accent
+   Link — aurora cyan accent, no underline by default (Brutal × Aurora)
    ========================================================================== */
+@import '../tokens.css';
 
+/* Base: aurora cyan, no underline */
 .ui-link {
-  color: var(--color-primary);
+  color: var(--fg-cyan);
   text-decoration: none;
-  font-weight: 500;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--transition-fast);
 }
 
 .ui-link:hover {
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 /* Variants */
 .ui-link--default {
-  color: var(--color-primary);
+  color: var(--fg-cyan);
+}
+
+.ui-link--primary {
+  color: var(--fg-pink);
+  font-family: var(--fg-font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .ui-link--muted {
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  color: var(--fg-paper-dim);
   font-weight: 400;
 }
 
 .ui-link--muted:hover {
-  color: var(--color-text-primary, #ffffff);
+  color: var(--fg-paper);
+  opacity: 1;
 }
 
-.ui-link--primary {
-  color: var(--color-primary);
-  font-weight: 600;
-}
-
-/* Arrow link - "View All →" style */
+/* Arrow link — "View All →" style */
 .ui-link--arrow::after {
   content: ' →';
 }
 
-/* Nav variant */
+/* Nav variant — mono caps, subtle hover tint */
 .ui-link--nav {
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  font-weight: 500;
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
   padding: 0.5rem 0.75rem;
-  border-radius: 0;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  border-radius: 0;
+  transition: color var(--transition-fast), background var(--transition-fast);
 }
 
 .ui-link--nav:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--color-text-primary, #ffffff);
+  color: var(--fg-paper);
+  background: rgba(245, 243, 235, 0.06);
+  opacity: 1;
 }
 
 .ui-link--nav.active {
-  color: var(--color-primary);
-  background: rgba(255, 61, 166, 0.15);
+  color: var(--fg-ink);
+  background: var(--gradient-primary);
+  opacity: 1;
 }

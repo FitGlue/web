@@ -1,4 +1,8 @@
-/* Checkbox Component Styles */
+/* ==========================================================================
+   Checkbox — Brutal × Aurora square checkbox
+   Square box, aurora cyan check, ink-3 bg, no border-radius
+   ========================================================================== */
+@import '../../tokens.css';
 
 .form-checkbox-wrapper {
   display: flex;
@@ -15,62 +19,64 @@
 .form-checkbox__label {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 0.75rem;
   cursor: pointer;
   user-select: none;
 }
 
+/* Square box — no border-radius */
 .form-checkbox__box {
   flex-shrink: 0;
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--fg-ink-3);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
+/* Checkmark icon — aurora cyan */
 .form-checkbox__check {
-  width: 12px;
-  height: 10px;
-  color: white;
+  width: 11px;
+  height: 9px;
+  color: var(--fg-ink);
   opacity: 0;
-  transform: scale(0.5);
-  transition: all 0.2s ease;
+  transform: scale(0.6);
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
 }
 
-/* Hover State */
+/* Hover state */
 .form-checkbox__label:hover .form-checkbox__box {
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 0 1.5px rgba(245, 243, 235, 0.4);
 }
 
-/* Checked State */
-.form-checkbox__input:checked+.form-checkbox__label .form-checkbox__box {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-  border-color: transparent;
+/* Checked state — aurora cyan fill */
+.form-checkbox__input:checked + .form-checkbox__label .form-checkbox__box {
+  background: var(--fg-cyan);
+  box-shadow: none;
 }
 
-.form-checkbox__input:checked+.form-checkbox__label .form-checkbox__check {
+.form-checkbox__input:checked + .form-checkbox__label .form-checkbox__check {
   opacity: 1;
   transform: scale(1);
+  color: var(--fg-ink);
 }
 
-/* Focus State */
-.form-checkbox__input:focus+.form-checkbox__label .form-checkbox__box {
-  box-shadow: 0 0 0 3px rgba(255, 61, 166, 0.3);
+/* Focus state */
+.form-checkbox__input:focus + .form-checkbox__label .form-checkbox__box {
+  box-shadow: inset 0 0 0 2px var(--fg-paper);
 }
 
-/* Disabled State */
-.form-checkbox__input:disabled+.form-checkbox__label {
-  opacity: 0.5;
+/* Disabled state */
+.form-checkbox__input:disabled + .form-checkbox__label {
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-/* Text */
+/* Text block */
 .form-checkbox__text {
   display: flex;
   flex-direction: column;
@@ -79,31 +85,33 @@
 }
 
 .form-checkbox__label-text {
-  font-size: 15px;
+  font-family: var(--fg-font-body);
+  font-size: 0.9375rem;
   font-weight: 500;
-  color: var(--color-text);
+  color: var(--fg-paper);
   line-height: 1.3;
 }
 
 .form-checkbox__description {
-  font-size: 13px;
-  color: var(--color-text-muted);
+  font-family: var(--fg-font-body);
+  font-size: 0.8125rem;
+  color: var(--fg-paper-dim);
   line-height: 1.4;
 }
 
-/* Size Variants */
+/* Size variants */
 .form-checkbox-wrapper--small .form-checkbox__box {
   width: 16px;
   height: 16px;
 }
 
 .form-checkbox-wrapper--small .form-checkbox__check {
-  width: 10px;
-  height: 8px;
+  width: 9px;
+  height: 7px;
 }
 
 .form-checkbox-wrapper--small .form-checkbox__label-text {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .form-checkbox-wrapper--large .form-checkbox__box {
@@ -112,15 +120,15 @@
 }
 
 .form-checkbox-wrapper--large .form-checkbox__check {
-  width: 14px;
-  height: 12px;
+  width: 13px;
+  height: 11px;
 }
 
 .form-checkbox-wrapper--large .form-checkbox__label-text {
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
-/* Error State */
+/* Error state */
 .form-checkbox-wrapper--error .form-checkbox__box {
-  border-color: var(--color-danger);
+  box-shadow: inset 0 0 0 2px var(--fg-rose);
 }

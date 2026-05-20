@@ -1,9 +1,10 @@
 import React from 'react';
 import { PluginManifest } from '../types/plugin';
-import { Button, Heading, Paragraph, Badge, Card, Code } from './library/ui';
+import { Button, Paragraph, Badge, Card, Code } from './library/ui';
 import { Modal } from './library/ui/Modal';
 import { PluginIcon } from './library/ui/PluginIcon';
 import { Stack } from './library/layout';
+import { ModalSection } from './library/layout/ModalSection';
 
 interface Props {
     enricher: PluginManifest;
@@ -43,8 +44,7 @@ export const EnricherInfoModal: React.FC<Props> = ({ enricher, onClose }) => {
                 )}
 
                 {enricher.configSchema && enricher.configSchema.length > 0 && (
-                    <Stack gap="sm">
-                        <Heading level={4}>Configuration Options</Heading>
+                    <ModalSection title="Configuration Options">
                         <Stack gap="xs">
                             {enricher.configSchema.map(field => (
                                 <Card key={field.key}>
@@ -58,12 +58,11 @@ export const EnricherInfoModal: React.FC<Props> = ({ enricher, onClose }) => {
                                 </Card>
                             ))}
                         </Stack>
-                    </Stack>
+                    </ModalSection>
                 )}
 
                 {enricher.transformations && enricher.transformations.length > 0 && (
-                    <Stack gap="sm">
-                        <Heading level={4}>Example Transformation</Heading>
+                    <ModalSection title="Example Transformation">
                         <Card>
                             <Stack direction="horizontal" gap="md" align="center" wrap>
                                 <Stack gap="xs" align="center">
@@ -77,18 +76,17 @@ export const EnricherInfoModal: React.FC<Props> = ({ enricher, onClose }) => {
                                 </Stack>
                             </Stack>
                         </Card>
-                    </Stack>
+                    </ModalSection>
                 )}
 
                 {enricher.useCases && enricher.useCases.length > 0 && (
-                    <Stack gap="sm">
-                        <Heading level={4}>Perfect For</Heading>
+                    <ModalSection title="Perfect For">
                         <Stack gap="xs">
                             {enricher.useCases.slice(0, 3).map((useCase, i) => (
                                 <Paragraph key={i}>🎯 {useCase}</Paragraph>
                             ))}
                         </Stack>
-                    </Stack>
+                    </ModalSection>
                 )}
             </Stack>
         </Modal>

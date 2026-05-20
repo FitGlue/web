@@ -1,0 +1,129 @@
+/* ==========================================================================
+   ActivitiesListPage — Brutal × Aurora layout
+   ========================================================================== */
+
+/* Filter chip strip */
+.activities-filter {
+    display: flex;
+    align-items: stretch;
+    border-bottom: var(--fg-rule-thin);
+    background: var(--fg-ink);
+    overflow-x: auto;
+}
+
+.activities-filter__chip {
+    padding: 0.875rem 1.125rem;
+    font-family: var(--fg-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--color-text-muted);
+    border: none;
+    border-right: var(--fg-rule-thin);
+    background: transparent;
+    cursor: pointer;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.activities-filter__chip:hover {
+    color: var(--fg-paper);
+}
+
+.activities-filter__chip--active {
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+}
+
+.activities-filter__chip-count {
+    font-size: 0.5625rem;
+    padding: 0.125rem 0.375rem;
+    background: var(--fg-ink-2);
+    color: var(--fg-paper);
+}
+
+.activities-filter__chip--active .activities-filter__chip-count {
+    background: var(--fg-ink);
+    color: var(--fg-paper);
+}
+
+.activities-filter__spacer {
+    flex: 1;
+}
+
+/* Day separator */
+.activities-day {
+    padding: 0.875rem 2rem;
+    background: var(--fg-ink-2);
+    border-bottom: var(--fg-rule-thin);
+    display: flex;
+    align-items: baseline;
+    gap: 1.125rem;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.activities-day__date {
+    font-family: var(--fg-font-display);
+    font-size: 1.125rem;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+}
+
+.activities-day__rel {
+    font-family: var(--fg-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+
+.activities-day__count {
+    margin-left: auto;
+    font-family: var(--fg-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+
+.activities-day__count b {
+    color: var(--fg-paper);
+}
+
+/* Empty state */
+.activities-empty {
+    padding: 5rem 2rem;
+    text-align: center;
+}
+
+.activities-empty__icon {
+    font-size: 4rem;
+    line-height: 1;
+}
+
+.activities-empty__title {
+    font-family: var(--fg-font-display);
+    font-size: 2rem;
+    letter-spacing: -0.025em;
+    margin: 1.125rem 0 0.375rem;
+    text-transform: uppercase;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.activities-empty__sub {
+    font-family: var(--fg-font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+}

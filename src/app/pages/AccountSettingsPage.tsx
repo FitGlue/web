@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { updateProfile } from 'firebase/auth';
-import { PageLayout, Stack, Grid } from '../components/library/layout';
-import { Card, Button, Heading, Paragraph, Badge, Code, List, ListItem, GlowCard, Avatar, ProgressBar, useToast } from '../components/library/ui';
-import { Link } from '../components/library/navigation';
 import { client } from '../../shared/api/client';
 import { useUser } from '../hooks/useUser';
 import { useAuth } from '../hooks/useAuth';
 import { userAtom } from '../state/authState';
 import { useNerdMode } from '../state/NerdModeContext';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST, HOBBYIST_TIER_LIMITS } from '../utils/tier';
-import { Input, FormField } from '../components/library/forms';
 import { NotificationPreferencesCard } from '../components/NotificationPreferencesCard';
 import { ReauthModal } from '../components/ReauthModal';
+import { useToast, Button, Badge } from '../components/library/ui';
+import { SettingsLayout } from '../components/library/layout';
+import { Input } from '../components/library/forms';
 
 const AccountSettingsPage: React.FC = () => {
     const [firebaseUser] = useAtom(userAtom);
@@ -20,12 +20,13 @@ const AccountSettingsPage: React.FC = () => {
     const toast = useToast();
     const { isNerdMode } = useNerdMode();
     const { changePassword } = useAuth();
+    const navigate = useNavigate();
 
-    // Name editing - always visible, dirty state detection
+    // Name editing
     const [editedName, setEditedName] = useState('');
     const [savingName, setSavingName] = useState(false);
 
-    // Email editing - inline with dirty detection
+    // Email editing
     const [editedEmail, setEditedEmail] = useState('');
     const [savingEmail, setSavingEmail] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
@@ -45,7 +46,7 @@ const AccountSettingsPage: React.FC = () => {
     const [passwordError, setPasswordError] = useState('');
     const [passwordSuccess, setPasswordSuccess] = useState('');
 
-    // Reauth modal state (for email change on stale sessions)
+    // Reauth modal state
     const [showReauthModal, setShowReauthModal] = useState(false);
 
     // Data export state
@@ -67,7 +68,6 @@ const AccountSettingsPage: React.FC = () => {
 
     const handleSaveName = async () => {
         if (!firebaseUser || !editedName.trim()) return;
-
         setSavingName(true);
         try {
             await updateProfile(firebaseUser, { displayName: editedName.trim() });
@@ -84,11 +84,9 @@ const AccountSettingsPage: React.FC = () => {
     const handleSaveEmail = async () => {
         if (!firebaseUser || !editedEmail.trim()) return;
         if (editedEmail.trim() === firebaseUser.email) return;
-
         setSavingEmail(true);
         setEmailError('');
         setEmailSent(false);
-
         try {
             await client.POST('/users/me/auth-email/send-email-change', { body: { newEmail: editedEmail.trim() } as never });
             setEmailSent(true);
@@ -105,31 +103,18 @@ const AccountSettingsPage: React.FC = () => {
 
     const handleReauthSuccess = () => {
         setShowReauthModal(false);
-        // Retry the email change after successful re-authentication
         handleSaveEmail();
     };
 
     const handleChangePassword = async () => {
         setPasswordError('');
         setPasswordSuccess('');
-
-        if (!currentPassword) {
-            setPasswordError('Current password is required');
-            return;
-        }
-        if (newPassword.length < 6) {
-            setPasswordError('New password must be at least 6 characters');
-            return;
-        }
-        if (newPassword !== confirmPassword) {
-            setPasswordError('Passwords do not match');
-            return;
-        }
-
+        if (!currentPassword) { setPasswordError('Current password is required'); return; }
+        if (newPassword.length < 6) { setPasswordError('New password must be at least 6 characters'); return; }
+        if (newPassword !== confirmPassword) { setPasswordError('Passwords do not match'); return; }
         setChangingPassword(true);
         const success = await changePassword(currentPassword, newPassword);
         setChangingPassword(false);
-
         if (success) {
             setPasswordSuccess('Password updated successfully!');
             setCurrentPassword('');
@@ -141,7 +126,6 @@ const AccountSettingsPage: React.FC = () => {
         }
     };
 
-    // Check if user has an email/password provider (vs Google/Facebook only)
     const hasPasswordProvider = firebaseUser?.providerData?.some(
         (p) => p.providerId === 'password'
     ) ?? false;
@@ -160,14 +144,9 @@ const AccountSettingsPage: React.FC = () => {
     };
 
     const handleDeleteAccount = async () => {
-        if (deleteConfirmation !== 'DELETE') {
-            setDeleteError('Please type DELETE to confirm');
-            return;
-        }
-
+        if (deleteConfirmation !== 'DELETE') { setDeleteError('Please type DELETE to confirm'); return; }
         setDeleting(true);
         setDeleteError(null);
-
         try {
             await client.DELETE('/users/me');
             window.location.href = '/auth/logout';
@@ -183,13 +162,10 @@ const AccountSettingsPage: React.FC = () => {
         setExportStatus('pending');
         setExportError(null);
         setExportDownloadUrl(null);
-
         try {
             const { data: response } = await client.POST('/users/me/export');
             const typedResponse = response as { jobId: string };
             const jobId = typedResponse?.jobId;
-
-            // Poll for completion
             const pollInterval = setInterval(async () => {
                 try {
                     const { data: status } = await client.GET('/export/status/{jobId}' as never, { params: { path: { jobId } } } as never);
@@ -221,382 +197,308 @@ const AccountSettingsPage: React.FC = () => {
         }
     };
 
-
-    const connectionCount = [
-        ((profile as Record<string, unknown>)?.integrations as Record<string, { connected?: boolean }> | undefined)?.strava?.connected,
-        ((profile as Record<string, unknown>)?.integrations as Record<string, { connected?: boolean }> | undefined)?.fitbit?.connected,
-        ((profile as Record<string, unknown>)?.integrations as Record<string, { connected?: boolean }> | undefined)?.hevy?.connected
-    ].filter(Boolean).length;
-
     const effectiveTier = profile ? getEffectiveTier(profile) : TIER_HOBBYIST;
     const isAthlete = effectiveTier === TIER_ATHLETE;
     const maxSyncs = isAthlete ? '∞' : String(HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH);
     const syncsUsed = profile?.syncCountThisMonth ?? 0;
 
-    // Get user initial for avatar
     const getInitial = () => {
-        if (firebaseUser?.displayName) {
-            return firebaseUser.displayName[0].toUpperCase();
-        }
-        if (firebaseUser?.email) {
-            return firebaseUser.email[0].toUpperCase();
-        }
+        if (firebaseUser?.displayName) return firebaseUser.displayName[0].toUpperCase();
+        if (firebaseUser?.email) return firebaseUser.email[0].toUpperCase();
         return '?';
     };
 
     return (
-        <PageLayout
-            title="Account Settings"
-            backTo="/"
-            backLabel="Dashboard"
-        >
-            <Stack gap="lg">
-                {/* Profile Card */}
-                <div className="fg-band">
-                    <span className="fg-band__label">PROFILE</span>
-                </div>
-                <Card>
-                    <Stack gap="md">
-                        <Heading level={3}>Profile</Heading>
-                        <Stack direction="horizontal" gap="lg" align="start">
-                            <Avatar initial={getInitial()} size="lg" />
-                            <Stack gap="md" fullWidth>
-                                {/* Name field - always editable with dirty detection */}
-                                <FormField label="Name" htmlFor="profile-name">
-                                    <Stack direction="horizontal" gap="sm" align="center">
+        <SettingsLayout title="Account" backLabel="SETTINGS / ACCOUNT">
+            <div>
+                    {/* Plan banner */}
+                    <div className="stx-plan">
+                        <span className="stx-plan__icon">✦</span>
+                        <div style={{ flex: 1, display: 'flex', alignItems: 'baseline', gap: '1rem' }}>
+                            <span className="stx-plan__title">
+                                {isAthlete ? 'ATHLETE · UNLIMITED SYNCS' : 'HOBBYIST'}
+                            </span>
+                            <span className="stx-plan__meta">
+                                {syncsUsed} / {maxSyncs} SYNCS THIS MONTH
+                            </span>
+                        </div>
+                        <Button variant="ink" size="sm" onClick={() => navigate('/settings/subscription')}>
+                            {isAthlete ? 'MANAGE →' : 'UPGRADE →'}
+                        </Button>
+                    </div>
+
+                    {/* Profile section */}
+                    <section className="stx-section">
+                        <div className="stx-section__head">
+                            <div>
+                                <h2>YOUR PROFILE</h2>
+                                <p className="stx-section__sub">How you appear on Showcase pages.</p>
+                            </div>
+                        </div>
+                        <div className="stx-section__body">
+                            {/* Avatar */}
+                            <div className="settings-field">
+                                <div><div className="settings-field__label-name">Avatar</div></div>
+                                <div className="stx-field__input">
+                                    <div className="stx-avatar-row">
+                                        <div className="stx-avatar">{getInitial()}</div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                                            <span style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.1em', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
+                                                Managed via Showcase settings
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Display Name */}
+                            <div className="settings-field">
+                                <div><div className="settings-field__label-name">Display Name</div><div className="settings-field__label-hint">How you appear on Showcase pages.</div></div>
+                                <div className="stx-field__input">
+                                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', maxWidth: 480 }}>
                                         <Input
-                                            id="profile-name"
                                             type="text"
                                             value={editedName}
                                             onChange={(e) => setEditedName(e.target.value)}
                                             placeholder="Your name"
                                             disabled={savingName}
+                                            style={{ flex: 1 }}
                                         />
                                         {isNameDirty && (
                                             <Button
-                                                variant="primary"
-                                                size="small"
+                                                size="sm"
                                                 onClick={handleSaveName}
                                                 disabled={savingName || !editedName.trim()}
                                             >
-                                                {savingName ? 'Saving...' : 'Save'}
+                                                {savingName ? 'SAVING…' : 'SAVE'}
                                             </Button>
                                         )}
-                                    </Stack>
-                                </FormField>
+                                    </div>
+                                </div>
+                            </div>
 
-                                {/* Email field - editable with verification on save */}
-                                <FormField label="Email" htmlFor="profile-email">
-                                    <Stack gap="xs">
-                                        <Stack direction="horizontal" gap="sm" align="center">
-                                            <Input
-                                                id="profile-email"
-                                                type="email"
-                                                value={editedEmail}
-                                                onChange={(e) => {
-                                                    setEditedEmail(e.target.value);
-                                                    setEmailSent(false);
-                                                    setEmailError('');
-                                                }}
-                                                placeholder="your@email.com"
-                                                disabled={savingEmail}
-                                            />
-                                            {isEmailDirty && !emailSent && (
-                                                <Button
-                                                    variant="primary"
-                                                    size="small"
-                                                    onClick={handleSaveEmail}
-                                                    disabled={savingEmail || !editedEmail.trim()}
-                                                >
-                                                    {savingEmail ? 'Sending...' : 'Save'}
-                                                </Button>
-                                            )}
-                                        </Stack>
-                                        {emailSent && (
-                                            <Paragraph size="sm" muted>
-                                                ✉️ Verification sent to <strong>{editedEmail}</strong>. Check your inbox.
-                                            </Paragraph>
-                                        )}
-                                        {emailError && (
-                                            <Paragraph size="sm">{emailError}</Paragraph>
-                                        )}
-                                    </Stack>
-                                </FormField>
-                            </Stack>
-                        </Stack>
-                    </Stack>
-                </Card>
-
-                {/* Security Card - Change Password */}
-                {hasPasswordProvider && (
-                    <>
-                    <div className="fg-band fg-band--ink">
-                        <span className="fg-band__label">SECURITY</span>
-                    </div>
-                    <Card>
-                        <Stack gap="md">
-                            <Stack direction="horizontal" gap="sm" align="center">
-                                <Paragraph inline>🔒</Paragraph>
-                                <Heading level={3}>Security</Heading>
-                            </Stack>
-
-                            <Heading level={4}>Change Password</Heading>
-                            <Stack gap="sm">
-                                <FormField label="Current Password" htmlFor="current-password">
-                                    <Input
-                                        id="current-password"
-                                        type="password"
-                                        value={currentPassword}
-                                        onChange={(e) => { setCurrentPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
-                                        placeholder="Enter current password"
-                                        disabled={changingPassword}
-                                    />
-                                </FormField>
-                                <FormField label="New Password" htmlFor="new-password">
-                                    <Input
-                                        id="new-password"
-                                        type="password"
-                                        value={newPassword}
-                                        onChange={(e) => { setNewPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
-                                        placeholder="Enter new password (min 6 characters)"
-                                        disabled={changingPassword}
-                                    />
-                                </FormField>
-                                <FormField label="Confirm New Password" htmlFor="confirm-password">
-                                    <Input
-                                        id="confirm-password"
-                                        type="password"
-                                        value={confirmPassword}
-                                        onChange={(e) => { setConfirmPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
-                                        placeholder="Re-enter new password"
-                                        disabled={changingPassword}
-                                    />
-                                </FormField>
-                                {passwordError && <Paragraph size="sm">{passwordError}</Paragraph>}
-                                {passwordSuccess && <Paragraph size="sm">{passwordSuccess}</Paragraph>}
-                                <Button
-                                    variant="primary"
-                                    onClick={handleChangePassword}
-                                    disabled={changingPassword || !currentPassword || !newPassword || !confirmPassword}
-                                >
-                                    {changingPassword ? 'Changing Password...' : 'Change Password'}
-                                </Button>
-                            </Stack>
-                        </Stack>
-                    </Card>
-                    </>
-                )}
-
-                {/* Subscription Card - Premium Styling */}
-                <div className="fg-band">
-                    <span className="fg-band__label">SUBSCRIPTION</span>
-                    <span className="fg-band__right">
-                        {isAthlete ? '✦ ATHLETE' : 'HOBBYIST'}
-                    </span>
-                </div>
-                <Card highlighted={isAthlete}>
-                    <Stack gap="md">
-                        <Stack direction="horizontal" justify="between" align="center">
-                            <Heading level={3}>Subscription</Heading>
-                            <Badge variant={isAthlete ? 'premium' : 'default'}>
-                                {isAthlete ? '✨ Athlete' : 'Hobbyist'}
-                            </Badge>
-                        </Stack>
-
-                        <Grid cols={2} gap="md">
-                            <Card variant="elevated">
-                                <Stack gap="sm">
-                                    <Paragraph size="sm" muted>Syncs This Month</Paragraph>
-                                    <Stack direction="horizontal" align="end" gap="xs">
-                                        <Heading level={2}>{syncsUsed}</Heading>
-                                        <Paragraph inline muted>/ {maxSyncs}</Paragraph>
-                                    </Stack>
-                                    {!isAthlete && (
-                                        <ProgressBar
-                                            value={syncsUsed}
-                                            max={HOBBYIST_TIER_LIMITS.SYNCS_PER_MONTH}
-                                            variant="gradient"
-                                            size="sm"
+                            {/* Email */}
+                            <div className="settings-field">
+                                <div><div className="settings-field__label-name">Email</div><div className="settings-field__label-hint">Change requires re-verification.</div></div>
+                                <div className="stx-field__input">
+                                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', maxWidth: 480 }}>
+                                        <Input
+                                            type="email"
+                                            value={editedEmail}
+                                            onChange={(e) => {
+                                                setEditedEmail(e.target.value);
+                                                setEmailSent(false);
+                                                setEmailError('');
+                                            }}
+                                            placeholder="your@email.com"
+                                            disabled={savingEmail}
+                                            style={{ flex: 1 }}
                                         />
+                                        {isEmailDirty && !emailSent && (
+                                            <Button
+                                                size="sm"
+                                                onClick={handleSaveEmail}
+                                                disabled={savingEmail || !editedEmail.trim()}
+                                            >
+                                                {savingEmail ? 'SENDING…' : 'SAVE'}
+                                            </Button>
+                                        )}
+                                    </div>
+                                    {emailSent && (
+                                        <p className="stx-field__help">
+                                            <span style={{ marginRight: '0.5rem' }}><Badge variant="success">✓ SENT</Badge></span>
+                                            Check {editedEmail} for the verification link.
+                                        </p>
                                     )}
-                                </Stack>
-                            </Card>
+                                    {emailError && (
+                                        <p className="stx-field__help" style={{ color: 'var(--fg-rose)' }}>{emailError}</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
-                            <Card variant="elevated">
-                                <Stack gap="sm">
-                                    <Paragraph size="sm" muted>Connections</Paragraph>
-                                    <Heading level={2}>{connectionCount}</Heading>
-                                </Stack>
-                            </Card>
-                        </Grid>
+                    {/* Security section */}
+                    {hasPasswordProvider && (
+                        <section className="stx-section">
+                            <div className="stx-section__head">
+                                <div>
+                                    <h2>LOGIN &amp; SECURITY</h2>
+                                    <p className="stx-section__sub">Email, password, two-factor.</p>
+                                </div>
+                            </div>
+                            <div className="stx-section__body">
+                                <div className="settings-field">
+                                    <div><div className="settings-field__label-name">Current Password</div></div>
+                                    <div className="stx-field__input">
+                                        <Input
+                                            type="password"
+                                            value={currentPassword}
+                                            onChange={(e) => { setCurrentPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
+                                            placeholder="Enter current password"
+                                            disabled={changingPassword}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="settings-field">
+                                    <div><div className="settings-field__label-name">New Password</div><div className="settings-field__label-hint">Min 6 characters.</div></div>
+                                    <div className="stx-field__input">
+                                        <Input
+                                            type="password"
+                                            value={newPassword}
+                                            onChange={(e) => { setNewPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
+                                            placeholder="Min 6 characters"
+                                            disabled={changingPassword}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="settings-field">
+                                    <div><div className="settings-field__label-name">Confirm Password</div></div>
+                                    <div className="stx-field__input">
+                                        <Input
+                                            type="password"
+                                            value={confirmPassword}
+                                            onChange={(e) => { setConfirmPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
+                                            placeholder="Re-enter new password"
+                                            disabled={changingPassword}
+                                        />
+                                        {passwordError && <p className="stx-field__help" style={{ color: 'var(--fg-rose)' }}>{passwordError}</p>}
+                                        {passwordSuccess && <p className="stx-field__help" style={{ color: 'var(--fg-green)' }}>{passwordSuccess}</p>}
+                                        <div style={{ marginTop: '0.75rem' }}>
+                                            <Button
+                                                size="sm"
+                                                onClick={handleChangePassword}
+                                                disabled={changingPassword || !currentPassword || !newPassword || !confirmPassword}
+                                            >
+                                                {changingPassword ? 'CHANGING…' : 'CHANGE PASSWORD'}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    )}
 
-                        <Button
-                            variant={isAthlete ? 'secondary' : 'primary'}
-                            onClick={() => window.location.href = '/app/settings/upgrade'}
-                        >
-                            {isAthlete ? 'Manage Subscription →' : 'Upgrade to Athlete →'}
-                        </Button>
-                    </Stack>
-                </Card>
+                    {/* Notifications section */}
+                    <div className="fg-band fg-band--ink">
+                        <span className="fg-band__label">NOTIFICATIONS</span>
+                    </div>
+                    <section className="stx-section">
+                        <div className="stx-section__body" style={{ padding: 0 }}>
+                            <NotificationPreferencesCard />
+                        </div>
+                    </section>
 
-                {/* Help & Support Card - Premium Styling */}
-                <GlowCard variant="default">
-                    <Stack gap="md">
-                        <Heading level={3}>Help & Support</Heading>
-                        <Grid cols={3} gap="md">
-                            <Link to="/help" external>
-                                <Card variant="interactive">
-                                    <Stack gap="sm" align="center">
-                                        <Paragraph size="lg">📚</Paragraph>
-                                        <Paragraph size="sm">FAQ & Guides</Paragraph>
-                                    </Stack>
-                                </Card>
-                            </Link>
-                            <Link to="mailto:support@fitglue.tech" external>
-                                <Card variant="interactive">
-                                    <Stack gap="sm" align="center">
-                                        <Paragraph size="lg">📧</Paragraph>
-                                        <Paragraph size="sm">Contact Support</Paragraph>
-                                    </Stack>
-                                </Card>
-                            </Link>
-                            <Link to="/contact" external>
-                                <Card variant="interactive">
-                                    <Stack gap="sm" align="center">
-                                        <Paragraph size="lg">💡</Paragraph>
-                                        <Paragraph size="sm">Request a Feature</Paragraph>
-                                    </Stack>
-                                </Card>
-                            </Link>
-                        </Grid>
-                    </Stack>
-                </GlowCard>
+                    {/* Data Rights section */}
+                    <section className="stx-section">
+                        <div className="stx-section__head">
+                            <div>
+                                <h2>DATA RIGHTS</h2>
+                                <p className="stx-section__sub">GDPR — your right to access, rectify, and delete your personal data.</p>
+                            </div>
+                        </div>
+                        <div className="stx-section__body">
+                            <div className="settings-field">
+                                <div><div className="settings-field__label-name">Export Data</div><div className="settings-field__label-hint">GDPR right to portability.</div></div>
+                                <div className="stx-field__input">
+                                    {exportStatus === 'idle' && (
+                                        <Button variant="ink" size="sm" onClick={handleExportData}>
+                                            DOWNLOAD MY DATA
+                                        </Button>
+                                    )}
+                                    {(exportStatus === 'pending' || exportStatus === 'running') && (
+                                        <>
+                                            <Button variant="ink" size="sm" disabled>
+                                                {exportStatus === 'pending' ? '⏳ STARTING…' : '⏳ PREPARING…'}
+                                            </Button>
+                                            <p className="stx-field__help">This may take a few minutes. You&apos;ll also receive an email.</p>
+                                        </>
+                                    )}
+                                    {exportStatus === 'completed' && exportDownloadUrl && (
+                                        <>
+                                            <a href={exportDownloadUrl} className="fg-button fg-button--sm">
+                                                DOWNLOAD EXPORT (ZIP)
+                                            </a>
+                                            <p className="stx-field__help">Link expires in 24 hours. A copy was also sent to your email.</p>
+                                        </>
+                                    )}
+                                    {exportStatus === 'failed' && (
+                                        <>
+                                            <p className="stx-field__help" style={{ color: 'var(--fg-rose)' }}>{exportError}</p>
+                                            <Button variant="ink" size="sm" onClick={handleExportData}>
+                                                TRY AGAIN
+                                            </Button>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
-                {/* Notification Preferences Card */}
-                <div className="fg-band fg-band--ink">
-                    <span className="fg-band__label">NOTIFICATIONS</span>
-                </div>
-                <NotificationPreferencesCard />
+                    {/* Nerd Mode — Advanced */}
+                    {isNerdMode && (
+                        <section className="stx-section">
+                            <div className="stx-section__head">
+                                <div>
+                                    <h2>ADVANCED</h2>
+                                    <p className="stx-section__sub">Developer details — nerd mode only.</p>
+                                </div>
+                            </div>
+                            <div className="stx-section__body">
+                                <div className="settings-field">
+                                    <div><div className="settings-field__label-name">User ID</div><div className="settings-field__label-hint">Firebase UID — nerd mode only.</div></div>
+                                    <div className="stx-field__input">
+                                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                                            <code style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', color: 'var(--fg-cyan)', background: 'var(--fg-ink)', padding: '0.5rem 0.75rem' }}>
+                                                {firebaseUser?.uid || 'N/A'}
+                                            </code>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={handleCopyUserId}
+                                            >
+                                                {copied ? '✓ COPIED' : 'COPY'}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    )}
 
-                {/* Data Rights - Always Visible (GDPR) */}
-                <div className="fg-band fg-band--ink">
-                    <span className="fg-band__label">DATA RIGHTS</span>
-                </div>
-                <Card>
-                    <Stack gap="md">
-                        <Heading level={3}>📋 Data Rights</Heading>
-                        <Paragraph size="sm">
-                            Under GDPR you have the right to access, rectify, and delete your personal data.
-                            You can export all your data at any time.
-                        </Paragraph>
-                        {exportStatus === 'idle' && (
-                            <Button variant="secondary" onClick={handleExportData}>
-                                📦 Download My Data
-                            </Button>
-                        )}
-                        {(exportStatus === 'pending' || exportStatus === 'running') && (
-                            <Stack gap="xs">
-                                <Button variant="secondary" disabled>
-                                    {exportStatus === 'pending' ? '⏳ Starting export...' : '⏳ Preparing your data...'}
-                                </Button>
-                                <Paragraph size="sm" muted>
-                                    This may take a few minutes. You will also receive an email when it is ready.
-                                </Paragraph>
-                            </Stack>
-                        )}
-                        {exportStatus === 'completed' && exportDownloadUrl && (
-                            <Stack gap="xs">
-                                <Link to={exportDownloadUrl} external>
-                                    <Button variant="primary">
-                                        ⬇️ Download Export (ZIP)
+                    {/* Danger Zone */}
+                    <div className="stx-danger">
+                        <h3>DANGER ZONE</h3>
+                        <div className="settings-field" style={{ borderBottom: 0 }}>
+                            <div><div className="settings-field__label-name">Delete Account</div><div className="settings-field__label-hint">Permanent and irreversible.</div></div>
+                            <div className="stx-field__input">
+                                <p className="stx-field__help" style={{ marginBottom: '0.75rem' }}>
+                                    This action is <strong style={{ color: 'var(--fg-paper)' }}>permanent and irreversible</strong>.
+                                    Removes your profile, pipelines, run history and all synced activities.
+                                </p>
+                                <Input
+                                    type="text"
+                                    value={deleteConfirmation}
+                                    onChange={(e) => setDeleteConfirmation(e.target.value)}
+                                    placeholder="Type DELETE to confirm"
+                                    disabled={deleting}
+                                    style={{ maxWidth: 320, marginBottom: '0.75rem' }}
+                                />
+                                {deleteError && <p className="stx-field__help" style={{ color: 'var(--fg-rose)', marginBottom: '0.75rem' }}>{deleteError}</p>}
+                                <div>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={handleDeleteAccount}
+                                        disabled={deleteConfirmation !== 'DELETE' || deleting}
+                                    >
+                                        {deleting ? 'DELETING…' : 'DELETE ACCOUNT & ALL DATA'}
                                     </Button>
-                                </Link>
-                                <Paragraph size="sm" muted>
-                                    This link expires in 24 hours. A copy was also sent to your email.
-                                </Paragraph>
-                            </Stack>
-                        )}
-                        {exportStatus === 'failed' && (
-                            <Stack gap="xs">
-                                <Paragraph size="sm">{exportError}</Paragraph>
-                                <Button variant="secondary" onClick={handleExportData}>
-                                    🔄 Try Again
-                                </Button>
-                            </Stack>
-                        )}
-                    </Stack>
-                </Card>
-
-                {isNerdMode && (
-                    <Card>
-                        <Heading level={3}>🤓 Advanced</Heading>
-                        <Stack gap="md">
-                            <Stack gap="xs">
-                                <Paragraph size="sm" muted>User ID</Paragraph>
-                                <Stack direction="horizontal" gap="sm" align="center">
-                                    <Code>
-                                        {firebaseUser?.uid || 'N/A'}
-                                    </Code>
-                                    <Button variant="text" size="small" onClick={handleCopyUserId}>
-                                        {copied ? '✓ Copied' : '📋 Copy'}
-                                    </Button>
-                                </Stack>
-                            </Stack>
-                        </Stack>
-                    </Card>
-                )}
-
-                {/* Danger Zone */}
-                <div className="stx-danger">
-                    <h3>DANGER ZONE</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <Card>
-                    <Stack gap="md">
-                        <Stack direction="horizontal" gap="sm" align="center">
-                            <Paragraph inline>⚠️</Paragraph>
-                            <Heading level={3}>Danger Zone</Heading>
-                        </Stack>
-                        <Stack gap="md">
-                            <Heading level={4}>Delete Account</Heading>
-                            <Stack gap="xs">
-                                <Paragraph bold>Right to Erasure (GDPR Article 17)</Paragraph>
-                                <Paragraph>
-                                    This action is <strong>permanent and irreversible</strong>.
-                                    Deleting your account will remove:
-                                </Paragraph>
-                            </Stack>
-                            <List>
-                                <ListItem>Your profile and account information</ListItem>
-                                <ListItem>All connected integrations and credentials</ListItem>
-                                <ListItem>All pipelines, activities, and processing history</ListItem>
-                                <ListItem>All personal records, booster data, and preferences</ListItem>
-                                <ListItem>All API keys and uploaded files</ListItem>
-                            </List>
-                            <Stack gap="sm">
-                                <FormField label="Type DELETE to confirm:" htmlFor="delete-confirm">
-                                    <Input
-                                        id="delete-confirm"
-                                        type="text"
-                                        value={deleteConfirmation}
-                                        onChange={(e) => setDeleteConfirmation(e.target.value)}
-                                        placeholder="Type DELETE"
-                                        disabled={deleting}
-                                    />
-                                </FormField>
-                                {deleteError && <Paragraph size="sm">{deleteError}</Paragraph>}
-                                <Button
-                                    variant="danger"
-                                    onClick={handleDeleteAccount}
-                                    disabled={deleteConfirmation !== 'DELETE' || deleting}
-                                    fullWidth
-                                >
-                                    {deleting ? 'Deleting Account...' : 'Permanently Delete My Account'}
-                                </Button>
-                            </Stack>
-                        </Stack>
-                    </Stack>
-                </Card>
-            </Stack>
 
             {/* Re-authentication Modal */}
             {firebaseUser && hasPasswordProvider && (
@@ -608,7 +510,7 @@ const AccountSettingsPage: React.FC = () => {
                     description="Your session has expired. Please enter your password to continue changing your email."
                 />
             )}
-        </PageLayout>
+        </SettingsLayout>
     );
 };
 

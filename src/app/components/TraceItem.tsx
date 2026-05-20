@@ -10,6 +10,7 @@ import { Code } from './library/ui/Code';
 import { Link } from './library/navigation/Link';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { buildDestinationUrl } from '../utils/destinationUrls';
+import './TraceItem.css';
 
 interface TraceItemProps {
     execution: ExecutionRecord;
@@ -359,20 +360,26 @@ export const TraceItem: React.FC<TraceItemProps> = ({ execution, index }) => {
     const customContent = renderCustomContent();
     const hasCustomContent = customContent !== null;
 
+    const isEnricher = execution.service === 'enricher';
+
     return (
-        <Stack direction="horizontal" gap="md">
-            <Text>{index + 1}</Text>
-            <Stack gap="sm" fullWidth>
-                <Stack direction="horizontal" gap="sm" align="center">
-                    <Text>{serviceName}</Text>
-                    <StatusPill status={execution.status || 'UNKNOWN'} />
-                </Stack>
-
-                {execution.errorMessage && <Text variant="muted">{execution.errorMessage}</Text>}
-
-                {!isNerdMode && hasCustomContent && customContent}
-                {(isNerdMode || !hasCustomContent) && <NerdRenderer execution={execution} />}
-            </Stack>
-        </Stack>
+        <div className={`trace-item${isEnricher ? ' trace-item--enricher' : ''}`}>
+            <span className="trace-item__ordinal">{String(index + 1).padStart(2, '0')}</span>
+            <div className="trace-item__body">
+                <span className="trace-item__service">{serviceName}</span>
+                {execution.errorMessage && (
+                    <span className="trace-item__error">{execution.errorMessage}</span>
+                )}
+                {!isNerdMode && hasCustomContent && (
+                    <div className="trace-item__detail">{customContent}</div>
+                )}
+                {(isNerdMode || !hasCustomContent) && (
+                    <div className="trace-item__detail"><NerdRenderer execution={execution} /></div>
+                )}
+            </div>
+            <div className="trace-item__meta">
+                <StatusPill status={execution.status || 'UNKNOWN'} />
+            </div>
+        </div>
     );
 };

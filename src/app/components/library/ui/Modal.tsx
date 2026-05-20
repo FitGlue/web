@@ -20,6 +20,8 @@ export interface ModalProps {
   closeOnEscape?: boolean;
   /** Footer content (typically buttons) */
   footer?: ReactNode;
+  /** Danger variant — rose outline instead of paper outline */
+  danger?: boolean;
   /** Child content */
   children: ReactNode;
 }
@@ -37,6 +39,7 @@ export const Modal: React.FC<ModalProps> = ({
   closeOnBackdrop = true,
   closeOnEscape = true,
   footer,
+  danger = false,
   children,
 }) => {
   // Handle escape key
@@ -68,6 +71,7 @@ export const Modal: React.FC<ModalProps> = ({
   const classes = [
     'ui-modal__content',
     `ui-modal__content--${size}`,
+    danger ? 'ui-modal__content--danger' : '',
   ].filter(Boolean).join(' ');
 
   return (

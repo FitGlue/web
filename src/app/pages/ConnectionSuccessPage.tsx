@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { PageLayout, Stack } from '../components/library/layout';
-import { Button, CardSkeleton, Heading, Paragraph, Code, Badge, Card, useToast } from '../components/library/ui';
+import { PageLayout } from '../components/library/layout';
+import { CardSkeleton, Button, useToast } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { useConnectionActions } from '../hooks/useConnectionActions';
 import { IntegrationAction } from '../types/plugin';
+import './ConnectionSuccessPage.css';
 
 interface LocationState {
     ingressApiKey?: string;
@@ -35,7 +36,6 @@ const ConnectionSuccessPage: React.FC = () => {
     const [copiedUrl, setCopiedUrl] = useState(false);
     const toast = useToast();
 
-    // Connection actions
     const {
         triggerAction,
         isActionRunning,
@@ -55,7 +55,6 @@ const ConnectionSuccessPage: React.FC = () => {
     const requiresWebhookUrlOnly = id === 'intervals';
     const webhookUrl = useMemo(() => (requiresWebhookSetup || requiresWebhookUrlOnly) && id ? getWebhookUrl(id) : '', [id, requiresWebhookSetup, requiresWebhookUrlOnly]);
 
-    // Realtime hook auto-refreshes, but we can still trigger manual refresh
     useEffect(() => {
         refreshIntegrations();
     }, [refreshIntegrations]);
@@ -78,220 +77,167 @@ const ConnectionSuccessPage: React.FC = () => {
 
     if (registryLoading) {
         return (
-            <PageLayout title="Connected!" backTo="/connections" backLabel="Connections">
-                <Stack gap="lg" align="center">
+            <PageLayout title="Connected!">
+                <div style={{ padding: '1.5rem' }}>
                     <CardSkeleton variant="integration" />
-                </Stack>
+                </div>
             </PageLayout>
         );
     }
 
     return (
-        <PageLayout title="Connected!" backTo="/connections" backLabel="Connections">
-            <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
-                <span className="fg-band__label">CONNECTED · {displayName.toUpperCase()}</span>
-                <span className="fg-band__right">✓ SUCCESS</span>
-            </div>
-            <Stack gap="lg" align="center">
-                <Paragraph size="lg">
-                    {icon}
-                </Paragraph>
+        <PageLayout title="Connected!">
+            <div className="success-scene">
+                <div className="state">
+                    <span className="state__stamp state__stamp--green">✓ CONNECTED</span>
+                    <div className="state__icon">{icon}</div>
+                    <h2 className="state__h">
+                        {displayName} is{' '}
+                        <span className="state__h-gr">live.</span>
+                    </h2>
+                    <p className="state__body">
+                        Your <strong>{displayName}</strong> account has been successfully connected to FitGlue.
+                        Your activities will start flowing in automatically.
+                    </p>
 
-                <Heading level={1} centered>Success!</Heading>
+                    <div className="state__detail" style={{ textAlign: 'left' }}>
+                        <div className="state__detail-l">WHAT HAPPENS NEXT</div>
+                        <div>
+                            1 · Build a pipeline with {displayName} as source or destination.<br />
+                            2 · Upload an activity (or use any source pointing at it).<br />
+                            3 · Watch the run trace appear in /app/activities within ~5s.
+                        </div>
+                    </div>
 
-                <Paragraph centered>
-                    Your <strong>{displayName}</strong> account has been successfully connected to FitGlue.
-                </Paragraph>
-
-                {ingressApiKey && requiresWebhookSetup && (
-                    <Stack gap="md">
-                        <Stack gap="md">
-                            <Heading level={2}>🔧 Complete Your {displayName} Setup</Heading>
-                            <Paragraph>
-                                To receive workouts from {displayName}, you need to configure webhooks in the <strong>{displayName} app</strong>.
-                                Open <strong>Settings → Developer</strong> in {displayName} and configure the following:
-                            </Paragraph>
-
-                            <Stack gap="sm">
-                                <Paragraph bold>
-                                    1️⃣ Webhook URL
-                                </Paragraph>
-                                <Paragraph muted size="sm">
-                                    Paste this into &quot;Url you want to get notified on&quot;:
-                                </Paragraph>
-                                <Stack direction="horizontal" align="center" gap="sm">
-                                    <Code>{webhookUrl}</Code>
-                                    <Button variant="secondary" onClick={handleCopyUrl}>
-                                        {copiedUrl ? '✓ Copied!' : '📋 Copy'}
+                    {/* Webhook setup — Hevy */}
+                    {ingressApiKey && requiresWebhookSetup && (
+                        <div className="state__detail" style={{ textAlign: 'left', width: '100%' }}>
+                            <div className="state__detail-l">🔧 COMPLETE YOUR {displayName.toUpperCase()} SETUP</div>
+                            <p style={{ fontFamily: 'var(--fg-font-body)', fontSize: '0.9375rem', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
+                                Configure webhooks in <strong style={{ color: 'var(--fg-paper)' }}>Settings → Developer</strong>.
+                            </p>
+                            <div style={{ marginBottom: '0.75rem' }}>
+                                <div className="state__detail-l">1 — WEBHOOK URL</div>
+                                <div className="success-copy-row">
+                                    <span className="success-copy-value">{webhookUrl}</span>
+                                    <Button size="sm" onClick={handleCopyUrl}>
+                                        {copiedUrl ? '✓ COPIED' : 'COPY'}
                                     </Button>
-                                </Stack>
-                            </Stack>
-
-                            <Stack gap="sm">
-                                <Paragraph bold>
-                                    2️⃣ Authorization Header
-                                </Paragraph>
-                                <Paragraph muted size="sm">
-                                    Paste this into &quot;Your authorization header&quot;:
-                                </Paragraph>
-                                <Stack direction="horizontal" align="center" gap="sm">
-                                    <Code>{ingressApiKey}</Code>
-                                    <Button variant="secondary" onClick={handleCopyKey}>
-                                        {copiedKey ? '✓ Copied!' : '📋 Copy'}
+                                </div>
+                            </div>
+                            <div style={{ marginBottom: '0.75rem' }}>
+                                <div className="state__detail-l">2 — AUTHORIZATION HEADER</div>
+                                <div className="success-copy-row">
+                                    <span className="success-copy-value">{ingressApiKey}</span>
+                                    <Button size="sm" onClick={handleCopyKey}>
+                                        {copiedKey ? '✓ COPIED' : 'COPY'}
                                     </Button>
-                                </Stack>
-                            </Stack>
-
-                            <Stack gap="sm">
-                                <Paragraph bold>
-                                    3️⃣ Click &quot;Subscribe&quot; in {displayName}
-                                </Paragraph>
-                                <Paragraph muted size="sm">
-                                    Once subscribed, your workouts will sync automatically!
-                                </Paragraph>
-                            </Stack>
-
-                            <Paragraph>
+                                </div>
+                            </div>
+                            <div className="success-warning">
                                 ⚠️ <strong>Save the authorization header now!</strong> It won&apos;t be shown again.
-                            </Paragraph>
+                            </div>
                             {ingressKeyLabel && (
-                                <Paragraph muted size="sm">
-                                    Label: {ingressKeyLabel}
-                                </Paragraph>
+                                <p style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: '0.5rem' }}>
+                                    LABEL: {ingressKeyLabel}
+                                </p>
                             )}
-                        </Stack>
-                    </Stack>
-                )}
+                        </div>
+                    )}
 
-                {ingressApiKey && !requiresWebhookSetup && (
-                    <Stack gap="md">
-                        <Stack gap="md">
-                            <Heading level={2}>🔑 Important: Configure {displayName}</Heading>
-                            <Paragraph>
-                                Copy this <strong>FitGlue Ingress API Key</strong> and add it to your {displayName} webhook settings
-                                as the Authorization header:
-                            </Paragraph>
-                            <Stack direction="horizontal" align="center" gap="sm">
-                                <Code>{ingressApiKey}</Code>
-                                <Button variant="secondary" onClick={handleCopyKey}>
-                                    {copiedKey ? '✓ Copied!' : '📋 Copy'}
+                    {/* Ingress API key (non-hevy) */}
+                    {ingressApiKey && !requiresWebhookSetup && (
+                        <div className="state__detail" style={{ textAlign: 'left', width: '100%' }}>
+                            <div className="state__detail-l">🔑 CONFIGURE {displayName.toUpperCase()}</div>
+                            <p style={{ fontFamily: 'var(--fg-font-body)', fontSize: '0.9375rem', color: 'var(--color-text-muted)', marginBottom: '0.75rem' }}>
+                                Copy this <strong style={{ color: 'var(--fg-paper)' }}>FitGlue Ingress API Key</strong> and add it as the Authorization header in {displayName} webhook settings:
+                            </p>
+                            <div className="success-copy-row" style={{ marginBottom: '0.75rem' }}>
+                                <span className="success-copy-value">{ingressApiKey}</span>
+                                <Button size="sm" onClick={handleCopyKey}>
+                                    {copiedKey ? '✓ COPIED' : 'COPY'}
                                 </Button>
-                            </Stack>
-                            <Paragraph>
+                            </div>
+                            <div className="success-warning">
                                 ⚠️ <strong>Save this key now!</strong> It won&apos;t be shown again.
-                            </Paragraph>
+                            </div>
                             {ingressKeyLabel && (
-                                <Paragraph muted size="sm">
-                                    Label: {ingressKeyLabel}
-                                </Paragraph>
+                                <p style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: '0.5rem' }}>
+                                    LABEL: {ingressKeyLabel}
+                                </p>
                             )}
-                        </Stack>
-                    </Stack>
-                )}
+                        </div>
+                    )}
 
-                {requiresWebhookUrlOnly && (
-                    <Stack gap="md">
-                        <Heading level={2}>🔧 One More Step</Heading>
-                        <Paragraph>
-                            To receive activities from Intervals.icu, register this webhook URL in your{' '}
-                            <strong>Intervals.icu account settings</strong>:
-                        </Paragraph>
-
-                        <Stack gap="xs">
-                            <Paragraph size="sm" muted>
-                                Go to <strong>Settings → Developer → Webhook URL</strong> and paste:
-                            </Paragraph>
-                            <Stack direction="horizontal" align="center" gap="sm">
-                                <Code>{webhookUrl}</Code>
-                                <Button variant="secondary" onClick={handleCopyUrl}>
-                                    {copiedUrl ? '✓ Copied!' : '📋 Copy'}
+                    {/* Intervals webhook URL */}
+                    {requiresWebhookUrlOnly && (
+                        <div className="state__detail" style={{ textAlign: 'left', width: '100%' }}>
+                            <div className="state__detail-l">🔧 ONE MORE STEP</div>
+                            <p style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
+                                Settings → Developer → Webhook URL
+                            </p>
+                            <div className="success-copy-row" style={{ marginBottom: '0.75rem' }}>
+                                <span className="success-copy-value">{webhookUrl}</span>
+                                <Button size="sm" onClick={handleCopyUrl}>
+                                    {copiedUrl ? '✓ COPIED' : 'COPY'}
                                 </Button>
-                            </Stack>
-                        </Stack>
+                            </div>
+                        </div>
+                    )}
 
-                        <Paragraph size="sm" muted>
-                            Once saved, FitGlue will be notified whenever you log an activity in Intervals.icu.
-                        </Paragraph>
-                    </Stack>
-                )}
-
-                {!ingressApiKey && !requiresWebhookUrlOnly && (
-                    <Paragraph muted centered>
-                        Your activities will now sync automatically.
-                    </Paragraph>
-                )}
-
-                {/* Available Actions */}
-                {integration?.actions && integration.actions.length > 0 && (
-                    <Card variant="elevated">
-                        <Stack gap="md">
-                            <Stack gap="xs">
-                                <Heading level={3}>🚀 Get Started</Heading>
-                                <Paragraph size="sm" muted>
-                                    You can run these now, or find them later in your connection settings.
-                                </Paragraph>
-                            </Stack>
+                    {/* Available Actions */}
+                    {integration?.actions && integration.actions.length > 0 && (
+                        <div className="state__detail" style={{ textAlign: 'left', width: '100%' }}>
+                            <div className="state__detail-l">🚀 GET STARTED — {integration.actions.length} ACTIONS AVAILABLE</div>
                             {integration.actions.map((action: IntegrationAction) => {
                                 const running = isActionRunning(action.id);
                                 const completed = isActionCompleted(action.id);
-                                const error = getActionError(action.id);
-
+                                const actionError = getActionError(action.id);
                                 return (
-                                    <Stack
-                                        key={action.id}
-                                        direction="horizontal"
-                                        justify="between"
-                                        align="center"
-                                        gap="md"
-                                    >
-                                        <Stack direction="horizontal" gap="md" align="center">
-                                            <Paragraph size="lg">
-                                                {action.icon}
-                                            </Paragraph>
-                                            <Stack gap="xs">
-                                                <Paragraph bold>{action.label}</Paragraph>
-                                                <Paragraph size="sm" muted>
-                                                    {action.description}
-                                                </Paragraph>
-                                                {error && (
-                                                    <Badge variant="error">{error}</Badge>
-                                                )}
-                                            </Stack>
-                                        </Stack>
+                                    <div key={action.id} className="success-action-row">
+                                        <span className="success-action-icon">{action.icon}</span>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ fontFamily: 'var(--fg-font-display)', fontSize: '0.9375rem', textTransform: 'uppercase', letterSpacing: '-0.005em' }}>
+                                                {action.label}
+                                            </div>
+                                            <p style={{ fontFamily: 'var(--fg-font-body)', fontSize: '0.8125rem', color: 'var(--color-text-muted)', margin: '0.25rem 0 0' }}>
+                                                {action.description}
+                                            </p>
+                                            {actionError && (
+                                                <p style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', color: 'var(--fg-rose)', marginTop: '0.25rem' }}>{actionError}</p>
+                                            )}
+                                        </div>
                                         <Button
-                                            variant={completed ? 'secondary' : 'primary'}
-                                            size="small"
+                                            variant={completed ? 'ink' : 'primary'}
+                                            size="sm"
                                             disabled={running}
                                             onClick={async () => {
                                                 try {
                                                     await triggerAction(action.id);
-                                                    toast.success(
-                                                        'Action Started',
-                                                        `${action.label} is running in the background. You'll be notified when it completes.`
-                                                    );
+                                                    toast.success('Action Started', `${action.label} is running in the background.`);
                                                 } catch {
                                                     toast.error('Failed', 'Could not start the action. Please try again.');
                                                 }
                                             }}
                                         >
-                                            {running ? 'Running...' : completed ? '✓ Done' : 'Run'}
+                                            {running ? 'RUNNING…' : completed ? '✓ DONE' : 'RUN'}
                                         </Button>
-                                    </Stack>
+                                    </div>
                                 );
                             })}
-                        </Stack>
-                    </Card>
-                )}
+                        </div>
+                    )}
 
-                <Stack direction="horizontal" gap="md">
-                    <Button variant="primary" onClick={() => navigate('/connections')}>
-                        View Connections
-                    </Button>
-                    <Button variant="secondary" onClick={() => navigate('/')}>
-                        Go to Dashboard
-                    </Button>
-                </Stack>
-            </Stack>
+                    <div className="state__cta">
+                        <Button variant="ghost" size="sm" onClick={() => navigate(`/connections/${id}`)}>
+                            VIEW CONNECTION
+                        </Button>
+                        <Button size="sm" onClick={() => navigate('/settings/pipelines/new')}>
+                            BUILD A PIPELINE →
+                        </Button>
+                    </div>
+                </div>
+            </div>
         </PageLayout>
     );
 };

@@ -100,6 +100,59 @@ export function groupPluginsByCategory(
   return grouped;
 }
 
+export type PipelineStageId =
+    | 'PIPELINE_STAGE_GATE'
+    | 'PIPELINE_STAGE_ENRICHMENT'
+    | 'PIPELINE_STAGE_METRICS'
+    | 'PIPELINE_STAGE_CONTEXT_AI'
+    | 'PIPELINE_STAGE_INPUT'
+    | 'PIPELINE_STAGE_VIZ';
+
+export const PIPELINE_STAGE_META: Record<PipelineStageId, PluginCategory> = {
+    PIPELINE_STAGE_GATE:       { id: 'PIPELINE_STAGE_GATE',       name: 'Filter',      emoji: '🚦', pluginType: 'enricher' },
+    PIPELINE_STAGE_ENRICHMENT: { id: 'PIPELINE_STAGE_ENRICHMENT', name: 'Achievements', emoji: '🏆', pluginType: 'enricher' },
+    PIPELINE_STAGE_METRICS:    { id: 'PIPELINE_STAGE_METRICS',    name: 'Metrics',     emoji: '📊', pluginType: 'enricher' },
+    PIPELINE_STAGE_CONTEXT_AI: { id: 'PIPELINE_STAGE_CONTEXT_AI', name: 'AI & Context', emoji: '✨', pluginType: 'enricher' },
+    PIPELINE_STAGE_INPUT:      { id: 'PIPELINE_STAGE_INPUT',      name: 'Workflow',    emoji: '💬', pluginType: 'enricher' },
+    PIPELINE_STAGE_VIZ:        { id: 'PIPELINE_STAGE_VIZ',        name: 'Visuals',     emoji: '🖼️', pluginType: 'enricher' },
+};
+
+const STAGE_ORDER: PipelineStageId[] = [
+    'PIPELINE_STAGE_GATE',
+    'PIPELINE_STAGE_ENRICHMENT',
+    'PIPELINE_STAGE_METRICS',
+    'PIPELINE_STAGE_CONTEXT_AI',
+    'PIPELINE_STAGE_INPUT',
+    'PIPELINE_STAGE_VIZ',
+];
+
+export function groupPluginsByStage(
+    plugins: PluginManifest[]
+): Map<PluginCategory, PluginManifest[]> {
+    const grouped = new Map<PluginCategory, PluginManifest[]>();
+
+    for (const stageId of STAGE_ORDER) {
+        const cat = PIPELINE_STAGE_META[stageId];
+        const matching = plugins
+            .filter((p) => p.stage === stageId)
+            .sort((a, b) => {
+                if (a.isPremium !== b.isPremium) return a.isPremium ? -1 : 1;
+                return a.name.localeCompare(b.name);
+            });
+        if (matching.length > 0) grouped.set(cat, matching);
+    }
+
+    // Fallback bucket for plugins with no stage
+    const stagedIds = new Set(Array.from(grouped.values()).flatMap((ps) => ps.map((p) => p.id)));
+    const unstaged = plugins.filter((p) => !stagedIds.has(p.id));
+    if (unstaged.length > 0) {
+        const fallback: PluginCategory = { id: 'other', name: 'Other', emoji: '📦', pluginType: 'enricher' };
+        grouped.set(fallback, unstaged);
+    }
+
+    return grouped;
+}
+
 /**
  * Get plugins recommended for user based on their connected integrations
  */

@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Mobile · Showcase Activity</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../css/tokens.css?v=3" />
+<link rel="stylesheet" href="../../css/base.css?v=3" />
+<link rel="stylesheet" href="../../css/components.css?v=3" />
+<link rel="stylesheet" href="../../css/overrides.css?v=3" />
+<link rel="stylesheet" href="../../css/mobile.css?v=3" />
+<style>
+  body { background: var(--fg-ink); color: var(--fg-paper); margin: 0; }
+  body .header, body .footer { display: none; }
+
+  /* Top public bar */
+  .mtop { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 3px solid var(--fg-paper); background: var(--fg-ink); }
+  .mtop__brand { display: flex; align-items: center; gap: 8px; font-family: var(--fg-font-display); font-size: 1rem; color: var(--fg-paper); text-decoration: none; }
+  .mtop__brand .fg-logo { width: 18px; height: 18px; }
+  .mtop__cta { padding: 7px 10px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .6875rem; letter-spacing: .04em; text-transform: uppercase; text-decoration: none; }
+
+  /* Banner — gradient + AI banner */
+  .mbanner { aspect-ratio: 4/3; background: var(--gradient-primary); position: relative; overflow: hidden; }
+  .mbanner__noise { position: absolute; inset: 0; opacity: .4; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22160%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%222%22/><feColorMatrix values=%221 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.7 0%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/></svg>"); }
+  .mbanner__inner { position: absolute; inset: 14px; border: 2px dashed rgba(7,7,16,.5); display: flex; flex-direction: column; justify-content: space-between; padding: 12px; }
+  .mbanner__stamp { padding: 4px 8px; background: var(--fg-ink); color: var(--fg-paper); font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; align-self: flex-start; }
+  .mbanner__quote { color: var(--fg-ink); font-family: var(--fg-font-display); font-size: 1.625rem; line-height: .9; letter-spacing: -.025em; text-transform: uppercase; }
+
+  /* Title */
+  .mtitle { padding: 18px 16px 14px; }
+  .mtitle__meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .mtitle h1 { font-family: var(--fg-font-display); font-size: 2.5rem; line-height: .92; letter-spacing: -.035em; text-transform: uppercase; margin: 0 0 6px; }
+  .mtitle h1 .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .mtitle__by { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .08em; color: var(--color-text-muted); text-transform: uppercase; }
+  .mtitle__by b { color: var(--fg-paper); font-weight: 700; }
+
+  /* Hero stats — 3 across */
+  .mstats { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 0 16px 18px; }
+  .mstats > * { padding: 0 12px; }
+  .mstats > * + * { border-left: 1.5px solid var(--fg-hairline-color); }
+  .mstats > *:first-child { padding-left: 0; }
+  .mstats > *:last-child { padding-right: 0; }
+  .mstats__emoji { font-size: 1rem; margin-bottom: 4px; }
+  .mstats__n { font-family: var(--fg-font-display); font-size: 2.25rem; line-height: .92; letter-spacing: -.035em; }
+  .mstats--gr .mstats__n { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .mstats__u { font-family: var(--fg-font-display); font-size: .75rem; color: var(--color-text-muted); margin-left: 4px; }
+  .mstats__l { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); margin-top: 4px; text-transform: uppercase; }
+
+  /* AI Summary */
+  .msummary { padding: 16px; background: radial-gradient(70% 100% at 50% 0%, rgba(139,92,246,.14), transparent 60%); border-top: 1.5px solid var(--fg-hairline-color); border-bottom: 1.5px solid var(--fg-hairline-color); }
+  .msummary__head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .msummary__head .em { font-size: 1.25rem; }
+  .msummary__head .ttl { font-family: var(--fg-font-display); font-size: .8125rem; letter-spacing: .02em; text-transform: uppercase; }
+  .msummary p { font-family: var(--fg-font-body); font-size: 1rem; line-height: 1.5; margin: 0; }
+  .msummary .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700; }
+  .msummary b { color: var(--fg-paper); }
+
+  /* HEART RATE section */
+  .msec { padding: 16px; border-bottom: 1.5px solid var(--fg-hairline-color); }
+  .msec--alt { background: var(--fg-ink-2); }
+  .msec__row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1.5px solid var(--fg-hairline-color); }
+  .msec__title { font-family: var(--fg-font-display); font-size: .9375rem; letter-spacing: .02em; text-transform: uppercase; }
+  .msec__right { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+
+  /* HR mini stats */
+  .mhr-mini { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .mhr-mini > div { display: flex; flex-direction: column; }
+  .mhr-mini__n { font-family: var(--fg-font-display); font-size: 1.625rem; line-height: .95; letter-spacing: -.025em; }
+  .mhr-mini--gr .mhr-mini__n { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .mhr-mini__l { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .mhr-chart { height: 80px; }
+  .mhr-drift { margin-top: 8px; padding: 4px 8px; border: 1.5px solid var(--fg-rose); color: var(--fg-rose); font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .1em; display: inline-block; text-transform: uppercase; }
+
+  /* Zones */
+  .mzones { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .mzone { display: grid; grid-template-columns: 22px 70px 1fr 40px; gap: 8px; align-items: center; font-family: var(--fg-font-mono); font-size: .6875rem; }
+  .mzone__z { font-weight: 700; color: var(--fg-paper); }
+  .mzone__n { font-size: .5625rem; letter-spacing: .1em; color: var(--color-text-muted); text-transform: uppercase; }
+  .mzone__bar { height: 12px; background: var(--fg-ink-3); }
+  .mzone__fill { height: 100%; }
+  .mzone__min { text-align: right; color: var(--fg-paper); font-weight: 700; }
+
+  /* Effort/Energy/Load - stacked stat blocks */
+  .mstack > .mstat { padding: 14px 16px; border-bottom: 1.5px solid var(--fg-hairline-color); }
+  .mstack > .mstat:last-child { border-bottom: 0; }
+  .mstat__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .mstat__ttl { font-family: var(--fg-font-display); font-size: .8125rem; letter-spacing: .02em; text-transform: uppercase; }
+  .mstat__sub { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .mstat__row { display: flex; align-items: baseline; gap: 10px; }
+  .mstat__n { font-family: var(--fg-font-display); font-size: 2.5rem; line-height: .9; letter-spacing: -.035em; }
+  .mstat__n--gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .mstat__u { font-family: var(--fg-font-display); font-size: 1rem; color: var(--color-text-muted); }
+  .mstat__bar { margin-top: 8px; height: 6px; background: var(--fg-ink-3); position: relative; }
+  .mstat__bar-fill { height: 100%; background: var(--gradient-primary); }
+  .mstat__bar-needle { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--fg-paper); }
+  .mstat__hint { font-family: var(--fg-font-mono); font-size: .625rem; color: var(--color-text-muted); margin-top: 8px; line-height: 1.5; }
+  .mstat__buckets { margin-top: 10px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+  .mstat__bucket { padding: 4px 0; text-align: center; font-family: var(--fg-font-mono); font-size: .5rem; font-weight: 700; letter-spacing: .1em; background: var(--fg-ink-3); color: var(--color-text-muted); text-transform: uppercase; }
+  .mstat__bucket.on { background: var(--gradient-primary); color: var(--fg-ink); }
+
+  /* Recovery alert */
+  .malert { padding: 12px 16px; background: var(--fg-ink); color: var(--fg-rose); font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .04em; display: flex; align-items: center; gap: 10px; border-top: 1.5px solid var(--fg-hairline-color); }
+  .malert b { color: var(--fg-paper); }
+
+  /* Boosters chip wall — wraps */
+  .mboost-wrap { padding: 14px 16px; display: flex; flex-wrap: wrap; gap: 4px; }
+
+  /* CTA */
+  .mcta { background: var(--gradient-primary); color: var(--fg-ink); padding: 22px 18px; text-align: center; }
+  .mcta h2 { font-family: var(--fg-font-display); font-size: 1.625rem; line-height: .95; letter-spacing: -.025em; text-transform: uppercase; margin: 0 0 8px; color: var(--fg-ink); }
+  .mcta p { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .04em; margin: 0 0 16px; }
+  .mcta a { display: inline-block; padding: 12px 20px; background: var(--fg-ink); color: var(--fg-paper); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; text-decoration: none; }
+
+  /* Footer attr */
+  .mattr { padding: 16px; text-align: center; font-family: var(--fg-font-mono); font-size: .625rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; border-top: 3px solid var(--fg-paper); }
+  .mattr a { color: var(--fg-paper); text-decoration: none; }
+</style>
+</head>
+<body>
+
+  <div class="mtop">
+    <a class="mtop__brand" href="/"><span class="fg-logo"></span><span>FITGLUE</span></a>
+    <a class="mtop__cta" href="#">TRY FREE →</a>
+  </div>
+
+  <!-- BANNER -->
+  <div class="mbanner">
+    <div class="mbanner__noise"></div>
+    <div class="mbanner__inner">
+      <span class="mbanner__stamp">🎨 AI BANNER · AUTO</span>
+      <div class="mbanner__quote">CONTROLLED<br>BREATH,<br>RISING SPRING.</div>
+    </div>
+  </div>
+
+  <!-- TITLE -->
+  <div class="mtitle">
+    <div class="mtitle__meta">
+      <span class="fg-stamp" style="font-size:.5625rem;padding:3px 7px">PILATES</span>
+      <span class="fg-stamp fg-stamp--paper" style="font-size:.5625rem;padding:3px 7px">VIA FILE UPLOAD</span>
+      <span class="fg-stamp fg-stamp--ink" style="font-size:.5625rem;padding:3px 7px">WED 8 APR</span>
+    </div>
+    <h1>Tower<br><span class="gr">Pilates</span><br>Class.</h1>
+    <div class="mtitle__by">BY <b>JAMES KING</b> · 25 BOOSTERS</div>
+  </div>
+
+  <!-- HERO STATS -->
+  <div class="mstats">
+    <div>
+      <div class="mstats__emoji">⏱️</div>
+      <div><span class="mstats__n">50</span><span class="mstats__u">MIN</span></div>
+      <div class="mstats__l">Duration</div>
+    </div>
+    <div class="mstats--gr">
+      <div class="mstats__emoji">❤️</div>
+      <div><span class="mstats__n">82</span><span class="mstats__u">BPM</span></div>
+      <div class="mstats__l">Avg HR</div>
+    </div>
+    <div>
+      <div class="mstats__emoji">🦶</div>
+      <div><span class="mstats__n">60</span><span class="mstats__u">RPM</span></div>
+      <div class="mstats__l">Cadence</div>
+    </div>
+  </div>
+
+  <!-- AI SUMMARY -->
+  <div class="fg-band" style="padding:8px 16px"><span class="fg-band__label" style="font-size:.75rem">✨ AI Summary</span><span class="fg-band__right" style="font-size:.5625rem">AI COMPANION</span></div>
+  <div class="msummary">
+    <div class="msummary__head">
+      <span class="em">✨</span>
+      <span class="ttl">AI SUMMARY</span>
+    </div>
+    <p>Nice Tower Pilates class! A <span class="gr">moderate 50-minute session</span> with an average heart rate of 82 bpm kept things in the recovery zone, and a cadence averaging 60 rpm suggests a focus on controlled movements. Recovery: <b>32 hours</b>.</p>
+  </div>
+
+  <!-- HEART RATE -->
+  <div class="fg-band fg-band--ink" style="padding:8px 16px"><span class="fg-band__label" style="font-size:.75rem">❤️ Heart Rate</span><span class="fg-band__right" style="font-size:.5625rem">60S WINDOWS</span></div>
+  <div class="msec">
+    <div class="mhr-mini">
+      <div><div class="mhr-mini__n">63</div><div class="mhr-mini__l">MIN BPM</div></div>
+      <div class="mhr-mini--gr"><div class="mhr-mini__n">82</div><div class="mhr-mini__l">AVG BPM</div></div>
+      <div><div class="mhr-mini__n">116</div><div class="mhr-mini__l">MAX BPM</div></div>
+    </div>
+    <svg class="mhr-chart" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <defs><linearGradient id="mh" x1="0" x2="1"><stop offset="0" stop-color="#ff3da6"/><stop offset=".5" stop-color="#8b5cf6"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+      <path d="M0,72 L4,68 L10,60 L18,52 L26,48 L34,40 L42,36 L50,32 L58,12 L62,22 L70,32 L76,40 L82,46 L88,52 L94,58 L100,62 L100,100 L0,100 Z" fill="url(#mh)" opacity=".18"/>
+      <path d="M0,72 L4,68 L10,60 L18,52 L26,48 L34,40 L42,36 L50,32 L58,12 L62,22 L70,32 L76,40 L82,46 L88,52 L94,58 L100,62" stroke="url(#mh)" stroke-width="1.5" fill="none"/>
+    </svg>
+    <span class="mhr-drift">+14 DRIFT · HYDRATE</span>
+
+    <div class="msec__row" style="margin-top:14px">
+      <span class="msec__title">Zones</span>
+      <span class="msec__right">50 MIN TOTAL</span>
+    </div>
+    <div class="mzones">
+      <div class="mzone"><span class="mzone__z">Z0</span><span class="mzone__n">REST</span><div class="mzone__bar"><div class="mzone__fill" style="width:84%;background:var(--fg-violet)"></div></div><span class="mzone__min">42m</span></div>
+      <div class="mzone"><span class="mzone__z">Z1</span><span class="mzone__n">RECOVERY</span><div class="mzone__bar"><div class="mzone__fill" style="width:14%;background:var(--fg-cyan)"></div></div><span class="mzone__min">7m</span></div>
+      <div class="mzone"><span class="mzone__z">Z2</span><span class="mzone__n">ENDURANCE</span><div class="mzone__bar"></div><span class="mzone__min">0m</span></div>
+      <div class="mzone"><span class="mzone__z">Z3</span><span class="mzone__n">TEMPO</span><div class="mzone__bar"></div><span class="mzone__min">0m</span></div>
+      <div class="mzone"><span class="mzone__z">Z4</span><span class="mzone__n">THRESHOLD</span><div class="mzone__bar"></div><span class="mzone__min">0m</span></div>
+      <div class="mzone"><span class="mzone__z">Z5</span><span class="mzone__n">VO2 MAX</span><div class="mzone__bar"></div><span class="mzone__min">0m</span></div>
+    </div>
+  </div>
+
+  <!-- EFFORT / ENERGY / LOAD -->
+  <div class="fg-band fg-band--ink" style="padding:8px 16px"><span class="fg-band__label" style="font-size:.75rem">💥 Effort &amp; Energy</span><span class="fg-band__right" style="font-size:.5625rem">3 METRICS</span></div>
+  <div class="mstack msec--alt" style="background:var(--fg-ink-2)">
+    <div class="mstat">
+      <div class="mstat__top"><span class="mstat__ttl">Effort Score</span><span class="mstat__sub">OUT OF 100</span></div>
+      <div class="mstat__row"><span class="mstat__n">41</span><span class="mstat__u">/100</span><span class="fg-stamp" style="margin-left:auto;font-size:.5625rem;padding:3px 7px">MODERATE</span></div>
+      <div class="mstat__bar"><div class="mstat__bar-fill" style="width:41%"></div><div class="mstat__bar-needle" style="left:41%"></div></div>
+      <div class="mstat__hint">❤️ HR 0.75× · ⏱ Dur 1.21× · 💪 Intensity 0.31×</div>
+    </div>
+    <div class="mstat">
+      <div class="mstat__top"><span class="mstat__ttl">🔥 Calories</span><span class="mstat__sub">EXPENDITURE</span></div>
+      <div class="mstat__row"><span class="mstat__n mstat__n--gr">292</span><span class="mstat__u">KCAL</span></div>
+      <div class="mstat__hint">≈ 1.0 slice of pizza 🍕</div>
+    </div>
+    <div class="mstat">
+      <div class="mstat__top"><span class="mstat__ttl">💪 Training Load</span><span class="mstat__sub">TRIMP</span></div>
+      <div class="mstat__row"><span class="mstat__n">8</span><span class="fg-stamp" style="font-size:.5625rem;padding:3px 7px">RECOVERY</span></div>
+      <div class="mstat__buckets">
+        <div class="mstat__bucket on">REC</div>
+        <div class="mstat__bucket">EASY</div>
+        <div class="mstat__bucket">MOD</div>
+        <div class="mstat__bucket">HARD</div>
+        <div class="mstat__bucket">500+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECOVERY -->
+  <div class="fg-band fg-band--ink" style="padding:8px 16px"><span class="fg-band__label" style="font-size:.75rem">💤 Recovery Advisor</span><span class="fg-band__right" style="font-size:.5625rem">ACWR</span></div>
+  <div class="msec" style="background:radial-gradient(80% 100% at 0% 0%, rgba(255,61,166,.14), transparent 60%)">
+    <div class="mhr-mini">
+      <div><div class="mhr-mini__n">8</div><div class="mhr-mini__l">SESSION LOAD</div></div>
+      <div><div class="mhr-mini__n">657</div><div class="mhr-mini__l">7-DAY LOAD</div></div>
+      <div><div class="mhr-mini__n" style="color:var(--fg-rose)">4.00</div><div class="mhr-mini__l" style="color:var(--fg-rose)">ACWR ⚠</div></div>
+    </div>
+  </div>
+  <div class="malert">
+    <span style="font-size:1.125rem">🕐</span>
+    <span>REST <b>32 HOURS</b> · NEXT QUALITY SESSION FRI</span>
+  </div>
+
+  <!-- BOOSTERS -->
+  <div class="fg-band fg-band--ink" style="padding:8px 16px"><span class="fg-band__label" style="font-size:.75rem">🚀 Boosters Applied</span><span class="fg-band__right" style="font-size:.5625rem">25 / 25</span></div>
+  <div class="mboost-wrap">
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏃</span>PARKRUN</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏆</span>PRS</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">📅</span>GOAL</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⭐</span>STREAK</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏅</span>MILES</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏃‍♂️</span>PACE</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⏱️</span>INTERVALS</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">❤️</span>HR</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💗</span>ZONES</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🔋</span>CAL</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💥</span>EFFORT</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💪</span>LOAD</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💤</span>REC</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">👟</span>DYN</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🦶</span>CADENCE</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⚡</span>POWER</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🚀</span>SPEED</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⛰️</span>ELEV</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">📍</span>LOC</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🌤️</span>WX</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🎨</span>BANNER</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏷️</span>TYPE</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">✨</span>AI</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🔢</span>INCR</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🎯</span>COND</span>
+  </div>
+
+  <!-- CTA -->
+  <section class="mcta">
+    <h2>Want your sweat<br>to look like this?</h2>
+    <p>25 BOOSTERS ON EVERY ACTIVITY · FREE</p>
+    <a href="/auth/register">TRY FITGLUE FREE →</a>
+  </section>
+
+  <div class="mattr">
+    POWERED BY <a href="/">FITGLUE</a>
+  </div>
+
+</body>
+</html>

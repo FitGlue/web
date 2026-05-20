@@ -1,5 +1,6 @@
 /* ==========================================================================
-   FlowArrow Component - Simple Flow Indicator
+   FlowArrow — Brutal × Aurora
+   Pink accent arrow, mono label.
    ========================================================================== */
 @import '../tokens.css';
 
@@ -8,14 +9,13 @@
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
-  color: var(--color-text-muted);
+  color: var(--fg-pink);
   padding: 0.25rem;
 }
 
 .flow-arrow__icon {
-  font-size: 1.25rem;
-  font-weight: 300;
-  opacity: 0.6;
+  font-size: 1.125rem;
+  opacity: 0.7;
 }
 
 .flow-arrow--small .flow-arrow__icon {
@@ -23,10 +23,12 @@
 }
 
 .flow-arrow__label {
-  font-size: 0.7rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-muted);
+  letter-spacing: 0.1em;
+  color: var(--fg-paper-dim);
 }
 
 .flow-arrow--down {

@@ -2,9 +2,9 @@ import React from 'react';
 import './SettingsSection.css';
 
 export interface SettingsSectionProps {
-    /** Section title */
+    /** Section title shown in the band header */
     title?: string;
-    /** Optional description text */
+    /** Optional description text below the band */
     description?: string;
     /** Section content */
     children: React.ReactNode;
@@ -13,8 +13,8 @@ export interface SettingsSectionProps {
 }
 
 /**
- * SettingsSection provides standardized settings/edit section layout.
- * Replaces className patterns: edit-section, account-field, danger-zone
+ * SettingsSection — ink-2 surface with fg-band--sm section header.
+ * Brutal × Aurora: no rounded corners, gradient band label, flat rows.
  */
 export const SettingsSection: React.FC<SettingsSectionProps> = ({
     title,
@@ -24,9 +24,17 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
 }) => {
     return (
         <div className={`settings-section settings-section--${variant}`}>
-            {title && <h3>{title}</h3>}
-            {description && <p>{description}</p>}
-            <div>{children}</div>
+            {title && (
+                <div className="settings-section__head">
+                    <h3 className="settings-section__title">{title}</h3>
+                </div>
+            )}
+            {description && (
+                <p className="settings-section__description">{description}</p>
+            )}
+            <div className="settings-section__content">
+                {children}
+            </div>
         </div>
     );
 };

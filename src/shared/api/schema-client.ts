@@ -677,6 +677,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/me/pipeline-runs/{runId}/payload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Pipeline Run Payloads ===================== */
+        get: operations["ClientGatewayService_GetPipelineRunPayload"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/me/pipelines": {
         parameters: {
             query?: never;
@@ -710,6 +727,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/me/pipelines/{id}/backfill": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_BackfillActivities"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/me/pipelines/{id}/runs": {
         parameters: {
             query?: never;
@@ -734,6 +767,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["ClientGatewayService_GetPipelineRun"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/pipelines/{id}/source-activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_ListSourceActivities"];
         put?: never;
         post?: never;
         delete?: never;
@@ -909,6 +958,48 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * @description ActivityEnrichments holds typed outputs from the enricher pipeline.
+         *      Each sub-message is optional — only present if the corresponding enricher
+         *      was configured and ran. Replaces enrichment_metadata map<string,string>.
+         */
+        ActivityEnrichments: {
+            heartRate?: components["schemas"]["HeartRateSummary"];
+            heartRateZones?: components["schemas"]["HeartRateZonesSummary"];
+            effort?: components["schemas"]["EffortScoreSummary"];
+            calories?: components["schemas"]["CaloriesSummary"];
+            trainingLoad?: components["schemas"]["TrainingLoadSummary"];
+            recovery?: components["schemas"]["RecoverySummary"];
+            streak?: components["schemas"]["StreakSummary"];
+            aiSummary?: components["schemas"]["AiSummary"];
+            aiBanner?: components["schemas"]["AiBanner"];
+            pace?: components["schemas"]["PaceSummary"];
+            cadence?: components["schemas"]["CadenceSummary"];
+            power?: components["schemas"]["PowerSummary"];
+            elevation?: components["schemas"]["ElevationSummary"];
+            speed?: components["schemas"]["SpeedSummary"];
+            parkrun?: components["schemas"]["ParkrunSummary"];
+            weather?: components["schemas"]["WeatherSummary"];
+            location?: components["schemas"]["LocationSummary"];
+            runningDynamics?: components["schemas"]["RunningDynamicsSummary"];
+            personalRecords?: components["schemas"]["PersonalRecordsSummary"];
+            distanceMilestone?: components["schemas"]["DistanceMilestoneSummary"];
+            goalTracker?: components["schemas"]["GoalTrackerSummary"];
+            spotify?: components["schemas"]["SpotifyTracksSummary"];
+            intervals?: components["schemas"]["IntervalsSummary"];
+            muscleHeatmap?: components["schemas"]["MuscleHeatmapSummary"];
+        };
+        AiBanner: {
+            imageUrl?: string;
+            promptHash?: string;
+            generatorVersion?: string;
+        };
+        AiSummary: {
+            html?: string;
+            model?: string;
+            /** Format: date-time */
+            generatedAt?: string;
+        };
         AppleHealthIntegration: {
             enabled?: boolean;
             /** Format: date-time */
@@ -916,14 +1007,38 @@ export interface components {
             /** Format: date-time */
             lastUsedAt?: string;
         };
+        BackfillActivitiesGatewayRequest: {
+            id?: string;
+            source?: string;
+            sourceActivityIds?: string[];
+        };
+        BackfillActivitiesGatewayResponse: {
+            /** Format: int32 */
+            queuedCount?: number;
+        };
         BoosterExecution: {
             providerName?: string;
-            status?: string;
             durationMs?: string;
             metadata?: {
                 [key: string]: string;
             };
             error?: string;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            status?: "EXECUTION_STEP_STATUS_UNSPECIFIED" | "EXECUTION_STEP_STATUS_QUEUED" | "EXECUTION_STEP_STATUS_RUNNING" | "EXECUTION_STEP_STATUS_OK" | "EXECUTION_STEP_STATUS_PASS" | "EXECUTION_STEP_STATUS_SKIPPED" | "EXECUTION_STEP_STATUS_FAILED" | "EXECUTION_STEP_STATUS_RETRIED";
+        };
+        CadenceSummary: {
+            /** Format: int32 */
+            avgRpm?: number;
+            /** Format: int32 */
+            maxRpm?: number;
+        };
+        CaloriesSummary: {
+            /** Format: int32 */
+            kcal?: number;
+            comparisonText?: string;
         };
         ConfigFieldDependency: {
             fieldKey?: string;
@@ -1015,6 +1130,32 @@ export interface components {
             /** Format: date-time */
             completedAt?: string;
         };
+        DistanceMilestoneSummary: {
+            /** Format: double */
+            milestoneKm?: number;
+            /** Format: double */
+            lifetimeDistanceKm?: number;
+            /** Format: double */
+            nextMilestoneKm?: number;
+            activityTypeLabel?: string;
+        };
+        EffortFactor: {
+            label?: string;
+            /** Format: double */
+            ratioVsBaseline?: number;
+        };
+        EffortScoreSummary: {
+            /** Format: int32 */
+            score?: number;
+            band?: string;
+            factors?: components["schemas"]["EffortFactor"][];
+        };
+        ElevationSummary: {
+            /** Format: double */
+            totalGainM?: number;
+            /** Format: double */
+            totalLossM?: number;
+        };
         EnricherConfig: {
             /**
              * Format: enum
@@ -1022,6 +1163,36 @@ export interface components {
              */
             providerType?: "ENRICHER_PROVIDER_UNSPECIFIED" | "ENRICHER_PROVIDER_FITBIT_HEART_RATE" | "ENRICHER_PROVIDER_WORKOUT_SUMMARY" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP" | "ENRICHER_PROVIDER_SOURCE_LINK" | "ENRICHER_PROVIDER_VIRTUAL_GPS" | "ENRICHER_PROVIDER_TYPE_MAPPER" | "ENRICHER_PROVIDER_PARKRUN" | "ENRICHER_PROVIDER_CONDITION_MATCHER" | "ENRICHER_PROVIDER_AUTO_INCREMENT" | "ENRICHER_PROVIDER_USER_INPUT" | "ENRICHER_PROVIDER_ACTIVITY_FILTER" | "ENRICHER_PROVIDER_LOGIC_GATE" | "ENRICHER_PROVIDER_HEART_RATE_SUMMARY" | "ENRICHER_PROVIDER_AI_COMPANION" | "ENRICHER_PROVIDER_PACE_SUMMARY" | "ENRICHER_PROVIDER_CADENCE_SUMMARY" | "ENRICHER_PROVIDER_POWER_SUMMARY" | "ENRICHER_PROVIDER_SPEED_SUMMARY" | "ENRICHER_PROVIDER_PERSONAL_RECORDS" | "ENRICHER_PROVIDER_TRAINING_LOAD" | "ENRICHER_PROVIDER_SPOTIFY_TRACKS" | "ENRICHER_PROVIDER_WEATHER" | "ENRICHER_PROVIDER_ELEVATION_SUMMARY" | "ENRICHER_PROVIDER_LOCATION_NAMING" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP_IMAGE" | "ENRICHER_PROVIDER_ROUTE_THUMBNAIL" | "ENRICHER_PROVIDER_AI_BANNER" | "ENRICHER_PROVIDER_FIT_FILE_HEART_RATE" | "ENRICHER_PROVIDER_HYBRID_RACE_TAGGER" | "ENRICHER_PROVIDER_RUNNING_DYNAMICS" | "ENRICHER_PROVIDER_HEART_RATE_ZONES" | "ENRICHER_PROVIDER_CALORIES_BURNED" | "ENRICHER_PROVIDER_GOAL_TRACKER" | "ENRICHER_PROVIDER_STREAK_TRACKER" | "ENRICHER_PROVIDER_DISTANCE_MILESTONES" | "ENRICHER_PROVIDER_RECOVERY_ADVISOR" | "ENRICHER_PROVIDER_EFFORT_SCORE" | "ENRICHER_PROVIDER_INTERVALS" | "ENRICHER_PROVIDER_PHOTO_UPLOAD" | "ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY" | "ENRICHER_PROVIDER_AI_ACTIVITY_TYPE" | "ENRICHER_PROVIDER_MOCK";
             typedConfig?: {
+                [key: string]: string;
+            };
+        };
+        /** @description EntrySparkline is a downsampled timeseries for card-level sparklines. */
+        EntrySparkline: {
+            metric?: string;
+            values?: number[];
+        };
+        /** @description ExecutionStep is the unified record for a single step in a pipeline run. */
+        ExecutionStep: {
+            id?: string;
+            /** Format: int32 */
+            ordinal?: number;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            kind?: "EXECUTION_STEP_KIND_UNSPECIFIED" | "EXECUTION_STEP_KIND_SOURCE" | "EXECUTION_STEP_KIND_PARSE" | "EXECUTION_STEP_KIND_GATE" | "EXECUTION_STEP_KIND_ENRICHER_BATCH" | "EXECUTION_STEP_KIND_ROUTER" | "EXECUTION_STEP_KIND_DESTINATION";
+            displayName?: string;
+            service?: string;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            status?: "EXECUTION_STEP_STATUS_UNSPECIFIED" | "EXECUTION_STEP_STATUS_QUEUED" | "EXECUTION_STEP_STATUS_RUNNING" | "EXECUTION_STEP_STATUS_OK" | "EXECUTION_STEP_STATUS_PASS" | "EXECUTION_STEP_STATUS_SKIPPED" | "EXECUTION_STEP_STATUS_FAILED" | "EXECUTION_STEP_STATUS_RETRIED";
+            offsetMs?: string;
+            durationMs?: string;
+            statusLabel?: string;
+            error?: string;
+            metadata?: {
                 [key: string]: string;
             };
         };
@@ -1066,6 +1237,14 @@ export interface components {
             lastActivityAt?: string;
             /** Format: int32 */
             uploadsThisMonth?: number;
+            /** Format: int32 */
+            activitiesThisMonth?: number;
+            /** Format: int32 */
+            activitiesThisWeek?: number;
+            /** Format: int32 */
+            currentStreakDays?: number;
+            /** Format: int32 */
+            longestStreakDays?: number;
         };
         /** @description Booster Data */
         GetBoosterDataGatewayResponse: {
@@ -1088,6 +1267,13 @@ export interface components {
             publicUrl?: string;
             contentType?: string;
             maxSizeBytes?: string;
+        };
+        GetPipelineRunPayloadGatewayResponse: {
+            downloadUrl?: string;
+            sizeBytes?: string;
+            contentType?: string;
+            /** Format: date-time */
+            expiresAt?: string;
         };
         /** @description Registry */
         GetPluginIconGatewayResponse: {
@@ -1121,6 +1307,20 @@ export interface components {
             /** Format: date-time */
             lastUsedAt?: string;
         };
+        GoalEntry: {
+            label?: string;
+            /** Format: double */
+            current?: number;
+            /** Format: double */
+            target?: number;
+            unit?: string;
+            onPace?: boolean;
+            /** Format: int32 */
+            daysRemaining?: number;
+        };
+        GoalTrackerSummary: {
+            goals?: components["schemas"]["GoalEntry"][];
+        };
         GoogleIntegration: {
             enabled?: boolean;
             accessToken?: string;
@@ -1146,6 +1346,31 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             lastUsedAt?: string;
+        };
+        HeartRateSummary: {
+            /** Format: int32 */
+            minBpm?: number;
+            /** Format: int32 */
+            avgBpm?: number;
+            /** Format: int32 */
+            maxBpm?: number;
+            /** Format: int32 */
+            driftBpm?: number;
+            driftWarning?: boolean;
+        };
+        HeartRateZoneBucket: {
+            /** Format: int32 */
+            zoneIndex?: number;
+            name?: string;
+            /** Format: int32 */
+            minutes?: number;
+            /** Format: double */
+            percentage?: number;
+        };
+        HeartRateZonesSummary: {
+            zones?: components["schemas"]["HeartRateZoneBucket"][];
+            /** Format: int32 */
+            totalMinutes?: number;
         };
         HevyIntegration: {
             enabled?: boolean;
@@ -1197,6 +1422,18 @@ export interface components {
             isTemporarilyUnavailable?: boolean;
             actions?: components["schemas"]["IntegrationAction"][];
         };
+        IntervalSegment: {
+            type?: string;
+            label?: string;
+            /** Format: double */
+            durationSeconds?: number;
+            /** Format: double */
+            distanceMeters?: number;
+            /** Format: double */
+            avgHr?: number;
+            /** Format: double */
+            avgSpeedMs?: number;
+        };
         IntervalsIntegration: {
             enabled?: boolean;
             apiKey?: string;
@@ -1205,6 +1442,10 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             lastUsedAt?: string;
+        };
+        IntervalsSummary: {
+            segments?: components["schemas"]["IntervalSegment"][];
+            workoutName?: string;
         };
         Lap: {
             /** Format: date-time */
@@ -1217,6 +1458,12 @@ export interface components {
             exerciseName?: string;
             intensity?: string;
             isTelemetryContainerOnly?: boolean;
+        };
+        LifetimeZoneSplit: {
+            zones?: components["schemas"]["HeartRateZoneBucket"][];
+            /** Format: date-time */
+            computedAt?: string;
+            label?: string;
         };
         ListActivitiesGatewayResponse: {
             activities?: components["schemas"]["StandardizedActivity"][];
@@ -1251,8 +1498,20 @@ export interface components {
         ListShowcasesGatewayResponse: {
             showcases?: components["schemas"]["ShowcaseProfileEntry"][];
         };
+        ListSourceActivitiesGatewayResponse: {
+            activities?: components["schemas"]["SourceActivityItemGateway"][];
+            nextPageToken?: string;
+        };
         ListSourcesGatewayResponse: {
             sources?: components["schemas"]["PluginManifest"][];
+        };
+        LocationSummary: {
+            locationName?: string;
+            country?: string;
+            /** Format: double */
+            latitude?: number;
+            /** Format: double */
+            longitude?: number;
         };
         MockIntegration: {
             enabled?: boolean;
@@ -1260,6 +1519,11 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             lastUsedAt?: string;
+        };
+        MuscleHeatmapSummary: {
+            primary?: string[];
+            secondary?: string[];
+            imageUrl?: string;
         };
         NotificationPreferences: {
             notifyPendingInput?: boolean;
@@ -1281,6 +1545,19 @@ export interface components {
             /** Format: date-time */
             lastUsedAt?: string;
         };
+        PaceSplit: {
+            /** Format: int32 */
+            km?: number;
+            /** Format: double */
+            seconds?: number;
+        };
+        PaceSummary: {
+            /** Format: double */
+            avgPaceSecondsPerKm?: number;
+            /** Format: double */
+            bestSplitSecondsPerKm?: number;
+            splits?: components["schemas"]["PaceSplit"][];
+        };
         ParkrunIntegration: {
             enabled?: boolean;
             athleteId?: string;
@@ -1290,6 +1567,17 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             lastUsedAt?: string;
+        };
+        ParkrunSummary: {
+            eventName?: string;
+            /** Format: int32 */
+            position?: number;
+            finishTime?: string;
+            ageGrade?: string;
+            /** Format: int32 */
+            totalParkruns?: number;
+            isTimePb?: boolean;
+            isAgeGradePb?: boolean;
         };
         /** @description FIT File Parse */
         ParseFitFileGatewayRequest: {
@@ -1317,6 +1605,9 @@ export interface components {
             previousValue?: number;
             /** Format: double */
             improvement?: number;
+        };
+        PersonalRecordsSummary: {
+            records?: components["schemas"]["PersonalRecord"][];
         };
         PipelineConfig: {
             id?: string;
@@ -1363,6 +1654,12 @@ export interface components {
             pendingInputId?: string;
             originalPayloadUri?: string;
             enrichedEventUri?: string;
+            /**
+             * @description Unified record of every step in a pipeline run — source, parse, gate,
+             *      enricher batch, router, and per-destination uploaders.
+             *      boosters[] is preserved for existing documents; new clients should prefer steps[].
+             */
+            steps?: components["schemas"]["ExecutionStep"][];
         };
         PluginManifest: {
             id?: string;
@@ -1397,6 +1694,13 @@ export interface components {
             iconPath?: string;
             isTemporarilyUnavailable?: boolean;
             allowMultipleInstances?: boolean;
+            /**
+             * Format: enum
+             * @description PipelineStage groups boosters in the pipeline editor UI.
+             *      Only meaningful for type == PLUGIN_TYPE_ENRICHER.
+             * @enum {string}
+             */
+            stage?: "PIPELINE_STAGE_UNSPECIFIED" | "PIPELINE_STAGE_GATE" | "PIPELINE_STAGE_ENRICHMENT" | "PIPELINE_STAGE_METRICS" | "PIPELINE_STAGE_CONTEXT_AI" | "PIPELINE_STAGE_INPUT" | "PIPELINE_STAGE_VIZ";
         };
         PluginRegistryResponse: {
             sources?: components["schemas"]["PluginManifest"][];
@@ -1415,6 +1719,16 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             lastUsedAt?: string;
+        };
+        PowerSummary: {
+            /** Format: int32 */
+            avgWatts?: number;
+            /** Format: int32 */
+            normalizedPower?: number;
+            /** Format: double */
+            intensityFactor?: number;
+            /** Format: int32 */
+            kilojoules?: number;
         };
         Record: {
             /** Format: date-time */
@@ -1444,6 +1758,16 @@ export interface components {
             /** Format: double */
             distance?: number;
         };
+        RecoverySummary: {
+            /** Format: int32 */
+            sessionLoad?: number;
+            /** Format: double */
+            acuteChronicRatio?: number;
+            /** Format: int32 */
+            hoursToRecover?: number;
+            alert?: boolean;
+            alertText?: string;
+        };
         RepostGatewayResponse: {
             success?: boolean;
             message?: string;
@@ -1452,6 +1776,14 @@ export interface components {
         RepostVariantGatewayRequest: {
             activityId?: string;
             destination?: string;
+        };
+        RunningDynamicsSummary: {
+            /** Format: double */
+            avgGroundContactMs?: number;
+            /** Format: double */
+            avgVerticalOscillationCm?: number;
+            /** Format: double */
+            avgStepLengthM?: number;
         };
         /** @description Auth Email */
         SendEmailChangeGatewayRequest: {
@@ -1475,6 +1807,8 @@ export interface components {
             avgHeartRate?: number;
             /** Format: int32 */
             maxHeartRate?: number;
+            /** Format: int32 */
+            minHeartRate?: number;
         };
         /** @description FCM Token */
         SetFCMTokenGatewayRequest: {
@@ -1536,6 +1870,9 @@ export interface components {
             showPhotoGallery?: boolean;
             links?: components["schemas"]["ShowcaseLink"][];
             callouts?: components["schemas"]["ShowcaseBioCallout"][];
+            /** @description Lifetime aggregates — written by a daily rollup job. Optional; absent means not yet computed. */
+            zoneSplit?: components["schemas"]["LifetimeZoneSplit"];
+            streakHistory?: components["schemas"]["WeeklyStreakHistory"];
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;
@@ -1563,6 +1900,18 @@ export interface components {
             totalReps?: number;
             /** Format: double */
             totalWeightKg?: number;
+            /**
+             * Format: int32
+             * @description Reskin additions — populated on each activity sync
+             */
+            boosterCount?: number;
+            /** Format: int32 */
+            destinationCount?: number;
+            sparkline?: components["schemas"]["EntrySparkline"];
+            /** Format: int32 */
+            avgHeartRate?: number;
+            /** Format: int32 */
+            caloriesKcal?: number;
         };
         ShowcaseTheme: {
             themeId?: string;
@@ -1592,9 +1941,6 @@ export interface components {
             activityData?: components["schemas"]["StandardizedActivity"];
             fitFileUri?: string;
             appliedEnrichments?: string[];
-            enrichmentMetadata?: {
-                [key: string]: string;
-            };
             tags?: string[];
             pipelineExecutionId?: string;
             /** Format: date-time */
@@ -1606,6 +1952,21 @@ export interface components {
             ownerProfilePictureUrl?: string;
             ownerProfileSlug?: string;
             photoUrls?: string[];
+            enrichments?: components["schemas"]["ActivityEnrichments"];
+        };
+        SourceActivityItemGateway: {
+            sourceActivityId?: string;
+            title?: string;
+            type?: string;
+            /** Format: date-time */
+            startTime?: string;
+            alreadySynced?: boolean;
+        };
+        SpeedSummary: {
+            /** Format: double */
+            avgSpeedKmh?: number;
+            /** Format: double */
+            maxSpeedKmh?: number;
         };
         SpotifyIntegration: {
             enabled?: boolean;
@@ -1618,6 +1979,17 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             lastUsedAt?: string;
+        };
+        SpotifyTrack: {
+            title?: string;
+            artist?: string;
+            /** Format: int32 */
+            durationSeconds?: number;
+        };
+        SpotifyTracksSummary: {
+            tracks?: components["schemas"]["SpotifyTrack"][];
+            /** Format: int32 */
+            totalCount?: number;
         };
         StandardizedActivity: {
             /**
@@ -1666,6 +2038,21 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             lastUsedAt?: string;
+        };
+        StreakDay: {
+            date?: string;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            state?: "STREAK_DAY_STATE_UNSPECIFIED" | "STREAK_DAY_STATE_OFF" | "STREAK_DAY_STATE_ACTIVE" | "STREAK_DAY_STATE_REST";
+        };
+        StreakSummary: {
+            /** Format: int32 */
+            currentDays?: number;
+            /** Format: int32 */
+            longestDays?: number;
+            calendar?: components["schemas"]["StreakDay"][];
         };
         StrengthSet: {
             exerciseName?: string;
@@ -1726,6 +2113,12 @@ export interface components {
             markerType?: string;
             /** Format: int32 */
             durationSeconds?: number;
+        };
+        TrainingLoadSummary: {
+            /** Format: int32 */
+            trimp?: number;
+            bucket?: string;
+            hint?: string;
         };
         TrainingPeaksIntegration: {
             enabled?: boolean;
@@ -1826,6 +2219,15 @@ export interface components {
             trialEndsAt?: string;
             email?: string;
             displayName?: string;
+            /**
+             * Format: int32
+             * @description Streak aggregates — written by streak-tracker enricher rollup on every activity sync.
+             *      A "streak day" is any calendar day with at least one qualifying activity.
+             *      Optional; absent means not yet computed.
+             */
+            currentStreakDays?: number;
+            /** Format: int32 */
+            longestStreakDays?: number;
         };
         WahooIntegration: {
             enabled?: boolean;
@@ -1838,6 +2240,23 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             lastUsedAt?: string;
+        };
+        WeatherSummary: {
+            /** Format: double */
+            tempC?: number;
+            weatherDescription?: string;
+            /** Format: double */
+            windSpeedKph?: number;
+            windDirection?: string;
+            /** Format: int32 */
+            weatherCode?: number;
+        };
+        WeeklyStreakHistory: {
+            /** Format: int32 */
+            weeksTracked?: number;
+            /** Format: int32 */
+            missedWeeks?: number;
+            weeklyActive?: boolean[];
         };
         WorkoutDefinition: {
             name?: string;
@@ -3392,6 +3811,39 @@ export interface operations {
             };
         };
     };
+    ClientGatewayService_GetPipelineRunPayload: {
+        parameters: {
+            query?: {
+                which?: "PAYLOAD_KIND_UNSPECIFIED" | "PAYLOAD_KIND_ORIGINAL" | "PAYLOAD_KIND_ENRICHED";
+            };
+            header?: never;
+            path: {
+                runId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetPipelineRunPayloadGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
     ClientGatewayService_ListPipelines: {
         parameters: {
             query?: never;
@@ -3549,11 +4001,48 @@ export interface operations {
             };
         };
     };
+    ClientGatewayService_BackfillActivities: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BackfillActivitiesGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackfillActivitiesGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
     ClientGatewayService_ListPipelineRuns: {
         parameters: {
             query?: {
                 limit?: number;
                 pageToken?: string;
+                since?: string;
+                until?: string;
             };
             header?: never;
             path: {
@@ -3602,6 +4091,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PipelineRun"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListSourceActivities: {
+        parameters: {
+            query?: {
+                source?: string;
+                pageToken?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListSourceActivitiesGatewayResponse"];
                 };
             };
             /** @description Default error response */

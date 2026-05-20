@@ -119,15 +119,29 @@ export const PhotoUploadInput: React.FC<Props> = ({ activityId, value, onChange 
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <p style={{ margin: 0, color: 'var(--color-text-muted, #888)', fontSize: '0.875rem' }}>
+            {/* Status / count line — mono label */}
+            <p style={{
+                margin: 0,
+                fontFamily: 'var(--fg-font-mono)',
+                fontSize: '0.6875rem',
+                fontWeight: 700,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: 'var(--color-text-muted)',
+            }}>
                 {photos.length === 0
-                    ? 'Add up to 10 photos from this activity (optional).'
-                    : `${photos.length} photo${photos.length === 1 ? '' : 's'} added. You can add ${MAX_PHOTOS - photos.length} more.`
+                    ? 'Add up to 10 photos (optional)'
+                    : `${photos.length} photo${photos.length === 1 ? '' : 's'} added — ${MAX_PHOTOS - photos.length} remaining`
                 }
             </p>
 
+            {/* Photo grid */}
             {photos.length > 0 && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: '8px' }}>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
+                    gap: '4px',
+                }}>
                     {photos.map((photo, index) => (
                         <div key={photo.publicUrl} style={{ position: 'relative' }}>
                             <img
@@ -137,24 +151,26 @@ export const PhotoUploadInput: React.FC<Props> = ({ activityId, value, onChange 
                                     width: '100%',
                                     aspectRatio: '1',
                                     objectFit: 'cover',
-                                    borderRadius: '6px',
+                                    borderRadius: 0,
                                     display: 'block',
                                 }}
                             />
+                            {/* Remove button — BA ink overlay */}
                             <button
                                 type="button"
                                 onClick={() => removePhoto(index)}
                                 style={{
                                     position: 'absolute',
-                                    top: '2px',
-                                    right: '2px',
-                                    background: 'rgba(0,0,0,0.6)',
-                                    color: '#fff',
+                                    top: '3px',
+                                    right: '3px',
+                                    background: 'rgba(10,10,15,0.75)',
+                                    color: 'var(--fg-paper)',
                                     border: 'none',
-                                    borderRadius: '50%',
+                                    borderRadius: 0,
                                     width: '20px',
                                     height: '20px',
                                     cursor: 'pointer',
+                                    fontFamily: 'var(--fg-font-display)',
                                     fontSize: '12px',
                                     lineHeight: '20px',
                                     textAlign: 'center',
@@ -168,18 +184,37 @@ export const PhotoUploadInput: React.FC<Props> = ({ activityId, value, onChange 
                 </div>
             )}
 
+            {/* Upload progress */}
             {uploading && (
-                <p style={{ margin: 0, color: 'var(--color-text-muted, #888)', fontSize: '0.875rem' }}>
+                <p style={{
+                    margin: 0,
+                    fontFamily: 'var(--fg-font-mono)',
+                    fontSize: '0.6875rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: 'var(--fg-cyan)',
+                }}>
                     {uploadStatus}
                 </p>
             )}
 
+            {/* Error */}
             {error && (
-                <p style={{ margin: 0, color: 'var(--color-error, #e53e3e)', fontSize: '0.875rem' }}>
+                <p style={{
+                    margin: 0,
+                    fontFamily: 'var(--fg-font-mono)',
+                    fontSize: '0.6875rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: 'var(--fg-rose)',
+                }}>
                     {error}
                 </p>
             )}
 
+            {/* Drop zone / add button — dashed hairline, BA ink-3 bg */}
             {photos.length < MAX_PHOTOS && (
                 <>
                     <input
@@ -200,16 +235,28 @@ export const PhotoUploadInput: React.FC<Props> = ({ activityId, value, onChange 
                         disabled={uploading}
                         onClick={() => fileInputRef.current?.click()}
                         style={{
-                            padding: '8px 16px',
-                            borderRadius: '6px',
-                            border: '1px dashed var(--color-border, #444)',
-                            background: 'transparent',
-                            color: 'var(--color-text, #fff)',
+                            padding: '1.5rem',
+                            border: 0,
+                            borderRadius: 0,
+                            /* dashed drop zone outline */
+                            outline: '1.5px dashed rgba(245,243,235,0.2)',
+                            outlineOffset: '-1px',
+                            background: 'var(--fg-ink-3)',
+                            color: uploading
+                                ? 'var(--color-text-muted)'
+                                : 'var(--fg-paper)',
                             cursor: uploading ? 'not-allowed' : 'pointer',
-                            fontSize: '0.875rem',
+                            fontFamily: 'var(--fg-font-mono)',
+                            fontSize: '0.6875rem',
+                            fontWeight: 700,
+                            letterSpacing: '0.14em',
+                            textTransform: 'uppercase',
+                            textAlign: 'center',
+                            width: '100%',
+                            transition: 'outline-color 0.15s ease, color 0.15s ease',
                         }}
                     >
-                        {uploading ? 'Uploading…' : '📷 Add Photos'}
+                        {uploading ? 'Uploading…' : 'Upload Photo'}
                     </button>
                 </>
             )}

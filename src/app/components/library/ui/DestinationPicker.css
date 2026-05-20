@@ -1,0 +1,125 @@
+/* ==========================================================================
+   DestinationPicker — Brutal × Aurora
+   Stacked chip list + dashed add row.
+   ========================================================================== */
+
+.dest-picker { max-width: 720px; }
+
+.dest-picker__chosen {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.dest-chip {
+  padding: 12px 14px;
+  background: var(--fg-ink);
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  border-bottom: var(--fg-rule-thin);
+}
+
+.dest-chip:last-child {
+  border-bottom: 0;
+}
+
+.dest-chip__icon {
+  width: 32px;
+  height: 32px;
+  background: var(--fg-ink-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.0625rem;
+}
+
+.dest-chip__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dest-chip__name {
+  font-family: var(--fg-font-display);
+  font-size: 0.9375rem;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+
+.dest-chip__rule {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+}
+
+.dest-chip__rule code {
+  font-family: var(--fg-font-mono);
+  color: var(--fg-cyan);
+  background: var(--fg-ink-2);
+  padding: 1px 4px;
+}
+
+.dest-chip__actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.dest-chip__configure {
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0;
+}
+
+.dest-chip__configure:hover {
+  color: var(--fg-paper);
+}
+
+.dest-chip__remove {
+  color: var(--fg-rose);
+  cursor: pointer;
+  padding-left: 6px;
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.dest-picker__add {
+  padding: 12px 14px;
+  border: var(--fg-rule-dashed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  font-family: var(--fg-font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  background: none;
+  width: 100%;
+  margin-top: 6px;
+}
+
+.dest-picker__add:hover {
+  color: var(--fg-paper);
+}

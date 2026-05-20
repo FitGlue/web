@@ -1,0 +1,56 @@
+.countdown-ring {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.countdown-ring svg {
+    width: 100%;
+    height: 100%;
+}
+
+.countdown-ring__bg {
+    fill: none;
+    stroke: var(--fg-ink-3);
+    stroke-width: 8;
+}
+
+.countdown-ring__fg {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: square;
+}
+
+.countdown-ring__fg--warn {
+    stroke: var(--fg-rose);
+}
+
+.countdown-ring__label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: var(--fg-font-display);
+    pointer-events: none;
+}
+
+.countdown-ring__n {
+    font-size: 1.375rem;
+    line-height: 1;
+    letter-spacing: -.025em;
+}
+
+.countdown-ring__n--warn {
+    color: var(--fg-rose);
+}
+
+.countdown-ring__u {
+    font-family: var(--fg-font-mono);
+    font-size: .5rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    color: var(--color-text-muted);
+    margin-top: 3px;
+    text-transform: uppercase;
+}

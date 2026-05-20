@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Marketing · Pillar — FitGlue Reskin</title>
+<meta name="viewport" content="width=1440, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tokens.css?v=3" />
+<link rel="stylesheet" href="../css/base.css?v=3" />
+<link rel="stylesheet" href="../css/components.css?v=3" />
+<link rel="stylesheet" href="../css/overrides.css?v=3" />
+<style>
+  body { background: var(--fg-ink); color: var(--fg-paper); margin: 0; }
+  .page-hero { padding: 7rem 0 4rem; text-align: center; border-bottom: var(--fg-rule-thick); }
+  .page-hero h1 { font-size: clamp(3rem, 8vw, 6rem); margin-bottom: 1rem; }
+  .page-hero p { font-size: 1.25rem; color: var(--color-text-muted); max-width: 720px; margin: 0 auto; }
+  .booster-category-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: .75rem; border-bottom: var(--fg-rule-thin); }
+  .booster-category-header h2 { font-size: 1.5rem; margin: 0; }
+  .feature-grid { margin-bottom: 4rem; }
+  .pricing-feature-list { list-style: none; padding: 0; margin: 1.5rem 0; text-align: left; }
+  .pricing-feature-list li { padding: .5rem 0; border-bottom: var(--fg-rule-thin); display: flex; gap: .5rem; align-items: center; font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); }
+  .pricing-feature-list li::before { content: '✓'; color: var(--fg-green); font-weight: 700; }
+  .pricing-price { font-family: var(--fg-font-display); font-size: 3.5rem; line-height: .9; margin: 1rem 0; letter-spacing: -.04em; }
+  .pricing-price small { font-size: 1rem; color: var(--color-text-muted); display: block; margin-top: .5rem; letter-spacing: .14em; font-family: var(--fg-font-mono); }
+  .pricing-grid { padding: 2rem 0 4rem; }
+  .pricing-card { padding: 2.25rem 2rem; display: flex; flex-direction: column; }
+  .pricing-card h3 { font-size: 1.5rem; }
+  .pricing-card .btn { margin-top: auto; }
+</style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo"><span class="logo-fit">Fit</span><span class="logo-glue">Glue</span></a>
+        <nav class="nav"><ul class="nav-links">
+          <li><a href="/features" class="nav-link active">Features</a></li>
+          <li><a href="/how-it-works" class="nav-link">How It Works</a></li>
+          <li><a href="/pricing" class="nav-link">Pricing</a></li>
+          <li><a href="/auth/login" class="nav-link nav-link-ghost">Login</a></li>
+          <li><a href="/auth/register" class="nav-link nav-link-cta">Get Started</a></li>
+        </ul></nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <span class="fg-stamp fg-stamp--paper" style="margin-bottom:1.25rem">25 BOOSTERS · 9 SOURCES · 5 DESTINATIONS</span>
+      <h1>EVERY <span class="text-gradient">BOOSTER.</span><br>EVERY METRIC.</h1>
+      <p>FitGlue ships 25 boosters that enrich, analyze and route your activities. Mix and match them in pipelines that fire on every workout.</p>
+    </div>
+  </section>
+
+  <!-- BOOSTER CATEGORY 1: METRICS -->
+  <section class="section">
+    <div class="container">
+      <div class="booster-category-header">
+        <h2><span class="text-gradient">METRICS</span> · 8 boosters</h2>
+        <span style="font-family:var(--fg-font-mono);font-size:.75rem;letter-spacing:.14em;color:var(--color-text-muted)">COMPUTED FROM YOUR DATA</span>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card hoverable">
+          <span class="feature-icon">❤️</span>
+          <h3>Heart Rate Summary</h3>
+          <p>Min, avg, max BPM and HR drift. Detects dehydration and overreach early.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">💗</span>
+          <h3>Heart Rate Zones</h3>
+          <p>Time in Z0–Z5 calculated from your LTHR. Pretty bar chart on every activity.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">🔋</span>
+          <h3>Calories Burned</h3>
+          <p>Kcal expenditure with playful real-world equivalents ("≈ 1.0 slice of pizza 🍕").</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">💥</span>
+          <h3>Effort Score</h3>
+          <p>0–100 score blending HR, duration and intensity. Calibrates to <em>your</em> baseline.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">💪</span>
+          <h3>Training Load</h3>
+          <p>TRIMP score with Recovery / Easy / Mod / Hard buckets so it's actually readable.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">💤</span>
+          <h3>Recovery Advisor</h3>
+          <p>ACWR ratio + suggested recovery hours. Flags overreaching before you snap.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">⏱️</span>
+          <h3>Intervals</h3>
+          <p>Auto-detects interval sets from power & HR. Builds a per-rep summary.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">⛰️</span>
+          <h3>Elevation Summary</h3>
+          <p>Gain, loss and grade-adjusted pace. Now you know why that climb hurt.</p>
+        </div>
+      </div>
+
+      <!-- BOOSTER CATEGORY 2: ENRICHMENT -->
+      <div class="booster-category-header">
+        <h2><span class="text-gradient">ACHIEVEMENTS</span> · 6 boosters</h2>
+        <span style="font-family:var(--fg-font-mono);font-size:.75rem;letter-spacing:.14em;color:var(--color-text-muted)">TRACK PROGRESS</span>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card hoverable">
+          <span class="feature-icon">🏆</span>
+          <h3>Personal Records</h3>
+          <p>Best 1k, 5k, 10k, 21k, 42k splits — tracked, compared, celebrated.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">📅</span>
+          <h3>Goal Tracker</h3>
+          <p>Weekly distance/time goals with daily-pace-required nudges.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">⭐</span>
+          <h3>Streak Tracker</h3>
+          <p>Active-day streaks. Your current run vs your best ever.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">🏅</span>
+          <h3>Distance Milestones</h3>
+          <p>500km, 1000km, 5000km celebrations on the right activity.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">🏃</span>
+          <h3>Parkrun Results</h3>
+          <p>Official finish time, position, age-grade — pulled live from parkrun.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">🔢</span>
+          <h3>Auto Increment</h3>
+          <p>"Ride #314 of 2026" — auto-numbers every activity in a series.</p>
+        </div>
+      </div>
+
+      <!-- BOOSTER CATEGORY 3: AI -->
+      <div class="booster-category-header">
+        <h2><span class="text-gradient">CONTEXT & AI</span> · 5 boosters</h2>
+        <span style="font-family:var(--fg-font-mono);font-size:.75rem;letter-spacing:.14em;color:var(--color-text-muted)">LLM + EXTERNAL APIS</span>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card hoverable premium">
+          <div class="feature-card-header">
+            <span class="feature-icon">✨</span>
+            <span class="premium-badge">ATHLETE</span>
+          </div>
+          <h3>AI Activity Companion</h3>
+          <p>A short, witty, natural-language writeup of every workout. Reads like a friend, not a tracker.</p>
+        </div>
+        <div class="feature-card hoverable premium">
+          <div class="feature-card-header">
+            <span class="feature-icon">🎨</span>
+            <span class="premium-badge">ATHLETE</span>
+          </div>
+          <h3>AI Banner</h3>
+          <p>Generates a beautiful cover image themed to your route, weather, and effort.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">🌤️</span>
+          <h3>Weather</h3>
+          <p>Temp, wind, conditions at activity start — stitched in from your GPS.</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">📍</span>
+          <h3>Location Naming</h3>
+          <p>"Hilly south loop · cold start" — generated from your GPX, not "Morning Ride".</p>
+        </div>
+        <div class="feature-card hoverable">
+          <span class="feature-icon">🏷️</span>
+          <h3>Type Mapper</h3>
+          <p>Maps FIT-file types to per-destination types (Hevy strength → Strava workout, etc).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 style="text-align:center;margin-bottom:.75rem">9 <span class="text-gradient">CONNECTIONS</span> · COUNTING</h2>
+      <p class="text-muted" style="text-align:center;max-width:600px;margin:0 auto 3rem">Sources feed pipelines. Destinations receive enriched activities. Many do both.</p>
+      <div class="integrations-grid">
+        <a class="integration-card-link" href="/connections/strava"><div class="integration-card hoverable">
+          <div class="integration-logo"><span class="integration-emoji">🚴</span></div>
+          <div class="integration-name">Strava</div>
+          <span class="integration-status live">LIVE · SRC+DST</span>
+        </div></a>
+        <a class="integration-card-link" href="/connections/hevy"><div class="integration-card hoverable">
+          <div class="integration-logo"><span class="integration-emoji">🏋️</span></div>
+          <div class="integration-name">Hevy</div>
+          <span class="integration-status live">LIVE · SRC+DST</span>
+        </div></a>
+        <a class="integration-card-link" href="/connections/fitbit"><div class="integration-card hoverable">
+          <div class="integration-logo"><span class="integration-emoji">💗</span></div>
+          <div class="integration-name">Fitbit</div>
+          <span class="integration-status live">LIVE · SOURCE</span>
+        </div></a>
+        <a class="integration-card-link" href="/connections/apple"><div class="integration-card hoverable">
+          <div class="integration-logo"><span class="integration-emoji">🍎</span></div>
+          <div class="integration-name">Apple HealthKit</div>
+          <span class="integration-status live">LIVE · SOURCE</span>
+        </div></a>
+        <a class="integration-card-link" href="/connections/health-connect"><div class="integration-card hoverable">
+          <div class="integration-logo"><span class="integration-emoji">🤖</span></div>
+          <div class="integration-name">Health Connect</div>
+          <span class="integration-status live">LIVE · SOURCE</span>
+        </div></a>
+        <a class="integration-card-link" href="/connections/parkrun"><div class="integration-card hoverable">
+          <div class="integration-logo"><span class="integration-emoji">🏃</span></div>
+          <div class="integration-name">Parkrun</div>
+          <span class="integration-status live">LIVE · SOURCE</span>
+        </div></a>
+        <a class="integration-card-link" href="/connections/intervals"><div class="integration-card hoverable">
+          <div class="integration-logo"><span class="integration-emoji">📊</span></div>
+          <div class="integration-name">Intervals.icu</div>
+          <span class="integration-status beta">BETA · SRC+DST</span>
+        </div></a>
+        <a class="integration-card-link" href="/connections/github"><div class="integration-card hoverable">
+          <div class="integration-logo"><span class="integration-emoji">🐙</span></div>
+          <div class="integration-name">GitHub</div>
+          <span class="integration-status live">LIVE · DEST</span>
+        </div></a>
+        <div class="integration-card coming-soon">
+          <div class="integration-logo"><span class="integration-emoji">⌚</span></div>
+          <div class="integration-name">Garmin</div>
+          <span class="integration-status coming">COMING</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section">
+    <div class="container">
+      <h2 style="text-align:center;margin-bottom:.75rem">SIMPLE <span class="text-gradient">PRICING</span></h2>
+      <p class="text-muted" style="text-align:center;max-width:600px;margin:0 auto">Start free. Upgrade when you outgrow it. Cancel any time.</p>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Free</h3>
+          <div class="pricing-price">£0<small>FOREVER</small></div>
+          <ul class="pricing-feature-list">
+            <li>50 activities / month</li>
+            <li>14 boosters</li>
+            <li>3 connections</li>
+            <li>1 pipeline</li>
+            <li>Community support</li>
+          </ul>
+          <a href="/auth/register" class="btn btn-ghost">Start free</a>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Most popular</div>
+          <h3>Athlete</h3>
+          <div class="pricing-price">£6<small>/MO · BILLED ANNUALLY</small></div>
+          <ul class="pricing-feature-list">
+            <li>Unlimited activities</li>
+            <li>All 25 boosters</li>
+            <li>All 9 connections</li>
+            <li>Unlimited pipelines</li>
+            <li>AI Banner + AI Companion</li>
+            <li>Public Showcase pages</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="/auth/register" class="btn btn-primary">Get Athlete</a>
+        </div>
+        <div class="pricing-card">
+          <h3>Coach</h3>
+          <div class="pricing-price">£18<small>/MO PER COACH</small></div>
+          <ul class="pricing-feature-list">
+            <li>Everything in Athlete</li>
+            <li>Up to 25 athlete seats</li>
+            <li>Coach destination</li>
+            <li>Weekly digest emails</li>
+            <li>White-label Showcase</li>
+            <li>Dedicated onboarding</li>
+          </ul>
+          <a href="/contact" class="btn btn-ghost">Talk to us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">Pick a plan.<br>Or just start free.</h2>
+      <p class="cta-subtitle">FitGlue is free for 50 activities a month. Upgrade only when you actually outgrow it.</p>
+      <a href="/auth/register" class="btn btn-primary btn-lg">Start free →</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo"><span class="logo-fit">Fit</span><span class="logo-glue">Glue</span></a>
+          <p class="footer-tagline">Connect everywhere, enhance everything.</p>
+        </div>
+        <div class="footer-column"><h4 class="footer-heading">Product</h4><ul class="footer-links"><li><a href="/features">Features</a></li><li><a href="/how-it-works">How It Works</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/changelog">What's New</a></li></ul></div>
+        <div class="footer-column"><h4 class="footer-heading">Company</h4><ul class="footer-links"><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li></ul></div>
+        <div class="footer-column"><h4 class="footer-heading">Docs</h4><ul class="footer-links"><li><a href="/help">Help</a></li><li><a href="/guides">Guides</a></li></ul></div>
+        <div class="footer-column"><h4 class="footer-heading">Legal</h4><ul class="footer-links"><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li><li><a href="/security">Security</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><p>© 2026 FitGlue. All rights reserved.</p></div>
+    </div>
+  </footer>
+
+</body>
+</html>

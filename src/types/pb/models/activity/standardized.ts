@@ -78,6 +78,7 @@ export interface Session {
   totalCalories?: number | undefined;
   avgHeartRate?: number | undefined;
   maxHeartRate?: number | undefined;
+  minHeartRate?: number | undefined;
 }
 
 export interface Lap {

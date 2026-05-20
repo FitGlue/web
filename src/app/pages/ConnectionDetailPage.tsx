@@ -1,17 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { PageLayout, Stack } from '../components/library/layout';
-import {
-    Button, Heading, Paragraph, CardSkeleton, Card, Badge, Code, ConfirmDialog, useToast
-} from '../components/library/ui';
+import { useAtom } from 'jotai';
+import { PageLayout } from '../components/library/layout';
+import { CardSkeleton, Badge, Button, ConfirmDialog, RunRow, useToast } from '../components/library/ui';
 import { PluginIcon } from '../components/library/ui/PluginIcon';
 import { client } from '../../shared/api/client';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { useConnectionActions } from '../hooks/useConnectionActions';
+import { pipelineRunsAtom } from '../state/activitiesState';
+import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { IntegrationAuthType } from '../types/plugin';
 import { resolveEnum } from '../utils/resolveEnum';
 import '../components/library/ui/CardSkeleton.css';
+import './ConnectionDetailPage.css';
 
 const getWebhookUrl = (integrationId: string): string => {
     const hostname = window.location.hostname;
@@ -34,11 +37,16 @@ const ConnectionDetailPage: React.FC = () => {
     const toast = useToast();
     const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { integrations, loading: integrationsLoading, refresh } = useRealtimeIntegrations();
+    const { pipelines } = useRealtimePipelines();
+
+    useRealtimePipelineRuns(true, 50);
+    const [pipelineRuns] = useAtom(pipelineRunsAtom);
 
     const [disconnecting, setDisconnecting] = useState(false);
     const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
     const [copied, setCopied] = useState(false);
     const [copiedWebhook, setCopiedWebhook] = useState(false);
+    const [configOpen, setConfigOpen] = useState(false);
 
     const requiresWebhookUrlOnly = id === 'intervals';
     const webhookUrl = useMemo(() => requiresWebhookUrlOnly && id ? getWebhookUrl(id) : '', [id, requiresWebhookUrlOnly]);
@@ -47,7 +55,6 @@ const ConnectionDetailPage: React.FC = () => {
     const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[id || ''];
     const isConnected = status?.connected ?? false;
 
-    // Connection actions hook
     const {
         triggerAction,
         isActionRunning,
@@ -55,11 +62,22 @@ const ConnectionDetailPage: React.FC = () => {
         getActionError,
     } = useConnectionActions(id || '');
 
-    // Format last synced date
-    const formatLastSynced = (dateStr?: string) => {
+    // Filter pipeline runs by this connection (source match)
+    const connectionRuns = useMemo(() => {
+        const connId = id?.toLowerCase() || '';
+        return pipelineRuns.filter(r => r.source?.toLowerCase() === connId).slice(0, 10);
+    }, [pipelineRuns, id]);
+
+    // Pipeline name lookup for RunRow
+    const pipelineNameMap = useMemo(() => {
+        const map: Record<string, string> = {};
+        pipelines.forEach(p => { map[p.id] = p.name || p.id; });
+        return map;
+    }, [pipelines]);
+
+    const formatLastSynced = (dateStr?: string): string | null => {
         if (!dateStr) return null;
         const date = new Date(dateStr);
-        // Check for invalid date
         if (isNaN(date.getTime())) return null;
         return date.toLocaleString(undefined, {
             month: 'short',
@@ -68,6 +86,13 @@ const ConnectionDetailPage: React.FC = () => {
             hour: 'numeric',
             minute: '2-digit',
         });
+    };
+
+    const formatConnectedSince = (dateStr?: string): string | null => {
+        if (!dateStr) return null;
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return null;
+        return date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
     };
 
     const handleCopyId = async () => {
@@ -89,16 +114,14 @@ const ConnectionDetailPage: React.FC = () => {
         setTimeout(() => setCopiedWebhook(false), 2000);
     };
 
-    const handleReconnect = () => {
-        navigate(`/connections/${id}/setup`);
-    };
+    const handleReconnect = () => navigate(`/connections/${id}/setup`);
 
     const handleDisconnect = async () => {
         setShowDisconnectConfirm(false);
         setDisconnecting(true);
         try {
             await client.DELETE('/users/me/integrations/{provider}', { params: { path: { provider: id! } } });
-            await refresh();
+            refresh();
             toast.success('Disconnected', `${integration?.name} has been disconnected`);
             navigate('/connections');
         } catch (error) {
@@ -113,9 +136,13 @@ const ConnectionDetailPage: React.FC = () => {
     if (registryLoading || integrationsLoading) {
         return (
             <PageLayout title="Connection" backTo="/connections" backLabel="Connections">
-                <Stack gap="lg">
+                <div className="fg-band">
+                    <span className="fg-band__label">CONNECTION</span>
+                    <span className="fg-band__right">LOADING…</span>
+                </div>
+                <div style={{ padding: '1.5rem' }}>
                     <CardSkeleton variant="integration" />
-                </Stack>
+                </div>
             </PageLayout>
         );
     }
@@ -124,49 +151,47 @@ const ConnectionDetailPage: React.FC = () => {
     if (!integration) {
         return (
             <PageLayout title="Connection Not Found" backTo="/connections" backLabel="Connections">
-                <Card>
-                    <Stack gap="md">
-                        <Paragraph>This connection type does not exist.</Paragraph>
-                        <Button variant="primary" onClick={() => navigate('/connections')}>
-                            Back to Connections
-                        </Button>
-                    </Stack>
-                </Card>
+                <div className="fg-band fg-band--ink">
+                    <span className="fg-band__label">CONNECTION NOT FOUND</span>
+                </div>
+                <div className="conn-detail__section-body">
+                    <p style={{ fontFamily: 'var(--fg-font-body)', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
+                        This connection type does not exist.
+                    </p>
+                    <Button size="sm" onClick={() => navigate('/connections')}>
+                        BACK TO CONNECTIONS
+                    </Button>
+                </div>
             </PageLayout>
         );
     }
 
-    // Not connected - redirect to setup
+    // Not connected
     if (!isConnected) {
         return (
             <PageLayout title={integration.name} backTo="/connections" backLabel="Connections">
-                <Card variant="elevated">
-                    <Stack gap="lg">
-                        <Stack direction="horizontal" align="center" gap="md">
-                            <PluginIcon
-                                icon={integration.icon}
-                                iconType={integration.iconType}
-                                iconPath={integration.iconPath}
-                                size="large"
-                            />
-                            <Stack gap="xs">
-                                <Heading level={2}>{integration.name}</Heading>
-                                <Badge variant="default">Not Connected</Badge>
-                            </Stack>
-                        </Stack>
-
-                        <Paragraph>{integration.description}</Paragraph>
-
-                        <Stack direction="horizontal" gap="sm" justify="end">
-                            <Button variant="secondary" onClick={() => navigate('/connections')}>
-                                Back
-                            </Button>
-                            <Button variant="primary" onClick={() => navigate(`/connections/${id}/setup`)}>
-                                Connect {integration.name}
-                            </Button>
-                        </Stack>
-                    </Stack>
-                </Card>
+                <div className="fg-band fg-band--ink">
+                    <span className="fg-band__label">CONNECTION · {integration.name.toUpperCase()}</span>
+                    <span className="fg-band__right">○ NOT CONNECTED</span>
+                </div>
+                <div className="conn-detail">
+                    <div className="conn-detail__hero">
+                        <div className="conn-detail__icon">
+                            <PluginIcon icon={integration.icon} iconType={integration.iconType} iconPath={integration.iconPath} size="large" />
+                        </div>
+                        <div>
+                            <div className="conn-detail__hero-name">{integration.name}</div>
+                            <div className="conn-detail__hero-sub">{integration.description}</div>
+                        </div>
+                        <Badge>NOT CONNECTED</Badge>
+                    </div>
+                    <div className="conn-detail__actions">
+                        <Button variant="ink" size="sm" onClick={() => navigate('/connections')}>← BACK</Button>
+                        <Button size="sm" onClick={() => navigate(`/connections/${id}/setup`)}>
+                            CONNECT {integration.name.toUpperCase()} →
+                        </Button>
+                    </div>
+                </div>
             </PageLayout>
         );
     }
@@ -174,6 +199,10 @@ const ConnectionDetailPage: React.FC = () => {
     const authType = resolveEnum(integration.authType, IntegrationAuthType);
     const isOAuth = authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_OAUTH;
     const isAppSync = authType === IntegrationAuthType.INTEGRATION_AUTH_TYPE_APP_SYNC;
+    const lastSynced = formatLastSynced(status?.lastUsedAt);
+    const connectedSince = formatConnectedSince(status?.lastUsedAt);
+
+    const hasConfig = !!(status?.externalUserId || (status?.additionalDetails && Object.keys(status.additionalDetails).length > 0) || requiresWebhookUrlOnly);
 
     return (
         <PageLayout
@@ -181,188 +210,229 @@ const ConnectionDetailPage: React.FC = () => {
             backTo="/connections"
             backLabel="Connections"
         >
-            <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
-                <span className="fg-band__label">CONNECTION · {integration.name.toUpperCase()}</span>
-                <span className="fg-band__right">{isConnected ? '● ACTIVE' : '○ INACTIVE'}</span>
+            {/* Hero */}
+            <div className="cd-hero">
+                <div className="cd-hero__icon">
+                    <PluginIcon
+                        icon={integration.icon}
+                        iconType={integration.iconType}
+                        iconPath={integration.iconPath}
+                        size="large"
+                    />
+                </div>
+                <div>
+                    <div className="cd-hero__name">{integration.name}</div>
+                    <div className="cd-hero__meta">
+                        {connectedSince && <>CONNECTED SINCE <b>{connectedSince}</b></>}
+                        {status?.externalUserId && <> · ID <b>{status.externalUserId}</b></>}
+                    </div>
+                </div>
+                <div className="cd-hero__status">
+                    <span className="cd-hero__status-pill">✓ HEALTHY</span>
+                    {lastSynced && (
+                        <span className="cd-hero__status-last">SYNCED {lastSynced}</span>
+                    )}
+                </div>
             </div>
-            <Card variant="elevated">
-                <Stack gap="lg">
-                    {/* Header with icon and status */}
-                    <Stack direction="horizontal" align="center" gap="md">
-                        <PluginIcon
-                            icon={integration.icon}
-                            iconType={integration.iconType}
-                            iconPath={integration.iconPath}
-                            size="large"
-                        />
-                        <Stack gap="xs">
-                            <Heading level={2}>{integration.name}</Heading>
-                            <Badge variant="success">
-                                <Stack direction="horizontal" gap="xs" align="center">
-                                    <Paragraph inline size="sm">✓</Paragraph>
-                                    <Paragraph inline size="sm">Connected</Paragraph>
-                                </Stack>
-                            </Badge>
-                        </Stack>
-                    </Stack>
 
-                    {/* Connection Details */}
-                    <Card variant="default">
-                        <Stack gap="md">
-                            <Heading level={4}>Connection Details</Heading>
+            {/* Actions strip */}
+            <div className="cd-actions">
+                {isOAuth && (
+                    <button className="cd-actions__btn" onClick={handleReconnect}>
+                        🔄 RECONNECT
+                    </button>
+                )}
+                {integration.actions?.map((action: { id: string; label: string; icon: string }) => {
+                    const running = isActionRunning(action.id);
+                    const completed = isActionCompleted(action.id);
+                    const error = getActionError(action.id);
+                    return (
+                        <button
+                            key={action.id}
+                            className="cd-actions__btn"
+                            disabled={running}
+                            onClick={async () => {
+                                try {
+                                    await triggerAction(action.id);
+                                    toast.success('Action Started', `${action.label} is running in the background.`);
+                                } catch {
+                                    toast.error('Failed', 'Could not start the action. Please try again.');
+                                }
+                            }}
+                        >
+                            {action.icon} {running ? 'RUNNING…' : completed ? `${action.label} AGAIN` : action.label.toUpperCase()}
+                            {error && <span style={{ marginLeft: 4, color: 'var(--fg-rose)', fontSize: '.625rem' }}>⚠</span>}
+                        </button>
+                    );
+                })}
+                <div className="cd-actions__spacer" />
+                <button
+                    className="cd-actions__btn cd-actions__btn--danger"
+                    onClick={() => setShowDisconnectConfirm(true)}
+                    disabled={disconnecting}
+                >
+                    ⊗ {disconnecting ? 'DISCONNECTING…' : 'DISCONNECT'}
+                </button>
+                {lastSynced && (
+                    <span className="cd-actions__meta">LAST SYNC <b>{lastSynced}</b></span>
+                )}
+            </div>
 
-                            {status?.externalUserId && (
-                                <Stack direction="horizontal" justify="between" align="center">
-                                    <Stack gap="xs">
-                                        <Paragraph size="sm" muted>
-                                            {integration.apiKeyLabel || 'ID'}
-                                        </Paragraph>
-                                        <Paragraph>
-                                            <Code>{status.externalUserId}</Code>
-                                        </Paragraph>
-                                    </Stack>
-                                    <Button
-                                        variant="secondary"
-                                        size="small"
-                                        onClick={handleCopyId}
-                                    >
-                                        {copied ? '✓ Copied' : 'Copy'}
-                                    </Button>
-                                </Stack>
-                            )}
+            {/* Body: status sidebar + feed */}
+            <div className="cd-body">
 
-                            {/* Display additional integration-specific details */}
-                            {status?.additionalDetails && Object.entries(status.additionalDetails).map(([label, value]) => (
-                                <Stack gap="xs" key={label}>
-                                    <Paragraph size="sm" muted>{label}</Paragraph>
-                                    <Paragraph><Code>{value}</Code></Paragraph>
-                                </Stack>
-                            ))}
-
-                            {status?.lastUsedAt && (
-                                <Stack gap="xs">
-                                    <Paragraph size="sm" muted>Last Synced</Paragraph>
-                                    <Paragraph>{formatLastSynced(status.lastUsedAt)}</Paragraph>
-                                </Stack>
-                            )}
-                        </Stack>
-                    </Card>
+                {/* Left: status sidebar */}
+                <aside className="cd-status">
+                    {/* Status rows */}
+                    <div className="cd-status__group">
+                        <div className="cd-status__label">⚡ STATUS</div>
+                        {status?.lastUsedAt && (
+                            <div className="cd-status__row">
+                                <span className="cd-status__row-l">Last sync</span>
+                                <span className="cd-status__row-v cd-status__row-v--gr">{lastSynced}</span>
+                            </div>
+                        )}
+                        <div className="cd-status__row">
+                            <span className="cd-status__row-l">Recent runs</span>
+                            <span className="cd-status__row-v">{connectionRuns.length}</span>
+                        </div>
+                        {isAppSync && (
+                            <div className="cd-status__row">
+                                <span className="cd-status__row-l">Sync method</span>
+                                <span className="cd-status__row-v">📱 Mobile app</span>
+                            </div>
+                        )}
+                    </div>
 
                     {/* App Sync notice */}
                     {isAppSync && (
-                        <Card variant="default">
-                            <Stack direction="horizontal" gap="md" align="start">
-                                <Paragraph inline>📱</Paragraph>
-                                <Stack gap="xs">
-                                    <Paragraph bold>Syncs via Mobile App</Paragraph>
-                                    <Paragraph size="sm" muted>
-                                        Activities from {integration.name} are synced through the FitGlue mobile app.
-                                    </Paragraph>
-                                </Stack>
-                            </Stack>
-                        </Card>
+                        <div className="cd-status__group">
+                            <div className="cd-status__label">📱 SYNC METHOD</div>
+                            <div className="cd-status__notice">
+                                Activities from {integration.name} are synced through the FitGlue mobile app.
+                            </div>
+                        </div>
                     )}
 
-                    {/* Intervals webhook URL reminder */}
+                    {/* Webhook URL */}
                     {requiresWebhookUrlOnly && (
-                        <Card variant="default">
-                            <Stack gap="md">
-                                <Stack direction="horizontal" gap="md" align="start">
-                                    <Paragraph inline>🔗</Paragraph>
-                                    <Stack gap="xs">
-                                        <Paragraph bold>Webhook Setup Required</Paragraph>
-                                        <Paragraph size="sm" muted>
-                                            Register this URL in <strong>Intervals.icu → Settings → Developer → Webhook URL</strong> so FitGlue is notified when you log activities.
-                                        </Paragraph>
-                                    </Stack>
-                                </Stack>
-                                <Stack direction="horizontal" align="center" gap="sm">
-                                    <Code>{webhookUrl}</Code>
-                                    <Button variant="secondary" size="small" onClick={handleCopyWebhookUrl}>
-                                        {copiedWebhook ? '✓ Copied!' : 'Copy'}
-                                    </Button>
-                                </Stack>
-                            </Stack>
-                        </Card>
+                        <div className="cd-status__group">
+                            <div className="cd-status__label">🔗 WEBHOOK</div>
+                            <div className="cd-status__notice">
+                                Register this URL in Intervals.icu → Settings → Developer.
+                            </div>
+                            <button className="cd-status__copy-btn" onClick={handleCopyWebhookUrl}>
+                                {copiedWebhook ? '✓ COPIED' : 'COPY WEBHOOK URL'}
+                            </button>
+                        </div>
                     )}
 
-                    {/* Available Actions */}
+                    {/* External ID */}
+                    {status?.externalUserId && (
+                        <div className="cd-status__group">
+                            <div className="cd-status__label">🔑 {integration.apiKeyLabel?.toUpperCase() || 'ACCOUNT ID'}</div>
+                            <div className="cd-status__row">
+                                <span className="cd-status__row-l cd-status__row-l--mono">{status.externalUserId}</span>
+                                <button className="cd-status__copy-btn" onClick={handleCopyId}>
+                                    {copied ? '✓' : 'COPY'}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Additional details */}
+                    {status?.additionalDetails && Object.keys(status.additionalDetails).length > 0 && (
+                        <div className="cd-status__group">
+                            <div className="cd-status__label">ℹ DETAILS</div>
+                            {Object.entries(status.additionalDetails).map(([label, value]) => (
+                                <div className="cd-status__row" key={label}>
+                                    <span className="cd-status__row-l">{label}</span>
+                                    <span className="cd-status__row-v">{value}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Integration actions in sidebar */}
                     {integration.actions && integration.actions.length > 0 && (
-                        <Card variant="default">
-                            <Stack gap="md">
-                                <Heading level={4}>Available Actions</Heading>
-                                {integration.actions.map((action: { id: string; label: string; description: string; icon: string }) => {
-                                    const running = isActionRunning(action.id);
-                                    const completed = isActionCompleted(action.id);
-                                    const error = getActionError(action.id);
+                        <div className="cd-status__group">
+                            <div className="cd-status__label">
+                                ⚡ ACTIONS · {integration.actions.length}
+                            </div>
+                            {integration.actions.map((action: { id: string; label: string; description: string; icon: string }) => (
+                                <div key={action.id} className="cd-status__action">
+                                    <span className="cd-status__action-icon">{action.icon}</span>
+                                    <div className="cd-status__action-body">
+                                        <div className="cd-status__action-name">{action.label}</div>
+                                        {getActionError(action.id) && (
+                                            <div className="cd-status__action-err">{getActionError(action.id)}</div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </aside>
 
-                                    return (
-                                        <Stack
-                                            key={action.id}
-                                            direction="horizontal"
-                                            justify="between"
-                                            align="center"
-                                            gap="md"
-                                        >
-                                            <Stack direction="horizontal" gap="md" align="center">
-                                                <Paragraph inline style={{ fontSize: '1.5rem' }}>
-                                                    {action.icon}
-                                                </Paragraph>
-                                                <Stack gap="xs">
-                                                    <Paragraph bold>{action.label}</Paragraph>
-                                                    <Paragraph size="sm" muted>
-                                                        {action.description}
-                                                    </Paragraph>
-                                                    {error && (
-                                                        <Badge variant="error">{error}</Badge>
-                                                    )}
-                                                </Stack>
-                                            </Stack>
-                                            <Button
-                                                variant={completed ? 'secondary' : 'primary'}
-                                                size="small"
-                                                disabled={running}
-                                                onClick={async () => {
-                                                    try {
-                                                        await triggerAction(action.id);
-                                                        toast.success(
-                                                            'Action Started',
-                                                            `${action.label} is running in the background. You'll be notified when it completes.`
-                                                        );
-                                                    } catch {
-                                                        toast.error('Failed', 'Could not start the action. Please try again.');
-                                                    }
-                                                }}
-                                            >
-                                                {running ? 'Running...' : completed ? 'Run Again' : 'Run'}
-                                            </Button>
-                                        </Stack>
-                                    );
-                                })}
-                            </Stack>
-                        </Card>
+                {/* Right: recent runs + config */}
+                <div className="cd-feed">
+                    <div className="fg-band fg-band--ink">
+                        <span className="fg-band__label">✨ RECENT RUNS · THROUGH {integration.name.toUpperCase()}</span>
+                        <span className="fg-band__right">{connectionRuns.length} RUNS</span>
+                    </div>
+
+                    {connectionRuns.length === 0 ? (
+                        <div className="cd-feed__empty">
+                            <span>No runs through this connection yet</span>
+                        </div>
+                    ) : (
+                        connectionRuns.map(run => (
+                            <RunRow
+                                key={run.id}
+                                run={run}
+                                variant="feed"
+                                pipelineName={pipelineNameMap[run.pipelineId]}
+                                onClick={() => {
+                                    if (run.activityId) navigate(`/activities/${run.activityId}`);
+                                    else navigate(`/activities/unsynchronized/${run.id}`);
+                                }}
+                            />
+                        ))
                     )}
 
-                    {/* Actions */}
-                    <Stack direction="horizontal" gap="sm" justify="end">
-                        {isOAuth && (
-                            <Button
-                                variant="secondary"
-                                onClick={handleReconnect}
-                            >
-                                Reconnect
-                            </Button>
-                        )}
-                        <Button
-                            variant="danger"
-                            onClick={() => setShowDisconnectConfirm(true)}
-                            disabled={disconnecting}
-                        >
-                            {disconnecting ? 'Disconnecting...' : 'Disconnect'}
-                        </Button>
-                    </Stack>
-                </Stack>
-            </Card>
+                    {/* Collapsible config */}
+                    {hasConfig && (
+                        <div className="cd-config">
+                            <button className="cd-config__head" onClick={() => setConfigOpen(o => !o)}>
+                                <span className="cd-config__title">⚙ CONFIGURATION</span>
+                                <span className="cd-config__chev">{configOpen ? '−' : '+'}</span>
+                            </button>
+                            {configOpen && (
+                                <div className="cd-config__grid">
+                                    {status?.externalUserId && (
+                                        <div className="cd-config__kv">
+                                            <span className="cd-config__k">{integration.apiKeyLabel || 'ID'}</span>
+                                            <span className="cd-config__v">{status.externalUserId}</span>
+                                        </div>
+                                    )}
+                                    {requiresWebhookUrlOnly && (
+                                        <div className="cd-config__kv">
+                                            <span className="cd-config__k">WEBHOOK URL</span>
+                                            <span className="cd-config__v">{webhookUrl}</span>
+                                        </div>
+                                    )}
+                                    {status?.additionalDetails && Object.entries(status.additionalDetails).map(([k, v]) => (
+                                        <div className="cd-config__kv" key={k}>
+                                            <span className="cd-config__k">{k}</span>
+                                            <span className="cd-config__v">{v}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
 
             <ConfirmDialog
                 isOpen={showDisconnectConfirm}

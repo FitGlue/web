@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Stack } from '../library/layout';
 import { Card, Text, Heading, EmptyState, Code } from '../library/ui';
+import './admin.css';
 import { Link } from '../library/navigation';
 import {
   Table,

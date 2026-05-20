@@ -1,0 +1,143 @@
+/* ==========================================================================
+   ConnectionSetupPage — Brutal × Aurora reskin
+   ========================================================================== */
+
+/* OAuth screen */
+.conn-setup-oauth {
+  padding: 2rem;
+}
+
+.conn-setup-oauth__brand-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.conn-setup-oauth__scope-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
+  margin-bottom: 1rem;
+}
+
+.conn-setup-oauth__scope {
+  padding: 0.875rem 1rem;
+  border-bottom: var(--fg-rule-thin);
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-family: var(--fg-font-body);
+  font-size: 0.9375rem;
+  color: var(--fg-paper);
+}
+
+.conn-setup-oauth__scope:last-child {
+  border-bottom: 0;
+}
+
+.conn-setup-oauth__scope-icon {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--fg-green);
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+.conn-setup-oauth__security {
+  padding: 0.875rem 1rem;
+  background: rgba(34, 211, 238, 0.06);
+  box-shadow: inset 0 0 0 1.5px rgba(34, 211, 238, 0.2);
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.conn-setup-oauth__security-title {
+  font-family: var(--fg-font-display);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  margin-bottom: 0.25rem;
+}
+
+.conn-setup-oauth__security-body {
+  font-family: var(--fg-font-body);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* API key / public ID input */
+.conn-setup-input-wrap {
+  box-shadow: inset 0 0 0 2px rgba(245, 243, 235, 0.2);
+  display: flex;
+}
+
+.conn-setup-input {
+  flex: 1;
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+  border: 0;
+  padding: 0.75rem 1rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.875rem;
+  outline: none;
+}
+
+/* Error banner */
+.conn-setup-error {
+  padding: 0.875rem 1rem;
+  background: rgba(255, 93, 108, 0.1);
+  box-shadow: inset 0 0 0 1.5px var(--fg-rose);
+  margin-bottom: 1rem;
+  font-family: var(--fg-font-body);
+  font-size: 0.875rem;
+  color: var(--fg-rose);
+}
+
+/* Setup steps list */
+.conn-setup-steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.conn-setup-step-item {
+  font-family: var(--fg-font-body);
+  font-size: 0.9375rem;
+  color: var(--fg-paper);
+  line-height: 1.55;
+}
+
+/* App Sync step row */
+.conn-setup-app-step {
+  padding: 0.875rem 1rem;
+  border-bottom: var(--fg-rule-thin);
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-family: var(--fg-font-body);
+  font-size: 0.9375rem;
+  color: var(--fg-paper);
+}
+
+.conn-setup-app-step-num {
+  font-family: var(--fg-font-display);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.conn-setup-app-note {
+  font-family: var(--fg-font-body);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-top: 1rem;
+}

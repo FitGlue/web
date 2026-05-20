@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card, Heading, Paragraph } from '../library/ui';
-import { Stack } from '../library/layout';
+import './StatCard.css';
 
 interface StatCardProps {
     title: string;
@@ -10,6 +9,10 @@ interface StatCardProps {
     loading?: boolean;
 }
 
+/**
+ * StatCard — Brutal × Aurora reskin
+ * ink-2 surface, large mono value in aurora-cyan, small mono label
+ */
 export const StatCard: React.FC<StatCardProps> = ({
     title,
     value,
@@ -18,12 +21,18 @@ export const StatCard: React.FC<StatCardProps> = ({
     loading = false,
 }) => {
     return (
-        <Card variant="default" onClick={onClick}>
-            <Stack gap="xs" align="center">
-                <Heading level={3}>{title}</Heading>
-                <Paragraph size="lg" bold>{loading ? '...' : value}</Paragraph>
-                <Paragraph size="sm" muted>{label}</Paragraph>
-            </Stack>
-        </Card>
+        <div
+            className={`ba-stat-card${onClick ? ' ba-stat-card--clickable' : ''}`}
+            onClick={onClick}
+            role={onClick ? 'button' : undefined}
+            tabIndex={onClick ? 0 : undefined}
+            onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); } : undefined}
+        >
+            <div className="ba-stat-card__title">{title}</div>
+            <div className={`ba-stat-card__value${loading ? ' ba-stat-card__value--loading' : ''}`}>
+                {loading ? '...' : value}
+            </div>
+            <div className="ba-stat-card__label">{label}</div>
+        </div>
     );
 };

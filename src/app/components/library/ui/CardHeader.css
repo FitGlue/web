@@ -1,4 +1,8 @@
-/* CardHeader component styles */
+/* ==========================================================================
+   CardHeader — Brutal × Aurora
+   Display title, mono link, no legacy border-radius.
+   ========================================================================== */
+
 .card-header-row {
   display: flex;
   justify-content: space-between;
@@ -8,22 +12,29 @@
 
 .card-header-row h3 {
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-family: var(--fg-font-display);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
 }
 
 .card-header-row .card-link,
 .card-header-row .card-link-btn {
-  font-size: 0.85rem;
-  color: var(--color-primary);
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-pink);
   text-decoration: none;
-  font-weight: 500;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--transition-fast);
 }
 
 .card-header-row .card-link:hover,
 .card-header-row .card-link-btn:hover {
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .card-header-row .card-link-btn {
@@ -31,4 +42,5 @@
   border: none;
   cursor: pointer;
   padding: 0;
+  font-family: var(--fg-font-mono);
 }

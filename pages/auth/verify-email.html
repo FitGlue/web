@@ -1,26 +1,41 @@
 {{> auth-head}}
 
-<div class="auth-container">
-  <h1 class="title">
-    <a href="/" class="logo-link">
-      <span class="fit">Fit</span><span class="glue">Glue</span>
-    </a>
-  </h1>
-  <h2>Verify Your Email</h2>
+<div class="auth-split">
+  <!-- LEFT: brand panel -->
+  <div class="auth-side auth-side--brand">
+    <a href="/" class="auth-logo">FITGLUE</a>
+    <div>
+      <div class="auth-eyebrow" style="color: var(--fg-pink); margin-bottom: 1.5rem">✦ ONE MORE STEP</div>
+      <div class="auth-brand-quote">
+        CHECK YOUR<br><span class="text-gradient">INBOX.</span>
+      </div>
+      <div class="auth-trust">
+        <span class="fg-stamp fg-stamp--outline">SECURE LINK</span>
+        <span class="fg-stamp fg-stamp--outline">EXPIRES IN 24HR</span>
+      </div>
+    </div>
+    <div class="auth-brand-footer">
+      <span>© 2026 FitGlue</span><span>—</span>
+      <a href="/privacy">PRIVACY</a>
+      <a href="/terms">TERMS</a>
+    </div>
+  </div>
 
-  <div class="auth-box verification-content">
-    <p class="auth-description">
-      We've sent a verification email to <strong id="user-email"></strong>.
-      Please check your inbox and click the verification link.
-    </p>
+  <!-- RIGHT: state card -->
+  <div class="auth-side auth-side--form">
+    <div class="auth-form">
+      <div class="auth-eyebrow">Verify Your Email</div>
+      <h1>ALMOST<br><span class="text-gradient">THERE.</span></h1>
+      <p class="lead">We've sent a verification email to <strong id="user-email"></strong>. Please check your inbox and click the verification link.</p>
 
-    <div id="auth-error" class="auth-message error" style="display: none;"></div>
-    <div id="auth-success" class="auth-message success" style="display: none;"></div>
+      <div id="auth-error" class="auth-message error" style="display: none;"></div>
+      <div id="auth-success" class="auth-message success" style="display: none;"></div>
 
-    <button id="btn-resend" class="btn primary">Resend Verification Email</button>
-    <button id="btn-continue" class="btn secondary">Continue to App</button>
+      <button id="btn-resend" class="auth-submit" type="button" style="margin-bottom:.75rem">Resend Verification Email →</button>
+      <button id="btn-continue" class="auth-submit" type="button" style="background:transparent;color:var(--fg-paper);box-shadow:inset 0 0 0 2px var(--fg-paper)">Continue to App</button>
 
-    <p class="redirect-message">Already verified? The app will detect it automatically.</p>
+      <p class="auth-footer-note" style="margin-top:1rem">Already verified? The app will detect it automatically.</p>
+    </div>
   </div>
 </div>
 

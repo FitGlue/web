@@ -1,229 +1,220 @@
 {{> header}}
 
 <main>
+<style>
+  /* ── Page-heading block ── */
+  .ph { padding: 56px 32px; max-width: 1280px; margin: 0 auto; }
+  .ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .ph__title { font-family: var(--fg-font-display); font-size: clamp(2.5rem, 7vw, 5rem); line-height: .9; letter-spacing: -.04em; text-transform: uppercase; margin: 14px 0; }
+  .ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ph__sub { font-family: var(--fg-font-body); font-size: 1.125rem; color: var(--color-text-muted); line-height: 1.55; max-width: 640px; }
+
+  /* ── Aurora band ── */
+  .feat-band { padding: 14px 32px; background: var(--gradient-primary); display: flex; justify-content: space-between; align-items: center; }
+  .feat-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-ink); text-transform: uppercase; }
+  .feat-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--fg-ink); opacity: .7; text-transform: uppercase; }
+
+  /* ── Dark info band ── */
+  .dark-band { padding: 14px 32px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); border-top: var(--fg-rule-thin); display: flex; justify-content: space-between; align-items: center; }
+  .dark-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-paper); text-transform: uppercase; }
+  .dark-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+
+  /* ── Pipeline illustration ── */
+  .pipeline-ill { padding: 48px 32px; max-width: 800px; margin: 0 auto; display: flex; align-items: center; gap: 0; }
+  .pipe-node { flex: 0 0 auto; text-align: center; }
+  .pipe-node__box { padding: 18px 24px; background: var(--fg-ink-2); border: var(--fg-rule-thin); display: inline-flex; flex-direction: column; align-items: center; gap: 8px; min-width: 140px; }
+  .pipe-node__box--aurora { background: var(--gradient-primary); border: 0; }
+  .pipe-node__icon { font-size: 1.75rem; line-height: 1; }
+  .pipe-node__label { font-family: var(--fg-font-display); font-size: .9375rem; letter-spacing: -.01em; text-transform: uppercase; }
+  .pipe-node__box--aurora .pipe-node__label { color: var(--fg-ink); }
+  .pipe-line { flex: 1; height: 2px; background: var(--gradient-primary); position: relative; }
+  .pipe-line::after { content: '→'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); font-size: 1.125rem; color: var(--fg-cyan); background: var(--fg-ink); padding: 0 2px; }
+
+  /* ── Booster grid ── */
+  .feat-grid { padding: 0 32px 64px; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .feat { padding: 24px; background: var(--fg-ink-2); display: flex; flex-direction: column; gap: 12px; min-height: 220px; }
+  .feat--premium { box-shadow: inset 0 0 0 2px var(--fg-paper); }
+  .feat__icon { font-size: 2rem; line-height: 1; }
+  .feat__title { font-family: var(--fg-font-display); font-size: 1.25rem; letter-spacing: -.015em; text-transform: uppercase; }
+  .feat__body { font-family: var(--fg-font-body); font-size: .9375rem; line-height: 1.5; color: var(--color-text-muted); }
+  .feat__tag { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; padding: 2px 8px; display: inline-block; text-transform: uppercase; margin-top: auto; align-self: flex-start; }
+  .feat__tag--free { background: var(--fg-paper); color: var(--fg-ink); }
+  .feat__tag--athlete { background: var(--gradient-primary); color: var(--fg-ink); }
+
+  /* ── CTA strip ── */
+  .feat-cta { padding: 64px 32px; text-align: center; border-top: var(--fg-rule-thin); }
+  .feat-cta__title { font-family: var(--fg-font-display); font-size: clamp(1.75rem, 4vw, 2.5rem); letter-spacing: -.025em; text-transform: uppercase; margin-bottom: 24px; }
+  .feat-cta__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn-aurora { display: inline-flex; align-items: center; gap: 6px; padding: 14px 24px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 6px; padding: 14px 24px; background: transparent; color: var(--fg-paper); box-shadow: inset 0 0 0 1.5px var(--fg-paper); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; margin-left: 12px; }
+
+  @media (max-width: 900px) {
+    .feat-grid { grid-template-columns: repeat(2, 1fr); }
+    .pipeline-ill { flex-direction: column; gap: 18px; }
+    .pipe-line { width: 2px; height: 32px; background: var(--gradient-primary); }
+    .pipe-line::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -14px; transform: translateX(-50%); }
+  }
+  @media (max-width: 600px) {
+    .feat-grid { grid-template-columns: 1fr; padding: 0 16px 48px; }
+    .ph { padding: 40px 16px; }
+  }
+</style>
+
   <!-- Hero -->
-  <section class="about-hero">
-    <div class="container">
-      <h1 class="text-center animate-on-scroll">Powerful <span class="text-gradient">Features</span></h1>
-      <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
-        Connect your fitness apps, enhance your data, and share it beautifully—all in one place.
-      </p>
-    </div>
-  </section>
+  <div class="ph">
+    <div class="ph__eyebrow">FEATURES · 25 BOOSTERS · 30+ INTEGRATIONS</div>
+    <h1 class="ph__title">Everything <span class="gr">in one chain.</span></h1>
+    <p class="ph__sub">Pick your sources. Stack the boosters you want in the middle. Choose where it all lands. Every activity flows through automatically — enriched, annotated, and ready to share.</p>
+  </div>
 
-  <!-- Pipeline Overview -->
-  <section class="section">
-    <div class="container text-center">
-      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: 0 0 var(--space-md)">
-        <span class="fg-band__label">How It Works</span>
-      </div>
-      <div class="animate-on-scroll">
-        <div class="pipeline-flow">
-          <div class="pipeline-node source">
-            <span class="pipeline-icon">📥</span>
-            <span class="pipeline-label">Your Workout</span>
-          </div>
-          <div class="pipeline-connector">
-            <div class="connector-line"></div>
-          </div>
-          <div class="pipeline-node magic">
-            <span class="pipeline-icon">✨</span>
-            <span class="pipeline-label">FitGlue Magic</span>
-          </div>
-          <div class="pipeline-connector">
-            <div class="connector-line"></div>
-          </div>
-          <div class="pipeline-node destination">
-            <span class="pipeline-icon">📤</span>
-            <span class="pipeline-label">Your Story</span>
-          </div>
-        </div>
-      </div>
-      <p class="text-muted mt-md" style="max-width: 500px; margin-left: auto; margin-right: auto;">
-        Your workout data flows automatically from one app, gets enhanced with the details you care about, then arrives
-        at its destination looking incredible. Connect once, and it just works.
-      </p>
-
-      <!-- Dashboard Screenshot -->
-      <div class="product-screenshot mt-lg animate-on-scroll" style="max-width: 700px;">
-        <div class="product-screenshot__chrome">
-          <span class="product-screenshot__dot"></span>
-          <span class="product-screenshot__dot"></span>
-          <span class="product-screenshot__dot"></span>
-        </div>
-        <img src="/images/screenshots/hero-dashboard.png" alt="FitGlue dashboard" class="product-screenshot__image" />
+  <!-- Pipeline illustration -->
+  <div class="dark-band">
+    <span class="dark-band__label">THE PIPELINE</span>
+    <span class="dark-band__right">SOURCE → FITGLUE → DESTINATION</span>
+  </div>
+  <div class="pipeline-ill">
+    <div class="pipe-node">
+      <div class="pipe-node__box">
+        <span class="pipe-node__icon">📥</span>
+        <span class="pipe-node__label">Source</span>
       </div>
     </div>
-  </section>
-
-  <!-- Connections -->
-  <section id="sources" class="section section-alt">
-    <div class="container">
-      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: 0 0 var(--space-md)">
-        <span class="fg-band__label">📥 Sources</span>
-      </div>
-      <p class="text-muted animate-on-scroll mb-lg">Import your workouts automatically from your favorite apps</p>
-
-      <div class="info-grid stagger-children">
-        <div class="info-card">
-          <span class="feature-icon">🔄</span>
-          <h3>Automatic Sync</h3>
-          <p>Once connected, your workouts flow into FitGlue automatically. No manual exports, no file downloads.</p>
-        </div>
-
-        <div class="info-card">
-          <span class="feature-icon">🔐</span>
-          <h3>Instant Connect</h3>
-          <p>One tap to link your accounts securely. Your passwords never touch our servers—bank-level security built
-            in.</p>
-        </div>
-
-        <div class="info-card">
-          <span class="feature-icon">⚡</span>
-          <h3>Lightning-Fast Sync</h3>
-          <p>Your data arrives within seconds of completing a workout. No waiting, no delays.</p>
-        </div>
-      </div>
-
-      <div class="feature-grid mt-lg stagger-children">
-        {{#each sources}}
-        <a href="{{detailsUrl}}" class="feature-card-link">
-          <div
-            class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
-            <div class="feature-card-header">
-              {{#if iconPath}}
-              <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
-              {{else}}
-              <span class="feature-icon">{{icon}}</span>
-              {{/if}}
-              {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
-              {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
-            </div>
-            <h3>{{name}}</h3>
-            <p>{{description}}</p>
-          </div>
-        </a>
-        {{/each}}
+    <div class="pipe-line"></div>
+    <div class="pipe-node">
+      <div class="pipe-node__box pipe-node__box--aurora">
+        <span class="pipe-node__icon">⚡</span>
+        <span class="pipe-node__label">FitGlue</span>
       </div>
     </div>
-  </section>
-
-  <!-- Boosters -->
-  <section id="boosters" class="section">
-    <div class="container">
-      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: 0 0 var(--space-md)">
-        <span class="fg-band__label">✨ Boosters</span>
-      </div>
-      <p class="text-muted animate-on-scroll mb-lg">Transform your activity data with powerful Boosters</p>
-
-      {{#each boostersByCategory}}
-      <div class="booster-category animate-on-scroll">
-        <h3 class="category-title">
-          <span class="category-emoji">{{emoji}}</span>
-          {{name}}
-        </h3>
-        <div class="feature-grid stagger-children">
-          {{#each plugins}}
-          <a href="{{detailsUrl}}" class="feature-card-link">
-            <div
-              class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
-              <div class="feature-card-header">
-                {{#if iconPath}}
-                <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
-                {{else}}
-                <span class="feature-icon">{{icon}}</span>
-                {{/if}}
-                {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
-                {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
-              </div>
-              <h3>{{name}}</h3>
-              <p>{{description}}</p>
-            </div>
-          </a>
-          {{/each}}
-        </div>
-      </div>
-      {{/each}}
-
-      <div class="text-center mt-lg animate-on-scroll">
-        <p class="text-muted mb-sm">And many more boosters coming soon...</p>
+    <div class="pipe-line"></div>
+    <div class="pipe-node">
+      <div class="pipe-node__box">
+        <span class="pipe-node__icon">📤</span>
+        <span class="pipe-node__label">Destination</span>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Sync Targets -->
-  <section id="targets" class="section section-alt">
-    <div class="container">
-      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: 0 0 var(--space-md)">
-        <span class="fg-band__label">📤 Targets</span>
-      </div>
-      <p class="text-muted animate-on-scroll mb-lg">Send your boosted activities to the platforms you love</p>
-
-      <div class="info-grid stagger-children">
-        <div class="info-card">
-          <span class="feature-icon">🚴</span>
-          <h3>No App Required</h3>
-          <p>FitGlue works with any app that exports your workouts in a standard format. No need to download or install
-            anything - just configure on the website.</p>
-        </div>
-
-        <div class="info-card">
-          <span class="feature-icon">🔔</span>
-          <h3>Instant Notifications</h3>
-          <p>Get notified when your activities are synced. Know exactly when your workout goes live.</p>
-        </div>
-
-        <div class="info-card">
-          <span class="feature-icon">✨</span>
-          <h3>Rich Descriptions</h3>
-          <p>Activities arrive at their destination complete with AI-generated descriptions, stats, and more.</p>
-        </div>
-      </div>
-
-      <div class="feature-grid mt-lg stagger-children">
-        {{#each destinations}}
-        <a href="{{detailsUrl}}" class="feature-card-link">
-          <div
-            class="feature-card{{#if isPremium}} premium{{/if}}{{#if isTemporarilyUnavailable}} coming-soon{{/if}} hoverable">
-            <div class="feature-card-header">
-              {{#if iconPath}}
-              <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
-              {{else}}
-              <span class="feature-icon">{{icon}}</span>
-              {{/if}}
-              {{#if isPremium}}<span class="premium-badge">PRO</span>{{/if}}
-              {{#if isTemporarilyUnavailable}}<span class="coming-badge">Coming Soon</span>{{/if}}
-            </div>
-            <h3>{{name}}</h3>
-            <p>{{description}}</p>
-          </div>
-        </a>
-        {{/each}}
-      </div>
+  <!-- Metrics boosters -->
+  <div class="feat-band">
+    <span class="feat-band__label">⚡ METRICS BOOSTERS · 13</span>
+    <span class="feat-band__right">COMPUTED FROM YOUR DATA</span>
+  </div>
+  <div class="feat-grid">
+    <div class="feat">
+      <div class="feat__icon">❤️</div>
+      <div class="feat__title">Heart Rate Zones</div>
+      <div class="feat__body">Time in Z0–Z5 per activity. Custom thresholds per athlete. Use the zone breakdown in your Strava description or Showcase.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
     </div>
-  </section>
-
-  <!-- Request Integration -->
-  <section class="section">
-    <div class="container text-center">
-      <h2 class="mb-md animate-on-scroll">Don't See Your <span class="text-gradient">App</span>?</h2>
-      <p class="text-muted mb-lg animate-on-scroll" style="max-width: 500px; margin-left: auto; margin-right: auto;">
-        We're always adding new connections. Let us know what you'd like to see.
-      </p>
-      <a href="/contact" class="btn btn-secondary animate-on-scroll">Request a Connection →</a>
+    <div class="feat">
+      <div class="feat__icon">💥</div>
+      <div class="feat__title">Effort Score</div>
+      <div class="feat__body">A weighted score 0–100 combining HR drift, duration, and intensity. Tells you how hard the session really was.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
     </div>
-  </section>
+    <div class="feat">
+      <div class="feat__icon">🔥</div>
+      <div class="feat__title">Calories Burned</div>
+      <div class="feat__body">Accurate kcal using HR + weight + duration. Pizza-slice equivalent included free of charge.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
+    </div>
+    <div class="feat">
+      <div class="feat__icon">💪</div>
+      <div class="feat__title">Training Load</div>
+      <div class="feat__body">TRIMP-based load score per session, bucketed Recovery / Easy / Mod / Hard / 500+ for visual training plans.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
+    </div>
+    <div class="feat">
+      <div class="feat__icon">💤</div>
+      <div class="feat__title">Recovery Advisor</div>
+      <div class="feat__body">Acute-to-chronic ratio + hours-to-recover estimate. Catches over-reaching before it bites.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
+    </div>
+    <div class="feat">
+      <div class="feat__icon">⭐</div>
+      <div class="feat__title">Streak Tracker</div>
+      <div class="feat__body">Consecutive-active-days counter, week-streak history, and a 28-day visual calendar.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
+    </div>
+    <div class="feat">
+      <div class="feat__icon">🏆</div>
+      <div class="feat__title">Personal Records</div>
+      <div class="feat__body">Auto-tracks PRs across cardio (fastest 5K, longest ride) and strength (1RM per lift). Stamps activities that set them.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
+    </div>
+    <div class="feat">
+      <div class="feat__icon">🌤️</div>
+      <div class="feat__title">Weather Context</div>
+      <div class="feat__body">Temperature, humidity, and wind conditions at the time and location of each outdoor activity.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
+    </div>
+    <div class="feat">
+      <div class="feat__icon">🗺️</div>
+      <div class="feat__title">Elevation Stats</div>
+      <div class="feat__body">Total ascent, descent, max altitude, and a gradient breakdown — calculated from GPS track or FIT file.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
+    </div>
+  </div>
+
+  <!-- AI boosters -->
+  <div class="feat-band">
+    <span class="feat-band__label">✦ AI BOOSTERS · ATHLETE ONLY</span>
+    <span class="feat-band__right">POWERED BY LARGE LANGUAGE MODELS</span>
+  </div>
+  <div class="feat-grid">
+    <div class="feat feat--premium">
+      <div class="feat__icon">🎨</div>
+      <div class="feat__title">AI Banner</div>
+      <div class="feat__body">Generated cover image for each activity, captioned with a one-line AI poem. Drops straight into your Strava description.</div>
+      <span class="feat__tag feat__tag--athlete">✦ ATHLETE</span>
+    </div>
+    <div class="feat feat--premium">
+      <div class="feat__icon">✨</div>
+      <div class="feat__title">AI Companion</div>
+      <div class="feat__body">A natural-language paragraph that summarises the activity — best moment, hardest moment, surprise. Reads like a coach wrote it.</div>
+      <span class="feat__tag feat__tag--athlete">✦ ATHLETE</span>
+    </div>
+    <div class="feat feat--premium">
+      <div class="feat__icon">🖼️</div>
+      <div class="feat__title">Muscle Heatmap Image</div>
+      <div class="feat__body">A rendered anatomical heatmap showing which muscle groups were activated during a strength session. Share directly to Strava.</div>
+      <span class="feat__tag feat__tag--athlete">✦ ATHLETE</span>
+    </div>
+  </div>
+
+  <!-- Platform boosters -->
+  <div class="dark-band">
+    <span class="dark-band__label">🔗 PLATFORM BOOSTERS · 9</span>
+    <span class="dark-band__right">ENRICHED FROM YOUR CONNECTED APPS</span>
+  </div>
+  <div class="feat-grid">
+    <div class="feat">
+      <div class="feat__icon">🏃</div>
+      <div class="feat__title">Parkrun Results</div>
+      <div class="feat__body">Auto-detects your Saturday parkrun, fetches official time + position + age grade from the results page, and stamps your activity.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
+    </div>
+    <div class="feat">
+      <div class="feat__icon">💓</div>
+      <div class="feat__title">Fitbit Heart Rate</div>
+      <div class="feat__body">Pulls HR data from your Fitbit and overlays it on any activity synced from another source. Works across platforms seamlessly.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
+    </div>
+    <div class="feat">
+      <div class="feat__icon">📍</div>
+      <div class="feat__title">Location Title</div>
+      <div class="feat__body">Reverse-geocodes the start point of an activity and generates a natural place name for your Strava title.</div>
+      <span class="feat__tag feat__tag--free">FREE</span>
+    </div>
+  </div>
 
   <!-- CTA -->
-  <section class="cta-section">
-    <div class="container">
-      <div class="cta-content">
-        <h2 class="cta-title animate-on-scroll">Ready to Get <span class="text-gradient">Started</span>?</h2>
-        <p class="cta-subtitle animate-on-scroll">Start your 30-day free Athlete trial. No credit card required.</p>
-        <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg animate-on-scroll">Get Started Free →</a>
-      </div>
-    </div>
-  </section>
+  <div class="feat-cta">
+    <p class="feat-cta__title">Ready to <span class="gr">try it all?</span></p>
+    <a href="/auth/register" class="btn-aurora">START FREE →</a>
+    <a href="/pricing" class="btn-ghost">SEE PLANS</a>
+  </div>
 </main>
 
 {{> footer}}

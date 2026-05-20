@@ -7,9 +7,11 @@
 
 // Page structure
 export { PageLayout } from './PageLayout';
+export { SettingsLayout } from './SettingsLayout';
 export { PageHeader } from './PageHeader';
 export { Section } from './Section';
 export { AppHeader } from './AppHeader';
+export { AppHeader as AppBar } from './AppHeader';
 export { Footer } from './Footer';
 
 // Layout primitives
@@ -22,3 +24,7 @@ export { FieldRow } from './FieldRow';
 export { ModalSection } from './ModalSection';
 export { SettingsSection } from './SettingsSection';
 export { FeatureItem } from './FeatureItem';
+
+// Long-form / legal prose wrapper
+export { LegalProse } from './LegalProse';
+export type { LegalProseProps } from './LegalProse';

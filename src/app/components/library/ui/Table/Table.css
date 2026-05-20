@@ -1,27 +1,23 @@
 /* ==========================================================================
-   Table Component Styles
-   Premium data table styling for FitGlue
+   Table — Brutal × Aurora
+   Hard edges, hairline dividers, mono headers, no radius.
    ========================================================================== */
 
-/* Base Table */
 .ui-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  overflow: hidden;
+  background: var(--fg-ink-2);
 }
 
 .ui-table-wrapper {
   overflow-x: auto;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
 }
 
 /* Variants */
 .ui-table--striped tbody tr:nth-child(even) {
-  background: var(--color-surface-elevated);
+  background: var(--fg-ink-3);
 }
 
 .ui-table--compact th,
@@ -31,28 +27,25 @@
 
 /* Table Header */
 .ui-table-header {
-  background: var(--color-surface-elevated);
+  background: var(--fg-ink);
+  border-bottom: var(--fg-rule-thin);
 }
 
 .ui-table-header-cell {
   padding: var(--spacing-sm) var(--spacing-md);
   text-align: left;
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.75rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-secondary);
-  border-bottom: 1px solid var(--color-border);
+  color: var(--fg-paper-dim);
+  border-bottom: var(--fg-rule-thin);
   white-space: nowrap;
 }
 
-.ui-table-header-cell--center {
-  text-align: center;
-}
-
-.ui-table-header-cell--right {
-  text-align: right;
-}
+.ui-table-header-cell--center { text-align: center; }
+.ui-table-header-cell--right  { text-align: right; }
 
 .ui-table-header-cell--sortable {
   cursor: pointer;
@@ -61,22 +54,19 @@
 }
 
 .ui-table-header-cell--sortable:hover {
-  color: var(--color-text-primary);
+  color: var(--fg-paper);
 }
 
 .ui-table-header-cell__sort-icon {
   margin-left: var(--spacing-xs);
   opacity: 0.5;
-  font-size: 0.65rem;
+  font-size: 0.5625rem;
 }
 
 .ui-table-header-cell--sorted .ui-table-header-cell__sort-icon {
   opacity: 1;
-  color: var(--color-primary);
+  color: var(--fg-pink);
 }
-
-/* Table Body */
-.ui-table-body {}
 
 /* Table Row */
 .ui-table-row {
@@ -84,7 +74,7 @@
 }
 
 .ui-table-row--hoverable:hover {
-  background: var(--color-surface-hover);
+  background: var(--fg-ink-3);
 }
 
 .ui-table-row--clickable {
@@ -102,19 +92,14 @@
 /* Table Cell */
 .ui-table-cell {
   padding: var(--spacing-sm) var(--spacing-md);
-  border-bottom: 1px solid var(--color-border-subtle);
-  color: var(--color-text-primary);
+  border-bottom: var(--fg-rule-thin);
+  color: var(--fg-paper);
   font-size: 0.875rem;
   vertical-align: middle;
 }
 
-.ui-table-cell--center {
-  text-align: center;
-}
-
-.ui-table-cell--right {
-  text-align: right;
-}
+.ui-table-cell--center  { text-align: center; }
+.ui-table-cell--right   { text-align: right; }
 
 .ui-table-cell--truncate {
   overflow: hidden;
@@ -123,11 +108,10 @@
 }
 
 .ui-table-cell--muted {
-  color: var(--color-text-secondary);
+  color: var(--fg-paper-dim);
   font-size: 0.8125rem;
 }
 
-/* Last row no border */
 .ui-table-body .ui-table-row:last-child .ui-table-cell {
   border-bottom: none;
 }
@@ -144,22 +128,12 @@
   min-height: 200px;
 }
 
-.ui-table-loading::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Skeleton row */
 .ui-table-skeleton-row .ui-table-cell {
   background: linear-gradient(90deg,
-      var(--color-surface) 25%,
-      var(--color-surface-elevated) 50%,
-      var(--color-surface) 75%);
+    var(--fg-ink-2) 25%,
+    var(--fg-ink-3) 50%,
+    var(--fg-ink-2) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }

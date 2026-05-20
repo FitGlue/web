@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Showcase Activity — FitGlue Reskin</title>
+<meta name="viewport" content="width=1440, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tokens.css?v=3" />
+<link rel="stylesheet" href="../css/base.css?v=3" />
+<link rel="stylesheet" href="../css/components.css?v=3" />
+<link rel="stylesheet" href="../css/overrides.css?v=3" />
+<style>
+  body { background: var(--fg-ink); color: var(--fg-paper); margin: 0; min-height: 100vh; }
+  body .header, body .footer { display: none; } /* showcase hides marketing chrome */
+
+  .sa-bar { padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: var(--fg-rule-thick); background: var(--fg-ink); }
+  .sa-bar__crumb { font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .12em; color: var(--color-text-muted); text-transform: uppercase; }
+  .sa-bar__crumb a, .sa-bar__crumb b { color: var(--fg-paper); text-decoration: none; }
+
+  /* HERO */
+  .sa-hero { display: grid; grid-template-columns: 1.2fr 1fr; }
+  .sa-hero__left { padding: 40px 36px 32px; background: var(--fg-ink-2); }
+  .sa-hero__meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .sa-hero__title { font-family: var(--fg-font-display); font-size: 5.5rem; line-height: .92; letter-spacing: -.035em; margin: 0 0 14px; text-transform: uppercase; }
+  .sa-hero__title span.gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sa-hero__by { font-family: var(--fg-font-mono); font-size: .8125rem; letter-spacing: .08em; color: var(--color-text-muted); text-transform: uppercase; }
+  .sa-hero__by b { color: var(--fg-paper); font-weight: 700; }
+
+  /* big stat row */
+  .sa-bigstats { margin-top: 28px; display: flex; gap: 36px; }
+  .sa-bigstat { padding-left: 18px; border-left: var(--fg-rule-thin); }
+  .sa-bigstat:first-child { padding-left: 0; border-left: 0; }
+  .sa-bigstat__emoji { font-size: 1.125rem; margin-bottom: 4px; }
+  .sa-bigstat__row { display: flex; align-items: baseline; gap: 6px; }
+  .sa-bigstat__n { font-family: var(--fg-font-display); font-size: 3.75rem; line-height: .92; letter-spacing: -.035em; }
+  .sa-bigstat--gr .sa-bigstat__n { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sa-bigstat__u { font-family: var(--fg-font-display); font-size: .875rem; color: var(--color-text-muted); }
+  .sa-bigstat__l { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); margin-top: 6px; text-transform: uppercase; }
+
+  /* AI Banner placeholder */
+  .sa-hero__right { position: relative; overflow: hidden; background: var(--gradient-primary); }
+  .sa-hero__banner-grain { position: absolute; inset: 0; opacity: .4; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22160%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%222%22/><feColorMatrix values=%221 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.7 0%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/></svg>"); }
+  .sa-hero__banner-inner { position: absolute; inset: 18px; border: 2px dashed rgba(7,7,16,.5); display: flex; flex-direction: column; justify-content: space-between; padding: 18px; }
+  .sa-hero__banner-quote { color: var(--fg-ink); font-family: var(--fg-font-display); font-size: 2.5rem; line-height: .9; letter-spacing: -.025em; max-width: 360px; text-transform: uppercase; }
+
+  /* AI SUMMARY */
+  .sa-summary { display: grid; grid-template-columns: 200px 1fr; border-bottom: var(--fg-rule-thin); }
+  .sa-summary__label { padding: 22px 22px; background: var(--fg-ink-2); display: flex; flex-direction: column; justify-content: center; }
+  .sa-summary__label-emoji { font-size: 2rem; }
+  .sa-summary__label-title { font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; margin-top: 8px; text-transform: uppercase; }
+  .sa-summary__label-by { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); margin-top: 4px; }
+  .sa-summary__body { padding: 22px 28px; background: radial-gradient(70% 100% at 50% 0%, rgba(139,92,246,.14), transparent 60%); }
+  .sa-summary__body p { font-family: var(--fg-font-body); font-size: 1.25rem; line-height: 1.5; max-width: 1080px; margin: 0; }
+  .sa-summary__body p .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700; }
+  .sa-summary__body p b { color: var(--fg-paper); }
+
+  /* SECTION shared */
+  .sa-section-head { padding: 0; }
+
+  /* HEART RATE */
+  .sa-hr { display: grid; grid-template-columns: 1.4fr 1fr; gap: 36px; padding: 24px 32px; border-bottom: var(--fg-rule-thin); }
+  .sa-hr__top { display: flex; align-items: baseline; gap: 32px; margin-bottom: 12px; flex-wrap: wrap; }
+  .sa-mini { display: flex; flex-direction: column; }
+  .sa-mini__n { font-family: var(--fg-font-display); font-size: 2.5rem; line-height: .95; letter-spacing: -.025em; }
+  .sa-mini--gr .sa-mini__n { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sa-mini__l { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .sa-drift { margin-left: auto; padding: 4px 10px; border: 1.5px solid var(--fg-rose); color: var(--fg-rose); font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .1em; }
+  .sa-hr__chart { height: 140px; }
+  .sa-interior-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 8px; border-bottom: var(--fg-rule-thin); margin-bottom: 8px; }
+  .sa-interior-head__label { font-family: var(--fg-font-display); font-size: .8125rem; letter-spacing: .02em; text-transform: uppercase; }
+  .sa-interior-head__right { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  /* Zones */
+  .sa-zones { display: flex; flex-direction: column; gap: 6px; padding-top: 10px; }
+  .sa-zone { display: grid; grid-template-columns: 30px 100px 1fr 50px; gap: 8px; align-items: center; font-family: var(--fg-font-mono); font-size: .6875rem; }
+  .sa-zone__z { font-weight: 700; color: var(--fg-paper); }
+  .sa-zone__name { font-size: .625rem; letter-spacing: .1em; color: var(--color-text-muted); text-transform: uppercase; }
+  .sa-zone__bar { height: 14px; background: var(--fg-ink-3); position: relative; }
+  .sa-zone__fill { height: 100%; }
+  .sa-zone__mins { text-align: right; color: var(--fg-paper); font-weight: 700; }
+
+  /* EFFORT & ENERGY */
+  .sa-trio { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 24px 32px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); }
+  .sa-trio > * { padding-right: 28px; }
+  .sa-trio > * + * { border-left: var(--fg-rule-thin); padding-left: 28px; padding-right: 28px; }
+  .sa-trio > *:last-child { padding-right: 0; }
+  .sa-trio__row { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; }
+  .sa-trio__n { font-family: var(--fg-font-display); font-size: 3.5rem; line-height: .9; letter-spacing: -.035em; }
+  .sa-trio--big .sa-trio__n { font-size: 4.5rem; }
+  .sa-trio__u { font-family: var(--fg-font-display); font-size: 1.25rem; color: var(--color-text-muted); }
+  .sa-trio--cal .sa-trio__n { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sa-trio__bar { margin-top: 14px; height: 8px; background: var(--fg-ink-3); position: relative; }
+  .sa-trio__bar-fill { height: 100%; background: var(--gradient-primary); }
+  .sa-trio__bar-needle { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--fg-paper); }
+  .sa-trio__hint { font-family: var(--fg-font-mono); font-size: .6875rem; color: var(--color-text-muted); line-height: 1.5; margin-top: 10px; }
+  .sa-trio__buckets { margin-top: 14px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+  .sa-trio__bucket { padding: 4px 0; text-align: center; font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .1em; background: var(--fg-ink-3); color: var(--color-text-muted); text-transform: uppercase; }
+  .sa-trio__bucket.on { background: var(--gradient-primary); color: var(--fg-ink); }
+
+  /* RECOVERY */
+  .sa-rec { padding: 28px 32px; background: radial-gradient(80% 100% at 0% 0%, rgba(255,61,166,.14), transparent 60%); border-bottom: var(--fg-rule-thin); }
+  .sa-rec__grid { display: grid; grid-template-columns: 1fr 1fr 1fr; border: 0; }
+  .sa-rec__stat { padding: 4px 24px; }
+  .sa-rec__stat + .sa-rec__stat { border-left: var(--fg-rule-thin); }
+  .sa-rec__n { font-family: var(--fg-font-display); font-size: 3rem; letter-spacing: -.03em; line-height: 1; }
+  .sa-rec__n--warn { color: var(--fg-rose); }
+  .sa-rec__l { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); margin-top: 8px; text-transform: uppercase; }
+  .sa-rec__sub { font-family: var(--fg-font-mono); font-size: .6875rem; margin-top: 4px; }
+  .sa-rec__sub--warn { color: var(--fg-rose); }
+  .sa-rec__alert { margin-top: 18px; padding: 12px 16px; background: var(--fg-ink); color: var(--fg-rose); font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .04em; display: flex; align-items: center; gap: 14px; }
+  .sa-rec__alert b { color: var(--fg-paper); }
+
+  /* PROGRESS row */
+  .sa-prog { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 24px 32px; border-bottom: var(--fg-rule-thin); }
+  .sa-prog > * { padding-right: 28px; }
+  .sa-prog > * + * { border-left: var(--fg-rule-thin); padding-left: 28px; padding-right: 28px; }
+  .sa-prog > *:last-child { padding-right: 0; }
+  .sa-prog__pct { font-family: var(--fg-font-display); font-size: 3.125rem; letter-spacing: -.035em; margin-top: 12px; line-height: 1; }
+  .sa-prog__pct-small { font-size: 1.5rem; color: var(--color-text-muted); }
+  .sa-prog__bar { margin-top: 8px; height: 10px; background: var(--fg-ink-3); }
+  .sa-prog__bar-fill { height: 100%; background: var(--gradient-primary); }
+  .sa-prog__notes { font-family: var(--fg-font-mono); font-size: .6875rem; color: var(--color-text-muted); line-height: 1.6; margin-top: 10px; }
+  .sa-prog__streak { font-family: var(--fg-font-display); font-size: 4rem; letter-spacing: -.04em; background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; margin-top: 12px; }
+  .sa-prog__streak-cal { margin-top: 12px; display: flex; gap: 3px; }
+  .sa-prog__streak-day { flex: 1; height: 14px; background: var(--fg-ink-2); }
+  .sa-prog__streak-day.on { background: var(--gradient-primary); }
+  .sa-prog__streak-day.maybe { background: var(--fg-ink-3); }
+  .sa-prog__cad-row { display: flex; gap: 20px; margin-top: 12px; }
+  .sa-prog__cad-n { font-family: var(--fg-font-display); font-size: 2.375rem; letter-spacing: -.03em; line-height: 1; }
+  .sa-prog__cad-n--gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sa-prog__cad-bars { margin-top: 14px; height: 50px; display: flex; align-items: flex-end; gap: 1px; }
+  .sa-prog__cad-bars span { flex: 1; background: var(--fg-paper); opacity: .55; }
+
+  /* BOOSTERS */
+  .sa-boost { padding: 20px 32px; background: var(--fg-ink-2); display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* CTA */
+  .sa-cta { background: var(--gradient-primary); color: var(--fg-ink); padding: 26px 36px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 24px; }
+  .sa-cta h2 { font-family: var(--fg-font-display); font-size: 2rem; letter-spacing: -.025em; text-transform: uppercase; margin: 0; color: var(--fg-ink); }
+  .sa-cta p { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .04em; margin: 6px 0 0; }
+</style>
+</head>
+<body>
+
+  <!-- top -->
+  <div class="sa-bar">
+    <a href="/" style="text-decoration:none;display:flex;align-items:center;gap:10px;font-family:var(--fg-font-display);font-size:1.125rem;color:var(--fg-paper)">
+      <span class="fg-logo"></span>
+      <span>FITGLUE</span>
+    </a>
+    <div class="sa-bar__crumb">
+      <a href="/showcase/jamesking">JAMES KING</a> / <b>TOWER PILATES CLASS</b>
+    </div>
+    <div style="display:flex;gap:10px">
+      <a href="#" class="fg-button fg-button--ghost fg-button--sm">✦ SHARE</a>
+      <a href="#" class="fg-button fg-button--sm">TRY FITGLUE FREE →</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="sa-hero">
+    <div class="sa-hero__left">
+      <div class="sa-hero__meta">
+        <span class="fg-stamp">PILATES</span>
+        <span class="fg-stamp fg-stamp--paper">VIA FILE UPLOAD</span>
+        <span class="fg-stamp fg-stamp--ink">WED 8 APR · 10:34</span>
+      </div>
+      <h1 class="sa-hero__title">
+        Tower<br>
+        <span class="gr">Pilates</span><br>
+        Class.
+      </h1>
+      <div class="sa-hero__by">BY <b>JAMES KING</b> · ENRICHED BY <b>25 BOOSTERS</b></div>
+
+      <div class="sa-bigstats">
+        <div class="sa-bigstat">
+          <div class="sa-bigstat__emoji">⏱️</div>
+          <div class="sa-bigstat__row"><span class="sa-bigstat__n">50</span><span class="sa-bigstat__u">MIN</span></div>
+          <div class="sa-bigstat__l">Duration</div>
+        </div>
+        <div class="sa-bigstat sa-bigstat--gr">
+          <div class="sa-bigstat__emoji">❤️</div>
+          <div class="sa-bigstat__row"><span class="sa-bigstat__n">82</span><span class="sa-bigstat__u">BPM</span></div>
+          <div class="sa-bigstat__l">Avg heart rate</div>
+        </div>
+        <div class="sa-bigstat">
+          <div class="sa-bigstat__emoji">🦶</div>
+          <div class="sa-bigstat__row"><span class="sa-bigstat__n">60</span><span class="sa-bigstat__u">RPM</span></div>
+          <div class="sa-bigstat__l">Avg cadence</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sa-hero__right">
+      <div class="sa-hero__banner-grain"></div>
+      <div class="sa-hero__banner-inner">
+        <span class="fg-stamp fg-stamp--ink">🎨 AI BANNER · AUTO-GENERATED</span>
+        <div class="sa-hero__banner-quote">CONTROLLED<br>BREATH,<br>RISING SPRING.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI SUMMARY -->
+  <div class="fg-band">
+    <span class="fg-band__label">✨ AI Summary</span>
+    <span class="fg-band__right">GENERATED BY AI ACTIVITY COMPANION</span>
+  </div>
+  <div class="sa-summary">
+    <div class="sa-summary__label">
+      <div class="sa-summary__label-emoji">✨</div>
+      <div class="sa-summary__label-title">AI SUMMARY</div>
+      <div class="sa-summary__label-by">by AI Companion</div>
+    </div>
+    <div class="sa-summary__body">
+      <p>Nice Tower Pilates class! A <span class="gr">moderate 50-minute session</span> with an average heart rate of 82 bpm kept things in the recovery zone, and a cadence averaging 60 rpm suggests a focus on controlled movements. Recovery advisor is suggesting <b>32 hours to recover</b>.</p>
+    </div>
+  </div>
+
+  <!-- HEART RATE -->
+  <div class="fg-band fg-band--ink">
+    <span class="fg-band__label">❤️ Heart Rate</span>
+    <span class="fg-band__right">60-SECOND ROLLING WINDOWS</span>
+  </div>
+  <div class="sa-hr">
+    <div>
+      <div class="sa-hr__top">
+        <div class="sa-mini"><span class="sa-mini__n">63</span><span class="sa-mini__l">MIN BPM</span></div>
+        <div class="sa-mini sa-mini--gr"><span class="sa-mini__n">82</span><span class="sa-mini__l">AVG BPM</span></div>
+        <div class="sa-mini"><span class="sa-mini__n">116</span><span class="sa-mini__l">MAX BPM</span></div>
+        <span class="sa-drift">+14 DRIFT · HYDRATE</span>
+      </div>
+      <svg class="sa-hr__chart" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs><linearGradient id="hrg" x1="0" x2="1"><stop offset="0" stop-color="#ff3da6"/><stop offset=".5" stop-color="#8b5cf6"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+        <path d="M 0,72 L 4,68 L 10,60 L 18,52 L 26,48 L 34,40 L 42,36 L 50,32 L 58,12 L 62,22 L 70,32 L 76,40 L 82,46 L 88,52 L 94,58 L 100,62 L 100,100 L 0,100 Z" fill="url(#hrg)" opacity=".18"/>
+        <path d="M 0,72 L 4,68 L 10,60 L 18,52 L 26,48 L 34,40 L 42,36 L 50,32 L 58,12 L 62,22 L 70,32 L 76,40 L 82,46 L 88,52 L 94,58 L 100,62" stroke="url(#hrg)" stroke-width="1.5" fill="none"/>
+      </svg>
+    </div>
+    <div>
+      <div class="sa-interior-head">
+        <span class="sa-interior-head__label">Zones</span>
+        <span class="sa-interior-head__right">50 MIN TOTAL</span>
+      </div>
+      <div class="sa-zones">
+        <div class="sa-zone"><span class="sa-zone__z">Z0</span><span class="sa-zone__name">REST</span><div class="sa-zone__bar"><div class="sa-zone__fill" style="width:84%;background:var(--fg-violet)"></div></div><span class="sa-zone__mins">42 m</span></div>
+        <div class="sa-zone"><span class="sa-zone__z">Z1</span><span class="sa-zone__name">RECOVERY</span><div class="sa-zone__bar"><div class="sa-zone__fill" style="width:14%;background:var(--fg-cyan)"></div></div><span class="sa-zone__mins">7 m</span></div>
+        <div class="sa-zone"><span class="sa-zone__z">Z2</span><span class="sa-zone__name">ENDURANCE</span><div class="sa-zone__bar"><div class="sa-zone__fill" style="width:0%"></div></div><span class="sa-zone__mins">0 m</span></div>
+        <div class="sa-zone"><span class="sa-zone__z">Z3</span><span class="sa-zone__name">TEMPO</span><div class="sa-zone__bar"><div class="sa-zone__fill" style="width:0%"></div></div><span class="sa-zone__mins">0 m</span></div>
+        <div class="sa-zone"><span class="sa-zone__z">Z4</span><span class="sa-zone__name">THRESHOLD</span><div class="sa-zone__bar"><div class="sa-zone__fill" style="width:0%"></div></div><span class="sa-zone__mins">0 m</span></div>
+        <div class="sa-zone"><span class="sa-zone__z">Z5</span><span class="sa-zone__name">VO2 MAX</span><div class="sa-zone__bar"><div class="sa-zone__fill" style="width:0%"></div></div><span class="sa-zone__mins">0 m</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EFFORT & ENERGY -->
+  <div class="fg-band fg-band--ink">
+    <span class="fg-band__label">💥 Effort & Energy</span>
+    <span class="fg-band__right">3 COMPUTED METRICS</span>
+  </div>
+  <div class="sa-trio">
+    <!-- Effort -->
+    <div>
+      <div class="sa-interior-head">
+        <span class="sa-interior-head__label">Effort Score</span>
+        <span class="sa-interior-head__right">OUT OF 100</span>
+      </div>
+      <div class="sa-trio__row">
+        <span class="sa-trio__n">41</span><span class="sa-trio__u">/100</span><span class="fg-stamp" style="margin-left:6px">MODERATE</span>
+      </div>
+      <div class="sa-trio__bar">
+        <div class="sa-trio__bar-fill" style="width:41%"></div>
+        <div class="sa-trio__bar-needle" style="left:41%"></div>
+      </div>
+      <div class="sa-trio__hint">❤️ HR 0.75× avg · ⏱ Dur 1.21× avg · 💪 Intensity 0.31× avg</div>
+    </div>
+    <!-- Calories -->
+    <div class="sa-trio sa-trio--cal sa-trio--big" style="display:block;padding:0;border-left:0">
+      <div class="sa-interior-head">
+        <span class="sa-interior-head__label">🔥 Calories</span>
+        <span class="sa-interior-head__right">EXPENDITURE</span>
+      </div>
+      <div class="sa-trio__row" style="margin-top:18px">
+        <span class="sa-trio__n">292</span>
+      </div>
+      <div style="font-family:var(--fg-font-mono);font-size:.6875rem;font-weight:700;letter-spacing:.14em;color:var(--color-text-muted);margin-top:4px;text-transform:uppercase">KCAL · TOTAL</div>
+      <div style="font-family:var(--fg-font-body);font-size:.875rem;color:var(--fg-paper);margin-top:14px">≈ 1.0 slice of pizza 🍕</div>
+    </div>
+    <!-- Training load -->
+    <div>
+      <div class="sa-interior-head">
+        <span class="sa-interior-head__label">💪 Training Load</span>
+        <span class="sa-interior-head__right">TRIMP SCORE</span>
+      </div>
+      <div class="sa-trio__row">
+        <span class="sa-trio__n">8</span><span class="fg-stamp">RECOVERY</span>
+      </div>
+      <div class="sa-trio__hint">Light session · aids active recovery</div>
+      <div class="sa-trio__buckets">
+        <div class="sa-trio__bucket on">REC</div>
+        <div class="sa-trio__bucket">EASY</div>
+        <div class="sa-trio__bucket">MOD</div>
+        <div class="sa-trio__bucket">HARD</div>
+        <div class="sa-trio__bucket">500+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECOVERY -->
+  <div class="fg-band fg-band--ink">
+    <span class="fg-band__label">💤 Recovery Advisor</span>
+    <span class="fg-band__right">ACUTE : CHRONIC WORKLOAD RATIO</span>
+  </div>
+  <div class="sa-rec">
+    <div class="sa-rec__grid">
+      <div class="sa-rec__stat">
+        <div class="sa-rec__n">8</div>
+        <div class="sa-rec__l">Session load</div>
+        <div class="sa-rec__sub">TRIMP today</div>
+      </div>
+      <div class="sa-rec__stat">
+        <div class="sa-rec__n">657</div>
+        <div class="sa-rec__l">7-day load</div>
+        <div class="sa-rec__sub">28d avg: 657</div>
+      </div>
+      <div class="sa-rec__stat">
+        <div class="sa-rec__n sa-rec__n--warn">4.00</div>
+        <div class="sa-rec__l">ACWR</div>
+        <div class="sa-rec__sub sa-rec__sub--warn">Overreaching ⚠</div>
+      </div>
+    </div>
+    <div class="sa-rec__alert">
+      <span style="font-size:1.25rem">🕐</span>
+      <span>SUGGESTED RECOVERY · <b>32 HOURS</b> · NEXT QUALITY SESSION FRI</span>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="fg-band fg-band--ink">
+    <span class="fg-band__label">🎯 Progress</span>
+    <span class="fg-band__right">GOAL · STREAK · CADENCE</span>
+  </div>
+  <div class="sa-prog">
+    <div>
+      <div class="sa-interior-head">
+        <span class="sa-interior-head__label">Weekly Goal</span>
+        <span class="sa-interior-head__right">0.0 / 20 KM</span>
+      </div>
+      <div class="sa-prog__pct">0<span class="sa-prog__pct-small">%</span></div>
+      <div class="sa-prog__bar"><div class="sa-prog__bar-fill" style="width:0%"></div></div>
+      <div class="sa-prog__notes">➕ This activity: +0.0 km<br>💡 Need 3.3 km/day to hit goal</div>
+    </div>
+    <div>
+      <div class="sa-interior-head">
+        <span class="sa-interior-head__label">🔥 Streak</span>
+        <span class="sa-interior-head__right">ACTIVITY DAYS</span>
+      </div>
+      <div class="sa-prog__streak">2</div>
+      <div class="sa-prog__streak-cal">
+        <span class="sa-prog__streak-day"></span>
+        <span class="sa-prog__streak-day"></span>
+        <span class="sa-prog__streak-day"></span>
+        <span class="sa-prog__streak-day"></span>
+        <span class="sa-prog__streak-day"></span>
+        <span class="sa-prog__streak-day"></span>
+        <span class="sa-prog__streak-day"></span>
+        <span class="sa-prog__streak-day"></span>
+        <span class="sa-prog__streak-day maybe"></span>
+        <span class="sa-prog__streak-day maybe"></span>
+        <span class="sa-prog__streak-day maybe"></span>
+        <span class="sa-prog__streak-day maybe"></span>
+        <span class="sa-prog__streak-day on"></span>
+        <span class="sa-prog__streak-day on"></span>
+      </div>
+      <div class="sa-prog__notes" style="margin-top:10px">BEST: 120 DAYS</div>
+    </div>
+    <div>
+      <div class="sa-interior-head">
+        <span class="sa-interior-head__label">🦶 Cadence</span>
+        <span class="sa-interior-head__right">RPM</span>
+      </div>
+      <div class="sa-prog__cad-row">
+        <div>
+          <div class="sa-prog__cad-n">60</div>
+          <div class="sa-mini__l">AVG</div>
+        </div>
+        <div>
+          <div class="sa-prog__cad-n sa-prog__cad-n--gr">100</div>
+          <div class="sa-mini__l">MAX</div>
+        </div>
+      </div>
+      <div class="sa-prog__cad-bars">
+        <!-- 40 bars, mid heights -->
+        <span style="height:35%"></span><span style="height:42%"></span><span style="height:38%"></span><span style="height:55%"></span>
+        <span style="height:48%"></span><span style="height:62%"></span><span style="height:50%"></span><span style="height:44%"></span>
+        <span style="height:58%"></span><span style="height:66%"></span><span style="height:48%"></span><span style="height:38%"></span>
+        <span style="height:52%"></span><span style="height:60%"></span><span style="height:46%"></span><span style="height:54%"></span>
+        <span style="height:38%"></span><span style="height:42%"></span><span style="height:58%"></span><span style="height:64%"></span>
+        <span style="height:50%"></span><span style="height:44%"></span><span style="height:60%"></span><span style="height:72%"></span>
+        <span style="height:80%"></span><span style="height:65%"></span><span style="height:55%"></span><span style="height:92%;opacity:1;background:var(--fg-pink)"></span>
+        <span style="height:48%"></span><span style="height:50%"></span><span style="height:42%"></span><span style="height:54%"></span>
+        <span style="height:46%"></span><span style="height:38%"></span><span style="height:60%"></span><span style="height:50%"></span>
+        <span style="height:44%"></span><span style="height:38%"></span><span style="height:42%"></span><span style="height:36%"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOSTERS -->
+  <div class="fg-band fg-band--ink">
+    <span class="fg-band__label">🚀 Boosters Applied</span>
+    <span class="fg-band__right">25 OF 25 RAN SUCCESSFULLY</span>
+  </div>
+  <div class="sa-boost">
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏃</span>PARKRUN</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🔢</span>AUTO INCREMENT</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏆</span>PRS</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">📅</span>GOAL</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⭐</span>STREAK</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏅</span>MILESTONES</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏃‍♂️</span>PACE</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⏱️</span>INTERVALS</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">❤️</span>HR SUM</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💗</span>HR ZONES</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🔋</span>CALORIES</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💥</span>EFFORT</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💪</span>LOAD</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💤</span>RECOVERY</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">👟</span>DYNAMICS</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🦶</span>CADENCE</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⚡</span>POWER</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🚀</span>SPEED</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⛰️</span>ELEV</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">📍</span>LOCATION</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🌤️</span>WEATHER</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🎨</span>AI BANNER</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏷️</span>TYPE MAP</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">✨</span>AI COMPANION</span>
+    <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🎯</span>CONDITION</span>
+  </div>
+
+  <!-- CTA -->
+  <section class="sa-cta">
+    <div>
+      <h2>Want your sweat<br>to look like this?</h2>
+      <p>FITGLUE STITCHES 25 BOOSTERS ONTO EVERY ACTIVITY — AUTO.</p>
+    </div>
+    <a href="/auth/register" class="fg-button fg-button--ink fg-button--lg">TRY FITGLUE FREE →</a>
+  </section>
+
+</body>
+</html>

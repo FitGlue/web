@@ -1,28 +1,31 @@
+/* ==========================================================================
+   PremiumBadge — Brutal × Aurora
+   Aurora gradient stamp, sharp corners, mono caps.
+   ========================================================================== */
+
 .premium-badge {
   display: inline-flex;
   align-items: center;
-  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
-  color: #1a1a1a;
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  font-family: var(--fg-font-mono);
   font-weight: 700;
-  font-size: 0.625rem;
-  letter-spacing: 0.05em;
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  padding: 0.1875rem 0.4375rem;
   text-transform: uppercase;
-  box-shadow: 0 1px 3px rgba(255, 215, 0, 0.3);
 }
 
 .premium-badge--medium {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   padding: 0.25rem 0.5rem;
 }
 
-/* Premium card styling */
+/* Premium option card */
 .option-card.premium {
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+  box-shadow: inset 0 0 0 1.5px rgba(139, 92, 246, 0.4);
 }
 
 .option-card.premium:hover {
-  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: inset 0 0 0 1.5px rgba(139, 92, 246, 0.7);
 }

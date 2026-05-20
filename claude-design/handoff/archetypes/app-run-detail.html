@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>App · Pipeline Run Detail — FitGlue Reskin</title>
+<meta name="viewport" content="width=1440, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tokens.css?v=3" />
+<link rel="stylesheet" href="../css/base.css?v=3" />
+<link rel="stylesheet" href="../css/components.css?v=3" />
+<link rel="stylesheet" href="../css/overrides.css?v=3" />
+<style>
+  body { background: var(--fg-ink); color: var(--fg-paper); margin: 0; min-height: 100vh; }
+  body .header, body .footer { display: none; } /* in-app */
+
+  /* App top bar */
+  .app-bar { display: flex; align-items: stretch; border-bottom: var(--fg-rule-thick); background: var(--fg-ink); }
+  .app-bar__brand { padding: 14px 22px; display: flex; align-items: center; gap: 10px; font-family: var(--fg-font-display); font-size: 1.125rem; }
+  .app-bar__brand .fg-logo { width: 22px; height: 22px; }
+  .app-bar__nav { display: flex; align-items: stretch; flex: 1; }
+  .app-bar__link { padding: 14px 18px; display: flex; align-items: center; font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .12em; color: var(--color-text-muted); text-decoration: none; text-transform: uppercase; }
+  .app-bar__link.active { background: var(--gradient-primary); color: var(--fg-ink); }
+  .app-bar__user { padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+  .app-bar__avatar { width: 30px; height: 30px; background: var(--gradient-primary); color: var(--fg-ink); display: flex; align-items: center; justify-content: center; font-family: var(--fg-font-display); font-size: .8125rem; }
+
+  /* Heading slab */
+  .rd-head { padding: 22px 30px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 32px; }
+  .rd-head__crumb { font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; display: flex; gap: 8px; align-items: center; }
+  .rd-head__crumb a { color: var(--color-text-muted); text-decoration: none; }
+  .rd-head__crumb b { color: var(--fg-paper); }
+  .rd-head__title { font-family: var(--fg-font-display); font-size: 2.25rem; line-height: 1; letter-spacing: -.025em; margin: 8px 0 4px; text-transform: uppercase; }
+  .rd-head__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .rd-head__sub { font-family: var(--fg-font-mono); font-size: .8125rem; letter-spacing: .04em; color: var(--color-text-muted); }
+  .rd-head__sub code { color: var(--fg-cyan); background: var(--fg-ink); padding: 2px 6px; }
+  .rd-head__actions { display: flex; align-items: center; gap: 8px; }
+
+  /* SUMMARY band of stats */
+  .rd-summary { display: grid; grid-template-columns: repeat(6, 1fr); border-bottom: var(--fg-rule-thin); background: var(--fg-ink); }
+  .rd-summary > div { padding: 18px 22px; }
+  .rd-summary > div + div { border-left: var(--fg-rule-thin); }
+  .rd-summary__n { font-family: var(--fg-font-display); font-size: 2rem; line-height: .95; letter-spacing: -.025em; }
+  .rd-summary__n--ok { color: var(--fg-green); }
+  .rd-summary__n--gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .rd-summary__l { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); margin-top: 6px; text-transform: uppercase; }
+
+  /* TOOLBAR */
+  .rd-tools { display: flex; align-items: stretch; border-bottom: var(--fg-rule-thin); background: var(--fg-ink-2); font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .1em; }
+  .rd-tools__tab { padding: 12px 18px; color: var(--fg-paper); text-decoration: none; }
+  .rd-tools__tab + .rd-tools__tab { border-left: var(--fg-rule-thin); }
+  .rd-tools__tab.active { background: var(--gradient-primary); color: var(--fg-ink); }
+  .rd-tools__tab .count { margin-left: 6px; padding: 1px 6px; background: var(--fg-ink); color: var(--color-text-muted); font-size: .5625rem; }
+  .rd-tools__tab.active .count { background: var(--fg-ink); color: var(--fg-paper); }
+  .rd-tools__spacer { flex: 1; }
+  .rd-tools__toggle { padding: 12px 18px; display: flex; align-items: center; gap: 10px; color: var(--color-text-muted); border-left: var(--fg-rule-thin); }
+  .rd-tools__toggle.on { color: var(--fg-paper); }
+  .rd-tools__switch { width: 32px; height: 18px; background: var(--fg-ink-3); position: relative; box-shadow: inset 0 0 0 1.5px var(--fg-paper); cursor: pointer; }
+  .rd-tools__switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 11px; height: 11px; background: var(--fg-paper); }
+  .rd-tools__toggle.on .rd-tools__switch { background: var(--gradient-primary); box-shadow: none; }
+  .rd-tools__toggle.on .rd-tools__switch::after { left: 16px; background: var(--fg-ink); }
+  .rd-tools__btn { padding: 12px 16px; color: var(--fg-paper); border-left: var(--fg-rule-thin); }
+  .rd-tools__btn--rose { color: var(--fg-rose); }
+
+  /* MAIN — left rail (step list) + main (step detail) */
+  .rd-main { display: grid; grid-template-columns: 320px 1fr; min-height: 80vh; }
+  .rd-rail { background: var(--fg-ink-2); border-right: var(--fg-rule-thin); }
+  .rd-rail__head { padding: 12px 18px; font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); border-bottom: var(--fg-rule-thin); display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
+  .rd-step-row { padding: 12px 18px; display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: start; border-bottom: var(--fg-rule-thin); cursor: pointer; }
+  .rd-step-row.active { background: var(--fg-ink-3); }
+  .rd-step-row.active::before { content: ''; position: absolute; left: 0; width: 4px; top: 0; bottom: 0; background: var(--gradient-primary); }
+  .rd-step-row { position: relative; }
+  .rd-step-row__n { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .04em; color: var(--color-text-muted); }
+  .rd-step-row__title { font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: -.005em; text-transform: uppercase; line-height: 1.1; }
+  .rd-step-row__service { font-family: var(--fg-font-mono); font-size: .625rem; letter-spacing: .1em; color: var(--color-text-subtle); margin-top: 4px; text-transform: uppercase; }
+  .rd-step-row__pill { padding: 2px 6px; font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; }
+  .rd-step-row__pill--ok { background: var(--fg-green); color: var(--fg-ink); }
+  .rd-step-row__pill--run { background: var(--gradient-primary); color: var(--fg-ink); }
+  .rd-step-row__pill--err { background: var(--fg-rose); color: var(--fg-paper); }
+  .rd-step-row__pill--skip { background: var(--fg-ink); color: var(--color-text-muted); box-shadow: inset 0 0 0 1.5px var(--fg-paper); }
+  .rd-step-row__pill--queue { background: transparent; color: var(--fg-paper); box-shadow: inset 0 0 0 1.5px var(--fg-paper); }
+  .rd-step-row__time { font-family: var(--fg-font-mono); font-size: .625rem; color: var(--color-text-subtle); margin-top: 4px; letter-spacing: .04em; }
+
+  /* MAIN body */
+  .rd-body { padding: 0; }
+  /* the focused step header */
+  .rd-step-head { padding: 24px 32px 16px; border-bottom: var(--fg-rule-thin); display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; }
+  .rd-step-head__num { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .rd-step-head__title { font-family: var(--fg-font-display); font-size: 2rem; line-height: 1; letter-spacing: -.025em; margin: 6px 0 8px; text-transform: uppercase; }
+  .rd-step-head__meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .rd-step-head__metrics { display: flex; gap: 28px; }
+  .rd-step-head__metric { display: flex; flex-direction: column; }
+  .rd-step-head__metric-n { font-family: var(--fg-font-display); font-size: 1.875rem; line-height: 1; letter-spacing: -.025em; }
+  .rd-step-head__metric-l { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); margin-top: 4px; text-transform: uppercase; }
+
+  /* Provider list — for the enricher step */
+  .rd-providers { padding: 0; }
+  .rd-providers-head { padding: 14px 32px; font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
+  .rd-provider { padding: 16px 32px; border-bottom: var(--fg-rule-thin); display: grid; grid-template-columns: 36px 1fr auto; gap: 16px; align-items: center; }
+  .rd-provider__num { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; color: var(--color-text-muted); }
+  .rd-provider__name { font-family: var(--fg-font-display); font-size: 1rem; letter-spacing: -.005em; text-transform: uppercase; }
+  .rd-provider__meta { font-family: var(--fg-font-mono); font-size: .75rem; color: var(--color-text-muted); margin-top: 4px; letter-spacing: .04em; display: flex; gap: 12px; flex-wrap: wrap; }
+  .rd-provider__meta b { color: var(--fg-paper); }
+  .rd-provider__right { display: flex; align-items: center; gap: 12px; }
+  .rd-provider__ms { font-family: var(--fg-font-mono); font-size: .75rem; color: var(--color-text-muted); }
+
+  /* Destinations grid — for router step */
+  .rd-dests { padding: 18px 32px 8px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .rd-dest { padding: 14px; background: var(--fg-ink-2); display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; }
+  .rd-dest__emoji { width: 40px; height: 40px; background: var(--fg-ink-3); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+  .rd-dest__name { font-family: var(--fg-font-display); font-size: 1rem; letter-spacing: -.005em; text-transform: uppercase; }
+  .rd-dest__url { font-family: var(--fg-font-mono); font-size: .6875rem; color: var(--fg-cyan); text-decoration: none; }
+  .rd-dest__url:hover { text-decoration: underline; }
+
+  /* Code / JSON block (nerd mode) */
+  .rd-json {
+    padding: 16px 20px;
+    background: var(--fg-ink);
+    border-bottom: var(--fg-rule-thin);
+    font-family: var(--fg-font-mono);
+    font-size: .75rem;
+    line-height: 1.5;
+    color: var(--fg-paper);
+    overflow-x: auto;
+  }
+  .rd-json .key { color: var(--fg-cyan); }
+  .rd-json .str { color: var(--fg-green); }
+  .rd-json .num { color: var(--fg-pink); }
+  .rd-json .bool { color: var(--fg-gold); }
+  .rd-json .ellipsis { color: var(--color-text-subtle); font-style: italic; }
+  .rd-json__head {
+    padding: 10px 32px;
+    background: var(--fg-ink-2);
+    border-bottom: var(--fg-rule-thin);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--fg-font-mono);
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .rd-json__head .chev { color: var(--fg-paper); font-family: var(--fg-font-display); }
+
+  /* Summary section under header */
+  .rd-section-head { padding: 16px 32px 6px; display: flex; justify-content: space-between; align-items: baseline; }
+  .rd-section-head h2 { font-family: var(--fg-font-display); font-size: 1.125rem; letter-spacing: .02em; text-transform: uppercase; margin: 0; }
+  .rd-section-head__right { font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+
+  /* Step KV summary on the focused step */
+  .rd-kvgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 0 32px 18px; }
+  .rd-kvgrid > div { padding: 12px 0 0; }
+  .rd-kvgrid > div + div { border-left: var(--fg-rule-thin); padding-left: 18px; margin-left: 18px; }
+  .rd-kvgrid__l { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 4px; }
+  .rd-kvgrid__v { font-family: var(--fg-font-body); font-size: 1rem; color: var(--fg-paper); }
+</style>
+</head>
+<body>
+
+  <!-- APP TOP BAR -->
+  <div class="app-bar">
+    <a href="/app" class="app-bar__brand"><span class="fg-logo"></span><span>FITGLUE</span></a>
+    <div class="app-bar__nav">
+      <a class="app-bar__link" href="/app">DASHBOARD</a>
+      <a class="app-bar__link" href="/app/settings/pipelines">PIPELINES</a>
+      <a class="app-bar__link" href="/app/connections">CONNECTIONS</a>
+      <a class="app-bar__link active" href="/app/activities">ACTIVITIES</a>
+      <a class="app-bar__link" href="/app/showcase">SHOWCASE</a>
+      <a class="app-bar__link" href="/app/settings/account">SETTINGS</a>
+    </div>
+    <div class="app-bar__user">
+      <div class="app-bar__avatar">JK</div>
+      <div>
+        <div style="font-family:var(--fg-font-display);font-size:.75rem;line-height:1">JAMES KING</div>
+        <div style="font-family:var(--fg-font-mono);font-size:.5625rem;letter-spacing:.1em;color:var(--color-text-muted);margin-top:2px">✦ ATHLETE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADING -->
+  <div class="rd-head">
+    <div>
+      <div class="rd-head__crumb">
+        <a href="/app/activities">ACTIVITIES</a> / <a href="/app/activities?tab=runs">RUNS</a> / <b>RUN #4012</b>
+      </div>
+      <div class="rd-head__title">Tower Pilates Class <span class="gr">→</span> Run trace</div>
+      <div class="rd-head__sub">
+        Pipeline <b style="color:var(--fg-paper)">Non-Hybrid</b> · v12 · started <b style="color:var(--fg-paper)">Wed 8 Apr · 10:34:18</b> · execution <code>pe_01HVRMK4Z2QPYC8M7B9X3F6JT</code>
+      </div>
+    </div>
+    <div class="rd-head__actions">
+      <a href="#" class="fg-button fg-button--ghost fg-button--sm">📦 EXPORT JSON</a>
+      <a href="#" class="fg-button fg-button--ghost fg-button--sm">⟲ REPLAY</a>
+      <a href="#" class="fg-button fg-button--sm">VIEW ACTIVITY →</a>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="rd-summary">
+    <div>
+      <div class="rd-summary__n rd-summary__n--ok">✓ OK</div>
+      <div class="rd-summary__l">Final status</div>
+    </div>
+    <div>
+      <div class="rd-summary__n">4.18<span style="font-size:1rem;color:var(--color-text-muted)"> s</span></div>
+      <div class="rd-summary__l">Total runtime</div>
+    </div>
+    <div>
+      <div class="rd-summary__n rd-summary__n--gr">25</div>
+      <div class="rd-summary__l">Enrichers ran</div>
+    </div>
+    <div>
+      <div class="rd-summary__n">3</div>
+      <div class="rd-summary__l">Destinations · ok</div>
+    </div>
+    <div>
+      <div class="rd-summary__n">0</div>
+      <div class="rd-summary__l">Errors / retries</div>
+    </div>
+    <div>
+      <div class="rd-summary__n">2.4<span style="font-size:1rem;color:var(--color-text-muted)"> MB</span></div>
+      <div class="rd-summary__l">Payload out</div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="rd-tools">
+    <a class="rd-tools__tab active" href="#">TRACE <span class="count">9 STEPS</span></a>
+    <a class="rd-tools__tab" href="#">TIMELINE</a>
+    <a class="rd-tools__tab" href="#">DIFF <span class="count">+28 KEYS</span></a>
+    <a class="rd-tools__tab" href="#">RAW JSON</a>
+    <div class="rd-tools__spacer"></div>
+    <div class="rd-tools__toggle on">
+      <span>NERD MODE</span>
+      <span class="rd-tools__switch"></span>
+    </div>
+    <a class="rd-tools__btn" href="#">⟲ REPLAY</a>
+    <a class="rd-tools__btn rd-tools__btn--rose" href="#">⏭ SKIP &amp; RESYNC</a>
+  </div>
+
+  <!-- MAIN — left rail + right detail -->
+  <div class="rd-main">
+
+    <!-- LEFT — step list -->
+    <aside class="rd-rail">
+      <div class="rd-rail__head">
+        <span>Execution Trace</span>
+        <span>9 STEPS</span>
+      </div>
+
+      <div class="rd-step-row">
+        <div class="rd-step-row__n">01</div>
+        <div>
+          <div class="rd-step-row__title">File Upload</div>
+          <div class="rd-step-row__service">webhook · strava</div>
+          <div class="rd-step-row__time">+0ms · 184ms</div>
+        </div>
+        <div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+        </div>
+      </div>
+
+      <div class="rd-step-row">
+        <div class="rd-step-row__n">02</div>
+        <div>
+          <div class="rd-step-row__title">Parse FIT</div>
+          <div class="rd-step-row__service">fit-parser</div>
+          <div class="rd-step-row__time">+184ms · 226ms</div>
+        </div>
+        <div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+        </div>
+      </div>
+
+      <div class="rd-step-row">
+        <div class="rd-step-row__n">03</div>
+        <div>
+          <div class="rd-step-row__title">Condition Matcher</div>
+          <div class="rd-step-row__service">gate · rule</div>
+          <div class="rd-step-row__time">+410ms · 12ms</div>
+        </div>
+        <div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ PASS</span>
+        </div>
+      </div>
+
+      <div class="rd-step-row active">
+        <div class="rd-step-row__n">04</div>
+        <div>
+          <div class="rd-step-row__title">Enricher</div>
+          <div class="rd-step-row__service">enricher · 25 providers</div>
+          <div class="rd-step-row__time">+422ms · 3.14s</div>
+        </div>
+        <div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ 25/25</span>
+        </div>
+      </div>
+
+      <div class="rd-step-row">
+        <div class="rd-step-row__n">05</div>
+        <div>
+          <div class="rd-step-row__title">Router</div>
+          <div class="rd-step-row__service">router · 3 dests</div>
+          <div class="rd-step-row__time">+3.56s · 24ms</div>
+        </div>
+        <div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+        </div>
+      </div>
+
+      <div class="rd-step-row">
+        <div class="rd-step-row__n">06</div>
+        <div>
+          <div class="rd-step-row__title">Strava Upload</div>
+          <div class="rd-step-row__service">strava-uploader</div>
+          <div class="rd-step-row__time">+3.58s · 412ms</div>
+        </div>
+        <div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+        </div>
+      </div>
+
+      <div class="rd-step-row">
+        <div class="rd-step-row__n">07</div>
+        <div>
+          <div class="rd-step-row__title">Showcase Publish</div>
+          <div class="rd-step-row__service">showcase-uploader</div>
+          <div class="rd-step-row__time">+3.58s · 88ms</div>
+        </div>
+        <div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+        </div>
+      </div>
+
+      <div class="rd-step-row">
+        <div class="rd-step-row__n">08</div>
+        <div>
+          <div class="rd-step-row__title">Hevy Upload</div>
+          <div class="rd-step-row__service">hevy-uploader</div>
+          <div class="rd-step-row__time">+3.58s · 96ms</div>
+        </div>
+        <div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+        </div>
+      </div>
+
+      <div class="rd-step-row">
+        <div class="rd-step-row__n">09</div>
+        <div>
+          <div class="rd-step-row__title">Finalise</div>
+          <div class="rd-step-row__service">finaliser</div>
+          <div class="rd-step-row__time">+4.16s · 22ms</div>
+        </div>
+        <div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT — focused step detail (Step 04 / Enricher) -->
+    <div class="rd-body">
+
+      <!-- focused step head -->
+      <div class="rd-step-head">
+        <div>
+          <div class="rd-step-head__num">STEP 04 OF 09 · ENRICHER</div>
+          <h1 class="rd-step-head__title">Enricher · 25 providers ran</h1>
+          <div class="rd-step-head__meta">
+            <span class="fg-stamp">✓ ALL OK</span>
+            <span class="fg-stamp fg-stamp--ink">enricher.run</span>
+            <span class="fg-stamp fg-stamp--outline">PROVIDER FAN-OUT</span>
+          </div>
+        </div>
+        <div class="rd-step-head__metrics">
+          <div class="rd-step-head__metric"><span class="rd-step-head__metric-n">3.14<span style="font-size:1rem;color:var(--color-text-muted)">s</span></span><span class="rd-step-head__metric-l">DURATION</span></div>
+          <div class="rd-step-head__metric"><span class="rd-step-head__metric-n">25</span><span class="rd-step-head__metric-l">PROVIDERS</span></div>
+          <div class="rd-step-head__metric"><span class="rd-step-head__metric-n">+28</span><span class="rd-step-head__metric-l">KEYS ADDED</span></div>
+        </div>
+      </div>
+
+      <!-- KV summary -->
+      <div class="rd-kvgrid">
+        <div>
+          <div class="rd-kvgrid__l">Triggered at</div>
+          <div class="rd-kvgrid__v">Wed 8 Apr · 10:34:18.422</div>
+        </div>
+        <div>
+          <div class="rd-kvgrid__l">Input keys</div>
+          <div class="rd-kvgrid__v">12 (raw FIT-derived)</div>
+        </div>
+        <div>
+          <div class="rd-kvgrid__l">Output keys</div>
+          <div class="rd-kvgrid__v">40 (12 in + 28 enriched)</div>
+        </div>
+      </div>
+
+      <!-- PROVIDERS list -->
+      <div class="rd-providers-head">
+        <span>Provider Executions · 25</span>
+        <span>SORT: ORDER ↓ &nbsp;·&nbsp; STATUS · DURATION</span>
+      </div>
+
+      <div class="rd-providers">
+        <div class="rd-provider">
+          <div class="rd-provider__num">01</div>
+          <div>
+            <div class="rd-provider__name">🏃 Parkrun Results</div>
+            <div class="rd-provider__meta"><span>matched: <b>no</b></span><span>reason: <b>not_a_parkrun_route</b></span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--skip">SKIP</span>
+            <span class="rd-provider__ms">8 ms</span>
+          </div>
+        </div>
+
+        <div class="rd-provider">
+          <div class="rd-provider__num">02</div>
+          <div>
+            <div class="rd-provider__name">🔢 Auto Increment</div>
+            <div class="rd-provider__meta"><span>sequence: <b>#314</b></span><span>type: <b>pilates</b></span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+            <span class="rd-provider__ms">22 ms</span>
+          </div>
+        </div>
+
+        <div class="rd-provider">
+          <div class="rd-provider__num">03</div>
+          <div>
+            <div class="rd-provider__name">🏆 Personal Records</div>
+            <div class="rd-provider__meta"><span>checked: <b>4 events</b></span><span>new_prs: <b>0</b></span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+            <span class="rd-provider__ms">186 ms</span>
+          </div>
+        </div>
+
+        <div class="rd-provider">
+          <div class="rd-provider__num">04</div>
+          <div>
+            <div class="rd-provider__name">❤️ Heart Rate Summary</div>
+            <div class="rd-provider__meta"><span>min: <b>63</b></span><span>avg: <b>82</b></span><span>max: <b>116</b></span><span>drift: <b>+14</b></span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+            <span class="rd-provider__ms">42 ms</span>
+          </div>
+        </div>
+
+        <div class="rd-provider">
+          <div class="rd-provider__num">05</div>
+          <div>
+            <div class="rd-provider__name">💗 Heart Rate Zones</div>
+            <div class="rd-provider__meta"><span>z0: <b>42m</b></span><span>z1: <b>7m</b></span><span>z2-z5: <b>0m</b></span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+            <span class="rd-provider__ms">38 ms</span>
+          </div>
+        </div>
+
+        <div class="rd-provider">
+          <div class="rd-provider__num">06</div>
+          <div>
+            <div class="rd-provider__name">💥 Effort Score</div>
+            <div class="rd-provider__meta"><span>score: <b>41/100</b></span><span>band: <b>moderate</b></span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+            <span class="rd-provider__ms">14 ms</span>
+          </div>
+        </div>
+
+        <div class="rd-provider">
+          <div class="rd-provider__num">07</div>
+          <div>
+            <div class="rd-provider__name">💪 Training Load</div>
+            <div class="rd-provider__meta"><span>trimp: <b>8</b></span><span>band: <b>recovery</b></span><span>acwr: <b>4.00 ⚠</b></span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+            <span class="rd-provider__ms">19 ms</span>
+          </div>
+        </div>
+
+        <div class="rd-provider">
+          <div class="rd-provider__num">08</div>
+          <div>
+            <div class="rd-provider__name">🌤️ Weather</div>
+            <div class="rd-provider__meta"><span>source: <b>openweather</b></span><span>temp: <b>12°C</b></span><span>cond: <b>indoor / no GPS</b></span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--skip">SKIP</span>
+            <span class="rd-provider__ms">312 ms</span>
+          </div>
+        </div>
+
+        <div class="rd-provider">
+          <div class="rd-provider__num">09</div>
+          <div>
+            <div class="rd-provider__name">🎨 AI Banner</div>
+            <div class="rd-provider__meta"><span>model: <b>flux-schnell</b></span><span>tokens: <b>184</b></span><span>output: <b>banner_01.webp</b></span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+            <span class="rd-provider__ms">1.42 s</span>
+          </div>
+        </div>
+
+        <div class="rd-provider">
+          <div class="rd-provider__num">10</div>
+          <div>
+            <div class="rd-provider__name">✨ AI Activity Companion</div>
+            <div class="rd-provider__meta"><span>model: <b>gpt-mini-fit</b></span><span>tokens: <b>312</b></span><span>preview:</span> <span style="color:var(--fg-paper)">"Nice Tower Pilates class!…"</span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+            <span class="rd-provider__ms">848 ms</span>
+          </div>
+        </div>
+
+        <div class="rd-provider">
+          <div class="rd-provider__num">11</div>
+          <div>
+            <div class="rd-provider__name">📍 Location Naming</div>
+            <div class="rd-provider__meta"><span>method: <b>title_pattern</b></span><span>matched: <b>"tower" → studio</b></span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--ok">✓ OK</span>
+            <span class="rd-provider__ms">6 ms</span>
+          </div>
+        </div>
+
+        <div class="rd-provider">
+          <div class="rd-provider__num">12 · 13 · 14 · …</div>
+          <div>
+            <div class="rd-provider__name">14 more providers</div>
+            <div class="rd-provider__meta"><span>Goal · Streak · Milestones · Pace · Intervals · Calories · Recovery · Dynamics · Cadence · Power · Speed · Elevation · Type Mapper · Condition recheck</span></div>
+          </div>
+          <div class="rd-provider__right">
+            <span class="rd-step-row__pill rd-step-row__pill--ok">✓ 14/14</span>
+            <span class="rd-provider__ms">88 ms total</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NERD MODE / RAW IO -->
+      <div class="rd-json__head"><span>📦 Outputs (Nerd Mode) · provider_executions[…]</span><span class="chev">▾ COLLAPSE</span></div>
+      <pre class="rd-json">{
+  <span class="key">"step"</span>: <span class="str">"enricher"</span>,
+  <span class="key">"status"</span>: <span class="str">"SUCCESS"</span>,
+  <span class="key">"duration_ms"</span>: <span class="num">3142</span>,
+  <span class="key">"provider_executions"</span>: [
+    {
+      <span class="key">"ProviderName"</span>: <span class="str">"heart-rate-summary"</span>,
+      <span class="key">"Status"</span>: <span class="str">"SUCCESS"</span>,
+      <span class="key">"Metadata"</span>: {
+        <span class="key">"min_bpm"</span>: <span class="num">63</span>,
+        <span class="key">"avg_bpm"</span>: <span class="num">82</span>,
+        <span class="key">"max_bpm"</span>: <span class="num">116</span>,
+        <span class="key">"drift_bpm"</span>: <span class="num">14</span>
+      }
+    },
+    {
+      <span class="key">"ProviderName"</span>: <span class="str">"ai-banner"</span>,
+      <span class="key">"Status"</span>: <span class="str">"SUCCESS"</span>,
+      <span class="key">"Metadata"</span>: {
+        <span class="key">"model"</span>: <span class="str">"flux-schnell"</span>,
+        <span class="key">"prompt_tokens"</span>: <span class="num">184</span>,
+        <span class="key">"image_url"</span>: <span class="str">"gs://fitglue-prod/banners/2026-04-08/jk-tpc.webp"</span>,
+        <span class="key">"width"</span>: <span class="num">1200</span>,
+        <span class="key">"height"</span>: <span class="num">630</span>
+      }
+    },
+    <span class="ellipsis">… 23 more items …</span>
+  ],
+  <span class="key">"keys_added"</span>: [
+    <span class="str">"heart_rate.zones"</span>, <span class="str">"effort.score"</span>, <span class="str">"effort.band"</span>,
+    <span class="str">"training_load.trimp"</span>, <span class="str">"training_load.acwr"</span>,
+    <span class="str">"recovery.suggested_hours"</span>, <span class="str">"ai_banner.url"</span>,
+    <span class="ellipsis">… 21 more keys …</span>
+  ]
+}</pre>
+
+      <!-- ROUTER preview (next step peek) -->
+      <div class="rd-section-head">
+        <h2>↓ Next · Step 05 · Router</h2>
+        <span class="rd-section-head__right">FAN-OUT TO 3 DESTINATIONS</span>
+      </div>
+      <div class="rd-dests">
+        <div class="rd-dest">
+          <div class="rd-dest__emoji">🚴</div>
+          <div>
+            <div class="rd-dest__name">Strava</div>
+            <a class="rd-dest__url" href="#">strava.com/activities/9842113…<span style="color:var(--color-text-muted)">↗</span></a>
+          </div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ 412 ms</span>
+        </div>
+        <div class="rd-dest">
+          <div class="rd-dest__emoji">🔗</div>
+          <div>
+            <div class="rd-dest__name">Showcase</div>
+            <a class="rd-dest__url" href="#">fitglue.tech/showcase/activity/tower-pilates-class…<span style="color:var(--color-text-muted)">↗</span></a>
+          </div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ 88 ms</span>
+        </div>
+        <div class="rd-dest">
+          <div class="rd-dest__emoji">🏋️</div>
+          <div>
+            <div class="rd-dest__name">Hevy</div>
+            <a class="rd-dest__url" href="#">hevy.com/workout/k3n8x…<span style="color:var(--color-text-muted)">↗</span></a>
+          </div>
+          <span class="rd-step-row__pill rd-step-row__pill--ok">✓ 96 ms</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

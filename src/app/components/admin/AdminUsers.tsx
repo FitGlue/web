@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { Stack } from '../library/layout';
 import { Card, Button, Badge, EmptyState, useToast, Code, Text } from '../library/ui';
+import './admin.css';
 import {
   DataTable,
   DataTableColumn,
@@ -75,7 +76,7 @@ export const AdminUsers: React.FC = () => {
       key: 'isAdmin',
       header: 'Role',
       render: (user) => user.isAdmin ? (
-        <Badge variant="premium" size="sm">Admin</Badge>
+        <Badge variant="premium" size="sm" className="admin-badge--premium">Admin</Badge>
       ) : (
         <Text variant="muted">-</Text>
       ),
@@ -85,7 +86,11 @@ export const AdminUsers: React.FC = () => {
       key: 'accessEnabled',
       header: 'Access',
       render: (user) => (
-        <Badge variant={user.accessEnabled ? 'success' : 'warning'} size="sm">
+        <Badge
+          variant={user.accessEnabled ? 'success' : 'warning'}
+          size="sm"
+          className={user.accessEnabled ? 'admin-badge--ok' : 'admin-badge--warn'}
+        >
           {user.accessEnabled ? '✓ Active' : '⏳ Waitlist'}
         </Badge>
       ),
@@ -98,6 +103,7 @@ export const AdminUsers: React.FC = () => {
         <Badge
           variant={user.tier === UserTier.USER_TIER_ATHLETE ? 'premium' : 'default'}
           size="sm"
+          className={user.tier === UserTier.USER_TIER_ATHLETE ? 'admin-badge--premium' : 'admin-badge--muted'}
         >
           {user.tier === UserTier.USER_TIER_ATHLETE ? 'Athlete' : 'Hobbyist'}
         </Badge>

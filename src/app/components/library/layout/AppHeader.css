@@ -1,110 +1,142 @@
 @import '../tokens.css';
 
 /* ==========================================================================
-   AppHeader — Brutal × Aurora app bar
+   AppHeader — Brutal × Aurora .app-bar pattern
+   Matches the .app-bar spec from archetypes/app-wizard.html
    ========================================================================== */
 
 .app-header {
   display: flex;
   align-items: stretch;
-  border-bottom: var(--fg-rule-thick, 3px solid #f5f5f5);
-  background: var(--fg-ink, #070710);
+  border-bottom: var(--fg-rule-thick);
+  background: var(--fg-ink);
   position: sticky;
   top: 0;
-  z-index: var(--z-dropdown, 100);
+  z-index: var(--z-dropdown);
 }
 
-/* Logo */
+/* Brand / logo section — matches .app-bar__brand */
 .app-header__logo-link {
-  padding: 14px 22px;
+  padding: .875rem 1.375rem;
   display: flex;
   align-items: center;
+  gap: .625rem;
   text-decoration: none;
 }
 
 .app-header__logo {
-  font-family: var(--fg-font-display, 'Archivo Black', sans-serif);
+  font-family: var(--fg-font-display);
   font-size: 1.125rem;
-  letter-spacing: .04em;
+  letter-spacing: -.01em;
   margin: 0;
   line-height: 1;
+  color: var(--fg-paper);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: .375rem;
 }
 
+/* FG logo box — matches .fg-logo pattern */
+.app-header__logo-icon {
+  position: relative;
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  box-shadow: inset 0 0 0 2px var(--fg-paper);
+  flex-shrink: 0;
+}
+.app-header__logo-icon::before,
+.app-header__logo-icon::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+.app-header__logo-icon::before { top: 0; bottom: 50%; background: var(--gradient-primary); }
+.app-header__logo-icon::after  { top: 50%; bottom: 0; background: var(--fg-ink); }
+
+/* Keep gradient text for FIT, solid for GLUE */
 .app-header__logo-fit {
-  background: var(--gradient-primary, linear-gradient(95deg, #ff3da6, #8b5cf6, #22d3ee));
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .app-header__logo-glue {
-  color: var(--fg-paper, #f5f5f5);
+  color: var(--fg-paper);
 }
 
-/* Primary nav */
+/* Primary nav — matches .app-bar__nav */
 .app-header__nav {
   display: flex;
   align-items: stretch;
   flex: 1;
 }
 
+/* Nav links — matches .app-bar__link */
 .app-header__nav-link {
-  padding: 14px 18px;
+  padding: .875rem 1.125rem;
   display: flex;
   align-items: center;
-  font-family: var(--fg-font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--fg-font-mono);
   font-size: .6875rem;
   font-weight: 700;
   letter-spacing: .12em;
-  color: var(--color-text-muted, rgba(255,255,255,0.5));
+  color: var(--color-text-muted);
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
-  transition: color var(--transition-fast, .15s ease), background var(--transition-fast, .15s ease);
+  transition: color var(--transition-fast), background var(--transition-fast);
 }
 
 .app-header__nav-link:hover {
-  color: var(--fg-paper, #f5f5f5);
-  background: rgba(255,255,255,.04);
+  color: var(--fg-paper);
+  background: rgba(245, 243, 235, 0.04);
 }
 
+/* Active nav — aurora gradient fill, ink text */
 .app-header__nav-link.active {
-  background: var(--gradient-primary, linear-gradient(95deg, #ff3da6, #8b5cf6, #22d3ee));
-  color: var(--fg-ink, #070710);
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
 }
 
-/* User section */
+/* User section — matches .app-bar__user */
 .app-header__user-menu {
   position: relative;
   display: flex;
   align-items: center;
-  padding: 10px 16px;
+  padding: .625rem 1rem;
+  gap: .5rem;
 }
 
+/* Avatar — matches .app-bar__avatar (square by default) */
 .app-header__avatar {
   position: relative;
   width: 30px;
   height: 30px;
-  background: var(--gradient-primary, linear-gradient(95deg, #ff3da6, #8b5cf6, #22d3ee));
-  color: var(--fg-ink, #070710);
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
   border: none;
   cursor: pointer;
-  font-family: var(--fg-font-display, 'Archivo Black', sans-serif);
+  font-family: var(--fg-font-display);
   font-size: .8125rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity var(--transition-fast, .15s ease);
+  transition: opacity var(--transition-fast);
+  /* No border-radius — square avatar per design rules */
 }
 
 .app-header__avatar:hover { opacity: .85; }
 
-/* Avatar with profile picture — keep circular since avatar is an exception */
+/* Avatar with profile picture — avatar images are the one exception for border-radius */
 .app-header__avatar--has-image {
   background-size: cover;
   background-position: center;
-  border-radius: 50%;
-  border: 1.5px solid var(--fg-pink, #ff3da6);
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--fg-pink);
 }
 
 /* ATHLETE tier badge */
@@ -112,47 +144,70 @@
   position: absolute;
   bottom: -4px;
   right: -4px;
-  background: var(--gradient-primary, linear-gradient(95deg, #ff3da6, #8b5cf6));
-  color: var(--fg-ink, #070710);
-  font-family: var(--fg-font-mono, 'JetBrains Mono', monospace);
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  font-family: var(--fg-font-mono);
   font-size: .5rem;
   font-weight: 700;
   letter-spacing: .08em;
   padding: 1px 4px;
   text-transform: uppercase;
-  border: 1.5px solid var(--fg-ink, #070710);
+  border: 1.5px solid var(--fg-ink);
 }
 
-/* Dropdown */
+/* User name display */
+.app-header__user-info {
+  display: flex;
+  flex-direction: column;
+  gap: .125rem;
+}
+
+.app-header__user-name {
+  font-family: var(--fg-font-display);
+  font-size: .75rem;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--fg-paper);
+}
+
+.app-header__user-tier {
+  font-family: var(--fg-font-mono);
+  font-size: .5625rem;
+  letter-spacing: .1em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+/* Dropdown panel */
 .app-header__dropdown {
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
-  min-width: 220px;
-  background: var(--fg-ink-2, #0d0d1a);
-  border: var(--fg-rule-thin, 1.5px solid rgba(245,245,245,.12));
-  box-shadow: 0 10px 40px rgba(0,0,0,.5);
-  z-index: var(--z-dropdown, 100);
+  min-width: 240px;
+  background: var(--fg-ink-2);
+  border: 1.5px solid var(--fg-paper);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .7);
+  z-index: calc(var(--z-dropdown) + 1);
 }
 
 .app-header__dropdown-header {
   padding: .875rem 1rem;
-  background: rgba(255,255,255,.04);
-  border-bottom: var(--fg-rule-thin, 1.5px solid rgba(245,245,245,.12));
+  background: var(--fg-ink-3);
+  border-bottom: var(--fg-rule-thin);
 }
 
 .app-header__dropdown-email {
-  font-family: var(--fg-font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--fg-font-mono);
   font-size: .6875rem;
   letter-spacing: .08em;
-  color: var(--color-text-muted, rgba(255,255,255,.5));
+  color: var(--color-text-muted);
   word-break: break-all;
   text-transform: uppercase;
 }
 
 .app-header__dropdown-divider {
-  height: 1.5px;
-  background: rgba(245,245,245,.12);
+  height: 0;
+  border-top: var(--fg-rule-thin);
 }
 
 .app-header__dropdown-item {
@@ -161,32 +216,35 @@
   gap: .75rem;
   padding: .75rem 1rem;
   text-decoration: none;
-  color: var(--fg-paper, #f5f5f5);
-  font-family: var(--fg-font-body, 'Archivo', sans-serif);
+  color: var(--fg-paper);
+  font-family: var(--fg-font-body);
   font-size: .875rem;
-  transition: background var(--transition-fast, .15s ease);
+  transition: background var(--transition-fast);
+  border-bottom: var(--fg-rule-thin);
 }
 
 .app-header__dropdown-item:hover {
-  background: rgba(255,255,255,.06);
+  background: var(--fg-ink-3);
 }
 
 .app-header__dropdown-item--danger {
-  color: var(--fg-rose, #ff453a);
+  color: var(--fg-rose);
 }
 
 .app-header__dropdown-item--danger:hover {
-  background: rgba(255,69,58,.08);
+  background: rgba(255, 93, 108, 0.08);
 }
 
 .app-header__dropdown-icon {
   font-size: 1rem;
   width: 20px;
   text-align: center;
+  flex-shrink: 0;
 }
 
-/* Hide nav on small screens, show hamburger-style via dropdown only */
+/* Hide nav on small screens */
 @media (max-width: 768px) {
   .app-header__nav { display: none; }
-  .app-header__logo-link { padding: 14px 16px; }
+  .app-header__logo-link { padding: .875rem 1rem; }
+  .app-header__user-info { display: none; }
 }

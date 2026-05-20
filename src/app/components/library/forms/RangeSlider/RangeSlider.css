@@ -1,98 +1,110 @@
+/* ==========================================================================
+   RangeSlider — Brutal × Aurora
+   Aurora gradient track, square thumb, mono labels
+   ========================================================================== */
+@import '../../tokens.css';
+
 .form-range-slider__wrapper {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
 }
 
+/* Mono-caps label */
 .form-range-slider__label {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.6);
-    white-space: nowrap;
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-paper-dim);
+  white-space: nowrap;
 }
 
+/* Value display */
 .form-range-slider__value {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.6);
-    white-space: nowrap;
-    min-width: 2.5rem;
-    text-align: right;
+  font-family: var(--fg-font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--fg-paper);
+  white-space: nowrap;
+  min-width: 2.5rem;
+  text-align: right;
 }
 
 /* Track */
 .form-range-slider {
-    flex: 1;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 4px;
-    border-radius: 0;
-    background: rgba(255, 255, 255, 0.15);
-    outline: none;
-    transition: background 0.15s ease;
-    cursor: pointer;
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 0;
+  /* Aurora gradient track */
+  background: linear-gradient(90deg, var(--fg-pink), var(--fg-violet) 50%, var(--fg-cyan));
+  outline: none;
+  cursor: pointer;
 }
 
-.form-range-slider:hover {
-    background: rgba(255, 255, 255, 0.22);
+/* Override track when disabled */
+.form-range-slider:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: var(--fg-hairline-color);
 }
 
+/* Focus */
 .form-range-slider:focus-visible {
-    outline: 2px solid var(--color-primary, #6366f1);
-    outline-offset: 4px;
-    border-radius: 0;
+  outline: 2px solid var(--fg-paper);
+  outline-offset: 4px;
 }
 
-/* Webkit thumb */
+/* Webkit — square thumb */
 .form-range-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--color-primary, #6366f1);
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
+  background: var(--fg-paper);
+  cursor: pointer;
+  box-shadow: inset 0 0 0 2px var(--fg-ink-3);
+  transition: transform var(--transition-fast);
 }
 
 .form-range-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-    box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.25);
+  transform: scale(1.15);
 }
 
-/* Firefox thumb */
+.form-range-slider:disabled::-webkit-slider-thumb {
+  cursor: not-allowed;
+  background: var(--fg-paper-dim);
+}
+
+/* Firefox — square thumb */
 .form-range-slider::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--color-primary, #6366f1);
-    cursor: pointer;
-    border: none;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
+  background: var(--fg-paper);
+  cursor: pointer;
+  border: none;
+  box-shadow: inset 0 0 0 2px var(--fg-ink-3);
+  transition: transform var(--transition-fast);
 }
 
 .form-range-slider::-moz-range-thumb:hover {
-    transform: scale(1.2);
-    box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.25);
+  transform: scale(1.15);
 }
 
 /* Firefox track */
 .form-range-slider::-moz-range-track {
-    height: 4px;
-    border-radius: 0;
-    background: rgba(255, 255, 255, 0.15);
-}
-
-/* Disabled state */
-.form-range-slider:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-.form-range-slider:disabled::-webkit-slider-thumb {
-    cursor: not-allowed;
+  height: 4px;
+  border-radius: 0;
+  background: linear-gradient(90deg, var(--fg-pink), var(--fg-violet) 50%, var(--fg-cyan));
 }
 
 .form-range-slider:disabled::-moz-range-thumb {
-    cursor: not-allowed;
+  cursor: not-allowed;
+  background: var(--fg-paper-dim);
 }

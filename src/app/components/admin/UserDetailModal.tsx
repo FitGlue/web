@@ -2,6 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { Stack, Grid } from '../library/layout';
 import { Modal, Button, Badge, Text, Heading, LoadingState, EmptyState, useToast, KeyValue, Paragraph } from '../library/ui';
+import './admin.css';
 import { Link } from '../library/navigation';
 import { useAdminUsers } from '../../hooks/admin';
 import { selectedUserIdAtom, selectedUserDetailAtom, selectedUserLoadingAtom } from '../../state/adminState';
@@ -72,13 +73,19 @@ export const UserDetailModal: React.FC = () => {
               <KeyValue label="Created" value={selectedUser.createdAt} format="datetime" />
               <Stack direction="horizontal" gap="sm" align="center">
                 <Paragraph><strong>Tier:</strong></Paragraph>
-                <Badge variant={selectedUser.tier === UserTier.USER_TIER_ATHLETE ? 'premium' : 'default'}>
+                <Badge
+                  variant={selectedUser.tier === UserTier.USER_TIER_ATHLETE ? 'premium' : 'default'}
+                  className={selectedUser.tier === UserTier.USER_TIER_ATHLETE ? 'admin-badge--premium' : 'admin-badge--muted'}
+                >
                   {selectedUser.tier === UserTier.USER_TIER_ATHLETE ? 'Athlete' : 'Hobbyist'}
                 </Badge>
               </Stack>
               <Stack direction="horizontal" gap="sm" align="center">
                 <Paragraph><strong>Access:</strong></Paragraph>
-                <Badge variant={selectedUser.accessEnabled ? 'success' : 'warning'}>
+                <Badge
+                  variant={selectedUser.accessEnabled ? 'success' : 'warning'}
+                  className={selectedUser.accessEnabled ? 'admin-badge--ok' : 'admin-badge--warn'}
+                >
                   {selectedUser.accessEnabled ? 'Enabled' : 'Waitlisted'}
                 </Badge>
               </Stack>

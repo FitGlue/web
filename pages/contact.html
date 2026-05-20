@@ -1,119 +1,75 @@
 {{> header}}
 
 <main>
+<style>
+  /* ── Page heading ── */
+  .ph { padding: 56px 32px; max-width: 1280px; margin: 0 auto; }
+  .ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .ph__title { font-family: var(--fg-font-display); font-size: clamp(2.5rem, 7vw, 5rem); line-height: .9; letter-spacing: -.04em; text-transform: uppercase; margin: 14px 0; }
+  .ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ph__sub { font-family: var(--fg-font-body); font-size: 1.125rem; color: var(--color-text-muted); line-height: 1.55; max-width: 640px; }
+
+  /* ── Contact form block ── */
+  .contact-wrap { padding: 0 32px 64px; max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+  .contact__form { display: flex; flex-direction: column; gap: 14px; }
+  .contact__field { display: flex; flex-direction: column; gap: 6px; }
+  .contact__label { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .contact__input { background: var(--fg-ink-2); padding: 14px 16px; font-family: var(--fg-font-mono); font-size: .9375rem; color: var(--fg-paper); border: 0; box-shadow: inset 0 0 0 1.5px var(--fg-ink-3); width: 100%; outline: none; }
+  .contact__input:focus { box-shadow: inset 0 0 0 1.5px var(--fg-cyan); }
+  .contact__textarea { background: var(--fg-ink-2); padding: 14px 16px; font-family: var(--fg-font-body); font-size: .9375rem; color: var(--fg-paper); border: 0; min-height: 160px; box-shadow: inset 0 0 0 1.5px var(--fg-ink-3); width: 100%; resize: vertical; outline: none; }
+  .contact__textarea:focus { box-shadow: inset 0 0 0 1.5px var(--fg-cyan); }
+  .contact__btn { display: inline-flex; align-items: center; gap: 6px; padding: 14px 28px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; align-self: flex-start; }
+  .contact__btn:hover { opacity: .9; }
+
+  /* ── Email fallback ── */
+  .contact__fallback { font-family: var(--fg-font-mono); font-size: .8125rem; color: var(--color-text-muted); letter-spacing: .04em; line-height: 1.6; }
+  .contact__fallback a { color: var(--fg-cyan); }
+  .contact__notice { padding: 16px; background: var(--fg-ink-2); border-left: 3px solid; border-image: var(--gradient-primary) 1; font-family: var(--fg-font-mono); font-size: .75rem; color: var(--color-text-muted); letter-spacing: .04em; line-height: 1.6; }
+
+  @media (max-width: 600px) {
+    .ph { padding: 40px 16px; }
+    .contact-wrap { padding: 0 16px 48px; }
+  }
+</style>
+
   <!-- Hero -->
-  <section class="about-hero">
-    <div class="container">
-      <h1 class="text-center animate-on-scroll">Get in <span class="text-gradient">Touch</span></h1>
-      <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
-        Have a question, suggestion, or just want to say hi? We'd love to hear from you.
-      </p>
+  <div class="ph">
+    <div class="ph__eyebrow">CONTACT</div>
+    <h1 class="ph__title">Get in <span class="gr">touch.</span></h1>
+    <p class="ph__sub">Feature request? Bug? Hiring? Press? Anything goes. We read everything and reply within 48 hours on weekdays. For paying Athlete users, support tickets jump the queue.</p>
+  </div>
+
+  <!-- Form -->
+  <div class="contact-wrap">
+    <form class="contact__form" id="contact-form" action="mailto:hello@fitglue.tech" method="get" enctype="text/plain">
+      <div class="contact__field">
+        <label class="contact__label" for="contact-name">YOUR NAME</label>
+        <input class="contact__input" id="contact-name" name="name" type="text" placeholder="James King" required />
+      </div>
+      <div class="contact__field">
+        <label class="contact__label" for="contact-email">EMAIL</label>
+        <input class="contact__input" id="contact-email" name="email" type="email" placeholder="james@example.com" required />
+      </div>
+      <div class="contact__field">
+        <label class="contact__label" for="contact-subject">SUBJECT</label>
+        <input class="contact__input" id="contact-subject" name="subject" type="text" placeholder="What's up?" />
+      </div>
+      <div class="contact__field">
+        <label class="contact__label" for="contact-message">MESSAGE</label>
+        <textarea class="contact__textarea" id="contact-message" name="body" placeholder="A line or twenty, take your time…" required></textarea>
+      </div>
+      <button type="submit" class="contact__btn">SEND →</button>
+    </form>
+
+    <div class="contact__notice">
+      ⏱ We aim to respond within 48 hours on weekdays. Athlete subscribers get priority responses — usually same day.
     </div>
-  </section>
 
-  <!-- Contact Options -->
-  <section class="section">
-    <div class="container" style="max-width: 800px;">
-      <div class="feature-grid stagger-children">
-        <div class="feature-card text-center">
-          <span class="feature-icon">📧</span>
-          <h3>Email Us</h3>
-          <p class="text-muted mb-md">For general inquiries and support</p>
-          <a href="mailto:hello@fitglue.tech" class="btn btn-secondary">hello@fitglue.tech</a>
-        </div>
-
-        <div class="feature-card text-center">
-          <span class="feature-icon">💬</span>
-          <h3>Community</h3>
-          <p class="text-muted mb-md">Join our Discord for updates and discussion</p>
-          <a href="https://discord.gg/fitglue" target="_blank" rel="noopener" class="btn btn-secondary">Join Discord</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Request an Integration -->
-  <section class="section section-alt">
-    <div class="container" style="max-width: 600px;">
-      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: 0 0 var(--space-md)">
-        <span class="fg-band__label">Request a Connection</span>
-      </div>
-      <p class="text-center text-muted mb-lg animate-on-scroll">
-        Don't see your favorite fitness app? Let us know and we'll prioritize it based on demand.
-      </p>
-
-      <form id="integration-request-form" class="integration-request-form animate-on-scroll">
-        <div class="form-group">
-          <label for="integration-name" class="form-label">Integration Name</label>
-          <input type="text" id="integration-name" name="integration" class="form-input"
-            placeholder="e.g. Garmin, Whoop, Peloton..." required minlength="2">
-        </div>
-
-        <div class="form-group">
-          <label for="integration-email" class="form-label">Email (optional)</label>
-          <input type="email" id="integration-email" name="email" class="form-input"
-            placeholder="Get notified when we add it">
-        </div>
-
-        <!-- Honeypot -->
-        <input type="text" name="website_url" class="hp-field" tabindex="-1" autocomplete="off">
-
-        <button type="submit" class="btn btn-primary btn-block">Submit Request</button>
-      </form>
-
-      <div id="integration-success" class="integration-success" style="display: none;">
-        <span class="success-icon">🎉</span>
-        <h3>Thanks!</h3>
-        <p>Your request has been submitted. We'll consider adding this integration.</p>
-      </div>
-
-      <div id="integration-error" class="integration-error" style="display: none;">
-        <p>Something went wrong. Please try again.</p>
-      </div>
-    </div>
-  </section>
+    <p class="contact__fallback">
+      Prefer email directly? <a href="mailto:hello@fitglue.tech">hello@fitglue.tech</a><br>
+      For security issues, email <a href="mailto:security@fitglue.tech">security@fitglue.tech</a> — we respond within 24 hours.
+    </p>
+  </div>
 </main>
-
-<script>
-  document.getElementById('integration-request-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    const form = this;
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const successEl = document.getElementById('integration-success');
-    const errorEl = document.getElementById('integration-error');
-
-    const formData = new FormData(form);
-    const data = {
-      integration: formData.get('integration'),
-      email: formData.get('email') || undefined,
-      website_url: formData.get('website_url') || undefined,
-    };
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    errorEl.style.display = 'none';
-
-    try {
-      const response = await fetch('/api/v2/integrations/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        form.style.display = 'none';
-        successEl.style.display = 'block';
-      } else {
-        throw new Error('Request failed');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      errorEl.style.display = 'block';
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit Request';
-    }
-  });
-</script>
 
 {{> footer}}

@@ -1,9 +1,10 @@
 import React from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { PageLayout, Stack } from '../components/library/layout';
-import { Button, CardSkeleton, Heading, Paragraph } from '../components/library/ui';
+import { PageLayout } from '../components/library/layout';
+import { CardSkeleton, Button } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
+import './ConnectionSuccessPage.css';
 
 const ConnectionErrorPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -31,50 +32,47 @@ const ConnectionErrorPage: React.FC = () => {
 
     if (registryLoading) {
         return (
-            <PageLayout title="Connection Failed" backTo="/connections" backLabel="Connections">
-                <Stack gap="lg" align="center">
+            <PageLayout title="Connection Failed">
+                <div style={{ padding: '1.5rem' }}>
                     <CardSkeleton variant="integration" />
-                </Stack>
+                </div>
             </PageLayout>
         );
     }
 
     return (
-        <PageLayout title="Connection Failed" backTo="/connections" backLabel="Connections">
-            <div className="fg-band" style={{ marginBottom: '1.5rem' }}>
-                <span className="fg-band__label">CONNECTION · {displayName.toUpperCase()}</span>
-                <span className="fg-band__right">✕ FAILED</span>
+        <PageLayout title="Connection Failed">
+            <div className="success-scene">
+                <div className="state">
+                    <span className="state__stamp state__stamp--rose">✕ AUTHORISATION FAILED</span>
+                    <div className="state__icon">⚠</div>
+                    <h2 className="state__h">
+                        {displayName} said{' '}
+                        <span className="state__h-gr">no.</span>
+                    </h2>
+                    <p className="state__body">
+                        {getErrorMessage(reason)}
+                    </p>
+                    <div className="state__detail" style={{ textAlign: 'left' }}>
+                        <div className="state__detail-l">ERROR DETAIL</div>
+                        <div>
+                            Code:{' '}
+                            <code style={{ fontFamily: 'var(--fg-font-mono)', color: 'var(--fg-rose)', background: 'var(--fg-ink)', padding: '1px 4px' }}>
+                                {reason.replace(/_/g, ' ')}
+                            </code>{' '}
+                            · Check your credentials and try again. If the issue persists, contact support.
+                        </div>
+                    </div>
+                    <div className="state__cta">
+                        <Button variant="ghost" size="sm" onClick={() => navigate('/connections')}>
+                            ← CONNECTIONS
+                        </Button>
+                        <Button size="sm" onClick={() => navigate(`/connections/${id}/setup`)}>
+                            ⟲ TRY AGAIN →
+                        </Button>
+                    </div>
+                </div>
             </div>
-            <Stack gap="lg" align="center">
-                <Paragraph size="lg">
-                    ⚠️
-                </Paragraph>
-
-                <Heading level={1} centered>Connection Failed</Heading>
-
-                <Paragraph centered>
-                    {getErrorMessage(reason)}
-                </Paragraph>
-
-                <Paragraph muted centered>
-                    Please try again or contact support if the issue persists.
-                </Paragraph>
-
-                <Stack direction="horizontal" gap="md">
-                    <Button
-                        variant="primary"
-                        onClick={() => navigate(`/connections/${id}/setup`)}
-                    >
-                        Try Again
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        onClick={() => navigate('/connections')}
-                    >
-                        Back to Connections
-                    </Button>
-                </Stack>
-            </Stack>
         </PageLayout>
     );
 };

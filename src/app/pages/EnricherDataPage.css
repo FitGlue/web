@@ -1,0 +1,26 @@
+.enricher-page-intro {
+  padding: 1rem 1.25rem;
+  background: var(--fg-ink-2);
+  border-bottom: var(--fg-rule-thin);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+}
+
+.enricher-page-intro__icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.enricher-page-intro__text {
+  font-family: var(--fg-font-body);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.enricher-page-intro__text strong {
+  font-weight: 700;
+  color: var(--fg-paper);
+}

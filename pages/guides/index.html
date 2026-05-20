@@ -1,131 +1,148 @@
 {{> header}}
 
 <main>
-  <!-- Hero Section -->
-  <section class="about-hero">
-    <div class="container">
-      <h1 class="text-center animate-on-scroll">
-        <span class="text-gradient">Guides</span> & Tutorials
-      </h1>
-      <p class="text-center text-muted animate-on-scroll" style="max-width: 600px; margin: var(--space-md) auto 0;">
-        Learn how to transform your fitness data with FitGlue. From first steps to advanced pipelines.
-      </p>
+<style>
+  /* ── Page heading ── */
+  .ph { padding: 56px 32px; max-width: 1280px; margin: 0 auto; }
+  .ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .ph__title { font-family: var(--fg-font-display); font-size: clamp(2.5rem, 7vw, 5rem); line-height: .9; letter-spacing: -.04em; text-transform: uppercase; margin: 14px 0; }
+  .ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ph__sub { font-family: var(--fg-font-body); font-size: 1.125rem; color: var(--color-text-muted); line-height: 1.55; max-width: 640px; }
+
+  /* ── Dark band ── */
+  .dark-band { padding: 14px 32px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); border-top: var(--fg-rule-thin); display: flex; justify-content: space-between; align-items: center; }
+  .dark-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-paper); text-transform: uppercase; }
+  .dark-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+
+  /* ── Aurora band (Recipes promo) ── */
+  .aurora-band { padding: 18px 32px; background: var(--gradient-primary); display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+  .aurora-band__content { flex: 1; }
+  .aurora-band__badge { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; background: var(--fg-ink); color: var(--fg-paper); padding: 2px 8px; display: inline-block; margin-bottom: 6px; text-transform: uppercase; }
+  .aurora-band__text { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--fg-ink); line-height: 1.5; }
+  .aurora-band__btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; background: var(--fg-ink); color: var(--fg-paper); font-family: var(--fg-font-display); font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; flex-shrink: 0; }
+
+  /* ── Guide card grid ── */
+  .guide-grid { padding: 0 32px 80px; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .guide-card { padding: 28px; background: var(--fg-ink-2); display: flex; flex-direction: column; gap: 12px; min-height: 200px; text-decoration: none; color: inherit; transition: box-shadow .15s; }
+  .guide-card:hover { box-shadow: inset 0 0 0 1.5px var(--fg-cyan); }
+  .guide-card--featured { box-shadow: inset 0 0 0 2px var(--fg-paper); grid-column: span 2; flex-direction: row; align-items: flex-start; gap: 24px; }
+  .guide-card__icon { font-size: 2rem; line-height: 1; flex-shrink: 0; }
+  .guide-card__body { display: flex; flex-direction: column; gap: 10px; }
+  .guide-card__title { font-family: var(--fg-font-display); font-size: 1.375rem; letter-spacing: -.015em; text-transform: uppercase; }
+  .guide-card--featured .guide-card__title { font-size: 1.625rem; }
+  .guide-card__desc { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); line-height: 1.5; }
+  .guide-card__link { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .12em; color: var(--fg-cyan); margin-top: auto; text-transform: uppercase; }
+
+  /* ── CTA ── */
+  .guide-cta { padding: 48px 32px; text-align: center; border-top: var(--fg-rule-thin); }
+  .guide-cta__title { font-family: var(--fg-font-display); font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -.025em; text-transform: uppercase; margin-bottom: 20px; }
+  .guide-cta__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn-aurora { display: inline-flex; align-items: center; gap: 6px; padding: 14px 28px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; }
+
+  @media (max-width: 900px) {
+    .guide-grid { grid-template-columns: repeat(2, 1fr); }
+    .guide-card--featured { grid-column: span 2; }
+  }
+  @media (max-width: 600px) {
+    .guide-grid { grid-template-columns: 1fr; padding: 0 16px 48px; }
+    .guide-card--featured { grid-column: span 1; flex-direction: column; }
+    .ph { padding: 40px 16px; }
+    .aurora-band { flex-direction: column; align-items: flex-start; }
+    .guide-cta { padding: 40px 16px; }
+  }
+</style>
+
+  <!-- Hero -->
+  <div class="ph">
+    <div class="ph__eyebrow">GUIDES &amp; TUTORIALS</div>
+    <h1 class="ph__title">Learn <span class="gr">FitGlue.</span></h1>
+    <p class="ph__sub">From first steps to advanced pipelines. Step-by-step guides for every part of the platform.</p>
+  </div>
+
+  <!-- Recipes promo band -->
+  <div class="aurora-band">
+    <div class="aurora-band__content">
+      <span class="aurora-band__badge">NEW · RECIPES</span>
+      <p class="aurora-band__text">Skip the setup guides — import pre-built pipeline configurations with one click and start transforming your data in seconds.</p>
     </div>
-  </section>
+    <a href="/app/recipes" class="aurora-band__btn">BROWSE RECIPES →</a>
+  </div>
 
-  <!-- Recipes Quick Start -->
-  <section class="guide-quick-start">
-    <div class="container">
-      <div class="quick-start-banner animate-on-scroll">
-        <div class="quick-start-content">
-          <span class="quick-start-badge">🍳 New: Recipes</span>
-          <p>Skip the setup guides — import pre-built pipeline configurations with one click and start transforming your
-            data in seconds.</p>
-        </div>
-        <div class="quick-start-actions">
-          <a href="/app/recipes" class="btn btn-primary">Browse Recipes →</a>
-        </div>
+  <!-- Start here -->
+  <div class="dark-band">
+    <span class="dark-band__label">START HERE</span>
+    <span class="dark-band__right">FIRST READ IF YOU'RE NEW</span>
+  </div>
+
+  <div class="guide-grid" style="padding-bottom: 0;">
+    <a href="/guides/getting-started" class="guide-card guide-card--featured">
+      <div class="guide-card__icon">🚀</div>
+      <div class="guide-card__body">
+        <div class="guide-card__title">Getting Started with FitGlue</div>
+        <div class="guide-card__desc">From signup to your first boosted activity in under 10 minutes. Everything you need to know to start transforming your fitness data.</div>
+        <span class="guide-card__link">READ GUIDE →</span>
       </div>
-    </div>
-  </section>
+    </a>
+  </div>
 
-  <!-- Getting Started -->
-  <section class="section">
-    <div class="container">
-      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: 0 0 var(--space-md)">
-        <span class="fg-band__label">Start Here</span>
+  <!-- Popular guides -->
+  <div class="dark-band" style="margin-top: 0;">
+    <span class="dark-band__label">POPULAR USE CASES</span>
+    <span class="dark-band__right">MOST-READ GUIDES</span>
+  </div>
+
+  <div class="guide-grid">
+    <a href="/guides/hevy-to-strava" class="guide-card">
+      <div class="guide-card__icon">🏋️</div>
+      <div class="guide-card__body">
+        <div class="guide-card__title">Strength Training → Strava Posts</div>
+        <div class="guide-card__desc">Turn boring "Weight Training — 45 min" entries into detailed exercise breakdowns, muscle heatmaps, and shareable Showcase pages.</div>
+        <span class="guide-card__link">READ GUIDE →</span>
       </div>
-      <div class="guides-grid stagger-children">
-        <!-- Getting Started Guide -->
-        <a href="/guides/getting-started" class="guide-card featured">
-          <div class="guide-card-icon">🚀</div>
-          <div class="guide-card-content">
-            <h3>Getting Started with FitGlue</h3>
-            <p>From signup to your first boosted activity in under 10 minutes. Everything you need to know to start
-              transforming your fitness data.</p>
-            <span class="guide-card-cta">Read Guide →</span>
-          </div>
-        </a>
+    </a>
+
+    <a href="/guides/fitbit-heart-rate" class="guide-card">
+      <div class="guide-card__icon">💓</div>
+      <div class="guide-card__body">
+        <div class="guide-card__title">Fitbit Heart Rate on Any Activity</div>
+        <div class="guide-card__desc">Merge Fitbit heart rate data with any Strava activity for accurate calories, training zones, and complete workout insights.</div>
+        <span class="guide-card__link">READ GUIDE →</span>
       </div>
-    </div>
-  </section>
+    </a>
 
-  <!-- Use Case Guides -->
-  <section class="section section-alt">
-    <div class="container">
-      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: 0 0 var(--space-md)">
-        <span class="fg-band__label">Popular Use Cases</span>
+    <a href="/guides/parkrun-automation" class="guide-card">
+      <div class="guide-card__icon">🏃</div>
+      <div class="guide-card__body">
+        <div class="guide-card__title">Automate Your Saturday Parkrun</div>
+        <div class="guide-card__desc">Automatic event detection, official times, finishing position, age grade, and PB celebrations — no manual work required.</div>
+        <span class="guide-card__link">READ GUIDE →</span>
       </div>
-      <div class="guides-grid stagger-children">
-        <!-- Hevy to Strava Guide -->
-        <a href="/guides/hevy-to-strava" class="guide-card">
-          <div class="guide-card-icon">🏋️ → ✨</div>
-          <div class="guide-card-content">
-            <h3>Transform Your Strength Training into Strava Posts Worth Sharing</h3>
-            <p>Turn boring "Weight Training - 45 min" into detailed exercise breakdowns, muscle heatmaps, and
-              shareable Showcase pages.</p>
-            <span class="guide-card-cta">Read Guide →</span>
-          </div>
-        </a>
+    </a>
 
-        <!-- Fitbit Heart Rate Guide -->
-        <a href="/guides/fitbit-heart-rate" class="guide-card">
-          <div class="guide-card-icon">💓</div>
-          <div class="guide-card-content">
-            <h3>Your Fitbit Knows Your Heart. Now Your Strava Can Too.</h3>
-            <p>Merge Fitbit heart rate data with any Strava activity for accurate calories, training zones, and
-              complete workout insights.</p>
-            <span class="guide-card-cta">Read Guide →</span>
-          </div>
-        </a>
-
-        <!-- Parkrun Automation Guide -->
-        <a href="/guides/parkrun-automation" class="guide-card">
-          <div class="guide-card-icon">🏃</div>
-          <div class="guide-card-content">
-            <h3>Your Saturday Parkrun Deserves Official Recognition</h3>
-            <p>Automatic event detection, official times, finishing position, age grade, and PB celebrations—no manual
-              work required.</p>
-            <span class="guide-card-cta">Read Guide →</span>
-          </div>
-        </a>
-
-        <!-- Garmin FIT Upload Guide -->
-        <a href="/guides/garmin-fit-upload" class="guide-card">
-          <div class="guide-card-icon">⌚</div>
-          <div class="guide-card-content">
-            <h3>Transform Your Garmin Workouts with FIT File Upload</h3>
-            <p>Your Garmin captures incredible data. FitGlue transforms it into weather context, location titles,
-              elevation stats, and beautiful pages.</p>
-            <span class="guide-card-cta">Read Guide →</span>
-          </div>
-        </a>
-
-        <!-- Showcase Guide -->
-        <a href="/guides/showcase" class="guide-card">
-          <div class="guide-card-icon">🔗</div>
-          <div class="guide-card-content">
-            <h3>Share Your Achievements with Showcase</h3>
-            <p>Create beautiful, shareable activity pages that anyone can view—no Strava account required. Perfect for
-              coaches, friends, or social media.</p>
-            <span class="guide-card-cta">Read Guide →</span>
-          </div>
-        </a>
+    <a href="/guides/garmin-fit-upload" class="guide-card">
+      <div class="guide-card__icon">⌚</div>
+      <div class="guide-card__body">
+        <div class="guide-card__title">Garmin FIT File Upload</div>
+        <div class="guide-card__desc">Your Garmin captures incredible data. FitGlue transforms it into weather context, location titles, elevation stats, and beautiful pages.</div>
+        <span class="guide-card__link">READ GUIDE →</span>
       </div>
-    </div>
-  </section>
+    </a>
 
-  <!-- CTA Section -->
-  <section class="cta-section">
-    <div class="container">
-      <div class="cta-content">
-        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Transform</span> Your Fitness
-          Data?</h2>
-        <p class="cta-subtitle animate-on-scroll">Start your 30-day free Athlete trial. No credit card required.</p>
-        <a href="/auth/register" class="btn btn-primary btn-lg animate-on-scroll">Get Started Free →</a>
+    <a href="/guides/showcase" class="guide-card">
+      <div class="guide-card__icon">🔗</div>
+      <div class="guide-card__body">
+        <div class="guide-card__title">Share with Showcase</div>
+        <div class="guide-card__desc">Create beautiful, shareable activity pages that anyone can view — no Strava account required. Perfect for coaches, friends, or social media.</div>
+        <span class="guide-card__link">READ GUIDE →</span>
       </div>
-    </div>
-  </section>
+    </a>
+  </div>
+
+  <!-- CTA -->
+  <div class="guide-cta">
+    <h2 class="guide-cta__title">Ready to <span class="gr">get started?</span></h2>
+    <a href="/auth/register" class="btn-aurora">START FREE →</a>
+  </div>
 </main>
 
 {{> footer}}

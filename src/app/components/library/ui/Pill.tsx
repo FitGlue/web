@@ -1,59 +1,53 @@
 import React from 'react';
-import './Pill.css';
 
+// Maps to fg-stamp classes in app-components.css.
 export interface PillProps {
-  /** Content of the pill */
-  children: React.ReactNode;
-  /** Visual variant */
-  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'primary' | 'pink' | 'gradient' | 'outlined' | 'muted';
-  /** Size variant */
-  size?: 'small' | 'default' | 'large';
-  /** Optional icon */
-  icon?: string;
-  /** Optional click handler */
-  onClick?: () => void;
-  /** Active/selected state (for tabs) */
-  active?: boolean;
+    children: React.ReactNode;
+    variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'primary' | 'pink' | 'gradient' | 'outlined' | 'muted';
+    size?: 'small' | 'default' | 'large';
+    icon?: string;
+    onClick?: () => void;
+    active?: boolean;
 }
 
-/**
- * Pill - Compact status indicator with optional icon.
- * Used for status badges, tags, labels, and tabs.
- *
- * Variants:
- * - default: Light background, dark text
- * - success/warning/error/info: Semantic colors
- * - primary: Brand purple
- * - gradient: Pink-to-purple gradient background, white text (for activity types)
- * - outlined: Transparent with border
- * - muted: Subtle, low-contrast
- */
-export const Pill: React.FC<PillProps> = ({
-  children,
-  variant = 'default',
-  size = 'default',
-  icon,
-  onClick,
-  active = false,
-}) => {
-  const classes = [
-    'pill',
-    `pill--${variant}`,
-    `pill--${size}`,
-    active && 'pill--active',
-  ].filter(Boolean).join(' ');
+const VARIANT_CLASS: Record<NonNullable<PillProps['variant']>, string> = {
+    default:  '',
+    success:  'fg-stamp--green',
+    warning:  'fg-stamp--gold',
+    error:    'fg-stamp--rose',
+    info:     'fg-stamp--violet',
+    primary:  'fg-stamp--cyan',
+    pink:     'fg-stamp--rose',
+    gradient: '',
+    outlined: 'fg-stamp--outline',
+    muted:    'fg-stamp--ink',
+};
 
-  return (
-    <span
-      className={classes}
-      onClick={onClick}
-      role={onClick ? 'button' : undefined}
-      tabIndex={onClick ? 0 : undefined}
-    >
-      {icon && <span>{icon}</span>}
-      {children}
-    </span>
-  );
+export const Pill: React.FC<PillProps> = ({
+    children,
+    variant = 'default',
+    size: _size, // eslint-disable-line @typescript-eslint/no-unused-vars
+    icon,
+    onClick,
+    active = false,
+}) => {
+    const classes = [
+        'fg-stamp',
+        VARIANT_CLASS[variant],
+        active ? 'fg-stamp--cyan' : '',
+    ].filter(Boolean).join(' ');
+
+    return (
+        <span
+            className={classes}
+            onClick={onClick}
+            role={onClick ? 'button' : undefined}
+            tabIndex={onClick ? 0 : undefined}
+        >
+            {icon && <span>{icon}</span>}
+            {children}
+        </span>
+    );
 };
 
 export default Pill;

@@ -6,6 +6,7 @@
 
 /* eslint-disable */
 import type { DestinationType } from "../plugin/provider";
+import type { ActivityEnrichments, HeartRateZoneBucket } from "./enrichments";
 import type { ActivitySource, ActivityType } from "./source";
 import type { StandardizedActivity } from "./standardized";
 
@@ -35,7 +36,6 @@ export interface ShowcasedActivity {
   activityData?: StandardizedActivity | undefined;
   fitFileUri: string;
   appliedEnrichments: string[];
-  enrichmentMetadata: { [key: string]: string };
   tags: string[];
   pipelineExecutionId?: string | undefined;
   createdAt?: Date | undefined;
@@ -45,11 +45,7 @@ export interface ShowcasedActivity {
   ownerProfilePictureUrl: string;
   ownerProfileSlug: string;
   photoUrls: string[];
-}
-
-export interface ShowcasedActivity_EnrichmentMetadataEntry {
-  key: string;
-  value: string;
+  enrichments?: ActivityEnrichments | undefined;
 }
 
 export interface ShowcaseProfileEntry {
@@ -64,6 +60,20 @@ export interface ShowcaseProfileEntry {
   totalSets: number;
   totalReps: number;
   totalWeightKg: number;
+  /** Reskin additions — populated on each activity sync */
+  boosterCount: number;
+  destinationCount: number;
+  sparkline?: EntrySparkline | undefined;
+  avgHeartRate?: number | undefined;
+  caloriesKcal?: number | undefined;
+}
+
+/** EntrySparkline is a downsampled timeseries for card-level sparklines. */
+export interface EntrySparkline {
+  /** "heart_rate" | "pace" | "power" | "weight" */
+  metric: string;
+  /** ≤ 24 sample points, downsampled */
+  values: number[];
 }
 
 export interface ShowcaseTheme {
@@ -108,4 +118,26 @@ export interface ShowcaseProfile {
   showPhotoGallery: boolean;
   links: ShowcaseLink[];
   callouts: ShowcaseBioCallout[];
+  /** Lifetime aggregates — written by a daily rollup job. Optional; absent means not yet computed. */
+  zoneSplit?: LifetimeZoneSplit | undefined;
+  streakHistory?: WeeklyStreakHistory | undefined;
+}
+
+export interface LifetimeZoneSplit {
+  /** re-uses HeartRateZoneBucket from enrichments.proto */
+  zones: HeartRateZoneBucket[];
+  computedAt?:
+    | Date
+    | undefined;
+  /** "Polarized", "Pyramidal", "Threshold" */
+  label: string;
+}
+
+export interface WeeklyStreakHistory {
+  /** e.g. 26 */
+  weeksTracked: number;
+  /** count of weeks with zero qualifying activities */
+  missedWeeks: number;
+  /** most-recent-last; true = had at least one activity */
+  weeklyActive: boolean[];
 }

@@ -1,10 +1,16 @@
+/* ==========================================================================
+   Link — Brutal × Aurora
+   Cyan accent, underline on hover.
+   ========================================================================== */
+
 .link {
-    color: var(--color-primary);
-    text-decoration: none;
-    transition: color 0.2s ease;
+  color: var(--fg-cyan);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
 }
 
 .link:hover {
-    color: var(--color-primary-hover, var(--color-primary));
-    text-decoration: underline;
+  opacity: 0.8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

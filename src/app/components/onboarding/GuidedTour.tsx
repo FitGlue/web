@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useGuidedTour, TourStep } from '../../hooks/useGuidedTour';
+import { Button } from '../library/ui/Button';
 import './GuidedTour.css';
 
 interface TourTooltipProps {
@@ -64,9 +65,9 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
         <div className={`tour-tooltip tour-tooltip-${step.position}`} style={getTooltipStyle()}>
             <div className="tour-tooltip-header">
                 <span className="tour-tooltip-title">{step.title}</span>
-                <button className="tour-tooltip-close" onClick={onSkip} aria-label="Close tour">
+                <Button className="tour-tooltip-close" variant="ghost" size="sm" onClick={onSkip} aria-label="Close tour">
                     ✕
-                </button>
+                </Button>
             </div>
             <p className="tour-tooltip-description">{step.description}</p>
             <div className="tour-tooltip-footer">
@@ -79,12 +80,12 @@ const TourTooltip: React.FC<TourTooltipProps> = ({
                     ))}
                 </div>
                 <div className="tour-tooltip-actions">
-                    <button className="tour-btn-skip" onClick={onSkip}>
+                    <Button className="tour-btn-skip" variant="ghost" size="sm" onClick={onSkip}>
                         Skip
-                    </button>
-                    <button className="tour-btn-next" onClick={onNext}>
+                    </Button>
+                    <Button className="tour-btn-next" variant="primary" size="sm" onClick={onNext}>
                         {isLastStep ? 'Finish' : 'Next →'}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

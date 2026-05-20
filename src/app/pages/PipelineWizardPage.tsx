@@ -1,10 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout/PageLayout';
-import { Stack } from '../components/library/layout/Stack';
 import { Card } from '../components/library/ui/Card';
 import { Button } from '../components/library/ui/Button';
-import { Heading } from '../components/library/ui/Heading';
 import { Paragraph } from '../components/library/ui/Paragraph';
 import { useToast } from '../components/library/ui/Toast';
 import { client } from '../../shared/api/client';
@@ -20,7 +18,9 @@ import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginCategorySection } from '../components/PluginCategorySection';
 import { BoosterExclusionPills } from '../components/BoosterExclusionPills';
-import { WizardOptionGrid, WizardExcludedSection, WizardStepIndicator, PipelineReviewFlow } from '../components/wizard';
+import { WizardOptionGrid, WizardExcludedSection, PipelineReviewFlow } from '../components/wizard';
+import { SourcePicker } from '../components/library/ui/SourcePicker';
+import { DestinationPicker } from '../components/library/ui/DestinationPicker';
 import { useShowcasePreferences } from '../hooks/useShowcasePreferences';
 import { useNerdMode } from '../state/NerdModeContext';
 import { EnricherProviderType } from '../../types/pb/user';
@@ -28,6 +28,7 @@ import { PluginManifest, ConfigFieldType } from '../types/plugin';
 import { resolveEnum } from '../utils/resolveEnum';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST } from '../utils/tier';
 import { ENRICHER_CATEGORIES, groupPluginsByCategory, getRecommendedPlugins } from '../utils/pluginCategories';
+import './PipelineWizardPage.css';
 
 interface SelectedEnricher {
     manifest: PluginManifest;
@@ -299,60 +300,107 @@ const PipelineWizardPage: React.FC = () => {
         setSelectedDestinations(prev => prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]);
     };
 
-    const renderStepIndicator = () => {
-        const displaySteps = steps.filter(s => {
-            if (s === 'source-config' && !sourceNeedsConfig) return false;
-            if (s === 'enricher-config' && !enrichersNeedConfig) return false;
-            if (s === 'destination-config' && !destinationsNeedConfig) return false;
-            return true;
-        });
-        const displayIndex = displaySteps.indexOf(step);
-        const stepLabels: Record<string, string> = {
-            'source': 'Source',
-            'source-config': 'Source Config',
-            'enrichers': 'Enrichers',
-            'enricher-config': 'Configure',
-            'destinations': 'Destinations',
-            'destination-config': 'Dest Config',
-            'review': 'Review',
-        };
-        const stepConfig = displaySteps.map(s => ({
-            id: s,
-            label: stepLabels[s] || s.charAt(0).toUpperCase() + s.slice(1),
-        }));
-        return <WizardStepIndicator steps={stepConfig} currentStepIndex={displayIndex} />;
+    const stepLabels: Record<string, string> = {
+        'source': 'Source',
+        'source-config': 'Source Config',
+        'enrichers': 'Boosters',
+        'enricher-config': 'Configure',
+        'destinations': 'Destinations',
+        'destination-config': 'Dest Config',
+        'review': 'Review',
+    };
+
+    const stepSubLabels: Record<string, string> = {
+        'source': 'Pick where data comes from',
+        'source-config': 'Configure source',
+        'enrichers': 'Pick what to enrich',
+        'enricher-config': 'Configure boosters',
+        'destinations': 'Where to send',
+        'destination-config': 'Configure destinations',
+        'review': 'Validate with a sample',
+    };
+
+    const getDisplaySteps = () => steps.filter(s => {
+        if (s === 'source-config' && !sourceNeedsConfig) return false;
+        if (s === 'enricher-config' && !enrichersNeedConfig) return false;
+        if (s === 'destination-config' && !destinationsNeedConfig) return false;
+        return true;
+    });
+
+    const renderWizardRail = () => {
+        const displaySteps = getDisplaySteps();
+        const currentDisplayIndex = displaySteps.indexOf(step);
+
+        return (
+            <aside className="pipe-wiz__rail">
+                <div className="pipe-wiz__rail-title">STEPS</div>
+                {displaySteps.map((s, i) => {
+                    const isDone = i < currentDisplayIndex;
+                    const isCurrent = s === step;
+                    return (
+                        <div
+                            key={s}
+                            className={`wiz__step${isDone ? ' wiz__step--done' : ''}${isCurrent ? ' wiz__step--current' : ''}`}
+                        >
+                            <div className="wiz__num">
+                                <span className="wiz__num-text">{i + 1}</span>
+                            </div>
+                            <div>
+                                <div className="wiz__step-title">{stepLabels[s]}</div>
+                                <div className="wiz__step-sub">{stepSubLabels[s]}</div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </aside>
+        );
     };
 
     const renderSourceStep = () => {
         const availableSources = sources.filter(isPluginAvailable);
         const excludedSources = sources.filter(s => !isPluginAvailable(s));
 
+        const sourceTiles = availableSources.map(s => ({
+            id: s.id,
+            name: s.name,
+            icon: s.icon,
+            connected: s.requiredIntegrations?.every(reqId => {
+                const integration = (userIntegrations as Record<string, { connected?: boolean } | undefined> | null)?.[reqId];
+                return integration?.connected ?? false;
+            }) ?? true,
+        }));
+
         return (
-            <Stack>
-                <Heading level={3}>Select Sources</Heading>
-                <Paragraph>Pick <strong>one or more</strong> sources for your activities.</Paragraph>
-                {loading ? (
-                    <Paragraph>Loading sources...</Paragraph>
-                ) : (
-                    <>
-                        <WizardOptionGrid
-                            options={availableSources}
-                            selectedIds={selectedSources}
-                            onSelect={(source) => setSelectedSources(prev =>
-                                prev.includes(source.id) ? prev.filter(id => id !== source.id) : [...prev, source.id]
-                            )}
-                            selectionMode="multi"
-                        />
-                        <WizardExcludedSection
-                            items={excludedSources}
-                            getKey={s => s.id}
-                            getIcon={s => s.icon}
-                            getName={s => s.name}
-                            getHint={getExcludedHint}
-                        />
-                    </>
-                )}
-            </Stack>
+            <>
+                <div className="pipe-wiz__body-head">
+                    <div className="pipe-wiz__step-label">STEP 1 — SOURCE</div>
+                    <h2 className="pipe-wiz__step-title"><span className="fg-text-gradient">SELECT SOURCES.</span></h2>
+                    <p className="pipe-wiz__step-help">Pick <strong>one or more</strong> sources for your activities.</p>
+                </div>
+                <div className="pipe-wiz__content">
+                    {loading ? (
+                        <Paragraph>Loading sources...</Paragraph>
+                    ) : (
+                        <>
+                            <SourcePicker
+                                sources={sourceTiles}
+                                multiSelect
+                                selectedIds={selectedSources}
+                                onSelect={(id) => setSelectedSources(prev =>
+                                    prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
+                                )}
+                            />
+                            <WizardExcludedSection
+                                items={excludedSources}
+                                getKey={s => s.id}
+                                getIcon={s => s.icon}
+                                getName={s => s.name}
+                                getHint={getExcludedHint}
+                            />
+                        </>
+                    )}
+                </div>
+            </>
         );
     };
 
@@ -378,61 +426,78 @@ const PipelineWizardPage: React.FC = () => {
         };
 
         return (
-            <Stack>
-                <Heading level={3}>Add Boosters (Optional)</Heading>
-                <Paragraph>Click to add boosters. Drag the <strong>grip handle</strong> to reorder.</Paragraph>
-                <EnricherTimeline
-                    enrichers={selectedEnrichers}
-                    onReorder={setSelectedEnrichers}
-                    onRemove={(index) => setSelectedEnrichers(prev => prev.filter((_, i) => i !== index))}
-                    onInfoClick={(manifest) => setInfoEnricher(manifest)}
-                />
-                {loading ? (
-                    <Paragraph>Loading enrichers...</Paragraph>
-                ) : (
-                    <>
-                        {!enricherSearchQuery && recommended.length > 0 && (
-                            <Stack>
-                                <Heading level={4}>⭐ Recommended for You</Heading>
-                                <WizardOptionGrid
-                                    options={recommended}
-                                    selectedIds={selectedEnrichers.map(e => e.manifest.id)}
-                                    onSelect={(option) => toggleEnricher(option as unknown as PluginManifest)}
+            <>
+                <div className="pipe-wiz__body-head">
+                    <div className="pipe-wiz__step-label">BOOSTERS (OPTIONAL)</div>
+                    <h2 className="pipe-wiz__step-title"><span className="fg-text-gradient">PICK YOUR BOOSTERS.</span></h2>
+                    <p className="pipe-wiz__step-help">Click to add boosters. Drag the <strong>grip handle</strong> to reorder.</p>
+                </div>
+                <div className="pipe-wiz__content">
+                    <EnricherTimeline
+                        enrichers={selectedEnrichers}
+                        onReorder={setSelectedEnrichers}
+                        onRemove={(index) => setSelectedEnrichers(prev => prev.filter((_, i) => i !== index))}
+                        onInfoClick={(manifest) => setInfoEnricher(manifest)}
+                    />
+                    {loading ? (
+                        <Paragraph>Loading enrichers...</Paragraph>
+                    ) : (
+                        <>
+                            {!enricherSearchQuery && recommended.length > 0 && (
+                                <div className="pipe-wiz__section">
+                                    <div className="fg-band fg-band--sm fg-band--ink">
+                                        <span className="fg-band__label">⭐ RECOMMENDED FOR YOU</span>
+                                        <span className="fg-band__right">{recommended.length} BOOSTERS</span>
+                                    </div>
+                                    <WizardOptionGrid
+                                        options={recommended}
+                                        selectedIds={selectedEnrichers.map(e => e.manifest.id)}
+                                        onSelect={(option) => toggleEnricher(option as unknown as PluginManifest)}
+                                    />
+                                </div>
+                            )}
+                            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1.25rem' }}>
+                                <input
+                                    className="pipe-wiz__search"
+                                    type="text"
+                                    placeholder="Search boosters..."
+                                    value={enricherSearchQuery}
+                                    onChange={(e) => setEnricherSearchQuery(e.target.value)}
                                 />
-                            </Stack>
-                        )}
-                        <Stack direction="horizontal" align="center" justify="between">
-                            <FormInput type="text" placeholder="Search boosters..." value={enricherSearchQuery}
-                                onChange={(e) => setEnricherSearchQuery(e.target.value)} />
-                            <Button variant="secondary" size="small" onClick={() => setExpandAllCategories(!expandAllCategories)}>
-                                {expandAllCategories ? 'Collapse All' : 'Expand All'}
-                            </Button>
-                        </Stack>
-                        {Array.from(groupedEnrichers.entries()).map(([category, plugins]) => (
-                            <PluginCategorySection
-                                key={category.id}
-                                category={category}
-                                plugins={plugins}
-                                selectedIds={selectedEnrichers.map(e => e.manifest.id)}
-                                onSelect={toggleEnricher}
-                                onInfoClick={setInfoEnricher}
-                                disabledPlugins={new Set(excludedEnrichers.map(e => e.id))}
-                                getDisabledReason={getDisabledReason}
-                                defaultExpanded={!!enricherSearchQuery || expandAllCategories}
-                            />
-                        ))}
-                        {!enricherSearchQuery && (
-                            <WizardExcludedSection
-                                items={excludedEnrichers}
-                                getKey={e => e.id}
-                                getIcon={e => e.icon}
-                                getName={e => e.name}
-                                getHint={getExcludedHint}
-                            />
-                        )}
-                    </>
-                )}
-            </Stack>
+                                <Button
+                                    variant="ink"
+                                    size="sm"
+                                    onClick={() => setExpandAllCategories(!expandAllCategories)}
+                                >
+                                    {expandAllCategories ? 'COLLAPSE ALL' : 'EXPAND ALL'}
+                                </Button>
+                            </div>
+                            {Array.from(groupedEnrichers.entries()).map(([category, plugins]) => (
+                                <PluginCategorySection
+                                    key={category.id}
+                                    category={category}
+                                    plugins={plugins}
+                                    selectedIds={selectedEnrichers.map(e => e.manifest.id)}
+                                    onSelect={toggleEnricher}
+                                    onInfoClick={setInfoEnricher}
+                                    disabledPlugins={new Set(excludedEnrichers.map(e => e.id))}
+                                    getDisabledReason={getDisabledReason}
+                                    defaultExpanded={!!enricherSearchQuery || expandAllCategories}
+                                />
+                            ))}
+                            {!enricherSearchQuery && (
+                                <WizardExcludedSection
+                                    items={excludedEnrichers}
+                                    getKey={e => e.id}
+                                    getIcon={e => e.icon}
+                                    getName={e => e.name}
+                                    getHint={getExcludedHint}
+                                />
+                            )}
+                        </>
+                    )}
+                </div>
+            </>
         );
     };
 
@@ -440,26 +505,31 @@ const PipelineWizardPage: React.FC = () => {
         if (selectedEnrichers.length === 0) return null;
         const current = selectedEnrichers[currentEnricherIndex];
         if (!current || (current.manifest.configSchema?.length ?? 0) === 0) return null;
+        const configurableCount = selectedEnrichers.filter(e => (e.manifest.configSchema?.length ?? 0) > 0).length;
 
         return (
-            <Stack>
-                <Heading level={3}>Configure: {current.manifest.icon} {current.manifest.name}</Heading>
-                <Paragraph>{current.manifest.description}</Paragraph>
-                <Card>
-                    {current.manifest.id === 'logic-gate' ? (
-                        <LogicGateConfigForm key={`logic-gate-${currentEnricherIndex}`} initialValues={current.config}
-                            onChange={config => updateEnricherConfig(currentEnricherIndex, config)} />
-                    ) : (
-                        <EnricherConfigForm key={`${current.manifest.id}-${currentEnricherIndex}`} schema={current.manifest.configSchema ?? []} initialValues={current.config}
-                            onChange={config => updateEnricherConfig(currentEnricherIndex, config)} />
-                    )}
-                </Card>
-                {selectedEnrichers.filter(e => (e.manifest.configSchema?.length ?? 0) > 0).length > 1 && (
-                    <Paragraph>
-                        Configuring {currentEnricherIndex + 1} of {selectedEnrichers.filter(e => (e.manifest.configSchema?.length ?? 0) > 0).length}
-                    </Paragraph>
-                )}
-            </Stack>
+            <>
+                <div className="pipe-wiz__body-head">
+                    <div className="pipe-wiz__step-label">
+                        CONFIGURE BOOSTER{configurableCount > 1 ? ` · ${currentEnricherIndex + 1} OF ${configurableCount}` : ''}
+                    </div>
+                    <h2 className="pipe-wiz__step-title">
+                        <span className="fg-text-gradient">{current.manifest.icon} {current.manifest.name.toUpperCase()}.</span>
+                    </h2>
+                    <p className="pipe-wiz__step-help">{current.manifest.description}</p>
+                </div>
+                <div className="pipe-wiz__content">
+                    <Card>
+                        {current.manifest.id === 'logic-gate' ? (
+                            <LogicGateConfigForm key={`logic-gate-${currentEnricherIndex}`} initialValues={current.config}
+                                onChange={config => updateEnricherConfig(currentEnricherIndex, config)} />
+                        ) : (
+                            <EnricherConfigForm key={`${current.manifest.id}-${currentEnricherIndex}`} schema={current.manifest.configSchema ?? []} initialValues={current.config}
+                                onChange={config => updateEnricherConfig(currentEnricherIndex, config)} />
+                        )}
+                    </Card>
+                </div>
+            </>
         );
     };
 
@@ -467,56 +537,77 @@ const PipelineWizardPage: React.FC = () => {
         const availableDestinations = destinations.filter(isPluginAvailable);
         const excludedDestinations = destinations.filter(d => !isPluginAvailable(d));
 
+        const selectedDestChips = selectedDestinations
+            .map(id => destinations.find(d => d.id === id))
+            .filter((d): d is NonNullable<typeof d> => !!d)
+            .map(d => ({ id: d.id, name: d.name, icon: d.icon }));
+
+        const unselectedAvailable = availableDestinations.filter(d => !selectedDestinations.includes(d.id));
+
         return (
-            <Stack>
-                <Heading level={3}>Select Destinations</Heading>
-                <Paragraph>Select <strong>at least one</strong> destination for your activities</Paragraph>
-                {loading ? (
-                    <Paragraph>Loading destinations...</Paragraph>
-                ) : (
-                    <>
-                        <WizardOptionGrid
-                            options={availableDestinations}
-                            selectedIds={selectedDestinations}
-                            onSelect={(dest) => toggleDestination(dest.id)}
-                            selectionMode="multi"
-                        />
-                        <WizardExcludedSection
-                            items={excludedDestinations}
-                            getKey={d => d.id}
-                            getIcon={d => d.icon}
-                            getName={d => d.name}
-                            getHint={getExcludedHint}
-                        />
-                        {/* NerdMode: Per-destination enricher exclusions */}
-                        {isNerdMode && selectedEnrichers.length > 0 && selectedDestinations.map(destId => {
-                            const destManifest = destinations.find(d => d.id === destId);
-                            if (!destManifest) return null;
-                            const enricherInfos = selectedEnrichers.map(e => ({
-                                id: e.manifest.id,
-                                name: e.manifest.name,
-                                providerType: EnricherProviderType[e.manifest.enricherProviderType as number] || String(e.manifest.enricherProviderType),
-                                icon: e.manifest.icon,
-                                iconType: e.manifest.iconType,
-                                iconPath: e.manifest.iconPath,
-                            }));
-                            return (
-                                <BoosterExclusionPills
-                                    key={`excl-${destManifest.id}`}
-                                    destinationId={destManifest.id}
-                                    destinationName={destManifest.name}
-                                    enrichers={enricherInfos}
-                                    excludedProviderTypes={excludedEnrichersByDest[destManifest.id] || []}
-                                    onChange={(destId, excluded) => setExcludedEnrichersByDest(prev => ({
-                                        ...prev,
-                                        [destId]: excluded,
-                                    }))}
+            <>
+                <div className="pipe-wiz__body-head">
+                    <div className="pipe-wiz__step-label">DESTINATIONS</div>
+                    <h2 className="pipe-wiz__step-title"><span className="fg-text-gradient">WHERE TO SEND.</span></h2>
+                    <p className="pipe-wiz__step-help">Select <strong>at least one</strong> destination for your activities.</p>
+                </div>
+                <div className="pipe-wiz__content">
+                    {loading ? (
+                        <Paragraph>Loading destinations...</Paragraph>
+                    ) : (
+                        <>
+                            {selectedDestChips.length > 0 && (
+                                <DestinationPicker
+                                    destinations={selectedDestChips}
+                                    onRemove={toggleDestination}
+                                    onAdd={() => {}}
+                                    onConfigure={() => {}}
                                 />
-                            );
-                        })}
-                    </>
-                )}
-            </Stack>
+                            )}
+                            {unselectedAvailable.length > 0 && (
+                                <WizardOptionGrid
+                                    options={unselectedAvailable}
+                                    selectedIds={selectedDestinations}
+                                    onSelect={(dest) => toggleDestination(dest.id)}
+                                    selectionMode="multi"
+                                />
+                            )}
+                            <WizardExcludedSection
+                                items={excludedDestinations}
+                                getKey={d => d.id}
+                                getIcon={d => d.icon}
+                                getName={d => d.name}
+                                getHint={getExcludedHint}
+                            />
+                            {isNerdMode && selectedEnrichers.length > 0 && selectedDestinations.map(destId => {
+                                const destManifest = destinations.find(d => d.id === destId);
+                                if (!destManifest) return null;
+                                const enricherInfos = selectedEnrichers.map(e => ({
+                                    id: e.manifest.id,
+                                    name: e.manifest.name,
+                                    providerType: EnricherProviderType[e.manifest.enricherProviderType as number] || String(e.manifest.enricherProviderType),
+                                    icon: e.manifest.icon,
+                                    iconType: e.manifest.iconType,
+                                    iconPath: e.manifest.iconPath,
+                                }));
+                                return (
+                                    <BoosterExclusionPills
+                                        key={`excl-${destManifest.id}`}
+                                        destinationId={destManifest.id}
+                                        destinationName={destManifest.name}
+                                        enrichers={enricherInfos}
+                                        excludedProviderTypes={excludedEnrichersByDest[destManifest.id] || []}
+                                        onChange={(destId, excluded) => setExcludedEnrichersByDest(prev => ({
+                                            ...prev,
+                                            [destId]: excluded,
+                                        }))}
+                                    />
+                                );
+                            })}
+                        </>
+                    )}
+                </div>
+            </>
         );
     };
 
@@ -542,7 +633,6 @@ const PipelineWizardPage: React.FC = () => {
             return resolveEnum(field?.fieldType, ConfigFieldType) === ConfigFieldType.CONFIG_FIELD_TYPE_KEY_VALUE_MAP;
         };
 
-        // Convert selected enrichers to ReviewEnricher format
         const reviewEnrichers = selectedEnrichers.map(e => ({
             id: e.manifest.id,
             icon: e.manifest.icon,
@@ -554,7 +644,6 @@ const PipelineWizardPage: React.FC = () => {
             ),
         }));
 
-        // Convert destinations to ReviewDestination format
         const reviewDests = dests.map(d => {
             const excluded = excludedEnrichersByDest[d.id] || [];
             const excludedNames = excluded.map(provType => {
@@ -574,61 +663,84 @@ const PipelineWizardPage: React.FC = () => {
         });
 
         return (
-            <Stack>
-                <Heading level={3}>Review Your Pipeline</Heading>
-                <Card>
-                    <FormField label="Pipeline Name (Optional)" htmlFor="pipelineName">
-                        <FormInput id="pipelineName" type="text" placeholder="e.g., Morning Gym Sessions"
-                            value={pipelineName} onChange={(e) => setPipelineName(e.target.value)}
-                            maxLength={64} />
-                    </FormField>
-                </Card>
+            <>
+                <div className="pipe-wiz__body-head">
+                    <div className="pipe-wiz__step-label">REVIEW &amp; CONFIRM</div>
+                    <h2 className="pipe-wiz__step-title"><span className="fg-text-gradient">REVIEW YOUR PIPELINE.</span></h2>
+                    <p className="pipe-wiz__step-help">Name your pipeline and confirm the configuration before creating.</p>
+                </div>
+                <div className="pipe-wiz__content">
+                    <Card>
+                        <FormField label="Pipeline Name (Optional)" htmlFor="pipelineName">
+                            <FormInput id="pipelineName" type="text" placeholder="e.g., Morning Gym Sessions"
+                                value={pipelineName} onChange={(e) => setPipelineName(e.target.value)}
+                                maxLength={64} />
+                        </FormField>
+                    </Card>
 
-                <PipelineReviewFlow
-                    sources={reviewSources}
-                    enrichers={reviewEnrichers}
-                    destinations={reviewDests}
-                />
+                    <PipelineReviewFlow
+                        sources={reviewSources}
+                        enrichers={reviewEnrichers}
+                        destinations={reviewDests}
+                    />
 
-                {error && <Paragraph>{error}</Paragraph>}
-            </Stack>
+                    {error && <div className="pipe-wiz__error">{error}</div>}
+                </div>
+            </>
         );
     };
 
     const renderSourceConfigStep = () => {
         if (!selectedSourceManifest?.configSchema?.length) return null;
         return (
-            <Stack>
-                <Heading level={3}>Configure {selectedSourceManifest.name}</Heading>
-                <Paragraph>Set up your source configuration</Paragraph>
-                <Card>
-                    <PluginConfigForm
-                        key={selectedSourceManifest.id}
-                        schema={selectedSourceManifest.configSchema}
-                        initialValues={Object.keys(sourceConfig).length > 0 ? sourceConfig : (getPluginDefault(selectedSourceManifest.id) || {})}
-                        onChange={setSourceConfig}
-                    />
-                </Card>
-            </Stack>
+            <>
+                <div className="pipe-wiz__body-head">
+                    <div className="pipe-wiz__step-label">SOURCE CONFIGURATION</div>
+                    <h2 className="pipe-wiz__step-title">
+                        <span className="fg-text-gradient">CONFIGURE {selectedSourceManifest.name.toUpperCase()}.</span>
+                    </h2>
+                    <p className="pipe-wiz__step-help">Set up your source configuration.</p>
+                </div>
+                <div className="pipe-wiz__content">
+                    <Card>
+                        <PluginConfigForm
+                            key={selectedSourceManifest.id}
+                            schema={selectedSourceManifest.configSchema}
+                            initialValues={Object.keys(sourceConfig).length > 0 ? sourceConfig : (getPluginDefault(selectedSourceManifest.id) || {})}
+                            onChange={setSourceConfig}
+                        />
+                    </Card>
+                </div>
+            </>
         );
     };
 
     const renderDestinationConfigStep = () => {
         const destManifest = destinationsWithConfig[currentDestConfigIndex];
         if (!destManifest) return null;
+        const label = destinationsWithConfig.length > 1
+            ? `DESTINATION CONFIG · ${currentDestConfigIndex + 1} OF ${destinationsWithConfig.length}`
+            : 'DESTINATION CONFIGURATION';
         return (
-            <Stack>
-                <Heading level={3}>Configure {destManifest.name}</Heading>
-                <Paragraph>Set up your destination configuration{destinationsWithConfig.length > 1 ? ` (${currentDestConfigIndex + 1} of ${destinationsWithConfig.length})` : ''}</Paragraph>
-                <Card>
-                    <PluginConfigForm
-                        key={destManifest.id}
-                        schema={destManifest.configSchema!}
-                        initialValues={destinationConfigs[destManifest.id] || getPluginDefault(destManifest.id) || {}}
-                        onChange={(values) => setDestinationConfigs(prev => ({ ...prev, [destManifest.id]: values }))}
-                    />
-                </Card>
-            </Stack>
+            <>
+                <div className="pipe-wiz__body-head">
+                    <div className="pipe-wiz__step-label">{label}</div>
+                    <h2 className="pipe-wiz__step-title">
+                        <span className="fg-text-gradient">CONFIGURE {destManifest.name.toUpperCase()}.</span>
+                    </h2>
+                    <p className="pipe-wiz__step-help">Set up your destination configuration.</p>
+                </div>
+                <div className="pipe-wiz__content">
+                    <Card>
+                        <PluginConfigForm
+                            key={destManifest.id}
+                            schema={destManifest.configSchema!}
+                            initialValues={destinationConfigs[destManifest.id] || getPluginDefault(destManifest.id) || {}}
+                            onChange={(values) => setDestinationConfigs(prev => ({ ...prev, [destManifest.id]: values }))}
+                        />
+                    </Card>
+                </div>
+            </>
         );
     };
 
@@ -648,10 +760,15 @@ const PipelineWizardPage: React.FC = () => {
     if (registryError) {
         return (
             <PageLayout title="Create Pipeline" backTo="/settings/pipelines" backLabel="Pipelines">
-                <Card>
-                    <Paragraph>Failed to load plugin registry: {registryError}</Paragraph>
-                    <Button variant="primary" onClick={() => window.location.reload()}>Retry</Button>
-                </Card>
+                <div className="fg-band fg-band--ink">
+                    <span className="fg-band__label">ERROR LOADING REGISTRY</span>
+                </div>
+                <div style={{ padding: '1.5rem 2rem' }}>
+                    <p style={{ fontFamily: 'var(--fg-font-body)', color: 'var(--fg-rose)', marginBottom: '1rem' }}>
+                        Failed to load plugin registry: {registryError}
+                    </p>
+                    <Button size="sm" onClick={() => window.location.reload()}>RETRY</Button>
+                </div>
             </PageLayout>
         );
     }
@@ -659,23 +776,59 @@ const PipelineWizardPage: React.FC = () => {
     return (
         <>
             <PageLayout title="Create Pipeline" backTo="/settings/pipelines" backLabel="Pipelines">
-                <Stack>
-                    <div className="fg-band">
-                        <span className="fg-band__label">NEW PIPELINE</span>
+                {/* Aurora band header */}
+                <div className="fg-band">
+                    <span className="fg-band__label">NEW PIPELINE</span>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <Button
+                            variant="ink"
+                            size="sm"
+                            onClick={() => navigate('/settings/pipelines')}
+                        >
+                            CANCEL ✕
+                        </Button>
                     </div>
-                    {renderStepIndicator()}
-                    {renderCurrentStep()}
-                    <Stack direction="horizontal" justify="end">
-                        {currentStepIndex > 0 && <Button variant="secondary" onClick={handleBack}>Back</Button>}
-                        {step !== 'review' ? (
-                            <Button variant="primary" onClick={handleNext} disabled={!canProceed() || loading}>Next</Button>
-                        ) : (
-                            <Button variant="primary" onClick={handleCreate} disabled={creating}>
-                                {creating ? 'Creating...' : 'Create Pipeline'}
-                            </Button>
-                        )}
-                    </Stack>
-                </Stack>
+                </div>
+
+                {/* Wizard layout: rail + body */}
+                <div className="pipe-wiz">
+                    {renderWizardRail()}
+
+                    <div className="pipe-wiz__body">
+                        {renderCurrentStep()}
+
+                        {/* Footer actions */}
+                        <div className="pipe-wiz__actions">
+                            {currentStepIndex > 0 ? (
+                                <button className="wiz__back" onClick={handleBack}>
+                                    ← BACK
+                                </button>
+                            ) : (
+                                <span />
+                            )}
+
+                            <span style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', letterSpacing: '0.14em', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
+                                {getDisplaySteps().indexOf(step) + 1} OF {getDisplaySteps().length}
+                            </span>
+
+                            {step !== 'review' ? (
+                                <Button
+                                    onClick={handleNext}
+                                    disabled={!canProceed() || loading}
+                                >
+                                    NEXT →
+                                </Button>
+                            ) : (
+                                <Button
+                                    onClick={handleCreate}
+                                    disabled={creating}
+                                >
+                                    {creating ? 'CREATING…' : 'CREATE PIPELINE →'}
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                </div>
             </PageLayout>
             {infoEnricher && <EnricherInfoModal enricher={infoEnricher} onClose={() => setInfoEnricher(null)} />}
         </>

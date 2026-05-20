@@ -5,6 +5,7 @@
 // source: models/events/pipeline.proto
 
 /* eslint-disable */
+import type { ActivityEnrichments } from "../activity/enrichments";
 import type { ActivitySource, ActivityType } from "../activity/source";
 import type { StandardizedActivity } from "../activity/standardized";
 import type { DestinationType } from "../plugin/provider";
@@ -82,11 +83,13 @@ export interface EnrichedActivityEvent {
   source: ActivitySource;
   activityData?: StandardizedActivity | undefined;
   appliedEnrichments: string[];
+  /** operational pipeline flags for destination service */
   enrichmentMetadata: { [key: string]: string };
   destinations: DestinationType[];
   tags: string[];
   pipelineExecutionId?: string | undefined;
   activityDataUri: string;
+  enrichments?: ActivityEnrichments | undefined;
 }
 
 export interface EnrichedActivityEvent_EnrichmentMetadataEntry {

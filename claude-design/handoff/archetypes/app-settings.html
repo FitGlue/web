@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>App · Settings — FitGlue Reskin</title>
+<meta name="viewport" content="width=1440, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/tokens.css?v=3" />
+<link rel="stylesheet" href="../css/base.css?v=3" />
+<link rel="stylesheet" href="../css/components.css?v=3" />
+<link rel="stylesheet" href="../css/overrides.css?v=3" />
+<style>
+  body { background: var(--fg-ink); color: var(--fg-paper); margin: 0; min-height: 100vh; }
+  .app-bar { display: flex; align-items: stretch; border-bottom: var(--fg-rule-thick); background: var(--fg-ink); }
+  .app-bar__brand { padding: .875rem 1.375rem; display: flex; align-items: center; gap: .625rem; font-family: var(--fg-font-display); font-size: 1.125rem; }
+  .app-bar__brand .fg-logo { width: 22px; height: 22px; }
+  .app-bar__nav { display: flex; align-items: stretch; flex: 1; }
+  .app-bar__link { padding: .875rem 1.125rem; display: flex; align-items: center; font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .12em; color: var(--color-text-muted); text-decoration: none; text-transform: uppercase; }
+  .app-bar__link.active { background: var(--gradient-primary); color: var(--fg-ink); }
+  .app-bar__user { padding: .625rem 1rem; display: flex; align-items: center; gap: .5rem; }
+  .app-bar__avatar { width: 30px; height: 30px; background: var(--gradient-primary); color: var(--fg-ink); display: flex; align-items: center; justify-content: center; font-family: var(--fg-font-display); font-size: .8125rem; }
+
+  .page-head { padding: 1.5rem 2rem; background: var(--fg-ink-2); display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2rem; }
+  .page-head__eyebrow { font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .page-head h1 { font-size: 2.5rem; margin-top: .375rem; }
+
+  /* settings layout */
+  .settings { display: grid; grid-template-columns: 220px 1fr; min-height: 80vh; }
+  .settings__rail { background: var(--fg-ink-2); border-right: var(--fg-rule-thin); padding: 1rem 0; }
+  .settings__rail-section { font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-subtle); text-transform: uppercase; padding: 1rem 1.25rem .5rem; }
+  .settings__rail a { display: block; padding: .75rem 1.25rem; font-family: var(--fg-font-display); font-size: .8125rem; letter-spacing: -.005em; text-transform: uppercase; color: var(--color-text-muted); text-decoration: none; border-left: 3px solid transparent; }
+  .settings__rail a.active { color: var(--fg-paper); border-left-color: var(--fg-pink); background: var(--fg-ink-3); }
+  .settings__rail a:hover { color: var(--fg-paper); }
+
+  /* sections */
+  .stx-section { padding: 0; }
+  .stx-section + .stx-section { margin-top: 0; }
+  .stx-section__head { padding: 1.5rem 2rem 1rem; border-bottom: var(--fg-rule-thin); display: flex; align-items: baseline; justify-content: space-between; }
+  .stx-section__head h2 { font-size: 1.375rem; margin: 0; }
+  .stx-section__sub { font-family: var(--fg-font-body); font-size: .875rem; color: var(--color-text-muted); margin-top: .25rem; }
+  .stx-section__body { padding: 1.5rem 2rem; }
+
+  /* form fields */
+  .stx-field { display: grid; grid-template-columns: 200px 1fr; gap: 2rem; padding: 1.125rem 0; border-bottom: var(--fg-rule-thin); align-items: start; }
+  .stx-field__label { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; padding-top: .625rem; }
+  .stx-field__input input, .stx-field__input select, .stx-field__input textarea {
+    background: var(--fg-ink); color: var(--fg-paper); border: 0;
+    box-shadow: inset 0 0 0 2px var(--fg-paper);
+    padding: .75rem 1rem; font-family: var(--fg-font-body); font-size: .9375rem;
+    width: 100%; outline: none; max-width: 480px;
+    transition: box-shadow var(--transition-fast);
+  }
+  .stx-field__input input:focus, .stx-field__input select:focus { box-shadow: inset 0 0 0 2px var(--fg-pink); }
+  .stx-field__help { font-family: var(--fg-font-body); font-size: .8125rem; color: var(--color-text-muted); margin-top: .5rem; max-width: 480px; }
+
+  /* toggles */
+  .stx-toggle { display: inline-flex; align-items: center; gap: .625rem; padding: .5rem 0; }
+  .stx-toggle__switch { width: 44px; height: 24px; background: var(--fg-ink-3); position: relative; box-shadow: inset 0 0 0 2px var(--fg-paper); cursor: pointer; }
+  .stx-toggle__switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; background: var(--fg-paper); transition: left var(--transition-fast); }
+  .stx-toggle__switch--on { background: var(--gradient-primary); box-shadow: none; }
+  .stx-toggle__switch--on::after { left: 25px; background: var(--fg-ink); }
+  .stx-toggle__label { font-family: var(--fg-font-body); font-size: .9375rem; }
+
+  /* danger zone */
+  .stx-danger { background: rgba(255,93,108,0.08); padding: 1.5rem 2rem; border-top: 3px solid var(--fg-rose); }
+  .stx-danger h3 { color: var(--fg-rose); font-size: 1rem; margin-bottom: .75rem; }
+
+  /* avatar block */
+  .stx-avatar-row { display: flex; align-items: center; gap: 1rem; }
+  .stx-avatar { width: 80px; height: 80px; background: var(--gradient-primary); color: var(--fg-ink); display: flex; align-items: center; justify-content: center; font-family: var(--fg-font-display); font-size: 2rem; }
+
+  /* plan banner */
+  .stx-plan { padding: 1.5rem 2rem; background: var(--gradient-primary); color: var(--fg-ink); display: flex; align-items: center; gap: 1.5rem; }
+  .stx-plan__icon { font-size: 2rem; }
+  .stx-plan__title { font-family: var(--fg-font-display); font-size: 1.5rem; letter-spacing: -.01em; }
+  .stx-plan__meta { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; }
+</style>
+</head>
+<body>
+
+  <!-- APP TOP BAR -->
+  <div class="app-bar">
+    <a href="/app" class="app-bar__brand"><span class="fg-logo"></span><span>FITGLUE</span></a>
+    <div class="app-bar__nav">
+      <a class="app-bar__link" href="/app">DASHBOARD</a>
+      <a class="app-bar__link" href="/app/settings/pipelines">PIPELINES</a>
+      <a class="app-bar__link" href="/app/connections">CONNECTIONS</a>
+      <a class="app-bar__link" href="/app/activities">ACTIVITIES</a>
+      <a class="app-bar__link" href="/app/showcase">SHOWCASE</a>
+      <a class="app-bar__link active" href="/app/settings/account">SETTINGS</a>
+    </div>
+    <div class="app-bar__user">
+      <div class="app-bar__avatar">JK</div>
+      <div>
+        <div style="font-family:var(--fg-font-display);font-size:.75rem;line-height:1">JAMES KING</div>
+        <div style="font-family:var(--fg-font-mono);font-size:.5625rem;letter-spacing:.1em;color:var(--color-text-muted);margin-top:.125rem">✦ ATHLETE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADING -->
+  <div class="page-head">
+    <div>
+      <div class="page-head__eyebrow">SETTINGS / ACCOUNT</div>
+      <h1>ACCOUNT</h1>
+    </div>
+  </div>
+
+  <!-- SETTINGS LAYOUT -->
+  <div class="settings">
+    <!-- RAIL -->
+    <aside class="settings__rail">
+      <div class="settings__rail-section">PROFILE</div>
+      <a href="/app/settings/account" class="active">Account</a>
+      <a href="/app/settings/notifications">Notifications</a>
+      <a href="/app/settings/showcase">Showcase</a>
+
+      <div class="settings__rail-section">BILLING</div>
+      <a href="/app/settings/subscription">Subscription</a>
+      <a href="/app/settings/invoices">Invoices</a>
+
+      <div class="settings__rail-section">DATA</div>
+      <a href="/app/settings/enricher-data">Booster data</a>
+      <a href="/app/settings/export">Export</a>
+
+      <div class="settings__rail-section">DEVELOPER</div>
+      <a href="/app/settings/api-keys">API keys</a>
+      <a href="/app/settings/webhooks">Webhooks</a>
+    </aside>
+
+    <!-- BODY -->
+    <div>
+
+      <!-- ATHLETE plan banner -->
+      <div class="stx-plan">
+        <span class="stx-plan__icon">✦</span>
+        <div style="flex:1;display:flex;align-items:baseline;gap:1rem">
+          <span class="stx-plan__title">ATHLETE · UNLIMITED SYNCS</span>
+          <span class="stx-plan__meta">3,412 CREDITS · RESETS 1 JUN</span>
+        </div>
+        <a href="/app/settings/subscription" class="fg-button fg-button--ink fg-button--sm">MANAGE →</a>
+      </div>
+
+      <!-- Profile -->
+      <section class="stx-section">
+        <div class="stx-section__head">
+          <div>
+            <h2>YOUR PROFILE</h2>
+            <p class="stx-section__sub">How you appear on Showcase pages and in coach reports.</p>
+          </div>
+          <button class="fg-button fg-button--sm">SAVE CHANGES</button>
+        </div>
+        <div class="stx-section__body">
+          <div class="stx-field">
+            <div class="stx-field__label">Avatar</div>
+            <div class="stx-field__input">
+              <div class="stx-avatar-row">
+                <div class="stx-avatar">JK</div>
+                <div style="display:flex;flex-direction:column;gap:.375rem">
+                  <a href="#" class="fg-button fg-button--ink fg-button--sm" style="align-self:flex-start">UPLOAD NEW</a>
+                  <span style="font-family:var(--fg-font-mono);font-size:.6875rem;letter-spacing:.1em;color:var(--color-text-muted);text-transform:uppercase">PNG / JPG · MAX 2MB</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="stx-field">
+            <div class="stx-field__label">Display name</div>
+            <div class="stx-field__input"><input type="text" value="James King" /></div>
+          </div>
+          <div class="stx-field">
+            <div class="stx-field__label">Bio</div>
+            <div class="stx-field__input">
+              <textarea rows="3">Pilates obsessive who occasionally cycles. London → Surrey → everywhere with hills.</textarea>
+              <p class="stx-field__help">140 character limit. Shown publicly on your Showcase page.</p>
+            </div>
+          </div>
+          <div class="stx-field">
+            <div class="stx-field__label">Timezone</div>
+            <div class="stx-field__input">
+              <select><option>Europe/London (GMT+1)</option></select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Account -->
+      <section class="stx-section">
+        <div class="stx-section__head">
+          <div>
+            <h2>LOGIN &amp; SECURITY</h2>
+            <p class="stx-section__sub">Email, password, two-factor.</p>
+          </div>
+        </div>
+        <div class="stx-section__body">
+          <div class="stx-field">
+            <div class="stx-field__label">Email</div>
+            <div class="stx-field__input">
+              <input type="email" value="james@kingsroad.cc" />
+              <p class="stx-field__help"><span class="fg-stamp fg-stamp--green" style="margin-right:.5rem">✓ VERIFIED</span>Used for login &amp; weekly digest.</p>
+            </div>
+          </div>
+          <div class="stx-field">
+            <div class="stx-field__label">Password</div>
+            <div class="stx-field__input">
+              <a href="#" class="fg-button fg-button--ink fg-button--sm">CHANGE PASSWORD</a>
+              <p class="stx-field__help">Last changed 47 days ago.</p>
+            </div>
+          </div>
+          <div class="stx-field">
+            <div class="stx-field__label">Two-factor</div>
+            <div class="stx-field__input">
+              <div class="stx-toggle">
+                <div class="stx-toggle__switch stx-toggle__switch--on"></div>
+                <span class="stx-toggle__label">Authenticator app · enabled</span>
+              </div>
+              <p class="stx-field__help">Require a code from your authenticator on every login.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notifications -->
+      <section class="stx-section">
+        <div class="stx-section__head">
+          <div>
+            <h2>NOTIFICATIONS</h2>
+            <p class="stx-section__sub">Choose what gets pinged where.</p>
+          </div>
+        </div>
+        <div class="stx-section__body">
+          <div class="stx-field">
+            <div class="stx-field__label">Activity synced</div>
+            <div class="stx-field__input">
+              <div class="stx-toggle"><div class="stx-toggle__switch stx-toggle__switch--on"></div><span class="stx-toggle__label">Email digest · weekly</span></div>
+              <div class="stx-toggle"><div class="stx-toggle__switch"></div><span class="stx-toggle__label">Push · per activity</span></div>
+            </div>
+          </div>
+          <div class="stx-field">
+            <div class="stx-field__label">Pipeline halted</div>
+            <div class="stx-field__input">
+              <div class="stx-toggle"><div class="stx-toggle__switch stx-toggle__switch--on"></div><span class="stx-toggle__label">Email · immediate</span></div>
+              <div class="stx-toggle"><div class="stx-toggle__switch stx-toggle__switch--on"></div><span class="stx-toggle__label">Push · immediate</span></div>
+            </div>
+          </div>
+          <div class="stx-field">
+            <div class="stx-field__label">Connection stale</div>
+            <div class="stx-field__input">
+              <div class="stx-toggle"><div class="stx-toggle__switch stx-toggle__switch--on"></div><span class="stx-toggle__label">Email · after 7 days</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Danger zone -->
+      <div class="stx-danger">
+        <h3>DANGER ZONE</h3>
+        <div class="stx-field" style="border-bottom:0">
+          <div class="stx-field__label">Delete account</div>
+          <div class="stx-field__input">
+            <a href="#" class="fg-button" style="background:var(--fg-rose);color:var(--fg-paper)">DELETE ACCOUNT &amp; ALL DATA</a>
+            <p class="stx-field__help">Removes your profile, pipelines, run history and 1,284 synced activities. <strong style="color:var(--fg-paper)">This cannot be undone.</strong></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

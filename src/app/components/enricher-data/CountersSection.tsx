@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Stack, Grid } from '../library/layout';
 import { Card, Button, Heading, Paragraph, Badge, AccordionTrigger } from '../library/ui';
 import { Input, FormField } from '../library/forms';
+import './enricher-data.css';
 import { client } from '../../../shared/api/client';
 import { Counter } from './types';
 import { formatDate } from './helpers';

@@ -1,7 +1,8 @@
 import React, { useEffect, useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { Stack, Grid } from '../library/layout';
-import { Card, Badge, EmptyState, Button, Text, Heading, Code } from '../library/ui';
+import { Card, Badge, EmptyState, Button, Text, Code } from '../library/ui';
+import './admin.css';
 import {
   DataTable,
   DataTableColumn,
@@ -21,6 +22,15 @@ const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 
   'PIPELINE_RUN_STATUS_SKIPPED': 'default',
   'PIPELINE_RUN_STATUS_ARCHIVED': 'default',
   'PIPELINE_RUN_STATUS_TIER_BLOCKED': 'warning',
+};
+
+// BA badge class mapping
+const statusBadgeClass: Record<string, string> = {
+  'success': 'admin-badge--ok',
+  'error': 'admin-badge--failed',
+  'warning': 'admin-badge--warn',
+  'info': 'admin-badge--warn',
+  'default': 'admin-badge--muted',
 };
 
 /**
@@ -105,11 +115,14 @@ export const AdminPipelineRuns: React.FC = () => {
     {
       key: 'status',
       header: 'Status',
-      render: (run) => (
-        <Badge variant={statusVariants[run.status ?? ''] || 'default'} size="sm">
-          {run.status}
-        </Badge>
-      ),
+      render: (run) => {
+        const v = statusVariants[run.status ?? ''] || 'default';
+        return (
+          <Badge variant={v} size="sm" className={statusBadgeClass[v]}>
+            {run.status}
+          </Badge>
+        );
+      },
       width: '100px',
     },
     {
@@ -131,15 +144,16 @@ export const AdminPipelineRuns: React.FC = () => {
       header: 'Destinations',
       render: (run) => (
         <Stack direction="horizontal" gap="xs">
-          {(run.destinations ?? []).map((d, i) => (
-            <Badge
-              key={i}
-              variant={d.status === 'DESTINATION_STATUS_SUCCESS' ? 'success' : d.status === 'DESTINATION_STATUS_FAILED' ? 'error' : 'default'}
-              size="sm"
-            >
-              {d.destination}
-            </Badge>
-          ))}
+          {(run.destinations ?? []).map((d, i) => {
+            const v = d.status === 'DESTINATION_STATUS_SUCCESS' ? 'success'
+              : d.status === 'DESTINATION_STATUS_FAILED' ? 'error'
+              : 'default';
+            return (
+              <Badge key={i} variant={v} size="sm" className={statusBadgeClass[v]}>
+                {d.destination}
+              </Badge>
+            );
+          })}
         </Stack>
       ),
       width: '200px',
@@ -148,25 +162,25 @@ export const AdminPipelineRuns: React.FC = () => {
 
   return (
     <Stack gap="md">
-      {/* Stats summary */}
+      {/* Stats summary — BA admin-stat-card panels */}
       {stats && (
         <Grid cols={4} gap="md">
-          <Card>
-            <Text variant="muted">Total Runs</Text>
-            <Heading level={3}>{stats.total}</Heading>
-          </Card>
-          <Card>
-            <Text variant="muted">Synced</Text>
-            <Heading level={3}>{stats.byStatus['Synced'] || 0}</Heading>
-          </Card>
-          <Card>
-            <Text variant="muted">Failed</Text>
-            <Heading level={3}>{stats.byStatus['Failed'] || 0}</Heading>
-          </Card>
-          <Card>
-            <Text variant="muted">Pending</Text>
-            <Heading level={3}>{stats.byStatus['Pending'] || 0}</Heading>
-          </Card>
+          <div className="admin-stat-card">
+            <div className="admin-stat-card__label">Total Runs</div>
+            <div className="admin-stat-card__value">{stats.total}</div>
+          </div>
+          <div className="admin-stat-card">
+            <div className="admin-stat-card__label">Synced</div>
+            <div className="admin-stat-card__value">{stats.byStatus['Synced'] || 0}</div>
+          </div>
+          <div className="admin-stat-card">
+            <div className="admin-stat-card__label">Failed</div>
+            <div className="admin-stat-card__value">{stats.byStatus['Failed'] || 0}</div>
+          </div>
+          <div className="admin-stat-card">
+            <div className="admin-stat-card__label">Pending</div>
+            <div className="admin-stat-card__value">{stats.byStatus['Pending'] || 0}</div>
+          </div>
         </Grid>
       )}
 

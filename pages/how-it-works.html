@@ -1,243 +1,128 @@
 {{> header}}
 
 <main>
+<style>
+  /* ── Page heading ── */
+  .ph { padding: 56px 32px; max-width: 1280px; margin: 0 auto; }
+  .ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .ph__title { font-family: var(--fg-font-display); font-size: clamp(2.5rem, 7vw, 5rem); line-height: .9; letter-spacing: -.04em; text-transform: uppercase; margin: 14px 0; }
+  .ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ph__sub { font-family: var(--fg-font-body); font-size: 1.125rem; color: var(--color-text-muted); line-height: 1.55; max-width: 640px; }
+
+  /* ── 4-step grid ── */
+  .steps-grid { padding: 0 32px 64px; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); border-top: var(--fg-rule-thin); border-bottom: var(--fg-rule-thin); }
+  .step { padding: 32px 24px; border-right: var(--fg-rule-thin); }
+  .step:last-child { border-right: 0; }
+  .step__n { font-family: var(--fg-font-display); font-size: 5rem; line-height: 1; letter-spacing: -.04em; background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .step__t { font-family: var(--fg-font-display); font-size: 1.5rem; letter-spacing: -.015em; margin-top: 8px; text-transform: uppercase; }
+  .step__d { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); line-height: 1.55; margin-top: 8px; }
+
+  /* ── FAQ section ── */
+  .hiw-faq { padding: 64px 32px; max-width: 860px; margin: 0 auto; }
+  .hiw-faq__title { font-family: var(--fg-font-display); font-size: 2rem; letter-spacing: -.025em; text-transform: uppercase; margin-bottom: 32px; }
+  .hiw-faq__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .faq-item { padding: 22px 0; border-bottom: var(--fg-rule-thin); }
+  .faq-item:first-of-type { border-top: var(--fg-rule-thin); }
+  .faq-item__q { font-family: var(--fg-font-display); font-size: 1.125rem; letter-spacing: -.01em; text-transform: uppercase; margin-bottom: 10px; }
+  .faq-item__a { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); line-height: 1.6; }
+
+  /* ── CTA ── */
+  .hiw-cta { padding: 64px 32px; text-align: center; border-top: var(--fg-rule-thin); }
+  .hiw-cta__title { font-family: var(--fg-font-display); font-size: clamp(1.75rem, 4vw, 2.5rem); letter-spacing: -.025em; text-transform: uppercase; margin-bottom: 24px; }
+  .hiw-cta__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn-aurora { display: inline-flex; align-items: center; gap: 6px; padding: 14px 24px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; }
+
+  /* ── Dark info band ── */
+  .dark-band { padding: 14px 32px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); border-top: var(--fg-rule-thin); display: flex; justify-content: space-between; align-items: center; }
+  .dark-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-paper); text-transform: uppercase; }
+  .dark-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+
+  @media (max-width: 900px) {
+    .steps-grid { grid-template-columns: repeat(2, 1fr); }
+    .step:nth-child(2) { border-right: 0; }
+    .step:nth-child(3) { border-top: var(--fg-rule-thin); }
+    .step:nth-child(4) { border-top: var(--fg-rule-thin); border-right: 0; }
+  }
+  @media (max-width: 600px) {
+    .steps-grid { grid-template-columns: 1fr; padding: 0 16px 48px; }
+    .step { border-right: 0; border-bottom: var(--fg-rule-thin); }
+    .step:last-child { border-bottom: 0; }
+    .ph { padding: 40px 16px; }
+    .hiw-faq { padding: 48px 16px; }
+    .hiw-cta { padding: 48px 16px; }
+  }
+</style>
+
   <!-- Hero -->
-  <section class="about-hero">
-    <div class="container">
-      <h1 class="text-center animate-on-scroll">How It <span class="text-gradient">Works</span></h1>
-      <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
-        Connect your apps in minutes, and your data flows beautifully — everywhere
-      </p>
+  <div class="ph">
+    <div class="ph__eyebrow">HOW IT WORKS · ~5 MINUTES FROM ZERO TO ENRICHED</div>
+    <h1 class="ph__title">Plug it in.<br><span class="gr">Magic out.</span></h1>
+    <p class="ph__sub">Four steps. No code. No spreadsheets. Each activity from any source lands in your dashboard within seconds, enriched with everything the boosters add.</p>
+  </div>
+
+  <!-- Steps grid -->
+  <div class="dark-band">
+    <span class="dark-band__label">THE STEPS</span>
+    <span class="dark-band__right">CONNECT · BUILD · SYNC · SHARE</span>
+  </div>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step__n">1</div>
+      <div class="step__t">Connect</div>
+      <div class="step__d">Hook in Strava, Hevy, Garmin, Fitbit, Apple Health — 30+ integrations. OAuth or API key, 30 seconds each. One tap to link your accounts securely.</div>
     </div>
-  </section>
-
-  <!-- Steps -->
-  <section class="section">
-    <div class="container" style="max-width: 800px;">
-      <div class="steps">
-        <div class="step animate-on-scroll">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <h3>Connect Your Apps</h3>
-            <p>Link your fitness platforms in seconds. We support Hevy, Fitbit, and more coming soon. Just click,
-              authorize, and you're connected.</p>
-
-            <div class="step-cards mt-md">
-              {{#each connectionsPreview}}
-              <div class="feature-card{{#if isTemporarilyUnavailable}} coming-soon{{/if}}">
-                {{#if iconPath}}
-                <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
-                {{else}}
-                <span style="font-size: 1.25rem;">{{icon}}</span>
-                {{/if}}
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">{{name}}</h4>
-                {{#if isTemporarilyUnavailable}}
-                <div class="text-muted" style="font-size: 0.65rem;">Coming Soon</div>
-                {{/if}}
-              </div>
-              {{/each}}
-            </div>
-          </div>
-        </div>
-
-        <div class="step animate-on-scroll">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <h3>Select Your Sources</h3>
-            <p>Pick where your workout data comes from. Create pipelines that pull from the apps you actually
-              use—whether that's your weightlifting tracker or your smartwatch.</p>
-
-            <div class="step-cards mt-md">
-              {{#each sourcesPreview}}
-              <div class="feature-card{{#if isTemporarilyUnavailable}} coming-soon{{/if}}">
-                {{#if iconPath}}
-                <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
-                {{else}}
-                <span style="font-size: 1.25rem;">{{icon}}</span>
-                {{/if}}
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">{{name}}</h4>
-                {{#if isTemporarilyUnavailable}}
-                <div class="text-muted" style="font-size: 0.65rem;">Coming Soon</div>
-                {{/if}}
-              </div>
-              {{/each}}
-            </div>
-            <a href="/features#sources" class="see-all-link">See all {{sourcesTotal}} Sources →</a>
-          </div>
-        </div>
-
-        <div class="step animate-on-scroll">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <h3>Configure Your Boosters</h3>
-            <p>Choose which enhancements to apply to your activities. AI descriptions? Heart rate data from Fitbit?
-              Muscle heatmaps? Mix and match to your liking.</p>
-
-            <div class="step-cards mt-md">
-              {{#each boostersPreview}}
-              <div class="feature-card{{#if isTemporarilyUnavailable}} coming-soon{{/if}}">
-                {{#if iconPath}}
-                <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
-                {{else}}
-                <span style="font-size: 1.25rem;">{{icon}}</span>
-                {{/if}}
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">{{name}}</h4>
-                {{#if isTemporarilyUnavailable}}
-                <div class="text-muted" style="font-size: 0.65rem;">Coming Soon</div>
-                {{/if}}
-              </div>
-              {{/each}}
-            </div>
-            <a href="/features#boosters" class="see-all-link">See all {{boostersTotal}} Boosters →</a>
-          </div>
-        </div>
-
-        <div class="step animate-on-scroll">
-          <div class="step-number">4</div>
-          <div class="step-content">
-            <h3>Auto-Sync to Your Targets</h3>
-            <p>Set your destination and forget about it. Every activity you complete is automatically boosted and synced
-              to Strava—or wherever you want it to go.</p>
-
-            <div class="step-cards mt-md">
-              {{#each destinationsPreview}}
-              <div class="feature-card{{#if isTemporarilyUnavailable}} coming-soon{{/if}}">
-                {{#if iconPath}}
-                <img src="{{iconPath}}" alt="" class="feature-icon-{{iconType}}" />
-                {{else}}
-                <span style="font-size: 1.25rem;">{{icon}}</span>
-                {{/if}}
-                <h4 style="font-size: 0.8rem; margin-top: 0.25rem;">{{name}}</h4>
-                {{#if isTemporarilyUnavailable}}
-                <div class="text-muted" style="font-size: 0.65rem;">Coming Soon</div>
-                {{/if}}
-              </div>
-              {{/each}}
-            </div>
-            <a href="/features#targets" class="see-all-link">See all {{destinationsTotal}} Targets →</a>
-          </div>
-        </div>
-      </div>
+    <div class="step">
+      <div class="step__n">2</div>
+      <div class="step__t">Build Pipeline</div>
+      <div class="step__d">Pick a source, stack boosters in the middle, choose destinations. Save. Each pipeline takes about 2 minutes to configure — then it runs itself forever.</div>
     </div>
-  </section>
-
-  <!-- Visual Pipeline -->
-  <section class="section section-alt">
-    <div class="container">
-      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: 0 0 var(--space-lg)">
-        <span class="fg-band__label">The Pipeline in Action</span>
-      </div>
-
-      <div class="animate-on-scroll">
-        <div class="pipeline-flow">
-          <div class="pipeline-node source">
-            <span class="pipeline-icon">🏋️</span>
-            <span class="pipeline-label">Your Workout</span>
-          </div>
-          <div class="pipeline-connector">
-            <div class="connector-line"></div>
-          </div>
-          <div class="pipeline-node magic">
-            <span class="pipeline-icon">✨</span>
-            <span class="pipeline-label">FitGlue Magic</span>
-          </div>
-          <div class="pipeline-connector">
-            <div class="connector-line"></div>
-          </div>
-          <div class="pipeline-node destination">
-            <span class="pipeline-icon">🎯</span>
-            <span class="pipeline-label">Your Story</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="text-center mt-lg animate-on-scroll">
-        <p class="text-muted mb-md">This entire process happens automatically, every time you work out.</p>
-        <p class="text-muted" style="font-size: 0.875rem;">Average sync time: under 30 seconds</p>
-      </div>
-
-      <!-- Pipeline Wizard Screenshot -->
-      <div class="product-screenshot mt-lg animate-on-scroll">
-        <div class="product-screenshot__chrome">
-          <span class="product-screenshot__dot"></span>
-          <span class="product-screenshot__dot"></span>
-          <span class="product-screenshot__dot"></span>
-        </div>
-        <img src="/images/screenshots/pipeline-wizard.png" alt="FitGlue pipeline configuration wizard"
-          class="product-screenshot__image" />
-      </div>
+    <div class="step">
+      <div class="step__n">3</div>
+      <div class="step__t">First Sync</div>
+      <div class="step__d">Every new activity flows through automatically. AI summary, HR zones, training load, personal records — added without lifting a finger.</div>
     </div>
-  </section>
+    <div class="step">
+      <div class="step__n">4</div>
+      <div class="step__t">Share</div>
+      <div class="step__d">Public showcase profile, Strava posts that actually say something, personal feed, fan-out to multiple platforms simultaneously.</div>
+    </div>
+  </div>
 
   <!-- FAQ -->
-  <section class="section">
-    <div class="container" style="max-width: 800px;">
-      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: 0 0 var(--space-lg)">
-        <span class="fg-band__label">Common Questions</span>
-      </div>
+  <div class="hiw-faq">
+    <h2 class="hiw-faq__title">Common <span class="gr">questions.</span></h2>
 
-      <div class="feature-grid" style="grid-template-columns: 1fr;">
-        <div class="feature-card animate-on-scroll">
-          <h3>How long does syncing take?</h3>
-          <p>Most activities sync in under 30 seconds. The exact time depends on which boosters you've enabled—simple
-            text boosters are instant, while AI features take a few seconds longer. Parkrun results sync automatically
-            once the official results are published (usually about 2 hours after your run).</p>
-        </div>
-
-        <div class="feature-card animate-on-scroll">
-          <h3>Is my data secure?</h3>
-          <p>Absolutely. We use industry-standard encryption for all connections—we never see your passwords. Your
-            data is encrypted in transit and at rest, and you can disconnect any integration or delete your data at any
-            time.</p>
-        </div>
-
-        <div class="feature-card animate-on-scroll">
-          <h3>Can I use FitGlue with multiple devices?</h3>
-          <p>Yes! FitGlue is device-agnostic. Whether your workout comes from your phone, a Garmin watch, a Fitbit, or a
-            gym bike—if it reaches a connected source, FitGlue will process it. You can even have multiple sources
-            feeding into the same pipeline.</p>
-        </div>
-
-        <div class="feature-card animate-on-scroll">
-          <h3>Does it work with all Hevy workouts?</h3>
-          <p>Yes! Every workout you log in Hevy is automatically detected and processed. We enhance it with your chosen
-            boosters and send it wherever you want. Note: API access requires Hevy Pro subscription.</p>
-        </div>
-
-        <div class="feature-card animate-on-scroll">
-          <h3>Can I customize what gets synced?</h3>
-          <p>You have full control. Create custom pipelines, choose specific boosters, and decide exactly where your
-            data goes. You can even use filters to only process certain activity types. It's your fitness journey—you're
-            in charge.</p>
-        </div>
-
-        <div class="feature-card animate-on-scroll">
-          <h3>What if a sync fails?</h3>
-          <p>We've built robust retry mechanisms. If a sync fails (rare!), we automatically retry. You can see the
-            status of every activity in your dashboard, and failed syncs are clearly flagged so you know what happened.
-          </p>
-        </div>
-
-        <div class="feature-card animate-on-scroll">
-          <h3>What happens to my data if I cancel?</h3>
-          <p>Your data stays yours. If you cancel your Athlete subscription, you'll drop to the free Hobbyist tier—your
-            pipelines and history remain intact, you just lose access to premium features. If you delete your account,
-            we permanently remove all your data from our servers.</p>
-        </div>
-      </div>
+    <div class="faq-item">
+      <div class="faq-item__q">How long does syncing take?</div>
+      <div class="faq-item__a">Most activities sync in under 30 seconds. The exact time depends on which boosters you've enabled — simple text boosters are instant, while AI features take a few seconds longer. Parkrun results sync automatically once official results are published (usually about 2 hours after your run).</div>
     </div>
-  </section>
+
+    <div class="faq-item">
+      <div class="faq-item__q">Is my data secure?</div>
+      <div class="faq-item__a">Yes. We use industry-standard encryption for all connections — we never see your passwords. Your data is encrypted in transit and at rest, and you can disconnect any integration or delete your data at any time. See our <a href="/security" style="color:var(--fg-cyan)">security page</a> for full details.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-item__q">Can I use FitGlue with multiple devices?</div>
+      <div class="faq-item__a">Yes. FitGlue is device-agnostic. Whether your workout comes from your phone, a Garmin watch, a Fitbit, or a gym bike — if it reaches a connected source, FitGlue will process it. You can even have multiple sources feeding into the same pipeline.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-item__q">What if a sync fails?</div>
+      <div class="faq-item__a">We've built robust retry mechanisms. If a sync fails (rare), we automatically retry. You can see the status of every activity in your dashboard, and failed syncs are clearly flagged so you know exactly what happened.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-item__q">What happens to my data if I cancel?</div>
+      <div class="faq-item__a">Your data stays yours. If you cancel your Athlete subscription, you'll drop to the free Hobbyist tier — your pipelines and history remain intact, you just lose access to premium features. If you delete your account, we permanently remove all your data from our servers.</div>
+    </div>
+  </div>
 
   <!-- CTA -->
-  <section class="cta-section">
-    <div class="container">
-      <div class="cta-content">
-        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Try It</span>?</h2>
-        <p class="cta-subtitle animate-on-scroll">Start your 30-day free Athlete trial. No credit card required.</p>
-        <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg animate-on-scroll">Get Started Free →</a>
-      </div>
-    </div>
-  </section>
+  <div class="hiw-cta">
+    <p class="hiw-cta__title">Ready to <span class="gr">try it?</span></p>
+    <a href="/auth/register" class="btn-aurora">GET STARTED FREE →</a>
+  </div>
 </main>
 
 {{> footer}}

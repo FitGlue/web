@@ -8,6 +8,7 @@
 import type { ActivitySource } from "./activity";
 import type { Destination } from "./events";
 import type { ActivityType, StandardizedActivity } from "./standardized_activity";
+import type { ExecutionStep } from "./models/pipeline/execution";
 
 export const protobufPackage = "fitglue";
 
@@ -695,6 +696,8 @@ export interface PipelineRun {
   originalPayloadUri: string;
   /** GCS URI: gs://{bucket}/enriched_events/{userId}/{pipelineRunId}.json */
   enrichedEventUri: string;
+  /** Unified execution steps — populated for runs after the reskin rollout. */
+  steps: ExecutionStep[];
 }
 
 /** BoosterExecution tracks a single enricher provider's execution. */

@@ -1,128 +1,148 @@
 {{> header}}
 
-<main class="legal-page">
-    <div class="container legal-content fg-prose">
-        <h1>Your Data, Protected</h1>
-        <p class="legal-last-updated">Last updated: February 2026</p>
+<main>
+<style>
+  .legal-ph { padding: 48px 32px 32px; max-width: 760px; margin: 0 auto; }
+  .legal-ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 14px; }
+  .legal-ph__title { font-family: var(--fg-font-display); font-size: clamp(2rem, 5vw, 3rem); line-height: .95; letter-spacing: -.025em; text-transform: uppercase; }
+  .legal-ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-        <p>FitGlue connects your fitness apps and enhances your workout data. That means we handle health and activity
-            information—and we take that responsibility seriously. This page explains exactly how we protect your data,
-            what
-            we do (and don't do) with it, and the technical measures we use to keep it safe.</p>
+  .legal { padding: 0 32px 80px; max-width: 760px; margin: 0 auto; font-family: var(--fg-font-body); font-size: 1.0625rem; line-height: 1.7; color: var(--fg-paper); }
+  .legal-last-updated { font-family: var(--fg-font-mono); font-size: .75rem; letter-spacing: .1em; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 32px; display: block; }
+  .legal h2 { font-family: var(--fg-font-display); font-size: 1.5rem; letter-spacing: -.015em; text-transform: uppercase; margin: 40px 0 12px; line-height: 1.1; }
+  .legal h2:first-of-type { margin-top: 0; }
+  .legal h3 { font-family: var(--fg-font-display); font-size: 1.125rem; letter-spacing: -.01em; text-transform: uppercase; margin: 24px 0 8px; line-height: 1.1; }
+  .legal p { margin: 0 0 1rem; color: var(--color-text-muted); }
+  .legal p:last-child { margin: 0; }
+  .legal p strong, .legal p b { color: var(--fg-paper); font-weight: 700; }
+  .legal ul { padding-left: 1.5rem; color: var(--color-text-muted); margin: 0 0 1rem; }
+  .legal li { margin: 6px 0; }
+  .legal li strong, .legal li b { color: var(--fg-paper); font-weight: 700; }
+  .legal a { color: var(--fg-cyan); }
 
-        <h2>Our Approach</h2>
-        <p>FitGlue is built on a simple principle: <strong>your data belongs to you</strong>. We act as a secure conduit
-            between the fitness platforms you choose to connect—nothing more. We process your data only as you direct,
-            and we
-            never use it for any purpose beyond delivering the service you've asked for.</p>
+  @media (max-width: 600px) {
+    .legal-ph { padding: 40px 16px 24px; }
+    .legal { padding: 0 16px 48px; }
+  }
+</style>
 
-        <h2>What We Collect &amp; Why</h2>
-        <p>We collect only the minimum data necessary to provide our service:</p>
-        <ul>
-            <li><strong>Workout activities:</strong> Exercise type, duration, sets, reps, and performance metrics—used
-                to sync
-                and enhance your activities across platforms</li>
-            <li><strong>Heart rate &amp; health metrics:</strong> When you connect a wearable (Fitbit, Apple Watch,
-                etc.),
-                we access heart rate data to enrich your activities with training zones and calorie estimates</li>
-            <li><strong>GPS &amp; location data:</strong> Route and elevation data from activities (via Strava, FIT file
-                uploads, or mobile sync) used to provide location context, elevation profiles, and weather enrichment
-            </li>
-            <li><strong>Authentication tokens:</strong> OAuth tokens from connected platforms, used exclusively to
-                communicate with those services on your behalf</li>
-            <li><strong>Account information:</strong> Your email address for login and essential service communications
-            </li>
-        </ul>
-        <p>We request only the specific permissions needed for each integration—never broad or unnecessary access.</p>
+  <div class="legal-ph">
+    <div class="legal-ph__eyebrow">SECURITY · LAST UPDATED FEBRUARY 2026</div>
+    <h1 class="legal-ph__title">Security at <span class="gr">FitGlue.</span></h1>
+  </div>
 
-        <h2>What We Never Do</h2>
-        <p>We believe in being explicit about boundaries. FitGlue will <strong>never</strong>:</p>
-        <ul>
-            <li>Sell, rent, or trade your health data to any third party</li>
-            <li>Use your data for advertising or ad targeting</li>
-            <li>Mine your health data for profiling or analytics beyond the service</li>
-            <li>Share your data with anyone you haven't explicitly authorised</li>
-            <li>Store health data in locations outside our secured infrastructure</li>
-            <li>Write false or inaccurate data to Apple Health, Health Connect, or any connected platform</li>
-        </ul>
+  <div class="legal">
+    <span class="legal-last-updated">Last updated: February 2026</span>
 
-        <h2>How We Protect Your Data</h2>
-        <p>We implement multiple layers of security to protect your information:</p>
+    <p>FitGlue connects your fitness apps and enhances your workout data. That means we handle health and activity
+        information — and we take that responsibility seriously. This page explains exactly how we protect your data,
+        what we do (and don't do) with it, and the technical measures we use to keep it safe.</p>
 
-        <h3>Encryption</h3>
-        <ul>
-            <li><strong>In transit:</strong> All data is encrypted using TLS/SSL—every API call, webhook, and browser
-                connection is secured</li>
-            <li><strong>At rest:</strong> All stored data is encrypted at rest using Google Cloud Platform's default
-                encryption with AES-256</li>
-        </ul>
+    <h2>Our Approach</h2>
+    <p>FitGlue is built on a simple principle: <strong>your data belongs to you</strong>. We act as a secure conduit
+        between the fitness platforms you choose to connect — nothing more. We process your data only as you direct,
+        and we never use it for any purpose beyond delivering the service you've asked for.</p>
 
-        <h3>Authentication &amp; Access</h3>
-        <ul>
-            <li><strong>OAuth 2.0:</strong> We use industry-standard OAuth 2.0 for all platform connections (Strava,
-                Fitbit,
-                etc.), meaning we never see or store your passwords for those services</li>
-            <li><strong>API key security:</strong> Ingress API keys are hashed using SHA-256 before storage—we never
-                store
-                raw keys</li>
-            <li><strong>Firebase Authentication:</strong> User accounts are managed through Google's Firebase
-                Authentication
-                infrastructure</li>
-        </ul>
+    <h2>What We Collect &amp; Why</h2>
+    <p>We collect only the minimum data necessary to provide our service:</p>
+    <ul>
+        <li><strong>Workout activities:</strong> Exercise type, duration, sets, reps, and performance metrics — used
+            to sync and enhance your activities across platforms</li>
+        <li><strong>Heart rate &amp; health metrics:</strong> When you connect a wearable (Fitbit, Apple Watch,
+            etc.), we access heart rate data to enrich your activities with training zones and calorie estimates</li>
+        <li><strong>GPS &amp; location data:</strong> Route and elevation data from activities (via Strava, FIT file
+            uploads, or mobile sync) used to provide location context, elevation profiles, and weather enrichment</li>
+        <li><strong>Authentication tokens:</strong> OAuth tokens from connected platforms, used exclusively to
+            communicate with those services on your behalf</li>
+        <li><strong>Account information:</strong> Your email address for login and essential service communications</li>
+    </ul>
+    <p>We request only the specific permissions needed for each integration — never broad or unnecessary access.</p>
 
-        <h3>Data Lifecycle</h3>
-        <ul>
-            <li><strong>Credential purge:</strong> When you disconnect an integration, all stored tokens and
-                credentials are immediately deleted from our systems and any associated API keys are destroyed</li>
-            <li><strong>Full deletion:</strong> Disconnecting a service triggers a complete destruction of all
-                connection
-                data—not a soft disable, but a hard delete of tokens, keys, and metadata</li>
-            <li><strong>Account deletion:</strong> Deleting your account permanently removes all your data,
-                deletes all integration credentials, and purges your authentication records</li>
-        </ul>
+    <h2>What We Never Do</h2>
+    <p>We believe in being explicit about boundaries. FitGlue will <strong>never</strong>:</p>
+    <ul>
+        <li>Sell, rent, or trade your health data to any third party</li>
+        <li>Use your data for advertising or ad targeting</li>
+        <li>Mine your health data for profiling or analytics beyond the service</li>
+        <li>Share your data with anyone you haven't explicitly authorised</li>
+        <li>Store health data in locations outside our secured infrastructure</li>
+        <li>Write false or inaccurate data to Apple Health, Health Connect, or any connected platform</li>
+    </ul>
 
-        <h2>You're Always in Control</h2>
-        <p>We give you full control over your data at every step:</p>
-        <ul>
-            <li><strong>Granular permissions:</strong> You choose exactly which platforms to connect and what data to
-                share
-            </li>
-            <li><strong>Disconnect anytime:</strong> Remove any integration instantly—all associated data and tokens are
-                immediately destroyed</li>
-            <li><strong>Delete your account:</strong> Full account deletion is available in-app, removing all data from
-                our
-                systems</li>
-            <li><strong>Data rights:</strong> Under GDPR and UK data protection law, you can request access to,
-                correction
-                of, or deletion of your personal data at any time</li>
-        </ul>
+    <h2>How We Protect Your Data</h2>
+    <p>We implement multiple layers of security to protect your information:</p>
 
-        <h2>Platform Compliance</h2>
-        <p>FitGlue is designed to meet the health data requirements of both major mobile platforms:</p>
-        <ul>
-            <li><strong>Apple HealthKit:</strong> We comply with Apple's HealthKit guidelines—health data is never used
-                for advertising or data mining, is not stored in iCloud, and is accessed only with your explicit
-                permission</li>
-            <li><strong>Google Health Connect:</strong> We comply with Google Play's Health Connect policies—we request
-                only minimum necessary permissions, never commercially exploit health data, and maintain robust security
-                controls</li>
-        </ul>
-        <p>Our handling of health data is consistent with both Apple's
-            <a href="https://developer.apple.com/app-store/review/guidelines/#health-and-health-research"
-                style="color: var(--color-primary);" target="_blank" rel="noopener">App Store Review Guidelines</a> and
-            Google's
-            <a href="https://support.google.com/googleplay/android-developer/answer/10787469"
-                style="color: var(--color-primary);" target="_blank" rel="noopener">Health Connect policies</a>.
-        </p>
+    <h3>Encryption</h3>
+    <ul>
+        <li><strong>In transit:</strong> All data is encrypted using TLS/SSL — every API call, webhook, and browser
+            connection is secured</li>
+        <li><strong>At rest:</strong> All stored data is encrypted at rest using Google Cloud Platform's default
+            encryption with AES-256</li>
+    </ul>
 
-        <h2>Questions?</h2>
-        <p>If you have any questions about how we handle your data, please contact us at
-            <a href="mailto:privacy@fitglue.tech" style="color: var(--color-primary);">privacy@fitglue.tech</a>.
-            For full details on data collection, sharing, and your rights, see our
-            <a href="/privacy" style="color: var(--color-primary);">Privacy Policy</a>.
-        </p>
+    <h3>Authentication &amp; Access</h3>
+    <ul>
+        <li><strong>OAuth 2.0:</strong> We use industry-standard OAuth 2.0 for all platform connections (Strava,
+            Fitbit, etc.), meaning we never see or store your passwords for those services</li>
+        <li><strong>API key security:</strong> Ingress API keys are hashed using SHA-256 before storage — we never
+            store raw keys</li>
+        <li><strong>Firebase Authentication:</strong> User accounts are managed through Google's Firebase
+            Authentication infrastructure</li>
+    </ul>
 
-    </div>
+    <h3>Data Lifecycle</h3>
+    <ul>
+        <li><strong>Credential purge:</strong> When you disconnect an integration, all stored tokens and
+            credentials are immediately deleted from our systems and any associated API keys are destroyed</li>
+        <li><strong>Full deletion:</strong> Disconnecting a service triggers a complete destruction of all
+            connection data — not a soft disable, but a hard delete of tokens, keys, and metadata</li>
+        <li><strong>Account deletion:</strong> Deleting your account permanently removes all your data,
+            deletes all integration credentials, and purges your authentication records</li>
+    </ul>
+
+    <h2>You're Always in Control</h2>
+    <p>We give you full control over your data at every step:</p>
+    <ul>
+        <li><strong>Granular permissions:</strong> You choose exactly which platforms to connect and what data to share</li>
+        <li><strong>Disconnect anytime:</strong> Remove any integration instantly — all associated data and tokens are
+            immediately destroyed</li>
+        <li><strong>Delete your account:</strong> Full account deletion is available in-app, removing all data from our
+            systems</li>
+        <li><strong>Data rights:</strong> Under GDPR and UK data protection law, you can request access to,
+            correction of, or deletion of your personal data at any time</li>
+    </ul>
+
+    <h2>Platform Compliance</h2>
+    <p>FitGlue is designed to meet the health data requirements of both major mobile platforms:</p>
+    <ul>
+        <li><strong>Apple HealthKit:</strong> We comply with Apple's HealthKit guidelines — health data is never used
+            for advertising or data mining, is not stored in iCloud, and is accessed only with your explicit permission</li>
+        <li><strong>Google Health Connect:</strong> We comply with Google Play's Health Connect policies — we request
+            only minimum necessary permissions, never commercially exploit health data, and maintain robust security controls</li>
+    </ul>
+    <p>Our handling of health data is consistent with both Apple's
+        <a href="https://developer.apple.com/app-store/review/guidelines/#health-and-health-research"
+            target="_blank" rel="noopener">App Store Review Guidelines</a> and Google's
+        <a href="https://support.google.com/googleplay/android-developer/answer/10787469"
+            target="_blank" rel="noopener">Health Connect policies</a>.
+    </p>
+
+    <h2>Reporting a Vulnerability</h2>
+    <p>Email <a href="mailto:security@fitglue.tech">security@fitglue.tech</a>. We respond within 24 hours on weekdays. Responsible disclosure earns a thank-you and (above a certain severity) a bounty.</p>
+    <ul>
+        <li><strong>P0 critical:</strong> RCE, auth bypass, data exfil — £500+</li>
+        <li><strong>P1 high:</strong> elevation, SQLi, sensitive XSS — £200</li>
+        <li><strong>P2 medium:</strong> CSRF, info leak — £50</li>
+        <li><strong>P3 low / hardening:</strong> our gratitude</li>
+    </ul>
+
+    <h2>Questions?</h2>
+    <p>If you have any questions about how we handle your data, please contact us at
+        <a href="mailto:privacy@fitglue.tech">privacy@fitglue.tech</a>.
+        For full details on data collection, sharing, and your rights, see our
+        <a href="/privacy">Privacy Policy</a>.
+    </p>
+  </div>
 </main>
 
 {{> footer}}

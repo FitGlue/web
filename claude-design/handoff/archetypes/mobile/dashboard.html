@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Mobile · Dashboard</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../css/tokens.css?v=3" />
+<link rel="stylesheet" href="../../css/base.css?v=3" />
+<link rel="stylesheet" href="../../css/components.css?v=3" />
+<link rel="stylesheet" href="../../css/overrides.css?v=3" />
+<link rel="stylesheet" href="../../css/mobile.css?v=3" />
+<style>
+  body { background: var(--fg-ink); color: var(--fg-paper); margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+  body .header, body .footer { display: none; }
+  main { flex: 1; }
+
+  /* HERO greeting */
+  .dx-hero { padding: 18px 16px 14px; background: var(--fg-ink-2); border-bottom: 1.5px solid var(--fg-hairline-color); }
+  .dx-hero__when { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .dx-hero h1 { font-family: var(--fg-font-display); font-size: 2.25rem; line-height: .95; letter-spacing: -.035em; margin: 4px 0 0; text-transform: uppercase; }
+  .dx-hero h1 .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* Hero stats — 2x2 grid */
+  .dx-stats { display: grid; grid-template-columns: 1fr 1fr; }
+  .dx-stats > div { padding: 14px 16px; }
+  .dx-stats > div:nth-child(odd) { border-right: 1.5px solid var(--fg-hairline-color); }
+  .dx-stats > div { border-bottom: 1.5px solid var(--fg-hairline-color); }
+  .dx-stats > div:last-child { border-bottom: 0; }
+  .dx-stats__n { font-family: var(--fg-font-display); font-size: 1.875rem; line-height: .95; letter-spacing: -.025em; }
+  .dx-stats--gr .dx-stats__n { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .dx-stats__l { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); margin-top: 4px; text-transform: uppercase; }
+
+  /* ATHLETE banner */
+  .dx-plan { background: var(--gradient-primary); color: var(--fg-ink); padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+  .dx-plan__em { font-size: 1.5rem; }
+  .dx-plan__ttl { font-family: var(--fg-font-display); font-size: 1rem; letter-spacing: -.005em; text-transform: uppercase; }
+  .dx-plan__sub { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; margin-top: 2px; }
+  .dx-plan__cta { margin-left: auto; padding: 6px 10px; background: var(--fg-ink); color: var(--fg-paper); font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+
+  /* Action band */
+  .dx-action { padding: 12px 16px; background: var(--fg-ink); display: flex; align-items: center; gap: 12px; border-bottom: 1.5px solid var(--fg-hairline-color); }
+  .dx-action__em { width: 36px; height: 36px; background: var(--fg-green); color: var(--fg-ink); display: flex; align-items: center; justify-content: center; font-family: var(--fg-font-display); font-size: 1rem; }
+  .dx-action__ttl { font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: -.005em; text-transform: uppercase; }
+  .dx-action__sub { font-family: var(--fg-font-mono); font-size: .625rem; color: var(--color-text-muted); margin-top: 2px; }
+
+  /* Recipe nudge */
+  .dx-recipe { padding: 14px 16px; background: radial-gradient(120% 100% at 0% 0%, rgba(139,92,246,.15), transparent 70%); border-bottom: 1.5px solid var(--fg-hairline-color); }
+  .dx-recipe__row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .dx-recipe__row .em { font-size: 1.25rem; }
+  .dx-recipe__row .ttl { font-family: var(--fg-font-display); font-size: .8125rem; letter-spacing: -.005em; text-transform: uppercase; }
+  .dx-recipe p { font-family: var(--fg-font-body); font-size: .8125rem; color: var(--color-text-muted); line-height: 1.5; margin: 0 0 10px; }
+  .dx-recipe a { display: inline-block; padding: 8px 12px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; text-decoration: none; }
+
+  /* Section bands */
+  .dx-band { padding: 10px 16px; background: var(--fg-ink); border-bottom: 1.5px solid var(--fg-hairline-color); display: flex; justify-content: space-between; align-items: center; }
+  .dx-band--gr { background: var(--gradient-primary); color: var(--fg-ink); }
+  .dx-band__l { font-family: var(--fg-font-display); font-size: .8125rem; letter-spacing: .02em; text-transform: uppercase; }
+  .dx-band__r { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; opacity: .85; text-transform: uppercase; }
+
+  /* Pipelines list (mobile) */
+  .dx-pl { padding: 14px 16px; border-bottom: 1.5px solid var(--fg-hairline-color); }
+  .dx-pl__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .dx-pl__head .ttl { font-family: var(--fg-font-display); font-size: .9375rem; letter-spacing: -.005em; text-transform: uppercase; }
+  .dx-pl__head .star { padding: 2px 6px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; margin-left: 6px; }
+  .dx-pl__head .boost { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .12em; color: var(--color-text-muted); }
+  .dx-pl__row { display: flex; align-items: center; gap: 8px; }
+  .dx-pl__src { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 600; }
+  .dx-pl__arrow { color: var(--color-text-muted); font-family: var(--fg-font-mono); }
+  .dx-pl__dests { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+  .dx-pl__dest { padding: 2px 6px; background: var(--fg-ink-3); font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .08em; }
+
+  /* Upload zone */
+  .dx-upload { padding: 24px 16px; background: radial-gradient(60% 60% at 50% 50%, rgba(34,211,238,.12), transparent 70%); border: 2.5px dashed var(--fg-paper); margin: 14px 16px; text-align: center; }
+  .dx-upload__em { font-size: 2rem; }
+  .dx-upload__ttl { font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .02em; margin-top: 8px; text-transform: uppercase; }
+  .dx-upload__sub { font-family: var(--fg-font-mono); font-size: .5625rem; color: var(--color-text-muted); letter-spacing: .12em; margin-top: 4px; text-transform: uppercase; }
+
+  /* Recent runs list */
+  .dx-run { padding: 12px 16px; border-bottom: 1.5px solid var(--fg-hairline-color); }
+  .dx-run__top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .dx-run__type { padding: 2px 6px; font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; background: var(--gradient-primary); color: var(--fg-ink); }
+  .dx-run__type--ink { background: var(--fg-ink-3); color: var(--fg-paper); }
+  .dx-run__title { flex: 1; font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: -.005em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dx-run__time { font-family: var(--fg-font-mono); font-size: .625rem; color: var(--color-text-muted); }
+  .dx-run__bot { display: flex; justify-content: space-between; align-items: center; }
+  .dx-run__via { font-family: var(--fg-font-mono); font-size: .5625rem; letter-spacing: .1em; color: var(--color-text-muted); text-transform: uppercase; }
+  .dx-run__status { display: flex; align-items: center; gap: 6px; }
+  .dx-run__status .ms { font-family: var(--fg-font-mono); font-size: .5625rem; color: var(--color-text-muted); }
+  .dx-run__status .pill { padding: 1px 5px; font-family: var(--fg-font-mono); font-size: .5rem; font-weight: 700; letter-spacing: .14em; background: var(--fg-green); color: var(--fg-ink); }
+  .dx-run__status .pill--rose { background: transparent; color: var(--fg-rose); }
+  .dx-run__reason { margin-top: 4px; font-family: var(--fg-font-mono); font-size: .5625rem; color: var(--color-text-subtle); font-style: italic; }
+
+  /* spacer above the sticky bottom nav so content isn't covered */
+  main { padding-bottom: 72px; }
+</style>
+</head>
+<body>
+
+  <main>
+    <!-- TOP -->
+    <header class="fg-mobile-app-bar">
+      <a href="/" style="display:flex;align-items:center;gap:8px;font-family:var(--fg-font-display);font-size:1rem;color:var(--fg-paper);text-decoration:none">
+        <span class="fg-logo"></span>
+        <span>FITGLUE</span>
+      </a>
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#" style="font-family:var(--fg-font-mono);font-size:.5625rem;letter-spacing:.14em;color:var(--color-text-muted);text-decoration:none;text-transform:uppercase">↻ UPDATE</a>
+        <div style="width:30px;height:30px;background:var(--gradient-primary);color:var(--fg-ink);display:flex;align-items:center;justify-content:center;font-family:var(--fg-font-display);font-size:.8125rem">JK</div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <div class="dx-hero">
+      <div class="dx-hero__when">WED 18 MAY · 11:04</div>
+      <h1>Hey James <span class="gr">—</span><br>Welcome back.</h1>
+    </div>
+
+    <!-- 2x2 STATS -->
+    <div class="dx-stats">
+      <div><div class="dx-stats__n">1,284</div><div class="dx-stats__l">This month</div></div>
+      <div><div class="dx-stats__n">247</div><div class="dx-stats__l">This week</div></div>
+      <div class="dx-stats--gr"><div class="dx-stats__n">3</div><div class="dx-stats__l">Active pipelines</div></div>
+      <div><div class="dx-stats__n">2d</div><div class="dx-stats__l">Streak 🔥</div></div>
+    </div>
+
+    <!-- ATHLETE plan -->
+    <div class="dx-plan">
+      <span class="dx-plan__em">✦</span>
+      <div>
+        <div class="dx-plan__ttl">ATHLETE · UNLIMITED</div>
+        <div class="dx-plan__sub">3,412 CREDITS · RESETS 1 JUN</div>
+      </div>
+      <a class="dx-plan__cta" href="#">MANAGE →</a>
+    </div>
+
+    <!-- Action required -->
+    <div class="dx-action">
+      <div class="dx-action__em">✓</div>
+      <div>
+        <div class="dx-action__ttl">All caught up</div>
+        <div class="dx-action__sub">0 PENDING · 3 PIPELINES</div>
+      </div>
+    </div>
+
+    <!-- Recipe -->
+    <div class="dx-band fg-band">
+      <span class="dx-band__l">💡 Recipe for you</span>
+      <span class="dx-band__r">1 NEW</span>
+    </div>
+    <div class="dx-recipe">
+      <div class="dx-recipe__row">
+        <span class="em">💜</span>
+        <span class="ttl">Fitbit → Strava — Merge HR</span>
+      </div>
+      <p>Add accurate calories, training zones &amp; intensity to your Strava rides by glueing Fitbit BPM onto every activity.</p>
+      <a href="#">BROWSE RECIPES →</a>
+    </div>
+
+    <!-- Upload -->
+    <div class="dx-band">
+      <span class="dx-band__l">📤 Upload FIT</span>
+      <span class="dx-band__r">DRAG OR TAP</span>
+    </div>
+    <div class="dx-upload">
+      <div class="dx-upload__em">📂</div>
+      <div class="dx-upload__ttl">DROP .FIT FILES HERE</div>
+      <div class="dx-upload__sub">SELECT ONE OR MANY · MAX 50</div>
+    </div>
+
+    <!-- Pipelines -->
+    <div class="dx-band fg-band">
+      <span class="dx-band__l">🔀 Your Pipelines</span>
+      <span class="dx-band__r">3 ACTIVE · VIEW ALL →</span>
+    </div>
+    <div class="dx-pl">
+      <div class="dx-pl__head">
+        <div><span class="ttl">NON-HYBRID</span><span class="star">★ PRIMARY</span></div>
+        <span class="boost">25 BOOSTERS</span>
+      </div>
+      <div class="dx-pl__row">
+        <span class="dx-pl__src">📤 File Upload</span>
+        <span class="dx-pl__arrow">↓</span>
+        <div class="dx-pl__dests">
+          <span class="dx-pl__dest">🔗 SC</span>
+          <span class="dx-pl__dest">🚴 STR</span>
+          <span class="dx-pl__dest">🏋️ HV</span>
+        </div>
+      </div>
+    </div>
+    <div class="dx-pl">
+      <div class="dx-pl__head">
+        <div><span class="ttl">HYBRID</span></div>
+        <span class="boost">16 BOOSTERS</span>
+      </div>
+      <div class="dx-pl__row">
+        <span class="dx-pl__src">📤 File Upload</span>
+        <span class="dx-pl__arrow">↓</span>
+        <div class="dx-pl__dests">
+          <span class="dx-pl__dest">🔗 SC</span>
+          <span class="dx-pl__dest">🚴 STR</span>
+          <span class="dx-pl__dest">🏋️ HV</span>
+        </div>
+      </div>
+    </div>
+    <div class="dx-pl">
+      <div class="dx-pl__head">
+        <div><span class="ttl">HEALTH CONNECT</span></div>
+        <span class="boost">7 BOOSTERS</span>
+      </div>
+      <div class="dx-pl__row">
+        <span class="dx-pl__src">🤖 Health Connect</span>
+        <span class="dx-pl__arrow">↓</span>
+        <div class="dx-pl__dests">
+          <span class="dx-pl__dest">🐙 GH</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent runs -->
+    <div class="dx-band fg-band">
+      <span class="dx-band__l">✨ Recent Runs</span>
+      <span class="dx-band__r">LIVE · VIEW ALL →</span>
+    </div>
+    <div class="dx-run">
+      <div class="dx-run__top"><span class="dx-run__type">PILATES</span><span class="dx-run__title">Tower Pilates Class</span><span class="dx-run__time">11:04</span></div>
+      <div class="dx-run__bot"><span class="dx-run__via">VIA NON-HYBRID</span><div class="dx-run__status"><span class="ms">25 BOOSTERS · 3</span><span class="pill">✓</span></div></div>
+    </div>
+    <div class="dx-run">
+      <div class="dx-run__top"><span class="dx-run__type dx-run__type--ink">WORKOUT</span><span class="dx-run__title">Tower Pilates Class</span><span class="dx-run__time">11:04</span></div>
+      <div class="dx-run__bot"><span class="dx-run__via">VIA HYBRID</span><div class="dx-run__status"><span class="pill pill--rose">⏭ SKIPPED</span></div></div>
+      <div class="dx-run__reason">ℹ Title contains excluded pattern: class</div>
+    </div>
+    <div class="dx-run">
+      <div class="dx-run__top"><span class="dx-run__type">CROSSFIT</span><span class="dx-run__title">Bootcamp Class</span><span class="dx-run__time">11:02</span></div>
+      <div class="dx-run__bot"><span class="dx-run__via">VIA NON-HYBRID</span><div class="dx-run__status"><span class="ms">25 BOOSTERS · 3</span><span class="pill">✓</span></div></div>
+    </div>
+    <div class="dx-run">
+      <div class="dx-run__top"><span class="dx-run__type">RIDE</span><span class="dx-run__title">Saturday South Loop</span><span class="dx-run__time">07:42</span></div>
+      <div class="dx-run__bot"><span class="dx-run__via">VIA NON-HYBRID</span><div class="dx-run__status"><span class="ms">25 BOOSTERS · 3</span><span class="pill">✓</span></div></div>
+    </div>
+    <div class="dx-run">
+      <div class="dx-run__top"><span class="dx-run__type">RUN</span><span class="dx-run__title">Easy Recovery Jog</span><span class="dx-run__time">06:30</span></div>
+      <div class="dx-run__bot"><span class="dx-run__via">VIA NON-HYBRID</span><div class="dx-run__status"><span class="ms">25 BOOSTERS · 3</span><span class="pill">✓</span></div></div>
+    </div>
+  </main>
+
+  <!-- BOTTOM TAB BAR -->
+  <nav class="fg-mobile-bar">
+    <a class="fg-mobile-bar__item active" href="/app">
+      <span class="ic">◐</span>
+      <span>HOME</span>
+    </a>
+    <a class="fg-mobile-bar__item" href="/app/activities">
+      <span class="ic">⚡</span>
+      <span>RUNS</span>
+    </a>
+    <a class="fg-mobile-bar__item" href="/app/settings/pipelines">
+      <span class="ic">🔀</span>
+      <span>FLOWS</span>
+    </a>
+    <a class="fg-mobile-bar__item" href="/app/connections">
+      <span class="ic">⊞</span>
+      <span>APPS</span>
+    </a>
+    <a class="fg-mobile-bar__item" href="/app/settings/account">
+      <span class="ic">⚙</span>
+      <span>YOU</span>
+    </a>
+  </nav>
+
+</body>
+</html>

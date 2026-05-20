@@ -1,51 +1,28 @@
 /* ==========================================================================
-   Paragraph Component - Typography
+   Paragraph — Brutal × Aurora
+   Body font, paper token colors.
    ========================================================================== */
 @import '../tokens.css';
 
 .ui-paragraph {
   margin: 0;
+  font-family: var(--fg-font-body);
   line-height: var(--line-height-normal);
-  color: var(--color-text-primary);
+  color: var(--fg-paper);
 }
 
 /* Size variants */
-.ui-paragraph--sm {
-  font-size: 0.875rem;
-}
-
-.ui-paragraph--md {
-  font-size: 1rem;
-}
-
-.ui-paragraph--lg {
-  font-size: 1.125rem;
-}
+.ui-paragraph--sm { font-size: 0.875rem; }
+.ui-paragraph--md { font-size: 1rem; }
+.ui-paragraph--lg { font-size: 1.0625rem; }
 
 /* Modifiers */
-.ui-paragraph--muted {
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-}
+.ui-paragraph--muted   { color: var(--fg-paper-dim); }
+.ui-paragraph--centered { text-align: center; }
+.ui-paragraph--bold    { font-weight: 600; }
+.ui-paragraph--nowrap  { white-space: nowrap; }
 
-.ui-paragraph--centered {
-  text-align: center;
-}
-
-.ui-paragraph--bold {
-  font-weight: 600;
-}
-
-.ui-paragraph--nowrap {
-  white-space: nowrap;
-}
-
-/* Mobile: Slightly smaller text for compact layout */
 @media (max-width: 768px) {
-  .ui-paragraph--md {
-    font-size: 0.9375rem;
-  }
-
-  .ui-paragraph--lg {
-    font-size: 1rem;
-  }
+  .ui-paragraph--md { font-size: 0.9375rem; }
+  .ui-paragraph--lg { font-size: 1rem; }
 }

@@ -1,0 +1,105 @@
+/* ==========================================================================
+   ExecutionStepTrace — Brutal × Aurora
+   rd-step-row pattern: ink-3 bg, mono labels, status pills
+   ========================================================================== */
+
+.execution-step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  background: var(--fg-ink-3);
+  box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+  border-radius: 0;
+  font-family: var(--fg-font-mono);
+  font-size: 0.75rem;
+  position: relative;
+}
+
+/* Violet left connector accent for running step */
+.execution-step-row--running {
+  background: rgba(139, 92, 246, 0.08);
+  box-shadow: inset 0 0 0 1px var(--fg-violet);
+}
+
+.execution-step-ordinal {
+  color: var(--fg-paper-dim);
+  min-width: 1.5rem;
+  text-align: right;
+  font-size: 0.625rem;
+  padding-top: 0.125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.execution-step-icon {
+  font-size: 0.875rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.execution-step-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+}
+
+.execution-step-kind {
+  color: var(--fg-paper-dim);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.execution-step-name {
+  color: var(--fg-paper);
+  font-family: var(--fg-font-display);
+  font-size: 0.8125rem;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+
+.execution-step-error {
+  color: var(--fg-rose);
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.execution-step-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.execution-step-dur {
+  color: var(--fg-paper-dim);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* Status pills — BA system */
+.step-pill {
+  display: inline-block;
+  padding: 0.125rem 0.4375rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-radius: 0;
+}
+
+.step-pill--ok      { background: var(--fg-green);  color: var(--fg-ink); }
+.step-pill--failed  { background: var(--fg-rose);   color: var(--fg-paper); }
+.step-pill--skipped { background: var(--fg-ink-2);  color: var(--fg-paper-dim); box-shadow: inset 0 0 0 1.5px var(--fg-paper); }
+.step-pill--running { background: var(--gradient-primary); color: var(--fg-ink); }
+.step-pill--queued  { background: transparent;      color: var(--fg-paper); box-shadow: inset 0 0 0 1.5px var(--fg-paper); }
+.step-pill--retried { background: var(--fg-violet); color: var(--fg-paper); }

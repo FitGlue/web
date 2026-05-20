@@ -7,13 +7,12 @@ import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { pipelineRunsAtom } from '../state/activitiesState';
-import { PageLayout, Stack, Grid } from '../components/library/layout';
+import { PageLayout } from '../components/library/layout';
 import { useToast } from '../components/library/ui/Toast/Toast';
 
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
 import { PipelineRunsList } from '../components/dashboard/PipelineRunsList';
 import { FileUploadPanel } from '../components/dashboard/FileUploadPanel';
-import { ConnectionsSummaryCard } from '../components/dashboard/ConnectionsSummaryCard';
 import { PipelinesSummaryCard } from '../components/dashboard/PipelinesSummaryCard';
 import { ActionRequiredSummaryCard } from '../components/dashboard/ActionRequiredSummaryCard';
 import { SubscriptionBanner } from '../components/dashboard/SubscriptionBanner';
@@ -25,6 +24,7 @@ import { client } from '../../shared/api/client';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
 import { GuidedTour } from '../components/onboarding/GuidedTour';
 import { GuidedTourProvider, useGuidedTour } from '../hooks/useGuidedTour';
+import './DashboardPage.css';
 
 const ONBOARDING_COMPLETE_KEY = 'fitglue_onboarding_complete';
 
@@ -37,17 +37,12 @@ const DashboardPageInner: React.FC = () => {
     });
     const { startTour } = useGuidedTour();
 
-    // Plugin registry (still REST for now - global static data)
     const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
-
-    // Real-time hooks (Firebase SDK) - no REST calls for reads
     const { loading: inputsLoading } = useRealtimeInputs();
     const { integrations } = useRealtimeIntegrations();
     const { pipelines } = useRealtimePipelines();
-    // Read pipelineRuns from atom - PipelineRunsList component manages the listener
     const [pipelineRuns] = useAtom(pipelineRunsAtom);
 
-    // User tier and showcase profile
     const { user } = useUser();
     const isAthlete = user ? getEffectiveTier(user) === TIER_ATHLETE : false;
     const [hasShowcaseProfile, setHasShowcaseProfile] = useState(false);
@@ -59,16 +54,30 @@ const DashboardPageInner: React.FC = () => {
             const profile = (data as Record<string, unknown>)?.profile;
             setHasShowcaseProfile(!!profile);
         } catch {
-            // Silently ignore — showcase check is non-critical
+            // non-critical
         }
     }, [isAthlete]);
 
-    useEffect(() => {
-        fetchShowcaseStatus();
-    }, [fetchShowcaseStatus]);
+    useEffect(() => { fetchShowcaseStatus(); }, [fetchShowcaseStatus]);
 
-    // Real-time stats listener
     useRealtimeStats(true);
+
+    const [heroStats, setHeroStats] = useState<{
+        activitiesThisMonth: number;
+        activitiesThisWeek: number;
+        currentStreakDays: number;
+    } | null>(null);
+
+    useEffect(() => {
+        client.GET('/users/me/activities/stats').then(({ data }) => {
+            if (!data) return;
+            setHeroStats({
+                activitiesThisMonth: data.activitiesThisMonth ?? 0,
+                activitiesThisWeek: data.activitiesThisWeek ?? 0,
+                currentStreakDays: data.currentStreakDays ?? 0,
+            });
+        }).catch(() => { /* non-critical */ });
+    }, []);
 
     useEffect(() => {
         if (searchParams.get('redirected') === 'true') {
@@ -80,7 +89,6 @@ const DashboardPageInner: React.FC = () => {
 
     const isLoading = inputsLoading || registryLoading;
 
-    // Onboarding status
     const connectedCount = registryIntegrations.filter(
         ri => integrations?.[ri.id as keyof IntegrationsSummary]?.connected
     ).length;
@@ -97,54 +105,122 @@ const DashboardPageInner: React.FC = () => {
         }
     }, [isLoading, allOnboardingComplete, onboardingComplete]);
 
+    const headerStats = heroStats ? (
+        <>
+            <div className="page-header-stat">
+                <span className="page-header-stat__value page-header-stat__value--gradient">
+                    {heroStats.activitiesThisMonth}
+                </span>
+                <span className="page-header-stat__label">This Month</span>
+            </div>
+            <div className="page-header-stat">
+                <span className="page-header-stat__value">
+                    {heroStats.activitiesThisWeek}
+                </span>
+                <span className="page-header-stat__label">This Week</span>
+            </div>
+            <div className="page-header-stat">
+                <span className="page-header-stat__value">
+                    {heroStats.currentStreakDays}
+                </span>
+                <span className="page-header-stat__label">Day Streak</span>
+            </div>
+        </>
+    ) : undefined;
+
     return (
-        <PageLayout title="Dashboard" loading={isLoading}>
-            <Stack gap="lg">
-                {!onboardingComplete && !isLoading && !allOnboardingComplete && (
-                    <WelcomeBanner
-                        hasConnections={hasConnections}
-                        hasPipelines={hasPipelines}
-                        hasSyncs={hasSyncs}
-                        isAthlete={isAthlete}
-                        hasShowcaseProfile={hasShowcaseProfile}
-                        onStartTour={startTour}
-                    />
-                )}
-
-                {/* Show PWA install banner only when WelcomeBanner is hidden */}
-                {(onboardingComplete || allOnboardingComplete) && <PWAInstallBanner />}
-
-                <SubscriptionBanner />
-
-                <SmartNudge page="dashboard" />
-
-                <div className="fg-band">
-                    <span className="fg-band__label">
-                        {isAthlete ? '✦ ATHLETE' : 'HOBBYIST'} · OVERVIEW
-                    </span>
-                    <span className="fg-band__right">{connectedCount} CONNECTED</span>
-                </div>
-
-                <Grid cols={3} gap="md">
-                    <ConnectionsSummaryCard />
-                    <PipelinesSummaryCard />
-                    <ActionRequiredSummaryCard />
-                </Grid>
-
-                <FileUploadPanel />
-
-                <div className="fg-band fg-band--ink">
-                    <span className="fg-band__label">RECENT RUNS</span>
-                </div>
-
-                <PipelineRunsList
-                    variant="dashboard"
-                    title=""
-                    defaultFilter="all"
-                    limit={6}
-                    onRunClick={(run) => run.activityId && navigate(`/activities/${run.activityId}`)}
+        <PageLayout
+            title="Dashboard"
+            loading={isLoading}
+            headerStats={headerStats}
+            fullWidth
+        >
+            {/* Pre-chrome system messages */}
+            {!onboardingComplete && !isLoading && !allOnboardingComplete && !hasConnections && (
+                <>
+                    <div className="dashboard-first-run">
+                        <div className="dashboard-first-run__banner">
+                            <div>
+                                <div className="dashboard-first-run__step">✦ WELCOME · STEP 1 OF 4</div>
+                                <div className="dashboard-first-run__heading">Pick a source to start.</div>
+                                <div className="dashboard-first-run__sub">CONNECT → BUILD A PIPELINE → SYNC ONCE → SHARE OR SIT ON IT</div>
+                            </div>
+                            <button className="fg-button" onClick={() => navigate('/connections')}>
+                                CONNECT FIRST SOURCE →
+                            </button>
+                        </div>
+                        <div className="dashboard-first-run__grid">
+                            <div className="dashboard-first-run__card">
+                                <div className="dashboard-first-run__card-icon">🔗</div>
+                                <div className="dashboard-first-run__card-title">No connections yet</div>
+                                <div className="dashboard-first-run__card-body">Hook in Strava, Hevy, Fitbit, Garmin — wherever your activities live.</div>
+                                <button className="fg-button" onClick={() => navigate('/connections')}>CONNECT A SOURCE →</button>
+                            </div>
+                            <div className="dashboard-first-run__card dashboard-first-run__card--dim">
+                                <div className="dashboard-first-run__card-icon">🔀</div>
+                                <div className="dashboard-first-run__card-title">No pipelines yet</div>
+                                <div className="dashboard-first-run__card-body">Pipelines route activities through boosters into destinations.</div>
+                                <div className="dashboard-first-run__card-hint">DO STEP 1 FIRST →</div>
+                            </div>
+                            <div className="dashboard-first-run__card dashboard-first-run__card--dim">
+                                <div className="dashboard-first-run__card-icon">✨</div>
+                                <div className="dashboard-first-run__card-title">No activities yet</div>
+                                <div className="dashboard-first-run__card-body">Your enriched activity feed shows up here once syncs start.</div>
+                                <div className="dashboard-first-run__card-hint">UPLOAD A .FIT FILE TO TRY →</div>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+            {!onboardingComplete && !isLoading && !allOnboardingComplete && hasConnections && (
+                <WelcomeBanner
+                    hasConnections={hasConnections}
+                    hasPipelines={hasPipelines}
+                    hasSyncs={hasSyncs}
+                    isAthlete={isAthlete}
+                    hasShowcaseProfile={hasShowcaseProfile}
+                    onStartTour={startTour}
                 />
-            </Stack>
+            )}
+            {(onboardingComplete || allOnboardingComplete) && <PWAInstallBanner />}
+            <SubscriptionBanner />
+
+            {/* Plan band */}
+            <div className="fg-band">
+                <span className="fg-band__label">
+                    {isAthlete ? '✦ ATHLETE' : 'HOBBYIST'} · OVERVIEW
+                </span>
+                <span className="fg-band__right">{connectedCount} CONNECTED</span>
+            </div>
+
+            {/* 3-column body */}
+            <div className="dashboard-body">
+                {/* Left — Action Required + Nudge + Upload */}
+                <div className="dashboard-col">
+                    <ActionRequiredSummaryCard />
+                    <SmartNudge page="dashboard" />
+                    <FileUploadPanel />
+                </div>
+
+                {/* Middle — Pipelines */}
+                <div className="dashboard-col">
+                    <PipelinesSummaryCard />
+                </div>
+
+                {/* Right — Recent Runs */}
+                <div className="dashboard-col dashboard-col--runs">
+                    <div className="fg-band fg-band--ink">
+                        <span className="fg-band__label">RECENT RUNS</span>
+                    </div>
+                    <PipelineRunsList
+                        variant="dashboard"
+                        title=""
+                        defaultFilter="all"
+                        limit={6}
+                        onRunClick={(run) => run.activityId && navigate(`/activities/${run.activityId}`)}
+                    />
+                </div>
+            </div>
 
             <GuidedTour />
         </PageLayout>

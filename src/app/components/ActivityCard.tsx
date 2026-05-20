@@ -1,10 +1,5 @@
 import React from 'react';
-import { StatusPill } from './library/ui/StatusPill';
-import { MetaBadge } from './MetaBadge';
-import { Card } from './library/ui/Card';
-import { Stack } from './library/layout/Stack';
-import { Heading } from './library/ui/Heading';
-import { Text } from './library/ui/Text';
+import './ActivityCard.css';
 
 interface ActivityCardProps {
   title: string;
@@ -17,6 +12,15 @@ interface ActivityCardProps {
   isUnsynchronized?: boolean;
 }
 
+function getStatusDotClass(status?: string): string {
+  if (!status) return 'activity-card__status-dot--synced';
+  const s = status.toUpperCase();
+  if (s === 'SYNCED' || s === 'OK' || s === 'SUCCESS') return 'activity-card__status-dot--synced';
+  if (s === 'PENDING' || s === 'QUEUED' || s === 'RUNNING') return 'activity-card__status-dot--pending';
+  if (s === 'ERROR' || s === 'FAILED') return 'activity-card__status-dot--error';
+  return 'activity-card__status-dot--unknown';
+}
+
 export const ActivityCard: React.FC<ActivityCardProps> = ({
   title,
   type,
@@ -27,7 +31,6 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
   onClick,
   isUnsynchronized
 }) => {
-
   const dateStr = timestamp ? new Date(timestamp).toLocaleString(undefined, {
     weekday: 'short',
     year: 'numeric',
@@ -37,26 +40,38 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
     minute: '2-digit'
   }) : 'N/A';
 
+  const displayStatus = status || (isUnsynchronized ? 'PENDING' : 'SYNCED');
+  const statusDotClass = getStatusDotClass(displayStatus);
+
   return (
-    <Card onClick={onClick} variant={isUnsynchronized ? 'default' : 'interactive'}>
-      <Stack gap="sm">
-        <Stack direction="horizontal" align="center" justify="between">
-          <Heading level={3}>{title}</Heading>
-          {status && <StatusPill status={status} />}
-          {!status && !isUnsynchronized && <StatusPill status="SYNCED" />}
-        </Stack>
+    <div className="activity-card" onClick={onClick} role="button" tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}>
 
-        <Stack direction="horizontal" gap="sm">
-          <MetaBadge label="Type" value={type} />
-          <MetaBadge label="Source" value={source} />
-        </Stack>
+      {/* Top band strip */}
+      <div className="activity-card__band">
+        <span className="activity-card__type">{type}</span>
+        <span className="activity-card__date">{dateStr}</span>
+      </div>
 
-        {errorMessage && (
-          <Text variant="muted">⚠️ {errorMessage}</Text>
-        )}
+      {/* Main body */}
+      <div className="activity-card__body">
+        <h3 className="activity-card__title">{title}</h3>
 
-        <Text variant="small">{isUnsynchronized ? 'Attempted' : 'Synced'}: {dateStr}</Text>
-      </Stack>
-    </Card>
+        <div className="activity-card__stats">
+          <span className="activity-card__stat">{source}</span>
+          <span className="activity-card__stat">{isUnsynchronized ? 'Attempted' : 'Synced'}</span>
+        </div>
+      </div>
+
+      {errorMessage && (
+        <div className="activity-card__error">⚠ {errorMessage}</div>
+      )}
+
+      {/* Footer — sync status dot */}
+      <div className="activity-card__footer">
+        <span className="activity-card__status-label">{displayStatus}</span>
+        <span className={`activity-card__status-dot ${statusDotClass}`} />
+      </div>
+    </div>
   );
 };

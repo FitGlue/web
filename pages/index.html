@@ -1,460 +1,153 @@
 {{> header}}
 
 <main>
-  <!-- Hero Section -->
-  <section class="hero lp-hero">
-    <div class="hero-split">
-      <!-- Left: Text + CTAs -->
-      <div class="hero-text">
-        <div class="hero-meta">
-          <span class="fg-stamp fg-stamp--ink">
-            <span style="width:6px;height:6px;background:var(--fg-green);border-radius:999px;display:inline-block;flex-shrink:0"></span>
-            v{{version}} · LIVE
-          </span>
-          <span class="fg-stamp fg-stamp--paper">9 SOURCES · 25 BOOSTERS · 5 DESTINATIONS</span>
-        </div>
+<style>
+  .lp-pipeline { background: var(--fg-ink-2); border: 1px solid rgba(240,238,230,0.08); overflow: hidden; }
+  .lp-pipeline__head { padding: .75rem 1rem; border-bottom: 1px solid rgba(240,238,230,0.08); display: flex; justify-content: space-between; font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .12em; color: var(--color-text-muted); text-transform: uppercase; }
+  .lp-pipeline__src { display: flex; gap: .75rem; align-items: center; }
+  .lp-pipeline__src-emoji { font-size: 1.25rem; }
+  .lp-pipeline__src-title { font-family: var(--fg-font-display); font-size: .875rem; text-transform: uppercase; letter-spacing: -.005em; }
+  .lp-pipeline__src-sub { font-family: var(--fg-font-mono); font-size: .625rem; color: var(--color-text-muted); letter-spacing: .08em; margin-top: 2px; }
+  .lp-pipeline__chips { padding: .75rem 1rem; display: flex; flex-wrap: wrap; gap: 6px; }
+  .lp-pipeline__dests { padding: .75rem 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .lp-dest { padding: 10px; background: var(--fg-ink); display: flex; flex-direction: column; gap: 4px; }
+  .lp-dest__emoji { font-size: 1.25rem; }
+  .lp-dest__name { font-family: var(--fg-font-display); font-size: .75rem; text-transform: uppercase; letter-spacing: -.005em; }
+  .lp-dest__status { font-family: var(--fg-font-mono); font-size: .5625rem; letter-spacing: .12em; color: var(--fg-cyan); text-transform: uppercase; }
+  .lp-trio { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(240,238,230,0.08); }
 
-        <h1 class="hero-title">
-          ONE<br>
-          SWEAT.<br>
-          <span class="text-gradient">EVERY<br>PLACE.</span>
-        </h1>
-        <p class="hero-subtitle">FitGlue pulls workouts from Strava, Hevy, Fitbit, Health Connect, Parkrun &amp; six more — runs them through 25 boosters, then ships polished activities to wherever your training really lives.</p>
-        <div class="hero-cta">
-          <a href="{{waitlistUrl}}" class="btn btn-primary btn-lg">Get Started Free</a>
-          <a href="/how-it-works" class="btn btn-ghost btn-lg">See a pipeline →</a>
-        </div>
-        <div class="hero-trust">
-          <span>★ NO CARD</span>
-          <span>★ 50 ACTIVITIES / MO FREE</span>
-          <span>★ CANCEL ANY TIME</span>
-        </div>
+  .lp-platforms { padding: 18px 32px; border-top: 1px solid rgba(240,238,230,0.08); border-bottom: 1px solid rgba(240,238,230,0.08); background: var(--fg-ink-2); display: flex; align-items: center; gap: 20px; flex-wrap: wrap; overflow: hidden; }
+  .lp-platforms__intro { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; flex-shrink: 0; }
+  .lp-platform { display: flex; align-items: center; gap: 6px; font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .1em; color: var(--color-text-muted); text-transform: uppercase; white-space: nowrap; }
+
+  @media (max-width: 600px) {
+    .lp-platforms { padding: 14px 16px; gap: 14px; }
+  }
+</style>
+
+  <!-- Hero -->
+  <div class="lp-hero">
+    <div class="lp-hero__text">
+      <div class="lp-hero__eyebrow">FITNESS DATA PLATFORM · v{{version}} · FREE FOREVER</div>
+      <h1 class="lp-hero__title">ONE SWEAT.<br><span class="gr">EVERY PLACE.</span></h1>
+      <p class="lp-hero__sub">FitGlue pulls workouts from Strava, Hevy, Fitbit, Health Connect, Parkrun and more — runs them through 25 boosters, then ships polished activities to wherever your training really lives.</p>
+      <div class="lp-hero__cta">
+        <a href="{{waitlistUrl}}" class="btn--aurora">START FREE →</a>
+        <a href="/how-it-works" class="btn--ghost">SEE HOW IT WORKS</a>
       </div>
-
-      <!-- Right: Live Pipeline Preview -->
-      <div class="hero-visual">
-        <div class="lp-pipeline">
-          <div class="lp-pipeline__head">
-            <span style="display:flex;gap:.625rem;align-items:center">
-              <span style="width:8px;height:8px;background:var(--fg-green);border-radius:999px;box-shadow:0 0 8px var(--fg-green);display:inline-block"></span>
-              LIVE PIPELINE · NON-HYBRID
-            </span>
-            <span style="color:var(--color-text-subtle)">RUN #4012 · 07:42:18</span>
-          </div>
-
-          <div class="fg-band fg-band--sm">
-            <span class="fg-band__label">01 · Source</span>
-            <span class="fg-band__right">1 OF 9</span>
-          </div>
-          <div style="padding:.875rem 1rem">
-            <div class="lp-pipeline__src">
-              <span class="lp-pipeline__src-emoji">📤</span>
-              <div style="flex:1">
-                <div class="lp-pipeline__src-title">FILE UPLOAD · STRAVA</div>
-                <div class="lp-pipeline__src-sub">tower-pilates.fit · 4.2 MB · 50:00</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="fg-band fg-band--sm fg-band--ink">
-            <span class="fg-band__label">02 · Boosters</span>
-            <span class="fg-band__right">20 DONE · 1 RUN · 4 QUEUED</span>
-          </div>
-          <div class="lp-pipeline__chips">
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🎯</span>CONDITION</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏃</span>PARKRUN</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🔢</span>AUTO INCREMENT</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏆</span>PRS</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">📅</span>GOAL</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⭐</span>STREAK</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏅</span>MILESTONES</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">❤️</span>HR SUMMARY</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💗</span>HR ZONES</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🔋</span>CALORIES</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💥</span>EFFORT SCORE</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💪</span>TRAINING LOAD</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💤</span>RECOVERY</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">👟</span>DYNAMICS</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⚡</span>POWER</span>
-            <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⛰️</span>ELEV</span>
-            <span class="fg-booster-chip fg-booster-chip--run fg-booster-chip--sm"><span class="fg-booster-chip__emoji">📍</span>LOCATION</span>
-            <span class="fg-booster-chip fg-booster-chip--queued fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🌤️</span>WEATHER</span>
-            <span class="fg-booster-chip fg-booster-chip--queued fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🎨</span>AI BANNER</span>
-            <span class="fg-booster-chip fg-booster-chip--queued fg-booster-chip--sm"><span class="fg-booster-chip__emoji">✨</span>AI COMPANION</span>
-          </div>
-
-          <div class="fg-band fg-band--sm">
-            <span class="fg-band__label">03 · Destinations</span>
-            <span class="fg-band__right">3 PLATFORMS · FAN-OUT</span>
-          </div>
-          <div class="lp-pipeline__dests">
-            <div class="lp-dest"><div class="lp-dest__emoji">🚴</div><div class="lp-dest__name">STRAVA</div><div class="lp-dest__status">● QUEUED</div></div>
-            <div class="lp-dest"><div class="lp-dest__emoji">🔗</div><div class="lp-dest__name">SHOWCASE</div><div class="lp-dest__status">● QUEUED</div></div>
-            <div class="lp-dest"><div class="lp-dest__emoji">🏋️</div><div class="lp-dest__name">HEVY</div><div class="lp-dest__status">● QUEUED</div></div>
-          </div>
-
-          <div class="lp-trio fg-panel--ink">
-            <div class="fg-inline-stat" style="border-left:0"><span class="fg-inline-stat__n">{{activitiesBoostedCount}}</span><span class="fg-inline-stat__l">Activities Boosted</span></div>
-            <div class="fg-inline-stat fg-inline-stat--gradient"><span class="fg-inline-stat__n">25</span><span class="fg-inline-stat__l">Boosters</span></div>
-            <div class="fg-inline-stat"><span class="fg-inline-stat__n">{{athleteCount}}</span><span class="fg-inline-stat__l">Athletes</span></div>
-          </div>
+      <div class="lp-hero__stats">
+        <div>
+          <div class="lp-hero__stat-n">{{activitiesBoostedCount}}</div>
+          <div class="lp-hero__stat-l">ACTIVITIES BOOSTED</div>
+        </div>
+        <div>
+          <div class="lp-hero__stat-n">25</div>
+          <div class="lp-hero__stat-l">BOOSTERS</div>
+        </div>
+        <div>
+          <div class="lp-hero__stat-n">{{athleteCount}}</div>
+          <div class="lp-hero__stat-l">ATHLETES</div>
         </div>
       </div>
     </div>
 
-    <!-- Platform strip -->
-    <div class="lp-platforms">
-      <span class="lp-platforms__intro">SPEAKS FLUENTLY TO ↓</span>
-      <span class="lp-platform"><span>🚴</span><span>STRAVA</span></span>
-      <span class="lp-platform"><span>🏋️</span><span>HEVY</span></span>
-      <span class="lp-platform"><span>💗</span><span>FITBIT</span></span>
-      <span class="lp-platform"><span>🍎</span><span>APPLE</span></span>
-      <span class="lp-platform"><span>🤖</span><span>HEALTH CONNECT</span></span>
-      <span class="lp-platform"><span>🏃</span><span>PARKRUN</span></span>
-      <span class="lp-platform"><span>🔵</span><span>GOOGLE</span></span>
-      <span class="lp-platform"><span>📊</span><span>INTERVALS.ICU</span></span>
-      <span class="lp-platform"><span>🐙</span><span>GITHUB</span></span>
-    </div>
-  </section>
-
-  <!-- Trust Strip -->
-  <section class="trust-strip">
-    <div class="container">
-      <div class="trust-strip-inner">
-        <div class="trust-badge">
-          <span class="trust-badge-icon">🔐</span>
-          <span class="trust-badge-text">One-Tap Secure Login</span>
-        </div>
-        <div class="trust-badge">
-          <span class="trust-badge-icon">🛡️</span>
-          <span class="trust-badge-text">Your Data, Protected</span>
-        </div>
-        <div class="trust-badge">
-          <span class="trust-badge-icon">🇪🇺</span>
-          <span class="trust-badge-text">Privacy First</span>
-        </div>
-        <div class="trust-divider"></div>
-        <div class="trust-stat">
-          <span class="trust-stat-value">{{athleteCount}}</span>
-          <span class="trust-stat-label">Athletes</span>
-        </div>
-        <div class="trust-stat">
-          <span class="trust-stat-value">{{activitiesBoostedCount}}</span>
-          <span class="trust-stat-label">Activities Boosted</span>
+    <!-- Live Pipeline Preview -->
+    <div class="lp-pipeline">
+      <div class="lp-pipeline__head">
+        <span>LIVE PIPELINE · RUN #4012</span>
+        <span>07:42:18</span>
+      </div>
+      <div class="fg-band fg-band--sm">
+        <span class="fg-band__label">01 · Source</span>
+        <span class="fg-band__right">1 OF 9</span>
+      </div>
+      <div style="padding:.875rem 1rem">
+        <div class="lp-pipeline__src">
+          <span class="lp-pipeline__src-emoji">📤</span>
+          <div>
+            <div class="lp-pipeline__src-title">FILE UPLOAD · STRAVA</div>
+            <div class="lp-pipeline__src-sub">tower-pilates.fit · 4.2 MB · 50:00</div>
+          </div>
         </div>
       </div>
-      <div class="trust-privacy">
-        <p>Connect in seconds. We never store your passwords—your data stays encrypted and under your control. <a
-            href="/privacy">Read our Privacy Policy</a></p>
+      <div class="fg-band fg-band--sm fg-band--ink">
+        <span class="fg-band__label">02 · Boosters</span>
+        <span class="fg-band__right">20 DONE · 1 RUN · 4 QUEUED</span>
       </div>
-    </div>
-  </section>
-
-  <!-- See the Magic — Real Destination Showcases -->
-  <section class="section">
-    <div class="container">
-      <h2 class="text-center mb-md animate-on-scroll">See the <span class="text-gradient">Magic</span></h2>
-      <p class="text-center text-muted mb-lg animate-on-scroll">Real results from real activities — click through to see
-        for yourself</p>
-
-      <div class="destinations-grid stagger-children">
-        <!-- Showcase Profile -->
-        <div class="destination-card">
-          <div class="product-screenshot destination-card__screenshot">
-            <div class="product-screenshot__chrome">
-              <span class="product-screenshot__dot"></span>
-              <span class="product-screenshot__dot"></span>
-              <span class="product-screenshot__dot"></span>
-            </div>
-            <img src="/images/screenshots/showcase-profile.png" alt="A real FitGlue showcase profile page"
-              class="product-screenshot__image" />
-          </div>
-          <div class="destination-card__body">
-            <h3 class="destination-card__title">🌟 Your Public Fitness Portfolio</h3>
-            <p class="destination-card__description">Your profile, your activities, your story — all in one shareable
-              page with interactive charts and telemetry data.</p>
-            <a href="https://fitglue.tech/u/james" class="btn btn-primary btn-sm destination-card__cta" target="_blank"
-              rel="noopener">See the
-              real thing →</a>
-          </div>
-        </div>
-
-        <!-- Showcased Activity -->
-        <div class="destination-card">
-          <div class="product-screenshot destination-card__screenshot">
-            <div class="product-screenshot__chrome">
-              <span class="product-screenshot__dot"></span>
-              <span class="product-screenshot__dot"></span>
-              <span class="product-screenshot__dot"></span>
-            </div>
-            <img src="/images/screenshots/showcase-activity.png"
-              alt="A real FitGlue showcased activity with charts and data" class="product-screenshot__image" />
-          </div>
-          <div class="destination-card__body">
-            <h3 class="destination-card__title">🏆 Museum-Grade Activity Pages</h3>
-            <p class="destination-card__description">Heart rate zones, muscle heatmaps, route maps, elevation profiles —
-              every detail of your workout, beautifully presented.</p>
-            <a href="https://fitglue.tech/showcase/lower-body-pt-2026-02-12"
-              class="btn btn-primary btn-sm destination-card__cta" target="_blank" rel="noopener">See the
-              real thing →</a>
-          </div>
-        </div>
-
-        <!-- Strava Activity -->
-        <div class="destination-card">
-          <div class="product-screenshot destination-card__screenshot">
-            <div class="product-screenshot__chrome">
-              <span class="product-screenshot__dot"></span>
-              <span class="product-screenshot__dot"></span>
-              <span class="product-screenshot__dot"></span>
-            </div>
-            <img src="/images/screenshots/strava-boosted.png" alt="A Strava activity enriched by FitGlue"
-              class="product-screenshot__image" />
-          </div>
-          <div class="destination-card__body">
-            <h3 class="destination-card__title">🚴 Your Strava, Supercharged</h3>
-            <p class="destination-card__description">Full workout summaries, heart rate data, and muscle heatmaps —
-              posted to your Strava automatically.</p>
-            <a href="https://www.strava.com/activities/17375485085" class="btn btn-primary btn-sm destination-card__cta"
-              target="_blank" rel="noopener">See the
-              real thing →</a>
-          </div>
-        </div>
+      <div class="lp-pipeline__chips">
+        <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🎯</span>CONDITION</span>
+        <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🏆</span>PRS</span>
+        <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">⭐</span>STREAK</span>
+        <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">❤️</span>HR ZONES</span>
+        <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💥</span>EFFORT</span>
+        <span class="fg-booster-chip fg-booster-chip--done fg-booster-chip--sm"><span class="fg-booster-chip__emoji">💪</span>TRAINING LOAD</span>
+        <span class="fg-booster-chip fg-booster-chip--run fg-booster-chip--sm"><span class="fg-booster-chip__emoji">📍</span>LOCATION</span>
+        <span class="fg-booster-chip fg-booster-chip--queued fg-booster-chip--sm"><span class="fg-booster-chip__emoji">🎨</span>AI BANNER</span>
+        <span class="fg-booster-chip fg-booster-chip--queued fg-booster-chip--sm"><span class="fg-booster-chip__emoji">✨</span>AI COMPANION</span>
+      </div>
+      <div class="fg-band fg-band--sm">
+        <span class="fg-band__label">03 · Destinations</span>
+        <span class="fg-band__right">3 PLATFORMS</span>
+      </div>
+      <div class="lp-pipeline__dests">
+        <div class="lp-dest"><div class="lp-dest__emoji">🚴</div><div class="lp-dest__name">STRAVA</div><div class="lp-dest__status">● QUEUED</div></div>
+        <div class="lp-dest"><div class="lp-dest__emoji">🔗</div><div class="lp-dest__name">SHOWCASE</div><div class="lp-dest__status">● QUEUED</div></div>
+        <div class="lp-dest"><div class="lp-dest__emoji">🏋️</div><div class="lp-dest__name">HEVY</div><div class="lp-dest__status">● QUEUED</div></div>
+      </div>
+      <div class="lp-trio fg-panel--ink">
+        <div class="fg-inline-stat" style="border-left:0"><span class="fg-inline-stat__n">{{activitiesBoostedCount}}</span><span class="fg-inline-stat__l">Boosted</span></div>
+        <div class="fg-inline-stat fg-inline-stat--gradient"><span class="fg-inline-stat__n">25</span><span class="fg-inline-stat__l">Boosters</span></div>
+        <div class="fg-inline-stat"><span class="fg-inline-stat__n">{{athleteCount}}</span><span class="fg-inline-stat__l">Athletes</span></div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- User Stories Section -->
-  <section class="section section-alt">
-    <div class="container">
-      <h2 class="text-center mb-md animate-on-scroll">Built for <span class="text-gradient">Athletes Like You</span>
-      </h2>
-      <p class="text-center text-muted mb-lg animate-on-scroll">Real problems, real solutions</p>
+  <!-- Platform strip -->
+  <div class="lp-platforms">
+    <span class="lp-platforms__intro">SPEAKS FLUENTLY TO ↓</span>
+    <span class="lp-platform"><span>🚴</span><span>STRAVA</span></span>
+    <span class="lp-platform"><span>🏋️</span><span>HEVY</span></span>
+    <span class="lp-platform"><span>💗</span><span>FITBIT</span></span>
+    <span class="lp-platform"><span>🍎</span><span>APPLE HEALTH</span></span>
+    <span class="lp-platform"><span>🤖</span><span>HEALTH CONNECT</span></span>
+    <span class="lp-platform"><span>🏃</span><span>PARKRUN</span></span>
+    <span class="lp-platform"><span>📊</span><span>INTERVALS.ICU</span></span>
+    <span class="lp-platform"><span>⌚</span><span>GARMIN</span></span>
+  </div>
 
-      <div class="story-grid stagger-children">
-        <!-- Strength Trainer Story -->
-        <div class="story-card">
-          <div class="story-persona">
-            <span class="story-emoji">🏋️</span>
-            <h3>The Strength Trainer</h3>
-          </div>
-          <div class="story-problem">
-            <strong>The problem:</strong> "I track every lift in Hevy, but when it syncs to Strava it just says 'Weight
-            Training – 45 min'. My friends have no idea what I actually did."
-          </div>
-          <div class="story-solution">
-            <strong>With FitGlue:</strong> Your workout appears on Strava with a complete summary—exercises, sets, reps,
-            weights, and a visual muscle heatmap showing exactly what you trained.
-          </div>
-        </div>
-
-        <!-- Multi-Device User Story -->
-        <div class="story-card">
-          <div class="story-persona">
-            <span class="story-emoji">⌚</span>
-            <h3>The Multi-Device User</h3>
-          </div>
-          <div class="story-problem">
-            <strong>The problem:</strong> "My Fitbit records perfect heart rate data all day, but my gym workouts show
-            up on Strava with no HR. It drives me crazy."
-          </div>
-          <div class="story-solution">
-            <strong>With FitGlue:</strong> We automatically merge your Fitbit heart rate into your activities—complete
-            with accurate calorie calculations and training zone insights.
-          </div>
-        </div>
-
-        <!-- Parkrunner Story -->
-        <div class="story-card">
-          <div class="story-persona">
-            <span class="story-emoji">🏃</span>
-            <h3>The Parkrunner</h3>
-          </div>
-          <div class="story-problem">
-            <strong>The problem:</strong> "My Strava shows 24:35 but my official parkrun time was 24:12. And where's my
-            finishing position? My age grade?"
-          </div>
-          <div class="story-solution">
-            <strong>With FitGlue:</strong> Your parkrun activity gets boosted with official results—accurate time,
-            position, age grade, and PB celebrations. Automatically.
-          </div>
-        </div>
-      </div>
-
-      <!-- Boosted Activity Screenshot - social proof -->
-      <div class="product-screenshot mt-lg animate-on-scroll" style="max-width: 600px;">
-        <div class="product-screenshot__chrome">
-          <span class="product-screenshot__dot"></span>
-          <span class="product-screenshot__dot"></span>
-          <span class="product-screenshot__dot"></span>
-        </div>
-        <img src="/images/screenshots/boosted-activity.png" alt="A real FitGlue-boosted activity on Strava"
-          class="product-screenshot__image" />
-      </div>
-
-      <div class="text-center mt-lg animate-on-scroll">
-        <a href="/guides" class="btn btn-secondary">Read Our Guides →</a>
-      </div>
+  <!-- Three pillars -->
+  <div class="band band--aurora"><span class="band__label">HOW FITGLUE WORKS</span><span class="band__right">~5 MIN FROM ZERO TO ENRICHED</span></div>
+  <div class="lp-pillars">
+    <div class="lp-pillar">
+      <div class="lp-pillar__n">1</div>
+      <div class="lp-pillar__title">Connect</div>
+      <p class="lp-pillar__body">Hook in 30+ sources — Strava, Hevy, Garmin, Fitbit, Apple Health, Parkrun and more. OAuth or API key, 30 seconds each. Connect once and every new activity flows in automatically.</p>
+      <a href="/how-it-works" class="lp-pillar__link">SEE HOW IT WORKS →</a>
     </div>
-  </section>
-
-  <!-- How It Works Preview -->
-  <section class="section">
-    <div class="container">
-      <h2 class="text-center mb-lg animate-on-scroll">How <span class="text-gradient">FitGlue</span> Works</h2>
-
-      <div class="feature-grid stagger-children">
-        <div class="feature-card">
-          <span class="feature-icon">🔗</span>
-          <h3>1. Connect</h3>
-          <p>Link the apps you already use—Hevy, Fitbit, Strava, Garmin, and more. Connect once and everything flows
-            automatically.</p>
-        </div>
-
-        <div class="feature-card">
-          <span class="feature-icon">🚀</span>
-          <h3>2. Enhance</h3>
-          <p>Choose how your data should look: AI descriptions, heart rate overlays, muscle heatmaps. Mix and match to
-            make every activity shine.
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <span class="feature-icon">🎯</span>
-          <h3>3. Share</h3>
-          <p>Your enhanced activity arrives at its destination automatically—Strava, Showcase, Google Sheets, wherever
-            you want it. Complete, beautiful, ready to share.</p>
-        </div>
-      </div>
-
-      <div class="text-center mt-lg animate-on-scroll">
-        <a href="/how-it-works" class="btn btn-secondary">See Full Details →</a>
-      </div>
+    <div class="lp-pillar">
+      <div class="lp-pillar__n">2</div>
+      <div class="lp-pillar__title">Enrich</div>
+      <p class="lp-pillar__body">Stack 25 boosters in the middle of your pipeline. HR zones, effort score, training load, streak tracking, personal records, AI summaries, AI banners. Pick the ones that matter to you.</p>
+      <a href="/features" class="lp-pillar__link">BROWSE ALL 25 BOOSTERS →</a>
     </div>
-  </section>
-
-  <!-- Configurability Showcase -->
-  <section class="section section-alt">
-    <div class="container">
-      <h2 class="text-center mb-md animate-on-scroll">Fully <span class="text-gradient">Configurable</span></h2>
-      <p class="text-center text-muted mb-lg animate-on-scroll">Your pipeline, your rules</p>
-
-      <div class="config-showcase stagger-children">
-        <div class="config-example">
-          <h4>📋 Summary Format</h4>
-          <div class="config-options-preview">
-            <span class="config-pill">Compact (4×10×100kg)</span>
-            <span class="config-pill active">Detailed (4 × 10 × 100.0kg)</span>
-            <span class="config-pill">Verbose (4 sets of 10 reps at 100.0kg)</span>
-          </div>
-        </div>
-
-        <div class="config-example">
-          <h4>🔥 Heatmap Style</h4>
-          <div class="config-options-preview">
-            <span class="config-pill active">Emoji Bars (🟪🟪🟪⬜⬜)</span>
-            <span class="config-pill">Percentage (Chest: 80%)</span>
-            <span class="config-pill">Text Only (High: Chest)</span>
-          </div>
-        </div>
-
-        <div class="config-example">
-          <h4>🗺️ Virtual GPS Routes</h4>
-          <div class="config-options-preview">
-            <span class="config-pill active">Hyde Park, London (~4km)</span>
-            <span class="config-pill">Central Park, NYC (~10km)</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="text-center mt-lg animate-on-scroll">
-        <a href="/features" class="btn btn-secondary">Explore All Features →</a>
-      </div>
+    <div class="lp-pillar">
+      <div class="lp-pillar__n">3</div>
+      <div class="lp-pillar__title">Share</div>
+      <p class="lp-pillar__body">Your enriched activity lands wherever you point it — Strava with a real description, your public Showcase profile, TrainingPeaks, Intervals.icu. Fan-out to all of them at once.</p>
+      <a href="/pricing" class="lp-pillar__link">SEE PLANS & PRICING →</a>
     </div>
-  </section>
-
-  <!-- Connect Everything Section -->
-  <section class="section section-alt">
-    <div class="container">
-      <h2 class="text-center mb-md animate-on-scroll">🌐 <span class="text-gradient">Connect Everywhere</span></h2>
-      <p class="text-center text-muted mb-lg animate-on-scroll">FitGlue works with the platforms you already use—and
-        we're adding more every month</p>
-
-      <div class="connect-grid stagger-children">
-        {{#each connectionsPreview}}
-        <a href="{{detailsUrl}}" class="connect-card-link animate-on-scroll">
-          <div class="connect-card{{#if isTemporarilyUnavailable}} coming-soon{{/if}}">
-            <div class="connect-card-icon">
-              {{#if iconPath}}
-              <img src="{{iconPath}}" alt="" class="connect-icon-img feature-icon-{{iconType}}" />
-              {{else}}
-              <span class="connect-icon-emoji">{{icon}}</span>
-              {{/if}}
-            </div>
-            <span class="connect-card-name">{{name}}</span>
-            {{#if isTemporarilyUnavailable}}
-            <span class="connect-card-badge">Coming Soon</span>
-            {{/if}}
-          </div>
-        </a>
-        {{/each}}
-      </div>
-
-      <!-- Universal Vision -->
-      <div class="vision-box mt-lg animate-on-scroll">
-        <h4>🌍 The Universal Fitness Hub</h4>
-        <p>Whether you lift weights in Hevy, track runs with Garmin, or log meals in MyFitnessPal—FitGlue connects them
-          all
-          and makes sure your data looks its best wherever it goes. One hub. Every app. Beautifully synced.</p>
-      </div>
-
-      <!-- Platform Marquee -->
-      <div class="platform-marquee mt-lg">
-        <div class="marquee-track">
-          <span>Hevy</span><span>•</span>
-          <span>Fitbit</span><span>•</span>
-          <span>Strava</span><span>•</span>
-          <span>Garmin</span><span>•</span>
-          <span>Apple Health</span><span>•</span>
-          <span>Health Connect</span><span>•</span>
-          <span>Strong</span><span>•</span>
-          <span>MacroFactor</span><span>•</span>
-          <span>MyFitnessPal</span><span>•</span>
-          <span>Runkeeper</span><span>•</span>
-          <span>Wahoo</span><span>•</span>
-          <span>Whoop</span><span>•</span>
-          <span>Hevy</span><span>•</span>
-          <span>Fitbit</span><span>•</span>
-          <span>Strava</span><span>•</span>
-          <span>Garmin</span><span>•</span>
-        </div>
-      </div>
-
-      <div class="text-center mt-lg animate-on-scroll">
-        <a href="/how-it-works" class="btn btn-secondary">See How It Works →</a>
-      </div>
-    </div>
-  </section>
+  </div>
 
   <!-- Final CTA -->
-  <section class="cta-section">
-    <div class="container">
-      <div class="cta-content">
-        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Connect</span> Your Fitness World?
-        </h2>
-        <p class="cta-subtitle animate-on-scroll">Start your 30-day free Athlete trial. No credit card required.</p>
-
-        <div class="cta-buttons animate-on-scroll">
-          <a href="/auth/register" class="btn btn-primary btn-lg">Get Started Free →</a>
-          <a href="/how-it-works" class="btn btn-secondary btn-lg">Learn More</a>
-        </div>
-      </div>
+  <div class="lp-cta-wrap">
+    <div class="lp-cta-wrap__title">One sweat.<br><span class="gr">Every place.</span></div>
+    <div class="lp-cta-wrap__sub">30-DAY TRIAL · NO CREDIT CARD · CANCEL ANY TIME · FREE FOREVER ON HOBBYIST</div>
+    <div class="lp-cta-wrap__btns">
+      <a href="{{waitlistUrl}}" class="btn--aurora">START FREE →</a>
+      <a href="/pricing" class="btn--ghost">SEE PRICING</a>
     </div>
-  </section>
-</main>
+  </div>
 
-<script src="/assets/js/particles.js"></script>
-<script>initParticles('hero-particles');</script>
-<script src="/assets/js/hero-carousel.js"></script>
+</main>
 
 {{> footer}}

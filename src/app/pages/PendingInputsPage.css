@@ -1,0 +1,160 @@
+/* ==========================================================================
+   PendingInputsPage — 2-column card grid (Brutal × Aurora)
+   ========================================================================== */
+
+.pi-grid {
+    padding: 24px 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Pending input card */
+.pi {
+    background: var(--fg-ink-2);
+    display: flex;
+    flex-direction: column;
+}
+
+.pi--urgent {
+    box-shadow: inset 0 0 0 2px var(--fg-rose);
+}
+
+/* Card header: ring + title + stamp */
+.pi__head {
+    padding: 22px 24px;
+    border-bottom: var(--fg-rule-thin);
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 18px;
+    align-items: center;
+}
+
+.pi__title {
+    font-family: var(--fg-font-display);
+    font-size: 1.375rem;
+    line-height: 1;
+    letter-spacing: -.015em;
+    text-transform: uppercase;
+}
+
+.pi__meta {
+    font-family: var(--fg-font-mono);
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    color: var(--color-text-muted);
+    margin-top: 6px;
+    text-transform: uppercase;
+}
+
+.pi__meta b {
+    color: var(--fg-paper);
+}
+
+.pi__stamp {
+    padding: 4px 8px;
+    font-family: var(--fg-font-mono);
+    font-size: .625rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    background: var(--fg-ink);
+    color: var(--fg-paper);
+    text-transform: uppercase;
+    white-space: nowrap;
+    align-self: start;
+}
+
+.pi__stamp--urgent {
+    background: var(--fg-rose);
+    color: var(--fg-paper);
+}
+
+/* Why-paused band */
+.pi__why {
+    padding: 14px 24px;
+    background: var(--fg-ink);
+    border-bottom: var(--fg-rule-thin);
+    font-family: var(--fg-font-body);
+    font-size: .9375rem;
+    line-height: 1.5;
+    color: var(--fg-paper);
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    align-items: start;
+}
+
+.pi__why-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    padding-top: 2px;
+}
+
+/* Inline form */
+.pi__form {
+    padding: 18px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+}
+
+/* CTA strip */
+.pi__cta {
+    padding: 14px 24px;
+    background: var(--fg-ink);
+    border-top: var(--fg-rule-thin);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pi__cta-meta {
+    font-family: var(--fg-font-mono);
+    font-size: .625rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    flex: 1;
+}
+
+/* Empty state */
+.pi-empty {
+    padding: 120px 32px;
+    text-align: center;
+}
+
+.pi-empty__icon {
+    font-size: 4rem;
+    line-height: 1;
+}
+
+.pi-empty__title {
+    font-family: var(--fg-font-display);
+    font-size: 3rem;
+    letter-spacing: -.025em;
+    margin: 22px 0 8px;
+    text-transform: uppercase;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.pi-empty__sub {
+    font-family: var(--fg-font-mono);
+    font-size: .8125rem;
+    color: var(--color-text-muted);
+    letter-spacing: .04em;
+    margin-bottom: 18px;
+}
+
+@media (max-width: 1024px) {
+    .pi-grid {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+}

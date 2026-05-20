@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from './Button';
 import { MultiRingSpinner } from './MultiRingSpinner';
-import './ConfirmDialog.css';
+import { Modal } from './Modal';
 
 interface ConfirmDialogProps {
   /** Whether the dialog is open */
@@ -26,7 +26,8 @@ interface ConfirmDialogProps {
 
 /**
  * ConfirmDialog - A branded modal dialog to replace window.confirm()
- * with proper styling and accessibility.
+ * with proper styling and accessibility. Now uses the Modal shell pattern:
+ * paper outline (or rose for danger), head/body/CTA.
  */
 export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   isOpen,
@@ -39,27 +40,35 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onCancel,
   isLoading = false,
 }) => {
-  if (!isOpen) return null;
-
   return (
-    <div className="confirm-dialog-backdrop" onClick={onCancel}>
-      <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
-        <h3 className="confirm-dialog__title">{title}</h3>
-        <p className="confirm-dialog__message">{message}</p>
-        <div className="confirm-dialog__actions">
-          <Button variant="secondary" onClick={onCancel} disabled={isLoading}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onCancel}
+      title={title}
+      size="sm"
+      danger={isDestructive}
+      closeOnBackdrop={!isLoading}
+      closeOnEscape={!isLoading}
+      footer={
+        <>
+          <Button variant="ghost" size="sm" onClick={onCancel} disabled={isLoading}>
             {cancelLabel}
           </Button>
           <Button
             variant={isDestructive ? 'danger' : 'primary'}
+            size="sm"
             onClick={onConfirm}
             disabled={isLoading}
           >
             {isLoading ? <MultiRingSpinner size="sm" /> : confirmLabel}
           </Button>
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    >
+      <p style={{ margin: 0, fontFamily: 'var(--fg-font-body)', fontSize: '0.9375rem', color: 'var(--fg-paper-dim)', lineHeight: 1.55 }}>
+        {message}
+      </p>
+    </Modal>
   );
 };
 

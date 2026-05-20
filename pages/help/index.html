@@ -1,82 +1,112 @@
 {{> header}}
 
 <main>
-  <!-- Hero Section -->
-  <section class="about-hero">
-    <div class="container">
-      <h1 class="text-center animate-on-scroll">
-        <span class="text-gradient">Help</span> & Support
-      </h1>
-      <p class="text-center text-muted animate-on-scroll" style="max-width: 600px; margin: var(--space-md) auto 0;">
-        Find answers, browse guides, and get in touch. We're here to help you get the most out of FitGlue.
-      </p>
-    </div>
-  </section>
+<style>
+  /* ── Page heading ── */
+  .ph { padding: 56px 32px; max-width: 1280px; margin: 0 auto; }
+  .ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .ph__title { font-family: var(--fg-font-display); font-size: clamp(2.5rem, 7vw, 5rem); line-height: .9; letter-spacing: -.04em; text-transform: uppercase; margin: 14px 0; }
+  .ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ph__sub { font-family: var(--fg-font-body); font-size: 1.125rem; color: var(--color-text-muted); line-height: 1.55; max-width: 640px; }
 
-  <!-- Quick Links -->
-  <section class="section">
-    <div class="container">
-      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: 0 0 var(--space-md)">
-        <span class="fg-band__label">Help & Support</span>
-      </div>
-      <div class="guides-grid stagger-children">
-        <a href="/help/faq" class="guide-card">
-          <div class="guide-card-icon">❓</div>
-          <div class="guide-card-content">
-            <h3>FAQ</h3>
-            <p>Frequently asked questions about pricing, sync limits, tiers, and more.</p>
-            <span class="guide-card-cta">View FAQ →</span>
-          </div>
-        </a>
+  /* ── Topic card grid ── */
+  .help-grid { padding: 0 32px 80px; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .help-card { padding: 28px; background: var(--fg-ink-2); display: flex; flex-direction: column; gap: 12px; min-height: 200px; text-decoration: none; color: inherit; transition: box-shadow .15s; }
+  .help-card:hover { box-shadow: inset 0 0 0 1.5px var(--fg-cyan); }
+  .help-card__icon { font-size: 2rem; line-height: 1; }
+  .help-card__title { font-family: var(--fg-font-display); font-size: 1.375rem; letter-spacing: -.015em; text-transform: uppercase; }
+  .help-card__desc { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); line-height: 1.5; }
+  .help-card__count { font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .help-card__link { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .12em; color: var(--fg-cyan); margin-top: auto; text-transform: uppercase; }
 
-        <a href="/guides" class="guide-card">
-          <div class="guide-card-icon">📚</div>
-          <div class="guide-card-content">
-            <h3>Guides & Tutorials</h3>
-            <p>Step-by-step guides for Hevy, Fitbit, Strava, Parkrun, Garmin, and Showcase.</p>
-            <span class="guide-card-cta">Browse Guides →</span>
-          </div>
-        </a>
+  /* ── Dark band ── */
+  .dark-band { padding: 14px 32px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); border-top: var(--fg-rule-thin); display: flex; justify-content: space-between; align-items: center; }
+  .dark-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-paper); text-transform: uppercase; }
+  .dark-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
 
-        <a href="/help/articles" class="guide-card">
-          <div class="guide-card-icon">📖</div>
-          <div class="guide-card-content">
-            <h3>Help Articles</h3>
-            <p>Troubleshooting, concepts, and setup guides. Browse by Source, Booster, Destination, or Connection.</p>
-            <span class="guide-card-cta">Browse Articles →</span>
-          </div>
-        </a>
+  /* ── Bottom CTA strip ── */
+  .help-cta { padding: 48px 32px; text-align: center; border-top: var(--fg-rule-thin); }
+  .help-cta__text { font-family: var(--fg-font-body); font-size: 1.0625rem; color: var(--color-text-muted); margin-bottom: 16px; }
+  .help-cta__text a { color: var(--fg-cyan); }
+  .help-cta__title { font-family: var(--fg-font-display); font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -.025em; text-transform: uppercase; margin-bottom: 20px; }
+  .help-cta__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-        <a href="/contact" class="guide-card">
-          <div class="guide-card-icon">📧</div>
-          <div class="guide-card-content">
-            <h3>Contact Us</h3>
-            <p>Email support, Twitter, or request a new integration. We'd love to hear from you.</p>
-            <span class="guide-card-cta">Get in Touch →</span>
-          </div>
-        </a>
+  @media (max-width: 900px) { .help-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) {
+    .help-grid { grid-template-columns: 1fr; padding: 0 16px 48px; }
+    .ph { padding: 40px 16px; }
+    .help-cta { padding: 40px 16px; }
+  }
+</style>
 
-        <a href="/contact" class="guide-card">
-          <div class="guide-card-icon">💡</div>
-          <div class="guide-card-content">
-            <h3>Request a Feature</h3>
-            <p>Have an idea to make FitGlue better? Contact us or request a new integration.</p>
-            <span class="guide-card-cta">Get in Touch →</span>
-          </div>
-        </a>
-      </div>
-    </div>
-  </section>
+  <!-- Hero -->
+  <div class="ph">
+    <div class="ph__eyebrow">HELP CENTRE</div>
+    <h1 class="ph__title">Get <span class="gr">unstuck.</span></h1>
+    <p class="ph__sub">Step-by-step guides, FAQs, and troubleshooting. If you can't find what you need, <a href="/contact" style="color:var(--fg-cyan)">drop us a line</a>.</p>
+  </div>
 
-  <!-- CTA Section -->
-  <section class="cta-section">
-    <div class="container">
-      <div class="cta-content">
-        <h2 class="cta-title animate-on-scroll">Still Need <span class="text-gradient">Help</span>?</h2>
-        <p class="cta-subtitle animate-on-scroll">Email us at <a href="mailto:support@fitglue.tech">support@fitglue.tech</a> and we'll get back to you.</p>
-      </div>
-    </div>
-  </section>
+  <!-- Topic cards -->
+  <div class="dark-band">
+    <span class="dark-band__label">HELP TOPICS</span>
+    <span class="dark-band__right">BROWSE BY CATEGORY</span>
+  </div>
+
+  <div class="help-grid">
+    <a href="/guides/getting-started" class="help-card">
+      <div class="help-card__icon">🚀</div>
+      <div class="help-card__title">Getting Started</div>
+      <div class="help-card__desc">From signup to your first enriched activity in 8 minutes. Everything you need to know to begin.</div>
+      <span class="help-card__count">8 ARTICLES</span>
+      <span class="help-card__link">BROWSE →</span>
+    </a>
+
+    <a href="/features#sources" class="help-card">
+      <div class="help-card__icon">🔗</div>
+      <div class="help-card__title">Connections</div>
+      <div class="help-card__desc">Strava, Hevy, Garmin, Fitbit, parkrun — connection guides for all 30+ providers.</div>
+      <span class="help-card__count">32 ARTICLES</span>
+      <span class="help-card__link">BROWSE →</span>
+    </a>
+
+    <a href="/how-it-works" class="help-card">
+      <div class="help-card__icon">🔀</div>
+      <div class="help-card__title">Pipelines</div>
+      <div class="help-card__desc">Building, importing, sharing, and troubleshooting pipelines. Advanced filter and routing help.</div>
+      <span class="help-card__count">14 ARTICLES</span>
+      <span class="help-card__link">BROWSE →</span>
+    </a>
+
+    <a href="/features#boosters" class="help-card">
+      <div class="help-card__icon">⚡</div>
+      <div class="help-card__title">Boosters</div>
+      <div class="help-card__desc">Each booster, what it does, what data it needs, how to configure it, and how to troubleshoot it.</div>
+      <span class="help-card__count">25 ARTICLES</span>
+      <span class="help-card__link">BROWSE →</span>
+    </a>
+
+    <a href="/guides/showcase" class="help-card">
+      <div class="help-card__icon">🎨</div>
+      <div class="help-card__title">Showcase</div>
+      <div class="help-card__desc">Public profile pages, themes, sharing activity links, photo galleries, and custom domains.</div>
+      <span class="help-card__count">11 ARTICLES</span>
+      <span class="help-card__link">BROWSE →</span>
+    </a>
+
+    <a href="/pricing" class="help-card">
+      <div class="help-card__icon">💳</div>
+      <div class="help-card__title">Billing &amp; Plans</div>
+      <div class="help-card__desc">Hobbyist vs Athlete tiers, upgrading, downgrading, invoices, refund policy.</div>
+      <span class="help-card__count">9 ARTICLES</span>
+      <span class="help-card__link">BROWSE →</span>
+    </a>
+  </div>
+
+  <!-- Bottom CTA -->
+  <div class="help-cta">
+    <h2 class="help-cta__title">Still need <span class="gr">help?</span></h2>
+    <p class="help-cta__text">Email us at <a href="mailto:support@fitglue.tech">support@fitglue.tech</a> and we'll get back to you within 48 hours on weekdays.</p>
+  </div>
 </main>
 
 {{> footer}}

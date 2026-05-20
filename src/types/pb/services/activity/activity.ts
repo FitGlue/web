@@ -132,6 +132,11 @@ export interface UpdateShowcaseSlugResponse {
 export interface AddShowcaseEntryRequest {
   userId: string;
   showcaseId: string;
+  /**
+   * destination_count is the number of destinations the activity was uploaded to.
+   * Passed by the showcase uploader so the profile entry can reflect the full upload scope.
+   */
+  destinationCount: number;
 }
 
 export interface RemoveShowcaseEntryRequest {
@@ -185,7 +190,12 @@ export interface GetActivityStatsResponse {
   totalActivities: number;
   totalShowcases: number;
   lastActivityAt: string;
+  /** DEPRECATED — prefer activities_this_month */
   uploadsThisMonth: number;
+  activitiesThisMonth: number;
+  activitiesThisWeek: number;
+  currentStreakDays: number;
+  longestStreakDays: number;
 }
 
 export interface ActivityService {
