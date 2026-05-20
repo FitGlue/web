@@ -192,15 +192,6 @@ const ConnectionsPage: React.FC = () => {
     const suggestedDest = destinationIntegrations.find(i => !statuses?.[i.id]?.connected);
     const showRecipeBand = !recipeDismissed && !!suggestedSource && !!suggestedDest && connectedCount > 0;
 
-    const connectedIntegrations = registryIntegrations.filter(i => {
-        const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[i.id];
-        return status?.connected;
-    });
-    const availableIntegrations = registryIntegrations.filter(i => {
-        const status = (integrations as Record<string, IntegrationStatus | undefined> | null)?.[i.id];
-        return !status?.connected;
-    });
-
     if (loading || registryLoading) {
         return (
             <PageLayout title="Connections" backTo="/" backLabel="Dashboard">
