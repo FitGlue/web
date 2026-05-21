@@ -1,13 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { pipelineRunsAtom } from '../state/activitiesState';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout } from '../components/library/layout/PageLayout';
-import { Code, IdBadge } from '../components/library/ui';
+import { Button, Code, IdBadge, useToast } from '../components/library/ui';
 import { ExecutionStepTrace } from '../components/ExecutionStepTrace';
 import { ExecutionStepStatus } from '../../types/pb/models/pipeline/execution';
 import { useNerdMode } from '../state/NerdModeContext';
+import { InputsService } from '../services/InputsService';
 import '../components/ExecutionStepTrace.css';
 import './RunDetail.css';
 
@@ -15,6 +16,9 @@ const UnsynchronizedDetailPage: React.FC = () => {
     const { pipelineExecutionId } = useParams<{ pipelineExecutionId: string }>();
     const { isNerdMode, toggleNerdMode } = useNerdMode();
     const [activeTab, setActiveTab] = useState<'trace' | 'json'>('trace');
+    const [cancelling, setCancelling] = useState(false);
+    const toast = useToast();
+    const navigate = useNavigate();
 
     const { loading } = useRealtimePipelineRuns(true, 50);
     const [pipelineRuns] = useAtom(pipelineRunsAtom);
@@ -33,6 +37,21 @@ const UnsynchronizedDetailPage: React.FC = () => {
             </PageLayout>
         );
     }
+
+    const handleCancelPipeline = async () => {
+        if (!run?.pendingInputId) return;
+        if (!confirm('Cancel this pipeline run? It will stop here with no further processing.')) return;
+        setCancelling(true);
+        try {
+            await InputsService.cancelPipeline(run.pendingInputId);
+            toast.success('Pipeline cancelled', 'The run has been cancelled.');
+            navigate('/activities?tab=unsynchronized');
+        } catch {
+            toast.error('Cancel failed', 'Could not cancel the pipeline. Please try again.');
+        } finally {
+            setCancelling(false);
+        }
+    };
 
     const steps = run?.steps ?? [];
     const stepCount = steps.length;
@@ -64,7 +83,11 @@ const UnsynchronizedDetailPage: React.FC = () => {
                     </div>
                 </div>
                 <div className="rd-head__actions">
-                    {/* placeholder for future replay/skip actions */}
+                    {run?.pendingInputId && (
+                        <Button variant="danger" size="small" onClick={handleCancelPipeline} disabled={cancelling}>
+                            {cancelling ? 'Cancelling…' : '⊗ Cancel Pipeline'}
+                        </Button>
+                    )}
                 </div>
             </div>
 
