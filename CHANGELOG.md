@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.17.0](https://github.com/fitglue/web/compare/v11.16.0...v11.17.0) (2026-05-21)
+
+
+### Features
+
+* **pipelines:** enhance source handling and add support for multiple sources ([13ac83e](https://github.com/fitglue/web/commit/13ac83e844dcdec415a538f7c2f29a1b84be8274))
+
 ## [11.16.0](https://github.com/fitglue/web/compare/v11.15.0...v11.16.0) (2026-05-20)
 
 
