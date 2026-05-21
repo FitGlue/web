@@ -1,0 +1,728 @@
+/* ==========================================================================
+   PipelineEditPage — wizard-chrome edit mode
+   Layout classes prefixed pipe-edit__* to avoid colliding with the create
+   wizard's pipe-wiz__* classes. New wiz__step-* classes are additive.
+   ========================================================================== */
+
+/* Full-height wizard layout */
+.pipe-edit {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: calc(100vh - 53px);
+}
+
+/* Step rail */
+.pipe-edit__rail {
+  background: var(--fg-ink-2);
+  border-right: var(--fg-rule-thin);
+  padding: 1.75rem 0;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.pipe-edit__rail-title {
+  padding: 0 1.75rem 1.125rem;
+  font-family: var(--fg-font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  border-bottom: var(--fg-rule-thin);
+  margin-bottom: 1.125rem;
+}
+
+.pipe-edit__rail-title .gr {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Step number circle — new variant used in edit page only */
+.wiz__step-n {
+  width: 28px;
+  height: 28px;
+  background: var(--fg-ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--fg-font-display);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.wiz__step--done .wiz__step-n {
+  background: var(--fg-green);
+  color: var(--fg-ink);
+}
+
+.wiz__step--active .wiz__step-n {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+}
+
+.wiz__step--warn .wiz__step-n {
+  background: var(--fg-rose);
+  color: var(--fg-ink);
+}
+
+/* Connector line between steps */
+.wiz__step--edit-mode {
+  position: relative;
+  padding: 0.875rem 1.75rem;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 0.875rem;
+  align-items: start;
+  cursor: pointer;
+}
+
+.wiz__step--edit-mode:hover {
+  background: var(--fg-ink-3);
+}
+
+.wiz__step--active.wiz__step--edit-mode .wiz__step-title,
+.wiz__step--done.wiz__step--edit-mode .wiz__step-title,
+.wiz__step--warn.wiz__step--edit-mode .wiz__step-title {
+  color: var(--fg-paper);
+}
+
+/* Value line below title (cyan mono, shows current setting) */
+.wiz__step-value {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  color: var(--fg-cyan);
+  margin-top: 3px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wiz__step--warn .wiz__step-value {
+  color: var(--fg-rose);
+}
+
+/* Gold dot for dirty state in rail */
+.wiz__step-dirty {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--fg-gold);
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* Pane (right side) */
+.pipe-edit__pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: calc(100vh - 53px);
+}
+
+/* Pane header */
+.pipe-edit__head {
+  padding: 2.25rem 2.5rem 1.75rem;
+  border-bottom: var(--fg-rule-thin);
+  background: var(--fg-ink);
+}
+
+.pipe-edit__crumb {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.625rem;
+}
+
+.pipe-edit__crumb b {
+  color: var(--fg-paper);
+}
+
+.pipe-edit__title {
+  font-family: var(--fg-font-display);
+  font-size: 3rem;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+.pipe-edit__title .gr {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pipe-edit__desc {
+  font-family: var(--fg-font-body);
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  max-width: 640px;
+  margin: 0;
+}
+
+/* Pane content area */
+.pipe-edit__body {
+  padding: 2rem 2.5rem 3.75rem;
+  flex: 1;
+}
+
+/* Sticky footer */
+.pipe-edit__foot {
+  padding: 1.125rem 2.5rem;
+  background: var(--fg-ink-2);
+  border-top: var(--fg-rule-thin);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+.pipe-edit__foot-meta {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.pipe-edit__foot-meta b {
+  color: var(--fg-paper);
+}
+
+.pipe-edit__foot-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--fg-gold);
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.pipe-edit__foot-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ============ Name step field layout ============ */
+.pipe-edit__field {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1.75rem;
+  align-items: start;
+  padding: 0.875rem 0;
+  border-bottom: var(--fg-rule-thin);
+  max-width: 760px;
+}
+
+.pipe-edit__field:last-child {
+  border-bottom: 0;
+}
+
+.pipe-edit__field-label-name {
+  font-family: var(--fg-font-display);
+  font-size: 0.9375rem;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+
+.pipe-edit__field-label-hint {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+  margin-top: 4px;
+}
+
+.pipe-edit__field-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 460px;
+}
+
+.pipe-edit__field-input {
+  background: var(--fg-ink-2);
+  padding: 0.75rem 0.875rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.875rem;
+  color: var(--fg-paper);
+  border: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-ink-3);
+  width: 100%;
+  outline: 0;
+}
+
+.pipe-edit__field-input:focus {
+  box-shadow: inset 0 0 0 2px var(--fg-paper);
+}
+
+.pipe-edit__field-input--lg {
+  font-family: var(--fg-font-display);
+  font-size: 1.5rem;
+  letter-spacing: -0.015em;
+  padding: 1rem 0.875rem;
+  text-transform: uppercase;
+}
+
+.pipe-edit__field-hint-r {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Toggle row */
+.pipe-edit__toggle-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  max-width: 460px;
+}
+
+.pipe-edit__toggle-name {
+  font-family: var(--fg-font-body);
+  font-size: 0.9375rem;
+  color: var(--fg-paper);
+}
+
+.pipe-edit__toggle-sub {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+  line-height: 1.45;
+}
+
+.pipe-edit__tog {
+  width: 40px;
+  height: 22px;
+  background: var(--fg-ink-3);
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 0;
+  padding: 0;
+}
+
+.pipe-edit__tog::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background: var(--color-text-muted);
+  transition: 0.15s;
+}
+
+.pipe-edit__tog--on {
+  background: var(--gradient-primary);
+}
+
+.pipe-edit__tog--on::after {
+  left: 21px;
+  background: var(--fg-ink);
+}
+
+/* ============ Booster list — phase-grouped drag list ============ */
+.booster-list {
+  display: flex;
+  flex-direction: column;
+  max-width: 820px;
+}
+
+.b-row {
+  display: grid;
+  grid-template-columns: 22px 28px 36px 1fr auto auto;
+  gap: 0.875rem;
+  align-items: center;
+  padding: 0.6875rem 0.75rem 0.6875rem 0.25rem;
+  background: var(--fg-ink-2);
+  border-bottom: 1px solid var(--fg-ink);
+  cursor: grab;
+}
+
+.b-row:hover {
+  background: var(--fg-ink-3);
+}
+
+.b-row:last-child {
+  border-bottom: 0;
+}
+
+.b-row--ghost {
+  opacity: 0.5;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--fg-ink-2) 0 6px,
+    transparent 6px 12px
+  );
+  cursor: not-allowed;
+}
+
+.b-row--ghost:hover {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--fg-ink-2) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+.b-row--warn {
+  box-shadow: inset 3px 0 0 var(--fg-rose);
+}
+
+.b-row--drag-over {
+  outline: 1.5px solid var(--fg-cyan);
+}
+
+.b-row__grip {
+  color: var(--color-text-subtle);
+  font-family: var(--fg-font-mono);
+  font-size: 1rem;
+  padding-left: 0.5rem;
+  cursor: grab;
+  line-height: 0;
+  user-select: none;
+}
+
+.b-row__grip:hover {
+  color: var(--fg-paper);
+}
+
+.b-row--ghost .b-row__grip {
+  cursor: not-allowed;
+}
+
+.b-row__idx {
+  font-family: var(--fg-font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+.b-row__icon {
+  width: 36px;
+  height: 36px;
+  background: var(--fg-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.b-row__title {
+  font-family: var(--fg-font-display);
+  font-size: 0.9375rem;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.b-row__sub {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+  margin-top: 3px;
+}
+
+.b-row__sub b {
+  color: var(--fg-cyan);
+}
+
+.b-row__sub--warn {
+  color: var(--fg-rose);
+}
+
+.b-row__tag {
+  font-family: var(--fg-font-mono);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 4px 8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.b-row__tag--gate {
+  background: rgba(255, 214, 10, 0.15);
+  color: var(--fg-gold);
+}
+
+.b-row__tag--enrich {
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--fg-cyan);
+}
+
+.b-row__tag--metric {
+  background: rgba(245, 243, 235, 0.08);
+  color: var(--color-text-muted);
+}
+
+.b-row__tag--ai {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+}
+
+.b-row-actions {
+  display: flex;
+  gap: 2px;
+}
+
+.b-row__btn {
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 0;
+  cursor: pointer;
+  font-family: var(--fg-font-mono);
+  font-size: 0.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.b-row__btn:hover {
+  color: var(--fg-paper);
+  background: var(--fg-ink);
+}
+
+.b-row__btn--rem:hover {
+  color: var(--fg-rose);
+}
+
+.b-row__btn--on {
+  color: var(--fg-cyan);
+  background: var(--fg-ink);
+}
+
+/* Phase divider bands */
+.b-divider {
+  padding: 0.875rem 0 0.625rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 820px;
+}
+
+.b-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--fg-hairline-color);
+}
+
+.b-divider:first-child {
+  padding-top: 0;
+}
+
+/* Warn banner above boosters list */
+.pipe-edit__warn-banner {
+  max-width: 820px;
+  margin-bottom: 1.125rem;
+  padding: 0.875rem 1rem;
+  background: rgba(255, 93, 108, 0.08);
+  box-shadow: inset 3px 0 0 var(--fg-rose);
+  font-family: var(--fg-font-mono);
+  font-size: 0.8125rem;
+  color: var(--fg-paper);
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+}
+
+.pipe-edit__warn-banner b {
+  color: var(--fg-rose);
+  font-weight: 700;
+}
+
+.pipe-edit__warn-banner a {
+  color: var(--fg-cyan);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Section label (used in destinations and configure) */
+.pipe-edit__sec-label {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 720px;
+}
+
+.pipe-edit__sec-label:not(:first-child) {
+  margin-top: 1.125rem;
+}
+
+.pipe-edit__sec-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--fg-hairline-color);
+}
+
+/* ============ Configure blocks ============ */
+.conf-block {
+  background: var(--fg-ink-2);
+  margin-bottom: 4px;
+  max-width: 760px;
+}
+
+.conf-block__head {
+  padding: 0.875rem 1.125rem;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  border-bottom: var(--fg-rule-thin);
+}
+
+.conf-block__icon {
+  width: 32px;
+  height: 32px;
+  background: var(--fg-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.0625rem;
+  flex-shrink: 0;
+}
+
+.conf-block__name {
+  font-family: var(--fg-font-display);
+  font-size: 1rem;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+
+.conf-block__type {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.12em;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+.conf-block__body {
+  padding: 0.5rem 1.125rem 0.875rem;
+}
+
+/* ============ Danger zone ============ */
+.danger-card {
+  background: var(--fg-ink-2);
+  border-left: 3px solid var(--fg-rose);
+  padding: 1.375rem 1.5rem;
+  max-width: 760px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.danger-card__name {
+  font-family: var(--fg-font-display);
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--fg-rose);
+}
+
+.danger-card__sub {
+  font-family: var(--fg-font-mono);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 6px;
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+}
+
+/* ============ Responsive ============ */
+@media (max-width: 768px) {
+  .pipe-edit {
+    grid-template-columns: 1fr;
+  }
+
+  .pipe-edit__rail {
+    position: static;
+    max-height: none;
+    border-right: none;
+    border-bottom: var(--fg-rule-thin);
+    padding: 0;
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .pipe-edit__rail-title {
+    display: none;
+  }
+
+  .wiz__step--edit-mode {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+  }
+
+  .wiz__step-value {
+    display: none;
+  }
+
+  .pipe-edit__head,
+  .pipe-edit__body {
+    padding: 1rem 1.25rem;
+  }
+
+  .pipe-edit__foot {
+    padding: 1rem 1.25rem;
+  }
+
+  .pipe-edit__field {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
