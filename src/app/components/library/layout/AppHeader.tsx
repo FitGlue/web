@@ -1,24 +1,34 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useUser } from '../../../hooks/useUser';
 import { client } from '../../../../shared/api/client';
 import { userAtom } from '../../../state/authState';
 import { profilePictureUrlAtom } from '../../../state/userState';
 import { getEffectiveTier, TIER_ATHLETE } from '../../../utils/tier';
+import { AvatarMenu } from './AvatarMenu';
+import { CommandPalette } from './CommandPalette';
 import './AppHeader.css';
 
 // Module-level flag — survives component remounts (page navigation)
 let profilePicFetched = false;
 
+const PRIMARY_NAV = [
+    { key: 'dashboard',   label: 'Dashboard',   to: '/',                   end: true  },
+    { key: 'pipelines',   label: 'Pipelines',   to: '/settings/pipelines', end: false },
+    { key: 'activities',  label: 'Activities',  to: '/activities',          end: false },
+    { key: 'connections', label: 'Connections', to: '/connections',         end: false },
+    { key: 'recipes',     label: 'Recipes',     to: '/recipes',            end: false },
+] as const;
+
 export const AppHeader: React.FC = () => {
     const { user: profile, loading } = useUser();
     const [firebaseUser] = useAtom(userAtom);
     const [showMenu, setShowMenu] = useState(false);
+    const [showPalette, setShowPalette] = useState(false);
     const [profilePictureUrl, setProfilePictureUrl] = useAtom(profilePictureUrlAtom);
 
     const menuRef = useRef<HTMLDivElement>(null);
-
     const isAthlete = profile && getEffectiveTier(profile) === TIER_ATHLETE;
 
     // Fetch profile picture for Athlete users — only once across all mounts
@@ -29,192 +39,160 @@ export const AppHeader: React.FC = () => {
         (async () => {
             try {
                 const { data } = await client.GET('/users/me/showcase-management/profile');
-                const typedData = data as {
-                    profile: { profilePictureUrl?: string } | null;
-                };
-                if (!cancelled) {
-                    if (typedData.profile?.profilePictureUrl) {
-                        setProfilePictureUrl(typedData.profile.profilePictureUrl);
-                    }
+                const typedData = data as { profile: { profilePictureUrl?: string } | null };
+                if (!cancelled && typedData.profile?.profilePictureUrl) {
+                    setProfilePictureUrl(typedData.profile.profilePictureUrl);
                 }
             } catch {
-                // Non-critical — reset flag so next render retries
                 profilePicFetched = false;
             }
         })();
         return () => { cancelled = true; };
     }, [isAthlete, setProfilePictureUrl]);
 
-    // Close menu when clicking outside
+    // Close avatar menu on outside click
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
                 setShowMenu(false);
             }
         };
-
-        if (showMenu) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        if (showMenu) document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [showMenu]);
 
-    // Get user initials - prefer displayName, fallback to email
-    const getInitial = () => {
-        // Show loading indicator while user is being fetched
-        if (loading && !firebaseUser) return '·';
+    // ⌘K / Ctrl+K — open command palette from anywhere
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                setShowPalette(true);
+            }
+        };
+        document.addEventListener('keydown', handler);
+        return () => document.removeEventListener('keydown', handler);
+    }, []);
 
-        // Try displayName first (from Firebase Auth)
+    const getInitials = (): string => {
+        if (loading && !firebaseUser) return '·';
         if (firebaseUser?.displayName) {
-            return firebaseUser.displayName[0].toUpperCase();
+            const parts = firebaseUser.displayName.trim().split(/\s+/);
+            return parts.length > 1
+                ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+                : parts[0].slice(0, 2).toUpperCase();
         }
-        // Fallback to email
-        if (firebaseUser?.email) {
-            return firebaseUser.email[0].toUpperCase();
-        }
+        if (firebaseUser?.email) return firebaseUser.email[0].toUpperCase();
         return '?';
     };
 
-
-    // Memoize avatar style to prevent re-applying backgroundImage on every render
     const avatarStyle = useMemo(
         () => profilePictureUrl ? { backgroundImage: `url(${profilePictureUrl})` } : undefined,
         [profilePictureUrl]
     );
 
     const displayName = firebaseUser?.displayName || firebaseUser?.email || 'User';
-    const shortDisplayName = firebaseUser?.displayName
-        ? firebaseUser.displayName.toUpperCase()
-        : (firebaseUser?.email?.split('@')[0] || 'USER').toUpperCase();
+    const email = firebaseUser?.email || '';
+    const shortName = (firebaseUser?.displayName || firebaseUser?.email?.split('@')[0] || 'User').toUpperCase();
 
     return (
-        <header className="app-header">
-            {/* Brand — .app-bar__brand pattern */}
-            <Link to="/" className="app-header__logo-link">
-                <span className="app-header__logo-icon" aria-hidden="true" />
-                <h1 className="app-header__logo">
-                    <span className="app-header__logo-fit">FIT</span>
-                    <span className="app-header__logo-glue">GLUE</span>
-                </h1>
-            </Link>
+        <>
+            <header className="app-nav" role="banner">
+                {/* Logo */}
+                <Link to="/" className="app-nav__logo" aria-label="FitGlue — go to dashboard">
+                    <span className="app-nav__logo-icon" aria-hidden="true" />
+                    <span className="app-nav__logo-wordmark" aria-hidden="true">
+                        <span className="app-nav__logo-fit">FIT</span>
+                        <span className="app-nav__logo-glue">GLUE</span>
+                    </span>
+                </Link>
 
-            {/* Primary nav — .app-bar__nav / .app-bar__link pattern */}
-            <nav className="app-header__nav">
-                <NavLink to="/" end className={({ isActive }) => `app-header__nav-link${isActive ? ' active' : ''}`}>
-                    Dashboard
-                </NavLink>
-                <NavLink to="/activities" className={({ isActive }) => `app-header__nav-link${isActive ? ' active' : ''}`}>
-                    Activities
-                </NavLink>
-                <NavLink to="/settings/pipelines" className={({ isActive }) => `app-header__nav-link${isActive ? ' active' : ''}`}>
-                    Pipelines
-                </NavLink>
-                <NavLink to="/connections" className={({ isActive }) => `app-header__nav-link${isActive ? ' active' : ''}`}>
-                    Connections
-                </NavLink>
-                {isAthlete && (
-                    <NavLink to="/settings/showcase" className={({ isActive }) => `app-header__nav-link${isActive ? ' active' : ''}`}>
-                        Showcase
-                    </NavLink>
-                )}
-            </nav>
-
-            {/* User section — .app-bar__user pattern */}
-            <div ref={menuRef} className="app-header__user-menu">
-                <button
-                    className={`app-header__avatar${profilePictureUrl ? ' app-header__avatar--has-image' : ''}`}
-                    onClick={() => setShowMenu(!showMenu)}
-                    aria-label="User menu"
-                    aria-expanded={showMenu}
-                    style={avatarStyle}
-                >
-                    {!profilePictureUrl && getInitial()}
-                    {isAthlete && (
-                        <span className="app-header__tier-badge">✦</span>
-                    )}
-                </button>
-
-                {/* User name + tier — visible on wider screens */}
-                <div className="app-header__user-info" aria-hidden="true">
-                    <span className="app-header__user-name">{shortDisplayName}</span>
-                    {isAthlete && (
-                        <span className="app-header__user-tier">✦ ATHLETE</span>
-                    )}
-                </div>
-
-                {showMenu && (
-                    <div className="app-header__dropdown">
-                        <div className="app-header__dropdown-header">
-                            <span className="app-header__dropdown-email">
-                                {displayName}
-                            </span>
-                        </div>
-                        <Link
-                            to="/settings/account"
-                            className="app-header__dropdown-item"
-                            onClick={() => setShowMenu(false)}
+                {/* Primary destinations — 5 max */}
+                <nav className="app-nav__primary" aria-label="Primary">
+                    {PRIMARY_NAV.map(item => (
+                        <NavLink
+                            key={item.key}
+                            to={item.to}
+                            end={item.end}
+                            className={({ isActive }) =>
+                                `app-nav__link${isActive ? ' app-nav__link--active' : ''}`
+                            }
                         >
-                            <span className="app-header__dropdown-icon">👤</span>
-                            Account
-                        </Link>
-                        <Link
-                            to="/settings/enricher-data"
-                            className="app-header__dropdown-item"
-                            onClick={() => setShowMenu(false)}
+                            {item.label}
+                        </NavLink>
+                    ))}
+                </nav>
+
+                {/* Right cluster */}
+                <div className="app-nav__cluster">
+                    {/* Search / command palette trigger */}
+                    <button
+                        className="app-nav__search"
+                        onClick={() => setShowPalette(true)}
+                        aria-label="Search"
+                        aria-keyshortcuts="Meta+K Control+K"
+                    >
+                        <span className="app-nav__search-label">⌕ SEARCH</span>
+                        <kbd className="app-nav__kbd">⌘K</kbd>
+                    </button>
+
+                    {/* Upload CTA — aurora gradient, always visible */}
+                    <button className="app-nav__upload" aria-label="Upload activity files">
+                        <span aria-hidden="true">↑</span> UPLOAD
+                    </button>
+
+                    {/* Notifications bell */}
+                    <button
+                        className="app-nav__notif"
+                        aria-label="0 unread notifications"
+                        aria-haspopup="true"
+                    >
+                        <span className="app-nav__bell" aria-hidden="true">🔔</span>
+                    </button>
+
+                    {/* Avatar trigger + menu */}
+                    <div ref={menuRef} className="app-nav__avatar-zone">
+                        <button
+                            className={`app-nav__avatar-trigger${showMenu ? ' app-nav__avatar-trigger--open' : ''}`}
+                            onClick={() => setShowMenu(v => !v)}
+                            aria-label="User menu"
+                            aria-expanded={showMenu}
+                            aria-haspopup="dialog"
                         >
-                            <span className="app-header__dropdown-icon">📊</span>
-                            Booster Data
-                        </Link>
-                        <Link
-                            to="/recipes"
-                            className="app-header__dropdown-item"
-                            onClick={() => setShowMenu(false)}
-                        >
-                            <span className="app-header__dropdown-icon">🧪</span>
-                            Recipes
-                        </Link>
-                        {isAthlete && (
-                            <Link
-                                to="/settings/showcase"
-                                className="app-header__dropdown-item"
-                                onClick={() => setShowMenu(false)}
+                            <div
+                                className={`app-nav__avatar-img${profilePictureUrl ? ' app-nav__avatar-img--photo' : ''}`}
+                                style={avatarStyle}
+                                aria-hidden="true"
                             >
-                                <span className="app-header__dropdown-icon">🌟</span>
-                                Manage Showcase
-                            </Link>
+                                {!profilePictureUrl && getInitials()}
+                            </div>
+                            <div className="app-nav__avatar-meta" aria-hidden="true">
+                                <span className="app-nav__avatar-name">{shortName}</span>
+                                {isAthlete && (
+                                    <span className="app-nav__avatar-plan">✦ ATHLETE</span>
+                                )}
+                            </div>
+                            <span className="app-nav__avatar-caret" aria-hidden="true">▾</span>
+                        </button>
+
+                        {showMenu && (
+                            <AvatarMenu
+                                displayName={displayName}
+                                email={email}
+                                initials={getInitials()}
+                                isAthlete={!!isAthlete}
+                                isAdmin={!!profile?.isAdmin}
+                                profilePictureUrl={profilePictureUrl || undefined}
+                                syncsThisMonth={profile?.syncCountThisMonth}
+                                onClose={() => setShowMenu(false)}
+                            />
                         )}
-                        {profile?.isAdmin && (
-                            <Link
-                                to="/admin"
-                                className="app-header__dropdown-item"
-                                onClick={() => setShowMenu(false)}
-                            >
-                                <span className="app-header__dropdown-icon">🛠️</span>
-                                Admin Console
-                            </Link>
-                        )}
-                        <a
-                            href="/help"
-                            className="app-header__dropdown-item"
-                            onClick={() => setShowMenu(false)}
-                        >
-                            <span className="app-header__dropdown-icon">📚</span>
-                            Help
-                        </a>
-                        <div className="app-header__dropdown-divider" />
-                        <a
-                            href="/auth/logout"
-                            className="app-header__dropdown-item app-header__dropdown-item--danger"
-                        >
-                            <span className="app-header__dropdown-icon">🚪</span>
-                            Logout
-                        </a>
                     </div>
-                )}
-            </div>
-        </header>
+                </div>
+            </header>
+
+            {showPalette && (
+                <CommandPalette onClose={() => setShowPalette(false)} />
+            )}
+        </>
     );
 };
