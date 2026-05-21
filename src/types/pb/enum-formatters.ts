@@ -1444,6 +1444,10 @@ const EnricherProviderTypeNames: Record<string, string> = {
     'AI_ACTIVITY_TYPE': 'Ai Activity Type',
     'Ai Activity Type': 'Ai Activity Type',
     '42': 'Ai Activity Type',
+    'ENRICHER_PROVIDER_ICAL_TITLE': 'Ical Title',
+    'ICAL_TITLE': 'Ical Title',
+    'Ical Title': 'Ical Title',
+    '43': 'Ical Title',
     'ENRICHER_PROVIDER_MOCK': 'Mock',
     'MOCK': 'Mock',
     'Mock': 'Mock',
@@ -1511,6 +1515,7 @@ export function formatEnricherProviderType(value: EnricherProviderType | number 
     case EnricherProviderType.ENRICHER_PROVIDER_PHOTO_UPLOAD: return 'Photo Upload';
     case EnricherProviderType.ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY: return 'Manual Workout Entry';
     case EnricherProviderType.ENRICHER_PROVIDER_AI_ACTIVITY_TYPE: return 'Ai Activity Type';
+    case EnricherProviderType.ENRICHER_PROVIDER_ICAL_TITLE: return 'Ical Title';
     case EnricherProviderType.ENRICHER_PROVIDER_MOCK: return 'Mock';
     default: return 'Unknown';
   }
@@ -1682,6 +1687,10 @@ const EnricherProviderTypeValues: Record<string, EnricherProviderType> = {
     'ai_activity_type': EnricherProviderType.ENRICHER_PROVIDER_AI_ACTIVITY_TYPE,
     'ai activity type': EnricherProviderType.ENRICHER_PROVIDER_AI_ACTIVITY_TYPE,
     '42': EnricherProviderType.ENRICHER_PROVIDER_AI_ACTIVITY_TYPE,
+    'enricher_provider_ical_title': EnricherProviderType.ENRICHER_PROVIDER_ICAL_TITLE,
+    'ical_title': EnricherProviderType.ENRICHER_PROVIDER_ICAL_TITLE,
+    'ical title': EnricherProviderType.ENRICHER_PROVIDER_ICAL_TITLE,
+    '43': EnricherProviderType.ENRICHER_PROVIDER_ICAL_TITLE,
     'enricher_provider_mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     'mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     '99': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
