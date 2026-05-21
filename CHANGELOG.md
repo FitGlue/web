@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.22.0](https://github.com/fitglue/web/compare/v11.21.0...v11.22.0) (2026-05-21)
+
+
+### Features
+
+* **pipeline-edit:** refactor edit page to wizard chrome with all 5 fixes ([87526ce](https://github.com/fitglue/web/commit/87526ce28c491970f6daa188132c58478113001b))
+
 ## [11.21.0](https://github.com/fitglue/web/compare/v11.20.1...v11.21.0) (2026-05-21)
 
 
