@@ -43,10 +43,16 @@
     .step:nth-child(3) { border-top: var(--fg-rule-thin); }
     .step:nth-child(4) { border-top: var(--fg-rule-thin); border-right: 0; }
   }
-  @media (max-width: 600px) {
-    .steps-grid { grid-template-columns: 1fr; padding: 0 16px 48px; }
+  @media (max-width: 720px) {
+    .steps-grid { grid-template-columns: 1fr; }
     .step { border-right: 0; border-bottom: var(--fg-rule-thin); }
+    .step:nth-child(3) { border-top: 0; }
+    .step:nth-child(4) { border-top: 0; }
     .step:last-child { border-bottom: 0; }
+    .step__n { font-size: 3rem; }
+  }
+  @media (max-width: 600px) {
+    .steps-grid { padding: 0 16px 48px; }
     .ph { padding: 40px 16px; }
     .hiw-faq { padding: 48px 16px; }
     .hiw-cta { padding: 48px 16px; }

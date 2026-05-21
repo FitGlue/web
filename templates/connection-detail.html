@@ -1,103 +1,162 @@
 {{> header}}
 
 <main>
+<style>
+  /* ── Page heading ── */
+  .ph { padding: 56px 32px; max-width: 1280px; margin: 0 auto; }
+  .ph__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .ph__eyebrow a { color: inherit; text-decoration: none; }
+  .ph__title { font-family: var(--fg-font-display); font-size: clamp(2rem, 6vw, 4rem); line-height: .95; letter-spacing: -.04em; text-transform: uppercase; margin: 14px 0; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .ph__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ph__icon { font-size: clamp(2rem, 5vw, 3rem); line-height: 1; }
+  .ph__icon-img { width: clamp(2rem, 5vw, 3rem); height: clamp(2rem, 5vw, 3rem); object-fit: contain; }
+  .ph__sub { font-family: var(--fg-font-body); font-size: 1.125rem; color: var(--color-text-muted); line-height: 1.55; max-width: 640px; }
+  .ph__badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .badge { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; padding: 4px 10px; text-transform: uppercase; }
+  .badge--live { background: var(--gradient-primary); color: var(--fg-ink); }
+  .badge--soon { background: var(--fg-ink-3); color: var(--color-text-muted); border: 1.5px solid rgba(245,243,235,.15); }
+
+  /* ── Bands ── */
+  .dark-band { padding: 14px 32px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); border-top: var(--fg-rule-thin); display: flex; justify-content: space-between; align-items: center; }
+  .dark-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-paper); text-transform: uppercase; }
+  .dark-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
+  .feat-band { padding: 14px 32px; background: var(--gradient-primary); display: flex; justify-content: space-between; align-items: center; }
+  .feat-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-ink); text-transform: uppercase; }
+  .feat-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--fg-ink); opacity: .7; text-transform: uppercase; }
+
+  /* ── Content container ── */
+  .content-wrap { padding: 48px 32px; max-width: 860px; margin: 0 auto; }
+
+  /* ── Feature list ── */
+  .item-list { padding: 0 32px 32px; max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; list-style: none; }
+  .item-list li { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); line-height: 1.55; padding: 12px 16px; background: var(--fg-ink-2); border-left: 3px solid transparent; transition: border-color .12s ease; }
+  .item-list li:hover { border-left-color: var(--fg-cyan); }
+
+  /* ── Setup steps ── */
+  .setup-steps { padding: 0 32px 48px; max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 0; }
+  .setup-step { display: grid; grid-template-columns: 48px 1fr; gap: 20px; align-items: start; padding: 20px 0; border-bottom: var(--fg-rule-thin); }
+  .setup-step:last-child { border-bottom: 0; }
+  .setup-step__n { font-family: var(--fg-font-display); font-size: 2rem; line-height: 1; letter-spacing: -.04em; background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .setup-step__title { font-family: var(--fg-font-display); font-size: 1.125rem; letter-spacing: -.015em; text-transform: uppercase; margin-bottom: 6px; }
+  .setup-step__desc { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); line-height: 1.55; }
+
+  /* ── Privacy block ── */
+  .privacy-block { padding: 0 32px 48px; max-width: 860px; margin: 0 auto; }
+  .privacy-block__inner { background: var(--fg-ink-2); border: var(--fg-rule-thin); padding: 28px 32px; }
+  .privacy-block__icon { font-size: 1.5rem; margin-bottom: 10px; }
+  .privacy-block__text { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); line-height: 1.6; }
+
+  /* ── CTA ── */
+  .plugin-cta { padding: 64px 32px; text-align: center; border-top: var(--fg-rule-thin); }
+  .plugin-cta__title { font-family: var(--fg-font-display); font-size: clamp(1.75rem, 4vw, 2.5rem); letter-spacing: -.025em; text-transform: uppercase; margin-bottom: 24px; }
+  .plugin-cta__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn-aurora { display: inline-flex; align-items: center; gap: 6px; padding: 14px 24px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; text-decoration: none; }
+
+  @media (max-width: 900px) {
+    .item-list { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .ph { padding: 40px 16px; }
+    .content-wrap { padding: 32px 16px; }
+    .item-list, .setup-steps, .privacy-block { padding-left: 16px; padding-right: 16px; }
+    .dark-band, .feat-band { padding-left: 16px; padding-right: 16px; }
+    .privacy-block__inner { padding: 20px; }
+  }
+</style>
+
   <!-- Hero -->
-  <section class="about-hero">
-    <div class="container">
-      <nav class="breadcrumb animate-on-scroll">
-        <a href="/features">Features</a> / Connections / <span>{{name}}</span>
-      </nav>
-      <h1 class="text-center animate-on-scroll">
-        {{#if iconPath}}
-          <img src="{{iconPath}}" alt="" class="integration-hero-icon integration-hero-icon-{{iconType}}" />
-        {{else}}
-          <span class="integration-hero-emoji">{{icon}}</span>
-        {{/if}}
-        <span class="text-gradient">{{name}}</span>
-      </h1>
-      <p class="text-center text-muted" style="max-width: 600px; margin: var(--space-md) auto 0;">
-        {{description}}
-      </p>
-      <div class="hero-badges">
-        {{#if isTemporarilyUnavailable}}
-          <span class="coming-badge">Coming Soon</span>
-        {{else}}
-          <span class="integration-status live">Live</span>
-        {{/if}}
+  <div class="ph">
+    <div class="ph__eyebrow">
+      <a href="/connections">CONNECTIONS</a> / {{name}}
+    </div>
+    <h1 class="ph__title">
+      {{#if iconPath}}
+        <img src="{{iconPath}}" alt="" class="ph__icon-img" />
+      {{else}}
+        <span class="ph__icon">{{icon}}</span>
+      {{/if}}
+      <span class="gr">{{name}}</span>
+    </h1>
+    <p class="ph__sub">{{description}}</p>
+    <div class="ph__badges">
+      {{#if isTemporarilyUnavailable}}
+        <span class="badge badge--soon">COMING SOON</span>
+      {{else}}
+        <span class="badge badge--live">LIVE</span>
+      {{/if}}
+    </div>
+  </div>
+
+  {{#if marketingHtml}}
+  <div class="dark-band">
+    <span class="dark-band__label">ABOUT {{name}}</span>
+  </div>
+  <div class="content-wrap">
+    <div class="fg-prose">{{{marketingHtml}}}</div>
+  </div>
+  {{/if}}
+
+  {{#if features.length}}
+  <div class="dark-band">
+    <span class="dark-band__label">FEATURES</span>
+    <span class="dark-band__right">{{features.length}} INCLUDED</span>
+  </div>
+  <ul class="item-list">
+    {{#each features}}
+    <li>{{this}}</li>
+    {{/each}}
+  </ul>
+  {{/if}}
+
+  <div class="feat-band">
+    <span class="feat-band__label">HOW TO CONNECT</span>
+    {{#if isOAuth}}<span class="feat-band__right">OAUTH 2.0 — NO PASSWORD NEEDED</span>{{else}}<span class="feat-band__right">API KEY</span>{{/if}}
+  </div>
+  {{#if hasSetupSteps}}
+  <div class="setup-steps">
+    {{#each setupSteps}}
+    <div class="setup-step">
+      <div class="setup-step__n">{{number}}</div>
+      <div>
+        <div class="setup-step__title">{{title}}</div>
+        <div class="setup-step__desc">{{description}}</div>
       </div>
     </div>
-  </section>
+    {{/each}}
+  </div>
+  {{else if setupInstructions}}
+  <div class="content-wrap">
+    <p style="font-family:var(--fg-font-body);font-size:.9375rem;color:var(--color-text-muted);line-height:1.6;">{{setupInstructions}}</p>
+  </div>
+  {{else}}
+  <div class="content-wrap">
+    <p style="font-family:var(--fg-font-body);font-size:.9375rem;color:var(--color-text-muted);">Connect {{name}} inside the app — tap Connections and follow the prompts.</p>
+  </div>
+  {{/if}}
 
-  <!-- About -->
-  <section class="section">
-    <div class="container" style="max-width: 800px;">
-      {{#if marketingHtml}}
-        <div class="markdown-content fg-prose animate-on-scroll">
-          {{{marketingHtml}}}
-        </div>
-      {{/if}}
-
-      {{#if features.length}}
-        <div class="fg-band fg-band--sm fg-band--ink animate-on-scroll" style="margin: var(--space-lg) 0 var(--space-md)">
-          <span class="fg-band__label">Features</span>
-        </div>
-        <ul class="feature-list animate-on-scroll">
-          {{#each features}}
-            <li>{{this}}</li>
-          {{/each}}
-        </ul>
-      {{/if}}
-
-      <div class="fg-band fg-band--sm animate-on-scroll" style="margin: var(--space-lg) 0 var(--space-md)">
-        <span class="fg-band__label">How to Connect</span>
-      </div>
-      {{#if hasSetupSteps}}
-        <div class="setup-steps-list animate-on-scroll">
-          {{#each setupSteps}}
-            <div class="setup-step">
-              <div class="step-number">{{number}}</div>
-              <div class="step-content">
-                <h4>{{title}}</h4>
-                <p>{{description}}</p>
-              </div>
-            </div>
-          {{/each}}
-        </div>
-      {{else if setupInstructions}}
-        <div class="setup-instructions animate-on-scroll">
-          <p>{{setupInstructions}}</p>
-        </div>
-      {{else}}
-        <p class="text-muted text-center animate-on-scroll">Setup instructions will appear here when you connect in the
-          app.</p>
-      {{/if}}
-
-      <div class="fg-band fg-band--sm fg-band--ink animate-on-scroll" style="margin: var(--space-lg) 0 var(--space-md)">
-        <span class="fg-band__label">Privacy & Security</span>
-      </div>
-      <p class="text-center animate-on-scroll">
+  <div class="dark-band">
+    <span class="dark-band__label">PRIVACY &amp; SECURITY</span>
+    <span class="dark-band__right">YOUR DATA STAYS YOURS</span>
+  </div>
+  <div class="privacy-block">
+    <div class="privacy-block__inner">
+      <div class="privacy-block__icon">🔒</div>
+      <p class="privacy-block__text">
         Your connection is secured with industry-standard encryption.
         {{#if isOAuth}}
-          FitGlue uses secure OAuth 2.0 authentication. We never see your password, and you can
-          revoke access at any time from your {{name}} account settings.
+          FitGlue uses secure OAuth 2.0 — we never see your password. You can revoke access at any time directly from your {{name}} account settings.
         {{else}}
-          Your API key is encrypted and stored securely. You can regenerate or revoke your key
-          at any time from the {{name}} settings.
+          Your API key is encrypted and stored securely. You can regenerate or revoke your key at any time from {{name}} settings.
         {{/if}}
       </p>
     </div>
-  </section>
+  </div>
 
   <!-- CTA -->
-  <section class="cta-section">
-    <div class="container">
-      <div class="cta-content">
-        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Connect {{name}}</span>?</h2>
-        <p class="cta-subtitle animate-on-scroll">Start syncing your {{name}} data automatically.</p>
-        <a href="/app/register" class="btn btn-primary btn-lg animate-on-scroll">Get Started →</a>
-      </div>
-    </div>
-  </section>
+  <div class="plugin-cta">
+    <p class="plugin-cta__title">Ready to connect <span class="gr">{{name}}</span>?</p>
+    <a href="/auth/register" class="btn-aurora">GET STARTED FREE →</a>
+  </div>
 </main>
 
 {{> footer}}

@@ -7786,3 +7786,164 @@ h4 {
   .lp-pillar { border-right: 0; border-bottom: 1px solid rgba(240,238,230,0.08); padding: 36px 20px; }
   .lp-pillar:last-child { border-bottom: 0; }
 }
+
+/* ============================================================
+   BRUTAL × AURORA — Guide & Help page overrides
+   Brings .guide-hero and .about-hero to flat left-aligned style
+   ============================================================ */
+
+.guide-hero,
+.about-hero {
+  padding: 56px 32px 48px;
+  background: transparent;
+  text-align: left;
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.guide-hero::before,
+.about-hero::before { display: none; }
+
+.guide-hero .container,
+.about-hero .container { max-width: 100%; padding: 0; margin: 0; }
+
+.guide-hero .breadcrumb,
+.about-hero .breadcrumb { justify-content: flex-start; margin-bottom: 14px; }
+
+.guide-title {
+  font-family: var(--fg-font-display);
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  line-height: .95;
+  letter-spacing: -.035em;
+  text-transform: uppercase;
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.about-hero h1 {
+  font-family: var(--fg-font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: .95;
+  letter-spacing: -.04em;
+  text-transform: uppercase;
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.guide-excerpt { text-align: left; margin-left: 0; margin-right: 0; }
+
+.about-hero p.text-muted { text-align: left; margin-left: 0; margin-right: 0; }
+
+.guide-meta {
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+
+.guide-quick-start {
+  padding: 0;
+  border-top: var(--fg-rule-thin);
+  border-bottom: var(--fg-rule-thin);
+}
+
+.quick-start-banner {
+  background: var(--fg-ink-2);
+  border: 0;
+  border-radius: 0;
+  padding: 14px 32px;
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.quick-start-badge {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  font-family: var(--fg-font-mono);
+  font-size: .5625rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  padding: 4px 10px;
+  border-radius: 0;
+}
+
+.guide-sidebar .sidebar-section,
+.guide-sidebar .sidebar-cta {
+  background: var(--fg-ink-2);
+  border: var(--fg-rule-thin);
+  border-radius: 0;
+  padding: 20px 24px;
+  margin-bottom: 2px;
+}
+
+.guide-sidebar .sidebar-section h4,
+.guide-sidebar .sidebar-cta h4 {
+  font-family: var(--fg-font-display);
+  font-size: .875rem;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  color: var(--fg-paper);
+}
+
+.guide-sidebar .sidebar-section p,
+.guide-sidebar .sidebar-cta p {
+  font-family: var(--fg-font-body);
+  font-size: .875rem;
+  color: var(--color-text-muted);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.guide-sidebar .related-guides-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; }
+
+.guide-sidebar .related-guides-list a {
+  font-family: var(--fg-font-body);
+  font-size: .875rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  padding: 5px 0 5px 10px;
+  display: block;
+  border-left: 2px solid transparent;
+  transition: border-color .12s ease, color .12s ease;
+}
+
+.guide-sidebar .related-guides-list a:hover { border-left-color: var(--fg-cyan); color: var(--fg-paper); }
+
+.author-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--fg-ink-2);
+  border: var(--fg-rule-thin);
+  border-radius: 0;
+  margin-top: 32px;
+}
+
+.author-box h4 { font-family: var(--fg-font-display); font-size: .9375rem; letter-spacing: -.01em; text-transform: uppercase; margin: 0 0 4px; }
+.author-box p { font-family: var(--fg-font-body); font-size: .8125rem; color: var(--color-text-muted); margin: 0; }
+
+.guide-content .feature-highlight {
+  background: var(--fg-ink-2);
+  border: var(--fg-rule-thin);
+  border-radius: 0;
+  padding: 24px;
+  margin: 24px 0;
+}
+
+.transformation-card { background: var(--fg-ink-2); border: var(--fg-rule-thin); border-radius: 0; }
+
+.pipeline-import-section { background: var(--fg-ink-2); border: var(--fg-rule-thin); border-radius: 0; padding: 32px; margin: 32px 0; }
+
+@media (max-width: 600px) {
+  .guide-hero,
+  .about-hero { padding: 40px 16px 32px; }
+  .quick-start-banner { padding: 14px 16px; }
+}

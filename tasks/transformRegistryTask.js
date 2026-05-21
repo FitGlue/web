@@ -67,14 +67,16 @@ export function transformRegistryTask() {
       const comingSoonConnections = allConnections.filter((/** @type {any} */ c) => c.isTemporarilyUnavailable);
 
       // Plugin lists with detailsUrls
-      const boosters = (registry.enrichers || []).map((/** @type {any} */ e) => ({
-        ...e,
-        detailsUrl: `/plugins/boosters/${e.id}`,
-        // Ensure premium flag is boolean for templates
-        isPremium: !!e.isPremium,
-        // Preserve temporarily unavailable status for "Coming Soon" banners
-        isTemporarilyUnavailable: !!e.isTemporarilyUnavailable,
-      }));
+      const boosters = (registry.enrichers || [])
+        .filter((/** @type {any} */ e) => e.enabled !== false)
+        .map((/** @type {any} */ e) => ({
+          ...e,
+          detailsUrl: `/plugins/boosters/${e.id}`,
+          // Ensure premium flag is boolean for templates
+          isPremium: !!e.isPremium,
+          // Preserve temporarily unavailable status for "Coming Soon" banners
+          isTemporarilyUnavailable: !!e.isTemporarilyUnavailable,
+        }));
       const sources = (registry.sources || []).map((/** @type {any} */ s) => ({
         ...s,
         detailsUrl: `/plugins/sources/${s.id}`,
@@ -114,26 +116,29 @@ export function transformRegistryTask() {
         { id: 'logic', name: 'Workflow & Logic', emoji: '⚙️', rightLabel: 'CONTROL FLOW & ROUTING' },
       ];
 
+      const KNOWN_CATEGORY_IDS = new Set(ENRICHER_CATEGORIES.map((c) => c.id));
+      const sortPlugins = (/** @type {any} */ a, /** @type {any} */ b) => {
+        if (a.isTemporarilyUnavailable !== b.isTemporarilyUnavailable) return a.isTemporarilyUnavailable ? 1 : -1;
+        if (a.isPremium !== b.isPremium) return a.isPremium ? -1 : 1;
+        return (a.name || '').localeCompare(b.name || '');
+      };
+
       // Group boosters by category for marketing templates (Pro/Premium first)
-      const boostersByCategory = ENRICHER_CATEGORIES
-        .map((cat) => ({
-          ...cat,
-          plugins: boosters
-            .filter((/** @type {any} */ b) => b.category === cat.id)
-            .sort((/** @type {any} */ a, /** @type {any} */ b) => {
-              // Available items before "Coming Soon"
-              if (a.isTemporarilyUnavailable !== b.isTemporarilyUnavailable) {
-                return a.isTemporarilyUnavailable ? 1 : -1;
-              }
-              // Pro (isPremium) boosters first
-              if (a.isPremium !== b.isPremium) {
-                return a.isPremium ? -1 : 1;
-              }
-              // Then alphabetically A-Z
-              return (a.name || '').localeCompare(b.name || '');
-            }),
-        }))
-        .filter((cat) => cat.plugins.length > 0);
+      const boostersByCategory = [
+        ...ENRICHER_CATEGORIES
+          .map((cat) => ({
+            ...cat,
+            plugins: boosters.filter((/** @type {any} */ b) => b.category === cat.id).sort(sortPlugins),
+          }))
+          .filter((cat) => cat.plugins.length > 0),
+        // Fallback: any enricher whose category isn't in the known list
+        (() => {
+          const uncategorized = boosters.filter((/** @type {any} */ b) => !KNOWN_CATEGORY_IDS.has(b.category));
+          return uncategorized.length > 0
+            ? { id: 'other', name: 'Other', emoji: '🔧', rightLabel: 'MISCELLANEOUS', plugins: uncategorized.sort(sortPlugins) }
+            : null;
+        })(),
+      ].filter(Boolean);
 
       // Grouped by type for help articles — Sources, Boosters, Destinations, Connections.
       // Excludes disabled/internal plugins (mock, parkrun_results).

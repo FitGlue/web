@@ -1,70 +1,99 @@
 {{> header}}
 
 <main>
-  <!-- Article Hero -->
-  <section class="guide-hero">
-    <div class="container">
-      <nav class="breadcrumb animate-on-scroll">
-        <a href="/">Home</a> /
-        <a href="/help">Help</a> /
-        <a href="/help/articles">Articles</a>{{#if breadcrumbSegments}}{{#each breadcrumbSegments}} /
-        <a href="{{url}}">{{label}}</a>{{/each}}{{/if}} /
-        <span>{{title}}</span>
-      </nav>
-      <h1 class="guide-title animate-on-scroll">{{title}}</h1>
-      {{#if excerpt}}
-      <div class="guide-excerpt animate-on-scroll">{{{excerpt}}}</div>
-      {{/if}}
-      <div class="guide-meta animate-on-scroll">
-        {{#if dateDisplay}}
-        <span class="guide-date">📅 {{dateDisplay}}</span>
-        {{/if}}
-      </div>
+<style>
+  /* ── Layout ── */
+  .art-wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px 64px; display: grid; grid-template-columns: 1fr 280px; gap: 48px; align-items: start; }
+
+  /* ── Hero ── */
+  .art-hero { padding: 56px 32px 48px; max-width: 1280px; margin: 0 auto; }
+  .art-hero__eyebrow { font-family: var(--fg-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 14px; }
+  .art-hero__eyebrow a { color: inherit; text-decoration: none; }
+  .art-hero__title { font-family: var(--fg-font-display); font-size: clamp(1.75rem, 5vw, 3rem); line-height: .95; letter-spacing: -.035em; text-transform: uppercase; }
+  .art-hero__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .art-hero__meta { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .12em; color: var(--color-text-muted); text-transform: uppercase; margin-top: 14px; }
+
+  /* ── Dark band ── */
+  .dark-band { padding: 14px 32px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); border-top: var(--fg-rule-thin); display: flex; justify-content: space-between; align-items: center; margin-bottom: 0; }
+  .dark-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-paper); text-transform: uppercase; }
+
+  /* ── Article ── */
+  .art-body { min-width: 0; }
+
+  /* ── Sidebar ── */
+  .art-sidebar { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 2px; }
+  .sidebar-card { background: var(--fg-ink-2); border: var(--fg-rule-thin); padding: 20px 24px; }
+  .sidebar-card__title { font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: -.01em; text-transform: uppercase; margin-bottom: 12px; }
+  .sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .sidebar-nav a { font-family: var(--fg-font-body); font-size: .875rem; color: var(--color-text-muted); text-decoration: none; padding: 4px 0; display: block; border-left: 2px solid transparent; padding-left: 10px; transition: border-color .12s ease, color .12s ease; }
+  .sidebar-nav a:hover { border-left-color: var(--fg-cyan); color: var(--fg-paper); }
+  .sidebar-cta { margin-top: 2px; }
+  .sidebar-cta__text { font-family: var(--fg-font-body); font-size: .875rem; color: var(--color-text-muted); line-height: 1.5; margin-bottom: 12px; }
+  .btn-aurora { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; text-decoration: none; }
+
+  /* ── Page CTA ── */
+  .art-cta { padding: 64px 32px; text-align: center; border-top: var(--fg-rule-thin); }
+  .art-cta__title { font-family: var(--fg-font-display); font-size: clamp(1.5rem, 3.5vw, 2.25rem); letter-spacing: -.025em; text-transform: uppercase; margin-bottom: 20px; }
+  .art-cta__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn-aurora-lg { display: inline-flex; align-items: center; gap: 6px; padding: 14px 28px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; text-decoration: none; }
+
+  @media (max-width: 860px) {
+    .art-wrap { grid-template-columns: 1fr; gap: 32px; }
+    .art-sidebar { position: static; }
+  }
+  @media (max-width: 600px) {
+    .art-hero { padding: 40px 16px 32px; }
+    .art-wrap { padding: 0 16px 48px; }
+    .dark-band { padding-left: 16px; padding-right: 16px; }
+    .art-cta { padding: 48px 16px; }
+  }
+</style>
+
+  <!-- Hero -->
+  <div class="art-hero">
+    <div class="art-hero__eyebrow">
+      <a href="/">HOME</a> /
+      <a href="/help">HELP</a> /
+      <a href="/help/articles">ARTICLES</a>
+      {{#if breadcrumbSegments}}{{#each breadcrumbSegments}} / <a href="{{url}}">{{label}}</a>{{/each}}{{/if}}
+      / {{title}}
     </div>
-  </section>
+    <h1 class="art-hero__title"><span class="gr">{{title}}</span></h1>
+    {{#if dateDisplay}}<div class="art-hero__meta">📅 {{dateDisplay}}</div>{{/if}}
+  </div>
 
-  <!-- Article Content -->
-  <section class="section">
-    <div class="container">
-      <div class="guide-layout">
-        <article class="guide-article">
-          <div class="guide-content integration-content fg-prose">
-            {{{content}}}
-          </div>
-        </article>
+  <div class="dark-band">
+    <span class="dark-band__label">ARTICLE</span>
+  </div>
 
-        <!-- Sidebar -->
-        <aside class="guide-sidebar">
-          <div class="sidebar-section animate-on-scroll">
-            <h4>📚 More Help</h4>
-            <ul class="related-guides-list">
-              <li><a href="/help">Help Hub</a></li>
-              <li><a href="/help/faq">FAQ</a></li>
-              <li><a href="/guides">Guides</a></li>
-              <li><a href="/contact">Contact</a></li>
-            </ul>
-          </div>
+  <div class="art-wrap">
+    <article class="art-body">
+      <div class="fg-prose">{{{content}}}</div>
+    </article>
 
-          <div class="sidebar-cta animate-on-scroll">
-            <h4>Need more help?</h4>
-            <p>We're here for you.</p>
-            <a href="mailto:support@fitglue.tech" class="btn btn-primary btn-sm">Email Support</a>
-          </div>
-        </aside>
+    <aside class="art-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-card__title">More Help</div>
+        <ul class="sidebar-nav">
+          <li><a href="/help">Help Hub</a></li>
+          <li><a href="/help/faq">FAQ</a></li>
+          <li><a href="/guides">Guides</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
       </div>
-    </div>
-  </section>
+      <div class="sidebar-card sidebar-cta">
+        <div class="sidebar-card__title">Need support?</div>
+        <p class="sidebar-cta__text">We're here for you.</p>
+        <a href="mailto:support@fitglue.tech" class="btn-aurora">EMAIL SUPPORT →</a>
+      </div>
+    </aside>
+  </div>
 
   <!-- CTA -->
-  <section class="cta-section">
-    <div class="container">
-      <div class="cta-content">
-        <h2 class="cta-title animate-on-scroll">Ready to <span class="text-gradient">Transform</span> Your Fitness Data?</h2>
-        <p class="cta-subtitle animate-on-scroll">Start your 30-day free Athlete trial. No credit card required.</p>
-        <a href="/auth/register" class="btn btn-primary btn-lg animate-on-scroll">Get Started Free →</a>
-      </div>
-    </div>
-  </section>
+  <div class="art-cta">
+    <p class="art-cta__title">Ready to <span class="gr">get started?</span></p>
+    <a href="/auth/register" class="btn-aurora-lg">START FREE →</a>
+  </div>
 </main>
 
 {{> footer}}
