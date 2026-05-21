@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.20.1](https://github.com/fitglue/web/compare/v11.20.0...v11.20.1) (2026-05-21)
+
+
+### Bug Fixes
+
+* **activity-detail:** restyle magic actions popover to Brutal x Aurora ([eacead2](https://github.com/fitglue/web/commit/eacead2b82d3edd58e7be193950a2e3cfd0a71c4))
+
 ## [11.20.0](https://github.com/fitglue/web/compare/v11.19.1...v11.20.0) (2026-05-21)
 
 
