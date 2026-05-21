@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.19.1](https://github.com/fitglue/web/compare/v11.19.0...v11.19.1) (2026-05-21)
+
+
+### Bug Fixes
+
+* **activity-detail:** compact header, single booster list, pre-wrap AI summary ([0570afd](https://github.com/fitglue/web/commit/0570afdeab02676d1f2ff1a18c0267a4a9c078ee))
+
 ## [11.19.0](https://github.com/fitglue/web/compare/v11.18.0...v11.19.0) (2026-05-21)
 
 
