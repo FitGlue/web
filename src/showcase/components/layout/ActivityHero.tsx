@@ -1,9 +1,11 @@
 import React from 'react';
 import type { components } from '../../../shared/api/schema-public';
-import { resolveCategory, CATEGORY_STAMP_CLASS, CATEGORY_EMOJI } from '../../utils/activityCategory';
+import { resolveCategory, CATEGORY_STAMP_CLASS } from '../../utils/activityCategory';
 import { getActivityIcon } from '../../utils/activityMeta';
+import { formatSource } from '../../utils/format';
 
 type ShowcasedActivity = components['schemas']['ShowcasedActivity'];
+type Session = components['schemas']['Session'];
 
 function formatDuration(s: number): string {
   if (s <= 0) return '—';
@@ -18,24 +20,24 @@ function formatDuration(s: number): string {
 function formatDistanceKm(m: number): string {
   if (m <= 0) return '—';
   const km = m / 1000;
-  return km >= 10 ? `${km.toFixed(1)} km` : `${km.toFixed(2)} km`;
+  return km >= 10 ? km.toFixed(1) : km.toFixed(2);
 }
 
 function formatPace(secsPerKm: number): string {
   if (secsPerKm <= 0) return '—';
   const m = Math.floor(secsPerKm / 60);
   const s = Math.round(secsPerKm % 60);
-  return `${m}:${String(s).padStart(2, '0')}/km`;
+  return `${m}:${String(s).padStart(2, '0')}`;
 }
 
 function totalSessionValue(
-  sessions: components['schemas']['Session'][] | undefined,
+  sessions: Session[] | undefined,
   key: 'totalElapsedTime' | 'totalDistance'
 ): number {
   return (sessions ?? []).reduce((sum, s) => sum + (s[key] ?? 0), 0);
 }
 
-function totalWeight(sessions: components['schemas']['Session'][] | undefined): number {
+function totalWeightKg(sessions: Session[] | undefined): number {
   let kg = 0;
   for (const s of sessions ?? []) {
     for (const set of s.strengthSets ?? []) {
@@ -45,8 +47,14 @@ function totalWeight(sessions: components['schemas']['Session'][] | undefined): 
   return kg;
 }
 
-function totalSets(sessions: components['schemas']['Session'][] | undefined): number {
+function totalSets(sessions: Session[] | undefined): number {
   return (sessions ?? []).reduce((sum, s) => sum + (s.strengthSets?.length ?? 0), 0);
+}
+
+interface AnchorStat {
+  value: string;
+  unit?: string;
+  label: string;
 }
 
 interface Props {
@@ -56,125 +64,149 @@ interface Props {
 export default function ActivityHero({ activity }: Props): React.ReactElement {
   const category = resolveCategory(activity);
   const stampClass = CATEGORY_STAMP_CLASS[category];
-  const emoji = getActivityIcon(activity.activityType) || CATEGORY_EMOJI[category];
-  const sessions = activity.activityData?.sessions;
+  const emoji = getActivityIcon(activity.activityType) || '🏃';
+  const sessions = activity.activityData?.sessions as Session[] | undefined;
   const enrichments = activity.enrichments;
+
+  const hasBanner = !!enrichments?.aiBanner?.imageUrl;
+  const sectionClass = `activity-hero-section${hasBanner ? ' activity-hero-section--with-banner' : ''}`;
 
   const durationSecs = totalSessionValue(sessions, 'totalElapsedTime');
   const distanceM = totalSessionValue(sessions, 'totalDistance');
   const avgBpm = enrichments?.heartRate?.avgBpm ?? 0;
+  const maxBpm = enrichments?.heartRate?.maxBpm ?? 0;
   const calories = enrichments?.calories?.kcal ?? 0;
   const locationName = enrichments?.location?.locationName;
   const prCount = enrichments?.personalRecords?.records?.length ?? 0;
-  const hasBanner = !!enrichments?.aiBanner?.imageUrl;
   const boosterCount = (activity.appliedEnrichments ?? []).length;
+  const sourceLabel = activity.source ? `VIA ${formatSource(activity.source).toUpperCase()}` : null;
+  const dateLabel = activity.startTime
+    ? new Date(activity.startTime).toLocaleDateString('en-GB', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }).toUpperCase()
+    : null;
+
+  // 4-column anchor stats by category
+  const anchorStats: AnchorStat[] = [];
+
+  if (category === 'cardio-distance') {
+    anchorStats.push({ value: distanceM > 0 ? formatDistanceKm(distanceM) : '—', unit: 'KM', label: 'Distance' });
+    anchorStats.push({ value: durationSecs > 0 ? formatDuration(durationSecs) : '—', label: 'Time' });
+    if (enrichments?.pace?.avgPaceSecondsPerKm && enrichments.pace.avgPaceSecondsPerKm > 0) {
+      anchorStats.push({ value: formatPace(enrichments.pace.avgPaceSecondsPerKm), unit: '/KM', label: 'Avg Pace' });
+    } else if (durationSecs > 0 && distanceM > 0) {
+      anchorStats.push({ value: formatPace(durationSecs / (distanceM / 1000)), unit: '/KM', label: 'Avg Pace' });
+    } else {
+      anchorStats.push({ value: '—', label: 'Avg Pace' });
+    }
+    anchorStats.push({ value: avgBpm > 0 ? String(avgBpm) : '—', unit: avgBpm > 0 ? 'BPM' : undefined, label: 'Avg HR' });
+  } else if (category === 'cardio-time') {
+    anchorStats.push({ value: durationSecs > 0 ? String(Math.round(durationSecs / 60)) : '—', unit: 'MIN', label: 'Duration' });
+    anchorStats.push({ value: avgBpm > 0 ? String(avgBpm) : '—', unit: avgBpm > 0 ? 'BPM' : undefined, label: 'Avg HR' });
+    anchorStats.push({ value: maxBpm > 0 ? String(maxBpm) : '—', unit: maxBpm > 0 ? 'BPM' : undefined, label: 'Max HR' });
+    anchorStats.push({ value: calories > 0 ? String(calories) : '—', unit: calories > 0 ? 'KCAL' : undefined, label: 'Calories' });
+  } else if (category === 'strength') {
+    const sets = totalSets(sessions);
+    const weightKg = totalWeightKg(sessions);
+    anchorStats.push({ value: sets > 0 ? String(sets) : '—', label: 'Sets' });
+    anchorStats.push({ value: weightKg > 0 ? Math.round(weightKg).toLocaleString() : '—', unit: weightKg > 0 ? 'KG' : undefined, label: 'Volume Moved' });
+    anchorStats.push({ value: durationSecs > 0 ? String(Math.round(durationSecs / 60)) : '—', unit: durationSecs > 0 ? 'MIN' : undefined, label: 'Duration' });
+    anchorStats.push({ value: prCount > 0 ? `+${prCount}` : '—', label: 'Personal Records' });
+  } else if (category === 'sport') {
+    anchorStats.push({ value: durationSecs > 0 ? String(Math.round(durationSecs / 60)) : '—', unit: durationSecs > 0 ? 'MIN' : undefined, label: 'Duration' });
+    anchorStats.push({ value: avgBpm > 0 ? String(avgBpm) : '—', unit: avgBpm > 0 ? 'BPM' : undefined, label: 'Avg HR' });
+    anchorStats.push({ value: calories > 0 ? String(calories) : '—', unit: calories > 0 ? 'KCAL' : undefined, label: 'Calories' });
+    anchorStats.push({ value: emoji, label: 'Activity Type' });
+  } else {
+    // untraditional
+    anchorStats.push({ value: durationSecs > 0 ? String(Math.round(durationSecs / 60)) : '—', unit: durationSecs > 0 ? 'MIN' : undefined, label: 'Duration' });
+    if (avgBpm > 0) anchorStats.push({ value: String(avgBpm), unit: 'BPM', label: 'Avg HR' });
+    if (calories > 0) anchorStats.push({ value: String(calories), unit: 'KCAL', label: 'Calories' });
+    if (distanceM > 0) anchorStats.push({ value: formatDistanceKm(distanceM), unit: 'KM', label: 'Distance' });
+    // Pad to 4 stats if needed
+    while (anchorStats.length < 4) anchorStats.push({ value: '—', label: '—' });
+  }
+
+  // Trim to exactly 4 stats
+  const stats = anchorStats.slice(0, 4);
+
+  const locationPart = locationName ? ` · 🌍 ${locationName.toUpperCase()}` : '';
+  const boosterPart = boosterCount > 0 ? ` · ENRICHED BY ${boosterCount} BOOSTER${boosterCount !== 1 ? 'S' : ''}` : '';
+  const ownerPart = activity.ownerDisplayName ? `BY ${activity.ownerDisplayName.toUpperCase()}` : null;
+  const creditLine = [ownerPart, boosterPart ? boosterPart.slice(3) : null, locationPart ? locationPart.slice(3) : null]
+    .filter(Boolean)
+    .join(' · ');
 
   return (
-    <div className="activity-hero">
+    <section className={sectionClass}>
       {hasBanner && (
         <img
-          className="activity-hero__banner"
+          className="activity-hero__banner-img"
           src={enrichments!.aiBanner!.imageUrl}
-          alt={activity.title ?? 'Activity banner'}
+          alt=""
+          aria-hidden="true"
         />
       )}
+      <div className="activity-hero__grain" aria-hidden="true" />
 
-      <div className="activity-hero__meta-row">
-        <span className={`stamp ${stampClass}`}>{emoji} {category.replace('-', ' ')}</span>
-        {locationName && <span>📍 {locationName}</span>}
-        {activity.startTime && (
-          <span>{new Date(activity.startTime).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</span>
-        )}
-        {prCount > 0 && <span className="stamp stamp--pr">+{prCount} PR</span>}
-        {enrichments?.parkrun?.eventName && (
-          <span className="stamp">🎽 Parkrun</span>
-        )}
-      </div>
+      <div className="activity-hero__inner">
+        {/* Top stamps row */}
+        <div className="activity-hero__stamps">
+          <span className={`stamp ${stampClass}`}>
+            {emoji} {(activity.activityType ?? '').replace('ACTIVITY_TYPE_', '').replace(/_/g, ' ')}
+          </span>
+          {sourceLabel && <span className="stamp stamp--hero-source">{sourceLabel}</span>}
+          {dateLabel && <span className="stamp stamp--hero-date">{dateLabel}</span>}
+          {prCount > 0 && <span className="stamp stamp--hero-pr">+{prCount} PR</span>}
+          {hasBanner && <span className="stamp stamp--hero-ai">🎨 AI BANNER</span>}
+        </div>
 
-      <h1 className="activity-hero__title">{activity.title ?? 'Activity'}</h1>
-
-      {(activity.ownerDisplayName || boosterCount > 0) && (
-        <div className="activity-hero__byline">
-          {activity.ownerDisplayName && (
-            <a
-              href={activity.ownerProfileSlug ? `/showcase/profile/${activity.ownerProfileSlug}` : undefined}
-              className="activity-hero__owner-link"
-            >
-              {activity.ownerProfilePictureUrl ? (
-                <img
-                  src={activity.ownerProfilePictureUrl}
-                  alt={activity.ownerDisplayName}
-                  className="activity-hero__owner-avatar"
-                />
+        {/* Title + credit + anchor stats */}
+        <div>
+          <h1 className="activity-hero__quote">{activity.title ?? 'Activity'}</h1>
+          {creditLine && (
+            <div className="activity-hero__credit">
+              {ownerPart ? (
+                <>
+                  BY{' '}
+                  <b>
+                    {activity.ownerProfileSlug ? (
+                      <a
+                        href={`/showcase/profile/${activity.ownerProfileSlug}`}
+                        style={{ color: 'inherit', textDecoration: 'none' }}
+                      >
+                        {activity.ownerDisplayName!.toUpperCase()}
+                      </a>
+                    ) : (
+                      activity.ownerDisplayName!.toUpperCase()
+                    )}
+                  </b>
+                  {boosterCount > 0 && ` · ENRICHED BY ${boosterCount} BOOSTER${boosterCount !== 1 ? 'S' : ''}`}
+                  {locationName && ` · 🌍 ${locationName.toUpperCase()}`}
+                </>
               ) : (
-                <span className="activity-hero__owner-avatar activity-hero__owner-avatar--initials">
-                  {activity.ownerDisplayName.charAt(0).toUpperCase()}
-                </span>
+                creditLine
               )}
-              <span>BY <b>{activity.ownerDisplayName.toUpperCase()}</b></span>
-            </a>
+            </div>
           )}
-          {boosterCount > 0 && (
-            <span>ENRICHED BY <b>{boosterCount} BOOSTER{boosterCount !== 1 ? 'S' : ''}</b></span>
-          )}
-        </div>
-      )}
 
-      <div className="activity-hero__stat-row">
-        {category === 'cardio-distance' && distanceM > 0 && (
-          <div className="activity-hero__primary-stat">
-            <span className="stat-value">{formatDistanceKm(distanceM)}</span>
-            <span className="stat-label">Distance</span>
+          {/* 4-col anchor stats */}
+          <div className="activity-hero__anchor">
+            {stats.map((stat, i) => (
+              <div key={i} className="activity-hero__anchor-cell">
+                <div className="activity-hero__anchor-n">
+                  {stat.value}
+                  {stat.unit && <span>{stat.unit}</span>}
+                </div>
+                <div className="activity-hero__anchor-l">{stat.label}</div>
+              </div>
+            ))}
           </div>
-        )}
-
-        {(category === 'cardio-time' || category === 'sport' || category === 'untraditional') && durationSecs > 0 && (
-          <div className="activity-hero__primary-stat">
-            <span className="stat-value">{Math.round(durationSecs / 60)}</span>
-            <span className="stat-label">MIN</span>
-          </div>
-        )}
-
-        {category === 'strength' && (
-          <div className="activity-hero__primary-stat">
-            <span className="stat-value">{Math.round(totalWeight(sessions)).toLocaleString()}</span>
-            <span className="stat-label">KG MOVED</span>
-          </div>
-        )}
-
-        <div className="activity-hero__secondary-stats">
-          {durationSecs > 0 && category === 'cardio-distance' && (
-            <div className="mini">
-              <span className="mini__value">{formatDuration(durationSecs)}</span>
-              <span className="mini__label">Duration</span>
-            </div>
-          )}
-          {distanceM > 0 && enrichments?.pace?.avgPaceSecondsPerKm && enrichments.pace.avgPaceSecondsPerKm > 0 && (
-            <div className="mini">
-              <span className="mini__value">{formatPace(enrichments.pace.avgPaceSecondsPerKm)}</span>
-              <span className="mini__label">Avg Pace</span>
-            </div>
-          )}
-          {avgBpm > 0 && (
-            <div className="mini">
-              <span className="mini__value">{avgBpm}</span>
-              <span className="mini__label">Avg BPM</span>
-            </div>
-          )}
-          {calories > 0 && (
-            <div className="mini">
-              <span className="mini__value">{calories}</span>
-              <span className="mini__label">kcal</span>
-            </div>
-          )}
-          {category === 'strength' && (
-            <div className="mini">
-              <span className="mini__value">{totalSets(sessions)}</span>
-              <span className="mini__label">Sets</span>
-            </div>
-          )}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

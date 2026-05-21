@@ -117,39 +117,121 @@ export default function ShowcaseActivityPage() {
 
   const enrichments = activity.enrichments as ActivityEnrichments | undefined;
   const appliedEnrichments = activity.appliedEnrichments ?? [];
+  const appliedSet2 = new Set(appliedEnrichments);
 
   // Suppress unused variable warning
   void appliedSet;
 
+  const parkrunData = appliedSet2.has('ENRICHER_PROVIDER_PARKRUN') ? enrichments?.parkrun : undefined;
+  const milestoneData = enrichments?.distanceMilestone?.milestoneKm ? enrichments.distanceMilestone : undefined;
+
+  const ownerProfileHref = activity.ownerProfileSlug
+    ? `/showcase/profile/${activity.ownerProfileSlug}`
+    : null;
+
   return (
     <div className="showcase-page">
-      <div className="showcase-layout">
-        {/* Main content column */}
-        <main className="showcase-main">
-          <ActivityHero activity={activity} />
+      <div className="showcase-page-bg" aria-hidden="true" />
+      <div className="showcase-page-wrap">
+        {/* Sticky public nav bar */}
+        <nav className="showcase-pubbar">
+          <a className="showcase-pubbar__brand" href="/">
+            FitGlue
+          </a>
+          <span className="showcase-pubbar__crumb">
+            {ownerProfileHref ? (
+              <a href={ownerProfileHref}>{activity.ownerDisplayName?.toUpperCase() ?? 'PROFILE'}</a>
+            ) : (
+              <span>{activity.ownerDisplayName?.toUpperCase() ?? ''}</span>
+            )}
+            {activity.ownerDisplayName && ' · '}
+            <b>{activity.title ?? 'Activity'}</b>
+          </span>
+          <div className="showcase-pubbar__actions">
+            <a
+              href="/"
+              style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-cyan)', textDecoration: 'none' }}
+            >
+              Try FitGlue →
+            </a>
+          </div>
+        </nav>
 
-          <ModuleGrid
-            moduleOrder={moduleOrder}
-            enrichments={enrichments}
-            activity={activity}
-          />
+        {/* Full-bleed hero — outside the layout grid */}
+        <ActivityHero activity={activity} />
 
-          {isOwner && (
-            <div style={{ borderTop: 'var(--fg-rule-thin)', padding: 'var(--space-md) 0', display: 'flex', gap: 'var(--space-sm)' }}>
-              <a
-                href="/app/settings/showcase"
-                style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-cyan)' }}
-              >
-                Manage showcase →
-              </a>
+        {/* Full-bleed parkrun band (only when enricher ran and data present) */}
+        {parkrunData?.eventName && (
+          <div className="parkrun-full-band">
+            <div className="parkrun-full-band__inner">
+              <div className="parkrun-full-band__cell">
+                {(parkrunData.isTimePb || parkrunData.isAgeGradePb) && (
+                  <div style={{ marginBottom: 8, display: 'flex', gap: 6 }}>
+                    {parkrunData.isTimePb && <span className="stamp stamp--pb">TIME PB</span>}
+                    {parkrunData.isAgeGradePb && <span className="stamp stamp--pb">AG PB</span>}
+                  </div>
+                )}
+                <div className="parkrun-full-band__n">{parkrunData.finishTime ?? '—'}</div>
+                <div className="parkrun-full-band__l">Finish Time · 🎽 {parkrunData.eventName}</div>
+              </div>
+              <div className="parkrun-full-band__cell">
+                <div className="parkrun-full-band__n">#{parkrunData.position ?? '—'}</div>
+                <div className="parkrun-full-band__l">Position</div>
+              </div>
+              <div className="parkrun-full-band__cell">
+                <div className="parkrun-full-band__n">{parkrunData.ageGrade ?? '—'}</div>
+                <div className="parkrun-full-band__l">Age Grade</div>
+              </div>
+              <div className="parkrun-full-band__cell">
+                <div className="parkrun-full-band__n">{parkrunData.totalParkruns ?? '—'}</div>
+                <div className="parkrun-full-band__l">Total Parkruns</div>
+              </div>
             </div>
-          )}
-        </main>
+          </div>
+        )}
 
-        {/* Right-rail booster timeline */}
-        <aside>
-          <BoosterTimeline appliedEnrichments={appliedEnrichments} />
-        </aside>
+        {/* Full-bleed milestone band */}
+        {milestoneData && (
+          <div className="milestone-full-band">
+            <div className="milestone-full-band__inner">
+              <span className="milestone-full-band__icon">🏅</span>
+              <div>
+                <div className="milestone-full-band__title">
+                  {milestoneData.milestoneKm.toLocaleString()} KM LIFETIME
+                </div>
+                <div className="milestone-full-band__sub">
+                  Total: {milestoneData.lifetimeDistanceKm.toFixed(1)} km · crossed today
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Layout grid: modules + booster timeline */}
+        <div className="showcase-layout">
+          <main className="showcase-main">
+            <ModuleGrid
+              moduleOrder={moduleOrder}
+              enrichments={enrichments}
+              activity={activity}
+            />
+
+            {isOwner && (
+              <div style={{ borderTop: 'var(--fg-rule-thin)', padding: 'var(--space-md) 0', display: 'flex', gap: 'var(--space-sm)' }}>
+                <a
+                  href="/app/settings/showcase"
+                  style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-cyan)' }}
+                >
+                  Manage showcase →
+                </a>
+              </div>
+            )}
+          </main>
+
+          <aside>
+            <BoosterTimeline appliedEnrichments={appliedEnrichments} />
+          </aside>
+        </div>
       </div>
     </div>
   );
