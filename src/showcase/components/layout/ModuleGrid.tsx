@@ -3,6 +3,7 @@ import type { ModuleKey } from '../../utils/enricherModules';
 import type { components } from '../../../shared/api/schema-public';
 import type { ActivityEnrichments } from '../../../types/pb/models/activity/enrichments';
 import { parseDescriptionSections } from '../DescriptionSections';
+import { formatSource } from '../../utils/format';
 
 // Lazy imports for each module — only import what's needed
 import HeartRateModule from '../modules/HeartRateModule';
@@ -20,13 +21,11 @@ import StreakModule from '../modules/StreakModule';
 import WeatherModule from '../modules/WeatherModule';
 import IntervalsModule from '../modules/IntervalsModule';
 import RunningDynamicsModule from '../modules/RunningDynamicsModule';
-import ParkrunModule from '../modules/ParkrunModule';
 import SpotifyModule from '../modules/SpotifyModule';
 import GoalTrackerModule from '../modules/GoalTrackerModule';
 import MuscleHeatmapModule from '../modules/MuscleHeatmapModule';
 import SetListModule from '../modules/SetListModule';
 import PersonalRecordsCallout from '../modules/PersonalRecordsCallout';
-import MilestoneCallout from '../modules/MilestoneCallout';
 
 type Session = components['schemas']['Session'];
 type Rec = components['schemas']['Record'];
@@ -68,7 +67,7 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
   );
   const routeThumbUrl = enrichments?.aiBanner?.imageUrl; // placeholder — route thumb would come from metadata
 
-  const preGridModules = new Set<ModuleKey>(['parkrun', 'hybrid-race-segments', 'ai-story', 'milestone-callout', 'pr-callout', 'description', 'tags', 'photos', 'map']);
+  const preGridModules = new Set<ModuleKey>(['hybrid-race-segments', 'ai-story', 'pr-callout', 'description', 'tags', 'photos', 'map']);
   const footerModules = new Set<ModuleKey>(['auto-increment-footer', 'source-link-footer']);
 
   // Pre-grid (full-width, before the 12-col grid)
@@ -83,8 +82,6 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
       {/* Pre-grid modules */}
       {preGrid.map((key) => {
         switch (key) {
-          case 'parkrun':
-            return <ParkrunModule key={key} data={enrichments?.parkrun} />;
           case 'ai-story':
             return aiSummaryHtml ? (
               <div key={key} className="ai-story">
@@ -94,8 +91,6 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
                 />
               </div>
             ) : null;
-          case 'milestone-callout':
-            return <MilestoneCallout key={key} data={enrichments?.distanceMilestone} />;
           case 'pr-callout':
             return <PersonalRecordsCallout key={key} data={enrichments?.personalRecords} />;
           case 'description':
@@ -202,7 +197,7 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
               case 'source-link-footer':
                 return (
                   <span key={key} className="enricher-footer__item">
-                    ↗ View on source
+                    ↗ View on {formatSource(activity.source)}
                   </span>
                 );
               default:
