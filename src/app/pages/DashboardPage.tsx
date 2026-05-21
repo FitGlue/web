@@ -23,6 +23,9 @@ import { client } from '../../shared/api/client';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
 import { PipelinesSection } from '../components/dashboard/PipelinesSection';
 import { RecentRunsSection } from '../components/dashboard/RecentRunsSection';
+import { ActionRequiredSection } from '../components/dashboard/ActionRequiredSection';
+import { RecipeSection } from '../components/dashboard/RecipeSection';
+import { UploadSection } from '../components/dashboard/UploadSection';
 import { GuidedTour } from '../components/onboarding/GuidedTour';
 import { GuidedTourProvider, useGuidedTour } from '../hooks/useGuidedTour';
 import './DashboardPage.css';
@@ -185,7 +188,11 @@ const DashboardPageInner: React.FC = () => {
                     onManage={() => navigate('/settings/subscription')}
                 />
                 <DashboardBody>
-                    <DashboardCol />
+                    <DashboardCol>
+                        <ActionRequiredSection />
+                        <RecipeSection />
+                        <UploadSection />
+                    </DashboardCol>
                     <DashboardCol>
                         <PipelinesSection />
                     </DashboardCol>
