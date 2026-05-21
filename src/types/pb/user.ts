@@ -171,6 +171,8 @@ export enum PipelineRunStatus {
   PIPELINE_RUN_STATUS_ARCHIVED = 7,
   /** PIPELINE_RUN_STATUS_TIER_BLOCKED - Blocked by tier limit (upgrade required) */
   PIPELINE_RUN_STATUS_TIER_BLOCKED = 8,
+  /** PIPELINE_RUN_STATUS_CANCELLED - Cancelled before completion */
+  PIPELINE_RUN_STATUS_CANCELLED = 9,
   UNRECOGNIZED = -1,
 }
 
