@@ -124,7 +124,7 @@ const DashboardPageInner: React.FC = () => {
 
     return (
         <PageLayout loading={isLoading} fullWidth>
-            {/* Pre-chrome system messages — will move above heading in later step */}
+            {/* Pre-chrome system messages — above DashboardLayout heading */}
             {!onboardingComplete && !isLoading && !allOnboardingComplete && !hasConnections && (
                 <div className="dashboard-first-run">
                     <div className="dashboard-first-run__banner">

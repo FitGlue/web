@@ -1,55 +1,9 @@
 /* ==========================================================================
-   DashboardPage — 3-column body layout (Brutal × Aurora)
+   DashboardPage — page-specific styles (Brutal × Aurora)
+   Column layout is in DashboardLayout.css
    ========================================================================== */
 
-/* 3-column body grid */
-.dashboard-body {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0;
-    align-items: start;
-    border-top: 0;
-}
-
-.dashboard-col {
-    border-right: var(--fg-rule-thin);
-    min-height: 400px;
-    display: flex;
-    flex-direction: column;
-}
-
-.dashboard-col:last-child {
-    border-right: none;
-}
-
-/* Recent runs column — no internal padding on the list */
-.dashboard-col--runs {
-    overflow: hidden;
-}
-
-@media (max-width: 1024px) {
-    .dashboard-body {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .dashboard-col--runs {
-        grid-column: 1 / -1;
-        border-right: none;
-        border-top: var(--fg-rule-thin);
-    }
-}
-
 @media (max-width: 640px) {
-    .dashboard-body {
-        grid-template-columns: 1fr;
-    }
-
-    .dashboard-col {
-        border-right: none;
-        border-bottom: var(--fg-rule-thin);
-        min-height: 0;
-    }
-
     .dashboard-first-run {
         padding: 16px;
     }
