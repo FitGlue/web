@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.19.0](https://github.com/fitglue/web/compare/v11.18.0...v11.19.0) (2026-05-21)
+
+
+### Features
+
+* **features:** update features display to dynamically show booster count and enhance styling ([5b52b26](https://github.com/fitglue/web/commit/5b52b2626683f43cfa3ab0ed3955c4d4edad4b31))
+* **showcase:** restructure activity page to full-bleed hero with public nav bar ([12ef247](https://github.com/fitglue/web/commit/12ef247ed3356f22689a38914038af86a2e32084))
+
 ## [11.18.0](https://github.com/fitglue/web/compare/v11.17.0...v11.18.0) (2026-05-21)
 
 
