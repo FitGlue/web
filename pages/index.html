@@ -30,7 +30,7 @@
     <div class="lp-hero__text">
       <div class="lp-hero__eyebrow">FITNESS DATA PLATFORM · v{{version}} · FREE FOREVER</div>
       <h1 class="lp-hero__title">ONE SWEAT.<br><span class="gr">EVERY PLACE.</span></h1>
-      <p class="lp-hero__sub">FitGlue pulls workouts from Strava, Hevy, Fitbit, Health Connect, Parkrun and more — runs them through 25 boosters, then ships polished activities to wherever your training really lives.</p>
+      <p class="lp-hero__sub">FitGlue pulls workouts from Strava, Hevy, Fitbit, Health Connect, Parkrun and more — runs them through {{boosters.length}} boosters, then ships polished activities to wherever your training really lives.</p>
       <div class="lp-hero__cta">
         <a href="{{waitlistUrl}}" class="btn--aurora">START FREE →</a>
         <a href="/how-it-works" class="btn--ghost">SEE HOW IT WORKS</a>
@@ -41,7 +41,7 @@
           <div class="lp-hero__stat-l">ACTIVITIES BOOSTED</div>
         </div>
         <div>
-          <div class="lp-hero__stat-n">25</div>
+          <div class="lp-hero__stat-n">{{boosters.length}}</div>
           <div class="lp-hero__stat-l">BOOSTERS</div>
         </div>
         <div>
@@ -96,7 +96,7 @@
       </div>
       <div class="lp-trio fg-panel--ink">
         <div class="fg-inline-stat" style="border-left:0"><span class="fg-inline-stat__n">{{activitiesBoostedCount}}</span><span class="fg-inline-stat__l">Boosted</span></div>
-        <div class="fg-inline-stat fg-inline-stat--gradient"><span class="fg-inline-stat__n">25</span><span class="fg-inline-stat__l">Boosters</span></div>
+        <div class="fg-inline-stat fg-inline-stat--gradient"><span class="fg-inline-stat__n">{{boosters.length}}</span><span class="fg-inline-stat__l">Boosters</span></div>
         <div class="fg-inline-stat"><span class="fg-inline-stat__n">{{athleteCount}}</span><span class="fg-inline-stat__l">Athletes</span></div>
       </div>
     </div>
@@ -127,8 +127,8 @@
     <div class="lp-pillar">
       <div class="lp-pillar__n">2</div>
       <div class="lp-pillar__title">Enrich</div>
-      <p class="lp-pillar__body">Stack 25 boosters in the middle of your pipeline. HR zones, effort score, training load, streak tracking, personal records, AI summaries, AI banners. Pick the ones that matter to you.</p>
-      <a href="/features" class="lp-pillar__link">BROWSE ALL 25 BOOSTERS →</a>
+      <p class="lp-pillar__body">Stack {{boosters.length}} boosters in the middle of your pipeline. HR zones, effort score, training load, streak tracking, personal records, AI summaries, AI banners. Pick the ones that matter to you.</p>
+      <a href="/features" class="lp-pillar__link">BROWSE ALL {{boosters.length}} BOOSTERS →</a>
     </div>
     <div class="lp-pillar">
       <div class="lp-pillar__n">3</div>

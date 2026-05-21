@@ -32,14 +32,18 @@
 
   /* ── Booster grid ── */
   .feat-grid { padding: 0 32px 64px; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  .feat { padding: 24px; background: var(--fg-ink-2); display: flex; flex-direction: column; gap: 12px; min-height: 220px; }
+  .feat { padding: 24px; background: var(--fg-ink-2); display: flex; flex-direction: column; gap: 12px; min-height: 220px; text-decoration: none; color: inherit; transition: box-shadow 0.15s ease; }
+  .feat:hover { box-shadow: inset 0 0 0 1.5px var(--fg-cyan); }
   .feat--premium { box-shadow: inset 0 0 0 2px var(--fg-paper); }
+  .feat--premium:hover { box-shadow: inset 0 0 0 2px var(--fg-cyan); }
+  .feat--unavailable { opacity: .5; pointer-events: none; }
   .feat__icon { font-size: 2rem; line-height: 1; }
   .feat__title { font-family: var(--fg-font-display); font-size: 1.25rem; letter-spacing: -.015em; text-transform: uppercase; }
   .feat__body { font-family: var(--fg-font-body); font-size: .9375rem; line-height: 1.5; color: var(--color-text-muted); }
   .feat__tag { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; padding: 2px 8px; display: inline-block; text-transform: uppercase; margin-top: auto; align-self: flex-start; }
   .feat__tag--free { background: var(--fg-paper); color: var(--fg-ink); }
   .feat__tag--athlete { background: var(--gradient-primary); color: var(--fg-ink); }
+  .feat__tag--soon { background: var(--fg-ink-3, #333); color: var(--color-text-muted); }
 
   /* ── CTA strip ── */
   .feat-cta { padding: 64px 32px; text-align: center; border-top: var(--fg-rule-thin); }
@@ -62,7 +66,7 @@
 
   <!-- Hero -->
   <div class="ph">
-    <div class="ph__eyebrow">FEATURES · 25 BOOSTERS · 30+ INTEGRATIONS</div>
+    <div class="ph__eyebrow">FEATURES · {{boosters.length}} BOOSTERS · 30+ INTEGRATIONS</div>
     <h1 class="ph__title">Everything <span class="gr">in one chain.</span></h1>
     <p class="ph__sub">Pick your sources. Stack the boosters you want in the middle. Choose where it all lands. Every activity flows through automatically — enriched, annotated, and ready to share.</p>
   </div>
@@ -95,119 +99,29 @@
     </div>
   </div>
 
-  <!-- Metrics boosters -->
+  <!-- Booster categories from registry -->
+  {{#each boostersByCategory}}
   <div class="feat-band">
-    <span class="feat-band__label">⚡ METRICS BOOSTERS · 13</span>
-    <span class="feat-band__right">COMPUTED FROM YOUR DATA</span>
+    <span class="feat-band__label">{{emoji}} {{name}} · {{plugins.length}}</span>
+    <span class="feat-band__right">{{rightLabel}}</span>
   </div>
   <div class="feat-grid">
-    <div class="feat">
-      <div class="feat__icon">❤️</div>
-      <div class="feat__title">Heart Rate Zones</div>
-      <div class="feat__body">Time in Z0–Z5 per activity. Custom thresholds per athlete. Use the zone breakdown in your Strava description or Showcase.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
-    <div class="feat">
-      <div class="feat__icon">💥</div>
-      <div class="feat__title">Effort Score</div>
-      <div class="feat__body">A weighted score 0–100 combining HR drift, duration, and intensity. Tells you how hard the session really was.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
-    <div class="feat">
-      <div class="feat__icon">🔥</div>
-      <div class="feat__title">Calories Burned</div>
-      <div class="feat__body">Accurate kcal using HR + weight + duration. Pizza-slice equivalent included free of charge.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
-    <div class="feat">
-      <div class="feat__icon">💪</div>
-      <div class="feat__title">Training Load</div>
-      <div class="feat__body">TRIMP-based load score per session, bucketed Recovery / Easy / Mod / Hard / 500+ for visual training plans.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
-    <div class="feat">
-      <div class="feat__icon">💤</div>
-      <div class="feat__title">Recovery Advisor</div>
-      <div class="feat__body">Acute-to-chronic ratio + hours-to-recover estimate. Catches over-reaching before it bites.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
-    <div class="feat">
-      <div class="feat__icon">⭐</div>
-      <div class="feat__title">Streak Tracker</div>
-      <div class="feat__body">Consecutive-active-days counter, week-streak history, and a 28-day visual calendar.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
-    <div class="feat">
-      <div class="feat__icon">🏆</div>
-      <div class="feat__title">Personal Records</div>
-      <div class="feat__body">Auto-tracks PRs across cardio (fastest 5K, longest ride) and strength (1RM per lift). Stamps activities that set them.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
-    <div class="feat">
-      <div class="feat__icon">🌤️</div>
-      <div class="feat__title">Weather Context</div>
-      <div class="feat__body">Temperature, humidity, and wind conditions at the time and location of each outdoor activity.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
-    <div class="feat">
-      <div class="feat__icon">🗺️</div>
-      <div class="feat__title">Elevation Stats</div>
-      <div class="feat__body">Total ascent, descent, max altitude, and a gradient breakdown — calculated from GPS track or FIT file.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
+    {{#each plugins}}
+    <a href="{{detailsUrl}}" class="feat{{#if isPremium}} feat--premium{{/if}}{{#if isTemporarilyUnavailable}} feat--unavailable{{/if}}">
+      <div class="feat__icon">{{icon}}</div>
+      <div class="feat__title">{{name}}</div>
+      <div class="feat__body">{{description}}</div>
+      {{#if isTemporarilyUnavailable}}
+        <span class="feat__tag feat__tag--soon">COMING SOON</span>
+      {{else if isPremium}}
+        <span class="feat__tag feat__tag--athlete">✦ ATHLETE</span>
+      {{else}}
+        <span class="feat__tag feat__tag--free">FREE</span>
+      {{/if}}
+    </a>
+    {{/each}}
   </div>
-
-  <!-- AI boosters -->
-  <div class="feat-band">
-    <span class="feat-band__label">✦ AI BOOSTERS · ATHLETE ONLY</span>
-    <span class="feat-band__right">POWERED BY LARGE LANGUAGE MODELS</span>
-  </div>
-  <div class="feat-grid">
-    <div class="feat feat--premium">
-      <div class="feat__icon">🎨</div>
-      <div class="feat__title">AI Banner</div>
-      <div class="feat__body">Generated cover image for each activity, captioned with a one-line AI poem. Drops straight into your Strava description.</div>
-      <span class="feat__tag feat__tag--athlete">✦ ATHLETE</span>
-    </div>
-    <div class="feat feat--premium">
-      <div class="feat__icon">✨</div>
-      <div class="feat__title">AI Companion</div>
-      <div class="feat__body">A natural-language paragraph that summarises the activity — best moment, hardest moment, surprise. Reads like a coach wrote it.</div>
-      <span class="feat__tag feat__tag--athlete">✦ ATHLETE</span>
-    </div>
-    <div class="feat feat--premium">
-      <div class="feat__icon">🖼️</div>
-      <div class="feat__title">Muscle Heatmap Image</div>
-      <div class="feat__body">A rendered anatomical heatmap showing which muscle groups were activated during a strength session. Share directly to Strava.</div>
-      <span class="feat__tag feat__tag--athlete">✦ ATHLETE</span>
-    </div>
-  </div>
-
-  <!-- Platform boosters -->
-  <div class="dark-band">
-    <span class="dark-band__label">🔗 PLATFORM BOOSTERS · 9</span>
-    <span class="dark-band__right">ENRICHED FROM YOUR CONNECTED APPS</span>
-  </div>
-  <div class="feat-grid">
-    <div class="feat">
-      <div class="feat__icon">🏃</div>
-      <div class="feat__title">Parkrun Results</div>
-      <div class="feat__body">Auto-detects your Saturday parkrun, fetches official time + position + age grade from the results page, and stamps your activity.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
-    <div class="feat">
-      <div class="feat__icon">💓</div>
-      <div class="feat__title">Fitbit Heart Rate</div>
-      <div class="feat__body">Pulls HR data from your Fitbit and overlays it on any activity synced from another source. Works across platforms seamlessly.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
-    <div class="feat">
-      <div class="feat__icon">📍</div>
-      <div class="feat__title">Location Title</div>
-      <div class="feat__body">Reverse-geocodes the start point of an activity and generates a natural place name for your Strava title.</div>
-      <span class="feat__tag feat__tag--free">FREE</span>
-    </div>
-  </div>
+  {{/each}}
 
   <!-- CTA -->
   <div class="feat-cta">

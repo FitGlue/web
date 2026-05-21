@@ -102,14 +102,16 @@ export function transformRegistryTask() {
         return (a.sortOrder ?? 99) - (b.sortOrder ?? 99);
       });
 
-      // Category metadata for grouping plugins (Output-based taxonomy)
+      // Category metadata for grouping plugins — IDs match the `category` field in registry enrichers
       const ENRICHER_CATEGORIES = [
-        { id: 'ai_images', name: 'AI & Images', emoji: '✨' },
-        { id: 'summaries', name: 'Summaries', emoji: '📝' },
-        { id: 'data', name: 'Data & Stats', emoji: '📊' },
-        { id: 'detection', name: 'Smart Detection', emoji: '🎯' },
-        { id: 'links', name: 'Links & References', emoji: '🔗' },
-        { id: 'workflow', name: 'Workflow', emoji: '⚙️' },
+        { id: 'stats', name: 'Metrics & Stats', emoji: '📊', rightLabel: 'COMPUTED FROM YOUR DATA' },
+        { id: 'detection', name: 'Smart Detection', emoji: '🎯', rightLabel: 'AUTOMATICALLY IDENTIFIED' },
+        { id: 'transformation', name: 'Summaries & Transforms', emoji: '📋', rightLabel: 'RESTRUCTURED FOR SHARING' },
+        { id: 'ai_content', name: 'AI Content', emoji: '✨', rightLabel: 'POWERED BY LARGE LANGUAGE MODELS' },
+        { id: 'visual', name: 'Visual', emoji: '🎨', rightLabel: 'IMAGES FOR YOUR ACTIVITIES' },
+        { id: 'location', name: 'Location', emoji: '📍', rightLabel: 'ENRICHED FROM GPS & MAPS' },
+        { id: 'references', name: 'Links & References', emoji: '🔗', rightLabel: 'CONNECTED TO OTHER PLATFORMS' },
+        { id: 'logic', name: 'Workflow & Logic', emoji: '⚙️', rightLabel: 'CONTROL FLOW & ROUTING' },
       ];
 
       // Group boosters by category for marketing templates (Pro/Premium first)
