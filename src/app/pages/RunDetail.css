@@ -662,10 +662,9 @@
 
 .magic__trigger {
     padding: 8px 14px;
-    font-family: var(--fg-font-mono);
-    font-size: .6875rem;
-    font-weight: 700;
-    letter-spacing: .1em;
+    font-family: var(--fg-font-display);
+    font-size: .75rem;
+    letter-spacing: .04em;
     text-transform: uppercase;
     background: var(--gradient-primary);
     color: var(--fg-ink);
@@ -673,11 +672,11 @@
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     white-space: nowrap;
 }
 
-.magic__trigger:hover { filter: brightness(1.1); }
+.magic__trigger:hover { filter: brightness(1.08); }
 
 .magic__pop {
     position: absolute;
@@ -688,9 +687,84 @@
     border: var(--fg-rule-thick);
     z-index: 100;
     box-shadow: 0 12px 32px rgba(0,0,0,.5);
-    padding: 16px;
     max-height: 60vh;
     overflow-y: auto;
+}
+
+.magic__sec {
+    padding: 14px 16px;
+    border-bottom: var(--fg-rule-thin);
+}
+
+.magic__sec:last-child { border-bottom: 0; }
+
+.magic__sec h5 {
+    margin: 0 0 4px;
+    font-family: var(--fg-font-display);
+    font-size: .8125rem;
+    letter-spacing: -.005em;
+    text-transform: uppercase;
+    color: var(--fg-paper);
+}
+
+.magic__sec p {
+    margin: 0 0 10px;
+    font-family: var(--fg-font-mono);
+    font-size: .6875rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    letter-spacing: .02em;
+}
+
+.magic__row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.magic__btn {
+    padding: 8px 10px;
+    background: var(--fg-ink);
+    color: var(--fg-paper);
+    border: 1px solid var(--fg-paper);
+    font-family: var(--fg-font-mono);
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.magic__btn:hover {
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+    border-color: transparent;
+}
+
+.magic__btn--danger {
+    color: var(--fg-rose);
+    border-color: var(--fg-rose);
+}
+
+.magic__btn--danger:hover {
+    background: var(--fg-rose);
+    color: var(--fg-ink);
+    border-color: transparent;
+}
+
+.magic__limit {
+    padding: 14px 16px;
+    font-family: var(--fg-font-mono);
+    font-size: .6875rem;
+    color: var(--color-text-muted);
+    letter-spacing: .04em;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
 }
 
 /* ── AI Activity Companion card ── */
