@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.18.0](https://github.com/fitglue/web/compare/v11.17.0...v11.18.0) (2026-05-21)
+
+
+### Features
+
+* **api:** add support for ICAL_TITLE in provider types and formatters ([b844acd](https://github.com/fitglue/web/commit/b844acd070efccf126ada331eb32ec767d0dc7e7))
+
 ## [11.17.0](https://github.com/fitglue/web/compare/v11.16.0...v11.17.0) (2026-05-21)
 
 
