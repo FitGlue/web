@@ -1,0 +1,33 @@
+/* ==========================================================================
+   DashboardBand — sub-section opener band inside dashboard columns
+   ========================================================================== */
+@import '../tokens.css';
+
+.dash-band {
+    padding: 0.5rem 1.25rem;
+    background: var(--fg-ink);
+    border-bottom: var(--fg-rule-thin);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dash-band--aurora {
+    background: linear-gradient(135deg, rgba(255, 61, 166, 0.15), rgba(139, 92, 246, 0.15) 50%, rgba(34, 211, 238, 0.15));
+}
+
+.dash-band__label {
+    font-family: var(--fg-font-display);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.dash-band__right {
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}

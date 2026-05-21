@@ -52,29 +52,33 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
         fullWidth && 'app-page-content--full-width',
     ].filter(Boolean).join(' ');
 
+    const showPageHeader = !!(title || backTo || headerActions || headerStats || onRefresh || headerSubtitle);
+
     return (
         <div className="app-page-layout">
             <AppHeader />
             <div className={contentClasses}>
-                <PageHeader
-                    title={title}
-                    backTo={backTo}
-                    backLabel={backLabel}
-                    subtitle={headerSubtitle}
-                    stats={headerStats}
-                    actions={(title || onRefresh || headerActions) ? (
-                        <>
-                            {onRefresh && (
-                                <RefreshControl
-                                    onRefresh={onRefresh}
-                                    loading={loading}
-                                    lastUpdated={lastUpdated}
-                                />
-                            )}
-                            {headerActions}
-                        </>
-                    ) : undefined}
-                />
+                {showPageHeader && (
+                    <PageHeader
+                        title={title}
+                        backTo={backTo}
+                        backLabel={backLabel}
+                        subtitle={headerSubtitle}
+                        stats={headerStats}
+                        actions={(title || onRefresh || headerActions) ? (
+                            <>
+                                {onRefresh && (
+                                    <RefreshControl
+                                        onRefresh={onRefresh}
+                                        loading={loading}
+                                        lastUpdated={lastUpdated}
+                                    />
+                                )}
+                                {headerActions}
+                            </>
+                        ) : undefined}
+                    />
+                )}
                 <main>
                     {children}
                 </main>

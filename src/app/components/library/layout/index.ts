@@ -28,3 +28,6 @@ export { FeatureItem } from './FeatureItem';
 // Long-form / legal prose wrapper
 export { LegalProse } from './LegalProse';
 export type { LegalProseProps } from './LegalProse';
+
+// Dashboard layout primitives
+export { DashboardLayout, DashboardBody, DashboardCol } from './DashboardLayout';

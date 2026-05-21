@@ -1,24 +1,22 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useRealtimeInputs } from '../hooks/useRealtimeInputs';
 import { useRealtimeStats } from '../hooks/useRealtimeStats';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { pipelineRunsAtom } from '../state/activitiesState';
+import { userAtom } from '../state/authState';
 import { PageLayout } from '../components/library/layout';
+import { DashboardLayout, DashboardBody, DashboardCol } from '../components/library/layout/DashboardLayout';
+import { DashboardHeading, Gr } from '../components/library/ui/DashboardHeading';
+import { DashboardPlanBand } from '../components/library/ui/DashboardPlanBand';
 import { useToast } from '../components/library/ui/Toast/Toast';
 
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
-import { PipelineRunsList } from '../components/dashboard/PipelineRunsList';
-import { FileUploadPanel } from '../components/dashboard/FileUploadPanel';
-import { PipelinesSummaryCard } from '../components/dashboard/PipelinesSummaryCard';
-import { ConnectionsSummaryCard } from '../components/dashboard/ConnectionsSummaryCard';
-import { ActionRequiredSummaryCard } from '../components/dashboard/ActionRequiredSummaryCard';
 import { SubscriptionBanner } from '../components/dashboard/SubscriptionBanner';
 import { PWAInstallBanner } from '../components/dashboard/PWAInstallBanner';
-import { SmartNudge } from '../components/SmartNudge';
 import { IntegrationsSummary } from '../state/integrationsState';
 import { useUser } from '../hooks/useUser';
 import { client } from '../../shared/api/client';
@@ -29,6 +27,14 @@ import './DashboardPage.css';
 
 const ONBOARDING_COMPLETE_KEY = 'fitglue_onboarding_complete';
 
+function getEyebrow(): string {
+    const now = new Date();
+    const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const time = now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false });
+    return `DASHBOARD · ${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} · ${time}`;
+}
+
 const DashboardPageInner: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -38,6 +44,7 @@ const DashboardPageInner: React.FC = () => {
     });
     const { startTour } = useGuidedTour();
 
+    const firebaseUser = useAtomValue(userAtom);
     const { integrations: registryIntegrations, loading: registryLoading } = usePluginRegistry();
     const { loading: inputsLoading } = useRealtimeInputs();
     const { integrations } = useRealtimeIntegrations();
@@ -106,72 +113,46 @@ const DashboardPageInner: React.FC = () => {
         }
     }, [isLoading, allOnboardingComplete, onboardingComplete]);
 
-    const headerStats = heroStats ? (
-        <>
-            <div className="page-header-stat">
-                <span className="page-header-stat__value page-header-stat__value--gradient">
-                    {heroStats.activitiesThisMonth}
-                </span>
-                <span className="page-header-stat__label">This Month</span>
-            </div>
-            <div className="page-header-stat">
-                <span className="page-header-stat__value">
-                    {heroStats.activitiesThisWeek}
-                </span>
-                <span className="page-header-stat__label">This Week</span>
-            </div>
-            <div className="page-header-stat">
-                <span className="page-header-stat__value">
-                    {heroStats.currentStreakDays}
-                </span>
-                <span className="page-header-stat__label">Day Streak</span>
-            </div>
-        </>
-    ) : undefined;
+    const firstName = firebaseUser?.displayName?.split(' ')[0] || 'there';
+    const activePipelines = pipelines.filter((p: { disabled?: boolean }) => !p.disabled).length;
+    const tier = isAthlete ? 'ATHLETE' as const : 'FREE' as const;
 
     return (
-        <PageLayout
-            title="Dashboard"
-            loading={isLoading}
-            headerStats={headerStats}
-            fullWidth
-        >
-            {/* Pre-chrome system messages */}
+        <PageLayout loading={isLoading} fullWidth>
+            {/* Pre-chrome system messages — will move above heading in later step */}
             {!onboardingComplete && !isLoading && !allOnboardingComplete && !hasConnections && (
-                <>
-                    <div className="dashboard-first-run">
-                        <div className="dashboard-first-run__banner">
-                            <div>
-                                <div className="dashboard-first-run__step">✦ WELCOME · STEP 1 OF 4</div>
-                                <div className="dashboard-first-run__heading">Pick a source to start.</div>
-                                <div className="dashboard-first-run__sub">CONNECT → BUILD A PIPELINE → SYNC ONCE → SHARE OR SIT ON IT</div>
-                            </div>
-                            <button className="fg-button" onClick={() => navigate('/connections')}>
-                                CONNECT FIRST SOURCE →
-                            </button>
+                <div className="dashboard-first-run">
+                    <div className="dashboard-first-run__banner">
+                        <div>
+                            <div className="dashboard-first-run__step">✦ WELCOME · STEP 1 OF 4</div>
+                            <div className="dashboard-first-run__heading">Pick a source to start.</div>
+                            <div className="dashboard-first-run__sub">CONNECT → BUILD A PIPELINE → SYNC ONCE → SHARE OR SIT ON IT</div>
                         </div>
-                        <div className="dashboard-first-run__grid">
-                            <div className="dashboard-first-run__card">
-                                <div className="dashboard-first-run__card-icon">🔗</div>
-                                <div className="dashboard-first-run__card-title">No connections yet</div>
-                                <div className="dashboard-first-run__card-body">Hook in Strava, Hevy, Fitbit, Garmin — wherever your activities live.</div>
-                                <button className="fg-button" onClick={() => navigate('/connections')}>CONNECT A SOURCE →</button>
-                            </div>
-                            <div className="dashboard-first-run__card dashboard-first-run__card--dim">
-                                <div className="dashboard-first-run__card-icon">🔀</div>
-                                <div className="dashboard-first-run__card-title">No pipelines yet</div>
-                                <div className="dashboard-first-run__card-body">Pipelines route activities through boosters into destinations.</div>
-                                <div className="dashboard-first-run__card-hint">DO STEP 1 FIRST →</div>
-                            </div>
-                            <div className="dashboard-first-run__card dashboard-first-run__card--dim">
-                                <div className="dashboard-first-run__card-icon">✨</div>
-                                <div className="dashboard-first-run__card-title">No activities yet</div>
-                                <div className="dashboard-first-run__card-body">Your enriched activity feed shows up here once syncs start.</div>
-                                <div className="dashboard-first-run__card-hint">UPLOAD A .FIT FILE TO TRY →</div>
-                            </div>
+                        <button className="fg-button" onClick={() => navigate('/connections')}>
+                            CONNECT FIRST SOURCE →
+                        </button>
+                    </div>
+                    <div className="dashboard-first-run__grid">
+                        <div className="dashboard-first-run__card">
+                            <div className="dashboard-first-run__card-icon">🔗</div>
+                            <div className="dashboard-first-run__card-title">No connections yet</div>
+                            <div className="dashboard-first-run__card-body">Hook in Strava, Hevy, Fitbit, Garmin — wherever your activities live.</div>
+                            <button className="fg-button" onClick={() => navigate('/connections')}>CONNECT A SOURCE →</button>
+                        </div>
+                        <div className="dashboard-first-run__card dashboard-first-run__card--dim">
+                            <div className="dashboard-first-run__card-icon">🔀</div>
+                            <div className="dashboard-first-run__card-title">No pipelines yet</div>
+                            <div className="dashboard-first-run__card-body">Pipelines route activities through boosters into destinations.</div>
+                            <div className="dashboard-first-run__card-hint">DO STEP 1 FIRST →</div>
+                        </div>
+                        <div className="dashboard-first-run__card dashboard-first-run__card--dim">
+                            <div className="dashboard-first-run__card-icon">✨</div>
+                            <div className="dashboard-first-run__card-title">No activities yet</div>
+                            <div className="dashboard-first-run__card-body">Your enriched activity feed shows up here once syncs start.</div>
+                            <div className="dashboard-first-run__card-hint">UPLOAD A .FIT FILE TO TRY →</div>
                         </div>
                     </div>
-                </>
+                </div>
             )}
             {!onboardingComplete && !isLoading && !allOnboardingComplete && hasConnections && (
                 <WelcomeBanner
@@ -186,43 +167,27 @@ const DashboardPageInner: React.FC = () => {
             {(onboardingComplete || allOnboardingComplete) && <PWAInstallBanner />}
             <SubscriptionBanner />
 
-            {/* Plan band */}
-            <div className="fg-band">
-                <span className="fg-band__label">
-                    {isAthlete ? '✦ ATHLETE' : 'HOBBYIST'} · OVERVIEW
-                </span>
-                <span className="fg-band__right">{connectedCount} CONNECTED</span>
-            </div>
-
-            {/* 3-column body */}
-            <div className="dashboard-body">
-                {/* Left — Connections + Action Required + Nudge + Upload */}
-                <div className="dashboard-col">
-                    <ConnectionsSummaryCard />
-                    <ActionRequiredSummaryCard />
-                    <SmartNudge page="dashboard" />
-                    <FileUploadPanel />
-                </div>
-
-                {/* Middle — Pipelines */}
-                <div className="dashboard-col">
-                    <PipelinesSummaryCard />
-                </div>
-
-                {/* Right — Recent Runs */}
-                <div className="dashboard-col dashboard-col--runs">
-                    <div className="fg-band fg-band--ink">
-                        <span className="fg-band__label">RECENT RUNS</span>
-                    </div>
-                    <PipelineRunsList
-                        variant="dashboard"
-                        title=""
-                        defaultFilter="all"
-                        limit={6}
-                        onRunClick={(run) => run.activityId && navigate(`/activities/${run.activityId}`)}
-                    />
-                </div>
-            </div>
+            <DashboardLayout>
+                <DashboardHeading
+                    eyebrow={getEyebrow()}
+                    title={<>Hey {firstName} <Gr>—</Gr> Welcome back</>}
+                    stats={[
+                        { n: heroStats?.activitiesThisMonth ?? '—', l: 'THIS MONTH', tone: 'gradient' },
+                        { n: heroStats?.activitiesThisWeek ?? '—', l: 'THIS WEEK' },
+                        { n: activePipelines, l: 'ACTIVE PIPELINES' },
+                        { n: heroStats ? `${heroStats.currentStreakDays}d 🔥` : '—', l: 'DAY STREAK' },
+                    ]}
+                />
+                <DashboardPlanBand
+                    tier={tier}
+                    onManage={() => navigate('/settings/subscription')}
+                />
+                <DashboardBody>
+                    <DashboardCol />
+                    <DashboardCol />
+                    <DashboardCol />
+                </DashboardBody>
+            </DashboardLayout>
 
             <GuidedTour />
         </PageLayout>

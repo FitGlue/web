@@ -1,0 +1,111 @@
+/* ==========================================================================
+   DashboardHeading — heading slab (Brutal × Aurora)
+   ========================================================================== */
+@import '../tokens.css';
+
+.dash-heading {
+    background: var(--fg-ink-2);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    padding: 1.5rem 2rem;
+    align-items: end;
+    border-bottom: var(--fg-rule-thin);
+}
+
+.dash-heading__left {
+    min-width: 0;
+}
+
+.dash-heading__eyebrow {
+    font-family: var(--fg-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+
+.dash-heading__title {
+    font-family: var(--fg-font-display);
+    font-size: 3rem;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin: 0.375rem 0 0;
+    text-transform: uppercase;
+}
+
+.dash-heading__gr {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.dash-heading__stats {
+    display: flex;
+    align-items: stretch;
+    gap: 1.5rem;
+    flex-shrink: 0;
+}
+
+.dash-istat {
+    padding-left: 1.125rem;
+    border-left: var(--fg-rule-thin);
+    display: flex;
+    flex-direction: column;
+}
+
+.dash-istat__n {
+    font-family: var(--fg-font-display);
+    font-size: 1.875rem;
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+}
+
+.dash-istat__n--gr {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.dash-istat__l {
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-text-muted);
+    margin-top: 0.4rem;
+    text-transform: uppercase;
+}
+
+@media (max-width: 1024px) {
+    .dash-heading {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .dash-heading__title {
+        font-size: 2.25rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .dash-heading {
+        padding: 1.25rem 1.25rem;
+    }
+
+    .dash-heading__title {
+        font-size: 1.75rem;
+    }
+
+    .dash-heading__stats {
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .dash-istat__n {
+        font-size: 1.375rem;
+    }
+}

@@ -1,0 +1,53 @@
+/* ==========================================================================
+   DashboardLayout — 3-column body grid (Brutal × Aurora)
+   ========================================================================== */
+@import '../tokens.css';
+
+.dash-layout {
+    display: flex;
+    flex-direction: column;
+}
+
+.dash-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: start;
+}
+
+.dash-col {
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    min-width: 0;
+}
+
+.dash-col + .dash-col {
+    border-left: var(--fg-rule-thin);
+}
+
+@media (max-width: 1024px) {
+    .dash-body {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .dash-col:nth-child(3) {
+        grid-column: 1 / -1;
+        border-left: none;
+        border-top: var(--fg-rule-thin);
+    }
+}
+
+@media (max-width: 640px) {
+    .dash-body {
+        grid-template-columns: 1fr;
+    }
+
+    .dash-col {
+        min-height: 0;
+    }
+
+    .dash-col + .dash-col {
+        border-left: none;
+        border-top: var(--fg-rule-thin);
+    }
+}

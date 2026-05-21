@@ -172,6 +172,18 @@ export type { RunRowProps } from './RunRow';
 export { PipelineSummaryCard } from './PipelineSummaryCard';
 export type { PipelineSummaryCardProps } from './PipelineSummaryCard';
 
+// Dashboard heading slab
+export { DashboardHeading, Gr } from './DashboardHeading';
+export type { DashboardHeadingProps, DashboardStat } from './DashboardHeading';
+
+// Dashboard sub-band opener
+export { DashboardBand } from './DashboardBand';
+export type { DashboardBandProps } from './DashboardBand';
+
+// Dashboard aurora plan band
+export { DashboardPlanBand } from './DashboardPlanBand';
+export type { DashboardPlanBandProps } from './DashboardPlanBand';
+
 // Countdown ring (SVG circular timer with aurora gradient)
 export { CountdownRing } from './CountdownRing';
 export type { CountdownRingProps } from './CountdownRing';
