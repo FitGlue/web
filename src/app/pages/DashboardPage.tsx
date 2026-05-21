@@ -21,6 +21,7 @@ import { IntegrationsSummary } from '../state/integrationsState';
 import { useUser } from '../hooks/useUser';
 import { client } from '../../shared/api/client';
 import { getEffectiveTier, TIER_ATHLETE } from '../utils/tier';
+import { PipelinesSection } from '../components/dashboard/PipelinesSection';
 import { GuidedTour } from '../components/onboarding/GuidedTour';
 import { GuidedTourProvider, useGuidedTour } from '../hooks/useGuidedTour';
 import './DashboardPage.css';
@@ -184,7 +185,9 @@ const DashboardPageInner: React.FC = () => {
                 />
                 <DashboardBody>
                     <DashboardCol />
-                    <DashboardCol />
+                    <DashboardCol>
+                        <PipelinesSection />
+                    </DashboardCol>
                     <DashboardCol />
                 </DashboardBody>
             </DashboardLayout>
