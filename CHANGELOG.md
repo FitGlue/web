@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.22.1](https://github.com/fitglue/web/compare/v11.22.0...v11.22.1) (2026-05-21)
+
+
+### Bug Fixes
+
+* **nav:** sync AppHeader.tsx to app-nav CSS classes ([7fe6f4b](https://github.com/fitglue/web/commit/7fe6f4bde4541aad70da3e42bb2799e325be127e))
+* **pipeline:** show cancel button on UnsynchronizedDetailPage for pending runs ([307a745](https://github.com/fitglue/web/commit/307a745d0cd2a378b62685882de3f4247eed187e))
+
 ## [11.22.0](https://github.com/fitglue/web/compare/v11.21.0...v11.22.0) (2026-05-21)
 
 
