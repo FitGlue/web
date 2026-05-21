@@ -15,7 +15,6 @@ import { DashboardPlanBand } from '../components/library/ui/DashboardPlanBand';
 import { useToast } from '../components/library/ui/Toast/Toast';
 
 import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
-import { SubscriptionBanner } from '../components/dashboard/SubscriptionBanner';
 import { PWAInstallBanner } from '../components/dashboard/PWAInstallBanner';
 import { IntegrationsSummary } from '../state/integrationsState';
 import { useUser } from '../hooks/useUser';
@@ -170,7 +169,6 @@ const DashboardPageInner: React.FC = () => {
                 />
             )}
             {(onboardingComplete || allOnboardingComplete) && <PWAInstallBanner />}
-            <SubscriptionBanner />
 
             <DashboardLayout>
                 <DashboardHeading
