@@ -1,0 +1,67 @@
+@import '../tokens.css';
+
+/* ==========================================================================
+   SubNavTabs — L3 horizontal section subnav (tabs)
+   Aurora underline on active item; use when section has 2–5 sibling views.
+   ========================================================================== */
+
+.subnav-tabs {
+    display: flex;
+    align-items: stretch;
+    background: var(--fg-ink);
+    border-bottom: 1.5px solid var(--fg-hairline-color);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.subnav-tabs::-webkit-scrollbar { display: none; }
+
+.subnav-tabs__tab {
+    padding: 0.75rem 1.125rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    transition: color var(--transition-fast);
+    flex-shrink: 0;
+}
+.subnav-tabs__tab:hover { color: var(--fg-paper); }
+
+.subnav-tabs__tab--active { color: var(--fg-paper); }
+
+/* Aurora underline on active — same pattern as AppNav links */
+.subnav-tabs__tab--active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1.5px;
+    height: 2px;
+    background: var(--gradient-primary);
+}
+
+.subnav-tabs__label {
+    font-family: var(--fg-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.subnav-tabs__count {
+    padding: 1px 6px;
+    background: var(--fg-ink-3);
+    color: var(--color-text-muted);
+    font-family: var(--fg-font-mono);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.subnav-tabs__tab--active .subnav-tabs__count {
+    color: var(--fg-paper);
+}

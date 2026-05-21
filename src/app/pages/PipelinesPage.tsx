@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { PageLayout } from '../components/library/layout';
+import { PageLayout, PageAction } from '../components/library/layout';
 import { CardSkeleton, Button, Badge, EmptyState, ConfirmDialog, IdBadge, useToast } from '../components/library/ui';
 
 import { client } from '../../shared/api/client';
@@ -274,11 +274,7 @@ const PipelinesPage: React.FC = () => {
 
     if (loading || registryLoading) {
         return (
-            <PageLayout title="Pipelines" backTo="/" backLabel="Dashboard">
-                <div className="fg-band">
-                    <span className="fg-band__label">YOUR PIPELINES</span>
-                    <span className="fg-band__right">LOADING…</span>
-                </div>
+            <PageLayout title="Pipelines">
                 <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     <CardSkeleton variant="pipeline-full" />
                     <CardSkeleton variant="pipeline-full" />
@@ -290,31 +286,25 @@ const PipelinesPage: React.FC = () => {
     return (
         <PageLayout
             title="Pipelines"
-            backTo="/"
-            backLabel="Dashboard"
             onRefresh={refreshPipelines}
-        >
-            <SmartNudge page="pipelines" />
-
-            {/* Header band */}
-            <div className="fg-band">
-                <span className="fg-band__label">YOUR PIPELINES</span>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <Button
-                        variant="ink"
-                        size="sm"
+            headerActions={
+                <>
+                    <PageAction
+                        tone="secondary"
                         onClick={() => { setImportCode(undefined); setShowImportModal(true); }}
                     >
                         📥 IMPORT
-                    </Button>
-                    <Button
-                        size="sm"
+                    </PageAction>
+                    <PageAction
+                        tone="primary"
                         onClick={() => navigate('/settings/pipelines/new')}
                     >
-                        + NEW PIPELINE
-                    </Button>
-                </div>
-            </div>
+                        ＋ NEW PIPELINE
+                    </PageAction>
+                </>
+            }
+        >
+            <SmartNudge page="pipelines" />
 
             {/* Filter strip — only show when there are pipelines */}
             {pipelines.length > 0 && (

@@ -36,8 +36,6 @@ const RecipesPage: React.FC = () => {
     return (
         <PageLayout
             title="Recipes"
-            backTo="/"
-            backLabel="Dashboard"
             headerSubtitle="Pick a recipe; we'll spin up the pipeline pre-configured. Edit the result as much as you want."
         >
             <div className="fg-band">

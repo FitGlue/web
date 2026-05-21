@@ -43,8 +43,8 @@ const EnricherDataPage: React.FC = () => {
     return (
         <PageLayout
             title="Booster Data"
-            backTo="/"
-            backLabel="Dashboard"
+            backTo="/settings/account"
+            backLabel="Settings"
         >
             <Stack gap="lg">
                 <div className="fg-band fg-band--ink">

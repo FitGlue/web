@@ -26,7 +26,7 @@ const UnsynchronizedDetailPage: React.FC = () => {
 
     if (!loading && !run) {
         return (
-            <PageLayout title="Not Found" backTo="/activities?tab=unsynchronized" backLabel="Unsynchronized Activities">
+            <PageLayout title="Not Found" backTo="/activities" backLabel="Activities">
                 <div style={{ padding: '3rem 2rem', textAlign: 'center' }}>
                     Pipeline execution not found.
                 </div>
@@ -45,7 +45,7 @@ const UnsynchronizedDetailPage: React.FC = () => {
     const sourceLabel = run?.source?.replace(/^SOURCE_/, '').replace(/_/g, ' ').toLowerCase() ?? '—';
 
     return (
-        <PageLayout backTo="/activities?tab=unsynchronized" backLabel="← UNSYNCHRONIZED">
+        <PageLayout>
             {/* ── Heading slab ── */}
             <div className="rd-head">
                 <div>

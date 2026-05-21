@@ -209,7 +209,7 @@ const AccountSettingsPage: React.FC = () => {
     };
 
     return (
-        <SettingsLayout title="Account" backLabel="SETTINGS / ACCOUNT">
+        <SettingsLayout title="Account">
             <div>
                     {/* Plan banner */}
                     <div className="stx-plan">

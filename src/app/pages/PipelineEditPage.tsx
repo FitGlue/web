@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout/PageLayout';
+import { PageAction, OverflowMenu } from '../components/library/layout';
 import { Stack } from '../components/library/layout/Stack';
 import { Card } from '../components/library/ui/Card';
 import { Button } from '../components/library/ui/Button';
@@ -103,7 +104,7 @@ const PipelineEditPage: React.FC = () => {
     const [showSyncModal, setShowSyncModal] = useState(false);
     const [enricherSearchQuery, setEnricherSearchQuery] = useState('');
     const [expandAllCategories, setExpandAllCategories] = useState(false);
-    const [runsLast7d, setRunsLast7d] = useState<number | null>(null);
+    const [showOverflow, setShowOverflow] = useState(false);
 
     const fetchPipeline = useCallback(async () => {
         if (!pipelineId) return;
@@ -177,16 +178,6 @@ const PipelineEditPage: React.FC = () => {
             fetchPipeline();
         }
     }, [fetchPipeline, registryLoading, enrichers]);
-
-    useEffect(() => {
-        if (!pipelineId) return;
-        const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-        client.GET('/users/me/pipelines/{id}/runs', {
-            params: { path: { id: pipelineId }, query: { since, limit: 100 } },
-        }).then(({ data }) => {
-            setRunsLast7d((data as { runs?: unknown[] })?.runs?.length ?? 0);
-        }).catch(() => {});
-    }, [pipelineId]);
 
     const handleSave = async () => {
         if (!pipelineId) return;
@@ -285,18 +276,41 @@ const PipelineEditPage: React.FC = () => {
     const availableDestinations = destinations.filter(d => d.enabled && isPluginAvailable(d));
     const excludedDestinations = destinations.filter(d => d.enabled && !isPluginAvailable(d));
 
+    const pipelineHeaderActions = (
+        <>
+            <div style={{ position: 'relative' }}>
+                <PageAction tone="more" onClick={() => setShowOverflow(v => !v)} />
+                {showOverflow && (
+                    <OverflowMenu
+                        onClose={() => setShowOverflow(false)}
+                        items={[
+                            { key: 'share', icon: '📤', label: 'Share', onClick: () => setShowShareModal(true) },
+                            ...(selectedSources.some(s => ['hevy', 'strava', 'fitbit', 'intervals'].includes(s))
+                                ? [{ key: 'sync', icon: '🕐', label: 'Sync historical', onClick: () => setShowSyncModal(true) }]
+                                : []),
+                        ]}
+                    />
+                )}
+            </div>
+            <PageAction tone="secondary" onClick={() => navigate('/settings/pipelines')}>
+                Cancel
+            </PageAction>
+            <PageAction
+                tone="primary"
+                onClick={handleSave}
+                disabled={saving || selectedSources.length === 0 || selectedDestinations.length === 0}
+            >
+                {saving ? 'Saving…' : 'Save Changes'}
+            </PageAction>
+        </>
+    );
+
     return (
         <>
-            <PageLayout title="Edit Pipeline" backTo="/settings/pipelines" backLabel="Pipelines">
+            <PageLayout title="Edit Pipeline" backTo="/settings/pipelines" backLabel="Pipelines" headerActions={pipelineHeaderActions}>
                 {error && (
                     <Card onClick={() => setError(null)}>{error}</Card>
                 )}
-                <div className="fg-band">
-                    <span className="fg-band__label">EDIT PIPELINE</span>
-                    {runsLast7d !== null && (
-                        <span className="fg-band__right">{runsLast7d} RUNS / 7D</span>
-                    )}
-                </div>
                 <Stack>
                     {/* Pipeline Name Section */}
                     <Card>
@@ -474,22 +488,6 @@ const PipelineEditPage: React.FC = () => {
                         );
                     })}
 
-                    {/* Actions */}
-                    <Stack direction="horizontal" justify="between">
-                        <Stack direction="horizontal" gap="sm">
-                            <Button variant="secondary" onClick={() => setShowShareModal(true)}>📤 Share</Button>
-                            {selectedSources.some(s => ['hevy', 'strava', 'fitbit', 'intervals'].includes(s)) && (
-                                <Button variant="secondary" onClick={() => setShowSyncModal(true)}>🕐 Sync historical</Button>
-                            )}
-                        </Stack>
-                        <Stack direction="horizontal" gap="sm">
-                            <Button variant="secondary" onClick={() => navigate('/settings/pipelines')}>Cancel</Button>
-                            <Button variant="primary" onClick={handleSave}
-                                disabled={saving || selectedSources.length === 0 || selectedDestinations.length === 0}>
-                                {saving ? 'Saving...' : 'Save Changes'}
-                            </Button>
-                        </Stack>
-                    </Stack>
                 </Stack>
             </PageLayout>
 

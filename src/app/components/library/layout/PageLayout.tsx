@@ -30,10 +30,6 @@ interface PageLayoutProps {
     children: ReactNode;
 }
 
-/**
- * PageLayout wraps entire page content with consistent structure.
- * Eliminates the need for container divs in page components.
- */
 export const PageLayout: React.FC<PageLayoutProps> = ({
     title,
     backTo,
@@ -54,6 +50,20 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 
     const showPageHeader = !!(title || backTo || headerActions || headerStats || onRefresh || headerSubtitle);
 
+    // Build actions — wraps RefreshControl + any additional actions
+    const resolvedActions = (onRefresh || headerActions) ? (
+        <>
+            {onRefresh && (
+                <RefreshControl
+                    onRefresh={onRefresh}
+                    loading={loading}
+                    lastUpdated={lastUpdated}
+                />
+            )}
+            {headerActions}
+        </>
+    ) : undefined;
+
     return (
         <div className="app-page-layout">
             <AppHeader />
@@ -65,18 +75,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
                         backLabel={backLabel}
                         subtitle={headerSubtitle}
                         stats={headerStats}
-                        actions={(title || onRefresh || headerActions) ? (
-                            <>
-                                {onRefresh && (
-                                    <RefreshControl
-                                        onRefresh={onRefresh}
-                                        loading={loading}
-                                        lastUpdated={lastUpdated}
-                                    />
-                                )}
-                                {headerActions}
-                            </>
-                        ) : undefined}
+                        actions={resolvedActions}
                     />
                 )}
                 <main>

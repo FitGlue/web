@@ -194,7 +194,7 @@ const ConnectionsPage: React.FC = () => {
 
     if (loading || registryLoading) {
         return (
-            <PageLayout title="Connections" backTo="/" backLabel="Dashboard">
+            <PageLayout title="Connections">
                 <div className="fg-band">
                     <span className="fg-band__label">CONNECTIONS</span>
                     <span className="fg-band__right">LOADING…</span>
@@ -210,7 +210,7 @@ const ConnectionsPage: React.FC = () => {
 
     if (registryIntegrations.length === 0) {
         return (
-            <PageLayout title="Connections" backTo="/" backLabel="Dashboard">
+            <PageLayout title="Connections">
                 <EmptyState
                     icon="🔗"
                     title="NO CONNECTIONS AVAILABLE"
@@ -223,8 +223,6 @@ const ConnectionsPage: React.FC = () => {
     return (
         <PageLayout
             title="Connections"
-            backTo="/"
-            backLabel="Dashboard"
             onRefresh={refreshIntegrations}
         >
             <SmartNudge page="connections" />

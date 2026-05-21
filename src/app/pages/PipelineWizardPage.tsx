@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/library/layout/PageLayout';
+import { PageAction } from '../components/library/layout';
 import { Card } from '../components/library/ui/Card';
 import { Button } from '../components/library/ui/Button';
 import { Paragraph } from '../components/library/ui/Paragraph';
@@ -775,21 +776,16 @@ const PipelineWizardPage: React.FC = () => {
 
     return (
         <>
-            <PageLayout title="Create Pipeline" backTo="/settings/pipelines" backLabel="Pipelines">
-                {/* Aurora band header */}
-                <div className="fg-band">
-                    <span className="fg-band__label">NEW PIPELINE</span>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <Button
-                            variant="ink"
-                            size="sm"
-                            onClick={() => navigate('/settings/pipelines')}
-                        >
-                            CANCEL ✕
-                        </Button>
-                    </div>
-                </div>
-
+            <PageLayout
+                title="Create Pipeline"
+                backTo="/settings/pipelines"
+                backLabel="Pipelines"
+                headerActions={
+                    <PageAction tone="secondary" onClick={() => navigate('/settings/pipelines')}>
+                        Cancel
+                    </PageAction>
+                }
+            >
                 {/* Wizard layout: rail + body */}
                 <div className="pipe-wiz">
                     {renderWizardRail()}

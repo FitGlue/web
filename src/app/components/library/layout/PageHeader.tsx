@@ -2,56 +2,150 @@ import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import './PageHeader.css';
 
-interface PageHeaderProps {
-    title?: string | ReactNode;
-    actions?: ReactNode;
-    backTo?: string;
-    backLabel?: string;
-    /** Mono text shown on the right side of the gradient band (e.g. breadcrumb) */
+// Status pill tone names map to CSS modifier classes
+type StatusTone = 'green' | 'rose' | 'aurora';
+
+export interface PageHeaderProps {
+    // ── New unified API ──────────────────────────────────────────
+    /** Breadcrumb trail; last entry is the current page (paper), ancestors are dim links. */
+    crumbs?: string[];
+    /** Path for each ancestor crumb (index-aligned with crumbs; last entry is current so ignored). */
+    crumbLinks?: string[];
+    /** Optional status pill rendered after the last crumb. */
+    status?: { label: string; tone?: StatusTone };
+    /** Right-aligned mono meta text (version, last-edited timestamp…). */
     eyebrow?: string;
-    /** Optional subtitle shown below the title in mono style */
+    /** Page title rendered in large display type. */
+    title?: string | ReactNode;
+    /** Optional word appended to title in aurora-gradient text. */
+    titleAccent?: string;
+    /** Mono dim secondary line beneath the title. */
+    meta?: string;
+    /** 1–3 <PageAction /> children (or any ReactNode). */
+    actions?: ReactNode;
+    /** Optional content rendered below meta — stats strip, filter chips, etc. */
+    children?: ReactNode;
+
+    // ── Legacy / compat props (still honoured by PageLayout) ─────
+    /** @deprecated Use crumbs + crumbLinks. Adds a back-link as first crumb. */
+    backTo?: string;
+    /** @deprecated Label for the back-link crumb. */
+    backLabel?: string;
+    /** @deprecated Use meta. */
     subtitle?: string;
-    /** Optional inline stats group aligned to the right of the title row */
+    /** @deprecated Use children. Inline stats rendered below the title. */
     stats?: ReactNode;
 }
 
-export const PageHeader: React.FC<PageHeaderProps> = ({ title, actions, backTo, backLabel, eyebrow, subtitle, stats }) => {
-    // Derive eyebrow from backLabel when not explicitly provided
-    const bandRight = eyebrow || (backLabel ? backLabel.toUpperCase() : undefined);
+export const PageHeader: React.FC<PageHeaderProps> = ({
+    crumbs,
+    crumbLinks,
+    status,
+    eyebrow,
+    title,
+    titleAccent,
+    meta,
+    actions,
+    children,
+    // legacy
+    backTo,
+    backLabel,
+    subtitle,
+    stats,
+}) => {
+    // ── Derive crumbs from legacy props when new API not supplied ─
+    const resolvedCrumbs: string[] = crumbs ?? (
+        backTo && backLabel && typeof title === 'string'
+            ? [backLabel, title]
+            : []
+    );
+    const resolvedLinks: (string | undefined)[] = crumbLinks ?? (
+        backTo && backLabel && typeof title === 'string'
+            ? [backTo, undefined]
+            : []
+    );
+
+    // Legacy subtitle / stats → new meta / children
+    const resolvedMeta = meta ?? subtitle;
+    const resolvedChildren = children ?? stats;
+
+    // Whether to render the crumbs / status / eyebrow row at all
+    const hasCrumbRow = resolvedCrumbs.length > 0 || !!status || !!eyebrow;
 
     return (
         <div className="page-header">
-            {/* Gradient band strip */}
-            <div className="page-header__band">
-                <span className="page-header__eyebrow">
-                    {typeof title === 'string' ? title.toUpperCase() : 'FITGLUE'}
-                </span>
-                {bandRight && (
-                    <span style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.14em', opacity: 0.85 }}>
-                        {bandRight}
-                    </span>
-                )}
-            </div>
+            {hasCrumbRow && (
+                <div className="page-header__crumb-row">
+                    {/* Breadcrumb trail */}
+                    {resolvedCrumbs.length > 0 && (
+                        <nav className="page-header__crumbs" aria-label="Breadcrumb">
+                            {resolvedCrumbs.map((crumb, i) => {
+                                const isLast = i === resolvedCrumbs.length - 1;
+                                const link = resolvedLinks[i];
+                                return (
+                                    <React.Fragment key={i}>
+                                        {i > 0 && (
+                                            <span className="page-header__crumb-sep" aria-hidden="true">/</span>
+                                        )}
+                                        {!isLast && link ? (
+                                            <Link to={link} className="page-header__crumb page-header__crumb--link">
+                                                {crumb.toUpperCase()}
+                                            </Link>
+                                        ) : (
+                                            <span
+                                                className={`page-header__crumb${isLast ? ' page-header__crumb--current' : ''}`}
+                                                aria-current={isLast ? 'page' : undefined}
+                                            >
+                                                {crumb.toUpperCase()}
+                                            </span>
+                                        )}
+                                    </React.Fragment>
+                                );
+                            })}
+                        </nav>
+                    )}
+
+                    {/* Status pill */}
+                    {status && (
+                        <span className={`page-header__status page-header__status--${status.tone ?? 'green'}`}>
+                            {status.label}
+                        </span>
+                    )}
+
+                    {/* Eyebrow — right-aligned */}
+                    {eyebrow && (
+                        <span className="page-header__eyebrow">{eyebrow}</span>
+                    )}
+                </div>
+            )}
 
             {/* Title + actions row */}
             <div className="page-header__body">
-                <div className="page-header-left">
-                    {backTo && (
-                        <Link to={backTo} className="back-link">
-                            ← {backLabel || 'Back'}
-                        </Link>
+                <div className="page-header__left">
+                    {title && (
+                        <h1 className="page-header__title">
+                            {typeof title === 'string' ? title.toUpperCase() : title}
+                            {titleAccent && (
+                                <>
+                                    {' '}
+                                    <span className="page-header__title-accent">
+                                        {titleAccent.toUpperCase()}
+                                    </span>
+                                </>
+                            )}
+                        </h1>
                     )}
-                    <div className="page-header-title">
-                        {typeof title === 'string' ? <h2>{title}</h2> : title}
-                    </div>
-                    {subtitle && (
-                        <p className="page-header-subtitle">{subtitle}</p>
+                    {resolvedMeta && (
+                        <p className="page-header__meta">{resolvedMeta}</p>
+                    )}
+                    {resolvedChildren && (
+                        <div className="page-header__children">{resolvedChildren}</div>
                     )}
                 </div>
-                <div className="page-header-actions">
-                    {stats && <div className="page-header-stats">{stats}</div>}
-                    {actions}
-                </div>
+
+                {actions && (
+                    <div className="page-header__actions">{actions}</div>
+                )}
             </div>
         </div>
     );

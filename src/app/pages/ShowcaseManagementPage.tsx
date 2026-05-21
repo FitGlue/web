@@ -510,7 +510,7 @@ const ShowcaseManagementPage: React.FC = () => {
 
     if (loading) {
         return (
-            <PageLayout title="Manage Showcase" backLabel="SETTINGS / SHOWCASE">
+            <PageLayout title="Manage Showcase">
                 <div style={{ padding: '2rem' }}>
                     <CardSkeleton variant="integration" />
                     <CardSkeleton variant="integration" />
@@ -522,7 +522,7 @@ const ShowcaseManagementPage: React.FC = () => {
 
     if (!profile) {
         return (
-            <PageLayout title="Manage Showcase" backLabel="SETTINGS / SHOWCASE">
+            <PageLayout title="Manage Showcase">
                 <Stack className="showcase-mgmt__empty" align="center" gap="md" style={{ padding: '3rem 2rem' }}>
                     <Paragraph className="showcase-mgmt__empty-icon">🌟</Paragraph>
                     <Paragraph>No showcase profile found.</Paragraph>
@@ -538,7 +538,7 @@ const ShowcaseManagementPage: React.FC = () => {
         <PageLayout
             title="Manage Showcase"
             backTo="/settings/account"
-            backLabel="← ACCOUNT"
+            backLabel="Account"
         >
             <div className="fg-band">
                 <span className="fg-band__label">SHOWCASE · PUBLIC PROFILE</span>

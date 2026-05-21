@@ -1,0 +1,182 @@
+@import '../tokens.css';
+
+/* ==========================================================================
+   AvatarMenu — popover anchored to AvatarTrigger
+   role="dialog" | opened on avatar click, closed on Esc or outside click
+   ========================================================================== */
+
+.avatar-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    width: 320px;
+    background: var(--fg-ink-2);
+    border: 1.5px solid var(--fg-paper);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    z-index: calc(var(--z-dropdown) + 1);
+    font-family: var(--fg-font-body);
+}
+
+/* Identity header — aurora wash */
+.avatar-menu__identity {
+    padding: 1.125rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+}
+
+.avatar-menu__avatar {
+    width: 44px;
+    height: 44px;
+    background: var(--fg-ink);
+    color: var(--fg-paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--fg-font-display);
+    font-size: 1.125rem;
+    flex-shrink: 0;
+}
+
+.avatar-menu__avatar--photo {
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--radius-full);
+}
+
+.avatar-menu__identity-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3125rem;
+    min-width: 0;
+}
+
+.avatar-menu__display-name {
+    font-family: var(--fg-font-display);
+    font-size: 1rem;
+    line-height: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.avatar-menu__email {
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    word-break: break-all;
+    opacity: 0.85;
+}
+
+/* Plan strip */
+.avatar-menu__plan {
+    padding: 0.75rem 1.125rem;
+    border-bottom: 1.5px solid var(--fg-hairline-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.avatar-menu__plan-name {
+    font-family: var(--fg-font-display);
+    font-size: 0.8125rem;
+    color: var(--fg-paper);
+    line-height: 1;
+}
+
+.avatar-menu__plan-meta {
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+}
+
+.avatar-menu__plan-cta {
+    padding: 0.25rem 0.5rem;
+    border: 1.5px solid var(--fg-paper);
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-paper);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background var(--transition-fast), color var(--transition-fast);
+    flex-shrink: 0;
+}
+.avatar-menu__plan-cta:hover {
+    background: var(--fg-paper);
+    color: var(--fg-ink);
+}
+
+/* Sections */
+.avatar-menu__section {
+    border-top: 1.5px solid var(--fg-hairline-color);
+    padding: 0.625rem 0;
+}
+
+.avatar-menu__section-label {
+    padding: 0.25rem 1.125rem 0.5rem;
+    font-family: var(--fg-font-mono);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(245, 243, 235, 0.3);
+}
+
+.avatar-menu__item {
+    padding: 0.5625rem 1.125rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--fg-font-body);
+    font-size: 0.8125rem;
+    color: var(--fg-paper);
+    text-decoration: none;
+    transition: background var(--transition-fast);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+}
+.avatar-menu__item:hover { background: var(--fg-ink-3); }
+
+.avatar-menu__item--danger {
+    color: var(--fg-rose);
+}
+.avatar-menu__item--danger:hover {
+    background: rgba(255, 93, 108, 0.08);
+}
+
+.avatar-menu__item-icon {
+    width: 16px;
+    font-size: 0.8125rem;
+    opacity: 0.85;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.avatar-menu__item-label { flex: 1; }
+
+.avatar-menu__item-hint {
+    font-family: var(--fg-font-mono);
+    font-size: 0.625rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.08em;
+}
+
+/* Footer row */
+.avatar-menu__footer {
+    border-top: 1.5px solid var(--fg-hairline-color);
+    padding: 0.3125rem 0;
+}

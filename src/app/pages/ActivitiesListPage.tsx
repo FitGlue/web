@@ -149,10 +149,10 @@ const ActivitiesListPage: React.FC = () => {
     return (
         <PageLayout fullWidth>
             <PageHeader
+                crumbs={['Activities']}
                 title="Activities"
-                subtitle="Real-time feed of every pipeline run — synced, skipped, failed, or in flight."
+                meta="Real-time feed of every pipeline run — synced, skipped, failed, or in flight."
                 stats={stats}
-                eyebrow="ACTIVITIES"
             />
 
             {/* Filter chip strip */}

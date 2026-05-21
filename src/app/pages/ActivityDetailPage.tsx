@@ -245,6 +245,8 @@ const getStatusInfo = (status?: PipelineRunStatus): {
             return { cardVariant: 'needs-input', badgeVariant: 'warning', statusLabel: 'Awaiting Input', statusIcon: '⏳' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED:
             return { cardVariant: 'premium', badgeVariant: 'default', statusLabel: 'Skipped', statusIcon: '⏭️' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED:
+            return { cardVariant: 'default', badgeVariant: 'error', statusLabel: 'Cancelled', statusIcon: '⊗' };
         default:
             return { cardVariant: 'default', badgeVariant: 'default' };
     }
@@ -379,7 +381,7 @@ const ActivityDetailPage: React.FC = () => {
     };
 
     return (
-        <PageLayout backTo="/activities" backLabel="← ACTIVITIES">
+        <PageLayout>
             {/* ── Heading slab ── */}
             <div className="rd-head">
                 <div>
@@ -422,6 +424,7 @@ const ActivityDetailPage: React.FC = () => {
                             pipelineExecutionId: pipelineRun.id,
                             syncedAt: pipelineRun.updatedAt,
                         } as unknown as SynchronizedActivity}
+                        pendingInputId={pipelineRun.pendingInputId ?? undefined}
                         onSuccess={() => { }}
                     />
                 </div>

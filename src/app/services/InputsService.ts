@@ -15,6 +15,7 @@ export interface InputResolutionRequest {
 export interface IInputsService {
   resolveInput(request: InputResolutionRequest): Promise<boolean>;
   dismissInput(activityId: string): Promise<boolean>;
+  cancelPipeline(pendingInputId: string): Promise<boolean>;
   setFCMToken(token: string): Promise<boolean>;
 }
 
@@ -45,6 +46,14 @@ export const InputsService: IInputsService = {
     await client.POST('/users/me/pending-inputs/{inputId}/submit', {
       params: { path: { inputId: activityId } },
       body,
+    });
+    return true;
+  },
+
+  async cancelPipeline(pendingInputId: string) {
+    await client.POST('/users/me/pending-inputs/{inputId}/cancel', {
+      params: { path: { inputId: pendingInputId } },
+      body: { inputId: pendingInputId },
     });
     return true;
   },

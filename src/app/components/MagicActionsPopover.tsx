@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SynchronizedActivity, ActivitiesService, RepostResponse } from '../services/ActivitiesService';
+import { InputsService } from '../services/InputsService';
 import { Destination } from '../../types/pb/events';
 import { formatDestination } from '../../types/pb/enum-formatters';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
@@ -36,14 +37,15 @@ const getAvailableDestinations = (
     return destinations;
 };
 
-type ModalType = 'missed' | 'retry' | 'full' | null;
+type ModalType = 'missed' | 'retry' | 'full' | 'cancel' | null;
 
 interface MagicActionsPopoverProps {
     activity: SynchronizedActivity;
     onSuccess: () => void;
+    pendingInputId?: string;
 }
 
-export const MagicActionsPopover: React.FC<MagicActionsPopoverProps> = ({ activity, onSuccess }) => {
+export const MagicActionsPopover: React.FC<MagicActionsPopoverProps> = ({ activity, onSuccess, pendingInputId }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [modalType, setModalType] = useState<ModalType>(null);
     const [selectedDestination, setSelectedDestination] = useState<string | null>(null);
@@ -112,6 +114,9 @@ export const MagicActionsPopover: React.FC<MagicActionsPopoverProps> = ({ activi
                 response = await ActivitiesService.retryDestination(activity.activityId!, selectedDestination);
             } else if (modalType === 'full') {
                 response = await ActivitiesService.fullPipelineRerun(activity.activityId!);
+            } else if (modalType === 'cancel' && pendingInputId) {
+                await InputsService.cancelPipeline(pendingInputId);
+                response = { success: true, message: 'Pipeline cancelled.' };
             } else {
                 return;
             }
@@ -206,6 +211,15 @@ export const MagicActionsPopover: React.FC<MagicActionsPopoverProps> = ({ activi
                                         >
                                             🔄 Re-run entire pipeline
                                         </button>
+                                        {pendingInputId && (
+                                            <button
+                                                type="button"
+                                                className="magic__btn magic__btn--danger"
+                                                onClick={() => openModal('cancel')}
+                                            >
+                                                ⊗ Cancel pipeline
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </>
@@ -219,20 +233,21 @@ export const MagicActionsPopover: React.FC<MagicActionsPopoverProps> = ({ activi
                 isOpen={!!modalType}
                 onClose={closeModal}
                 title={
-                    modalType === 'missed' ? `📤 Send to ${selectedDestination}` :
-                    modalType === 'retry'  ? `🔄 Retry ${selectedDestination}` :
-                                            '✨ Re-run Pipeline'
+                    modalType === 'missed'  ? `📤 Send to ${selectedDestination}` :
+                    modalType === 'retry'   ? `🔄 Retry ${selectedDestination}` :
+                    modalType === 'cancel'  ? '⊗ Cancel Pipeline' :
+                                             '✨ Re-run Pipeline'
                 }
                 size="sm"
                 footer={
                     <Stack direction="horizontal" gap="sm" justify="end">
                         <Button variant="secondary" onClick={closeModal} disabled={loading}>Cancel</Button>
                         <Button
-                            variant={modalType === 'full' ? 'danger' : 'primary'}
+                            variant={modalType === 'full' || modalType === 'cancel' ? 'danger' : 'primary'}
                             onClick={handleAction}
                             disabled={loading || result?.success === true}
                         >
-                            {loading ? 'Processing…' : modalType === 'full' ? 'Re-run Pipeline' : 'Confirm'}
+                            {loading ? 'Processing…' : modalType === 'full' ? 'Re-run Pipeline' : modalType === 'cancel' ? 'Cancel Pipeline' : 'Confirm'}
                         </Button>
                     </Stack>
                 }
@@ -250,6 +265,14 @@ export const MagicActionsPopover: React.FC<MagicActionsPopoverProps> = ({ activi
                                 <Paragraph>⚠️ <Paragraph inline bold>Warning:</Paragraph> This re-processes through the entire pipeline and may create <Paragraph inline bold>duplicate activities</Paragraph> in destination platforms.</Paragraph>
                             </Card>
                             <Paragraph>Use this only to apply new enrichers or fix processing issues.</Paragraph>
+                        </Stack>
+                    )}
+                    {modalType === 'cancel' && (
+                        <Stack gap="sm">
+                            <Card variant="elevated">
+                                <Paragraph>⚠️ <Paragraph inline bold>Warning:</Paragraph> This will permanently cancel the pipeline run. The activity will remain in its current state with <Paragraph inline bold>no further processing</Paragraph>.</Paragraph>
+                            </Card>
+                            <Paragraph>Use this to kill a run that is stuck waiting for input you no longer wish to provide.</Paragraph>
                         </Stack>
                     )}
                     {result && (

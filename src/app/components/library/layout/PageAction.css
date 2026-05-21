@@ -1,0 +1,71 @@
+@import '../tokens.css';
+
+/* ==========================================================================
+   PageAction — per-page verb buttons (primary / secondary / more)
+   One primary per page max. 0–2 secondary. One more (⋯) for overflow.
+   ========================================================================== */
+
+.page-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    font-family: var(--fg-font-display);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    transition:
+        opacity var(--transition-fast),
+        background var(--transition-fast);
+    white-space: nowrap;
+}
+
+.page-action:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* primary — aurora gradient fill, ink text */
+.page-action--primary {
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+}
+.page-action--primary:hover:not(:disabled) { opacity: 0.88; }
+
+/* secondary — ghost outline */
+.page-action--secondary {
+    background: transparent;
+    color: var(--fg-paper);
+    border: 2px solid var(--fg-paper);
+}
+.page-action--secondary:hover:not(:disabled) {
+    background: rgba(245, 243, 235, 0.06);
+}
+
+/* secondary + danger — rose */
+.page-action--secondary.page-action--danger {
+    color: var(--fg-rose);
+    border-color: var(--fg-rose);
+}
+.page-action--secondary.page-action--danger:hover:not(:disabled) {
+    background: rgba(255, 93, 108, 0.08);
+}
+
+/* more — ⋯ overflow square */
+.page-action--more {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    justify-content: center;
+    background: transparent;
+    color: var(--fg-paper);
+    border: 2px solid var(--fg-paper);
+    font-family: var(--fg-font-display);
+    font-size: 1.125rem;
+    letter-spacing: -0.05em;
+}
+.page-action--more:hover:not(:disabled) {
+    background: rgba(245, 243, 235, 0.06);
+}
