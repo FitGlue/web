@@ -1,15 +1,38 @@
 import React from 'react';
 import { PipelineRun, PipelineRunStatus } from '../../../../types/pb/user';
+import { ActivityType } from '../../../../types/pb/standardized_activity';
 import { formatActivityType } from '../../../../types/pb/enum-formatters';
 import './RunRow.css';
 
 export interface RunRowProps {
     run: PipelineRun;
-    /** feed: full-width hairline row (ActivitiesListPage). dashboard: compact (DashboardPage). detail: with diff link. */
+    /** feed: full-width hairline row (ActivitiesListPage). dashboard: compact 2-line (DashboardPage). detail: with diff link. */
     variant?: 'feed' | 'dashboard' | 'detail';
     pipelineName?: string;
     onClick?: () => void;
     onDiffClick?: (e: React.MouseEvent) => void;
+}
+
+function getTypeClass(type?: ActivityType): string {
+    switch (type) {
+        case ActivityType.ACTIVITY_TYPE_RIDE:
+        case ActivityType.ACTIVITY_TYPE_VIRTUAL_RIDE:
+        case ActivityType.ACTIVITY_TYPE_GRAVEL_RIDE:
+        case ActivityType.ACTIVITY_TYPE_MOUNTAIN_BIKE_RIDE:
+        case ActivityType.ACTIVITY_TYPE_EBIKE_RIDE:
+        case ActivityType.ACTIVITY_TYPE_EMOUNTAIN_BIKE_RIDE:
+            return 'run-row__type--cyan';
+        case ActivityType.ACTIVITY_TYPE_RUN:
+        case ActivityType.ACTIVITY_TYPE_TRAIL_RUN:
+        case ActivityType.ACTIVITY_TYPE_VIRTUAL_RUN:
+            return 'run-row__type--pink';
+        case ActivityType.ACTIVITY_TYPE_PILATES:
+        case ActivityType.ACTIVITY_TYPE_YOGA:
+        case ActivityType.ACTIVITY_TYPE_WEIGHT_TRAINING:
+            return 'run-row__type--violet';
+        default:
+            return 'run-row__type--ink3';
+    }
 }
 
 function getStatusClass(status?: PipelineRunStatus): string {
@@ -48,6 +71,7 @@ export const RunRow: React.FC<RunRowProps> = ({ run, variant = 'feed', pipelineN
     const title = run.title || 'Untitled Activity';
     const boosterCount = run.boosters?.length ?? 0;
     const destCount = run.destinations?.length ?? 0;
+    const typeClass = getTypeClass(run.type as ActivityType);
 
     const timestamp = run.createdAt
         ? new Date(run.createdAt).toLocaleString(undefined, {
@@ -55,15 +79,61 @@ export const RunRow: React.FC<RunRowProps> = ({ run, variant = 'feed', pipelineN
         })
         : null;
 
+    const interactiveProps = onClick ? {
+        role: 'button' as const,
+        tabIndex: 0,
+        onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') onClick(); },
+    } : {};
+
+    if (variant === 'dashboard') {
+        const status = run.status;
+        const synced = status === PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED
+            || status === PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL;
+        const skippedOrFailed = status === PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED
+            || status === PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED
+            || status === PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED;
+        const statusLabel = getStatusLabel(status);
+
+        return (
+            <div className="run-row run-row--dashboard" onClick={onClick} {...interactiveProps}>
+                <div className="run-row__top">
+                    <span className={`run-row__type ${typeClass}`}>{activityType}</span>
+                    <span className="run-row__title">{title}</span>
+                    {timestamp && <span className="run-row__time">{timestamp}</span>}
+                </div>
+                <div className="run-row__bottom">
+                    {pipelineName && <span className="run-row__via">VIA {pipelineName}</span>}
+                    {synced && (
+                        <span className="run-row__status">
+                            {(boosterCount > 0 || destCount > 0) && (
+                                <span className="run-row__count">
+                                    {boosterCount > 0 && `${boosterCount} BOOSTER${boosterCount !== 1 ? 'S' : ''}`}
+                                    {boosterCount > 0 && destCount > 0 && ' · '}
+                                    {destCount > 0 && `${destCount} DEST${destCount !== 1 ? 'S' : ''}`}
+                                </span>
+                            )}
+                            <span className="run-row__ok">✓</span>
+                        </span>
+                    )}
+                    {skippedOrFailed && (
+                        <span className="run-row__skip">⏭ {statusLabel}</span>
+                    )}
+                    {!synced && !skippedOrFailed && (
+                        <span className={`run-row__pill ${getStatusClass(status)}`}>
+                            {statusLabel}
+                        </span>
+                    )}
+                </div>
+                {skippedOrFailed && run.statusMessage && (
+                    <div className="run-row__reason">ℹ {run.statusMessage}</div>
+                )}
+            </div>
+        );
+    }
+
     return (
-        <div
-            className={`run-row run-row--${variant}`}
-            onClick={onClick}
-            role={onClick ? 'button' : undefined}
-            tabIndex={onClick ? 0 : undefined}
-            onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); } : undefined}
-        >
-            <span className="run-row__type">{activityType}</span>
+        <div className={`run-row run-row--${variant}`} onClick={onClick} {...interactiveProps}>
+            <span className={`run-row__type ${typeClass}`}>{activityType}</span>
 
             <div className="run-row__main">
                 <span className="run-row__title">{title}</span>

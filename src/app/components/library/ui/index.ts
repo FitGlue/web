@@ -168,6 +168,10 @@ export type { LinkProps } from './Link';
 export { RunRow } from './RunRow';
 export type { RunRowProps } from './RunRow';
 
+// Pipeline summary card (dashboard + pipelines list)
+export { PipelineSummaryCard } from './PipelineSummaryCard';
+export type { PipelineSummaryCardProps } from './PipelineSummaryCard';
+
 // Countdown ring (SVG circular timer with aurora gradient)
 export { CountdownRing } from './CountdownRing';
 export type { CountdownRingProps } from './CountdownRing';
