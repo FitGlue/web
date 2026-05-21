@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRealtimePipelineRuns } from '../../hooks/useRealtimePipelineRuns';
+import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { EnrichedActivityCard } from './EnrichedActivityCard';
+import { RunRow } from '../library/ui/RunRow';
 import { CardSkeleton, Paragraph, DashboardSummaryCard, EmptyState, TabbedCard, Heading } from '../library/ui';
 import { Stack } from '../library/layout';
 import { PipelineRunStatus, PipelineRun } from '../../../types/pb/user';
@@ -67,6 +69,7 @@ export const PipelineRunsList: React.FC<PipelineRunsListProps> = ({
 
     // Hook uses singleton pattern - safe to call from multiple components with same limit
     const { pipelineRuns, loading } = useRealtimePipelineRuns(true, limit);
+    const { pipelines } = useRealtimePipelines();
 
     const handleTabChange = (mode: FilterMode) => {
         setTabMode(mode);
@@ -177,7 +180,24 @@ export const PipelineRunsList: React.FC<PipelineRunsListProps> = ({
     );
 
     // Runs list content
-    const runsContent = (
+    const runsContent = variant === 'dashboard' ? (
+        <div>
+            {filteredRuns.map(run => {
+                const pipelineName = run.pipelineId
+                    ? pipelines.find((p: { id: string }) => p.id === run.pipelineId)?.name
+                    : undefined;
+                return (
+                    <RunRow
+                        key={run.id}
+                        run={run}
+                        variant="dashboard"
+                        pipelineName={pipelineName}
+                        onClick={() => handleRunClick(run)}
+                    />
+                );
+            })}
+        </div>
+    ) : (
         <Stack gap="md">
             {filteredRuns.map(run => (
                 <EnrichedActivityCard
