@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <defs>
+    <linearGradient id="aurora" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff3da6"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" fill="url(#aurora)"/>
+  <text x="24" y="24" dominant-baseline="central" text-anchor="middle"
+        fill="#070710" font-family="Arial Black, Arial, sans-serif"
+        font-size="17" font-weight="900" letter-spacing="-1">FG</text>
+</svg>
