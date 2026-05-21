@@ -616,6 +616,151 @@
     flex-wrap: wrap;
 }
 
+/* ── Rail divider (between enricher group and destinations) ── */
+.rd-rail__divider {
+    padding: 8px 18px;
+    background: var(--fg-ink);
+    font-family: var(--fg-font-mono);
+    font-size: .5625rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    border-bottom: var(--fg-rule-thin);
+    border-top: var(--fg-rule-thin);
+}
+
+/* ── Provider filter buttons (in .rd-providers-head) ── */
+.rd-provider__filter {
+    display: flex;
+    gap: 4px;
+}
+
+.rd-provider__filter button {
+    padding: 4px 10px;
+    background: var(--fg-ink);
+    color: var(--color-text-muted);
+    border: 1px solid rgba(245,243,235,.3);
+    font-family: var(--fg-font-mono);
+    font-size: .5625rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.rd-provider__filter button.active {
+    background: var(--fg-paper);
+    color: var(--fg-ink);
+    border-color: transparent;
+}
+
+/* ── Magic actions popover ── */
+.magic {
+    position: relative;
+}
+
+.magic__trigger {
+    padding: 8px 14px;
+    font-family: var(--fg-font-mono);
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+    border: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.magic__trigger:hover { filter: brightness(1.1); }
+
+.magic__pop {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 380px;
+    background: var(--fg-ink-2);
+    border: var(--fg-rule-thick);
+    z-index: 100;
+    box-shadow: 0 12px 32px rgba(0,0,0,.5);
+    padding: 16px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* ── AI Activity Companion card ── */
+.ai-card {
+    margin: 24px 32px;
+    background: var(--fg-ink-2);
+    border-left: 4px solid var(--fg-violet);
+}
+
+.ai-card__head {
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: var(--fg-rule-thin);
+}
+
+.ai-card__head h3 {
+    font-family: var(--fg-font-display);
+    font-size: .9375rem;
+    letter-spacing: -.005em;
+    margin: 0;
+    color: var(--fg-paper);
+}
+
+.ai-card__head span {
+    font-family: var(--fg-font-mono);
+    font-size: .625rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+
+.ai-card__body {
+    padding: 20px 24px;
+    font-family: var(--fg-font-mono);
+    font-size: .8125rem;
+    line-height: 1.65;
+    color: var(--fg-paper);
+    white-space: pre-wrap;
+}
+
+.ai-card__foot {
+    padding: 10px 20px;
+    border-top: var(--fg-rule-thin);
+    font-family: var(--fg-font-mono);
+    font-size: .625rem;
+    letter-spacing: .12em;
+    color: var(--color-text-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-transform: uppercase;
+}
+
+.ai-card__foot button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    font-family: var(--fg-font-mono);
+    font-size: .625rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 0;
+}
+
+.ai-card__foot button:hover { color: var(--fg-paper); }
+
 /* ── Responsive ── */
 @media (max-width: 1024px) {
     .rd-main {

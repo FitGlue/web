@@ -6,7 +6,7 @@ import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout } from '../components/library/layout';
 import { CardSkeleton, Heading, Paragraph, Code, Button, SvgAsset, useToast, IdBadge, ProgressBar } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
-import { RepostActionsMenu } from '../components/RepostActionsMenu';
+import { MagicActionsPopover } from '../components/MagicActionsPopover';
 import { client } from '../../shared/api/client';
 import { useNerdMode } from '../state/NerdModeContext';
 import { formatActivityType, formatDestination, formatDestinationStatus } from '../../types/pb/enum-formatters';
@@ -260,6 +260,9 @@ const ActivityDetailPage: React.FC = () => {
     // Per-run export state
     const [exportStatus, setExportStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
 
+    // Provider list filter: ALL | OK | SKIP
+    const [providerFilter, setProviderFilter] = useState<'ALL' | 'OK' | 'SKIP'>('ALL');
+
     // Get pipeline runs - this is now the PRIMARY data source
     const { pipelineRuns, loading } = useRealtimePipelineRuns(true, 50);
 
@@ -276,6 +279,7 @@ const ActivityDetailPage: React.FC = () => {
         activityType,
         generatedAssets,
         pipelineName,
+        showcaseUrl,
     } = useMemo(() => {
         if (!pipelineRun) {
             return {
@@ -285,6 +289,7 @@ const ActivityDetailPage: React.FC = () => {
                 activityType: '',
                 generatedAssets: [],
                 pipelineName: undefined,
+                showcaseUrl: undefined,
             };
         }
 
@@ -308,6 +313,14 @@ const ActivityDetailPage: React.FC = () => {
             ? pipelines.find(p => p.id === pipelineRun.pipelineId)?.name
             : undefined;
 
+        // Build showcase URL if this activity was synced there
+        const showcaseDest = pipelineRun.destinations?.find(d => formatDestination(d.destination) === 'Showcase');
+        const pipeline = pipelineRun.pipelineId ? pipelines.find(p => p.id === pipelineRun.pipelineId) : undefined;
+        const showcaseConfig = pipeline?.destinationConfigs?.['showcase']?.config;
+        const showcaseUrl = showcaseDest?.externalId
+            ? buildDestinationUrl(registryDestinations, 'showcase', showcaseDest.externalId, showcaseConfig)
+            : undefined;
+
         return {
             sourceInfo,
             destinations,
@@ -315,6 +328,7 @@ const ActivityDetailPage: React.FC = () => {
             activityType,
             generatedAssets,
             pipelineName,
+            showcaseUrl,
         };
     }, [pipelineRun, sources, registryDestinations, pipelines]);
 
@@ -387,7 +401,15 @@ const ActivityDetailPage: React.FC = () => {
                     </div>
                 </div>
                 <div className="rd-head__actions">
-                    <RepostActionsMenu
+                    <Button variant="secondary" size="small" disabled={exportStatus === 'loading'} onClick={handleExport}>
+                        {exportStatus === 'loading' ? '⏳ EXPORTING…' : '📦 EXPORT'}
+                    </Button>
+                    {showcaseUrl && (
+                        <a href={showcaseUrl} target="_blank" rel="noopener noreferrer" className="fg-button fg-button--ghost fg-button--sm">
+                            ↗ VIEW ON SHOWCASE
+                        </a>
+                    )}
+                    <MagicActionsPopover
                         activity={{
                             activityId: pipelineRun.activityId,
                             title: pipelineRun.title,
@@ -401,12 +423,7 @@ const ActivityDetailPage: React.FC = () => {
                             syncedAt: pipelineRun.updatedAt,
                         } as unknown as SynchronizedActivity}
                         onSuccess={() => { }}
-                        isPro={true}
-                        inline
                     />
-                    <Button variant="secondary" size="small" disabled={exportStatus === 'loading'} onClick={handleExport}>
-                        {exportStatus === 'loading' ? '⏳ EXPORTING…' : '📦 EXPORT'}
-                    </Button>
                 </div>
             </div>
 
@@ -460,10 +477,11 @@ const ActivityDetailPage: React.FC = () => {
 
             {/* ── Main 2-column layout ── */}
             <div className="rd-main">
-                {/* Left rail: pipeline steps */}
+                {/* Left rail: pipeline phases only — no per-booster rows */}
                 <aside className="rd-rail">
                     <div className="rd-rail__head">
-                        PIPELINE <b>{1 + providerExecutions.length + destinations.length} STEPS</b>
+                        <span>Execution Trace</span>
+                        <span>{1 + (providerExecutions.length > 0 ? 1 : 0) + destinations.length} STEPS</span>
                     </div>
 
                     {/* Source row */}
@@ -476,36 +494,26 @@ const ActivityDetailPage: React.FC = () => {
                         <span className="rd-step-row__pill rd-step-row__pill--ok">OK</span>
                     </div>
 
-                    {/* Booster rows */}
-                    {providerExecutions.map((exec, idx) => {
-                        const effectiveStatus = getEffectiveStatus(exec);
-                        const pillClass = effectiveStatus === 'SUCCESS' ? 'rd-step-row__pill--ok'
-                            : effectiveStatus === 'SKIPPED' ? 'rd-step-row__pill--skip'
-                            : (effectiveStatus === 'ERROR' || effectiveStatus === 'FAILED') ? 'rd-step-row__pill--err'
-                            : 'rd-step-row__pill--run';
-                        const pillLabel = effectiveStatus === 'SUCCESS' ? 'OK'
-                            : effectiveStatus === 'SKIPPED' ? 'SKIP'
-                            : effectiveStatus.slice(0, 4);
-                        const enricherPlugin = enrichers.find(
-                            e => e.id === exec.ProviderName || e.id === exec.ProviderName?.replace(/_/g, '-')
-                        );
-                        const boosterMs = pipelineRun.boosters?.find(b => b.providerName === exec.ProviderName)?.durationMs;
+                    {/* Single enricher group row — details live in the body, not here */}
+                    {providerExecutions.length > 0 && (() => {
+                        const ranCount = providerExecutions.filter(e => getEffectiveStatus(e) === 'SUCCESS').length;
+                        const skipCount = providerExecutions.filter(e => getEffectiveStatus(e) === 'SKIPPED').length;
                         return (
-                            <div key={idx} className="rd-step-row">
-                                <span className="rd-step-row__n">{String(idx + 1).padStart(2, '0')}</span>
+                            <div className="rd-step-row active">
+                                <span className="rd-step-row__n">ENR</span>
                                 <div>
-                                    <div className="rd-step-row__title">
-                                        {enricherPlugin?.name || exec.ProviderName?.replace(/[_-]/g, ' ') || 'Booster'}
-                                    </div>
-                                    <div className="rd-step-row__service">enricher</div>
-                                    {boosterMs != null && boosterMs > 0 && (
-                                        <div className="rd-step-row__time">{boosterMs}ms</div>
-                                    )}
+                                    <div className="rd-step-row__title">Enricher · {providerExecutions.length} boosters</div>
+                                    <div className="rd-step-row__service">{ranCount} ran · {skipCount} skipped · ↓ detail in body</div>
                                 </div>
-                                <span className={`rd-step-row__pill ${pillClass}`}>{pillLabel}</span>
+                                <span className="rd-step-row__pill rd-step-row__pill--ok">✓ {ranCount}/{providerExecutions.length}</span>
                             </div>
                         );
-                    })}
+                    })()}
+
+                    {/* Divider before destinations */}
+                    {destinations.length > 0 && (
+                        <div className="rd-rail__divider">→ Router · destinations</div>
+                    )}
 
                     {/* Destination rows */}
                     {destinations.map((dest, idx) => {
@@ -519,7 +527,7 @@ const ActivityDetailPage: React.FC = () => {
                                 <span className="rd-step-row__n">DST</span>
                                 <div>
                                     <div className="rd-step-row__title">{destInfo.name}</div>
-                                    <div className="rd-step-row__service">destination</div>
+                                    <div className="rd-step-row__service">{dest.name.toLowerCase()}-uploader</div>
                                 </div>
                                 <span className={`rd-step-row__pill ${pillClass}`}>
                                     {dest.status === 'Success' ? 'OK' : dest.status.slice(0, 4).toUpperCase()}
@@ -531,9 +539,22 @@ const ActivityDetailPage: React.FC = () => {
 
                 {/* Right body */}
                 <div className="rd-body">
-                    {/* Description */}
+                    {/* AI Activity Companion summary — preserves newlines and bullets */}
                     {pipelineRun.description && (
-                        <div className="rd-json">{pipelineRun.description}</div>
+                        <div className="ai-card">
+                            <div className="ai-card__head">
+                                <h3>✨ AI Activity Companion</h3>
+                            </div>
+                            <div className="ai-card__body">
+                                {pipelineRun.description.replace(/^✨ AI Summary:\n?/, '')}
+                            </div>
+                            <div className="ai-card__foot">
+                                <span>POSTED VIA FITGLUE</span>
+                                <button onClick={() => navigator.clipboard.writeText(pipelineRun.description || '')}>
+                                    📋 COPY
+                                </button>
+                            </div>
+                        </div>
                     )}
 
                     {/* Generated assets */}
@@ -577,13 +598,33 @@ const ActivityDetailPage: React.FC = () => {
                         </>
                     )}
 
-                    {/* Boosters detailed list */}
+                    {/* Boosters detailed list — ONE place only (rail has no per-booster rows) */}
                     {providerExecutions.length > 0 && (
                         <>
                             <div className="rd-providers-head">
-                                BOOSTERS <b>{providerExecutions.length} ENRICHERS</b>
+                                <span>Provider Executions · {providerExecutions.length} boosters</span>
+                                <div className="rd-provider__filter">
+                                    {(['ALL', 'OK', 'SKIP'] as const).map(f => {
+                                        const count = f === 'ALL' ? providerExecutions.length
+                                            : f === 'OK' ? providerExecutions.filter(e => getEffectiveStatus(e) === 'SUCCESS').length
+                                            : providerExecutions.filter(e => getEffectiveStatus(e) === 'SKIPPED').length;
+                                        return (
+                                            <button
+                                                key={f}
+                                                className={providerFilter === f ? 'active' : ''}
+                                                onClick={() => setProviderFilter(f)}
+                                            >
+                                                {f} · {count}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
                             </div>
-                            {providerExecutions.map((exec, idx) => {
+                            {providerExecutions.filter(exec => {
+                                if (providerFilter === 'ALL') return true;
+                                const s = getEffectiveStatus(exec);
+                                return providerFilter === 'OK' ? s === 'SUCCESS' : s === 'SKIPPED';
+                            }).map((exec, idx) => {
                                 const effectiveStatus = getEffectiveStatus(exec);
                                 const pillClass = effectiveStatus === 'SUCCESS' ? 'rd-step-row__pill--ok'
                                     : effectiveStatus === 'SKIPPED' ? 'rd-step-row__pill--skip'
