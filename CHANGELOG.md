@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.20.0](https://github.com/fitglue/web/compare/v11.19.1...v11.20.0) (2026-05-21)
+
+
+### Features
+
+* **dashboard:** build layout primitives + wire empty columns ([bf0512f](https://github.com/fitglue/web/commit/bf0512f03188bb12e054e2af4110668617d2e812))
+* **dashboard:** clean up orphans, move banners, remove stale CSS ([ee9a806](https://github.com/fitglue/web/commit/ee9a806d7ef6ee5dba7428599702c87c8393fd40))
+* **dashboard:** lift RunRow dashboard variant + add PipelineSummaryCard ([6f813df](https://github.com/fitglue/web/commit/6f813df309e04af83a459ddea52a809fbeb5fc8a))
+* **dashboard:** wire left column — Action / Recipe / Upload sections ([b817852](https://github.com/fitglue/web/commit/b81785205f8d485fc09c2474ddaf412a267ccd79))
+* **dashboard:** wire middle column with PipelinesSection ([258bcf1](https://github.com/fitglue/web/commit/258bcf18685df7a743485a45724ac9870d8e70d2))
+* **dashboard:** wire right column — RunRow replaces EnrichedActivityCard ([52b9f4f](https://github.com/fitglue/web/commit/52b9f4f8e0d6c8701f3d894df75d92c816779871))
+
+
+### Bug Fixes
+
+* **nav:** escape quotes in CommandPalette empty-state JSX ([08a17f1](https://github.com/fitglue/web/commit/08a17f1ce68847d8284b30a3fbec67b128e8fbda))
+
 ### [11.19.1](https://github.com/fitglue/web/compare/v11.19.0...v11.19.1) (2026-05-21)
 
 
