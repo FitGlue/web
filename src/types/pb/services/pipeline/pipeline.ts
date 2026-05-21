@@ -80,6 +80,11 @@ export interface ResolvePendingInputRequest {
   pendingInputId: string;
 }
 
+export interface CancelPipelineRequest {
+  userId: string;
+  pendingInputId: string;
+}
+
 export interface RepostActivityRequest {
   userId: string;
   activityId: string;
@@ -148,6 +153,7 @@ export interface PipelineService {
   SubmitInput(request: SubmitInputRequest): Promise<Empty>;
   ListPendingInputs(request: ListPendingInputsRequest): Promise<ListPendingInputsResponse>;
   ResolvePendingInput(request: ResolvePendingInputRequest): Promise<Empty>;
+  CancelPipeline(request: CancelPipelineRequest): Promise<Empty>;
   RepostActivity(request: RepostActivityRequest): Promise<Empty>;
   GetPipelineRun(request: GetPipelineRunRequest): Promise<PipelineRun>;
   ListPipelineRuns(request: ListPipelineRunsRequest): Promise<ListPipelineRunsResponse>;

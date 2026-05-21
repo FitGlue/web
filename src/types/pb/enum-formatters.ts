@@ -2553,6 +2553,10 @@ const PipelineRunStatusNames: Record<string, string> = {
     'TIER_BLOCKED': 'Tier Blocked',
     'Tier Blocked': 'Tier Blocked',
     '8': 'Tier Blocked',
+    'PIPELINE_RUN_STATUS_CANCELLED': 'Cancelled',
+    'CANCELLED': 'Cancelled',
+    'Cancelled': 'Cancelled',
+    '9': 'Cancelled',
 };
 
 export function formatPipelineRunStatus(value: PipelineRunStatus | number | string | undefined | null): string {
@@ -2583,6 +2587,7 @@ export function formatPipelineRunStatus(value: PipelineRunStatus | number | stri
     case PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED: return 'Skipped';
     case PipelineRunStatus.PIPELINE_RUN_STATUS_ARCHIVED: return 'Archived';
     case PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED: return 'Tier Blocked';
+    case PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED: return 'Cancelled';
     default: return 'Unknown';
   }
 }
@@ -2618,6 +2623,9 @@ const PipelineRunStatusValues: Record<string, PipelineRunStatus> = {
     'tier_blocked': PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED,
     'tier blocked': PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED,
     '8': PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED,
+    'pipeline_run_status_cancelled': PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED,
+    'cancelled': PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED,
+    '9': PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED,
 };
 
 export function parsePipelineRunStatus(input: string | number | undefined | null): PipelineRunStatus {

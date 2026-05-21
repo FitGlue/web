@@ -628,6 +628,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/me/pending-inputs/{inputId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_CancelPipeline"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/me/pending-inputs/{inputId}/submit": {
         parameters: {
             query?: never;
@@ -1039,6 +1055,9 @@ export interface components {
             /** Format: int32 */
             kcal?: number;
             comparisonText?: string;
+        };
+        CancelPipelineGatewayRequest: {
+            inputId?: string;
         };
         ConfigFieldDependency: {
             fieldKey?: string;
@@ -1643,7 +1662,7 @@ export interface components {
              * Format: enum
              * @enum {string}
              */
-            status?: "PIPELINE_RUN_STATUS_UNSPECIFIED" | "PIPELINE_RUN_STATUS_RUNNING" | "PIPELINE_RUN_STATUS_SYNCED" | "PIPELINE_RUN_STATUS_PARTIAL" | "PIPELINE_RUN_STATUS_FAILED" | "PIPELINE_RUN_STATUS_PENDING" | "PIPELINE_RUN_STATUS_SKIPPED" | "PIPELINE_RUN_STATUS_ARCHIVED" | "PIPELINE_RUN_STATUS_TIER_BLOCKED";
+            status?: "PIPELINE_RUN_STATUS_UNSPECIFIED" | "PIPELINE_RUN_STATUS_RUNNING" | "PIPELINE_RUN_STATUS_SYNCED" | "PIPELINE_RUN_STATUS_PARTIAL" | "PIPELINE_RUN_STATUS_FAILED" | "PIPELINE_RUN_STATUS_PENDING" | "PIPELINE_RUN_STATUS_SKIPPED" | "PIPELINE_RUN_STATUS_ARCHIVED" | "PIPELINE_RUN_STATUS_TIER_BLOCKED" | "PIPELINE_RUN_STATUS_CANCELLED";
             /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
@@ -3673,6 +3692,39 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StandardizedActivity"];
                 };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_CancelPipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                inputId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelPipelineGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Default error response */
             default: {
