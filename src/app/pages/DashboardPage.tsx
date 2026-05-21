@@ -14,6 +14,7 @@ import { WelcomeBanner } from '../components/onboarding/WelcomeBanner';
 import { PipelineRunsList } from '../components/dashboard/PipelineRunsList';
 import { FileUploadPanel } from '../components/dashboard/FileUploadPanel';
 import { PipelinesSummaryCard } from '../components/dashboard/PipelinesSummaryCard';
+import { ConnectionsSummaryCard } from '../components/dashboard/ConnectionsSummaryCard';
 import { ActionRequiredSummaryCard } from '../components/dashboard/ActionRequiredSummaryCard';
 import { SubscriptionBanner } from '../components/dashboard/SubscriptionBanner';
 import { PWAInstallBanner } from '../components/dashboard/PWAInstallBanner';
@@ -195,8 +196,9 @@ const DashboardPageInner: React.FC = () => {
 
             {/* 3-column body */}
             <div className="dashboard-body">
-                {/* Left — Action Required + Nudge + Upload */}
+                {/* Left — Connections + Action Required + Nudge + Upload */}
                 <div className="dashboard-col">
+                    <ConnectionsSummaryCard />
                     <ActionRequiredSummaryCard />
                     <SmartNudge page="dashboard" />
                     <FileUploadPanel />

@@ -24,6 +24,7 @@ interface PipelineConfig {
     id: string;
     name?: string;
     source: string;
+    sources?: string[];
     enrichers?: EnricherConfig[];
     destinations: (string | number)[];
     disabled?: boolean;
@@ -77,10 +78,12 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
                 <div>
                     <div className="pipe-card__flow-label">SOURCE</div>
                     <div className="pipe-card__chips">
-                        <span className="fg-booster-chip fg-booster-chip--done">
-                            <span className="fg-booster-chip__emoji">{getSourceIcon(pipeline.source)}</span>
-                            {getSourceName(pipeline.source)}
-                        </span>
+                        {(pipeline.sources?.length ? pipeline.sources : pipeline.source ? [pipeline.source] : []).map((s, i) => (
+                            <span key={i} className="fg-booster-chip fg-booster-chip--done">
+                                <span className="fg-booster-chip__emoji">{getSourceIcon(s)}</span>
+                                {getSourceName(s)}
+                            </span>
+                        ))}
                     </div>
                 </div>
 

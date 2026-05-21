@@ -47,6 +47,20 @@
     .dashboard-col {
         border-right: none;
         border-bottom: var(--fg-rule-thin);
+        min-height: 0;
+    }
+
+    .dashboard-first-run {
+        padding: 16px;
+    }
+
+    .dashboard-first-run__banner {
+        padding: 16px;
+    }
+
+    .dashboard-first-run__card {
+        min-height: 0;
+        padding: 24px 16px;
     }
 }
 

@@ -115,9 +115,15 @@ const PipelineEditPage: React.FC = () => {
             setPipeline(pipelineData);
             setPipelineName(pipelineData.name || '');
             // Prefer new sources array; fall back to legacy single source field.
-            const initSources = pipelineData.sources && pipelineData.sources.length > 0
+            const rawSources = pipelineData.sources && pipelineData.sources.length > 0
                 ? pipelineData.sources
                 : pipelineData.source ? [pipelineData.source] : [];
+            // Normalize "SOURCE_HEVY" → "hevy" by matching against manifest IDs.
+            const initSources = rawSources.map(s => {
+                const normalized = String(s).toLowerCase().replace('source_', '');
+                const manifest = sources.find(m => m.id === normalized);
+                return manifest?.id ?? normalized;
+            });
             setSelectedSources(initSources);
             setSelectedDestinations(pipelineData.destinations.map(d => {
                 // Convert numeric enum values to string IDs via manifest lookup
@@ -131,7 +137,11 @@ const PipelineEditPage: React.FC = () => {
                 return manifest?.id ?? normalized;
             }));
             const enricherConfigs: SelectedEnricher[] = pipelineData.enrichers.map(e => {
-                const manifest = enrichers.find(m => resolveEnum(m.enricherProviderType, EnricherProviderType) === resolveEnum(e.providerType, EnricherProviderType));
+                // Try direct string match first — handles enrichers not yet in the proto enum.
+                const manifest = enrichers.find(m =>
+                    String(m.enricherProviderType) === String(e.providerType) ||
+                    resolveEnum(m.enricherProviderType, EnricherProviderType) === resolveEnum(e.providerType, EnricherProviderType)
+                );
                 return {
                     manifest: manifest || { id: `unknown-${e.providerType}`, name: `Enricher ${e.providerType}`, enricherProviderType: resolveEnum(e.providerType, EnricherProviderType) } as unknown as PluginManifest,
                     config: e.typedConfig || {}

@@ -23,6 +23,9 @@ export const usePluginLookup = () => {
    * Get source info (name, icon) from source ID or enum value
    */
   const getSourceInfo = (source: string | number): PluginInfo => {
+    if (source === undefined || source === null || source === '') {
+      return { id: '', name: 'Unknown', icon: '📥' };
+    }
     const normalized = String(source).toLowerCase().replace('source_', '');
     const found = sources.find(s => s.id === normalized);
     return {

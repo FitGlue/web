@@ -11,6 +11,7 @@ export interface PipelineConfig {
     id: string;
     name?: string;
     source: string;
+    sources?: string[];
     enrichers: Array<{
         providerType: number;
         typedConfig?: Record<string, string>;

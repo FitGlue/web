@@ -38,10 +38,12 @@ export const useRealtimePipelines = () => {
         const querySnapshot = snapshot as any;
         return querySnapshot.docs.map((doc: { id: string; data: () => Record<string, unknown> }) => {
             const data = doc.data();
+            const sources = Array.isArray(data.sources) ? data.sources as string[] : data.source ? [data.source as string] : [];
             return {
                 id: doc.id,
                 name: data.name || '',
-                source: data.source,
+                source: (sources[0] ?? '') as string,
+                sources,
                 destinations: data.destinations || [],
                 enrichers: (Array.isArray(data.enrichers) ? data.enrichers : []).map((e: Record<string, unknown>) => ({
                     providerType: (e.provider_type || e.providerType) as number,
