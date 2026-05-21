@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.21.0](https://github.com/fitglue/web/compare/v11.20.1...v11.21.0) (2026-05-21)
+
+
+### Features
+
+* **nav:** unify navigation system with AppNav, AvatarMenu, CommandPalette, PageHeader, SubNavTabs, OverflowMenu, and PageAction ([4d01a77](https://github.com/fitglue/web/commit/4d01a772ed28f0962b55c0b4ee1fd3cd1adc7017))
+
+
+### Bug Fixes
+
+* **dashboard:** fix logo icon border; remove duplicate plan band ([1d749b1](https://github.com/fitglue/web/commit/1d749b1afda66df02123257a1f7124f0c1a1b85d))
+* **types:** add PIPELINE_RUN_STATUS_CANCELLED to PipelineRunStatus enum ([d0e23a8](https://github.com/fitglue/web/commit/d0e23a81d7d898bd8e98bcce4f5f1abaac3aaaa0))
+
 ### [11.20.1](https://github.com/fitglue/web/compare/v11.20.0...v11.20.1) (2026-05-21)
 
 
