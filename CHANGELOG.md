@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.22.2](https://github.com/fitglue/web/compare/v11.22.1...v11.22.2) (2026-05-21)
+
+
+### Bug Fixes
+
+* **marketing:** update plugin/connection detail pages and help templates to Brutal × Aurora design ([5168046](https://github.com/fitglue/web/commit/5168046ac9efa20c18b27705c4bd84c8e600a30a))
+
 ### [11.22.1](https://github.com/fitglue/web/compare/v11.22.0...v11.22.1) (2026-05-21)
 
 
