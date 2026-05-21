@@ -5,13 +5,13 @@
 
 /* ---- Theme Custom Properties ---- */
 .showcase-page {
-    /* Default theme (FitGlue Classic) */
-    --sc-bg: linear-gradient(180deg, #0a0a0a 0%, #1a0a20 50%, #0a0a0a 100%);
-    --sc-accent: #FF1B8D;
-    --sc-accent-alt: #9D4EDD;
-    --sc-card-bg: rgba(30, 30, 40, 0.6);
-    --sc-card-border: rgba(255, 255, 255, 0.1);
-    --sc-card-blur: blur(20px);
+    /* Default theme — Brutal × Aurora */
+    --sc-bg: var(--gradient-hero);
+    --sc-accent: var(--fg-pink);
+    --sc-accent-alt: var(--fg-violet);
+    --sc-card-bg: var(--fg-ink-2);
+    --sc-card-border: var(--fg-hairline-color);
+    --sc-card-blur: none;
 }
 
 /* Theme variants (applied via data-theme attribute) */
@@ -82,13 +82,12 @@
     z-index: 1;
 }
 
-/* ---- Glass Card (default card style) ---- */
+/* ---- Glass Card — retoned: hard ink slab, no blur ---- */
 .glass-card {
-    background: var(--sc-card-bg);
-    backdrop-filter: var(--sc-card-blur);
-    -webkit-backdrop-filter: var(--sc-card-blur);
-    border: 1px solid var(--sc-card-border);
-    border-radius: 24px;
+    background: var(--fg-ink-2);
+    border-radius: 0;
+    border: 0;
+    box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     animation: fadeInUp 0.6s ease-out backwards;
@@ -96,24 +95,18 @@
 
 /* Card style variants (applied via data-card-style attribute) */
 .showcase-page[data-card-style="solid"] .glass-card {
-    background: rgba(20, 20, 25, 0.95);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--fg-ink-3);
+    box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
 }
 
 .showcase-page[data-card-style="outline"] .glass-card {
     background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: 1px solid var(--sc-accent);
+    box-shadow: inset 0 0 0 1.5px var(--sc-accent);
 }
 
 .showcase-page[data-card-style="minimal"] .glass-card {
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: none;
+    background: transparent;
+    box-shadow: none;
 }
 
 @keyframes fadeInUp {
@@ -135,7 +128,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #0A0A0A;
+    background: var(--fg-ink);
     z-index: 9999;
     overflow: hidden;
 }
@@ -144,9 +137,9 @@
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse at 20% 20%, rgba(255, 27, 141, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(157, 78, 221, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(76, 201, 240, 0.03) 0%, transparent 70%);
+        radial-gradient(ellipse at 20% 20%, rgba(255, 61, 166, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(34, 211, 238, 0.03) 0%, transparent 70%);
     animation: loading-bg-pulse 4s ease-in-out infinite;
 }
 
@@ -195,7 +188,7 @@
 }
 
 .loading-logo-fit {
-    background: linear-gradient(135deg, #FF1B8D 0%, #FF6BB3 100%);
+    background: var(--gradient-primary);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -203,7 +196,7 @@
 }
 
 .loading-logo-glue {
-    background: linear-gradient(135deg, #9D4EDD 0%, #C77DFF 100%);
+    background: var(--gradient-primary);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -272,14 +265,14 @@
 }
 
 .fitglue-logo .fit {
-    background: linear-gradient(135deg, #FF1B8D 0%, #FF6BB3 100%);
+    background: var(--gradient-primary);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .fitglue-logo .glue {
-    background: linear-gradient(135deg, #9D4EDD 0%, #C77DFF 100%);
+    background: var(--gradient-primary);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -297,8 +290,8 @@
     content: '';
     position: absolute;
     inset: -2px;
-    border-radius: 24px;
-    background: linear-gradient(135deg, rgba(255, 27, 141, 0.3), rgba(157, 78, 221, 0.3));
+    border-radius: 0;
+    background: var(--gradient-aurora-soft);
     z-index: -1;
 }
 
@@ -320,21 +313,23 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 2rem;
-    background: linear-gradient(135deg, #FF1B8D 0%, #9D4EDD 100%);
-    color: #fff;
-    font-weight: 700;
-    font-size: 1rem;
+    padding: 0.875rem 1.375rem;
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+    font-family: var(--fg-font-display);
+    font-size: 0.875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     border: none;
-    border-radius: 12px;
+    border-radius: 0;
     cursor: pointer;
     text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform var(--transition-fast), filter var(--transition-fast);
 }
 
 .btn-gradient:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(157, 78, 221, 0.4);
+    transform: translateY(-1px);
+    filter: brightness(1.06);
 }
 
 /* ---- Hide site header/footer on showcase pages ---- */
