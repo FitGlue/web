@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.30.0](https://github.com/fitglue/web/compare/v11.29.2...v11.30.0) (2026-05-22)
+
+
+### Features
+
+* **showcase:** add heatmap, zone bar, route mosaic to profile; wire new enricher fields ([d7fb40e](https://github.com/fitglue/web/commit/d7fb40eec9acda7f94de6f2b293059364cb44a08))
+
 ### [11.29.2](https://github.com/fitglue/web/compare/v11.29.1...v11.29.2) (2026-05-22)
 
 
