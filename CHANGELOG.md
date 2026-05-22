@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.23.0](https://github.com/fitglue/web/compare/v11.22.2...v11.23.0) (2026-05-22)
+
+
+### Features
+
+* **pipeline:** cancel pipeline run by run ID on UnsynchronizedDetailPage ([4955ca6](https://github.com/fitglue/web/commit/4955ca6c930a729b5c53cf5ead5d631c2963c40b))
+
 ### [11.22.2](https://github.com/fitglue/web/compare/v11.22.1...v11.22.2) (2026-05-21)
 
 
