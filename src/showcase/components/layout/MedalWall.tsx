@@ -19,6 +19,12 @@ function prRecordLabel(recordType: string): string {
 
 function prValueLabel(value: number, unit: string): { val: string; sup: string } {
   if (unit === 'seconds') {
+    if (value >= 3600) {
+      const h = Math.floor(value / 3600);
+      const m = Math.floor((value % 3600) / 60);
+      const s = Math.floor(value % 60);
+      return { val: `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`, sup: '' };
+    }
     const m = Math.floor(value / 60);
     const s = Math.floor(value % 60);
     return { val: `${m}:${String(s).padStart(2, '0')}`, sup: '' };
@@ -111,7 +117,9 @@ function buildMedals(profile: ShowcaseProfile): Medal[] {
   const topPRs: ShowcaseTopPR[] = (profile.topPrs ?? []).filter(
     (p) => p.recordType && p.value && (p.unit === 'kg' || p.unit === 'seconds'),
   );
-  for (const pr of topPRs.slice(0, 4)) {
+  const timePRs = topPRs.filter((p) => p.unit === 'seconds').slice(0, 2);
+  const weightPRs = topPRs.filter((p) => p.unit === 'kg').slice(0, 2);
+  for (const pr of [...timePRs, ...weightPRs]) {
     const { val, sup } = prValueLabel(pr.value!, pr.unit!);
     const date = pr.achievedAt
       ? new Date(pr.achievedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })

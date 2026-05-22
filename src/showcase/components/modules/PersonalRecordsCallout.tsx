@@ -25,6 +25,12 @@ function prDelta(r: PersonalRecord): string | null {
 
 function prValue(r: PersonalRecord): { val: string; unit: string } {
   if (r.unit === 'seconds') {
+    if (r.newValue >= 3600) {
+      const h = Math.floor(r.newValue / 3600);
+      const m = Math.floor((r.newValue % 3600) / 60);
+      const s = Math.floor(r.newValue % 60);
+      return { val: `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`, unit: '' };
+    }
     const m = Math.floor(r.newValue / 60);
     const s = Math.floor(r.newValue % 60);
     return { val: `${m}:${String(s).padStart(2, '0')}`, unit: '' };
