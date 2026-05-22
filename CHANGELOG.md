@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.29.0](https://github.com/fitglue/web/compare/v11.28.1...v11.29.0) (2026-05-22)
+
+
+### Features
+
+* **showcase:** strength PRs on medal wall, PR band on activity page, PR tags on cards ([64e1619](https://github.com/fitglue/web/commit/64e16191acfa9a4acd85ae2966878e3e9577aa6f))
+
 ### [11.28.1](https://github.com/fitglue/web/compare/v11.28.0...v11.28.1) (2026-05-22)
 
 
