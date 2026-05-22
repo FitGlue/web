@@ -62,7 +62,7 @@ function buildMedals(profile: ShowcaseProfile): Medal[] {
   }
 
   const distKm = (profile.totalDistanceMeters ?? 0) / 1000;
-  for (const milestone of [25000, 10000, 5000, 2500, 1000]) {
+  for (const milestone of [25000, 10000, 5000, 2500, 1000, 500, 200, 100]) {
     if (distKm >= milestone) {
       medals.push({
         icon: '🏅',

@@ -111,13 +111,16 @@ export default function ShowcaseProfilePage() {
 
         {/* Sticky public nav bar */}
         <nav className="showcase-pubbar">
-          <a className="showcase-pubbar__brand" href="/">FitGlue</a>
+          <a className="showcase-pubbar__brand" href="/">
+            <span className="showcase-pubbar__brand-icon" aria-hidden="true">FG</span>
+            <span className="showcase-pubbar__brand-wordmark" aria-hidden="true">FITGLUE</span>
+          </a>
+          <span className="showcase-pubbar__crumb">
+            <b>{profile.displayName?.toUpperCase() ?? 'ATHLETE'}</b>
+          </span>
           <div className="showcase-pubbar__actions">
-            <span style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-paper)', padding: '6px 12px', border: 'var(--fg-rule-thin)', cursor: 'default' }}>
-              ✦ FOLLOW
-            </span>
-            <a href="/" style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-ink)', background: 'var(--fg-paper)', padding: '6px 12px', textDecoration: 'none' }}>
-              YOUR SHOWCASE →
+            <a href="/" style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-cyan)', textDecoration: 'none' }}>
+              TRY FITGLUE →
             </a>
           </div>
         </nav>
