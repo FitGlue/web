@@ -6,7 +6,7 @@ import { useUser } from '../../hooks/useUser';
 import { useNerdMode } from '../../state/NerdModeContext';
 import { getEffectiveTier, TIER_ATHLETE, HOBBYIST_TIER_LIMITS } from '../../utils/tier';
 import { DashboardBand } from '../library/ui/DashboardBand';
-import { Select, FormField } from '../library/forms';
+import { Input, Textarea, Select, FormField } from '../library/forms';
 
 type QueueStatus = 'pending' | 'uploading' | 'success' | 'error';
 
@@ -31,6 +31,8 @@ export const UploadSection: React.FC = () => {
 
     const inputRef = useRef<HTMLInputElement>(null);
     const [queue, setQueue] = useState<QueueItem[]>([]);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
     const [uploading, setUploading] = useState(false);
     const [selectedPipelineId, setSelectedPipelineId] = useState('');
 
@@ -81,6 +83,8 @@ export const UploadSection: React.FC = () => {
         handleFilesSelected(e.dataTransfer.files);
     }, [handleFilesSelected]);
 
+    const isSingleFile = queue.length === 1;
+
     const uploadOne = async (item: QueueItem): Promise<void> => {
         const arrayBuffer = await item.file.arrayBuffer();
         const bytes = new Uint8Array(arrayBuffer);
@@ -88,7 +92,11 @@ export const UploadSection: React.FC = () => {
         bytes.forEach(byte => { binary += String.fromCharCode(byte); });
         const base64Data = btoa(binary);
 
-        const payload: Record<string, string | undefined> = { fitFileContent: base64Data };
+        const payload: Record<string, string | undefined> = {
+            fitFileContent: base64Data,
+            title: (isSingleFile && title) ? title : undefined,
+            description: (isSingleFile && description) ? description : undefined,
+        };
         if (isNerdMode && selectedPipelineId) payload.pipelineId = selectedPipelineId;
 
         await client.POST('/users/me/parse-fit', { body: payload as never });
@@ -111,6 +119,10 @@ export const UploadSection: React.FC = () => {
             }
         }
         setUploading(false);
+        if (isSingleFile) {
+            setTitle('');
+            setDescription('');
+        }
     };
 
     if (pipelinesLoading || !hasFileUploadPipeline) return null;
@@ -178,6 +190,30 @@ export const UploadSection: React.FC = () => {
                             </span>
                         </div>
                     ))}
+                    {isSingleFile && (
+                        <div style={{ padding: '0.5rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <FormField label="Title" htmlFor="upload-title">
+                                <Input
+                                    id="upload-title"
+                                    type="text"
+                                    placeholder="Auto-generated if left blank"
+                                    value={title}
+                                    onChange={e => setTitle(e.target.value)}
+                                    disabled={uploading}
+                                />
+                            </FormField>
+                            <FormField label="Description" htmlFor="upload-desc">
+                                <Textarea
+                                    id="upload-desc"
+                                    placeholder="Add notes about this activity…"
+                                    value={description}
+                                    onChange={e => setDescription(e.target.value)}
+                                    disabled={uploading}
+                                    rows={2}
+                                />
+                            </FormField>
+                        </div>
+                    )}
                     {isNerdMode && (
                         <div style={{ padding: '0.5rem 1.25rem' }}>
                             <FormField label="Target Pipeline" htmlFor="upload-pipeline">
@@ -204,7 +240,7 @@ export const UploadSection: React.FC = () => {
                             <button
                                 className="fg-button fg-button--ghost fg-button--sm"
                                 style={{ marginLeft: '0.5rem' }}
-                                onClick={() => setQueue([])}
+                                onClick={() => { setQueue([]); setTitle(''); setDescription(''); }}
                                 disabled={uploading}
                             >
                                 CLEAR
@@ -213,7 +249,7 @@ export const UploadSection: React.FC = () => {
                     )}
                     {allDone && (
                         <div style={{ padding: '0.5rem 1.25rem' }}>
-                            <button className="fg-button fg-button--ghost fg-button--sm" onClick={() => setQueue([])}>
+                            <button className="fg-button fg-button--ghost fg-button--sm" onClick={() => { setQueue([]); setTitle(''); setDescription(''); }}>
                                 UPLOAD MORE →
                             </button>
                         </div>
