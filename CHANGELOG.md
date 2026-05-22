@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.28.1](https://github.com/fitglue/web/compare/v11.28.0...v11.28.1) (2026-05-22)
+
+
+### Bug Fixes
+
+* **showcase:** fix profile pubbar, medal thresholds, and mobile layout ([724e43c](https://github.com/fitglue/web/commit/724e43c094212159d3ce5c9b8b45d8f354cafc7b))
+
 ## [11.28.0](https://github.com/fitglue/web/compare/v11.27.0...v11.28.0) (2026-05-22)
 
 
