@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.27.0](https://github.com/fitglue/web/compare/v11.26.0...v11.27.0) (2026-05-22)
+
+
+### Features
+
+* **showcase:** rewrite profile page to match v2 archetype ([d89873d](https://github.com/fitglue/web/commit/d89873d140ee327c28342d15b568acf8221e8e31))
+
 ## [11.26.0](https://github.com/fitglue/web/compare/v11.25.0...v11.26.0) (2026-05-22)
 
 
