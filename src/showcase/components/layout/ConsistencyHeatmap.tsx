@@ -9,9 +9,9 @@ interface Props {
 
 export default function ConsistencyHeatmap({ streakHistory }: Props): React.ReactElement | null {
   const weeks = streakHistory?.weeklyActive;
-  if (!weeks || weeks.length < 8) return null;
+  if (!weeks || weeks.length < 4) return null;
 
-  const show = weeks.slice(-52);
+  const show = weeks;
   const activeCount = show.filter(Boolean).length;
   const pct = Math.round((activeCount / show.length) * 100);
 
@@ -25,7 +25,7 @@ export default function ConsistencyHeatmap({ streakHistory }: Props): React.Reac
   return (
     <div className="heatmap-band">
       <div className="heatmap-band__label">
-        <span>📅 CONSISTENCY · {activeCount}/{show.length} WEEKS ACTIVE · {pct}%</span>
+        <span>📅 CONSISTENCY SINCE JOINING · {activeCount}/{show.length} WEEKS ACTIVE · {pct}%</span>
         {currentStreak >= 2 && (
           <span className="heatmap-band__streak">🔥 {currentStreak} WK STREAK</span>
         )}
