@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Stack, PageLayout } from '../components/library/layout';
+import { Stack, SettingsLayout, SubNavTabs } from '../components/library/layout';
 import { Button, Paragraph, Card, Heading, Link, CardSkeleton, Avatar, Pagination } from '../components/library/ui';
 import { FormField, Input, Textarea, Toggle } from '../components/library/forms';
 import { client } from '../../shared/api/client';
@@ -510,19 +510,19 @@ const ShowcaseManagementPage: React.FC = () => {
 
     if (loading) {
         return (
-            <PageLayout title="Manage Showcase">
+            <SettingsLayout title="Showcase">
                 <div style={{ padding: '2rem' }}>
                     <CardSkeleton variant="integration" />
                     <CardSkeleton variant="integration" />
                     <CardSkeleton variant="integration" />
                 </div>
-            </PageLayout>
+            </SettingsLayout>
         );
     }
 
     if (!profile) {
         return (
-            <PageLayout title="Manage Showcase">
+            <SettingsLayout title="Showcase">
                 <Stack className="showcase-mgmt__empty" align="center" gap="md" style={{ padding: '3rem 2rem' }}>
                     <Paragraph className="showcase-mgmt__empty-icon">🌟</Paragraph>
                     <Paragraph>No showcase profile found.</Paragraph>
@@ -530,35 +530,24 @@ const ShowcaseManagementPage: React.FC = () => {
                         Showcase activities from your pipeline runs to create your public profile.
                     </Paragraph>
                 </Stack>
-            </PageLayout>
+            </SettingsLayout>
         );
     }
 
     return (
-        <PageLayout
-            title="Manage Showcase"
-            backTo="/settings/account"
-            backLabel="Account"
-        >
+        <SettingsLayout title="Showcase">
             <div className="fg-band">
                 <span className="fg-band__label">SHOWCASE · PUBLIC PROFILE</span>
             </div>
 
-            <div className="sm-layout">
-                <aside className="sm-subnav">
-                    {NAV_ITEMS.map(item => (
-                        <button
-                            key={item.id}
-                            className={`sm-subnav__link${activeSection === item.id ? ' sm-subnav__link--active' : ''}`}
-                            onClick={() => setSection(item.id)}
-                        >
-                            <span className="sm-subnav__icon">{item.icon}</span>
-                            {item.label}
-                        </button>
-                    ))}
-                </aside>
+            <SubNavTabs
+                tabs={NAV_ITEMS.map(item => ({ key: item.id, label: item.label }))}
+                active={activeSection}
+                onSelect={(key) => setSection(key as ShowcaseSection)}
+                aria-label="Showcase sections"
+            />
 
-                <div className="sm-panel">
+            <div className="sm-panel">
 
                     {/* ── PROFILE ── */}
                     {activeSection === 'profile' && (
@@ -994,7 +983,6 @@ const ShowcaseManagementPage: React.FC = () => {
                     )}
 
                 </div>
-            </div>
 
             {cropImage && (
                 <ImageCropModal
@@ -1003,7 +991,7 @@ const ShowcaseManagementPage: React.FC = () => {
                     onClose={handleCropCancel}
                 />
             )}
-        </PageLayout>
+        </SettingsLayout>
     );
 };
 
