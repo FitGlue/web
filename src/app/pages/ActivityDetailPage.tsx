@@ -430,6 +430,7 @@ const ActivityDetailPage: React.FC = () => {
                             syncedAt: pipelineRun.updatedAt,
                         } as unknown as SynchronizedActivity}
                         pendingInputId={pipelineRun.pendingInputId ?? undefined}
+                        isPendingRun={pipelineRun.status === PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING}
                         onSuccess={() => { }}
                     />
                 </div>

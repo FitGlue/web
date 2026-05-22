@@ -10,6 +10,7 @@ export interface SynchronizedActivity {
   startedAt?: string;
   source?: string;
   pipelineExecution?: ExecutionRecord[];
+  pipelineExecutionId?: string;
   enrichedData?: Record<string, unknown>;
   destinations?: Array<{ destination: string; status: string; externalId?: string; error?: string }>;
 }

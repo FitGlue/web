@@ -43,9 +43,10 @@ interface MagicActionsPopoverProps {
     activity: SynchronizedActivity;
     onSuccess: () => void;
     pendingInputId?: string;
+    isPendingRun?: boolean;
 }
 
-export const MagicActionsPopover: React.FC<MagicActionsPopoverProps> = ({ activity, onSuccess, pendingInputId }) => {
+export const MagicActionsPopover: React.FC<MagicActionsPopoverProps> = ({ activity, onSuccess, pendingInputId, isPendingRun }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [modalType, setModalType] = useState<ModalType>(null);
     const [selectedDestination, setSelectedDestination] = useState<string | null>(null);
@@ -114,8 +115,8 @@ export const MagicActionsPopover: React.FC<MagicActionsPopoverProps> = ({ activi
                 response = await ActivitiesService.retryDestination(activity.activityId!, selectedDestination);
             } else if (modalType === 'full') {
                 response = await ActivitiesService.fullPipelineRerun(activity.activityId!);
-            } else if (modalType === 'cancel' && pendingInputId) {
-                await InputsService.cancelPipeline(pendingInputId);
+            } else if (modalType === 'cancel' && activity.pipelineExecutionId) {
+                await InputsService.cancelPipelineRun(activity.pipelineExecutionId);
                 response = { success: true, message: 'Pipeline cancelled.' };
             } else {
                 return;
@@ -211,7 +212,7 @@ export const MagicActionsPopover: React.FC<MagicActionsPopoverProps> = ({ activi
                                         >
                                             🔄 Re-run entire pipeline
                                         </button>
-                                        {pendingInputId && (
+                                        {(isPendingRun || pendingInputId) && (
                                             <button
                                                 type="button"
                                                 className="magic__btn magic__btn--danger"
