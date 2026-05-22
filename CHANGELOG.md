@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.31.0](https://github.com/fitglue/web/compare/v11.30.2...v11.31.0) (2026-05-22)
+
+
+### Features
+
+* **showcase:** heatmap label says "since joining" and uses full history ([685da40](https://github.com/fitglue/web/commit/685da40c3a64df69a8135c2e6fc6a33d7f0e2404))
+
+
+### Bug Fixes
+
+* **showcase:** restyle route map to match module card design ([ebc5bdb](https://github.com/fitglue/web/commit/ebc5bdb74eb42047c3bc915aecaca15c2fe800f1))
+* **showcase:** show H:MM:SS for long times; balance PR medals by type ([a8e789e](https://github.com/fitglue/web/commit/a8e789e662e7b405c67151c4eea6194a479e304b))
+
 ### [11.30.2](https://github.com/fitglue/web/compare/v11.30.1...v11.30.2) (2026-05-22)
 
 ### [11.30.1](https://github.com/fitglue/web/compare/v11.30.0...v11.30.1) (2026-05-22)
