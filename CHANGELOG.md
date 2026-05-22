@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.25.0](https://github.com/fitglue/web/compare/v11.24.0...v11.25.0) (2026-05-22)
+
+
+### Features
+
+* **magic-actions:** show cancel button for pending runs on ActivityDetailPage ([21003ba](https://github.com/fitglue/web/commit/21003ba531362f9c8e85081bc1bd34b510fbb24b))
+* **nav:** move showcase sub-nav to horizontal SubNavTabs, wrap in SettingsLayout ([8ea7caf](https://github.com/fitglue/web/commit/8ea7caff7382f9c78ecc8388d14b35d4c4c8e84f))
+
 ## [11.24.0](https://github.com/fitglue/web/compare/v11.23.0...v11.24.0) (2026-05-22)
 
 
