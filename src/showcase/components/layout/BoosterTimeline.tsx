@@ -95,9 +95,9 @@ export default function BoosterTimeline({ appliedEnrichments }: Props): React.Re
   const applied = new Set(appliedEnrichments);
   const ranCount = appliedEnrichments.length;
 
-  // Show any applied enrichers that aren't in the canonical list (future/unknown enrichers)
+  // Show only enrichers that actually ran (in canonical order), plus any unknown ones
   const unknownApplied = appliedEnrichments.filter((k) => !ALL_ENRICHERS.includes(k));
-  const displayList = [...ALL_ENRICHERS, ...unknownApplied];
+  const displayList = [...ALL_ENRICHERS.filter((k) => applied.has(k)), ...unknownApplied];
 
   return (
     <div className="booster-timeline">

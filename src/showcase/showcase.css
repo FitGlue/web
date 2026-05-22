@@ -102,12 +102,31 @@ body:has(#showcase-root) {
 .showcase-pubbar__brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: var(--fg-font-display);
-  font-size: 1.125rem;
+  gap: 0.625rem;
   text-decoration: none;
-  color: var(--fg-paper);
+  flex-shrink: 0;
+}
+
+.showcase-pubbar__brand-icon {
+  width: 26px;
+  height: 26px;
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--fg-font-display);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.showcase-pubbar__brand-wordmark {
+  font-family: var(--fg-font-display);
+  font-size: 1.0625rem;
   letter-spacing: -0.01em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--fg-paper);
 }
 
 .showcase-pubbar__crumb {
@@ -143,8 +162,7 @@ body:has(#showcase-root) {
 
 .activity-hero-section {
   position: relative;
-  height: 60vh;
-  min-height: 540px;
+  min-height: max(60vh, 540px);
   overflow: hidden;
   background: var(--gradient-primary);
 }
@@ -179,7 +197,7 @@ body:has(#showcase-root) {
   max-width: 1280px;
   margin: 0 auto;
   padding: 56px 32px 32px;
-  height: 100%;
+  min-height: max(60vh, 540px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -832,6 +850,29 @@ body:has(#showcase-root) {
 
 .load-pill--active {
   background: var(--gradient-primary);
+}
+
+.load-pill-labels {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.load-pill-labels span {
+  flex: 1;
+  font-family: var(--fg-font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle, var(--color-text-muted));
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.load-pill-label--active {
+  color: var(--fg-paper) !important;
 }
 
 /* =====================================================

@@ -23,9 +23,12 @@ export default function TrainingLoadModule({ data }: Props): React.ReactElement 
           <div
             key={b}
             className={`load-pill${data.bucket === b ? ' load-pill--active' : ''}`}
-          >
-            {b}
-          </div>
+          />
+        ))}
+      </div>
+      <div className="load-pill-labels">
+        {BUCKETS.map(b => (
+          <span key={b} className={data.bucket === b ? 'load-pill-label--active' : ''}>{b}</span>
         ))}
       </div>
       {data.hint && <small>{data.hint}</small>}

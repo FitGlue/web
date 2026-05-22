@@ -136,7 +136,8 @@ export default function ShowcaseActivityPage() {
         {/* Sticky public nav bar */}
         <nav className="showcase-pubbar">
           <a className="showcase-pubbar__brand" href="/">
-            FitGlue
+            <span className="showcase-pubbar__brand-icon" aria-hidden="true">FG</span>
+            <span className="showcase-pubbar__brand-wordmark" aria-hidden="true">FITGLUE</span>
           </a>
           <span className="showcase-pubbar__crumb">
             {ownerProfileHref ? (

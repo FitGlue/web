@@ -9,6 +9,8 @@ interface Props {
 export default function HRZonesModule({ data }: Props): React.ReactElement | null {
   if (!data || !data.zones?.length || data.zones.every(z => z.minutes === 0)) return null;
 
+  const maxMinutes = Math.max(...data.zones.map(z => z.minutes), 1);
+
   return (
     <Module title="Heart Rate Zones" span={6}>
       <div className="zone-bars">
@@ -18,7 +20,7 @@ export default function HRZonesModule({ data }: Props): React.ReactElement | nul
             <div className="zone-row__bar-wrap">
               <div
                 className={`zone-row__bar zone-row__bar--z${z.zoneIndex}`}
-                style={{ width: `${z.percentage}%` }}
+                style={{ width: `${Math.max((z.minutes / maxMinutes) * 100, z.minutes > 0 ? 2 : 0)}%` }}
               />
             </div>
             <span>{z.minutes}m</span>

@@ -52,9 +52,11 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
     ? parseDescriptionSections(activity.description).find((s) => s.title === 'Description')?.content ?? null
     : null;
 
-  // Strip leading heading tag from AI summary HTML (e.g. <h2>AI Summary</h2>)
+  // Strip leading heading tag and any "AI Summary:" label from AI summary HTML
   const aiSummaryHtml = enrichments?.aiSummary?.html
-    ? enrichments.aiSummary.html.replace(/^<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>\s*/i, '')
+    ? enrichments.aiSummary.html
+        .replace(/^<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>\s*/i, '')
+        .replace(/\bAI\s*Summary\s*:\s*/i, '')
     : null;
 
   const photoUrls = activity.photoUrls ?? [];
