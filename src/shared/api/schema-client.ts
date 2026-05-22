@@ -693,6 +693,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/me/pipeline-runs/{runId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ClientGatewayService_CancelPipelineRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/me/pipeline-runs/{runId}/payload": {
         parameters: {
             query?: never;
@@ -1058,6 +1074,9 @@ export interface components {
         };
         CancelPipelineGatewayRequest: {
             inputId?: string;
+        };
+        CancelPipelineRunGatewayRequest: {
+            runId?: string;
         };
         ConfigFieldDependency: {
             fieldKey?: string;
@@ -3844,6 +3863,39 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_CancelPipelineRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                runId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelPipelineRunGatewayRequest"];
+            };
+        };
         responses: {
             /** @description OK */
             200: {

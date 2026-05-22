@@ -6,7 +6,7 @@ import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout } from '../components/library/layout/PageLayout';
 import { Button, Code, IdBadge, useToast } from '../components/library/ui';
 import { ExecutionStepTrace } from '../components/ExecutionStepTrace';
-import { ExecutionStepStatus } from '../../types/pb/models/pipeline/execution';
+import { ExecutionStepStatus, PipelineRunStatus } from '../../types/pb/models/pipeline/execution';
 import { useNerdMode } from '../state/NerdModeContext';
 import { InputsService } from '../services/InputsService';
 import '../components/ExecutionStepTrace.css';
@@ -39,11 +39,11 @@ const UnsynchronizedDetailPage: React.FC = () => {
     }
 
     const handleCancelPipeline = async () => {
-        if (!run?.pendingInputId) return;
+        if (!pipelineExecutionId) return;
         if (!confirm('Cancel this pipeline run? It will stop here with no further processing.')) return;
         setCancelling(true);
         try {
-            await InputsService.cancelPipeline(run.pendingInputId);
+            await InputsService.cancelPipelineRun(pipelineExecutionId);
             toast.success('Pipeline cancelled', 'The run has been cancelled.');
             navigate('/activities?tab=unsynchronized');
         } catch {
@@ -83,7 +83,7 @@ const UnsynchronizedDetailPage: React.FC = () => {
                     </div>
                 </div>
                 <div className="rd-head__actions">
-                    {run?.pendingInputId && (
+                    {run?.status === PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING && (
                         <Button variant="danger" size="small" onClick={handleCancelPipeline} disabled={cancelling}>
                             {cancelling ? 'Cancelling…' : '⊗ Cancel Pipeline'}
                         </Button>

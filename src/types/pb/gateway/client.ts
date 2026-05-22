@@ -240,6 +240,10 @@ export interface CancelPipelineGatewayRequest {
   inputId: string;
 }
 
+export interface CancelPipelineRunGatewayRequest {
+  runId: string;
+}
+
 export interface RepostActivityGatewayRequest {
   /** activity_id from path */
   id: string;
@@ -493,6 +497,7 @@ export interface ClientGatewayService {
   BackfillActivities(request: BackfillActivitiesGatewayRequest): Promise<BackfillActivitiesGatewayResponse>;
   SubmitInput(request: SubmitInputGatewayRequest): Promise<Empty>;
   CancelPipeline(request: CancelPipelineGatewayRequest): Promise<Empty>;
+  CancelPipelineRun(request: CancelPipelineRunGatewayRequest): Promise<Empty>;
   RepostActivity(request: RepostActivityGatewayRequest): Promise<Empty>;
   /** ===================== Activities ===================== */
   ListActivities(request: ListActivitiesGatewayRequest): Promise<ListActivitiesGatewayResponse>;
