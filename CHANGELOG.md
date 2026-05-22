@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.29.1](https://github.com/fitglue/web/compare/v11.29.0...v11.29.1) (2026-05-22)
+
+
+### Bug Fixes
+
+* **showcase:** correct PR delta direction for time-based records in MedalWall ([8ffbf99](https://github.com/fitglue/web/commit/8ffbf9971914e3751f1a6deeed0fbda567e75fa8))
+* **showcase:** show all pace splits and add pace sparkline ([99405b6](https://github.com/fitglue/web/commit/99405b6224cf5115907d07544e9dc1b8a357a5a1))
+
 ## [11.29.0](https://github.com/fitglue/web/compare/v11.28.1...v11.29.0) (2026-05-22)
 
 
