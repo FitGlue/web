@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.24.0](https://github.com/fitglue/web/compare/v11.23.0...v11.24.0) (2026-05-22)
+
+
+### Features
+
+* **pipeline:** unify wizard + edit page chrome, extract WizardStepHead ([8bf8bf0](https://github.com/fitglue/web/commit/8bf8bf0b204c2564819d78a5330b7d4bac727eec))
+
 ## [11.23.0](https://github.com/fitglue/web/compare/v11.22.2...v11.23.0) (2026-05-22)
 
 
