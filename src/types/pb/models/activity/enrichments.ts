@@ -114,6 +114,10 @@ export interface RecoverySummary {
   alert: boolean;
   /** e.g. "ACWR 1.42 — load is climbing fast" */
   alertText: string;
+  /** total TRIMP over last 7 days (including today) */
+  sevenDayLoad: number;
+  /** average daily TRIMP over last 28 days */
+  twentyEightDayAvgLoad: number;
 }
 
 export interface StreakSummary {
@@ -149,6 +153,8 @@ export interface PaceSummary {
   avgPaceSecondsPerKm: number;
   bestSplitSecondsPerKm: number;
   splits: PaceSplit[];
+  /** % slowdown from first quarter to last quarter; 0 if not enough splits */
+  paceDropPercent: number;
 }
 
 export interface PaceSplit {
@@ -165,14 +171,16 @@ export interface PowerSummary {
   avgWatts: number;
   /** NP */
   normalizedPower: number;
-  /** IF */
+  /** IF — only set when FTP is configured */
   intensityFactor: number;
   kilojoules: number;
+  maxWatts: number;
 }
 
 export interface ElevationSummary {
   totalGainM: number;
   totalLossM: number;
+  maxAltitudeM: number;
 }
 
 export interface SpeedSummary {

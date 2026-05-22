@@ -17,17 +17,27 @@ export default function PowerModule({ data }: Props): React.ReactElement | null 
           <span className="mini__label">AVG WATTS</span>
         </div>
         <div className="mini">
-          <span className="mini__value">{data.normalizedPower}</span>
-          <span className="mini__label">NORMALIZED POWER</span>
+          <span className="mini__value">{data.maxWatts}</span>
+          <span className="mini__label">MAX WATTS</span>
         </div>
-        <div className="mini">
-          <span className="mini__value">{data.intensityFactor.toFixed(2)}</span>
-          <span className="mini__label">INTENSITY FACTOR</span>
-        </div>
-        <div className="mini">
-          <span className="mini__value">{data.kilojoules}</span>
-          <span className="mini__label">WORK KJ</span>
-        </div>
+        {data.normalizedPower > 0 && (
+          <div className="mini">
+            <span className="mini__value">{data.normalizedPower}</span>
+            <span className="mini__label">NORM POWER</span>
+          </div>
+        )}
+        {data.kilojoules > 0 && (
+          <div className="mini">
+            <span className="mini__value">{data.kilojoules}</span>
+            <span className="mini__label">WORK KJ</span>
+          </div>
+        )}
+        {data.intensityFactor > 0 && (
+          <div className="mini">
+            <span className="mini__value">{data.intensityFactor.toFixed(2)}</span>
+            <span className="mini__label">INT FACTOR</span>
+          </div>
+        )}
       </div>
     </Module>
   );

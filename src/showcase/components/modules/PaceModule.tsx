@@ -85,6 +85,12 @@ export default function PaceModule({ data, records }: Props): React.ReactElement
         )}
       </div>
       <SparklineChart values={paceValues} />
+      {data.paceDropPercent > 0 && (
+        <div className="pace-fatigue">
+          <span className="pace-fatigue__icon">😓</span>
+          <span>{data.paceDropPercent.toFixed(0)}% pace drop in final quarter</span>
+        </div>
+      )}
       {splits.length > 0 && (
         <div className="pace-splits">
           {splits.map(sp => (

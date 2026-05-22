@@ -238,6 +238,8 @@ export interface components {
             totalGainM?: number;
             /** Format: double */
             totalLossM?: number;
+            /** Format: double */
+            maxAltitudeM?: number;
         };
         /** @description EntrySparkline is a downsampled timeseries for card-level sparklines. */
         EntrySparkline: {
@@ -407,6 +409,8 @@ export interface components {
             /** Format: double */
             bestSplitSecondsPerKm?: number;
             splits?: components["schemas"]["PaceSplit"][];
+            /** Format: double */
+            paceDropPercent?: number;
         };
         ParkrunSummary: {
             eventName?: string;
@@ -489,6 +493,8 @@ export interface components {
             intensityFactor?: number;
             /** Format: int32 */
             kilojoules?: number;
+            /** Format: int32 */
+            maxWatts?: number;
         };
         Record: {
             /** Format: date-time */
@@ -527,6 +533,10 @@ export interface components {
             hoursToRecover?: number;
             alert?: boolean;
             alertText?: string;
+            /** Format: int32 */
+            sevenDayLoad?: number;
+            /** Format: int32 */
+            twentyEightDayAvgLoad?: number;
         };
         RunningDynamicsSummary: {
             /** Format: double */

@@ -61,6 +61,12 @@ export default function ElevationModule({ data, records }: Props): React.ReactEl
           <span className="mini__value">{Math.round(data.totalLossM ?? 0)}m ↓</span>
           <span className="mini__label">LOSS</span>
         </div>
+        {(data.maxAltitudeM ?? 0) > 0 && (
+          <div className="mini">
+            <span className="mini__value">{Math.round(data.maxAltitudeM ?? 0)}m</span>
+            <span className="mini__label">MAX ALT</span>
+          </div>
+        )}
       </div>
       <ElevationSparkline values={elevValues} />
     </Module>

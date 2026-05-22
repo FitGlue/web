@@ -5,6 +5,9 @@ import type { components } from '../../shared/api/schema-public';
 import ProfileHero from '../components/layout/ProfileHero';
 import LifetimeStats from '../components/layout/LifetimeStats';
 import MedalWall from '../components/layout/MedalWall';
+import ConsistencyHeatmap from '../components/layout/ConsistencyHeatmap';
+import ZoneBar from '../components/layout/ZoneBar';
+import RouteMosaic from '../components/layout/RouteMosaic';
 import ActivityGrid from '../components/layout/ActivityGrid';
 
 type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
@@ -134,12 +137,21 @@ export default function ShowcaseProfilePage() {
         {/* Lifetime 4-up */}
         <LifetimeStats profile={profile} />
 
+        {/* 52-week consistency heatmap */}
+        <ConsistencyHeatmap streakHistory={profile.streakHistory} />
+
+        {/* Lifetime HR zone distribution */}
+        <ZoneBar zoneSplit={profile.zoneSplit} />
+
         {/* 4px gradient strip */}
         <div className="profile-strip" />
 
         {/* Main: activity feed + bio sidebar */}
         <div className="profile-main">
           <div className="profile-feed">
+            {/* Route thumbnail strip — only shown if ≥3 activities have map thumbnails */}
+            <RouteMosaic entries={entries} />
+
             <ActivityGrid
               entries={entries}
               totalActivities={profile.totalActivities}
