@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.28.0](https://github.com/fitglue/web/compare/v11.27.0...v11.28.0) (2026-05-22)
+
+
+### Features
+
+* **showcase:** update token imports and add design tokens for Brutal × Aurora system ([008e41d](https://github.com/fitglue/web/commit/008e41d457dd1c7726ba0660e3c8bae96f80c20e))
+* **upload:** add title and description fields for single file uploads in UploadSection ([8543551](https://github.com/fitglue/web/commit/854355127bd43268b1813f6fe16ce94f4c32db36))
+
 ## [11.27.0](https://github.com/fitglue/web/compare/v11.26.0...v11.27.0) (2026-05-22)
 
 
