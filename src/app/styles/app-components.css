@@ -1115,6 +1115,96 @@
 .wiz__booster-name  { font-family: var(--fg-font-display); font-size: 0.8125rem; text-transform: uppercase; letter-spacing: -0.005em; }
 .wiz__booster-sub   { font-family: var(--fg-font-mono);    font-size: 0.625rem;  letter-spacing: 0.04em; color: var(--color-text-muted); }
 
+/* --------------------------------------------------------------------------
+   Section divider label — shared by PipelineEditPage + PipelineWizardPage
+   Replaces pipe-edit__sec-label and pipe-wiz__sec-label
+   -------------------------------------------------------------------------- */
+
+.wiz__sec-label {
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin: 0 0 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 720px;
+}
+
+.wiz__sec-label:not(:first-child) {
+  margin-top: 1.125rem;
+}
+
+.wiz__sec-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--fg-hairline-color);
+}
+
+/* --------------------------------------------------------------------------
+   Clickable step rail — edit-mode variant
+   Used by PipelineEditPage + PipelineWizardPage
+   -------------------------------------------------------------------------- */
+
+.wiz__step-n {
+  width: 28px;
+  height: 28px;
+  background: var(--fg-ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--fg-font-display);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+.wiz__step--done   .wiz__step-n { background: var(--fg-green);          color: var(--fg-ink); }
+.wiz__step--active .wiz__step-n { background: var(--gradient-primary);  color: var(--fg-ink); }
+.wiz__step--warn   .wiz__step-n { background: var(--fg-rose);           color: var(--fg-ink); }
+
+.wiz__step--edit-mode {
+  position: relative;
+  padding: 0.875rem 1.75rem;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 0.875rem;
+  align-items: start;
+  cursor: pointer;
+}
+.wiz__step--edit-mode:hover { background: var(--fg-ink-3); }
+
+.wiz__step--active.wiz__step--edit-mode .wiz__step-title,
+.wiz__step--done.wiz__step--edit-mode   .wiz__step-title,
+.wiz__step--warn.wiz__step--edit-mode   .wiz__step-title { color: var(--fg-paper); }
+
+.wiz__step-value {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  color: var(--fg-cyan);
+  margin-top: 3px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wiz__step--warn .wiz__step-value { color: var(--fg-rose); }
+
+.wiz__step-dirty {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--fg-gold);
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
 /* Wizard footer */
 .wiz__actions {
   padding: 1.25rem 2rem;

@@ -106,14 +106,15 @@ export function transformRegistryTask() {
 
       // Category metadata for grouping plugins — IDs match the `category` field in registry enrichers
       const ENRICHER_CATEGORIES = [
-        { id: 'stats', name: 'Metrics & Stats', emoji: '📊', rightLabel: 'COMPUTED FROM YOUR DATA' },
+        { id: 'ai_images', name: 'AI & Images', emoji: '✨', rightLabel: 'AI-POWERED & VISUAL ENRICHMENTS' },
+        { id: 'summaries', name: 'Metrics & Summaries', emoji: '📊', rightLabel: 'COMPUTED FROM YOUR DATA' },
+        { id: 'data', name: 'Data & Stats', emoji: '📈', rightLabel: 'ENHANCED WITH EXTERNAL DATA' },
         { id: 'detection', name: 'Smart Detection', emoji: '🎯', rightLabel: 'AUTOMATICALLY IDENTIFIED' },
-        { id: 'transformation', name: 'Summaries & Transforms', emoji: '📋', rightLabel: 'RESTRUCTURED FOR SHARING' },
-        { id: 'ai_content', name: 'AI Content', emoji: '✨', rightLabel: 'POWERED BY LARGE LANGUAGE MODELS' },
-        { id: 'visual', name: 'Visual', emoji: '🎨', rightLabel: 'IMAGES FOR YOUR ACTIVITIES' },
-        { id: 'location', name: 'Location', emoji: '📍', rightLabel: 'ENRICHED FROM GPS & MAPS' },
-        { id: 'references', name: 'Links & References', emoji: '🔗', rightLabel: 'CONNECTED TO OTHER PLATFORMS' },
-        { id: 'logic', name: 'Workflow & Logic', emoji: '⚙️', rightLabel: 'CONTROL FLOW & ROUTING' },
+        { id: 'links', name: 'Links & References', emoji: '🔗', rightLabel: 'CONNECTED TO OTHER PLATFORMS' },
+        { id: 'workflow', name: 'Workflow & Logic', emoji: '⚙️', rightLabel: 'CONTROL FLOW & ROUTING' },
+        { id: 'media', name: 'Media', emoji: '🖼️', rightLabel: 'PHOTOS & ATTACHMENTS' },
+        { id: 'strength', name: 'Strength', emoji: '💪', rightLabel: 'STRENGTH & GYM TRAINING' },
+        { id: 'metadata', name: 'Metadata', emoji: '🏷️', rightLabel: 'TITLES & LABELS' },
       ];
 
       const KNOWN_CATEGORY_IDS = new Set(ENRICHER_CATEGORIES.map((c) => c.id));

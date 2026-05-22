@@ -41,137 +41,12 @@
   color: transparent;
 }
 
-/* Step number circle — new variant used in edit page only */
-.wiz__step-n {
-  width: 28px;
-  height: 28px;
-  background: var(--fg-ink-3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--fg-font-display);
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-  flex-shrink: 0;
-}
-
-.wiz__step--done .wiz__step-n {
-  background: var(--fg-green);
-  color: var(--fg-ink);
-}
-
-.wiz__step--active .wiz__step-n {
-  background: var(--gradient-primary);
-  color: var(--fg-ink);
-}
-
-.wiz__step--warn .wiz__step-n {
-  background: var(--fg-rose);
-  color: var(--fg-ink);
-}
-
-/* Connector line between steps */
-.wiz__step--edit-mode {
-  position: relative;
-  padding: 0.875rem 1.75rem;
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: 0.875rem;
-  align-items: start;
-  cursor: pointer;
-}
-
-.wiz__step--edit-mode:hover {
-  background: var(--fg-ink-3);
-}
-
-.wiz__step--active.wiz__step--edit-mode .wiz__step-title,
-.wiz__step--done.wiz__step--edit-mode .wiz__step-title,
-.wiz__step--warn.wiz__step--edit-mode .wiz__step-title {
-  color: var(--fg-paper);
-}
-
-/* Value line below title (cyan mono, shows current setting) */
-.wiz__step-value {
-  font-family: var(--fg-font-mono);
-  font-size: 0.6875rem;
-  color: var(--fg-cyan);
-  margin-top: 3px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.wiz__step--warn .wiz__step-value {
-  color: var(--fg-rose);
-}
-
-/* Gold dot for dirty state in rail */
-.wiz__step-dirty {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: var(--fg-gold);
-  border-radius: 50%;
-  margin-right: 5px;
-  vertical-align: middle;
-  flex-shrink: 0;
-}
-
 /* Pane (right side) */
 .pipe-edit__pane {
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: calc(100vh - 53px);
-}
-
-/* Pane header */
-.pipe-edit__head {
-  padding: 2.25rem 2.5rem 1.75rem;
-  border-bottom: var(--fg-rule-thin);
-  background: var(--fg-ink);
-}
-
-.pipe-edit__crumb {
-  font-family: var(--fg-font-mono);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  margin-bottom: 0.625rem;
-}
-
-.pipe-edit__crumb b {
-  color: var(--fg-paper);
-}
-
-.pipe-edit__title {
-  font-family: var(--fg-font-display);
-  font-size: 3rem;
-  line-height: 1;
-  letter-spacing: -0.035em;
-  margin: 0 0 0.5rem;
-  text-transform: uppercase;
-}
-
-.pipe-edit__title .gr {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.pipe-edit__desc {
-  font-family: var(--fg-font-body);
-  font-size: 1rem;
-  color: var(--color-text-muted);
-  line-height: 1.55;
-  max-width: 640px;
-  margin: 0;
 }
 
 /* Pane content area */
@@ -578,32 +453,6 @@
   color: var(--fg-cyan);
   text-decoration: underline;
   cursor: pointer;
-}
-
-/* Section label (used in destinations and configure) */
-.pipe-edit__sec-label {
-  font-family: var(--fg-font-mono);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: var(--color-text-muted);
-  margin: 0 0 0.75rem;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  max-width: 720px;
-}
-
-.pipe-edit__sec-label:not(:first-child) {
-  margin-top: 1.125rem;
-}
-
-.pipe-edit__sec-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--fg-hairline-color);
 }
 
 /* ============ Configure blocks ============ */

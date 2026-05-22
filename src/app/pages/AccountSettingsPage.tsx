@@ -50,7 +50,7 @@ const AccountSettingsPage: React.FC = () => {
     const [showReauthModal, setShowReauthModal] = useState(false);
 
     // Data export state
-    const [exportStatus, setExportStatus] = useState<'idle' | 'pending' | 'running' | 'completed' | 'failed'>('idle');
+    const [exportStatus, setExportStatus] = useState<'idle' | 'loading' | 'completed' | 'failed'>('idle');
     const [exportDownloadUrl, setExportDownloadUrl] = useState<string | null>(null);
     const [exportError, setExportError] = useState<string | null>(null);
 
@@ -159,41 +159,21 @@ const AccountSettingsPage: React.FC = () => {
     };
 
     const handleExportData = async () => {
-        setExportStatus('pending');
+        setExportStatus('loading');
         setExportError(null);
         setExportDownloadUrl(null);
         try {
-            const { data: response } = await client.POST('/users/me/export');
-            const typedResponse = response as { jobId: string };
-            const jobId = typedResponse?.jobId;
-            const pollInterval = setInterval(async () => {
-                try {
-                    const { data: status } = await client.GET('/export/status/{jobId}' as never, { params: { path: { jobId } } } as never);
-                    const typedStatus = status as unknown as { status: string; downloadUrl?: string; error?: string };
-                    if (typedStatus?.status === 'COMPLETED') {
-                        clearInterval(pollInterval);
-                        setExportStatus('completed');
-                        setExportDownloadUrl(typedStatus.downloadUrl as string);
-                        toast.success('Export Ready', 'Your data export is ready to download');
-                    } else if (typedStatus?.status === 'FAILED') {
-                        clearInterval(pollInterval);
-                        setExportStatus('failed');
-                        setExportError(typedStatus.error || 'Export failed');
-                        toast.error('Export Failed', 'Your data export could not be completed');
-                    } else {
-                        setExportStatus('running');
-                    }
-                } catch {
-                    clearInterval(pollInterval);
-                    setExportStatus('failed');
-                    setExportError('Failed to check export status');
-                }
-            }, 5000);
+            const { data } = await client.POST('/users/me/export');
+            const downloadUrl = data?.downloadUrl;
+            if (!downloadUrl) throw new Error('No download URL in response');
+            setExportStatus('completed');
+            setExportDownloadUrl(downloadUrl);
+            toast.success('Export Ready', 'Your data export is ready to download');
         } catch (err) {
-            console.error('Failed to trigger export:', err);
+            console.error('Failed to export data:', err);
             setExportStatus('failed');
-            setExportError('Failed to start data export');
-            toast.error('Export Failed', 'Could not start data export');
+            setExportError('Failed to generate data export');
+            toast.error('Export Failed', 'Could not generate data export');
         }
     };
 
@@ -406,13 +386,10 @@ const AccountSettingsPage: React.FC = () => {
                                             DOWNLOAD MY DATA
                                         </Button>
                                     )}
-                                    {(exportStatus === 'pending' || exportStatus === 'running') && (
-                                        <>
-                                            <Button variant="ink" size="sm" disabled>
-                                                {exportStatus === 'pending' ? '⏳ STARTING…' : '⏳ PREPARING…'}
-                                            </Button>
-                                            <p className="stx-field__help">This may take a few minutes. You&apos;ll also receive an email.</p>
-                                        </>
+                                    {exportStatus === 'loading' && (
+                                        <Button variant="ink" size="sm" disabled>
+                                            ⏳ PREPARING…
+                                        </Button>
                                     )}
                                     {exportStatus === 'completed' && exportDownloadUrl && (
                                         <>

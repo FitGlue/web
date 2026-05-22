@@ -1,6 +1,6 @@
 /* ==========================================================================
    SourcePicker — Brutal × Aurora
-   4-col grid of source tiles. Selected = aurora gradient.
+   3-col grid of horizontal source rows. Selected = aurora tint + inset border.
    ========================================================================== */
 
 .source-picker { max-width: 720px; }
@@ -17,49 +17,33 @@
 
 .source-picker__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-hairline-color);
 }
 
 .source-tile {
-  padding: 16px 12px;
-  background: var(--fg-ink);
+  padding: 1.25rem;
+  background: transparent;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  text-align: center;
-  position: relative;
+  gap: 0.875rem;
+  text-align: left;
   border: 0;
   color: var(--fg-paper);
   transition: background var(--transition-fast);
+  box-shadow: 1.5px 0 0 0 var(--fg-hairline-color), 0 1.5px 0 0 var(--fg-hairline-color);
+  width: 100%;
 }
 
-.source-tile:hover {
+.source-tile:hover:not([disabled]) {
   background: var(--fg-ink-2);
 }
 
 .source-tile--selected {
-  background: var(--gradient-primary);
-  color: var(--fg-ink);
-}
-
-.source-tile--connected::after {
-  content: '✓';
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 16px;
-  height: 16px;
-  background: var(--fg-green);
-  color: var(--fg-ink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--fg-font-display);
-  font-size: 0.625rem;
-  font-weight: 700;
+  background: linear-gradient(135deg, rgba(255, 61, 166, 0.10), rgba(139, 92, 246, 0.08) 50%, rgba(34, 211, 238, 0.10));
+  box-shadow: inset 0 0 0 2px var(--fg-paper);
 }
 
 .source-tile--disabled {
@@ -67,28 +51,48 @@
   cursor: not-allowed;
 }
 
-.source-tile__icon {
-  font-size: 1.75rem;
-  line-height: 1;
+.source-tile__icon-box {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fg-ink-3);
+  font-size: 1.375rem;
+  flex-shrink: 0;
+  transition: background var(--transition-fast);
+}
+
+.source-tile--selected .source-tile__icon-box {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+}
+
+.source-tile__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
 }
 
 .source-tile__name {
   font-family: var(--fg-font-display);
-  font-size: 0.75rem;
-  letter-spacing: -0.005em;
+  font-size: 1rem;
   text-transform: uppercase;
+  letter-spacing: -0.005em;
   line-height: 1.1;
 }
 
 .source-tile__meta {
   font-family: var(--fg-font-mono);
-  font-size: 0.5rem;
+  font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   color: var(--color-text-muted);
   text-transform: uppercase;
 }
 
-.source-tile--selected .source-tile__meta {
-  color: rgba(7, 7, 16, 0.6);
+@media (max-width: 640px) {
+  .source-picker__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

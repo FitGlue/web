@@ -10,22 +10,35 @@
   min-height: 70vh;
 }
 
-/* Step rail */
+/* Step rail — sticky like edit page */
 .pipe-wiz__rail {
   background: var(--fg-ink-2);
   border-right: var(--fg-rule-thin);
-  padding: 1.5rem 0;
+  padding: 1.75rem 0;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
 .pipe-wiz__rail-title {
   font-family: var(--fg-font-display);
-  font-size: 1rem;
+  font-size: 1.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 0 1.5rem 1rem;
+  letter-spacing: -0.015em;
+  line-height: 1;
+  padding: 0 1.75rem 1.125rem;
   border-bottom: var(--fg-rule-thin);
-  margin-bottom: 1rem;
+  margin-bottom: 1.125rem;
   color: var(--fg-paper);
+}
+
+.pipe-wiz__rail-title .gr {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Wizard body */
@@ -35,44 +48,9 @@
   flex-direction: column;
 }
 
-/* Step header */
-.pipe-wiz__body-head {
-  padding: 1.5rem 2rem 1rem;
-  border-bottom: var(--fg-rule-thin);
-  background: var(--fg-ink);
-}
-
-.pipe-wiz__step-label {
-  font-family: var(--fg-font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-}
-
-.pipe-wiz__step-title {
-  font-family: var(--fg-font-display);
-  font-size: 2rem;
-  line-height: 0.95;
-  letter-spacing: -0.025em;
-  text-transform: uppercase;
-  color: var(--fg-paper);
-  margin-bottom: 0.5rem;
-}
-
-.pipe-wiz__step-help {
-  font-family: var(--fg-font-body);
-  font-size: 1rem;
-  color: var(--color-text-muted);
-  max-width: 600px;
-  line-height: 1.55;
-}
-
-/* Content area */
+/* Content area — matches pipe-edit__body horizontal padding */
 .pipe-wiz__content {
-  padding: 1.5rem 2rem;
+  padding: 2rem 2.5rem 3.75rem;
   flex: 1;
   overflow-y: auto;
 }
@@ -111,9 +89,9 @@
   box-shadow: inset 0 0 0 2px var(--fg-pink);
 }
 
-/* Footer actions */
+/* Footer actions — matches pipe-edit__foot padding */
 .pipe-wiz__actions {
-  padding: 1.125rem 2rem;
+  padding: 1.125rem 2.5rem;
   border-top: var(--fg-rule-thin);
   display: flex;
   justify-content: space-between;
@@ -121,6 +99,7 @@
   background: var(--fg-ink-2);
   position: sticky;
   bottom: 0;
+  z-index: 10;
 }
 
 /* Error state */

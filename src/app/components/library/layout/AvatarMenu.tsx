@@ -91,48 +91,14 @@ export const AvatarMenu: React.FC<AvatarMenuProps> = ({
                 </Link>
             </div>
 
-            {/* Account section */}
+            {/* Admin + Support */}
             <div className="avatar-menu__section">
-                <div className="avatar-menu__section-label">ACCOUNT</div>
-                {isAthlete && (
-                    <Link to="/settings/showcase" className="avatar-menu__item" onClick={handleItemClick}>
-                        <span className="avatar-menu__item-icon" aria-hidden="true">✦</span>
-                        <span className="avatar-menu__item-label">My showcase</span>
-                    </Link>
-                )}
-                <Link to="/settings/account" className="avatar-menu__item" onClick={handleItemClick}>
-                    <span className="avatar-menu__item-icon" aria-hidden="true">◐</span>
-                    <span className="avatar-menu__item-label">Profile</span>
-                </Link>
-                <Link to="/settings/account" className="avatar-menu__item" onClick={handleItemClick}>
-                    <span className="avatar-menu__item-icon" aria-hidden="true">🔑</span>
-                    <span className="avatar-menu__item-label">Authentication</span>
-                </Link>
                 {isAdmin && (
                     <Link to="/admin" className="avatar-menu__item" onClick={handleItemClick}>
                         <span className="avatar-menu__item-icon" aria-hidden="true">🛠</span>
                         <span className="avatar-menu__item-label">Admin console</span>
                     </Link>
                 )}
-            </div>
-
-            {/* Preferences section */}
-            <div className="avatar-menu__section">
-                <div className="avatar-menu__section-label">PREFERENCES</div>
-                <Link to="/settings/account" className="avatar-menu__item" onClick={handleItemClick}>
-                    <span className="avatar-menu__item-icon" aria-hidden="true">⚙</span>
-                    <span className="avatar-menu__item-label">Settings</span>
-                    <span className="avatar-menu__item-hint">⌘,</span>
-                </Link>
-                <Link to="/settings/enricher-data" className="avatar-menu__item" onClick={handleItemClick}>
-                    <span className="avatar-menu__item-icon" aria-hidden="true">📊</span>
-                    <span className="avatar-menu__item-label">Booster data</span>
-                </Link>
-            </div>
-
-            {/* Support section */}
-            <div className="avatar-menu__section">
-                <div className="avatar-menu__section-label">SUPPORT</div>
                 <a href="/help" className="avatar-menu__item" onClick={handleItemClick}>
                     <span className="avatar-menu__item-icon" aria-hidden="true">?</span>
                     <span className="avatar-menu__item-label">Help &amp; docs</span>

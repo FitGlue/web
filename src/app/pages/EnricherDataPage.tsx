@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { PageLayout, Stack } from '../components/library/layout';
+import { SettingsLayout, Stack } from '../components/library/layout';
 import { client } from '../../shared/api/client';
 import { BoosterDataEntry } from '../components/enricher-data/types';
 import CountersSection from '../components/enricher-data/CountersSection';
@@ -19,7 +19,7 @@ const EnricherDataPage: React.FC = () => {
         setBoosterDataLoading(true);
         try {
             const { data } = await client.GET('/users/me/booster-data');
-            const entries: BoosterDataEntry[] = Object.entries((data as Record<string, Record<string, unknown>>) || {}).map(([id, data]) => ({
+            const entries: BoosterDataEntry[] = Object.entries((data?.data as Record<string, Record<string, unknown>>) || {}).map(([id, data]) => ({
                 id,
                 data: data as Record<string, unknown>,
             }));
@@ -41,11 +41,7 @@ const EnricherDataPage: React.FC = () => {
     const distanceMilestones = useMemo(() => boosterData.filter(b => b.id.startsWith('distance_milestones_')), [boosterData]);
 
     return (
-        <PageLayout
-            title="Booster Data"
-            backTo="/settings/account"
-            backLabel="Settings"
-        >
+        <SettingsLayout title="Booster Data">
             <Stack gap="lg">
                 <div className="fg-band fg-band--ink">
                     <span className="fg-band__label">BOOSTER DATA</span>
@@ -68,7 +64,7 @@ const EnricherDataPage: React.FC = () => {
                 <StreakTrackersSection entries={streakTrackers} loading={boosterDataLoading} onRefresh={fetchBoosterData} />
                 <DistanceMilestonesSection entries={distanceMilestones} loading={boosterDataLoading} onRefresh={fetchBoosterData} />
             </Stack>
-        </PageLayout>
+        </SettingsLayout>
     );
 };
 

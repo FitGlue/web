@@ -1,0 +1,50 @@
+/* ==========================================================================
+   WizardStepHead — shared step header for Pipeline Wizard + Edit pages
+   Replaces pipe-wiz__body-head and pipe-edit__head
+   ========================================================================== */
+
+.wiz-step-head {
+  padding: 2.25rem 2.5rem 1.75rem;
+  border-bottom: var(--fg-rule-thin);
+  background: var(--fg-ink);
+}
+
+.wiz-step-head__crumb {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.625rem;
+}
+
+.wiz-step-head__crumb b {
+  color: var(--fg-paper);
+}
+
+.wiz-step-head__title {
+  font-family: var(--fg-font-display);
+  font-size: 3rem;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
+  margin: 0 0 0.5rem;
+}
+
+.wiz-step-head__title .gr {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.wiz-step-head__desc {
+  font-family: var(--fg-font-body);
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  max-width: 640px;
+  line-height: 1.55;
+  margin: 0;
+}

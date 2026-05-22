@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useUser } from '../../../hooks/useUser';
 import { client } from '../../../../shared/api/client';
@@ -19,13 +19,17 @@ const PRIMARY_NAV = [
     { key: 'activities',  label: 'Activities',  to: '/activities',          end: false },
     { key: 'connections', label: 'Connections', to: '/connections',         end: false },
     { key: 'recipes',     label: 'Recipes',     to: '/recipes',            end: false },
+    // Settings is active for all /settings/* except /settings/pipelines (which belongs to Pipelines above)
+    { key: 'settings',    label: 'Settings',    to: '/settings/account',   end: false, activePrefix: '/settings/', excludePrefix: '/settings/pipelines' },
 ] as const;
 
 export const AppHeader: React.FC = () => {
     const { user: profile, loading } = useUser();
     const [firebaseUser] = useAtom(userAtom);
+    const location = useLocation();
     const [showMenu, setShowMenu] = useState(false);
     const [showPalette, setShowPalette] = useState(false);
+    const [showMobileNav, setShowMobileNav] = useState(false);
     const [profilePictureUrl, setProfilePictureUrl] = useAtom(profilePictureUrlAtom);
 
     const menuRef = useRef<HTMLDivElement>(null);
@@ -96,30 +100,30 @@ export const AppHeader: React.FC = () => {
 
     return (
         <>
-            <header className="app-nav" role="banner">
+            <header className={`app-nav${showMobileNav ? ' app-nav--mobile-open' : ''}`} role="banner">
                 {/* Logo */}
                 <Link to="/" className="app-nav__logo" aria-label="FitGlue — go to dashboard">
-                    <span className="app-nav__logo-icon" aria-hidden="true" />
-                    <span className="app-nav__logo-wordmark" aria-hidden="true">
-                        <span className="app-nav__logo-fit">FIT</span>
-                        <span className="app-nav__logo-glue">GLUE</span>
-                    </span>
+                    <span className="app-nav__logo-icon" aria-hidden="true">FG</span>
+                    <span className="app-nav__logo-wordmark" aria-hidden="true">FITGLUE</span>
                 </Link>
 
-                {/* Primary destinations — 5 max */}
+                {/* Primary destinations — 5 max, hidden on mobile */}
                 <nav className="app-nav__primary" aria-label="Primary">
-                    {PRIMARY_NAV.map(item => (
-                        <NavLink
-                            key={item.key}
-                            to={item.to}
-                            end={item.end}
-                            className={({ isActive }) =>
-                                `app-nav__link${isActive ? ' app-nav__link--active' : ''}`
+                    {PRIMARY_NAV.map(item => {
+                        const makeClass = ({ isActive: routerActive }: { isActive: boolean }) => {
+                            let active = routerActive;
+                            if ('activePrefix' in item && item.activePrefix) {
+                                active = location.pathname.startsWith(item.activePrefix)
+                                    && !('excludePrefix' in item && item.excludePrefix && location.pathname.startsWith(item.excludePrefix));
                             }
-                        >
-                            {item.label}
-                        </NavLink>
-                    ))}
+                            return `app-nav__link${active ? ' app-nav__link--active' : ''}`;
+                        };
+                        return (
+                            <NavLink key={item.key} to={item.to} end={item.end} className={makeClass}>
+                                {item.label}
+                            </NavLink>
+                        );
+                    })}
                 </nav>
 
                 {/* Right cluster */}
@@ -135,18 +139,16 @@ export const AppHeader: React.FC = () => {
                         <kbd className="app-nav__kbd">⌘K</kbd>
                     </button>
 
-                    {/* Upload CTA — aurora gradient, always visible */}
-                    <button className="app-nav__upload" aria-label="Upload activity files">
-                        <span aria-hidden="true">↑</span> UPLOAD
-                    </button>
-
-                    {/* Notifications bell */}
+                    {/* Hamburger — mobile only */}
                     <button
-                        className="app-nav__notif"
-                        aria-label="0 unread notifications"
-                        aria-haspopup="true"
+                        className="app-nav__ham"
+                        onClick={() => setShowMobileNav(v => !v)}
+                        aria-label="Toggle navigation"
+                        aria-expanded={showMobileNav}
                     >
-                        <span className="app-nav__bell" aria-hidden="true">🔔</span>
+                        <span aria-hidden="true" />
+                        <span aria-hidden="true" />
+                        <span aria-hidden="true" />
                     </button>
 
                     {/* Avatar trigger + menu */}
@@ -189,6 +191,26 @@ export const AppHeader: React.FC = () => {
                     </div>
                 </div>
             </header>
+
+            {showMobileNav && (
+                <nav className="app-nav__mobile" aria-label="Mobile navigation">
+                    {PRIMARY_NAV.map(item => {
+                        const makeClass = ({ isActive: routerActive }: { isActive: boolean }) => {
+                            let active = routerActive;
+                            if ('activePrefix' in item && item.activePrefix) {
+                                active = location.pathname.startsWith(item.activePrefix)
+                                    && !('excludePrefix' in item && item.excludePrefix && location.pathname.startsWith(item.excludePrefix));
+                            }
+                            return `app-nav__mobile-link${active ? ' app-nav__mobile-link--active' : ''}`;
+                        };
+                        return (
+                            <NavLink key={item.key} to={item.to} end={item.end} className={makeClass} onClick={() => setShowMobileNav(false)}>
+                                {item.label}
+                            </NavLink>
+                        );
+                    })}
+                </nav>
+            )}
 
             {showPalette && (
                 <CommandPalette onClose={() => setShowPalette(false)} />

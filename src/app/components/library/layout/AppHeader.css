@@ -29,24 +29,17 @@
 }
 
 .app-nav__logo-icon {
-    position: relative;
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 1.5px solid rgba(245, 243, 235, 0.3);
-    box-sizing: border-box;
-    overflow: hidden;
+    width: 28px;
+    height: 28px;
+    background: var(--gradient-primary);
+    color: var(--fg-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--fg-font-display);
+    font-size: 0.8125rem;
     flex-shrink: 0;
 }
-.app-nav__logo-icon::before,
-.app-nav__logo-icon::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-}
-.app-nav__logo-icon::before { top: 0; bottom: 50%; background: var(--gradient-primary); }
-.app-nav__logo-icon::after  { top: 50%; bottom: 0; background: var(--fg-ink); }
 
 .app-nav__logo-wordmark {
     font-family: var(--fg-font-display);
@@ -54,18 +47,8 @@
     letter-spacing: -0.01em;
     line-height: 1;
     text-transform: uppercase;
-    display: flex;
-    gap: 0.3125rem;
+    color: var(--fg-paper);
 }
-
-.app-nav__logo-fit {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-.app-nav__logo-glue { color: var(--fg-paper); }
 
 /* ── Primary nav ── */
 
@@ -153,59 +136,58 @@
     line-height: 1.5;
 }
 
-/* Upload CTA — aurora gradient is reserved for this one fill */
-.app-nav__upload {
-    padding: 0 1.125rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--gradient-primary);
-    color: var(--fg-ink);
-    border: none;
-    font-family: var(--fg-font-display);
-    font-size: 0.8125rem;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    cursor: pointer;
-    border-right: 1.5px solid var(--fg-hairline-color);
-    transition: opacity var(--transition-fast);
-}
-.app-nav__upload:hover { opacity: 0.88; }
+/* ── Hamburger — mobile only ── */
 
-/* Notifications bell */
-.app-nav__notif {
-    width: 48px;
-    display: flex;
-    align-items: center;
+.app-nav__ham {
+    display: none;
+    flex-direction: column;
     justify-content: center;
-    position: relative;
+    align-items: center;
+    gap: 5px;
+    width: 48px;
     background: transparent;
     border: none;
-    border-right: 1.5px solid var(--fg-hairline-color);
+    border-left: 1.5px solid var(--fg-hairline-color);
     cursor: pointer;
-    color: var(--fg-paper);
-    transition: background var(--transition-fast);
+    padding: 0;
 }
-.app-nav__notif:hover { background: rgba(245, 243, 235, 0.04); }
 
-.app-nav__bell { font-size: 1rem; }
+.app-nav__ham span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--fg-paper);
+    transition: opacity var(--transition-fast);
+}
 
-.app-nav__notif-badge {
-    position: absolute;
-    top: 9px;
-    right: 8px;
-    min-width: 16px;
-    height: 16px;
-    padding: 0 3px;
-    background: var(--gradient-primary);
-    color: var(--fg-ink);
-    font-family: var(--fg-font-mono);
-    font-size: 0.5625rem;
-    font-weight: 800;
+/* ── Mobile nav drawer ── */
+
+.app-nav__mobile {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    background: var(--fg-ink);
+    border-bottom: var(--fg-rule-thick);
+    position: sticky;
+    top: 52px;
+    z-index: calc(var(--z-dropdown) - 1);
 }
+
+.app-nav__mobile-link {
+    padding: 0.875rem 1.25rem;
+    font-family: var(--fg-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--fg-hairline-color);
+    transition: color var(--transition-fast);
+}
+
+.app-nav__mobile-link:last-child { border-bottom: none; }
+.app-nav__mobile-link:hover { color: var(--fg-paper); }
+.app-nav__mobile-link--active { color: var(--fg-paper); }
 
 /* ── Avatar trigger ── */
 
@@ -292,4 +274,5 @@
     .app-nav__avatar-meta { display: none; }
     .app-nav__avatar-caret { display: none; }
     .app-nav__search { display: none; }
+    .app-nav__ham { display: flex; }
 }

@@ -11,7 +11,7 @@ import { EnricherConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { SharePipelineModal } from '../components/SharePipelineModal';
 import { SyncHistoricalModal } from '../components/SyncHistoricalModal';
-import { WizardExcludedSection } from '../components/wizard';
+import { WizardExcludedSection, WizardStepHead } from '../components/wizard';
 import { BoosterExclusionPills } from '../components/BoosterExclusionPills';
 import { SourcePicker } from '../components/library/ui/SourcePicker';
 import { WizardOptionGrid } from '../components/wizard';
@@ -616,17 +616,11 @@ const PipelineEditPage: React.FC = () => {
     // ====== STEP 1 · NAME ======
     const renderNameStep = () => (
         <>
-            <div className="pipe-edit__head">
-                <div className="pipe-edit__crumb">
-                    STEP <b>{STEP_INDEX.name} OF {STEPS.length}</b> · NAME
-                </div>
-                <h1 className="pipe-edit__title">
-                    Name your <span className="gr">pipeline.</span>
-                </h1>
-                <p className="pipe-edit__desc">
-                    How this pipeline shows up on your dashboard, in run logs, and in every export. Rename anytime — historical runs keep their old name.
-                </p>
-            </div>
+            <WizardStepHead
+                step={STEP_INDEX.name} total={STEPS.length} section="NAME"
+                title={<>Name your <span className="gr">pipeline.</span></>}
+                description="How this pipeline shows up on your dashboard, in run logs, and in every export. Rename anytime — historical runs keep their old name."
+            />
             <div className="pipe-edit__body">
                 <div className="pipe-edit__field">
                     <div>
@@ -700,21 +694,15 @@ const PipelineEditPage: React.FC = () => {
 
         return (
             <>
-                <div className="pipe-edit__head">
-                    <div className="pipe-edit__crumb">
-                        STEP <b>{STEP_INDEX.source} OF {STEPS.length}</b> · SOURCE
-                    </div>
-                    <h1 className="pipe-edit__title">
-                        Where activities <span className="gr">come from.</span>
-                    </h1>
-                    <p className="pipe-edit__desc">
-                        Pick one or more sources. Each one is a trigger — when a new activity arrives, this whole pipeline runs against it.
-                    </p>
-                </div>
+                <WizardStepHead
+                    step={STEP_INDEX.source} total={STEPS.length} section="SOURCE"
+                    title={<>Where activities <span className="gr">come from.</span></>}
+                    description="Pick one or more sources. Each one is a trigger — when a new activity arrives, this whole pipeline runs against it."
+                />
                 <div className="pipe-edit__body">
                     {sourceTiles.length > 0 && (
                         <>
-                            <div className="pipe-edit__sec-label" style={{ marginTop: 0 }}>
+                            <div className="wiz__sec-label" style={{ marginTop: 0 }}>
                                 PICK A SOURCE · CHANGES WHAT TRIGGERS THE PIPELINE
                             </div>
                             <SourcePicker
@@ -729,7 +717,7 @@ const PipelineEditPage: React.FC = () => {
                     )}
                     {needsConnectionTiles.length > 0 && (
                         <>
-                            <div className="pipe-edit__sec-label">NEEDS CONNECTION</div>
+                            <div className="wiz__sec-label">NEEDS CONNECTION</div>
                             <SourcePicker
                                 sources={needsConnectionTiles}
                                 selectedIds={[]}
@@ -746,7 +734,7 @@ const PipelineEditPage: React.FC = () => {
                         if (!sourceManifest?.configSchema?.length) return null;
                         return (
                             <div style={{ marginTop: '1.5rem' }}>
-                                <div className="pipe-edit__sec-label">SOURCE CONFIGURATION</div>
+                                <div className="wiz__sec-label">SOURCE CONFIGURATION</div>
                                 <div className="conf-block">
                                     <div className="conf-block__head">
                                         <div className="conf-block__icon">{sourceManifest.icon}</div>
@@ -778,19 +766,12 @@ const PipelineEditPage: React.FC = () => {
 
         return (
             <>
-                <div className="pipe-edit__head">
-                    <div className="pipe-edit__crumb">
-                        STEP <b>{STEP_INDEX.boosters} OF {STEPS.length}</b> · BOOSTERS ·{' '}
-                        {selectedEnrichers.length} ACTIVE
-                        {ghostEnrichers.length ? ` · ${ghostEnrichers.length} DISABLED` : ''}
-                    </div>
-                    <h1 className="pipe-edit__title">
-                        The <span className="gr">recipe.</span>
-                    </h1>
-                    <p className="pipe-edit__desc">
-                        Boosters run top-to-bottom on every activity. Drag the grip to reorder, click ⚙ to configure, ✕ to remove. Gate boosters can short-circuit the pipeline — keep those at the top.
-                    </p>
-                </div>
+                <WizardStepHead
+                    step={STEP_INDEX.boosters} total={STEPS.length}
+                    section={<>BOOSTERS · {selectedEnrichers.length} ACTIVE{ghostEnrichers.length ? ` · ${ghostEnrichers.length} DISABLED` : ''}</>}
+                    title={<>The <span className="gr">recipe.</span></>}
+                    description="Boosters run top-to-bottom on every activity. Drag the grip to reorder, click ⚙ to configure, ✕ to remove. Gate boosters can short-circuit the pipeline — keep those at the top."
+                />
                 <div className="pipe-edit__body">
                     {warnEnrichers.length > 0 && (
                         <div className="pipe-edit__warn-banner">
@@ -922,21 +903,15 @@ const PipelineEditPage: React.FC = () => {
 
         return (
             <>
-                <div className="pipe-edit__head">
-                    <div className="pipe-edit__crumb">
-                        STEP <b>{STEP_INDEX.destinations} OF {STEPS.length}</b> · DESTINATIONS
-                    </div>
-                    <h1 className="pipe-edit__title">
-                        Where to <span className="gr">send.</span>
-                    </h1>
-                    <p className="pipe-edit__desc">
-                        Select at least one destination. Activities from every source trigger uploads to all selected destinations.
-                    </p>
-                </div>
+                <WizardStepHead
+                    step={STEP_INDEX.destinations} total={STEPS.length} section="DESTINATIONS"
+                    title={<>Where to <span className="gr">send.</span></>}
+                    description="Select at least one destination. Activities from every source trigger uploads to all selected destinations."
+                />
                 <div className="pipe-edit__body">
                     {selectedDestinations.length > 0 && (
                         <>
-                            <div className="pipe-edit__sec-label" style={{ marginTop: 0 }}>
+                            <div className="wiz__sec-label" style={{ marginTop: 0 }}>
                                 SELECTED · {selectedDestinations.length} DESTINATION{selectedDestinations.length !== 1 ? 'S' : ''}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', maxWidth: '720px', marginBottom: '1.125rem' }}>
@@ -974,7 +949,7 @@ const PipelineEditPage: React.FC = () => {
 
                     {unselectedAvailable.length > 0 && (
                         <>
-                            <div className="pipe-edit__sec-label">ADD MORE DESTINATIONS</div>
+                            <div className="wiz__sec-label">ADD MORE DESTINATIONS</div>
                             <WizardOptionGrid
                                 options={unselectedAvailable}
                                 selectedIds={selectedDestinations}
@@ -1025,17 +1000,11 @@ const PipelineEditPage: React.FC = () => {
     // ====== STEP 5 · CONFIGURE ======
     const renderConfigureStep = () => (
         <>
-            <div className="pipe-edit__head">
-                <div className="pipe-edit__crumb">
-                    STEP <b>{STEP_INDEX.configure} OF {STEPS.length}</b> · CONFIGURE
-                </div>
-                <h1 className="pipe-edit__title">
-                    Configure <span className="gr">every block.</span>
-                </h1>
-                <p className="pipe-edit__desc">
-                    All configurable boosters and destinations in one place. Click ⚙ on any booster or destination row to jump here directly.
-                </p>
-            </div>
+            <WizardStepHead
+                step={STEP_INDEX.configure} total={STEPS.length} section="CONFIGURE"
+                title={<>Configure <span className="gr">every block.</span></>}
+                description="All configurable boosters and destinations in one place. Click ⚙ on any booster or destination row to jump here directly."
+            />
             <div className="pipe-edit__body">
                 {configurableEnrichers.length === 0 && configurableDestinations.length === 0 && (
                     <div style={{
@@ -1052,7 +1021,7 @@ const PipelineEditPage: React.FC = () => {
 
                 {configurableEnrichers.length > 0 && (
                     <>
-                        <div className="pipe-edit__sec-label" style={{ marginTop: 0 }}>BOOSTERS</div>
+                        <div className="wiz__sec-label" style={{ marginTop: 0 }}>BOOSTERS</div>
                         {configurableEnrichers.map((e, i) => {
                             const absoluteIndex = selectedEnrichers.indexOf(e);
                             return (
@@ -1086,7 +1055,7 @@ const PipelineEditPage: React.FC = () => {
 
                 {configurableDestinations.length > 0 && (
                     <>
-                        <div className="pipe-edit__sec-label">DESTINATIONS</div>
+                        <div className="wiz__sec-label">DESTINATIONS</div>
                         {configurableDestinations.map(d => (
                             <div key={d.id} id={`conf-${d.id}`} className="conf-block">
                                 <div className="conf-block__head">
@@ -1113,17 +1082,11 @@ const PipelineEditPage: React.FC = () => {
     // ====== STEP 6 · DANGER ZONE ======
     const renderDangerStep = () => (
         <>
-            <div className="pipe-edit__head">
-                <div className="pipe-edit__crumb">
-                    STEP <b>{STEP_INDEX.danger} OF {STEPS.length}</b> · DANGER ZONE
-                </div>
-                <h1 className="pipe-edit__title">
-                    Destructive <span className="gr">actions.</span>
-                </h1>
-                <p className="pipe-edit__desc">
-                    These actions affect the pipeline and its history. Pause and archive are reversible. Deletion is permanent.
-                </p>
-            </div>
+            <WizardStepHead
+                step={STEP_INDEX.danger} total={STEPS.length} section="DANGER ZONE"
+                title={<>Destructive <span className="gr">actions.</span></>}
+                description="These actions affect the pipeline and its history. Pause and archive are reversible. Deletion is permanent."
+            />
             <div className="pipe-edit__body">
                 <div className="danger-card">
                     <div>

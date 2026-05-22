@@ -19,9 +19,9 @@ import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginCategorySection } from '../components/PluginCategorySection';
 import { BoosterExclusionPills } from '../components/BoosterExclusionPills';
-import { WizardOptionGrid, WizardExcludedSection, PipelineReviewFlow } from '../components/wizard';
+import { WizardOptionGrid, WizardExcludedSection, PipelineReviewFlow, WizardStepHead } from '../components/wizard';
 import { SourcePicker } from '../components/library/ui/SourcePicker';
-import { DestinationPicker } from '../components/library/ui/DestinationPicker';
+import '../components/library/ui/DestinationPicker.css';
 import { useShowcasePreferences } from '../hooks/useShowcasePreferences';
 import { useNerdMode } from '../state/NerdModeContext';
 import { EnricherProviderType } from '../../types/pb/user';
@@ -328,27 +328,65 @@ const PipelineWizardPage: React.FC = () => {
         return true;
     });
 
+    const getStepRailValue = (s: WizardStep): string | null => {
+        switch (s) {
+            case 'source':
+                if (selectedSources.length === 0) return null;
+                return selectedSources
+                    .map(id => sources.find(src => src.id === id)?.name ?? id)
+                    .join(' · ');
+            case 'source-config': return 'Configured';
+            case 'enrichers':
+                return selectedEnrichers.length > 0
+                    ? `${selectedEnrichers.length} booster${selectedEnrichers.length !== 1 ? 's' : ''}`
+                    : 'None';
+            case 'enricher-config': return 'Configured';
+            case 'destinations':
+                if (selectedDestinations.length === 0) return null;
+                return selectedDestinations
+                    .map(id => destinations.find(d => d.id === id)?.name ?? id)
+                    .join(' · ');
+            case 'destination-config': return 'Configured';
+            default: return null;
+        }
+    };
+
     const renderWizardRail = () => {
         const displaySteps = getDisplaySteps();
         const currentDisplayIndex = displaySteps.indexOf(step);
 
         return (
             <aside className="pipe-wiz__rail">
-                <div className="pipe-wiz__rail-title">STEPS</div>
+                <div className="pipe-wiz__rail-title">
+                    New <span className="gr">pipeline.</span>
+                </div>
                 {displaySteps.map((s, i) => {
                     const isDone = i < currentDisplayIndex;
                     const isCurrent = s === step;
+                    const value = isDone ? getStepRailValue(s) : null;
+
+                    const classes = [
+                        'wiz__step',
+                        'wiz__step--edit-mode',
+                        isDone ? 'wiz__step--done' : '',
+                        isCurrent ? 'wiz__step--active' : '',
+                    ].filter(Boolean).join(' ');
+
                     return (
                         <div
                             key={s}
-                            className={`wiz__step${isDone ? ' wiz__step--done' : ''}${isCurrent ? ' wiz__step--current' : ''}`}
+                            className={classes}
+                            onClick={() => isDone && setStep(s)}
                         >
-                            <div className="wiz__num">
-                                <span className="wiz__num-text">{i + 1}</span>
+                            <div className="wiz__step-n">
+                                {isDone ? '✓' : i + 1}
                             </div>
                             <div>
                                 <div className="wiz__step-title">{stepLabels[s]}</div>
-                                <div className="wiz__step-sub">{stepSubLabels[s]}</div>
+                                {value
+                                    ? <div className="wiz__step-value">{value}</div>
+                                    : <div className="wiz__step-sub">{stepSubLabels[s]}</div>
+                                }
                             </div>
                         </div>
                     );
@@ -371,18 +409,22 @@ const PipelineWizardPage: React.FC = () => {
             }) ?? true,
         }));
 
+        const displaySteps = getDisplaySteps();
+        const stepNum = displaySteps.indexOf('source') + 1;
+
         return (
             <>
-                <div className="pipe-wiz__body-head">
-                    <div className="pipe-wiz__step-label">STEP 1 — SOURCE</div>
-                    <h2 className="pipe-wiz__step-title"><span className="fg-text-gradient">SELECT SOURCES.</span></h2>
-                    <p className="pipe-wiz__step-help">Pick <strong>one or more</strong> sources for your activities.</p>
-                </div>
+                <WizardStepHead
+                    step={stepNum} total={displaySteps.length} section="SOURCE"
+                    title={<>Select your <span className="gr">sources.</span></>}
+                    description="Pick one or more sources. Each one is a trigger — when a new activity arrives, this whole pipeline runs against it."
+                />
                 <div className="pipe-wiz__content">
                     {loading ? (
                         <Paragraph>Loading sources...</Paragraph>
                     ) : (
                         <>
+                            <div className="wiz__sec-label">PICK A SOURCE · CHANGES WHAT TRIGGERS THE PIPELINE</div>
                             <SourcePicker
                                 sources={sourceTiles}
                                 multiSelect
@@ -426,13 +468,16 @@ const PipelineWizardPage: React.FC = () => {
             return undefined;
         };
 
+        const displaySteps = getDisplaySteps();
+        const stepNum = displaySteps.indexOf('enrichers') + 1;
+
         return (
             <>
-                <div className="pipe-wiz__body-head">
-                    <div className="pipe-wiz__step-label">BOOSTERS (OPTIONAL)</div>
-                    <h2 className="pipe-wiz__step-title"><span className="fg-text-gradient">PICK YOUR BOOSTERS.</span></h2>
-                    <p className="pipe-wiz__step-help">Click to add boosters. Drag the <strong>grip handle</strong> to reorder.</p>
-                </div>
+                <WizardStepHead
+                    step={stepNum} total={displaySteps.length} section="BOOSTERS (OPTIONAL)"
+                    title={<>Pick your <span className="gr">boosters.</span></>}
+                    description={<>Click to add boosters. Drag the <strong>grip handle</strong> to reorder.</>}
+                />
                 <div className="pipe-wiz__content">
                     <EnricherTimeline
                         enrichers={selectedEnrichers}
@@ -508,17 +553,19 @@ const PipelineWizardPage: React.FC = () => {
         if (!current || (current.manifest.configSchema?.length ?? 0) === 0) return null;
         const configurableCount = selectedEnrichers.filter(e => (e.manifest.configSchema?.length ?? 0) > 0).length;
 
+        const displaySteps = getDisplaySteps();
+        const stepNum = displaySteps.indexOf('enricher-config') + 1;
+        const configSection = configurableCount > 1
+            ? `CONFIGURE BOOSTER · ${currentEnricherIndex + 1} OF ${configurableCount}`
+            : 'CONFIGURE BOOSTER';
+
         return (
             <>
-                <div className="pipe-wiz__body-head">
-                    <div className="pipe-wiz__step-label">
-                        CONFIGURE BOOSTER{configurableCount > 1 ? ` · ${currentEnricherIndex + 1} OF ${configurableCount}` : ''}
-                    </div>
-                    <h2 className="pipe-wiz__step-title">
-                        <span className="fg-text-gradient">{current.manifest.icon} {current.manifest.name.toUpperCase()}.</span>
-                    </h2>
-                    <p className="pipe-wiz__step-help">{current.manifest.description}</p>
-                </div>
+                <WizardStepHead
+                    step={stepNum} total={displaySteps.length} section={configSection}
+                    title={<>Configure <span className="gr">{current.manifest.name.toLowerCase()}.</span></>}
+                    description={current.manifest.description ?? ''}
+                />
                 <div className="pipe-wiz__content">
                     <Card>
                         {current.manifest.id === 'logic-gate' ? (
@@ -537,41 +584,64 @@ const PipelineWizardPage: React.FC = () => {
     const renderDestinationsStep = () => {
         const availableDestinations = destinations.filter(isPluginAvailable);
         const excludedDestinations = destinations.filter(d => !isPluginAvailable(d));
-
-        const selectedDestChips = selectedDestinations
-            .map(id => destinations.find(d => d.id === id))
-            .filter((d): d is NonNullable<typeof d> => !!d)
-            .map(d => ({ id: d.id, name: d.name, icon: d.icon }));
-
         const unselectedAvailable = availableDestinations.filter(d => !selectedDestinations.includes(d.id));
+
+        const displaySteps = getDisplaySteps();
+        const stepNum = displaySteps.indexOf('destinations') + 1;
 
         return (
             <>
-                <div className="pipe-wiz__body-head">
-                    <div className="pipe-wiz__step-label">DESTINATIONS</div>
-                    <h2 className="pipe-wiz__step-title"><span className="fg-text-gradient">WHERE TO SEND.</span></h2>
-                    <p className="pipe-wiz__step-help">Select <strong>at least one</strong> destination for your activities.</p>
-                </div>
+                <WizardStepHead
+                    step={stepNum} total={displaySteps.length} section="DESTINATIONS"
+                    title={<>Where to <span className="gr">send.</span></>}
+                    description="Select at least one destination. Activities from every source trigger uploads to all selected destinations."
+                />
                 <div className="pipe-wiz__content">
                     {loading ? (
                         <Paragraph>Loading destinations...</Paragraph>
                     ) : (
                         <>
-                            {selectedDestChips.length > 0 && (
-                                <DestinationPicker
-                                    destinations={selectedDestChips}
-                                    onRemove={toggleDestination}
-                                    onAdd={() => {}}
-                                    onConfigure={() => {}}
-                                />
+                            {selectedDestinations.length > 0 && (
+                                <>
+                                    <div className="wiz__sec-label">
+                                        SELECTED · {selectedDestinations.length} DESTINATION{selectedDestinations.length !== 1 ? 'S' : ''}
+                                    </div>
+                                    <div style={{ maxWidth: '720px', marginBottom: '1.125rem' }}>
+                                        {selectedDestinations
+                                            .map(id => destinations.find(d => d.id === id))
+                                            .filter((d): d is NonNullable<typeof d> => !!d)
+                                            .map(d => (
+                                                <div key={d.id} className="dest-chip">
+                                                    <div className="dest-chip__icon">{d.icon}</div>
+                                                    <div className="dest-chip__main">
+                                                        <span className="dest-chip__name">{d.name}</span>
+                                                    </div>
+                                                    <div className="dest-chip__actions">
+                                                        <button
+                                                            className="dest-chip__remove"
+                                                            onClick={() => toggleDestination(d.id)}
+                                                            type="button"
+                                                            aria-label={`Remove ${d.name}`}
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                </>
                             )}
                             {unselectedAvailable.length > 0 && (
-                                <WizardOptionGrid
-                                    options={unselectedAvailable}
-                                    selectedIds={selectedDestinations}
-                                    onSelect={(dest) => toggleDestination(dest.id)}
-                                    selectionMode="multi"
-                                />
+                                <>
+                                    <div className="wiz__sec-label">ADD MORE DESTINATIONS</div>
+                                    <WizardOptionGrid
+                                        options={unselectedAvailable}
+                                        selectedIds={selectedDestinations}
+                                        onSelect={(dest) => toggleDestination(dest.id)}
+                                        selectionMode="multi"
+                                    />
+                                </>
                             )}
                             <WizardExcludedSection
                                 items={excludedDestinations}
@@ -663,13 +733,16 @@ const PipelineWizardPage: React.FC = () => {
             };
         });
 
+        const displaySteps = getDisplaySteps();
+        const stepNum = displaySteps.indexOf('review') + 1;
+
         return (
             <>
-                <div className="pipe-wiz__body-head">
-                    <div className="pipe-wiz__step-label">REVIEW &amp; CONFIRM</div>
-                    <h2 className="pipe-wiz__step-title"><span className="fg-text-gradient">REVIEW YOUR PIPELINE.</span></h2>
-                    <p className="pipe-wiz__step-help">Name your pipeline and confirm the configuration before creating.</p>
-                </div>
+                <WizardStepHead
+                    step={stepNum} total={displaySteps.length} section="REVIEW & CONFIRM"
+                    title={<>Review your <span className="gr">pipeline.</span></>}
+                    description="Name your pipeline and confirm the configuration before creating."
+                />
                 <div className="pipe-wiz__content">
                     <Card>
                         <FormField label="Pipeline Name (Optional)" htmlFor="pipelineName">
@@ -693,15 +766,16 @@ const PipelineWizardPage: React.FC = () => {
 
     const renderSourceConfigStep = () => {
         if (!selectedSourceManifest?.configSchema?.length) return null;
+        const displaySteps = getDisplaySteps();
+        const stepNum = displaySteps.indexOf('source-config') + 1;
+
         return (
             <>
-                <div className="pipe-wiz__body-head">
-                    <div className="pipe-wiz__step-label">SOURCE CONFIGURATION</div>
-                    <h2 className="pipe-wiz__step-title">
-                        <span className="fg-text-gradient">CONFIGURE {selectedSourceManifest.name.toUpperCase()}.</span>
-                    </h2>
-                    <p className="pipe-wiz__step-help">Set up your source configuration.</p>
-                </div>
+                <WizardStepHead
+                    step={stepNum} total={displaySteps.length} section="SOURCE CONFIGURATION"
+                    title={<>Configure your <span className="gr">source.</span></>}
+                    description={`Set up the configuration for ${selectedSourceManifest.name}.`}
+                />
                 <div className="pipe-wiz__content">
                     <Card>
                         <PluginConfigForm
@@ -719,18 +793,19 @@ const PipelineWizardPage: React.FC = () => {
     const renderDestinationConfigStep = () => {
         const destManifest = destinationsWithConfig[currentDestConfigIndex];
         if (!destManifest) return null;
-        const label = destinationsWithConfig.length > 1
+        const displaySteps = getDisplaySteps();
+        const stepNum = displaySteps.indexOf('destination-config') + 1;
+        const destSection = destinationsWithConfig.length > 1
             ? `DESTINATION CONFIG · ${currentDestConfigIndex + 1} OF ${destinationsWithConfig.length}`
             : 'DESTINATION CONFIGURATION';
+
         return (
             <>
-                <div className="pipe-wiz__body-head">
-                    <div className="pipe-wiz__step-label">{label}</div>
-                    <h2 className="pipe-wiz__step-title">
-                        <span className="fg-text-gradient">CONFIGURE {destManifest.name.toUpperCase()}.</span>
-                    </h2>
-                    <p className="pipe-wiz__step-help">Set up your destination configuration.</p>
-                </div>
+                <WizardStepHead
+                    step={stepNum} total={displaySteps.length} section={destSection}
+                    title={<>Configure <span className="gr">{destManifest.name.toLowerCase()}.</span></>}
+                    description="Set up your destination configuration."
+                />
                 <div className="pipe-wiz__content">
                     <Card>
                         <PluginConfigForm

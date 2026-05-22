@@ -18,10 +18,10 @@
   .step__d { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); line-height: 1.55; margin-top: 8px; }
 
   /* ── FAQ section ── */
-  .hiw-faq { padding: 64px 32px; max-width: 860px; margin: 0 auto; }
+  .hiw-faq { padding: 64px 32px; max-width: 1280px; margin: 0 auto; }
   .hiw-faq__title { font-family: var(--fg-font-display); font-size: 2rem; letter-spacing: -.025em; text-transform: uppercase; margin-bottom: 32px; }
   .hiw-faq__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .faq-item { padding: 22px 0; border-bottom: var(--fg-rule-thin); }
+  .faq-item { padding: 22px 24px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); }
   .faq-item:first-of-type { border-top: var(--fg-rule-thin); }
   .faq-item__q { font-family: var(--fg-font-display); font-size: 1.125rem; letter-spacing: -.01em; text-transform: uppercase; margin-bottom: 10px; }
   .faq-item__a { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); line-height: 1.6; }
@@ -45,17 +45,21 @@
   }
   @media (max-width: 720px) {
     .steps-grid { grid-template-columns: 1fr; }
-    .step { border-right: 0; border-bottom: var(--fg-rule-thin); }
+    .step { border-right: 0; border-bottom: var(--fg-rule-thin); padding: 28px 20px; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 16px; }
     .step:nth-child(3) { border-top: 0; }
     .step:nth-child(4) { border-top: 0; }
     .step:last-child { border-bottom: 0; }
-    .step__n { font-size: 3rem; }
+    .step__n { font-size: 2.5rem; grid-row: 1; grid-column: 1; align-self: baseline; line-height: 1; }
+    .step__t { grid-row: 1; grid-column: 2; align-self: end; margin-top: 0; font-size: 1.25rem; }
+    .step__d { grid-row: 2; grid-column: 2; margin-top: 8px; }
   }
   @media (max-width: 600px) {
     .steps-grid { padding: 0 16px 48px; }
     .ph { padding: 40px 16px; }
     .hiw-faq { padding: 48px 16px; }
+    .faq-item { padding: 18px 16px; }
     .hiw-cta { padding: 48px 16px; }
+    .dark-band { flex-wrap: wrap; gap: 4px; }
   }
 </style>
 

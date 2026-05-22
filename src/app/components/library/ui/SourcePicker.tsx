@@ -38,7 +38,6 @@ export const SourcePicker: React.FC<SourcePickerProps> = ({
           const classes = [
             'source-tile',
             isSelected ? 'source-tile--selected' : '',
-            source.connected ? 'source-tile--connected' : '',
             source.disabled ? 'source-tile--disabled' : '',
           ].filter(Boolean).join(' ');
 
@@ -50,9 +49,13 @@ export const SourcePicker: React.FC<SourcePickerProps> = ({
               type="button"
               disabled={source.disabled}
             >
-              <span className="source-tile__icon">{source.icon}</span>
-              <span className="source-tile__name">{source.name}</span>
-              {source.meta && <span className="source-tile__meta">{source.meta}</span>}
+              <div className="source-tile__icon-box">
+                <span className="source-tile__icon">{source.icon}</span>
+              </div>
+              <div className="source-tile__text">
+                <span className="source-tile__name">{source.name}</span>
+                {source.meta && <span className="source-tile__meta">{source.meta}</span>}
+              </div>
             </button>
           );
         })}

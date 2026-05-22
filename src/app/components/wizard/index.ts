@@ -1,3 +1,6 @@
+export { WizardStepHead } from './WizardStepHead';
+export type { WizardStepHeadProps } from './WizardStepHead';
+
 export { WizardOptionCard } from './WizardOptionCard';
 export type { WizardOptionCardProps } from './WizardOptionCard';
 
