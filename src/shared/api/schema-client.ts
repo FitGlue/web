@@ -1911,6 +1911,8 @@ export interface components {
             /** @description Lifetime aggregates — written by a daily rollup job. Optional; absent means not yet computed. */
             zoneSplit?: components["schemas"]["LifetimeZoneSplit"];
             streakHistory?: components["schemas"]["WeeklyStreakHistory"];
+            /** @description Top strength PRs — populated at request time from users/{userId}/personal_records/ */
+            topPrs?: components["schemas"]["ShowcaseTopPR"][];
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;
@@ -1950,12 +1952,25 @@ export interface components {
             avgHeartRate?: number;
             /** Format: int32 */
             caloriesKcal?: number;
+            /** @description PR tag displayed on profile activity cards (e.g. "★ DEADLIFT 180KG · +5KG") */
+            prLabel?: string;
         };
         ShowcaseTheme: {
             themeId?: string;
             customAccentColor?: string;
             animationId?: string;
             cardStyle?: string;
+        };
+        /** @description ShowcaseTopPR is a lightweight personal record for display on the profile medal wall. */
+        ShowcaseTopPR: {
+            recordType?: string;
+            /** Format: double */
+            value?: number;
+            unit?: string;
+            /** Format: date-time */
+            achievedAt?: string;
+            /** Format: double */
+            previousValue?: number;
         };
         /** @description ShowcasedActivity represents a publicly shareable activity snapshot. */
         ShowcasedActivity: {

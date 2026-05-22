@@ -10,6 +10,7 @@ import { buildModuleOrder } from '../utils/enricherModules';
 import ActivityHero from '../components/layout/ActivityHero';
 import ModuleGrid from '../components/layout/ModuleGrid';
 import BoosterTimeline from '../components/layout/BoosterTimeline';
+import PersonalRecordsCallout from '../components/modules/PersonalRecordsCallout';
 
 type ShowcasedActivity = components['schemas']['ShowcasedActivity'];
 
@@ -124,6 +125,7 @@ export default function ShowcaseActivityPage() {
 
   const parkrunData = appliedSet2.has('ENRICHER_PROVIDER_PARKRUN') ? enrichments?.parkrun : undefined;
   const milestoneData = enrichments?.distanceMilestone?.milestoneKm ? enrichments.distanceMilestone : undefined;
+  const prData = appliedSet2.has('ENRICHER_PROVIDER_PERSONAL_RECORDS') ? enrichments?.personalRecords : undefined;
 
   const ownerProfileHref = activity.ownerProfileSlug
     ? `/showcase/profile/${activity.ownerProfileSlug}`
@@ -207,6 +209,9 @@ export default function ShowcaseActivityPage() {
             </div>
           </div>
         )}
+
+        {/* Full-bleed PR band (strength activities with personal records) */}
+        {prData?.records?.length ? <PersonalRecordsCallout data={prData} /> : null}
 
         {/* Layout grid: modules + booster timeline */}
         <div className="showcase-layout">

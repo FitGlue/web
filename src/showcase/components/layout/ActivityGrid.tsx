@@ -194,6 +194,10 @@ export default function ActivityGrid({ entries, totalActivities }: Props): React
                   <path d={sparkPath} stroke="url(#spark-g)" strokeWidth="1.5" fill="none" />
                 </svg>
               )}
+
+              {e.prLabel && (
+                <span className="act__pr">{e.prLabel}</span>
+              )}
             </a>
           );
         })}

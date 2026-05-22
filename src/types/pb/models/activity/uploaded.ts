@@ -65,7 +65,11 @@ export interface ShowcaseProfileEntry {
   destinationCount: number;
   sparkline?: EntrySparkline | undefined;
   avgHeartRate?: number | undefined;
-  caloriesKcal?: number | undefined;
+  caloriesKcal?:
+    | number
+    | undefined;
+  /** PR tag displayed on profile activity cards (e.g. "★ DEADLIFT 180KG · +5KG") */
+  prLabel?: string | undefined;
 }
 
 /** EntrySparkline is a downsampled timeseries for card-level sparklines. */
@@ -120,7 +124,26 @@ export interface ShowcaseProfile {
   callouts: ShowcaseBioCallout[];
   /** Lifetime aggregates — written by a daily rollup job. Optional; absent means not yet computed. */
   zoneSplit?: LifetimeZoneSplit | undefined;
-  streakHistory?: WeeklyStreakHistory | undefined;
+  streakHistory?:
+    | WeeklyStreakHistory
+    | undefined;
+  /** Top strength PRs — populated at request time from users/{userId}/personal_records/ */
+  topPrs: ShowcaseTopPR[];
+}
+
+/** ShowcaseTopPR is a lightweight personal record for display on the profile medal wall. */
+export interface ShowcaseTopPR {
+  /** e.g. "bench_press_1rm" */
+  recordType: string;
+  /** e.g. 180 */
+  value: number;
+  /** "kg", "seconds", "meters" */
+  unit: string;
+  achievedAt?:
+    | Date
+    | undefined;
+  /** for computing improvement delta */
+  previousValue?: number | undefined;
 }
 
 export interface LifetimeZoneSplit {

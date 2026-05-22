@@ -1298,6 +1298,108 @@ body:has(#showcase-root) {
 }
 
 /* =====================================================
+   PR BAND — full-bleed personal records callout
+   Appears after hero on strength activity pages
+   ===================================================== */
+
+.pr-band {
+  background: var(--fg-paper);
+  color: var(--fg-ink);
+}
+
+.pr-band__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 18px 32px;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 24px;
+  align-items: center;
+}
+
+.pr-band__icon { font-size: 2rem; line-height: 1; }
+
+.pr-band__title {
+  font-family: var(--fg-font-display);
+  font-size: 1.375rem;
+  letter-spacing: -.015em;
+  text-transform: uppercase;
+}
+
+.pr-band__sub {
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-top: 4px;
+  opacity: .6;
+}
+
+.pr-band__n {
+  font-family: var(--fg-font-display);
+  font-size: 2.75rem;
+  line-height: 1;
+  letter-spacing: -.025em;
+}
+
+.pr-band__delta {
+  font-family: var(--fg-font-mono);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  padding: 4px 10px;
+  background: var(--fg-ink);
+  color: var(--fg-paper);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pr-band__extra {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 10px 32px 14px;
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(7,7,16,.12);
+}
+
+.pr-band__extra-item {
+  font-family: var(--fg-font-mono);
+  font-size: .75rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.pr-band__extra-delta {
+  color: var(--fg-ink);
+  font-weight: 700;
+  background: rgba(7,7,16,.08);
+  padding: 1px 5px;
+}
+
+/* Activity card PR tag */
+.act__pr {
+  padding: 3px 6px;
+  background: var(--fg-green);
+  color: var(--fg-ink);
+  font-family: var(--fg-font-mono);
+  font-size: .5625rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  align-self: flex-start;
+  display: inline-block;
+}
+
+@media (max-width: 680px) {
+  .pr-band__inner { grid-template-columns: auto 1fr; }
+  .pr-band__n { font-size: 2rem; }
+  .pr-band__delta { grid-column: 2; }
+}
+
+/* =====================================================
    SHOWCASE PROFILE PAGE
    ===================================================== */
 
