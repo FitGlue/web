@@ -50,9 +50,11 @@ export const RouteMap: React.FC<Props> = ({ points }) => {
   if (points.length === 0) return null;
 
   return (
-    <div className="showcase-section glass-card">
-      <div className="section-header"><h2>🗺️ Route</h2></div>
-      <div ref={containerRef} className="activity-map" style={{ height: '300px' }} />
+    <div className="mod" style={{ padding: 0, overflow: 'hidden' }}>
+      <div className="mod__header" style={{ padding: 'var(--space-sm)', marginBottom: 0 }}>
+        <h3 className="mod__title">🗺️ Route</h3>
+      </div>
+      <div ref={containerRef} style={{ height: '300px' }} />
     </div>
   );
 };
