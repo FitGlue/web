@@ -13,9 +13,11 @@ type ShowcaseLink = components['schemas']['ShowcaseLink'];
 
 function getLinkIcon(url: string | undefined): string {
   if (!url) return '↗';
-  if (url.includes('strava.com')) return '↗';
-  if (url.includes('instagram.com')) return '↗';
-  if (url.includes('github.com')) return '↗';
+  if (url.includes('strava.com')) return '🚴';
+  if (url.includes('instagram.com')) return '📷';
+  if (url.includes('github.com')) return '🐙';
+  if (url.includes('twitter.com') || url.includes('x.com')) return '🐦';
+  if (url.includes('youtube.com')) return '📺';
   return '↗';
 }
 
@@ -34,14 +36,14 @@ function LoadingScreen() {
 function ErrorScreen() {
   return (
     <div className="showcase-page">
-      <div style={{ padding: 'var(--space-xl) var(--space-md)', textAlign: 'center' }}>
+      <div style={{ padding: '64px 32px', textAlign: 'center' }}>
         <h1 style={{ fontFamily: 'var(--fg-font-display)', fontSize: '2rem', textTransform: 'uppercase' }}>
           Profile not found
         </h1>
-        <p style={{ color: 'var(--color-text-muted)', marginTop: 'var(--space-sm)' }}>
+        <p style={{ color: 'var(--color-text-muted)', marginTop: '1rem' }}>
           This athlete profile doesn&apos;t exist or hasn&apos;t been created yet.
         </p>
-        <a href="/" style={{ display: 'inline-block', marginTop: 'var(--space-md)', fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-cyan)' }}>
+        <a href="/" style={{ display: 'inline-block', marginTop: '1.5rem', fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-cyan)' }}>
           ← Explore FitGlue
         </a>
       </div>
@@ -99,84 +101,102 @@ export default function ShowcaseProfilePage() {
   if (error || !profile) return <ErrorScreen />;
 
   const hasMore = currentPage < totalPages;
-  const hasLinks = (profile.links ?? []).filter((l: ShowcaseLink) => l.url).length > 0;
-  const hasCallouts = (profile.callouts ?? []).filter((c) => c.text).length > 0;
-  const hasBio = !!profile.bio;
-  const hasSidebar = hasBio || hasCallouts || hasLinks;
+  const links = (profile.links ?? []).filter((l: ShowcaseLink) => l.url);
+  const callouts = (profile.callouts ?? []).filter((c) => c.text);
 
   return (
     <div className="showcase-page">
-      <div className="showcase-layout">
-        {/* Main content column */}
-        <main className="showcase-main">
-          <ProfileHero profile={profile} />
-          <LifetimeStats profile={profile} />
-          <MedalWall profile={profile} />
+      <div className="showcase-page-bg" aria-hidden="true" />
+      <div className="showcase-page-wrap">
 
-          <div style={{ borderTop: 'var(--fg-rule-thin)', paddingTop: 'var(--space-md)', marginTop: 'var(--space-md)' }}>
-            <p className="showcase-section-title">Activities</p>
-            <ActivityGrid entries={entries} />
+        {/* Sticky public nav bar */}
+        <nav className="showcase-pubbar">
+          <a className="showcase-pubbar__brand" href="/">FitGlue</a>
+          <div className="showcase-pubbar__actions">
+            <span style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-paper)', padding: '6px 12px', border: 'var(--fg-rule-thin)', cursor: 'default' }}>
+              ✦ FOLLOW
+            </span>
+            <a href="/" style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-ink)', background: 'var(--fg-paper)', padding: '6px 12px', textDecoration: 'none' }}>
+              YOUR SHOWCASE →
+            </a>
+          </div>
+        </nav>
 
-            {hasMore && (
-              <div style={{ paddingTop: 'var(--space-md)' }}>
-                <button
-                  onClick={loadMore}
-                  disabled={loadingMore}
-                  style={{
-                    fontFamily: 'var(--fg-font-mono)',
-                    fontSize: '0.75rem',
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    color: loadingMore ? 'var(--color-text-muted)' : 'var(--fg-cyan)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: loadingMore ? 'default' : 'pointer',
-                    padding: 0,
-                  }}
-                >
-                  {loadingMore ? 'Loading…' : 'Load more →'}
-                </button>
+        {/* Full-bleed profile hero */}
+        <ProfileHero profile={profile} />
+
+        {/* Medal wall (110px top padding clears the floating avatar) */}
+        <MedalWall profile={profile} />
+
+        {/* Lifetime 4-up */}
+        <LifetimeStats profile={profile} />
+
+        {/* 4px gradient strip */}
+        <div className="profile-strip" />
+
+        {/* Main: activity feed + bio sidebar */}
+        <div className="profile-main">
+          <div className="profile-feed">
+            <ActivityGrid
+              entries={entries}
+              totalActivities={profile.totalActivities}
+            />
+
+            {/* Pagination */}
+            {(hasMore || currentPage > 1) && (
+              <div className="profile-pagi">
+                <span className="profile-pagi__info" style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-text-muted)' }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+                {hasMore && (
+                  <button
+                    onClick={loadMore}
+                    disabled={loadingMore}
+                    style={{
+                      fontFamily: 'var(--fg-font-mono)',
+                      fontSize: '0.75rem',
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      color: loadingMore ? 'var(--color-text-muted)' : 'var(--fg-paper)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: loadingMore ? 'default' : 'pointer',
+                      padding: 0,
+                    }}
+                  >
+                    {loadingMore ? 'Loading…' : 'NEXT →'}
+                  </button>
+                )}
               </div>
             )}
           </div>
-        </main>
 
-        {/* Right sidebar */}
-        {hasSidebar && (
-          <aside className="profile-sidebar">
-            {hasBio && (
-              <div className="sidebar-section">
-                <p className="sidebar-section__title">About</p>
-                <div className="sidebar-section__bio">
-                  {profile.bio!.split('\n').map((line, i) => (
-                    <p key={i} style={{ margin: '0 0 0.4em' }}>{line}</p>
-                  ))}
-                </div>
-              </div>
+          {/* Sticky bio sidebar */}
+          <aside className="profile-bio">
+            {profile.bio && (
+              <p className="bio__about">{profile.bio}</p>
             )}
 
-            {hasCallouts && (
-              <div className="sidebar-section">
-                <p className="sidebar-section__title">Highlights</p>
-                {(profile.callouts ?? []).filter((c) => c.text).map((c, i) => (
-                  <div key={i} className="sidebar-callout">
-                    <span>→</span>
+            {callouts.length > 0 && (
+              <div className="bio__callouts">
+                {callouts.map((c, i) => (
+                  <div key={i} className="bio__callout">
                     <span>{c.text}</span>
                   </div>
                 ))}
               </div>
             )}
 
-            {hasLinks && (
-              <div className="sidebar-section">
-                <p className="sidebar-section__title">Links</p>
-                {(profile.links ?? []).filter((l: ShowcaseLink) => l.url).map((link: ShowcaseLink, i: number) => (
+            {links.length > 0 && (
+              <div className="bio__section">
+                <div className="bio__section-label">LINKS</div>
+                {links.map((link: ShowcaseLink, i: number) => (
                   <a
                     key={i}
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="sidebar-link"
+                    className="bio__link"
                   >
                     <span>{getLinkIcon(link.url)}</span>
                     <span>{link.label ?? link.url}</span>
@@ -185,11 +205,10 @@ export default function ShowcaseProfilePage() {
               </div>
             )}
 
-            <a href="/" className="sidebar-cta">
-              Start your showcase →
-            </a>
+            <a href="/" className="bio__cta">✦ START YOUR SHOWCASE</a>
           </aside>
-        )}
+        </div>
+
       </div>
     </div>
   );

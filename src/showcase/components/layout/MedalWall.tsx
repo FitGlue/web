@@ -6,77 +6,76 @@ type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
 interface Medal {
   icon: string;
   value: string;
+  valueSup?: string;
   label: string;
-  isStreak?: boolean;
-}
-
-function computeStreaks(weeklyActive: boolean[]): { current: number; longest: number } {
-  let current = 0;
-  for (let i = weeklyActive.length - 1; i >= 0; i--) {
-    if (weeklyActive[i]) current++;
-    else break;
-  }
-  let longest = 0;
-  let run = 0;
-  for (const active of weeklyActive) {
-    run = active ? run + 1 : 0;
-    if (run > longest) longest = run;
-  }
-  return { current, longest };
+  sub?: string;
+  isGradient?: boolean;
 }
 
 function buildMedals(profile: ShowcaseProfile): Medal[] {
   const medals: Medal[] = [];
 
   const weeklyActive = profile.streakHistory?.weeklyActive ?? [];
-  const { current: currentStreak, longest: longestStreak } = computeStreaks(weeklyActive);
+  let currentStreak = 0;
+  for (let i = weeklyActive.length - 1; i >= 0; i--) {
+    if (weeklyActive[i]) currentStreak++;
+    else break;
+  }
+  let longestStreak = 0;
+  let run = 0;
+  for (const active of weeklyActive) {
+    run = active ? run + 1 : 0;
+    if (run > longestStreak) longestStreak = run;
+  }
 
-  // Current streak (show if >= 4 consecutive weeks)
   if (currentStreak >= 4) {
     medals.push({
       icon: '🔥',
-      value: `${currentStreak}w`,
-      label: 'Current streak',
-      isStreak: true,
+      label: 'CURRENT STREAK',
+      value: String(currentStreak),
+      valueSup: 'wks',
+      sub: longestStreak > currentStreak ? `Best: ${longestStreak} wks` : 'Personal best',
+      isGradient: true,
     });
   }
 
-  // Longest streak (show if >= 8 consecutive weeks)
-  if (longestStreak >= 8) {
+  if (longestStreak >= 8 && longestStreak !== currentStreak) {
     medals.push({
       icon: '🏆',
-      value: `${longestStreak}w`,
-      label: 'Longest streak',
+      label: 'LONGEST STREAK',
+      value: String(longestStreak),
+      valueSup: 'wks',
     });
   }
 
-  // Activity count milestones
   const acts = profile.totalActivities ?? 0;
-  for (const milestone of [1000, 500, 100]) {
+  for (const milestone of [2000, 1000, 500, 250, 100]) {
     if (acts >= milestone) {
       medals.push({
         icon: '🎯',
-        value: `${milestone}`,
-        label: 'lifetime activities',
+        label: 'LIFETIME ACTIVITIES',
+        value: milestone.toLocaleString(),
+        sub: `${acts.toLocaleString()} total`,
       });
       break;
     }
   }
 
-  // Distance milestones (nearest thousand km)
   const distKm = (profile.totalDistanceMeters ?? 0) / 1000;
-  if (distKm > 0) {
-    const milestone = Math.floor(distKm / 1000) * 1000;
-    if (milestone >= 1000) {
+  for (const milestone of [25000, 10000, 5000, 2500, 1000]) {
+    if (distKm >= milestone) {
       medals.push({
         icon: '🏅',
-        value: `${milestone.toLocaleString()} km`,
-        label: `lifetime distance`,
+        label: 'MILESTONE',
+        value: milestone.toLocaleString(),
+        valueSup: 'km',
+        sub: `${Math.round(distKm).toLocaleString()} km lifetime`,
       });
+      break;
     }
   }
 
-  return medals;
+  return medals.slice(0, 8);
 }
 
 interface Props {
@@ -87,18 +86,35 @@ export default function MedalWall({ profile }: Props): React.ReactElement | null
   const medals = buildMedals(profile);
   if (!medals.length) return null;
 
+  const streakCount = profile.streakHistory?.weeklyActive ? 1 : 0;
+  const actCount = medals.filter((m) => m.label === 'LIFETIME ACTIVITIES').length;
+  const distCount = medals.filter((m) => m.label === 'MILESTONE').length;
+
   return (
-    <div>
-      <p className="showcase-section-title">Medal wall</p>
-      <div className="medal-wall">
+    <div className="medal-band">
+      <div className="medal-band__label">
+        <span>
+          <b>🏆 MEDAL WALL</b>
+          {streakCount > 0 && ` · ${streakCount} STREAK`}
+          {actCount > 0 && ` · ${actCount} MILESTONE`}
+          {distCount > 0 && ` · ${distCount} DISTANCE`}
+        </span>
+        {medals.length >= 4 && <span>SCROLL →</span>}
+      </div>
+      <div className="medals">
         {medals.map((m, i) => (
-          <div
-            key={i}
-            className={`medal-tile${m.isStreak ? ' medal-tile--streak' : ''}`}
-          >
-            <div className="medal-tile__icon">{m.icon}</div>
-            <div className="medal-tile__value">{m.value}</div>
-            <div className="medal-tile__label">{m.label}</div>
+          <div key={i} className={`medal${m.isGradient ? ' medal--gr' : ''}`}>
+            <div>
+              <div className="medal__icon">{m.icon}</div>
+              <div className="medal__label">{m.label}</div>
+            </div>
+            <div>
+              <div className="medal__n">
+                {m.value}
+                {m.valueSup && <sup>{m.valueSup}</sup>}
+              </div>
+              {m.sub && <div className="medal__sub">{m.sub}</div>}
+            </div>
           </div>
         ))}
       </div>
