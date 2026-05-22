@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.30.1](https://github.com/fitglue/web/compare/v11.30.0...v11.30.1) (2026-05-22)
+
+
+### Bug Fixes
+
+* **showcase:** restore Leaflet GPS route map on activity page ([b1ac127](https://github.com/fitglue/web/commit/b1ac12744edeaedb69a22dec413dcf0064f90ba1))
+
 ## [11.30.0](https://github.com/fitglue/web/compare/v11.29.2...v11.30.0) (2026-05-22)
 
 
