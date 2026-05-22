@@ -107,18 +107,32 @@ function buildMedals(profile: ShowcaseProfile): Medal[] {
     }
   }
 
-  // Strength PRs from server-side personal records
-  const topPRs: ShowcaseTopPR[] = (profile.topPrs ?? []).filter((p) => p.recordType && p.value && p.unit === 'kg');
+  // Personal records from server — both weight (kg, higher = better) and time (seconds, lower = better)
+  const topPRs: ShowcaseTopPR[] = (profile.topPrs ?? []).filter(
+    (p) => p.recordType && p.value && (p.unit === 'kg' || p.unit === 'seconds'),
+  );
   for (const pr of topPRs.slice(0, 4)) {
     const { val, sup } = prValueLabel(pr.value!, pr.unit!);
     const date = pr.achievedAt
       ? new Date(pr.achievedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
       : null;
-    const delta = pr.previousValue && pr.value! > pr.previousValue
-      ? `+${Math.round(pr.value! - pr.previousValue)} kg`
-      : null;
+    const isTimePR = pr.unit === 'seconds';
+    const improved = isTimePR
+      ? pr.previousValue != null && pr.value! < pr.previousValue
+      : pr.previousValue != null && pr.value! > pr.previousValue;
+    let delta: string | null = null;
+    if (improved) {
+      if (isTimePR) {
+        const d = pr.previousValue! - pr.value!;
+        const dm = Math.floor(d / 60);
+        const ds = Math.floor(d % 60);
+        delta = dm > 0 ? `−${dm}:${String(ds).padStart(2, '0')}` : `−${ds}s`;
+      } else {
+        delta = `+${Math.round(pr.value! - pr.previousValue!)} kg`;
+      }
+    }
     medals.push({
-      icon: '🏋️',
+      icon: isTimePR ? '⚡' : '🏋️',
       label: prRecordLabel(pr.recordType!),
       value: val,
       valueSup: sup,
