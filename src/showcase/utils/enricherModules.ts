@@ -135,7 +135,7 @@ export function buildModuleOrder(
       if (has('ENRICHER_PROVIDER_HEART_RATE_SUMMARY')) push('heart-rate');
       if (has('ENRICHER_PROVIDER_HEART_RATE_ZONES')) push('zones');
       if (has('ENRICHER_PROVIDER_PACE_SUMMARY')) push('pace');
-      if (has('ENRICHER_PROVIDER_SPEED_SUMMARY') && !has('ENRICHER_PROVIDER_PACE_SUMMARY')) push('speed');
+      if (has('ENRICHER_PROVIDER_SPEED_SUMMARY')) push('speed');
       if (has('ENRICHER_PROVIDER_CADENCE_SUMMARY')) push('cadence');
       if (has('ENRICHER_PROVIDER_ELEVATION_SUMMARY')) push('elevation');
       if (has('ENRICHER_PROVIDER_POWER_SUMMARY')) push('power');

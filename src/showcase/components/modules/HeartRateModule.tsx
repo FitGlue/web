@@ -70,9 +70,9 @@ export default function HeartRateModule({ data, records }: Props): React.ReactEl
           <span className="mini__value">{data.maxBpm}</span>
           <span className="mini__label">MAX BPM</span>
         </div>
-        {data.driftWarning && (
-          <div style={{ marginLeft: 'auto', padding: '3px 8px', border: '1.5px solid var(--fg-rose)', color: 'var(--fg-rose)', fontFamily: 'var(--fg-font-mono)', fontSize: '0.625rem', fontWeight: 700, letterSpacing: '0.1em', alignSelf: 'center' }}>
-            +{data.driftBpm} DRIFT
+        {data.driftBpm !== 0 && (
+          <div style={{ marginLeft: 'auto', padding: '3px 8px', border: `1.5px solid ${data.driftWarning ? 'var(--fg-rose)' : 'var(--color-text-muted)'}`, color: data.driftWarning ? 'var(--fg-rose)' : 'var(--color-text-muted)', fontFamily: 'var(--fg-font-mono)', fontSize: '0.625rem', fontWeight: 700, letterSpacing: '0.1em', alignSelf: 'center' }}>
+            {data.driftBpm > 0 ? '+' : ''}{data.driftBpm} DRIFT
           </div>
         )}
       </div>

@@ -69,7 +69,7 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
   );
   const routeThumbUrl = enrichments?.aiBanner?.imageUrl; // placeholder — route thumb would come from metadata
 
-  const preGridModules = new Set<ModuleKey>(['hybrid-race-segments', 'ai-story', 'pr-callout', 'description', 'tags', 'photos', 'map']);
+  const preGridModules = new Set<ModuleKey>(['hybrid-race-segments', 'ai-story', 'milestone-callout', 'pr-callout', 'description', 'tags', 'photos', 'map']);
   const footerModules = new Set<ModuleKey>(['auto-increment-footer', 'source-link-footer']);
 
   // Pre-grid (full-width, before the 12-col grid)
@@ -93,6 +93,31 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
                 />
               </div>
             ) : null;
+          case 'milestone-callout': {
+            const ms = enrichments?.distanceMilestone;
+            if (!ms || ms.lifetimeDistanceKm === 0) return null;
+            const toGo = ms.nextMilestoneKm ? ms.nextMilestoneKm - ms.lifetimeDistanceKm : null;
+            return (
+              <div key={key} className="milestone-callout">
+                <span className="milestone-callout__label">
+                  📊 Lifetime {ms.activityTypeLabel}
+                </span>
+                <span className="milestone-callout__value">
+                  {ms.lifetimeDistanceKm.toFixed(1)} km
+                </span>
+                {ms.nextMilestoneKm && toGo !== null && toGo > 0 && (
+                  <span className="milestone-callout__next">
+                    Next milestone: {ms.nextMilestoneKm} km · {toGo.toFixed(1)} km to go
+                  </span>
+                )}
+                {ms.milestoneKm > 0 && (
+                  <span className="milestone-callout__achieved">
+                    🎉 {ms.milestoneKm} km milestone reached!
+                  </span>
+                )}
+              </div>
+            );
+          }
           case 'pr-callout':
             return <PersonalRecordsCallout key={key} data={enrichments?.personalRecords} />;
           case 'description':
