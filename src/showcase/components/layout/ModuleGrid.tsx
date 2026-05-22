@@ -4,6 +4,7 @@ import type { components } from '../../../shared/api/schema-public';
 import type { ActivityEnrichments } from '../../../types/pb/models/activity/enrichments';
 import { parseDescriptionSections } from '../DescriptionSections';
 import { formatSource } from '../../utils/format';
+import { RouteMap } from '../RouteMap';
 
 // Lazy imports for each module — only import what's needed
 import HeartRateModule from '../modules/HeartRateModule';
@@ -64,10 +65,9 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
   const prTypes = new Set(
     (enrichments?.personalRecords?.records ?? []).map((r) => r.recordType ?? '')
   );
-  const hasGps = sessions?.some((s) =>
-    s.laps?.some((l) => l.records?.some((r) => r.positionLat !== 0 || r.positionLong !== 0))
-  );
-  const routeThumbUrl = enrichments?.aiBanner?.imageUrl; // placeholder — route thumb would come from metadata
+  const gpsPoints = flatRecords
+    .filter((r) => r.positionLat !== undefined && r.positionLat !== 0 && r.positionLong !== undefined && r.positionLong !== 0)
+    .map((r) => ({ lat: r.positionLat!, lng: r.positionLong! }));
 
   const preGridModules = new Set<ModuleKey>(['hybrid-race-segments', 'ai-story', 'milestone-callout', 'pr-callout', 'description', 'tags', 'photos', 'map']);
   const footerModules = new Set<ModuleKey>(['auto-increment-footer', 'source-link-footer']);
@@ -139,16 +139,8 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
               </div>
             ) : null;
           case 'map':
-            return hasGps ? (
-              <div key={key} className="map-module">
-                {routeThumbUrl ? (
-                  <img src={routeThumbUrl} alt="Route map" />
-                ) : (
-                  <span style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem' }}>
-                    🗺️ GPS ROUTE
-                  </span>
-                )}
-              </div>
+            return gpsPoints.length >= 10 ? (
+              <RouteMap key={key} points={gpsPoints} />
             ) : null;
           default:
             return null;

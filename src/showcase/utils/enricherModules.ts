@@ -85,7 +85,9 @@ const ENRICHER_TO_MODULE: Record<string, ModuleKey | null> = {
 function hasGps(activity: ShowcasedActivity): boolean {
   return (activity.activityData?.sessions ?? []).some((s) =>
     (s.laps ?? []).some((l) =>
-      (l.records ?? []).some((r) => r.positionLat !== 0 || r.positionLong !== 0)
+      (l.records ?? []).some(
+        (r) => r.positionLat !== undefined && r.positionLat !== 0 && r.positionLong !== undefined && r.positionLong !== 0
+      )
     )
   );
 }
