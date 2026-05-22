@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.26.0](https://github.com/fitglue/web/compare/v11.25.0...v11.26.0) (2026-05-22)
+
+
+### Features
+
+* **showcase:** enhance BoosterTimeline and ModuleGrid components, improve HRZonesModule and TrainingLoadModule layouts, update ShowcaseActivityPage branding, and refine CSS styles ([cb12aa8](https://github.com/fitglue/web/commit/cb12aa82d89f6935cb06b1dd7d30aa4f4f11e0bc))
+
 ## [11.25.0](https://github.com/fitglue/web/compare/v11.24.0...v11.25.0) (2026-05-22)
 
 
