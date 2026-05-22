@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.29.2](https://github.com/fitglue/web/compare/v11.29.1...v11.29.2) (2026-05-22)
+
+
+### Bug Fixes
+
+* **showcase:** render milestone, speed, and HR drift modules ([f091a6a](https://github.com/fitglue/web/commit/f091a6ab2d2b352edb046e51990cff819d7700e6))
+
 ### [11.29.1](https://github.com/fitglue/web/compare/v11.29.0...v11.29.1) (2026-05-22)
 
 
