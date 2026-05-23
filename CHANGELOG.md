@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.32.0](https://github.com/fitglue/web/compare/v11.31.3...v11.32.0) (2026-05-23)
+
+
+### Features
+
+* **pipeline-edit:** replace phase-grouped booster list with full catalogue UX ([a7394e9](https://github.com/fitglue/web/commit/a7394e99156e77e8120ee506875bb57ec7726d03))
+
+
+### Bug Fixes
+
+* **showcase:** update effort zones label to Z2–Z5 to include VO2 Max ([e386f91](https://github.com/fitglue/web/commit/e386f91fc79b1e8e46fba4456c15b9aadbb11338))
+
 ### [11.31.3](https://github.com/fitglue/web/compare/v11.31.2...v11.31.3) (2026-05-23)
 
 
