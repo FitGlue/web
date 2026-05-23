@@ -147,8 +147,6 @@ export default function ShowcaseActivityPage() {
             ) : (
               <span>{activity.ownerDisplayName?.toUpperCase() ?? ''}</span>
             )}
-            {activity.ownerDisplayName && ' · '}
-            <b>{activity.title ?? 'Activity'}</b>
           </span>
           <div className="showcase-pubbar__actions">
             <a

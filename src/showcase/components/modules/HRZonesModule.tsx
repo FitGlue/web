@@ -6,6 +6,11 @@ interface Props {
   data?: HeartRateZonesSummary;
 }
 
+function shortZoneName(name: string): string {
+  const m = name.match(/\(([^)]+)\)/);
+  return m ? m[1].toUpperCase() : name.replace(/^zone\s*\d+\s*/i, '').toUpperCase();
+}
+
 export default function HRZonesModule({ data }: Props): React.ReactElement | null {
   if (!data || !data.zones?.length || data.zones.every(z => z.minutes === 0)) return null;
 
@@ -16,7 +21,7 @@ export default function HRZonesModule({ data }: Props): React.ReactElement | nul
       <div className="zone-bars">
         {data.zones.map(z => (
           <div key={z.zoneIndex} className="zone-row">
-            <span>{z.name}</span>
+            <span className="zone-row__label">Z{z.zoneIndex} {shortZoneName(z.name)}</span>
             <div className="zone-row__bar-wrap">
               <div
                 className={`zone-row__bar zone-row__bar--z${z.zoneIndex}`}

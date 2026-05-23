@@ -87,6 +87,7 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
           case 'ai-story':
             return aiSummaryHtml ? (
               <div key={key} className="ai-story">
+                <span className="ai-story__label">✨ AI SUMMARY</span>
                 <p
                   className="ai-story__quote"
                   dangerouslySetInnerHTML={{ __html: aiSummaryHtml }}
@@ -122,7 +123,10 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
             return <PersonalRecordsCallout key={key} data={enrichments?.personalRecords} />;
           case 'description':
             return userDescription ? (
-              <div key={key} className="activity-description">{userDescription}</div>
+              <div key={key} className="activity-description">
+                <span className="activity-description__label">FROM THE ATHLETE</span>
+                <p className="activity-description__body">{userDescription}</p>
+              </div>
             ) : null;
           case 'tags':
             return tags.length > 0 ? (

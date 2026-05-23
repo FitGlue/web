@@ -69,7 +69,14 @@ export interface ShowcaseProfileEntry {
     | number
     | undefined;
   /** PR tag displayed on profile activity cards (e.g. "★ DEADLIFT 180KG · +5KG") */
-  prLabel?: string | undefined;
+  prLabel?:
+    | string
+    | undefined;
+  /**
+   * HR zone minutes per bucket (index 0–4), used to aggregate LifetimeZoneSplit on the profile.
+   * Populated at entry creation time from the HR zones enrichment; absent means no zone data.
+   */
+  hrZoneMinutes: number[];
 }
 
 /** EntrySparkline is a downsampled timeseries for card-level sparklines. */

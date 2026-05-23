@@ -23,13 +23,16 @@ export default function LifetimeStats({ profile }: Props): React.ReactElement {
   const dist = profile.totalDistanceMeters ? fmtDist(profile.totalDistanceMeters) : null;
   const hours = profile.totalDurationSeconds ? fmtHours(profile.totalDurationSeconds) : null;
   const missedWeeks = profile.streakHistory?.missedWeeks ?? null;
-  const weeksTracked = profile.streakHistory?.weeksTracked ?? 26;
+  const weeksTracked = profile.streakHistory?.weeksTracked ?? 0;
+  const activeWeeks = weeksTracked > 0 ? weeksTracked - (missedWeeks ?? 0) : null;
+  const activePct = weeksTracked > 0 && missedWeeks !== null
+    ? Math.round(((weeksTracked - missedWeeks) / weeksTracked) * 100)
+    : null;
 
-  // Zone split from API if available
-  const zoneSplitLabel = profile.zoneSplit?.label ?? null;
-  const z01 = profile.zoneSplit?.zones
+  // Effort zones: Z2 (Endurance) + Z3 (Tempo) + Z4 (Threshold) — the zones where fitness is built
+  const effortZones = profile.zoneSplit?.zones
     ? Math.round(
-        (profile.zoneSplit.zones.slice(0, 2).reduce((s, z) => s + (z.percentage ?? 0), 0))
+        profile.zoneSplit.zones.slice(2).reduce((s, z) => s + (z.percentage ?? 0), 0)
       )
     : null;
 
@@ -45,40 +48,43 @@ export default function LifetimeStats({ profile }: Props): React.ReactElement {
 
       <div>
         <div className="profile-life__n profile-life__n--gr">
-          {z01 !== null ? <>{z01}<sup>%</sup></> : dist ? <>{dist.value}<sup>{dist.sup}</sup></> : '—'}
+          {effortZones !== null ? <>{effortZones}<sup>%</sup></> : dist ? <>{dist.value}<sup>{dist.sup}</sup></> : '—'}
         </div>
         <div className="profile-life__l">
-          {z01 !== null ? 'Z0 + Z1 split' : 'Lifetime distance'}
+          {effortZones !== null ? 'Effort zones' : 'Lifetime distance'}
         </div>
         <div className="profile-life__sub">
-          {z01 !== null ? (zoneSplitLabel ?? 'Polarized') : null}
+          {effortZones !== null ? 'Z2–Z4 intensity' : null}
         </div>
       </div>
 
       <div>
         <div className="profile-life__n">
-          {dist && z01 !== null ? (
+          {dist && effortZones !== null ? (
             <>{dist.value}<sup>{dist.sup}</sup></>
           ) : hours ? (
             <>{hours.value}<sup>{hours.sup}</sup></>
           ) : '—'}
         </div>
         <div className="profile-life__l">
-          {dist && z01 !== null ? 'Lifetime distance' : 'Moving time'}
+          {dist && effortZones !== null ? 'Lifetime distance' : 'Moving time'}
         </div>
         <div className="profile-life__sub">
-          {hours && dist && z01 !== null ? `${hours.value}h moving` : null}
+          {hours && dist && effortZones !== null ? `${hours.value}h moving` : null}
         </div>
       </div>
 
       <div>
         <div className="profile-life__n">
-          {missedWeeks !== null ? missedWeeks : '—'}
+          {activeWeeks !== null ? activeWeeks : '—'}
         </div>
-        <div className="profile-life__l">Missed week-streaks</div>
+        <div className="profile-life__l">Active weeks</div>
         <div className="profile-life__sub">
-          Last {weeksTracked} weeks
-          {missedWeeks === 0 ? ' · perfect' : null}
+          {weeksTracked > 0
+            ? activePct === 100
+              ? `${weeksTracked} weeks · perfect`
+              : `${weeksTracked} weeks · ${activePct}% consistency`
+            : null}
         </div>
       </div>
     </div>

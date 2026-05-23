@@ -117,8 +117,12 @@ function buildMedals(profile: ShowcaseProfile): Medal[] {
   const topPRs: ShowcaseTopPR[] = (profile.topPrs ?? []).filter(
     (p) => p.recordType && p.value && (p.unit === 'kg' || p.unit === 'seconds'),
   );
-  const timePRs = topPRs.filter((p) => p.unit === 'seconds').slice(0, 2);
-  const weightPRs = topPRs.filter((p) => p.unit === 'kg').slice(0, 2);
+  // Show all run-speed (time) PRs; cap strength (weight) at 5 heaviest lifts.
+  const timePRs = topPRs.filter((p) => p.unit === 'seconds');
+  const weightPRs = topPRs
+    .filter((p) => p.unit === 'kg')
+    .sort((a, b) => (b.value ?? 0) - (a.value ?? 0))
+    .slice(0, 5);
   for (const pr of [...timePRs, ...weightPRs]) {
     const { val, sup } = prValueLabel(pr.value!, pr.unit!);
     const date = pr.achievedAt
@@ -148,7 +152,7 @@ function buildMedals(profile: ShowcaseProfile): Medal[] {
     });
   }
 
-  return medals.slice(0, 8);
+  return medals;
 }
 
 interface Props {

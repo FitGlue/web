@@ -116,15 +116,17 @@ export function buildModuleOrder(
     push('hybrid-race-segments');
   }
 
-  // 2. AI story
+  // 2. User-written description first (most personal content)
+  if (activity.description) push('description');
+
+  // 3. AI story
   if (has('ENRICHER_PROVIDER_AI_COMPANION')) push('ai-story');
 
-  // 3. Achievements
+  // 4. Achievements
   if (has('ENRICHER_PROVIDER_DISTANCE_MILESTONES')) push('milestone-callout');
   if (has('ENRICHER_PROVIDER_PERSONAL_RECORDS')) push('pr-callout');
 
-  // 4. Raw activity data modules
-  if (activity.description) push('description');
+  // 5. Tags and photos
   if ((activity.tags ?? []).length > 0) push('tags');
   if ((activity.photoUrls ?? []).length > 0) push('photos');
 
