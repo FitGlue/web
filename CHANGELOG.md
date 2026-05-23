@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.31.2](https://github.com/fitglue/web/compare/v11.31.1...v11.31.2) (2026-05-23)
+
+
+### Bug Fixes
+
+* **pipeline:** serialize enricher providerType as string enum name ([675c6d8](https://github.com/fitglue/web/commit/675c6d83b4535b21ca7defa441874bd578c35cec))
+
 ### [11.31.1](https://github.com/fitglue/web/compare/v11.31.0...v11.31.1) (2026-05-23)
 
 
