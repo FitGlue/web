@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.31.3](https://github.com/fitglue/web/compare/v11.31.2...v11.31.3) (2026-05-23)
+
+
+### Bug Fixes
+
+* **showcase:** fix bar offset and recovery overflow on mobile ([fb74576](https://github.com/fitglue/web/commit/fb745767cf87e423574a140e518d688895759cac))
+
 ### [11.31.2](https://github.com/fitglue/web/compare/v11.31.1...v11.31.2) (2026-05-23)
 
 
