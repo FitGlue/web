@@ -246,7 +246,7 @@ const PipelineWizardPage: React.FC = () => {
         setError(null);
         try {
             const enricherConfigs = selectedEnrichers.map(e => ({
-                providerType: e.manifest.enricherProviderType,
+                providerType: EnricherProviderType[e.manifest.enricherProviderType as number] || String(e.manifest.enricherProviderType),
                 typedConfig: e.config
             }));
             // Merge config + excludedEnrichers into destination configs
