@@ -686,6 +686,17 @@ body:has(#showcase-root) {
     grid-template-columns: 6rem 1fr auto;
   }
 
+  .mini-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-xs) var(--space-sm);
+  }
+
+  .mini {
+    flex: 1 1 4.5rem;
+    min-width: 4.5rem;
+  }
+
   .mini__value {
     font-size: 1.625rem;
   }
@@ -842,6 +853,16 @@ body:has(#showcase-root) {
   letter-spacing: 0.08em;
   color: var(--color-text-muted);
   white-space: nowrap;
+}
+
+.split-row > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.split-row > span:last-child {
+  text-align: right;
 }
 
 .split-row__bar-wrap {
