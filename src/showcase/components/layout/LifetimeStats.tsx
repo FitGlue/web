@@ -29,7 +29,7 @@ export default function LifetimeStats({ profile }: Props): React.ReactElement {
     ? Math.round(((weeksTracked - missedWeeks) / weeksTracked) * 100)
     : null;
 
-  // Effort zones: Z2 (Endurance) + Z3 (Tempo) + Z4 (Threshold) — the zones where fitness is built
+  // Effort zones: Z2 (Endurance) + Z3 (Tempo) + Z4 (Threshold) + Z5 (VO2 Max)
   const effortZones = profile.zoneSplit?.zones
     ? Math.round(
         profile.zoneSplit.zones.slice(2).reduce((s, z) => s + (z.percentage ?? 0), 0)
@@ -54,7 +54,7 @@ export default function LifetimeStats({ profile }: Props): React.ReactElement {
           {effortZones !== null ? 'Effort zones' : 'Lifetime distance'}
         </div>
         <div className="profile-life__sub">
-          {effortZones !== null ? 'Z2–Z4 intensity' : null}
+          {effortZones !== null ? 'Z2–Z5 intensity' : null}
         </div>
       </div>
 
