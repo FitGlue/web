@@ -455,6 +455,32 @@
   cursor: pointer;
 }
 
+/* ============ Boosters catalogue — search + section wrapper ============ */
+.pipe-edit__search {
+  flex: 1;
+  background: var(--fg-ink-2);
+  border: 0;
+  box-shadow: inset 0 0 0 1.5px var(--fg-ink-3);
+  padding: 0.625rem 0.875rem;
+  font-family: var(--fg-font-mono);
+  font-size: 0.8125rem;
+  color: var(--fg-paper);
+  outline: 0;
+  min-width: 0;
+}
+
+.pipe-edit__search:focus {
+  box-shadow: inset 0 0 0 2px var(--fg-paper);
+}
+
+.pipe-edit__search::placeholder {
+  color: var(--color-text-muted);
+}
+
+.pipe-edit__section {
+  margin-bottom: 1.5rem;
+}
+
 /* ============ Configure blocks ============ */
 .conf-block {
   background: var(--fg-ink-2);

@@ -6,6 +6,8 @@ import { Button } from '../components/library/ui/Button';
 import { useToast } from '../components/library/ui/Toast';
 import { ConfirmDialog } from '../components/library/ui/ConfirmDialog';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
+import { EnricherTimeline } from '../components/EnricherTimeline';
+import { PluginCategorySection } from '../components/PluginCategorySection';
 import { PluginConfigForm } from '../components/EnricherConfigForm';
 import { EnricherConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
@@ -16,6 +18,7 @@ import { BoosterExclusionPills } from '../components/BoosterExclusionPills';
 import { SourcePicker } from '../components/library/ui/SourcePicker';
 import { WizardOptionGrid } from '../components/wizard';
 import { CardSkeleton } from '../components/library/ui/CardSkeleton';
+import { ENRICHER_CATEGORIES, groupPluginsByCategory, getRecommendedPlugins } from '../utils/pluginCategories';
 import '../components/library/ui/CardSkeleton.css';
 import { useNerdMode } from '../state/NerdModeContext';
 import { EnricherProviderType } from '../../types/pb/user';
@@ -52,51 +55,6 @@ const STEP_INDEX: Record<EditStep, number> = {
     danger: 6,
 };
 
-type PipelineStage =
-    | 'PIPELINE_STAGE_GATE'
-    | 'PIPELINE_STAGE_ENRICHMENT'
-    | 'PIPELINE_STAGE_METRICS'
-    | 'PIPELINE_STAGE_CONTEXT_AI'
-    | 'PIPELINE_STAGE_INPUT'
-    | 'PIPELINE_STAGE_VIZ'
-    | 'PIPELINE_STAGE_UNSPECIFIED';
-
-const PHASE_LABEL: Partial<Record<PipelineStage, string>> = {
-    PIPELINE_STAGE_GATE: 'GATE · RUNS FIRST · CAN SHORT-CIRCUIT',
-    PIPELINE_STAGE_ENRICHMENT: 'ENRICHMENT · ADDS METADATA + STATE',
-    PIPELINE_STAGE_METRICS: 'METRICS · DERIVED CALCULATIONS',
-    PIPELINE_STAGE_CONTEXT_AI: 'AI · GENERATIVE · RUNS LAST',
-    PIPELINE_STAGE_INPUT: 'WORKFLOW · USER INPUT STEPS',
-    PIPELINE_STAGE_VIZ: 'VISUALS · IMAGE GENERATION',
-};
-
-const PHASE_TAG_CLASS: Partial<Record<PipelineStage, string>> = {
-    PIPELINE_STAGE_GATE: 'b-row__tag--gate',
-    PIPELINE_STAGE_ENRICHMENT: 'b-row__tag--enrich',
-    PIPELINE_STAGE_METRICS: 'b-row__tag--metric',
-    PIPELINE_STAGE_CONTEXT_AI: 'b-row__tag--ai',
-    PIPELINE_STAGE_INPUT: 'b-row__tag--metric',
-    PIPELINE_STAGE_VIZ: 'b-row__tag--ai',
-};
-
-const PHASE_TAG_LABEL: Partial<Record<PipelineStage, string>> = {
-    PIPELINE_STAGE_GATE: 'GATE',
-    PIPELINE_STAGE_ENRICHMENT: 'ENRICH',
-    PIPELINE_STAGE_METRICS: 'METRIC',
-    PIPELINE_STAGE_CONTEXT_AI: 'AI',
-    PIPELINE_STAGE_INPUT: 'INPUT',
-    PIPELINE_STAGE_VIZ: 'VIZ',
-};
-
-const PHASE_ORDER: PipelineStage[] = [
-    'PIPELINE_STAGE_GATE',
-    'PIPELINE_STAGE_ENRICHMENT',
-    'PIPELINE_STAGE_METRICS',
-    'PIPELINE_STAGE_CONTEXT_AI',
-    'PIPELINE_STAGE_INPUT',
-    'PIPELINE_STAGE_VIZ',
-];
-
 const I18N_KEY_RE = /^[A-Z][A-Z0-9_]+$/;
 
 function getBoosterDisplayName(manifest: PluginManifest): string {
@@ -106,35 +64,6 @@ function getBoosterDisplayName(manifest: PluginManifest): string {
             .replace(/\b\w/g, c => c.toUpperCase());
     }
     return manifest.name;
-}
-
-function getManifestStage(manifest: PluginManifest): PipelineStage {
-    return (manifest.stage as PipelineStage) || 'PIPELINE_STAGE_ENRICHMENT';
-}
-
-function groupEnrichersByPhase(
-    enrichers: SelectedEnricher[],
-): Map<PipelineStage, SelectedEnricher[]> {
-    const groups = new Map<PipelineStage, SelectedEnricher[]>();
-    const staged = new Set<string>();
-
-    for (const phase of PHASE_ORDER) {
-        const members = enrichers.filter(e => getManifestStage(e.manifest) === phase);
-        if (members.length > 0) {
-            groups.set(phase, members);
-            members.forEach(e => staged.add(e.manifest.id + e.manifest.enricherProviderType));
-        }
-    }
-
-    const unstaged = enrichers.filter(
-        e => !staged.has(e.manifest.id + e.manifest.enricherProviderType),
-    );
-    if (unstaged.length > 0) {
-        const existing = groups.get('PIPELINE_STAGE_ENRICHMENT') ?? [];
-        groups.set('PIPELINE_STAGE_ENRICHMENT', [...existing, ...unstaged]);
-    }
-
-    return groups;
 }
 
 function hasMissingRequiredConfig(manifest: PluginManifest, config: Record<string, string>): boolean {
@@ -230,10 +159,8 @@ const PipelineEditPage: React.FC = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
     const [configureAnchor, setConfigureAnchor] = useState<string | null>(null);
-
-    // Drag state for booster list
-    const [dragIndex, setDragIndex] = useState<number | null>(null);
-    const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+    const [enricherSearchQuery, setEnricherSearchQuery] = useState('');
+    const [expandAllCategories, setExpandAllCategories] = useState(false);
 
     const currentStateStr = JSON.stringify({
         pipelineName,
@@ -433,6 +360,15 @@ const PipelineEditPage: React.FC = () => {
         setShowDiscardConfirm(false);
     };
 
+    const toggleEnricher = (manifest: PluginManifest) => {
+        setSelectedEnrichers(prev => {
+            if (manifest.allowMultipleInstances) return [...prev, { manifest, config: {} }];
+            const exists = prev.find(e => e.manifest.id === manifest.id);
+            if (exists) return prev.filter(e => e.manifest.id !== manifest.id);
+            return [...prev, { manifest, config: {} }];
+        });
+    };
+
     const updateEnricherConfig = useCallback((index: number, config: Record<string, string>) => {
         setSelectedEnrichers(prev => {
             const updated = [...prev];
@@ -440,19 +376,6 @@ const PipelineEditPage: React.FC = () => {
             return updated;
         });
     }, []);
-
-    const removeEnricher = (index: number) => {
-        setSelectedEnrichers(prev => prev.filter((_, i) => i !== index));
-    };
-
-    const reorderEnrichers = (fromIndex: number, toIndex: number) => {
-        setSelectedEnrichers(prev => {
-            const next = [...prev];
-            const [moved] = next.splice(fromIndex, 1);
-            next.splice(toIndex, 0, moved);
-            return next;
-        });
-    };
 
     const navigateToConfigure = (anchor: string) => {
         setConfigureAnchor(anchor);
@@ -760,9 +683,24 @@ const PipelineEditPage: React.FC = () => {
 
     // ====== STEP 3 · BOOSTERS ======
     const renderBoostersStep = () => {
-        const grouped = groupEnrichersByPhase(selectedEnrichers);
+        const availableEnrichers = enrichers.filter(isPluginAvailable);
+        const excludedEnrichers = enrichers.filter(e => !isPluginAvailable(e));
+        const filteredEnrichers = enricherSearchQuery
+            ? availableEnrichers.filter(e =>
+                e.name.toLowerCase().includes(enricherSearchQuery.toLowerCase()) ||
+                (e.description ?? '').toLowerCase().includes(enricherSearchQuery.toLowerCase()))
+            : availableEnrichers;
+        const groupedEnrichers = groupPluginsByCategory(filteredEnrichers, ENRICHER_CATEGORIES);
+        const connectedIds = Object.entries(userIntegrations || {})
+            .filter(([, v]) => (v as { connected?: boolean } | undefined)?.connected)
+            .map(([k]) => k);
+        const recommended = getRecommendedPlugins(availableEnrichers, connectedIds, 4);
 
-        let globalIdx = 0;
+        const getDisabledReason = (plugin: PluginManifest): string | undefined => {
+            const missing = getMissingIntegrations(plugin);
+            if (missing.length > 0) return `Connect ${missing.join(', ')}`;
+            return undefined;
+        };
 
         return (
             <>
@@ -770,7 +708,7 @@ const PipelineEditPage: React.FC = () => {
                     step={STEP_INDEX.boosters} total={STEPS.length}
                     section={<>BOOSTERS · {selectedEnrichers.length} ACTIVE{ghostEnrichers.length ? ` · ${ghostEnrichers.length} DISABLED` : ''}</>}
                     title={<>The <span className="gr">recipe.</span></>}
-                    description="Boosters run top-to-bottom on every activity. Drag the grip to reorder, click ⚙ to configure, ✕ to remove. Gate boosters can short-circuit the pipeline — keep those at the top."
+                    description="Boosters run top-to-bottom on every activity. Drag the grip to reorder, click ⓘ for info, ✕ to remove. Click a booster below to add it."
                 />
                 <div className="pipe-edit__body">
                     {warnEnrichers.length > 0 && (
@@ -783,114 +721,66 @@ const PipelineEditPage: React.FC = () => {
                         </div>
                     )}
 
-                    {Array.from(grouped.entries()).map(([phase, phaseEnrichers]) => {
-                        const dividerLabel = PHASE_LABEL[phase] ?? phase;
-                        const tagClass = PHASE_TAG_CLASS[phase] ?? 'b-row__tag--enrich';
-                        const tagLabel = PHASE_TAG_LABEL[phase] ?? 'ENRICH';
+                    <EnricherTimeline
+                        enrichers={selectedEnrichers}
+                        onReorder={setSelectedEnrichers}
+                        onRemove={(index) => setSelectedEnrichers(prev => prev.filter((_, i) => i !== index))}
+                        onInfoClick={(manifest) => setInfoEnricher(manifest)}
+                    />
 
-                        return (
-                            <React.Fragment key={phase}>
-                                <div className="b-divider">{dividerLabel}</div>
-                                <div className="booster-list">
-                                    {phaseEnrichers.map(e => {
-                                        const absoluteIndex = selectedEnrichers.indexOf(e);
-                                        globalIdx++;
-                                        const displayIdx = globalIdx;
-                                        const isGhost = !isPluginAvailable(e.manifest);
-                                        const isWarn = !isGhost && hasMissingRequiredConfig(e.manifest, e.config);
-                                        const hasConfig = (e.manifest.configSchema?.length ?? 0) > 0;
-                                        const displayName = getBoosterDisplayName(e.manifest);
-                                        const missing = getMissingIntegrations(e.manifest);
-
-                                        const rowClass = [
-                                            'b-row',
-                                            isGhost ? 'b-row--ghost' : '',
-                                            isWarn ? 'b-row--warn' : '',
-                                            dragOverIndex === absoluteIndex && dragIndex !== absoluteIndex ? 'b-row--drag-over' : '',
-                                        ].filter(Boolean).join(' ');
-
-                                        return (
-                                            <div
-                                                key={`${e.manifest.id}-${absoluteIndex}`}
-                                                className={rowClass}
-                                                draggable={!isGhost}
-                                                onDragStart={() => setDragIndex(absoluteIndex)}
-                                                onDragOver={ev => { ev.preventDefault(); setDragOverIndex(absoluteIndex); }}
-                                                onDrop={() => {
-                                                    if (dragIndex !== null && dragIndex !== absoluteIndex) {
-                                                        reorderEnrichers(dragIndex, absoluteIndex);
-                                                    }
-                                                    setDragIndex(null);
-                                                    setDragOverIndex(null);
-                                                }}
-                                                onDragEnd={() => { setDragIndex(null); setDragOverIndex(null); }}
-                                            >
-                                                <span className="b-row__grip">⋮⋮</span>
-                                                <span className="b-row__idx">{String(displayIdx).padStart(2, '0')}</span>
-                                                <div className="b-row__icon">{e.manifest.icon}</div>
-                                                <div>
-                                                    <div className="b-row__title">{displayName}</div>
-                                                    {isWarn && (
-                                                        <div className="b-row__sub b-row__sub--warn">
-                                                            ⚠ MISSING REQUIRED CONFIG · CONFIGURE TO ENABLE
-                                                        </div>
-                                                    )}
-                                                    {isGhost && (
-                                                        <div className="b-row__sub b-row__sub--warn">
-                                                            ○ NEEDS {missing.join(', ')} CONNECTION TO ENABLE
-                                                        </div>
-                                                    )}
-                                                    {!isWarn && !isGhost && e.manifest.description && (
-                                                        <div className="b-row__sub">{e.manifest.description}</div>
-                                                    )}
-                                                </div>
-                                                <span className={`b-row__tag ${tagClass}`}>{tagLabel}</span>
-                                                <div className="b-row-actions">
-                                                    <button
-                                                        type="button"
-                                                        className={`b-row__btn${hasConfig ? ' b-row__btn--on' : ''}`}
-                                                        title="Configure"
-                                                        disabled={isGhost}
-                                                        onClick={() => hasConfig && navigateToConfigure(e.manifest.id)}
-                                                    >
-                                                        ⚙
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        className="b-row__btn"
-                                                        title="Info"
-                                                        onClick={() => setInfoEnricher(e.manifest)}
-                                                    >
-                                                        ⓘ
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        className="b-row__btn b-row__btn--rem"
-                                                        title="Remove"
-                                                        onClick={() => removeEnricher(absoluteIndex)}
-                                                    >
-                                                        ✕
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </React.Fragment>
-                        );
-                    })}
-
-                    {selectedEnrichers.length === 0 && (
-                        <div style={{
-                            padding: '2rem',
-                            fontFamily: 'var(--fg-font-mono)',
-                            fontSize: '0.8125rem',
-                            color: 'var(--color-text-muted)',
-                            letterSpacing: '0.04em',
-                            textTransform: 'uppercase',
-                        }}>
-                            No boosters selected.
+                    {!enricherSearchQuery && recommended.length > 0 && (
+                        <div className="pipe-edit__section">
+                            <div className="fg-band fg-band--sm fg-band--ink">
+                                <span className="fg-band__label">⭐ RECOMMENDED FOR YOU</span>
+                                <span className="fg-band__right">{recommended.length} BOOSTERS</span>
+                            </div>
+                            <WizardOptionGrid
+                                options={recommended}
+                                selectedIds={selectedEnrichers.map(e => e.manifest.id)}
+                                onSelect={(option) => toggleEnricher(option as unknown as PluginManifest)}
+                            />
                         </div>
+                    )}
+
+                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1.25rem' }}>
+                        <input
+                            className="pipe-edit__search"
+                            type="text"
+                            placeholder="Search boosters..."
+                            value={enricherSearchQuery}
+                            onChange={(e) => setEnricherSearchQuery(e.target.value)}
+                        />
+                        <Button
+                            variant="ink"
+                            size="sm"
+                            onClick={() => setExpandAllCategories(!expandAllCategories)}
+                        >
+                            {expandAllCategories ? 'COLLAPSE ALL' : 'EXPAND ALL'}
+                        </Button>
+                    </div>
+
+                    {Array.from(groupedEnrichers.entries()).map(([category, plugins]) => (
+                        <PluginCategorySection
+                            key={category.id}
+                            category={category}
+                            plugins={plugins}
+                            selectedIds={selectedEnrichers.map(e => e.manifest.id)}
+                            onSelect={toggleEnricher}
+                            onInfoClick={setInfoEnricher}
+                            disabledPlugins={new Set(excludedEnrichers.map(e => e.id))}
+                            getDisabledReason={getDisabledReason}
+                            defaultExpanded={!!enricherSearchQuery || expandAllCategories}
+                        />
+                    ))}
+
+                    {!enricherSearchQuery && (
+                        <WizardExcludedSection
+                            items={excludedEnrichers}
+                            getKey={e => e.id}
+                            getIcon={e => e.icon}
+                            getName={e => e.name}
+                            getHint={getExcludedHint}
+                        />
                     )}
                 </div>
             </>
