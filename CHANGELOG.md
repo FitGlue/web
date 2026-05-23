@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.31.1](https://github.com/fitglue/web/compare/v11.31.0...v11.31.1) (2026-05-23)
+
+
+### Bug Fixes
+
+* **showcase:** polish activity page layout and UX ([b4f51d8](https://github.com/fitglue/web/commit/b4f51d8c92ee9a1ab612df3fcbad4d2e28a8a4f3))
+
 ## [11.31.0](https://github.com/fitglue/web/compare/v11.30.2...v11.31.0) (2026-05-22)
 
 
