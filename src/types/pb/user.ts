@@ -88,6 +88,14 @@ export enum EnricherProviderType {
   ENRICHER_PROVIDER_EFFORT_SCORE = 38,
   /** ENRICHER_PROVIDER_INTERVALS - Config inputs: "show_all_intervals" (boolean), "show_progression" (boolean), "show_summary" (boolean) */
   ENRICHER_PROVIDER_INTERVALS = 39,
+  /** ENRICHER_PROVIDER_PHOTO_UPLOAD - Pauses pipeline to request photos, attaches them to the showcase activity */
+  ENRICHER_PROVIDER_PHOTO_UPLOAD = 40,
+  /** ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY - Pauses pipeline to request manual workout details from the user */
+  ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY = 41,
+  /** ENRICHER_PROVIDER_AI_ACTIVITY_TYPE - Uses AI to infer activity type from available data */
+  ENRICHER_PROVIDER_AI_ACTIVITY_TYPE = 42,
+  /** ENRICHER_PROVIDER_ICAL_TITLE - Config inputs: "ical_url", "min_overlap_seconds" - sets activity title from matching calendar event */
+  ENRICHER_PROVIDER_ICAL_TITLE = 43,
   ENRICHER_PROVIDER_MOCK = 99,
   UNRECOGNIZED = -1,
 }
