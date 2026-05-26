@@ -32,8 +32,8 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ photos, title = 'ðŸ“
   const visibleRest = rest.slice(0, 3);
 
   return (
-    <div className="showcase-section glass-card photo-gallery-section">
-      <div className="section-header"><h2>{title}</h2></div>
+    <div className="photo-gallery-section">
+      <div className="photo-gallery__header"><span className="photo-gallery__label">{title}</span></div>
 
       <div className={`photo-gallery-grid photo-gallery-grid--${Math.min(photos.length, 4)}`}>
         <div className="photo-gallery-main" onClick={() => openLightbox(0)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && openLightbox(0)}>
