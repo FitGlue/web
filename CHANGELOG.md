@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.33.3](https://github.com/fitglue/web/compare/v11.33.2...v11.33.3) (2026-05-26)
+
+
+### Bug Fixes
+
+* **showcase:** aurora overlay top-to-bottom; brutal exercise list ([c8f5a39](https://github.com/fitglue/web/commit/c8f5a39be5b23191ef480a20a782412c31d65878))
+* **showcase:** profile photo gallery uses fixed-height horizontal scroll strip ([cc77dad](https://github.com/fitglue/web/commit/cc77dad9441fbab930e4f2dbec05bcaad4d9bea3))
+
 ### [11.33.2](https://github.com/fitglue/web/compare/v11.33.1...v11.33.2) (2026-05-26)
 
 
