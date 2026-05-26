@@ -27,6 +27,7 @@ import GoalTrackerModule from '../modules/GoalTrackerModule';
 import MuscleHeatmapModule from '../modules/MuscleHeatmapModule';
 import SetListModule from '../modules/SetListModule';
 import PersonalRecordsCallout from '../modules/PersonalRecordsCallout';
+import { PhotoGallery } from '../PhotoGallery';
 
 type Session = components['schemas']['Session'];
 type Rec = components['schemas']['Record'];
@@ -69,8 +70,18 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
 
   const photoUrls = activity.photoUrls ?? [];
   const tags = activity.tags ?? [];
+  // Build a set of exercise names that have PRs by stripping known strength suffixes.
+  // The server stores recordType as e.g. "Bench Press_1rm", "Bench Press_set_volume" — we
+  // strip the suffix so we can match against the raw exerciseName from StrengthSet.
+  const PR_SUFFIXES = ['_1rm', '_set_volume', '_volume', '_reps'];
   const prTypes = new Set(
-    (enrichments?.personalRecords?.records ?? []).map((r) => r.recordType ?? '')
+    (enrichments?.personalRecords?.records ?? []).map((r) => {
+      const rt = r.recordType ?? '';
+      for (const suffix of PR_SUFFIXES) {
+        if (rt.endsWith(suffix)) return rt.slice(0, rt.length - suffix.length);
+      }
+      return rt;
+    })
   );
   const gpsPoints = flatRecords
     .filter((r) => r.positionLat !== undefined && r.positionLat !== 0 && r.positionLong !== undefined && r.positionLong !== 0)
@@ -143,11 +154,7 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
             ) : null;
           case 'photos':
             return photoUrls.length > 0 ? (
-              <div key={key} className="photo-grid">
-                {photoUrls.slice(0, 4).map((url) => (
-                  <img key={url} src={url} alt="Activity photo" />
-                ))}
-              </div>
+              <PhotoGallery key={key} photos={photoUrls} />
             ) : null;
           case 'map':
             return gpsPoints.length >= 10 ? (

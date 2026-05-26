@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function RecoveryModule({ data }: Props): React.ReactElement | null {
-  if (!data || data.sessionLoad === 0) return null;
+  if (!data) return null;
 
   return (
     <Module title="Recovery" span={6}>

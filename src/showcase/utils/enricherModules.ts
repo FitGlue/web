@@ -164,6 +164,7 @@ export function buildModuleOrder(
       push('set-list');
       if (has('ENRICHER_PROVIDER_HEART_RATE_SUMMARY')) push('heart-rate');
       if (has('ENRICHER_PROVIDER_HEART_RATE_ZONES')) push('zones');
+      if (has('ENRICHER_PROVIDER_EFFORT_SCORE')) push('effort');
       if (has('ENRICHER_PROVIDER_CALORIES_BURNED')) push('calories');
       if (has('ENRICHER_PROVIDER_TRAINING_LOAD')) push('training-load');
       break;

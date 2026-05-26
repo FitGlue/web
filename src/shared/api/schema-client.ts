@@ -1970,6 +1970,8 @@ export interface components {
              *      Populated at entry creation time from the HR zones enrichment; absent means no zone data.
              */
             hrZoneMinutes?: number[];
+            /** @description Photo URLs for activities with attached images; populated from ShowcasedActivity.photo_urls. */
+            photoUrls?: string[];
         };
         ShowcaseTheme: {
             themeId?: string;

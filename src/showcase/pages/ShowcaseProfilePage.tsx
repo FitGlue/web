@@ -9,6 +9,7 @@ import ConsistencyHeatmap from '../components/layout/ConsistencyHeatmap';
 import ZoneBar from '../components/layout/ZoneBar';
 import RouteMosaic from '../components/layout/RouteMosaic';
 import ActivityGrid from '../components/layout/ActivityGrid';
+import { PhotoGallery } from '../components/PhotoGallery';
 
 type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
 type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
@@ -139,6 +140,12 @@ export default function ShowcaseProfilePage() {
 
         {/* Lifetime HR zone distribution */}
         <ZoneBar zoneSplit={profile.zoneSplit} />
+
+        {/* Activity photo gallery — aggregated from all entries with photos */}
+        {profile.showPhotoGallery && (() => {
+          const allPhotos = entries.flatMap((e) => e.photoUrls ?? []).slice(0, 30);
+          return allPhotos.length > 0 ? <PhotoGallery photos={allPhotos} title="📷 Activity Photos" /> : null;
+        })()}
 
         {/* 4px gradient strip */}
         <div className="profile-strip" />

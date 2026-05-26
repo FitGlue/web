@@ -77,6 +77,8 @@ export interface ShowcaseProfileEntry {
    * Populated at entry creation time from the HR zones enrichment; absent means no zone data.
    */
   hrZoneMinutes: number[];
+  /** Photo URLs for activities with attached images; populated from ShowcasedActivity.photo_urls. */
+  photoUrls: string[];
 }
 
 /** EntrySparkline is a downsampled timeseries for card-level sparklines. */

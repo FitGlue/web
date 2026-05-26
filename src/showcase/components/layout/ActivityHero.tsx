@@ -69,7 +69,8 @@ export default function ActivityHero({ activity }: Props): React.ReactElement {
   const enrichments = activity.enrichments;
 
   const hasBanner = !!enrichments?.aiBanner?.imageUrl;
-  const sectionClass = `activity-hero-section${hasBanner ? ' activity-hero-section--with-banner' : ''}`;
+  const hasPhotoBg = !hasBanner && (activity.photoUrls?.length ?? 0) > 0;
+  const sectionClass = `activity-hero-section${hasBanner ? ' activity-hero-section--with-banner' : ''}${hasPhotoBg ? ' activity-hero-section--with-photo' : ''}`;
 
   const durationSecs = totalSessionValue(sessions, 'totalElapsedTime');
   const distanceM = totalSessionValue(sessions, 'totalDistance');
@@ -149,6 +150,17 @@ export default function ActivityHero({ activity }: Props): React.ReactElement {
           alt=""
           aria-hidden="true"
         />
+      )}
+      {hasPhotoBg && (
+        <>
+          <img
+            className="activity-hero__banner-img activity-hero__banner-img--photo"
+            src={activity.photoUrls![0]}
+            alt=""
+            aria-hidden="true"
+          />
+          <div className="activity-hero__photo-overlay" aria-hidden="true" />
+        </>
       )}
       <div className="activity-hero__grain" aria-hidden="true" />
 

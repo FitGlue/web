@@ -166,7 +166,7 @@ export default function MedalWall({ profile }: Props): React.ReactElement | null
   const streakCount = medals.filter((m) => m.label === 'CURRENT STREAK' || m.label === 'LONGEST STREAK').length;
   const actCount = medals.filter((m) => m.label === 'LIFETIME ACTIVITIES').length;
   const distCount = medals.filter((m) => m.label === 'DISTANCE MILESTONE').length;
-  const prCount = medals.filter((m) => m.icon === '🏋️').length;
+  const prCount = medals.filter((m) => m.icon === '🏋️' || m.icon === '⚡').length;
 
   return (
     <div className="medal-band">

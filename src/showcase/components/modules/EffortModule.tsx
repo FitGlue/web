@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function EffortModule({ data }: Props): React.ReactElement | null {
-  if (!data || data.score === 0) return null;
+  if (!data) return null;
 
   const factorsText = data.factors
     .map(f => `${f.label} ${f.ratioVsBaseline.toFixed(2)}×`)
