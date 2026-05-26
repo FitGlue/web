@@ -139,11 +139,6 @@ export default function ShowcaseActivityPage() {
 
   const enrichments = activity.enrichments as ActivityEnrichments | undefined;
   const appliedEnrichments = activity.appliedEnrichments ?? [];
-
-  // Derive AI summary plain text from HTML for meta description
-  const aiSummaryText = enrichments?.aiSummary?.html
-    ? enrichments.aiSummary.html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
-    : undefined;
   const appliedSet2 = new Set(appliedEnrichments);
 
   // Suppress unused variable warning
