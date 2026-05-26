@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.33.2](https://github.com/fitglue/web/compare/v11.33.1...v11.33.2) (2026-05-26)
+
+
+### Bug Fixes
+
+* **showcase:** aurora overlay on photo hero; brutal-style photo gallery ([b7ad12a](https://github.com/fitglue/web/commit/b7ad12afd122d7a123d6bf69070fd701f8e88b3f))
+
 ### [11.33.1](https://github.com/fitglue/web/compare/v11.33.0...v11.33.1) (2026-05-26)
 
 
