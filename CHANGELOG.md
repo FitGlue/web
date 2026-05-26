@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.33.0](https://github.com/fitglue/web/compare/v11.32.2...v11.33.0) (2026-05-26)
+
+
+### Features
+
+* **showcase:** restore share modal and add missing profile panels ([7e16e9a](https://github.com/fitglue/web/commit/7e16e9a202f48c6cd0de0386b7db9978e4796854))
+
+
+### Bug Fixes
+
+* **branding:** add Google Fonts, SVG favicon, and missing PNG assets to React SPA ([a5f1cc1](https://github.com/fitglue/web/commit/a5f1cc1a7af2d602f7bdc7fb0b9bf7073debfa2a))
+* **pipeline:** handle CANCELLED run status across all display components ([aea33e7](https://github.com/fitglue/web/commit/aea33e744d33c8d9cf9604d943c12ce0fa90a0d7))
+
 ### [11.32.2](https://github.com/fitglue/web/compare/v11.32.1...v11.32.2) (2026-05-24)
 
 ### [11.32.1](https://github.com/fitglue/web/compare/v11.32.0...v11.32.1) (2026-05-24)
