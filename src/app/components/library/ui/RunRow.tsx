@@ -44,6 +44,7 @@ function getStatusClass(status?: PipelineRunStatus): string {
             return 'run-row__pill--skip';
         case PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED:
         case PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED:
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED:
             return 'run-row__pill--fail';
         case PipelineRunStatus.PIPELINE_RUN_STATUS_RUNNING:
         case PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING:
@@ -62,6 +63,7 @@ function getStatusLabel(status?: PipelineRunStatus): string {
         case PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING: return 'PENDING';
         case PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED: return 'SKIPPED';
         case PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED: return 'UPGRADE';
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED: return 'CANCELLED';
         default: return 'UNKNOWN';
     }
 }
@@ -91,7 +93,8 @@ export const RunRow: React.FC<RunRowProps> = ({ run, variant = 'feed', pipelineN
             || status === PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL;
         const skippedOrFailed = status === PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED
             || status === PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED
-            || status === PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED;
+            || status === PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED
+            || status === PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED;
         const statusLabel = getStatusLabel(status);
 
         return (

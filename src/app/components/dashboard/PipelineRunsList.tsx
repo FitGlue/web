@@ -21,6 +21,7 @@ const ATTENTION_STATUSES = [
     PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING,
     PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED,
     PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED,
+    PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED,
 ];
 
 interface PipelineRunsListProps {

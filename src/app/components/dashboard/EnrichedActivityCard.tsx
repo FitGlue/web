@@ -71,6 +71,8 @@ const getStatusStamp = (status?: PipelineRunStatus): { variant: 'success' | 'war
             return { variant: 'default', label: '⏭ SKIPPED' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED:
             return { variant: 'error', label: '🔒 UPGRADE' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED:
+            return { variant: 'default', label: '⊗ CANCELLED' };
         default:
             return { variant: 'default', label: 'UNKNOWN' };
     }

@@ -27,7 +27,8 @@ function matchesFilter(run: PipelineRun, filter: StatusFilter): boolean {
             return run.status === PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED;
         case 'failed':
             return run.status === PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED
-                || run.status === PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED;
+                || run.status === PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED
+                || run.status === PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED;
         case 'pending':
             return run.status === PipelineRunStatus.PIPELINE_RUN_STATUS_RUNNING
                 || run.status === PipelineRunStatus.PIPELINE_RUN_STATUS_PENDING;

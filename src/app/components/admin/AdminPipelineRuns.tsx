@@ -22,6 +22,7 @@ const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 
   'PIPELINE_RUN_STATUS_SKIPPED': 'default',
   'PIPELINE_RUN_STATUS_ARCHIVED': 'default',
   'PIPELINE_RUN_STATUS_TIER_BLOCKED': 'warning',
+  'PIPELINE_RUN_STATUS_CANCELLED': 'default',
 };
 
 // BA badge class mapping
