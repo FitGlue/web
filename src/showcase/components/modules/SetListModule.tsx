@@ -10,66 +10,100 @@ interface Props {
   prTypes?: Set<string>;
 }
 
-interface CombinedSet {
-  exerciseName?: string;
-  reps: number;
-  weightKg: number;
-  count: number;
+interface ExerciseGroup {
+  name: string;
   isPR: boolean;
+  sets: Array<{ reps: number; weightKg: number; count: number }>;
+  totalVolume: number;
 }
 
-/** Group consecutive sets that share the same exercise name, reps, and weight. */
-function combineSets(sets: StrengthSet[], prTypes?: Set<string>): CombinedSet[] {
-  const combined: CombinedSet[] = [];
+/** Group all sets by exercise name, then combine consecutive identical sets within each group. */
+function groupByExercise(sets: StrengthSet[], prTypes?: Set<string>): ExerciseGroup[] {
+  // Collect runs of each exercise (preserving order of first appearance)
+  const order: string[] = [];
+  const runs: Record<string, StrengthSet[]> = {};
 
   for (const set of sets) {
-    const reps = set.reps ?? 0;
-    const weightKg = set.weightKg ?? 0;
     const name = set.exerciseName ?? '';
-    const isPR = !!(name && prTypes?.has(name));
-
-    const last = combined[combined.length - 1];
-    if (
-      last &&
-      last.exerciseName === name &&
-      last.reps === reps &&
-      last.weightKg === weightKg
-    ) {
-      last.count += 1;
-    } else {
-      combined.push({ exerciseName: name || undefined, reps, weightKg, count: 1, isPR });
+    if (!runs[name]) {
+      order.push(name);
+      runs[name] = [];
     }
+    runs[name].push(set);
   }
 
-  return combined;
+  return order.map((name) => {
+    const raw = runs[name];
+    // Combine consecutive identical reps+weight within this exercise
+    const combined: Array<{ reps: number; weightKg: number; count: number }> = [];
+    for (const set of raw) {
+      const reps = set.reps ?? 0;
+      const weightKg = set.weightKg ?? 0;
+      const last = combined[combined.length - 1];
+      if (last && last.reps === reps && last.weightKg === weightKg) {
+        last.count += 1;
+      } else {
+        combined.push({ reps, weightKg, count: 1 });
+      }
+    }
+    const totalVolume = raw.reduce((sum, s) => sum + (s.reps ?? 0) * (s.weightKg ?? 0), 0);
+    return {
+      name: name || 'Exercise',
+      isPR: !!(name && prTypes?.has(name)),
+      sets: combined,
+      totalVolume,
+    };
+  });
+}
+
+function formatSetChip(s: { reps: number; weightKg: number; count: number }): string {
+  const weight = s.weightKg > 0 ? ` × ${s.weightKg % 1 === 0 ? s.weightKg : s.weightKg.toFixed(1)}kg` : '';
+  const base = `${s.reps}${weight}`;
+  return s.count > 1 ? `${s.count}×${base}` : base;
 }
 
 export default function SetListModule({ sessions, prTypes }: Props): React.ReactElement | null {
   if (!sessions?.length) return null;
 
-  const allSets: StrengthSet[] = sessions.flatMap(s => s.strengthSets ?? []);
+  const allSets: StrengthSet[] = sessions.flatMap((s) => s.strengthSets ?? []);
   if (!allSets.length) return null;
 
+  const totalSets = allSets.length;
   const totalReps = allSets.reduce((sum, s) => sum + (s.reps ?? 0), 0);
-  const totalWeight = allSets.reduce((sum, s) => sum + (s.weightKg ?? 0), 0);
-  const combinedSets = combineSets(allSets, prTypes);
+  const totalVolume = allSets.reduce((sum, s) => sum + (s.reps ?? 0) * (s.weightKg ?? 0), 0);
+  const groups = groupByExercise(allSets, prTypes);
 
   return (
-    <Module title="Sets" right={`${allSets.length} sets · ${totalReps} reps · ${totalWeight.toFixed(1)} kg`} span={6}>
-      <div className="set-list">
-        {combinedSets.map((s, i) => (
-          <div key={i} className="set-row">
-            <span className="set-row__name">
-              {s.exerciseName}
-              {s.isPR && <span className="stamp stamp--pr">PR</span>}
-            </span>
-            <span className="set-row__detail">
-              {s.count > 1
-                ? `${s.count} × ${s.reps} × ${s.weightKg.toFixed(1)} kg`
-                : `${s.reps} × ${s.weightKg.toFixed(1)} kg`}
-            </span>
+    <Module
+      title="Workout"
+      right={`${groups.length} exercises · ${totalSets} sets`}
+      span={6}
+    >
+      <div className="ex-list">
+        {groups.map((group, gi) => (
+          <div key={gi} className={`ex-row${group.isPR ? ' ex-row--pr' : ''}`}>
+            <div className="ex-row__name">
+              {group.name}
+              {group.isPR && <span className="stamp stamp--pr">PR</span>}
+            </div>
+            <div className="ex-row__sets">
+              {group.sets.map((s, si) => (
+                <span key={si} className="ex-chip">{formatSetChip(s)}</span>
+              ))}
+            </div>
+            {group.totalVolume > 0 && (
+              <div className="ex-row__vol">{Math.round(group.totalVolume).toLocaleString()} kg</div>
+            )}
           </div>
         ))}
+      </div>
+      <div className="ex-footer">
+        <span className="ex-footer__stat">{totalReps} <span>REPS</span></span>
+        {totalVolume > 0 && (
+          <span className="ex-footer__stat ex-footer__stat--aurora">
+            {Math.round(totalVolume).toLocaleString()} <span>KG MOVED</span>
+          </span>
+        )}
       </div>
     </Module>
   );
