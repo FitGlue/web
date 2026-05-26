@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.34.0](https://github.com/fitglue/web/compare/v11.33.5...v11.34.0) (2026-05-26)
+
+
+### Features
+
+* **showcase:** redesign PR and muscle heatmap modules ([b013d48](https://github.com/fitglue/web/commit/b013d48526f9992932b1d98385f644e33b342488))
+
+
+### Bug Fixes
+
+* **showcase:** handle all set types in workout list ([bbdc5df](https://github.com/fitglue/web/commit/bbdc5df304e614f50c1f61cd3e9a7e6df952d31e))
+
 ### [11.33.5](https://github.com/fitglue/web/compare/v11.33.4...v11.33.5) (2026-05-26)
 
 
