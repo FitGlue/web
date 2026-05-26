@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.35.0](https://github.com/fitglue/web/compare/v11.34.0...v11.35.0) (2026-05-26)
+
+
+### Features
+
+* **showcase:** dynamic meta tags, emoji favicon, and fix run PR display ([812ea49](https://github.com/fitglue/web/commit/812ea490f1bee747c80364ce8909c8ec1d7b3674))
+
+
+### Bug Fixes
+
+* **showcase:** remove unused aiSummaryText variable ([6b1e2fe](https://github.com/fitglue/web/commit/6b1e2fe794ef4e09fef1e10a14fe677cf1305baa))
+
 ## [11.34.0](https://github.com/fitglue/web/compare/v11.33.5...v11.34.0) (2026-05-26)
 
 
