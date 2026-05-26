@@ -7,6 +7,8 @@ import type { ActivityEnrichments } from '../../types/pb/models/activity/enrichm
 import { initFirebase } from '../../shared/firebase';
 import { resolveCategory } from '../utils/activityCategory';
 import { buildModuleOrder } from '../utils/enricherModules';
+import { getActivityIcon } from '../utils/activityMeta';
+import { useShowcaseMeta } from '../utils/useShowcaseMeta';
 import ActivityHero from '../components/layout/ActivityHero';
 import ModuleGrid from '../components/layout/ModuleGrid';
 import BoosterTimeline from '../components/layout/BoosterTimeline';
@@ -115,11 +117,33 @@ export default function ShowcaseActivityPage() {
     return { moduleOrder: order, appliedSet: applied };
   }, [activity]);
 
+  const enrichmentsForMeta = activity?.enrichments as ActivityEnrichments | undefined;
+  const aiSummaryForMeta = enrichmentsForMeta?.aiSummary?.html
+    ? enrichmentsForMeta.aiSummary.html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    : undefined;
+
+  useShowcaseMeta(activity ? {
+    type: 'activity',
+    title: activity.title ?? 'Activity',
+    ownerName: activity.ownerDisplayName ?? undefined,
+    emoji: getActivityIcon(activity.activityType),
+    photoUrl: activity.photoUrls?.[0] ?? undefined,
+    bannerUrl: enrichmentsForMeta?.aiBanner?.imageUrl ?? undefined,
+    description: activity.description ?? undefined,
+    aiSummary: aiSummaryForMeta,
+    url: window.location.href,
+  } : null);
+
   if (loading) return <LoadingScreen />;
   if (error || !activity) return <ErrorScreen message={error ?? 'Unknown error'} />;
 
   const enrichments = activity.enrichments as ActivityEnrichments | undefined;
   const appliedEnrichments = activity.appliedEnrichments ?? [];
+
+  // Derive AI summary plain text from HTML for meta description
+  const aiSummaryText = enrichments?.aiSummary?.html
+    ? enrichments.aiSummary.html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    : undefined;
   const appliedSet2 = new Set(appliedEnrichments);
 
   // Suppress unused variable warning

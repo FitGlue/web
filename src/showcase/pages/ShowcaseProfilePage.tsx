@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import publicClient from '../../shared/api/public-client';
 import type { components } from '../../shared/api/schema-public';
@@ -10,6 +10,7 @@ import ZoneBar from '../components/layout/ZoneBar';
 import RouteMosaic from '../components/layout/RouteMosaic';
 import ActivityGrid from '../components/layout/ActivityGrid';
 import { PhotoGallery } from '../components/PhotoGallery';
+import { useShowcaseMeta } from '../utils/useShowcaseMeta';
 
 type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
 type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
@@ -75,13 +76,20 @@ export default function ShowcaseProfilePage() {
         setEntries(data.profile.entries ?? []);
         setCurrentPage(data.currentPage ?? 1);
         setTotalPages(data.totalPages ?? 1);
-        if (data.profile.displayName) {
-          document.title = `${data.profile.displayName} — FitGlue`;
-        }
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, [slug]);
+
+  const profileMeta = useMemo(() => profile ? ({
+    type: 'profile' as const,
+    displayName: profile.displayName ?? 'Athlete',
+    avatarUrl: profile.profilePictureUrl ?? undefined,
+    bio: profile.bio ?? undefined,
+    url: window.location.href,
+  }) : null, [profile]);
+
+  useShowcaseMeta(profileMeta);
 
   const loadMore = useCallback(async () => {
     if (!slug || loadingMore || currentPage >= totalPages) return;
