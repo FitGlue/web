@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.33.5](https://github.com/fitglue/web/compare/v11.33.4...v11.33.5) (2026-05-26)
+
+
+### Bug Fixes
+
+* **showcase:** fix staggered module layout on desktop ([9f7ae93](https://github.com/fitglue/web/commit/9f7ae936106f21ecf48309a01b135cd027eacb30))
+
 ### [11.33.4](https://github.com/fitglue/web/compare/v11.33.3...v11.33.4) (2026-05-26)
 
 
