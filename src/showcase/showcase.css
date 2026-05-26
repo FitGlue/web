@@ -2920,6 +2920,49 @@ body:has(#showcase-root) {
   pointer-events: none;
 }
 
+/* Profile photo count label */
+.photo-gallery__count {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  margin-left: auto;
+}
+
+/* Strip layout — horizontal scroll, all photos same height */
+.photo-strip {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 200px;
+  background: var(--fg-ink);
+  scrollbar-width: thin;
+  scrollbar-color: var(--fg-ink-3) transparent;
+}
+
+.photo-strip__item {
+  flex: 0 0 auto;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.photo-strip__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.photo-strip__item:hover img,
+.photo-strip__item:focus img {
+  transform: scale(1.05);
+}
+
 /* Lightbox */
 .photo-lightbox {
   position: fixed;

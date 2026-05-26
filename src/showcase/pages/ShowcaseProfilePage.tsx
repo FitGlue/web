@@ -144,7 +144,7 @@ export default function ShowcaseProfilePage() {
         {/* Activity photo gallery — aggregated from all entries with photos */}
         {profile.showPhotoGallery && (() => {
           const allPhotos = entries.flatMap((e) => e.photoUrls ?? []).slice(0, 30);
-          return allPhotos.length > 0 ? <PhotoGallery photos={allPhotos} title="📷 Activity Photos" /> : null;
+          return allPhotos.length > 0 ? <PhotoGallery photos={allPhotos} title="📷 Activity Photos" layout="strip" /> : null;
         })()}
 
         {/* 4px gradient strip */}

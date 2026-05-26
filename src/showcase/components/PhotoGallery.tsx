@@ -4,9 +4,10 @@ import { createPortal } from 'react-dom';
 interface PhotoGalleryProps {
   photos: string[];
   title?: string;
+  layout?: 'feature' | 'strip';
 }
 
-export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ photos, title = '📷 Photos' }) => {
+export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ photos, title = '📷 Photos', layout = 'feature' }) => {
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
 
   const openLightbox = useCallback((idx: number) => setLightboxIdx(idx), []);
@@ -27,6 +28,53 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ photos, title = '�
 
   if (photos.length === 0) return null;
 
+  const lightbox = lightboxIdx !== null && createPortal(
+    <div className="photo-lightbox" onClick={closeLightbox}>
+      <button className="photo-lightbox-close" onClick={closeLightbox} aria-label="Close">✕</button>
+      {photos.length > 1 && (
+        <button className="photo-lightbox-nav photo-lightbox-nav--prev" onClick={(e) => { e.stopPropagation(); prev(); }} aria-label="Previous">‹</button>
+      )}
+      <img
+        src={photos[lightboxIdx]}
+        alt={`Photo ${lightboxIdx + 1} of ${photos.length}`}
+        className="photo-lightbox-img"
+        onClick={(e) => e.stopPropagation()}
+      />
+      {photos.length > 1 && (
+        <button className="photo-lightbox-nav photo-lightbox-nav--next" onClick={(e) => { e.stopPropagation(); next(); }} aria-label="Next">›</button>
+      )}
+      <div className="photo-lightbox-counter">{lightboxIdx + 1} / {photos.length}</div>
+    </div>,
+    document.body
+  );
+
+  if (layout === 'strip') {
+    return (
+      <div className="photo-gallery-section">
+        <div className="photo-gallery__header">
+          <span className="photo-gallery__label">{title}</span>
+          <span className="photo-gallery__count">{photos.length} photo{photos.length !== 1 ? 's' : ''}</span>
+        </div>
+        <div className="photo-strip">
+          {photos.map((url, i) => (
+            <div
+              key={i}
+              className="photo-strip__item"
+              onClick={() => openLightbox(i)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && openLightbox(i)}
+            >
+              <img src={url} alt={`Activity photo ${i + 1}`} loading="lazy" />
+            </div>
+          ))}
+        </div>
+        {lightbox}
+      </div>
+    );
+  }
+
+  // Default 'feature' layout: 1 large main + up to 3 side thumbs
   const [first, ...rest] = photos;
   const overflow = rest.length > 3 ? rest.length - 3 : 0;
   const visibleRest = rest.slice(0, 3);
@@ -59,26 +107,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ photos, title = '�
           </div>
         )}
       </div>
-
-      {lightboxIdx !== null && createPortal(
-        <div className="photo-lightbox" onClick={closeLightbox}>
-          <button className="photo-lightbox-close" onClick={closeLightbox} aria-label="Close">✕</button>
-          {photos.length > 1 && (
-            <button className="photo-lightbox-nav photo-lightbox-nav--prev" onClick={(e) => { e.stopPropagation(); prev(); }} aria-label="Previous">‹</button>
-          )}
-          <img
-            src={photos[lightboxIdx]}
-            alt={`Photo ${lightboxIdx + 1} of ${photos.length}`}
-            className="photo-lightbox-img"
-            onClick={(e) => e.stopPropagation()}
-          />
-          {photos.length > 1 && (
-            <button className="photo-lightbox-nav photo-lightbox-nav--next" onClick={(e) => { e.stopPropagation(); next(); }} aria-label="Next">›</button>
-          )}
-          <div className="photo-lightbox-counter">{lightboxIdx + 1} / {photos.length}</div>
-        </div>,
-        document.body
-      )}
+      {lightbox}
     </div>
   );
 };
