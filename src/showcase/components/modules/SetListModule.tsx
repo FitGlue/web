@@ -10,16 +10,67 @@ interface Props {
   prTypes?: Set<string>;
 }
 
+interface SetEntry {
+  reps: number;
+  weightKg: number;
+  durationSeconds: number;
+  distanceMeters: number;
+  count: number;
+}
+
 interface ExerciseGroup {
   name: string;
   isPR: boolean;
-  sets: Array<{ reps: number; weightKg: number; count: number }>;
+  sets: SetEntry[];
   totalVolume: number;
+  totalDurationSeconds: number;
 }
 
-/** Group all sets by exercise name, then combine consecutive identical sets within each group. */
+function formatWeight(kg: number): string {
+  return kg % 1 === 0 ? String(kg) : kg.toFixed(1);
+}
+
+function formatDuration(secs: number): string {
+  if (secs >= 3600) {
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    return m > 0 ? `${h}h${m}m` : `${h}h`;
+  }
+  if (secs >= 60) {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return s > 0 ? `${m}m${s}s` : `${m}m`;
+  }
+  return `${secs}s`;
+}
+
+function formatSetChip(s: SetEntry): string {
+  const hasDuration = s.durationSeconds > 0;
+  const hasDistance = s.distanceMeters > 0;
+  const hasWeight = s.weightKg > 0;
+  const hasReps = s.reps > 0;
+
+  let base: string;
+
+  if (hasDuration) {
+    const dur = formatDuration(s.durationSeconds);
+    base = hasWeight ? `${dur} × ${formatWeight(s.weightKg)}kg` : dur;
+  } else if (hasDistance) {
+    const dist = s.distanceMeters >= 1000
+      ? `${(s.distanceMeters / 1000).toFixed(1)}km`
+      : `${Math.round(s.distanceMeters)}m`;
+    base = hasWeight ? `${dist} × ${formatWeight(s.weightKg)}kg` : dist;
+  } else {
+    // Reps-based (standard or bodyweight)
+    const weight = hasWeight ? ` × ${formatWeight(s.weightKg)}kg` : '';
+    base = hasReps ? `${s.reps}${weight}` : `—${weight}`;
+  }
+
+  return s.count > 1 ? `${s.count}×${base}` : base;
+}
+
+/** Group all sets by exercise name, then combine consecutive identical sets. */
 function groupByExercise(sets: StrengthSet[], prTypes?: Set<string>): ExerciseGroup[] {
-  // Collect runs of each exercise (preserving order of first appearance)
   const order: string[] = [];
   const runs: Record<string, StrengthSet[]> = {};
 
@@ -34,32 +85,40 @@ function groupByExercise(sets: StrengthSet[], prTypes?: Set<string>): ExerciseGr
 
   return order.map((name) => {
     const raw = runs[name];
-    // Combine consecutive identical reps+weight within this exercise
-    const combined: Array<{ reps: number; weightKg: number; count: number }> = [];
+    const combined: SetEntry[] = [];
+
     for (const set of raw) {
-      const reps = set.reps ?? 0;
-      const weightKg = set.weightKg ?? 0;
+      const entry: Omit<SetEntry, 'count'> = {
+        reps: set.reps ?? 0,
+        weightKg: set.weightKg ?? 0,
+        durationSeconds: set.durationSeconds ?? 0,
+        distanceMeters: set.distanceMeters ?? 0,
+      };
       const last = combined[combined.length - 1];
-      if (last && last.reps === reps && last.weightKg === weightKg) {
+      if (
+        last &&
+        last.reps === entry.reps &&
+        last.weightKg === entry.weightKg &&
+        last.durationSeconds === entry.durationSeconds &&
+        last.distanceMeters === entry.distanceMeters
+      ) {
         last.count += 1;
       } else {
-        combined.push({ reps, weightKg, count: 1 });
+        combined.push({ ...entry, count: 1 });
       }
     }
+
     const totalVolume = raw.reduce((sum, s) => sum + (s.reps ?? 0) * (s.weightKg ?? 0), 0);
+    const totalDurationSeconds = raw.reduce((sum, s) => sum + (s.durationSeconds ?? 0), 0);
+
     return {
       name: name || 'Exercise',
       isPR: !!(name && prTypes?.has(name)),
       sets: combined,
       totalVolume,
+      totalDurationSeconds,
     };
   });
-}
-
-function formatSetChip(s: { reps: number; weightKg: number; count: number }): string {
-  const weight = s.weightKg > 0 ? ` × ${s.weightKg % 1 === 0 ? s.weightKg : s.weightKg.toFixed(1)}kg` : '';
-  const base = `${s.reps}${weight}`;
-  return s.count > 1 ? `${s.count}×${base}` : base;
 }
 
 export default function SetListModule({ sessions, prTypes }: Props): React.ReactElement | null {
@@ -71,6 +130,7 @@ export default function SetListModule({ sessions, prTypes }: Props): React.React
   const totalSets = allSets.length;
   const totalReps = allSets.reduce((sum, s) => sum + (s.reps ?? 0), 0);
   const totalVolume = allSets.reduce((sum, s) => sum + (s.reps ?? 0) * (s.weightKg ?? 0), 0);
+  const totalDurationSeconds = allSets.reduce((sum, s) => sum + (s.durationSeconds ?? 0), 0);
   const groups = groupByExercise(allSets, prTypes);
 
   return (
@@ -94,11 +154,19 @@ export default function SetListModule({ sessions, prTypes }: Props): React.React
             {group.totalVolume > 0 && (
               <div className="ex-row__vol">{Math.round(group.totalVolume).toLocaleString()} kg</div>
             )}
+            {group.totalVolume === 0 && group.totalDurationSeconds > 0 && (
+              <div className="ex-row__vol">{formatDuration(group.totalDurationSeconds)}</div>
+            )}
           </div>
         ))}
       </div>
       <div className="ex-footer">
-        <span className="ex-footer__stat">{totalReps} <span>REPS</span></span>
+        {totalReps > 0 && (
+          <span className="ex-footer__stat">{totalReps} <span>REPS</span></span>
+        )}
+        {totalDurationSeconds > 0 && totalReps === 0 && (
+          <span className="ex-footer__stat">{formatDuration(totalDurationSeconds)} <span>TOTAL TIME</span></span>
+        )}
         {totalVolume > 0 && (
           <span className="ex-footer__stat ex-footer__stat--aurora">
             {Math.round(totalVolume).toLocaleString()} <span>KG MOVED</span>
