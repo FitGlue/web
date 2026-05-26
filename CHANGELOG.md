@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.33.1](https://github.com/fitglue/web/compare/v11.33.0...v11.33.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* **showcase:** fix missing panels, set combining, photos, and PR badges ([7c3f3b2](https://github.com/fitglue/web/commit/7c3f3b200e420d692234c607ce738e526587863a))
+
 ## [11.33.0](https://github.com/fitglue/web/compare/v11.32.2...v11.33.0) (2026-05-26)
 
 
