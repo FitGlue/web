@@ -750,7 +750,7 @@ body:has(#showcase-root) {
   grid-template-columns: repeat(12, 1fr);
   gap: var(--space-sm);
   padding: var(--space-md) 0;
-  align-items: start;
+  align-items: stretch;
 }
 
 /* Span classes */

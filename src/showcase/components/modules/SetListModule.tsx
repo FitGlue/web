@@ -77,7 +77,7 @@ export default function SetListModule({ sessions, prTypes }: Props): React.React
     <Module
       title="Workout"
       right={`${groups.length} exercises · ${totalSets} sets`}
-      span={6}
+      span={12}
     >
       <div className="ex-list">
         {groups.map((group, gi) => (
