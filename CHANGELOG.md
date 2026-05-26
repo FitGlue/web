@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.33.4](https://github.com/fitglue/web/compare/v11.33.3...v11.33.4) (2026-05-26)
+
+
+### Bug Fixes
+
+* **showcase:** hero aurora at bottom, photos as square strip ([5610310](https://github.com/fitglue/web/commit/5610310204a80900eaa4ef3ecb6843066aa78e87))
+
 ### [11.33.3](https://github.com/fitglue/web/compare/v11.33.2...v11.33.3) (2026-05-26)
 
 
