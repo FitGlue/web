@@ -154,7 +154,7 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
             ) : null;
           case 'photos':
             return photoUrls.length > 0 ? (
-              <PhotoGallery key={key} photos={photoUrls} />
+              <PhotoGallery key={key} photos={photoUrls} layout="strip" />
             ) : null;
           case 'map':
             return gpsPoints.length >= 10 ? (
