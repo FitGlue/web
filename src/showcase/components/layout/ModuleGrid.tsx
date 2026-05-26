@@ -26,7 +26,7 @@ import SpotifyModule from '../modules/SpotifyModule';
 import GoalTrackerModule from '../modules/GoalTrackerModule';
 import MuscleHeatmapModule from '../modules/MuscleHeatmapModule';
 import SetListModule from '../modules/SetListModule';
-import PersonalRecordsCallout from '../modules/PersonalRecordsCallout';
+import PersonalRecordsModule from '../modules/PersonalRecordsModule';
 import { PhotoGallery } from '../PhotoGallery';
 
 type Session = components['schemas']['Session'];
@@ -87,7 +87,7 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
     .filter((r) => r.positionLat !== undefined && r.positionLat !== 0 && r.positionLong !== undefined && r.positionLong !== 0)
     .map((r) => ({ lat: r.positionLat!, lng: r.positionLong! }));
 
-  const preGridModules = new Set<ModuleKey>(['hybrid-race-segments', 'ai-story', 'milestone-callout', 'pr-callout', 'description', 'tags', 'photos', 'map']);
+  const preGridModules = new Set<ModuleKey>(['hybrid-race-segments', 'ai-story', 'milestone-callout', 'description', 'tags', 'photos', 'map']);
   const footerModules = new Set<ModuleKey>(['auto-increment-footer', 'source-link-footer']);
 
   // Pre-grid (full-width, before the 12-col grid)
@@ -137,8 +137,7 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
               </div>
             );
           }
-          case 'pr-callout':
-            return <PersonalRecordsCallout key={key} data={enrichments?.personalRecords} />;
+          // pr-callout moved to grid — handled in gridModules switch below
           case 'description':
             return userDescription ? (
               <div key={key} className="activity-description">
@@ -233,6 +232,8 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
                     data={enrichments?.muscleHeatmap}
                   />
                 );
+              case 'pr-callout':
+                return <PersonalRecordsModule key={key} data={enrichments?.personalRecords} />;
               case 'set-list':
                 return <SetListModule key={key} sessions={sessions} prTypes={prTypes} />;
               case 'goals':

@@ -1153,23 +1153,83 @@ body:has(#showcase-root) {
   background: var(--fg-ink-3);
 }
 
-.muscle-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
-}
+/* Bar colours for muscle rows (extends zone-row pattern) */
+.zone-row__bar--muscle-primary   { background: var(--fg-pink); }
+.zone-row__bar--muscle-secondary { background: var(--color-text-muted); opacity: 0.5; }
 
-.muscle-chip {
+.muscle-type-label {
   font-family: var(--fg-font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.5625rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 0.2em 0.5em;
-  border: var(--fg-rule-thin);
+  white-space: nowrap;
+}
+.muscle-type-label--primary   { color: var(--fg-pink); }
+.muscle-type-label--secondary { color: var(--color-text-muted); opacity: 0.6; }
+
+/* =====================================================
+   PERSONAL RECORDS MODULE
+   ===================================================== */
+
+.pr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.muscle-chip--primary   { border-color: var(--fg-pink); color: var(--fg-pink); }
-.muscle-chip--secondary { color: var(--color-text-muted); }
+.pr-ex-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: var(--space-xs);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pr-ex-row:last-child { border-bottom: none; }
+
+.pr-ex-row__name {
+  font-family: var(--fg-font-display);
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  padding-top: 2px;
+}
+
+.pr-ex-row__types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.pr-type-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: rgba(255,255,255,0.06);
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pr-type-chip__label {
+  color: var(--fg-pink);
+  font-weight: 700;
+}
+
+.pr-type-chip__val {
+  color: var(--color-text-main);
+}
+
+.pr-type-chip__delta {
+  background: var(--fg-green);
+  color: var(--fg-ink);
+  padding: 0 4px;
+  font-weight: 700;
+}
 
 /* =====================================================
    SET LIST

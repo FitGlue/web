@@ -5,22 +5,26 @@ interface Props {
   data?: PersonalRecordsSummary;
 }
 
-function prDisplayLabel(r: PersonalRecord): string {
-  return r.recordType.replace(/_/g, ' ').toUpperCase();
+const PRIORITY_SUFFIXES = ['_1rm', '_set_volume', '_volume', '_reps'];
+
+function topPR(records: PersonalRecord[]): PersonalRecord {
+  return [...records].sort((a, b) => {
+    const ai = PRIORITY_SUFFIXES.findIndex(s => a.recordType.endsWith(s));
+    const bi = PRIORITY_SUFFIXES.findIndex(s => b.recordType.endsWith(s));
+    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+  })[0];
 }
 
-function prDelta(r: PersonalRecord): string | null {
-  if (r.previousValue == null || r.previousValue <= 0) return null;
-  if (r.unit === 'seconds') {
-    const delta = r.previousValue - r.newValue;
-    if (delta <= 0) return null;
-    const m = Math.floor(delta / 60);
-    const s = Math.floor(delta % 60);
-    return m > 0 ? `−${m}:${String(s).padStart(2, '0')}` : `−${s}s`;
+function parseRecordType(recordType: string): { exercise: string; prType: string } {
+  for (const suffix of PRIORITY_SUFFIXES) {
+    if (recordType.endsWith(suffix)) {
+      return {
+        exercise: recordType.slice(0, -suffix.length).replace(/_/g, ' ').toUpperCase(),
+        prType: suffix.slice(1).toUpperCase().replace(/_/g, ' '),
+      };
+    }
   }
-  const delta = r.newValue - r.previousValue;
-  if (delta <= 0) return null;
-  return `+${Math.round(delta)} ${r.unit.toUpperCase()}`;
+  return { exercise: recordType.toUpperCase(), prType: 'PR' };
 }
 
 function prValue(r: PersonalRecord): { val: string; unit: string } {
@@ -44,23 +48,39 @@ function prValue(r: PersonalRecord): { val: string; unit: string } {
   return { val: `${Math.round(r.newValue)}`, unit: r.unit };
 }
 
+function prDelta(r: PersonalRecord): string | null {
+  if (r.previousValue == null || r.previousValue <= 0) return null;
+  if (r.unit === 'seconds') {
+    const delta = r.previousValue - r.newValue;
+    if (delta <= 0) return null;
+    const m = Math.floor(delta / 60);
+    const s = Math.floor(delta % 60);
+    return m > 0 ? `−${m}:${String(s).padStart(2, '0')}` : `−${s}s`;
+  }
+  const delta = r.newValue - r.previousValue;
+  if (delta <= 0) return null;
+  return `+${Math.round(delta)} ${r.unit.toUpperCase()}`;
+}
+
 export default function PersonalRecordsCallout({ data }: Props): React.ReactElement | null {
   if (!data?.records?.length) return null;
 
-  const primary = data.records[0];
-  const rest = data.records.slice(1);
+  const primary = topPR(data.records);
+  const { exercise, prType } = parseRecordType(primary.recordType);
   const { val, unit } = prValue(primary);
   const delta = prDelta(primary);
+  const extraCount = data.records.length - 1;
 
   return (
     <div className="pr-band">
       <div className="pr-band__inner">
         <span className="pr-band__icon">🏆</span>
         <div>
-          <div className="pr-band__title">{prDisplayLabel(primary)}</div>
-          {primary.displayMessage && (
-            <div className="pr-band__sub">{primary.displayMessage}</div>
-          )}
+          <div className="pr-band__title">{exercise}</div>
+          <div className="pr-band__sub">
+            {prType} · NEW PERSONAL RECORD
+            {extraCount > 0 && ` · +${extraCount} MORE RECORD${extraCount !== 1 ? 'S' : ''} BELOW`}
+          </div>
         </div>
         <div className="pr-band__n">
           {val}
@@ -68,21 +88,6 @@ export default function PersonalRecordsCallout({ data }: Props): React.ReactElem
         </div>
         {delta && <span className="pr-band__delta">{delta}</span>}
       </div>
-
-      {rest.length > 0 && (
-        <div className="pr-band__extra">
-          {rest.map((r, i) => {
-            const rv = prValue(r);
-            const rd = prDelta(r);
-            return (
-              <span key={i} className="pr-band__extra-item">
-                <b>{prDisplayLabel(r)}</b>{' '}{rv.val}{rv.unit && ` ${rv.unit}`}
-                {rd && <span className="pr-band__extra-delta"> {rd}</span>}
-              </span>
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 }
