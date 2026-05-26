@@ -31,6 +31,13 @@ import PersonalRecordsCallout from '../modules/PersonalRecordsCallout';
 type Session = components['schemas']['Session'];
 type Rec = components['schemas']['Record'];
 
+function formatSegmentDuration(seconds: number | undefined): string {
+  if (!seconds || seconds <= 0) return '—';
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
 interface Props {
   moduleOrder: ModuleKey[];
   enrichments: ActivityEnrichments | undefined;
@@ -146,6 +153,32 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
             return gpsPoints.length >= 10 ? (
               <RouteMap key={key} points={gpsPoints} />
             ) : null;
+          case 'hybrid-race-segments': {
+            const segments = activity.activityData?.hybridRaceSummary?.segments ?? [];
+            if (segments.length === 0) return null;
+            const totalSeconds = segments.reduce((acc, seg) => acc + (seg.durationSeconds ?? 0), 0);
+            const totalDur = formatSegmentDuration(totalSeconds);
+            return (
+              <div key={key} className="hybrid-race">
+                <div className="hybrid-race__header">
+                  <span className="hybrid-race__label">🏁 RACE BREAKDOWN</span>
+                  <span className="hybrid-race__total">{totalDur} total</span>
+                </div>
+                <div className="hybrid-race__segments">
+                  {segments.map((seg, i) => (
+                    <div
+                      key={i}
+                      className={`hybrid-race__seg${seg.isRun ? ' hybrid-race__seg--run' : ''}`}
+                    >
+                      <span className="hybrid-race__seg-icon">{seg.icon}</span>
+                      <span className="hybrid-race__seg-label">{seg.label}</span>
+                      <span className="hybrid-race__seg-dur">{formatSegmentDuration(seg.durationSeconds)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
           default:
             return null;
         }

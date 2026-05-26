@@ -11,6 +11,7 @@ import ActivityHero from '../components/layout/ActivityHero';
 import ModuleGrid from '../components/layout/ModuleGrid';
 import BoosterTimeline from '../components/layout/BoosterTimeline';
 import PersonalRecordsCallout from '../components/modules/PersonalRecordsCallout';
+import { ShowcaseExportModal } from '../components/ShowcaseExportModal';
 
 type ShowcasedActivity = components['schemas']['ShowcasedActivity'];
 
@@ -48,6 +49,7 @@ export default function ShowcaseActivityPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -149,6 +151,13 @@ export default function ShowcaseActivityPage() {
             )}
           </span>
           <div className="showcase-pubbar__actions">
+            <button
+              className="showcase-pubbar__share-btn"
+              onClick={() => setShareOpen(true)}
+              aria-label="Share activity"
+            >
+              ↑ SHARE
+            </button>
             <a
               href="/"
               style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-cyan)', textDecoration: 'none' }}
@@ -237,6 +246,13 @@ export default function ShowcaseActivityPage() {
           </aside>
         </div>
       </div>
+
+      {shareOpen && (
+        <ShowcaseExportModal
+          data={activity}
+          onClose={() => setShareOpen(false)}
+        />
+      )}
     </div>
   );
 }

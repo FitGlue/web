@@ -18,6 +18,12 @@ interface Props {
   profile: ShowcaseProfile;
 }
 
+function fmtCount(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}k`;
+  return n.toLocaleString();
+}
+
 export default function LifetimeStats({ profile }: Props): React.ReactElement {
   const acts = (profile.totalActivities ?? 0).toLocaleString();
   const dist = profile.totalDistanceMeters ? fmtDist(profile.totalDistanceMeters) : null;
@@ -36,57 +42,82 @@ export default function LifetimeStats({ profile }: Props): React.ReactElement {
       )
     : null;
 
+  // Strength totals — only show if user has strength data
+  const totalSets = profile.totalSets && profile.totalSets > 0 ? profile.totalSets : null;
+  const totalReps = profile.totalReps && profile.totalReps > 0 ? profile.totalReps : null;
+  const hasStrength = totalSets !== null || totalReps !== null;
+
   return (
-    <div className="profile-life">
-      <div>
-        <div className="profile-life__n">{acts}</div>
-        <div className="profile-life__l">Activities</div>
-        <div className="profile-life__sub">
-          {(profile.totalActivities ?? 0) > 0 ? 'Via FitGlue pipelines' : 'No activities yet'}
+    <>
+      <div className="profile-life">
+        <div>
+          <div className="profile-life__n">{acts}</div>
+          <div className="profile-life__l">Activities</div>
+          <div className="profile-life__sub">
+            {(profile.totalActivities ?? 0) > 0 ? 'Via FitGlue pipelines' : 'No activities yet'}
+          </div>
+        </div>
+
+        <div>
+          <div className="profile-life__n profile-life__n--gr">
+            {effortZones !== null ? <>{effortZones}<sup>%</sup></> : dist ? <>{dist.value}<sup>{dist.sup}</sup></> : '—'}
+          </div>
+          <div className="profile-life__l">
+            {effortZones !== null ? 'Effort zones' : 'Lifetime distance'}
+          </div>
+          <div className="profile-life__sub">
+            {effortZones !== null ? 'Z2–Z5 intensity' : null}
+          </div>
+        </div>
+
+        <div>
+          <div className="profile-life__n">
+            {dist && effortZones !== null ? (
+              <>{dist.value}<sup>{dist.sup}</sup></>
+            ) : hours ? (
+              <>{hours.value}<sup>{hours.sup}</sup></>
+            ) : '—'}
+          </div>
+          <div className="profile-life__l">
+            {dist && effortZones !== null ? 'Lifetime distance' : 'Moving time'}
+          </div>
+          <div className="profile-life__sub">
+            {hours && dist && effortZones !== null ? `${hours.value}h moving` : null}
+          </div>
+        </div>
+
+        <div>
+          <div className="profile-life__n">
+            {activeWeeks !== null ? activeWeeks : '—'}
+          </div>
+          <div className="profile-life__l">Active weeks</div>
+          <div className="profile-life__sub">
+            {weeksTracked > 0
+              ? activePct === 100
+                ? `${weeksTracked} weeks · perfect`
+                : `${weeksTracked} weeks · ${activePct}% consistency`
+              : null}
+          </div>
         </div>
       </div>
 
-      <div>
-        <div className="profile-life__n profile-life__n--gr">
-          {effortZones !== null ? <>{effortZones}<sup>%</sup></> : dist ? <>{dist.value}<sup>{dist.sup}</sup></> : '—'}
+      {hasStrength && (
+        <div className="profile-life-strength">
+          {totalSets !== null && (
+            <div className="profile-life-strength__stat">
+              <span className="profile-life-strength__n">{fmtCount(totalSets)}</span>
+              <span className="profile-life-strength__l">Sets</span>
+            </div>
+          )}
+          {totalReps !== null && (
+            <div className="profile-life-strength__stat">
+              <span className="profile-life-strength__n">{fmtCount(totalReps)}</span>
+              <span className="profile-life-strength__l">Reps</span>
+            </div>
+          )}
+          <div className="profile-life-strength__label">Lifetime strength</div>
         </div>
-        <div className="profile-life__l">
-          {effortZones !== null ? 'Effort zones' : 'Lifetime distance'}
-        </div>
-        <div className="profile-life__sub">
-          {effortZones !== null ? 'Z2–Z5 intensity' : null}
-        </div>
-      </div>
-
-      <div>
-        <div className="profile-life__n">
-          {dist && effortZones !== null ? (
-            <>{dist.value}<sup>{dist.sup}</sup></>
-          ) : hours ? (
-            <>{hours.value}<sup>{hours.sup}</sup></>
-          ) : '—'}
-        </div>
-        <div className="profile-life__l">
-          {dist && effortZones !== null ? 'Lifetime distance' : 'Moving time'}
-        </div>
-        <div className="profile-life__sub">
-          {hours && dist && effortZones !== null ? `${hours.value}h moving` : null}
-        </div>
-      </div>
-
-      <div>
-        <div className="profile-life__n">
-          {activeWeeks !== null ? activeWeeks : '—'}
-        </div>
-        <div className="profile-life__l">Active weeks</div>
-        <div className="profile-life__sub">
-          {weeksTracked > 0
-            ? activePct === 100
-              ? `${weeksTracked} weeks · perfect`
-              : `${weeksTracked} weeks · ${activePct}% consistency`
-            : null}
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }

@@ -20,10 +20,23 @@ interface Props {
   profile: ShowcaseProfile;
 }
 
+function daysAgo(isoStr: string): string {
+  const diffMs = Date.now() - new Date(isoStr).getTime();
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (days === 0) return 'today';
+  if (days === 1) return 'yesterday';
+  if (days < 7) return `${days}d ago`;
+  if (days < 30) return `${Math.floor(days / 7)}w ago`;
+  if (days < 365) return `${Math.floor(days / 30)}mo ago`;
+  return `${Math.floor(days / 365)}y ago`;
+}
+
 export default function ProfileHero({ profile }: Props): React.ReactElement {
   const since = profile.createdAt
     ? new Date(profile.createdAt).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })
     : null;
+
+  const lastActive = profile.latestActivityAt ? daysAgo(profile.latestActivityAt) : null;
 
   const handle = profile.slug ? `@${profile.slug}` : null;
   const activities = profile.totalActivities ?? 0;
@@ -38,10 +51,13 @@ export default function ProfileHero({ profile }: Props): React.ReactElement {
 
         <div className="profile-hero__title">
           <h1 className="profile-hero__name">{profile.displayName ?? 'Athlete'}</h1>
+          {profile.subtitle && (
+            <div className="profile-hero__subtitle">{profile.subtitle}</div>
+          )}
           <div className="profile-hero__handle">
             {handle && <>{handle.replace('@', '@')}</>}
             {since && <>{handle ? ' · ' : ''}Since {since}</>}
-            {profile.subtitle && <> · {profile.subtitle}</>}
+            {lastActive && <> · Last active {lastActive}</>}
           </div>
         </div>
 
