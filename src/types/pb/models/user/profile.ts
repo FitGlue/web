@@ -50,6 +50,7 @@ export interface NotificationPreferences {
   notifyPendingInput: boolean;
   notifyPipelineSuccess: boolean;
   notifyPipelineFailure: boolean;
+  notifyConnectionAction: boolean;
 }
 
 export interface Counter {

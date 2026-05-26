@@ -211,6 +211,7 @@ export interface components {
             notifyPendingInput?: boolean;
             notifyPipelineSuccess?: boolean;
             notifyPipelineFailure?: boolean;
+            notifyConnectionAction?: boolean;
         };
         PipelineConfig: {
             id?: string;

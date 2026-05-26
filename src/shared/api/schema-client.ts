@@ -1569,6 +1569,7 @@ export interface components {
             notifyPendingInput?: boolean;
             notifyPipelineSuccess?: boolean;
             notifyPipelineFailure?: boolean;
+            notifyConnectionAction?: boolean;
         };
         OAuthConnectResponse: {
             url?: string;
