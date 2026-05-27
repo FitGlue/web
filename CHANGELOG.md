@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.37.0](https://github.com/fitglue/web/compare/v11.36.0...v11.37.0) (2026-05-27)
+
+
+### Features
+
+* **showcase:** add PR export tab and per-module share buttons ([695c208](https://github.com/fitglue/web/commit/695c20820dd8a9d2b07a65011f3bc692e2f1959d))
+
 ## [11.36.0](https://github.com/fitglue/web/compare/v11.35.1...v11.36.0) (2026-05-27)
 
 
