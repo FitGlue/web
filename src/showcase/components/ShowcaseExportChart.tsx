@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import type { components } from '../../shared/api/schema-public';
 import { ACCENTS, TEXT_SWATCHES } from './ShowcaseExportModal';
@@ -69,41 +69,107 @@ export function buildChartDefs(records: ActivityRecord[]): ChartDef[] {
   return defs;
 }
 
-// ─── Chart.js config ──────────────────────────────────────────────────────────
+// ─── SVG Sparkline ────────────────────────────────────────────────────────────
 
-function buildChartConfig(data: ChartData, color: string, showAxes: boolean) {
-  return {
-    type: 'line' as const,
-    data: {
-      labels: data.labels,
-      datasets: [{
-        data: data.values,
-        borderColor: color,
-        backgroundColor: `${color}28`,
-        borderWidth: 3,
-        pointRadius: 0,
-        fill: true,
-        tension: 0.3,
-      }],
-    },
-    options: {
-      responsive: false,
-      animation: false as const,
-      plugins: { legend: { display: false }, tooltip: { enabled: false } },
-      scales: {
-        x: {
-          display: showAxes,
-          ticks: { maxTicksLimit: 10, color: 'rgba(255,255,255,0.45)', font: { size: 14 } },
-          grid: { color: 'rgba(255,255,255,0.07)' },
-        },
-        y: {
-          display: showAxes,
-          ticks: { color: 'rgba(255,255,255,0.45)', font: { size: 14 } },
-          grid: { color: 'rgba(255,255,255,0.07)' },
-        },
-      },
-    },
-  };
+function downsample<T>(arr: T[], n: number): T[] {
+  if (arr.length <= n) return arr;
+  const step = arr.length / n;
+  return Array.from({ length: n }, (_, i) => arr[Math.floor(i * step)]);
+}
+
+const AXIS_LEFT   = 88;
+const AXIS_BOTTOM = 48;
+const PLOT_PAD_T  = 16;
+const PLOT_PAD_R  = 16;
+
+interface SparklineProps {
+  data: ChartData;
+  color: string;
+  showAxes: boolean;
+  chartId: string;
+  width: number;
+  height: number;
+}
+
+function ExportSparkline({ data, color, showAxes, chartId, width, height }: SparklineProps) {
+  const values = data.values;
+  const labels = data.labels;
+  if (values.length < 2) return null;
+
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+
+  const plotX = showAxes ? AXIS_LEFT : 0;
+  const plotY = PLOT_PAD_T;
+  const plotW = width - plotX - PLOT_PAD_R;
+  const plotH = height - plotY - (showAxes ? AXIS_BOTTOM : PLOT_PAD_T);
+
+  const ds       = downsample(values, 300);
+  const dsLabels = downsample(labels, 300);
+
+  const pts = ds.map((v, i) => {
+    const x = plotX + (i / (ds.length - 1)) * plotW;
+    const y = plotY + plotH - ((v - min) / range) * plotH;
+    return { x: +x.toFixed(1), y: +y.toFixed(1) };
+  });
+
+  const linePath = `M ${pts.map((p) => `${p.x},${p.y}`).join(' L ')}`;
+  const areaPath = `${linePath} L ${pts[pts.length - 1].x},${plotY + plotH} L ${plotX},${plotY + plotH} Z`;
+
+  const lineGrad = `spark-line-${chartId}`;
+  const fillGrad = `spark-fill-${chartId}`;
+
+  const X_TICKS = 6;
+  const xTickIndices = Array.from({ length: X_TICKS }, (_, i) => Math.round(i * (ds.length - 1) / (X_TICKS - 1)));
+  const Y_TICKS = 4;
+  const yTicks = Array.from({ length: Y_TICKS }, (_, i) => min + (range * i) / (Y_TICKS - 1));
+
+  const MONO = "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace";
+
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id={lineGrad} x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%"   stopColor={color} stopOpacity="0.65" />
+          <stop offset="50%"  stopColor={color} stopOpacity="1" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.65" />
+        </linearGradient>
+        <linearGradient id={fillGrad} x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%"   stopColor={color} stopOpacity="0.22" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.03" />
+        </linearGradient>
+      </defs>
+
+      {showAxes && yTicks.map((v, i) => {
+        const y = +(plotY + plotH - ((v - min) / range) * plotH).toFixed(1);
+        const label = v % 1 === 0 ? `${Math.round(v)}` : v.toFixed(1);
+        return (
+          <g key={i}>
+            <line x1={plotX} y1={y} x2={plotX + plotW} y2={y} stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+            <text x={plotX - 12} y={y + 5} textAnchor="end" fill="rgba(255,255,255,0.45)"
+              fontSize="14" fontFamily={MONO}>{label}</text>
+          </g>
+        );
+      })}
+
+      {showAxes && xTickIndices.map((idx, i) => {
+        const p = pts[idx];
+        const label = dsLabels[idx] ?? '';
+        return (
+          <g key={i}>
+            <line x1={p.x} y1={plotY} x2={p.x} y2={plotY + plotH} stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+            <text x={p.x} y={plotY + plotH + 30} textAnchor="middle" fill="rgba(255,255,255,0.45)"
+              fontSize="14" fontFamily={MONO}>{label}</text>
+          </g>
+        );
+      })}
+
+      <path d={areaPath} fill={`url(#${fillGrad})`} />
+      <path d={linePath} stroke={`url(#${lineGrad})`} strokeWidth="3" fill="none"
+        strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -117,6 +183,9 @@ const BG_OPTIONS = [
   { id: 'dark',        label: 'Dark',        color: '#0a0a0a' as string | null },
   { id: 'transparent', label: 'Transparent', color: null },
 ];
+
+const DISPLAY = "'Archivo Black','Arial Black',system-ui,sans-serif";
+const MONO    = "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace";
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -134,17 +203,15 @@ export const ChartExportTab: React.FC<Props> = ({
 }) => {
   const chartDefs = useMemo(() => buildChartDefs(records), [records]);
 
-  const [selectedId, setSelectedId] = useState(() => chartDefs[0]?.id ?? '');
-  const [showAxes,     setShowAxes]     = useState(true);
-  const [showTitle,    setShowTitle]    = useState(true);
-  const [showStats,    setShowStats]    = useState(true);
+  const [selectedId,    setSelectedId]    = useState(() => chartDefs[0]?.id ?? '');
+  const [showAxes,      setShowAxes]      = useState(true);
+  const [showTitle,     setShowTitle]     = useState(true);
+  const [showStats,     setShowStats]     = useState(true);
   const [showWatermark, setShowWatermark] = useState(true);
-  const [bgId, setBgId] = useState('dark');
-  const [exporting, setExporting] = useState(false);
+  const [bgId,          setBgId]          = useState('dark');
+  const [exporting,     setExporting]     = useState(false);
 
-  const frameRef        = useRef<HTMLDivElement>(null);
-  const canvasRef       = useRef<HTMLCanvasElement>(null);
-  const chartInstanceRef = useRef<{ destroy: () => void } | null>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
 
   const selectedChart = chartDefs.find((c) => c.id === selectedId) ?? chartDefs[0];
   const selectedBg    = BG_OPTIONS.find((b) => b.id === bgId)!;
@@ -158,27 +225,6 @@ export const ChartExportTab: React.FC<Props> = ({
     const fmt = (v: number) => (v % 1 === 0 ? `${v}` : v.toFixed(1));
     return { min: fmt(min), avg: fmt(avg), max: fmt(max), unit: selectedChart.unit };
   }, [selectedChart]);
-
-  useEffect(() => {
-    if (!canvasRef.current || !selectedChart || selectedChart.data.values.length === 0) return;
-
-    const canvas = canvasRef.current;
-    canvas.width  = CHART_W;
-    canvas.height = CHART_H;
-
-    let destroyed = false;
-    import('chart.js/auto').then((mod) => {
-      if (destroyed || !canvasRef.current) return;
-      if (chartInstanceRef.current) chartInstanceRef.current.destroy();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      chartInstanceRef.current = new (mod.default as any)(canvas, buildChartConfig(selectedChart.data, accent, showAxes));
-    });
-
-    return () => {
-      destroyed = true;
-      if (chartInstanceRef.current) { chartInstanceRef.current.destroy(); chartInstanceRef.current = null; }
-    };
-  }, [selectedChart, accent, showAxes]);
 
   const handleExport = useCallback(async () => {
     if (!frameRef.current) return;
@@ -233,31 +279,38 @@ export const ChartExportTab: React.FC<Props> = ({
           }}
         >
           <div style={{ position: 'absolute', top: 0, left: 0, transform: `scale(${PREVIEW_SCALE})`, transformOrigin: 'top left', width: CHART_W }}>
-            <div ref={frameRef} style={{ width: CHART_W, background: selectedBg.color ?? 'transparent', fontFamily: "'Inter','Helvetica Neue',sans-serif" }}>
-              <div style={{ padding: `40px ${CHART_PAD}px ${showTitle ? 28 : 0}px` }}>
+            <div ref={frameRef} style={{ width: CHART_W, background: selectedBg.color ?? 'transparent', fontFamily: DISPLAY }}>
+              <div style={{ padding: `48px ${CHART_PAD}px ${showTitle ? 28 : 0}px` }}>
                 {showTitle && (
-                  <div style={{ fontSize: 36, fontWeight: 700, color: textColor }}>
+                  <div style={{ fontFamily: DISPLAY, fontSize: 40, color: textColor, letterSpacing: '-0.01em', textTransform: 'uppercase' }}>
                     {selectedChart?.emoji} {selectedChart?.label}
                   </div>
                 )}
               </div>
-              <canvas ref={canvasRef} style={{ display: 'block', width: CHART_W, height: CHART_H }} />
-              <div style={{ display: 'flex', alignItems: 'flex-end', padding: `32px ${CHART_PAD}px 48px`, gap: 60 }}>
+              <ExportSparkline
+                data={selectedChart.data}
+                color={accent}
+                showAxes={showAxes}
+                chartId={selectedChart.id}
+                width={CHART_W}
+                height={CHART_H}
+              />
+              <div style={{ display: 'flex', alignItems: 'flex-end', padding: `32px ${CHART_PAD}px 52px`, gap: 60 }}>
                 {showStats && statsSummary && (
                   <>
                     {([['Min', statsSummary.min], ['Avg', statsSummary.avg], ['Max', statsSummary.max]] as [string, string][]).map(([label, val]) => (
                       <div key={label}>
-                        <div style={{ fontSize: 34, fontWeight: 700, color: accent, lineHeight: 1 }}>
-                          {val} <span style={{ fontSize: 20, color: `${textColor}59`, fontWeight: 400 }}>{statsSummary.unit}</span>
+                        <div style={{ fontFamily: DISPLAY, fontSize: 40, color: accent, lineHeight: 1 }}>
+                          {val} <span style={{ fontFamily: MONO, fontSize: 20, color: `${textColor}59`, fontWeight: 600 }}>{statsSummary.unit}</span>
                         </div>
-                        <div style={{ fontSize: 18, color: `${textColor}66`, marginTop: 6 }}>{label}</div>
+                        <div style={{ fontFamily: MONO, fontSize: 16, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: `${textColor}55`, marginTop: 8 }}>{label}</div>
                       </div>
                     ))}
                   </>
                 )}
                 {showWatermark && (
-                  <div style={{ marginLeft: 'auto', fontSize: 24, fontWeight: 700, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.04em' }}>
-                    Fit<span style={{ color: accent }}>Glue</span>
+                  <div style={{ marginLeft: 'auto', fontFamily: DISPLAY, fontSize: 24, color: 'rgba(245,243,235,0.18)', letterSpacing: '0.04em' }}>
+                    FIT<span style={{ color: accent }}>GLUE</span>
                   </div>
                 )}
               </div>

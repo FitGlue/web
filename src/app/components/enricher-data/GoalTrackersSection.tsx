@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Stack, Grid } from '../library/layout';
-import { Card, Button, Heading, Paragraph, Badge, AccordionTrigger } from '../library/ui';
+import { Grid } from '../library/layout';
 import { Input, FormField, Select } from '../library/forms';
 import './enricher-data.css';
 import { client } from '../../../shared/api/client';
@@ -59,141 +58,117 @@ const GoalTrackersSection: React.FC<GoalTrackersSectionProps> = ({ entries, load
     };
 
     return (
-        <Card>
-            <Stack gap="md">
-                <Stack direction="horizontal" justify="between" align="center">
-                    <AccordionTrigger isExpanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
-                        <Heading level={3}>🎯 Goal Trackers</Heading>
-                        <Badge variant="default">{loading ? '...' : entries.length}</Badge>
-                    </AccordionTrigger>
-                    <Button
-                        variant="secondary"
-                        size="small"
-                        onClick={() => { if (!showNew) setIsExpanded(true); setShowNew(!showNew); }}
-                    >
-                        {showNew ? 'Cancel' : '+ Add Goal'}
-                    </Button>
-                </Stack>
+        <div className="ba-enricher-section">
+            <div className="ba-enricher-section__head" onClick={() => setIsExpanded(!isExpanded)}>
+                <div className="ba-enricher-section__head-left">
+                    <span>🎯</span>
+                    <span className="ba-enricher-section__label">Goal Trackers</span>
+                    <span className="ba-enricher-section__count">{loading ? '…' : entries.length}</span>
+                </div>
+                <button
+                    className="ba-enricher-section__add-btn"
+                    onClick={(e) => { e.stopPropagation(); if (!showNew) setIsExpanded(true); setShowNew(!showNew); }}
+                >
+                    {showNew ? 'Cancel' : '+ Add'}
+                </button>
+            </div>
 
-                {isExpanded && (
-                    <>
-                        {showNew && (
-                            <Card>
-                                <Stack gap="sm">
-                                    <Heading level={4}>New Goal Tracker</Heading>
-                                    <Grid cols={3} gap="md">
-                                        <FormField label="Period" htmlFor="new-goal-period">
-                                            <Select
-                                                id="new-goal-period"
-                                                value={newPeriod}
-                                                onChange={(e) => setNewPeriod(e.target.value)}
-                                                options={[
-                                                    { value: 'week', label: 'Weekly' },
-                                                    { value: 'month', label: 'Monthly' },
-                                                    { value: 'year', label: 'Yearly' },
-                                                ]}
-                                            />
-                                        </FormField>
-                                        <FormField label="Metric" htmlFor="new-goal-metric">
-                                            <Select
-                                                id="new-goal-metric"
-                                                value={newMetric}
-                                                onChange={(e) => setNewMetric(e.target.value)}
-                                                options={[
-                                                    { value: 'distance', label: 'Distance (km)' },
-                                                    { value: 'duration', label: 'Duration (hours)' },
-                                                    { value: 'activities', label: 'Activities (count)' },
-                                                    { value: 'elevation', label: 'Elevation (m)' },
-                                                ]}
-                                            />
-                                        </FormField>
-                                        <FormField label="Initial Progress" htmlFor="new-goal-accumulated">
-                                            <Input
-                                                id="new-goal-accumulated"
-                                                type="number"
-                                                step={0.1}
-                                                min={0}
-                                                value={newAccumulated}
-                                                onChange={(e) => setNewAccumulated(parseFloat(e.target.value) || 0)}
-                                            />
-                                        </FormField>
-                                    </Grid>
-                                    <Button variant="primary" onClick={handleCreate}>
-                                        Create Goal Tracker
-                                    </Button>
-                                </Stack>
-                            </Card>
-                        )}
+            {isExpanded && (
+                <div className="ba-enricher-section__body">
+                    {showNew && (
+                        <div className="ba-enricher-section__new-form">
+                            <Grid cols={3} gap="md">
+                                <FormField label="Period" htmlFor="new-goal-period">
+                                    <Select
+                                        id="new-goal-period"
+                                        value={newPeriod}
+                                        onChange={(e) => setNewPeriod(e.target.value)}
+                                        options={[
+                                            { value: 'week', label: 'Weekly' },
+                                            { value: 'month', label: 'Monthly' },
+                                            { value: 'year', label: 'Yearly' },
+                                        ]}
+                                    />
+                                </FormField>
+                                <FormField label="Metric" htmlFor="new-goal-metric">
+                                    <Select
+                                        id="new-goal-metric"
+                                        value={newMetric}
+                                        onChange={(e) => setNewMetric(e.target.value)}
+                                        options={[
+                                            { value: 'distance', label: 'Distance (km)' },
+                                            { value: 'duration', label: 'Duration (hours)' },
+                                            { value: 'activities', label: 'Activities (count)' },
+                                            { value: 'elevation', label: 'Elevation (m)' },
+                                        ]}
+                                    />
+                                </FormField>
+                                <FormField label="Initial Progress" htmlFor="new-goal-accumulated">
+                                    <Input
+                                        id="new-goal-accumulated"
+                                        type="number"
+                                        step={0.1}
+                                        min={0}
+                                        value={newAccumulated}
+                                        onChange={(e) => setNewAccumulated(parseFloat(e.target.value) || 0)}
+                                    />
+                                </FormField>
+                            </Grid>
+                            <button className="fg-button fg-button--sm" style={{ marginTop: '1rem' }} onClick={handleCreate}>
+                                Create Goal Tracker
+                            </button>
+                        </div>
+                    )}
 
-                        {loading ? (
-                            <Paragraph muted>Loading goal trackers...</Paragraph>
-                        ) : entries.length === 0 ? (
-                            <Paragraph muted>No goal trackers yet. Add the Goal Tracker booster to a pipeline to start tracking.</Paragraph>
+                    {loading ? (
+                        <div className="ba-enricher-loading">Loading goal trackers…</div>
+                    ) : entries.length === 0 ? (
+                        <div className="ba-enricher-empty">No goal trackers yet. Add the Goal Tracker booster to a pipeline to start tracking.</div>
+                    ) : entries.map((entry) => (
+                        editingBooster?.id === entry.id ? (
+                            <div key={entry.id} className="ba-enricher-edit-form">
+                                <label className="ba-enricher-edit-form__label" htmlFor={`edit-${entry.id}-accumulated`}>
+                                    Editing: {getBoosterLabel(entry.id)} — Accumulated Progress
+                                </label>
+                                <Input
+                                    id={`edit-${entry.id}-accumulated`}
+                                    type="number"
+                                    step={0.1}
+                                    min={0}
+                                    value={(editingBooster.data.accumulated as number) ?? 0}
+                                    onChange={(e) => setEditingBooster({
+                                        ...editingBooster,
+                                        data: { ...editingBooster.data, accumulated: parseFloat(e.target.value) || 0 }
+                                    })}
+                                    style={{ maxWidth: '150px' }}
+                                />
+                                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                                    <button className="fg-button fg-button--sm" onClick={() => handleSave(editingBooster)}>Save</button>
+                                    <button className="fg-button fg-button--sm fg-button--ghost" onClick={() => setEditingBooster(null)}>Cancel</button>
+                                </div>
+                            </div>
                         ) : (
-                            <Stack gap="sm">
-                                {entries.map((entry) => (
-                                    <Card key={entry.id} variant="elevated">
-                                        {editingBooster?.id === entry.id ? (
-                                            <Stack gap="sm">
-                                                <Paragraph size="sm" muted>
-                                                    Editing: <strong>{getBoosterLabel(entry.id)}</strong>
-                                                </Paragraph>
-                                                <FormField label="Accumulated Progress" htmlFor={`edit-${entry.id}-accumulated`}>
-                                                    <Input
-                                                        id={`edit-${entry.id}-accumulated`}
-                                                        type="number"
-                                                        step={0.1}
-                                                        min={0}
-                                                        value={(editingBooster.data.accumulated as number) ?? 0}
-                                                        onChange={(e) => setEditingBooster({
-                                                            ...editingBooster,
-                                                            data: { ...editingBooster.data, accumulated: parseFloat(e.target.value) || 0 }
-                                                        })}
-                                                        style={{ maxWidth: '150px' }}
-                                                    />
-                                                </FormField>
-                                                <Stack direction="horizontal" gap="sm">
-                                                    <Button size="small" variant="primary" onClick={() => handleSave(editingBooster)}>
-                                                        Save
-                                                    </Button>
-                                                    <Button size="small" variant="text" onClick={() => setEditingBooster(null)}>
-                                                        Cancel
-                                                    </Button>
-                                                </Stack>
-                                            </Stack>
-                                        ) : (
-                                            <Stack direction="horizontal" justify="between" align="center">
-                                                <Stack gap="xs">
-                                                    <Paragraph><strong>{getBoosterLabel(entry.id)}</strong></Paragraph>
-                                                    <Paragraph size="sm" muted>
-                                                        Progress: {typeof entry.data.accumulated === 'number' ? entry.data.accumulated.toFixed(1) : '0'}
-                                                        {entry.data.period_key ? ` • Period: ${entry.data.period_key}` : ''}
-                                                        {entry.data.last_update ? ` • Updated: ${formatDate(entry.data.last_update as string)}` : ''}
-                                                    </Paragraph>
-                                                    {typeof entry.data.last_external_id === 'string' && entry.data.last_external_id && (
-                                                        <Paragraph size="sm" muted>
-                                                            Last source activity: {entry.data.last_external_id}
-                                                        </Paragraph>
-                                                    )}
-                                                </Stack>
-                                                <Stack direction="horizontal" gap="xs">
-                                                    <Button size="small" variant="text" onClick={() => setEditingBooster(entry)}>
-                                                        Edit
-                                                    </Button>
-                                                    <Button size="small" variant="danger" onClick={() => handleDelete(entry.id)}>
-                                                        Delete
-                                                    </Button>
-                                                </Stack>
-                                            </Stack>
-                                        )}
-                                    </Card>
-                                ))}
-                            </Stack>
-                        )}
-                    </>
-                )}
-            </Stack>
-        </Card >
+                            <div key={entry.id} className="ba-enricher-row">
+                                <div className="ba-enricher-row__left">
+                                    <div className="ba-enricher-row__label">{getBoosterLabel(entry.id)}</div>
+                                    <div className="ba-enricher-row__meta">
+                                        Progress: <span className="ba-enricher-row__meta-value">
+                                            {typeof entry.data.accumulated === 'number' ? entry.data.accumulated.toFixed(1) : '0'}
+                                        </span>
+                                        {entry.data.period_key ? <>{' · '}Period: <span className="ba-enricher-row__meta-value">{entry.data.period_key as string}</span></> : null}
+                                        {entry.data.last_update ? ` · Updated: ${formatDate(entry.data.last_update as string)}` : ''}
+                                    </div>
+                                </div>
+                                <div className="ba-enricher-row__actions">
+                                    <button className="fg-button fg-button--sm fg-button--ghost" onClick={() => setEditingBooster(entry)}>Edit</button>
+                                    <button className="fg-button fg-button--sm fg-button--ghost" style={{ color: 'var(--fg-rose)' }} onClick={() => handleDelete(entry.id)}>Delete</button>
+                                </div>
+                            </div>
+                        )
+                    ))}
+                </div>
+            )}
+        </div>
     );
 };
 

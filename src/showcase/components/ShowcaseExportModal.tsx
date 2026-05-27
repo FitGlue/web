@@ -41,9 +41,9 @@ const CARD_BACKGROUNDS = [
 ];
 
 const CARD_SHAPES: Array<{ id: string; label: string; borderRadius: string; widthPct: number; ratio: string | null }> = [
-  { id: 'landscape', label: 'Landscape', borderRadius: '24px',  widthPct: 88, ratio: '16/7' },
-  { id: 'square',    label: 'Square',    borderRadius: '32px',  widthPct: 78, ratio: '1'    },
-  { id: 'portrait',  label: 'Portrait',  borderRadius: '32px',  widthPct: 54, ratio: '2/3'  },
+  { id: 'landscape', label: 'Landscape', borderRadius: '0',     widthPct: 88, ratio: '16/7' },
+  { id: 'square',    label: 'Square',    borderRadius: '0',     widthPct: 78, ratio: '1'    },
+  { id: 'portrait',  label: 'Portrait',  borderRadius: '0',     widthPct: 54, ratio: '2/3'  },
   { id: 'circle',    label: 'Circle',    borderRadius: '50%',   widthPct: 72, ratio: '1'    },
   { id: 'pill',      label: 'Pill',      borderRadius: '999px', widthPct: 90, ratio: null   },
 ];
@@ -223,13 +223,16 @@ const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
       justifyContent: 'center',
     };
 
+    const DISPLAY = "'Archivo Black','Arial Black',system-ui,sans-serif";
+    const MONO    = "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace";
+
     return (
       <div ref={ref} style={{
         width: `${EXPORT_W}px`,
         background: 'transparent',
         display: 'flex', justifyContent: 'center',
         position: 'relative',
-        fontFamily: "'Inter','Helvetica Neue',sans-serif",
+        fontFamily: DISPLAY,
         padding: '80px 0',
       }}>
         <div style={cardStyle}>
@@ -238,37 +241,46 @@ const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
             <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${bannerUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.18 }} />
           )}
 
-          <div style={{ position: 'relative', zIndex: 1, display: 'inline-block', background: `${accent}22`, border: `1px solid ${accent}88`, borderRadius: '999px', padding: '10px 32px', color: accent, fontSize: '24px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '32px' }}>
+          {/* Activity type badge — hard-edged brutal tag */}
+          <div style={{ position: 'relative', zIndex: 1, display: 'inline-block', background: `${accent}18`, border: `2px solid ${accent}`, padding: '8px 28px', color: accent, fontFamily: MONO, fontSize: '20px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '36px' }}>
             {formatActivityType(data.activityType)}
           </div>
-          <div style={{ position: 'relative', zIndex: 1, fontSize: '56px', fontWeight: 800, color: textColor, lineHeight: 1.1, marginBottom: '24px', textShadow: isClear ? '0 2px 24px rgba(0,0,0,0.8)' : '0 2px 20px rgba(0,0,0,0.5)' }}>
+
+          {/* Title — display font, all-caps */}
+          <div style={{ position: 'relative', zIndex: 1, fontFamily: DISPLAY, fontSize: '64px', color: textColor, lineHeight: 1.05, marginBottom: '20px', letterSpacing: '-0.01em', textShadow: isClear ? '0 2px 24px rgba(0,0,0,0.9)' : '0 2px 20px rgba(0,0,0,0.4)', textTransform: 'uppercase' }}>
             {data.title ?? 'Activity'}
           </div>
+
+          {/* Date — mono, uppercase */}
           {data.startTime && (
-            <div style={{ position: 'relative', zIndex: 1, fontSize: '22px', color: `${textColor}a6`, marginBottom: '40px', textShadow: isClear ? '0 1px 12px rgba(0,0,0,0.8)' : undefined }}>
+            <div style={{ position: 'relative', zIndex: 1, fontFamily: MONO, fontSize: '18px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: `${textColor}88`, marginBottom: '48px', textShadow: isClear ? '0 1px 12px rgba(0,0,0,0.8)' : undefined }}>
               {formatDateFull(data.startTime)}
             </div>
           )}
+
+          {/* Stats grid — display font values, mono labels */}
           {stats.length > 0 && (
-            <div style={{ position: 'relative', zIndex: 1, display: 'flex', gap: '32px', justifyContent: 'center', marginBottom: '40px', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative', zIndex: 1, display: 'flex', gap: '40px', justifyContent: 'center', marginBottom: '44px', flexWrap: 'wrap' }}>
               {stats.map((s, i) => (
                 <div key={i} style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '40px', fontWeight: 700, color: accent, lineHeight: 1, textShadow: isClear ? '0 2px 16px rgba(0,0,0,0.9)' : undefined }}>{s.value}</div>
-                  <div style={{ fontSize: '18px', color: `${textColor}80`, marginTop: '6px', textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>{s.label}</div>
+                  <div style={{ fontFamily: DISPLAY, fontSize: '48px', color: accent, lineHeight: 1, textShadow: isClear ? '0 2px 16px rgba(0,0,0,0.9)' : undefined }}>{s.value}</div>
+                  <div style={{ fontFamily: MONO, fontSize: '16px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: `${textColor}66`, marginTop: '8px', textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>{s.label}</div>
                 </div>
               ))}
             </div>
           )}
+
+          {/* Owner — mono, dim */}
           {data.ownerDisplayName && (
-            <div style={{ position: 'relative', zIndex: 1, fontSize: '22px', color: `${textColor}73`, textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>
+            <div style={{ position: 'relative', zIndex: 1, fontFamily: MONO, fontSize: '18px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: `${textColor}55`, textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>
               {data.ownerDisplayName}
             </div>
           )}
 
-          {/* Watermark lives inside the card (bottom-right), clipped with the card shape */}
+          {/* Watermark — display font, bottom-right */}
           {showWatermark && (
-            <div style={{ position: 'absolute', bottom: '20px', right: '28px', fontSize: '18px', color: 'rgba(255,255,255,0.28)', fontWeight: 700, letterSpacing: '0.05em', zIndex: 2 }}>
-              Fit<span style={{ color: accent }}>Glue</span>
+            <div style={{ position: 'absolute', bottom: '20px', right: '28px', fontFamily: DISPLAY, fontSize: '18px', color: 'rgba(245,243,235,0.22)', letterSpacing: '0.04em', zIndex: 2 }}>
+              FIT<span style={{ color: accent }}>GLUE</span>
             </div>
           )}
         </div>

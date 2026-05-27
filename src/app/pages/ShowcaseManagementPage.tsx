@@ -152,7 +152,9 @@ const ShowcaseManagementPage: React.FC = () => {
             const { data } = await client.GET('/users/me/showcase-management/profile');
             const typedData = data as { profile: ShowcaseProfile | null; activities: ShowcaseActivity[] };
             setProfile(typedData?.profile ?? null);
-            setActivities(typedData?.activities || []);
+            setActivities((typedData?.activities || []).sort((a, b) =>
+                new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+            ));
             if (typedData?.profile) {
                 setSubtitle(typedData.profile.subtitle || '');
                 setBio(typedData.profile.bio || '');
@@ -535,7 +537,7 @@ const ShowcaseManagementPage: React.FC = () => {
     }
 
     return (
-        <SettingsLayout title="Showcase">
+        <SettingsLayout>
             <div className="fg-band">
                 <span className="fg-band__label">SHOWCASE · PUBLIC PROFILE</span>
             </div>

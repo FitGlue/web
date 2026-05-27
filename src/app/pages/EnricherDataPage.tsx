@@ -41,7 +41,7 @@ const EnricherDataPage: React.FC = () => {
     const distanceMilestones = useMemo(() => boosterData.filter(b => b.id.startsWith('distance_milestones_')), [boosterData]);
 
     return (
-        <SettingsLayout title="Booster Data">
+        <SettingsLayout>
             <Stack gap="lg">
                 <div className="fg-band fg-band--ink">
                     <span className="fg-band__label">BOOSTER DATA</span>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Stack, Grid } from '../library/layout';
-import { Card, Button, Heading, Paragraph, Badge, AccordionTrigger } from '../library/ui';
+import { Grid } from '../library/layout';
 import { Input, FormField } from '../library/forms';
 import './enricher-data.css';
 import { client } from '../../../shared/api/client';
@@ -65,105 +64,97 @@ const CountersSection: React.FC = () => {
     };
 
     return (
-        <Card>
-            <Stack gap="md">
-                <Stack direction="horizontal" justify="between" align="center">
-                    <AccordionTrigger isExpanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
-                        <Heading level={3}>🔢 Auto-Increment Counters</Heading>
-                        <Badge variant="default">{loading ? '...' : counters.length}</Badge>
-                    </AccordionTrigger>
-                    <Button
-                        variant="secondary"
-                        size="small"
-                        onClick={() => { if (!showNew) setIsExpanded(true); setShowNew(!showNew); }}
-                    >
-                        {showNew ? 'Cancel' : '+ Add Counter'}
-                    </Button>
-                </Stack>
+        <div className="ba-enricher-section">
+            <div className="ba-enricher-section__head" onClick={() => setIsExpanded(!isExpanded)}>
+                <div className="ba-enricher-section__head-left">
+                    <span>🔢</span>
+                    <span className="ba-enricher-section__label">Auto-Increment Counters</span>
+                    <span className="ba-enricher-section__count">{loading ? '…' : counters.length}</span>
+                </div>
+                <button
+                    className="ba-enricher-section__add-btn"
+                    onClick={(e) => { e.stopPropagation(); if (!showNew) setIsExpanded(true); setShowNew(!showNew); }}
+                >
+                    {showNew ? 'Cancel' : '+ Add'}
+                </button>
+            </div>
 
-                {isExpanded && (
-                    <>
-                        {showNew && (
-                            <Card>
-                                <Stack gap="sm">
-                                    <Heading level={4}>New Counter</Heading>
-                                    <Grid cols={2} gap="md">
-                                        <FormField label="Counter ID" htmlFor="new-counter-id">
-                                            <Input
-                                                id="new-counter-id"
-                                                type="text"
-                                                placeholder="e.g., parkrun_bushy"
-                                                value={newCounter.id}
-                                                onChange={(e) => setNewCounter({ ...newCounter, id: e.target.value })}
-                                            />
-                                        </FormField>
-                                        <FormField label="Initial Count" htmlFor="new-counter-count">
-                                            <Input
-                                                id="new-counter-count"
-                                                type="number"
-                                                value={newCounter.count}
-                                                onChange={(e) => setNewCounter({ ...newCounter, count: parseInt(e.target.value) || 0 })}
-                                            />
-                                            <Paragraph size="sm" muted>
-                                                This is the last-used value. The next activity will be #{newCounter.count + 1}.
-                                            </Paragraph>
-                                        </FormField>
-                                    </Grid>
-                                    <Button variant="primary" onClick={handleCreate} disabled={!newCounter.id.trim()}>
-                                        Create Counter
-                                    </Button>
-                                </Stack>
-                            </Card>
-                        )}
+            {isExpanded && (
+                <div className="ba-enricher-section__body">
+                    {showNew && (
+                        <div className="ba-enricher-section__new-form">
+                            <Grid cols={2} gap="md">
+                                <FormField label="Counter ID" htmlFor="new-counter-id">
+                                    <Input
+                                        id="new-counter-id"
+                                        type="text"
+                                        placeholder="e.g., parkrun_bushy"
+                                        value={newCounter.id}
+                                        onChange={(e) => setNewCounter({ ...newCounter, id: e.target.value })}
+                                    />
+                                </FormField>
+                                <FormField label="Initial Count" htmlFor="new-counter-count">
+                                    <Input
+                                        id="new-counter-count"
+                                        type="number"
+                                        value={newCounter.count}
+                                        onChange={(e) => setNewCounter({ ...newCounter, count: parseInt(e.target.value) || 0 })}
+                                    />
+                                </FormField>
+                            </Grid>
+                            <button
+                                className="fg-button fg-button--sm"
+                                style={{ marginTop: '1rem' }}
+                                onClick={handleCreate}
+                                disabled={!newCounter.id.trim()}
+                            >
+                                Create Counter
+                            </button>
+                        </div>
+                    )}
 
-                        {loading ? (
-                            <Paragraph muted>Loading counters...</Paragraph>
-                        ) : counters.length === 0 ? (
-                            <Paragraph muted>No counters yet. Add one with the Auto-Increment booster.</Paragraph>
+                    {loading ? (
+                        <div className="ba-enricher-loading">Loading counters…</div>
+                    ) : counters.length === 0 ? (
+                        <div className="ba-enricher-empty">No counters yet. Add one with the Auto-Increment booster.</div>
+                    ) : counters.map((counter) => (
+                        editingCounter?.id === counter.id ? (
+                            <div key={counter.id} className="ba-enricher-edit-form">
+                                <label className="ba-enricher-edit-form__label" htmlFor={`edit-${counter.id}-count`}>
+                                    Editing: {counter.id}
+                                </label>
+                                <Input
+                                    id={`edit-${counter.id}-count`}
+                                    type="number"
+                                    value={editingCounter.count}
+                                    onChange={(e) => setEditingCounter({ ...editingCounter, count: parseInt(e.target.value) || 0 })}
+                                    style={{ maxWidth: '150px' }}
+                                />
+                                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                                    <button className="fg-button fg-button--sm" onClick={() => handleSave(editingCounter)}>Save</button>
+                                    <button className="fg-button fg-button--sm fg-button--ghost" onClick={() => setEditingCounter(null)}>Cancel</button>
+                                </div>
+                            </div>
                         ) : (
-                            <Stack gap="sm">
-                                {counters.map((counter) => (
-                                    <Card key={counter.id} variant="elevated">
-                                        {editingCounter?.id === counter.id ? (
-                                            <Stack direction="horizontal" gap="sm" align="center">
-                                                <Input
-                                                    type="number"
-                                                    value={editingCounter.count}
-                                                    onChange={(e) => setEditingCounter({ ...editingCounter, count: parseInt(e.target.value) || 0 })}
-                                                />
-                                                <Button size="small" variant="primary" onClick={() => handleSave(editingCounter)}>
-                                                    Save
-                                                </Button>
-                                                <Button size="small" variant="text" onClick={() => setEditingCounter(null)}>
-                                                    Cancel
-                                                </Button>
-                                            </Stack>
-                                        ) : (
-                                            <Stack direction="horizontal" justify="between" align="center">
-                                                <Stack gap="xs">
-                                                    <Paragraph><strong>{counter.id}</strong></Paragraph>
-                                                    <Paragraph size="sm" muted>
-                                                        Last used: #{counter.count} • Next will be: #{counter.count + 1} • Updated: {formatDate(counter.lastUpdated)}
-                                                    </Paragraph>
-                                                </Stack>
-                                                <Stack direction="horizontal" gap="xs">
-                                                    <Button size="small" variant="text" onClick={() => setEditingCounter(counter)}>
-                                                        Edit
-                                                    </Button>
-                                                    <Button size="small" variant="danger" onClick={() => handleDelete(counter.id)}>
-                                                        Delete
-                                                    </Button>
-                                                </Stack>
-                                            </Stack>
-                                        )}
-                                    </Card>
-                                ))}
-                            </Stack>
-                        )}
-                    </>
-                )}
-            </Stack>
-        </Card>
+                            <div key={counter.id} className="ba-enricher-row">
+                                <div className="ba-enricher-row__left">
+                                    <div className="ba-enricher-row__label">{counter.id}</div>
+                                    <div className="ba-enricher-row__meta">
+                                        Last: <span className="ba-enricher-row__meta-value">#{counter.count}</span>
+                                        {' · '}Next: <span className="ba-enricher-row__meta-value">#{counter.count + 1}</span>
+                                        {' · '}Updated: {formatDate(counter.lastUpdated)}
+                                    </div>
+                                </div>
+                                <div className="ba-enricher-row__actions">
+                                    <button className="fg-button fg-button--sm fg-button--ghost" onClick={() => setEditingCounter(counter)}>Edit</button>
+                                    <button className="fg-button fg-button--sm fg-button--ghost" style={{ color: 'var(--fg-rose)' }} onClick={() => handleDelete(counter.id)}>Delete</button>
+                                </div>
+                            </div>
+                        )
+                    ))}
+                </div>
+            )}
+        </div>
     );
 };
 

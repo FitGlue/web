@@ -26,10 +26,10 @@ const BG_OPTIONS = [
 ];
 
 const CARD_SHAPES: Array<{ id: string; label: string; borderRadius: string; widthPct: number; ratio: string | null }> = [
-  { id: 'default',   label: 'Default',   borderRadius: '24px',  widthPct: 100, ratio: null   },
-  { id: 'landscape', label: 'Landscape', borderRadius: '24px',  widthPct: 88,  ratio: '16/7' },
-  { id: 'square',    label: 'Square',    borderRadius: '32px',  widthPct: 78,  ratio: '1'    },
-  { id: 'portrait',  label: 'Portrait',  borderRadius: '32px',  widthPct: 54,  ratio: '2/3'  },
+  { id: 'default',   label: 'Default',   borderRadius: '0',     widthPct: 100, ratio: null   },
+  { id: 'landscape', label: 'Landscape', borderRadius: '0',     widthPct: 88,  ratio: '16/7' },
+  { id: 'square',    label: 'Square',    borderRadius: '0',     widthPct: 78,  ratio: '1'    },
+  { id: 'portrait',  label: 'Portrait',  borderRadius: '0',     widthPct: 54,  ratio: '2/3'  },
   { id: 'circle',    label: 'Circle',    borderRadius: '50%',   widthPct: 72,  ratio: '1'    },
   { id: 'pill',      label: 'Pill',      borderRadius: '999px', widthPct: 90,  ratio: null   },
 ];
@@ -124,7 +124,7 @@ const HybridRaceExportCard = React.forwardRef<HTMLDivElement, CardProps>(
           display: 'flex',
           justifyContent: 'center',
           padding: cardShape.id === 'default' ? '0' : '80px 0',
-          fontFamily: "'Inter','Helvetica Neue',Arial,sans-serif",
+          fontFamily: "'Archivo Black','Arial Black',system-ui,sans-serif",
           position: 'relative',
         }}
       >
@@ -134,13 +134,14 @@ const HybridRaceExportCard = React.forwardRef<HTMLDivElement, CardProps>(
           {showHeader && (
             <div style={{ marginBottom: 44 * cs }}>
               <div style={{
-                fontSize: 18 * cs, fontWeight: 700, color: stnColor,
-                textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 16 * cs,
+                fontFamily: "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace",
+                fontSize: 16 * cs, fontWeight: 700, color: stnColor,
+                textTransform: 'uppercase', letterSpacing: '0.18em', marginBottom: 16 * cs,
                 textShadow,
               }}>
                 🏁 Race Breakdown
               </div>
-              <div style={{ fontSize: 48 * cs, fontWeight: 800, color: '#fff', lineHeight: 1.1, textShadow }}>
+              <div style={{ fontFamily: "'Archivo Black','Arial Black',system-ui,sans-serif", fontSize: 52 * cs, color: '#f5f3eb', lineHeight: 1.05, textTransform: 'uppercase', textShadow }}>
                 {title}
               </div>
             </div>
@@ -157,8 +158,10 @@ const HybridRaceExportCard = React.forwardRef<HTMLDivElement, CardProps>(
                     {seg.icon || (seg.isRun ? '🏃' : '💪')}
                   </div>
                   <div style={{
-                    width: 180 * cs, flexShrink: 0, fontSize: 20 * cs,
-                    color: isClear ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.72)',
+                    fontFamily: "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace",
+                    width: 200 * cs, flexShrink: 0, fontSize: 16 * cs, fontWeight: 700,
+                    letterSpacing: '0.08em', textTransform: 'uppercase',
+                    color: isClear ? 'rgba(245,243,235,0.9)' : 'rgba(245,243,235,0.65)',
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                     textShadow,
                   }}>
@@ -167,18 +170,18 @@ const HybridRaceExportCard = React.forwardRef<HTMLDivElement, CardProps>(
                   <div style={{
                     flex: 1, height: 42 * cs,
                     background: isClear ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.05)',
-                    borderRadius: 10 * cs, overflow: 'hidden',
+                    overflow: 'hidden',
                   }}>
                     <div style={{
                       width: `${pct}%`, height: '100%',
                       background: seg.isRun ? barGrad(runColor) : barGrad(stnColor),
-                      borderRadius: 10 * cs,
                       display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
                       paddingRight: 16 * cs, minWidth: 70 * cs, boxSizing: 'border-box',
                     }}>
                       {dur > 0 && (
                         <span style={{
-                          fontSize: 18 * cs, fontWeight: 700, color: '#fff',
+                          fontFamily: "'Archivo Black','Arial Black',system-ui,sans-serif",
+                          fontSize: 18 * cs, color: '#fff',
                           textShadow: '0 1px 3px rgba(0,0,0,0.6)', whiteSpace: 'nowrap',
                         }}>
                           {fmtSeg(dur)}
@@ -195,7 +198,6 @@ const HybridRaceExportCard = React.forwardRef<HTMLDivElement, CardProps>(
           {hasSplit && (
             <div style={{
               display: 'flex', marginTop: 40 * cs,
-              borderRadius: 16 * cs, overflow: 'hidden',
               border: `1px solid ${isClear ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)'}`,
             }}>
               <div style={{
@@ -203,8 +205,8 @@ const HybridRaceExportCard = React.forwardRef<HTMLDivElement, CardProps>(
                 alignItems: 'center', gap: 8 * cs, padding: `${24 * cs}px ${28 * cs}px`,
                 background: `${runColor}1a`,
               }}>
-                <span style={{ fontSize: 18 * cs, color: 'rgba(255,255,255,0.5)', textShadow }}>🏃 Runs</span>
-                <strong style={{ fontSize: 36 * cs, fontWeight: 800, color: runColor, lineHeight: 1, textShadow }}>
+                <span style={{ fontFamily: "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace", fontSize: 15 * cs, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(245,243,235,0.5)', textShadow }}>🏃 Runs</span>
+                <strong style={{ fontFamily: "'Archivo Black','Arial Black',system-ui,sans-serif", fontSize: 38 * cs, color: runColor, lineHeight: 1, textShadow }}>
                   {fmtTotal(runs)}
                 </strong>
               </div>
@@ -214,8 +216,8 @@ const HybridRaceExportCard = React.forwardRef<HTMLDivElement, CardProps>(
                 alignItems: 'center', gap: 8 * cs, padding: `${24 * cs}px ${28 * cs}px`,
                 background: `${stnColor}15`,
               }}>
-                <span style={{ fontSize: 18 * cs, color: 'rgba(255,255,255,0.5)', textShadow }}>💪 Stations</span>
-                <strong style={{ fontSize: 36 * cs, fontWeight: 800, color: stnColor, lineHeight: 1, textShadow }}>
+                <span style={{ fontFamily: "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace", fontSize: 15 * cs, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(245,243,235,0.5)', textShadow }}>💪 Stations</span>
+                <strong style={{ fontFamily: "'Archivo Black','Arial Black',system-ui,sans-serif", fontSize: 38 * cs, color: stnColor, lineHeight: 1, textShadow }}>
                   {fmtTotal(stns)}
                 </strong>
               </div>
@@ -229,12 +231,12 @@ const HybridRaceExportCard = React.forwardRef<HTMLDivElement, CardProps>(
               ? 'rgba(255,255,255,0.08)'
               : `linear-gradient(135deg,${stnColor}26,${runColor}26)`,
             border: `1px solid ${isClear ? 'rgba(255,255,255,0.15)' : `${stnColor}4d`}`,
-            borderRadius: 16 * cs,
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           }}>
-            <span style={{ fontSize: 24 * cs, fontWeight: 700, color: '#fff', textShadow }}>Total Time</span>
+            <span style={{ fontFamily: "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace", fontSize: 20 * cs, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#f5f3eb', textShadow }}>Total Time</span>
             <span style={{
-              fontSize: 50 * cs, fontWeight: 900, lineHeight: 1,
+              fontFamily: "'Archivo Black','Arial Black',system-ui,sans-serif",
+              fontSize: 52 * cs, lineHeight: 1,
               color: stnColor,
             }}>
               {fmtTotal(total)}
@@ -245,10 +247,11 @@ const HybridRaceExportCard = React.forwardRef<HTMLDivElement, CardProps>(
           {showWatermark && (
             <div style={{
               position: 'absolute', bottom: 20, right: 28,
-              fontSize: Math.max(14, 18 * cs), fontWeight: 700, letterSpacing: '0.05em',
-              color: 'rgba(255,255,255,0.22)',
+              fontFamily: "'Archivo Black','Arial Black',system-ui,sans-serif",
+              fontSize: Math.max(14, 18 * cs), letterSpacing: '0.04em',
+              color: 'rgba(245,243,235,0.22)',
             }}>
-              Fit<span style={{ color: stnColor }}>Glue</span>
+              FIT<span style={{ color: stnColor }}>GLUE</span>
             </div>
           )}
         </div>

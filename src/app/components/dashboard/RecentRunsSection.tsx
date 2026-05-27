@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PipelineRun } from '../../../types/pb/user';
-import { DashboardBand } from '../library/ui/DashboardBand';
 import { PipelineRunsList } from './PipelineRunsList';
 
 export const RecentRunsSection: React.FC = () => {
@@ -12,21 +11,11 @@ export const RecentRunsSection: React.FC = () => {
     };
 
     return (
-        <>
-            <DashboardBand
-                label="✨ Recent Runs"
-                right={
-                    <span style={{ cursor: 'pointer' }} onClick={() => navigate('/activities')}>
-                        LIVE · VIEW ALL →
-                    </span>
-                }
-            />
-            <PipelineRunsList
-                variant="dashboard"
-                defaultFilter="all"
-                limit={6}
-                onRunClick={handleRunClick}
-            />
-        </>
+        <PipelineRunsList
+            variant="dashboard"
+            defaultFilter="all"
+            limit={6}
+            onRunClick={handleRunClick}
+        />
     );
 };

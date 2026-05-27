@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Stack, Grid } from '../library/layout';
-import { Card, Button, Heading, Paragraph, Badge, AccordionTrigger } from '../library/ui';
+import { Grid } from '../library/layout';
 import { Input, FormField, Select } from '../library/forms';
 import './enricher-data.css';
 import { client } from '../../../shared/api/client';
@@ -59,151 +58,129 @@ const StreakTrackersSection: React.FC<StreakTrackersSectionProps> = ({ entries, 
     };
 
     return (
-        <Card>
-            <Stack gap="md">
-                <Stack direction="horizontal" justify="between" align="center">
-                    <AccordionTrigger isExpanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
-                        <Heading level={3}>🔥 Streak Trackers</Heading>
-                        <Badge variant="default">{loading ? '...' : entries.length}</Badge>
-                    </AccordionTrigger>
-                    <Button
-                        variant="secondary"
-                        size="small"
-                        onClick={() => { if (!showNew) setIsExpanded(true); setShowNew(!showNew); }}
-                    >
-                        {showNew ? 'Cancel' : '+ Add Streak'}
-                    </Button>
-                </Stack>
+        <div className="ba-enricher-section">
+            <div className="ba-enricher-section__head" onClick={() => setIsExpanded(!isExpanded)}>
+                <div className="ba-enricher-section__head-left">
+                    <span>🔥</span>
+                    <span className="ba-enricher-section__label">Streak Trackers</span>
+                    <span className="ba-enricher-section__count">{loading ? '…' : entries.length}</span>
+                </div>
+                <button
+                    className="ba-enricher-section__add-btn"
+                    onClick={(e) => { e.stopPropagation(); if (!showNew) setIsExpanded(true); setShowNew(!showNew); }}
+                >
+                    {showNew ? 'Cancel' : '+ Add'}
+                </button>
+            </div>
 
-                {isExpanded && (
-                    <>
-                        {showNew && (
-                            <Card>
-                                <Stack gap="sm">
-                                    <Heading level={4}>New Streak Tracker</Heading>
-                                    <Grid cols={3} gap="md">
-                                        <FormField label="Activity Type" htmlFor="new-streak-type">
-                                            <Select
-                                                id="new-streak-type"
-                                                value={newActivityTypes}
-                                                onChange={(e) => setNewActivityTypes(e.target.value)}
-                                                options={[
-                                                    { value: 'any', label: 'Any Activity' },
-                                                    { value: 'running', label: 'Running' },
-                                                    { value: 'cycling', label: 'Cycling' },
-                                                    { value: 'swimming', label: 'Swimming' },
-                                                    { value: 'strength', label: 'Strength Training' },
-                                                ]}
-                                            />
-                                        </FormField>
-                                        <FormField label="Current Streak" htmlFor="new-streak-current">
-                                            <Input
-                                                id="new-streak-current"
-                                                type="number"
-                                                min={0}
-                                                value={newCurrent}
-                                                onChange={(e) => setNewCurrent(parseInt(e.target.value) || 0)}
-                                            />
-                                        </FormField>
-                                        <FormField label="Longest Streak" htmlFor="new-streak-longest">
-                                            <Input
-                                                id="new-streak-longest"
-                                                type="number"
-                                                min={0}
-                                                value={newLongest}
-                                                onChange={(e) => setNewLongest(parseInt(e.target.value) || 0)}
-                                            />
-                                        </FormField>
-                                    </Grid>
-                                    <Button variant="primary" onClick={handleCreate}>
-                                        Create Streak Tracker
-                                    </Button>
-                                </Stack>
-                            </Card>
-                        )}
+            {isExpanded && (
+                <div className="ba-enricher-section__body">
+                    {showNew && (
+                        <div className="ba-enricher-section__new-form">
+                            <Grid cols={3} gap="md">
+                                <FormField label="Activity Type" htmlFor="new-streak-type">
+                                    <Select
+                                        id="new-streak-type"
+                                        value={newActivityTypes}
+                                        onChange={(e) => setNewActivityTypes(e.target.value)}
+                                        options={[
+                                            { value: 'any', label: 'Any Activity' },
+                                            { value: 'running', label: 'Running' },
+                                            { value: 'cycling', label: 'Cycling' },
+                                            { value: 'swimming', label: 'Swimming' },
+                                            { value: 'strength', label: 'Strength Training' },
+                                        ]}
+                                    />
+                                </FormField>
+                                <FormField label="Current Streak" htmlFor="new-streak-current">
+                                    <Input
+                                        id="new-streak-current"
+                                        type="number"
+                                        min={0}
+                                        value={newCurrent}
+                                        onChange={(e) => setNewCurrent(parseInt(e.target.value) || 0)}
+                                    />
+                                </FormField>
+                                <FormField label="Longest Streak" htmlFor="new-streak-longest">
+                                    <Input
+                                        id="new-streak-longest"
+                                        type="number"
+                                        min={0}
+                                        value={newLongest}
+                                        onChange={(e) => setNewLongest(parseInt(e.target.value) || 0)}
+                                    />
+                                </FormField>
+                            </Grid>
+                            <button className="fg-button fg-button--sm" style={{ marginTop: '1rem' }} onClick={handleCreate}>
+                                Create Streak Tracker
+                            </button>
+                        </div>
+                    )}
 
-                        {loading ? (
-                            <Paragraph muted>Loading streak trackers...</Paragraph>
-                        ) : entries.length === 0 ? (
-                            <Paragraph muted>No streak trackers yet. Add the Streak Tracker booster to a pipeline to start tracking.</Paragraph>
+                    {loading ? (
+                        <div className="ba-enricher-loading">Loading streak trackers…</div>
+                    ) : entries.length === 0 ? (
+                        <div className="ba-enricher-empty">No streak trackers yet. Add the Streak Tracker booster to a pipeline to start tracking.</div>
+                    ) : entries.map((entry) => (
+                        editingBooster?.id === entry.id ? (
+                            <div key={entry.id} className="ba-enricher-edit-form">
+                                <label className="ba-enricher-edit-form__label">
+                                    Editing: {getBoosterLabel(entry.id)}
+                                </label>
+                                <Grid cols={2} gap="md">
+                                    <div>
+                                        <label className="ba-enricher-edit-form__label" htmlFor={`edit-${entry.id}-current`}>Current Streak</label>
+                                        <Input
+                                            id={`edit-${entry.id}-current`}
+                                            type="number"
+                                            min={0}
+                                            value={(editingBooster.data.current_streak as number) ?? 0}
+                                            onChange={(e) => setEditingBooster({
+                                                ...editingBooster,
+                                                data: { ...editingBooster.data, current_streak: parseInt(e.target.value) || 0 }
+                                            })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="ba-enricher-edit-form__label" htmlFor={`edit-${entry.id}-longest`}>Longest Streak</label>
+                                        <Input
+                                            id={`edit-${entry.id}-longest`}
+                                            type="number"
+                                            min={0}
+                                            value={(editingBooster.data.longest_streak as number) ?? 0}
+                                            onChange={(e) => setEditingBooster({
+                                                ...editingBooster,
+                                                data: { ...editingBooster.data, longest_streak: parseInt(e.target.value) || 0 }
+                                            })}
+                                        />
+                                    </div>
+                                </Grid>
+                                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                                    <button className="fg-button fg-button--sm" onClick={() => handleSave(editingBooster)}>Save</button>
+                                    <button className="fg-button fg-button--sm fg-button--ghost" onClick={() => setEditingBooster(null)}>Cancel</button>
+                                </div>
+                            </div>
                         ) : (
-                            <Stack gap="sm">
-                                {entries.map((entry) => (
-                                    <Card key={entry.id} variant="elevated">
-                                        {editingBooster?.id === entry.id ? (
-                                            <Stack gap="sm">
-                                                <Paragraph size="sm" muted>
-                                                    Editing: <strong>{getBoosterLabel(entry.id)}</strong>
-                                                </Paragraph>
-                                                <Grid cols={2} gap="md">
-                                                    <FormField label="Current Streak" htmlFor={`edit-${entry.id}-current`}>
-                                                        <Input
-                                                            id={`edit-${entry.id}-current`}
-                                                            type="number"
-                                                            min={0}
-                                                            value={(editingBooster.data.current_streak as number) ?? 0}
-                                                            onChange={(e) => setEditingBooster({
-                                                                ...editingBooster,
-                                                                data: { ...editingBooster.data, current_streak: parseInt(e.target.value) || 0 }
-                                                            })}
-                                                        />
-                                                    </FormField>
-                                                    <FormField label="Longest Streak" htmlFor={`edit-${entry.id}-longest`}>
-                                                        <Input
-                                                            id={`edit-${entry.id}-longest`}
-                                                            type="number"
-                                                            min={0}
-                                                            value={(editingBooster.data.longest_streak as number) ?? 0}
-                                                            onChange={(e) => setEditingBooster({
-                                                                ...editingBooster,
-                                                                data: { ...editingBooster.data, longest_streak: parseInt(e.target.value) || 0 }
-                                                            })}
-                                                        />
-                                                    </FormField>
-                                                </Grid>
-                                                <Stack direction="horizontal" gap="sm">
-                                                    <Button size="small" variant="primary" onClick={() => handleSave(editingBooster)}>
-                                                        Save
-                                                    </Button>
-                                                    <Button size="small" variant="text" onClick={() => setEditingBooster(null)}>
-                                                        Cancel
-                                                    </Button>
-                                                </Stack>
-                                            </Stack>
-                                        ) : (
-                                            <Stack direction="horizontal" justify="between" align="center">
-                                                <Stack gap="xs">
-                                                    <Paragraph><strong>{getBoosterLabel(entry.id)}</strong></Paragraph>
-                                                    <Paragraph size="sm" muted>
-                                                        Current: {entry.data.current_streak as number ?? 0} days
-                                                        {' • '}Best: {entry.data.longest_streak as number ?? 0} days
-                                                        {entry.data.last_activity_date ? ` • Last: ${entry.data.last_activity_date}` : ''}
-                                                        {entry.data.last_update ? ` • Updated: ${formatDate(entry.data.last_update as string)}` : ''}
-                                                    </Paragraph>
-                                                    {typeof entry.data.last_external_id === 'string' && entry.data.last_external_id && (
-                                                        <Paragraph size="sm" muted>
-                                                            Last source activity: {entry.data.last_external_id}
-                                                        </Paragraph>
-                                                    )}
-                                                </Stack>
-                                                <Stack direction="horizontal" gap="xs">
-                                                    <Button size="small" variant="text" onClick={() => setEditingBooster(entry)}>
-                                                        Edit
-                                                    </Button>
-                                                    <Button size="small" variant="danger" onClick={() => handleDelete(entry.id)}>
-                                                        Delete
-                                                    </Button>
-                                                </Stack>
-                                            </Stack>
-                                        )}
-                                    </Card>
-                                ))}
-                            </Stack>
-                        )}
-                    </>
-                )}
-            </Stack>
-        </Card>
+                            <div key={entry.id} className="ba-enricher-row">
+                                <div className="ba-enricher-row__left">
+                                    <div className="ba-enricher-row__label">{getBoosterLabel(entry.id)}</div>
+                                    <div className="ba-enricher-row__meta">
+                                        Current: <span className="ba-enricher-row__meta-value">{(entry.data.current_streak as number) ?? 0} days</span>
+                                        {' · '}Best: <span className="ba-enricher-row__meta-value">{(entry.data.longest_streak as number) ?? 0} days</span>
+                                        {entry.data.last_activity_date ? ` · Last: ${entry.data.last_activity_date}` : ''}
+                                        {entry.data.last_update ? ` · Updated: ${formatDate(entry.data.last_update as string)}` : ''}
+                                    </div>
+                                </div>
+                                <div className="ba-enricher-row__actions">
+                                    <button className="fg-button fg-button--sm fg-button--ghost" onClick={() => setEditingBooster(entry)}>Edit</button>
+                                    <button className="fg-button fg-button--sm fg-button--ghost" style={{ color: 'var(--fg-rose)' }} onClick={() => handleDelete(entry.id)}>Delete</button>
+                                </div>
+                            </div>
+                        )
+                    ))}
+                </div>
+            )}
+        </div>
     );
 };
 

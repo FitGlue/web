@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Stack, Grid } from '../library/layout';
-import { Card, Button, Heading, Paragraph, Badge, AccordionTrigger } from '../library/ui';
+import { Grid } from '../library/layout';
 import { Input, FormField, Select } from '../library/forms';
 import './enricher-data.css';
 import { client } from '../../../shared/api/client';
@@ -57,128 +56,104 @@ const DistanceMilestonesSection: React.FC<DistanceMilestonesSectionProps> = ({ e
     };
 
     return (
-        <Card>
-            <Stack gap="md">
-                <Stack direction="horizontal" justify="between" align="center">
-                    <AccordionTrigger isExpanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
-                        <Heading level={3}>📊 Distance Milestones</Heading>
-                        <Badge variant="default">{loading ? '...' : entries.length}</Badge>
-                    </AccordionTrigger>
-                    <Button
-                        variant="secondary"
-                        size="small"
-                        onClick={() => { if (!showNew) setIsExpanded(true); setShowNew(!showNew); }}
-                    >
-                        {showNew ? 'Cancel' : '+ Add Milestone'}
-                    </Button>
-                </Stack>
+        <div className="ba-enricher-section">
+            <div className="ba-enricher-section__head" onClick={() => setIsExpanded(!isExpanded)}>
+                <div className="ba-enricher-section__head-left">
+                    <span>📊</span>
+                    <span className="ba-enricher-section__label">Distance Milestones</span>
+                    <span className="ba-enricher-section__count">{loading ? '…' : entries.length}</span>
+                </div>
+                <button
+                    className="ba-enricher-section__add-btn"
+                    onClick={(e) => { e.stopPropagation(); if (!showNew) setIsExpanded(true); setShowNew(!showNew); }}
+                >
+                    {showNew ? 'Cancel' : '+ Add'}
+                </button>
+            </div>
 
-                {isExpanded && (
-                    <>
-                        {showNew && (
-                            <Card>
-                                <Stack gap="sm">
-                                    <Heading level={4}>New Distance Milestone Tracker</Heading>
-                                    <Grid cols={2} gap="md">
-                                        <FormField label="Sport" htmlFor="new-milestone-sport">
-                                            <Select
-                                                id="new-milestone-sport"
-                                                value={newSport}
-                                                onChange={(e) => setNewSport(e.target.value)}
-                                                options={[
-                                                    { value: 'any', label: 'All Sports' },
-                                                    { value: 'running', label: 'Running' },
-                                                    { value: 'cycling', label: 'Cycling' },
-                                                    { value: 'swimming', label: 'Swimming' },
-                                                ]}
-                                            />
-                                        </FormField>
-                                        <FormField label="Lifetime Distance (km)" htmlFor="new-milestone-distance">
-                                            <Input
-                                                id="new-milestone-distance"
-                                                type="number"
-                                                step={0.1}
-                                                min={0}
-                                                value={newDistance}
-                                                onChange={(e) => setNewDistance(parseFloat(e.target.value) || 0)}
-                                            />
-                                        </FormField>
-                                    </Grid>
-                                    <Button variant="primary" onClick={handleCreate}>
-                                        Create Milestone Tracker
-                                    </Button>
-                                </Stack>
-                            </Card>
-                        )}
+            {isExpanded && (
+                <div className="ba-enricher-section__body">
+                    {showNew && (
+                        <div className="ba-enricher-section__new-form">
+                            <Grid cols={2} gap="md">
+                                <FormField label="Sport" htmlFor="new-milestone-sport">
+                                    <Select
+                                        id="new-milestone-sport"
+                                        value={newSport}
+                                        onChange={(e) => setNewSport(e.target.value)}
+                                        options={[
+                                            { value: 'any', label: 'All Sports' },
+                                            { value: 'running', label: 'Running' },
+                                            { value: 'cycling', label: 'Cycling' },
+                                            { value: 'swimming', label: 'Swimming' },
+                                        ]}
+                                    />
+                                </FormField>
+                                <FormField label="Lifetime Distance (km)" htmlFor="new-milestone-distance">
+                                    <Input
+                                        id="new-milestone-distance"
+                                        type="number"
+                                        step={0.1}
+                                        min={0}
+                                        value={newDistance}
+                                        onChange={(e) => setNewDistance(parseFloat(e.target.value) || 0)}
+                                    />
+                                </FormField>
+                            </Grid>
+                            <button className="fg-button fg-button--sm" style={{ marginTop: '1rem' }} onClick={handleCreate}>
+                                Create Milestone Tracker
+                            </button>
+                        </div>
+                    )}
 
-                        {loading ? (
-                            <Paragraph muted>Loading distance milestones...</Paragraph>
-                        ) : entries.length === 0 ? (
-                            <Paragraph muted>No distance milestones yet. Add the Distance Milestones booster to a pipeline to start tracking.</Paragraph>
+                    {loading ? (
+                        <div className="ba-enricher-loading">Loading distance milestones…</div>
+                    ) : entries.length === 0 ? (
+                        <div className="ba-enricher-empty">No distance milestones yet. Add the Distance Milestones booster to a pipeline to start tracking.</div>
+                    ) : entries.map((entry) => (
+                        editingBooster?.id === entry.id ? (
+                            <div key={entry.id} className="ba-enricher-edit-form">
+                                <label className="ba-enricher-edit-form__label" htmlFor={`edit-${entry.id}-distance`}>
+                                    Editing: {getBoosterLabel(entry.id)} — Lifetime Distance (km)
+                                </label>
+                                <Input
+                                    id={`edit-${entry.id}-distance`}
+                                    type="number"
+                                    step={0.1}
+                                    min={0}
+                                    value={(editingBooster.data.lifetime_distance as number) ?? 0}
+                                    onChange={(e) => setEditingBooster({
+                                        ...editingBooster,
+                                        data: { ...editingBooster.data, lifetime_distance: parseFloat(e.target.value) || 0 }
+                                    })}
+                                    style={{ maxWidth: '150px' }}
+                                />
+                                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                                    <button className="fg-button fg-button--sm" onClick={() => handleSave(editingBooster)}>Save</button>
+                                    <button className="fg-button fg-button--sm fg-button--ghost" onClick={() => setEditingBooster(null)}>Cancel</button>
+                                </div>
+                            </div>
                         ) : (
-                            <Stack gap="sm">
-                                {entries.map((entry) => (
-                                    <Card key={entry.id} variant="elevated">
-                                        {editingBooster?.id === entry.id ? (
-                                            <Stack gap="sm">
-                                                <Paragraph size="sm" muted>
-                                                    Editing: <strong>{getBoosterLabel(entry.id)}</strong>
-                                                </Paragraph>
-                                                <FormField label="Lifetime Distance (km)" htmlFor={`edit-${entry.id}-distance`}>
-                                                    <Input
-                                                        id={`edit-${entry.id}-distance`}
-                                                        type="number"
-                                                        step={0.1}
-                                                        min={0}
-                                                        value={(editingBooster.data.lifetime_distance as number) ?? 0}
-                                                        onChange={(e) => setEditingBooster({
-                                                            ...editingBooster,
-                                                            data: { ...editingBooster.data, lifetime_distance: parseFloat(e.target.value) || 0 }
-                                                        })}
-                                                        style={{ maxWidth: '150px' }}
-                                                    />
-                                                </FormField>
-                                                <Stack direction="horizontal" gap="sm">
-                                                    <Button size="small" variant="primary" onClick={() => handleSave(editingBooster)}>
-                                                        Save
-                                                    </Button>
-                                                    <Button size="small" variant="text" onClick={() => setEditingBooster(null)}>
-                                                        Cancel
-                                                    </Button>
-                                                </Stack>
-                                            </Stack>
-                                        ) : (
-                                            <Stack direction="horizontal" justify="between" align="center">
-                                                <Stack gap="xs">
-                                                    <Paragraph><strong>{getBoosterLabel(entry.id)}</strong></Paragraph>
-                                                    <Paragraph size="sm" muted>
-                                                        Lifetime: {typeof entry.data.lifetime_distance === 'number' ? entry.data.lifetime_distance.toFixed(1) : '0'} km
-                                                        {entry.data.last_update ? ` • Updated: ${formatDate(entry.data.last_update as string)}` : ''}
-                                                    </Paragraph>
-                                                    {typeof entry.data.last_external_id === 'string' && entry.data.last_external_id && (
-                                                        <Paragraph size="sm" muted>
-                                                            Last source activity: {entry.data.last_external_id}
-                                                        </Paragraph>
-                                                    )}
-                                                </Stack>
-                                                <Stack direction="horizontal" gap="xs">
-                                                    <Button size="small" variant="text" onClick={() => setEditingBooster(entry)}>
-                                                        Edit
-                                                    </Button>
-                                                    <Button size="small" variant="danger" onClick={() => handleDelete(entry.id)}>
-                                                        Delete
-                                                    </Button>
-                                                </Stack>
-                                            </Stack>
-                                        )}
-                                    </Card>
-                                ))}
-                            </Stack>
-                        )}
-                    </>
-                )}
-            </Stack>
-        </Card>
+                            <div key={entry.id} className="ba-enricher-row">
+                                <div className="ba-enricher-row__left">
+                                    <div className="ba-enricher-row__label">{getBoosterLabel(entry.id)}</div>
+                                    <div className="ba-enricher-row__meta">
+                                        Lifetime: <span className="ba-enricher-row__meta-value">
+                                            {typeof entry.data.lifetime_distance === 'number' ? entry.data.lifetime_distance.toFixed(1) : '0'} km
+                                        </span>
+                                        {entry.data.last_update ? ` · Updated: ${formatDate(entry.data.last_update as string)}` : ''}
+                                    </div>
+                                </div>
+                                <div className="ba-enricher-row__actions">
+                                    <button className="fg-button fg-button--sm fg-button--ghost" onClick={() => setEditingBooster(entry)}>Edit</button>
+                                    <button className="fg-button fg-button--sm fg-button--ghost" style={{ color: 'var(--fg-rose)' }} onClick={() => handleDelete(entry.id)}>Delete</button>
+                                </div>
+                            </div>
+                        )
+                    ))}
+                </div>
+            )}
+        </div>
     );
 };
 

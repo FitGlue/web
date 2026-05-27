@@ -150,7 +150,6 @@ const ActivitiesListPage: React.FC = () => {
     return (
         <PageLayout fullWidth>
             <PageHeader
-                crumbs={['Activities']}
                 title="Activities"
                 meta="Real-time feed of every pipeline run — synced, skipped, failed, or in flight."
                 stats={stats}
