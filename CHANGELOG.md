@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.38.0](https://github.com/fitglue/web/compare/v11.37.0...v11.38.0) (2026-05-27)
+
+
+### Features
+
+* **showcase:** add toggleable header band to PR export card ([2721da1](https://github.com/fitglue/web/commit/2721da107dcf7b1609e3554fe54c0a4595ecb735))
+
+
+### Bug Fixes
+
+* **showcase:** fix PR export card and module share buttons ([a3539b4](https://github.com/fitglue/web/commit/a3539b41b25d7a0b73cec000ffad999799cf0b14))
+
 ## [11.37.0](https://github.com/fitglue/web/compare/v11.36.0...v11.37.0) (2026-05-27)
 
 
