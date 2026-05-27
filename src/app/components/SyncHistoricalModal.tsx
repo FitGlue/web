@@ -51,7 +51,7 @@ export const SyncHistoricalModal: React.FC<Props> = ({
             const { data, error } = await client.GET('/users/me/connections/{provider}/activities', {
                 params: {
                     path: { provider },
-                    query: pageToken ? { page_token: pageToken } : {},
+                    query: pageToken ? { pageToken } : {},
                 },
             });
             if (error || !data) {
