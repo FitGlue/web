@@ -9,6 +9,8 @@ import { client } from '../../shared/api/client';
 import { components } from '../../shared/api/schema-client';
 
 type SourceActivityItem = components['schemas']['SourceActivityItemGateway'];
+type ListActivitiesResponse = components['schemas']['ListSourceActivitiesGatewayResponse'];
+type BackfillResponse = components['schemas']['BackfillActivitiesGatewayResponse'];
 
 interface ProviderInfo {
     name: string;
@@ -58,7 +60,7 @@ export const SyncHistoricalModal: React.FC<Props> = ({
                 setSyncError('Failed to load activities');
                 return;
             }
-            const response = data as { activities?: SourceActivityItem[]; nextPageToken?: string };
+            const response = data as ListActivitiesResponse;
             setActivities(prev => pageToken ? [...prev, ...(response.activities ?? [])] : (response.activities ?? []));
             setNextPageToken(response.nextPageToken ?? undefined);
         } catch {
@@ -105,7 +107,7 @@ export const SyncHistoricalModal: React.FC<Props> = ({
                 setSyncError('Failed to queue activities');
                 return;
             }
-            const response = data as { queuedCount?: number };
+            const response = data as BackfillResponse;
             setSyncedCount(response.queuedCount ?? selectedIds.size);
             setSelectedIds(new Set());
             setActivities([]);
