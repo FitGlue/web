@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.36.0](https://github.com/fitglue/web/compare/v11.35.1...v11.36.0) (2026-05-27)
+
+
+### Features
+
+* **ui:** aurora × brutal redesign of share items and app UI fixes ([0388eba](https://github.com/fitglue/web/commit/0388ebad794e3192a39060e066567708f3e2f7a7))
+
 ### [11.35.1](https://github.com/fitglue/web/compare/v11.35.0...v11.35.1) (2026-05-27)
 
 
