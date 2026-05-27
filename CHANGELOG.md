@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.39.0](https://github.com/fitglue/web/compare/v11.38.0...v11.39.0) (2026-05-27)
+
+
+### Features
+
+* **connections:** add connection-scoped historical activity import ([58dad2d](https://github.com/fitglue/web/commit/58dad2de3485521d9bbafa5b6e661b3f0d8fc1b5))
+* **showcase:** add PNG export buttons to activity feed cards ([0512fa6](https://github.com/fitglue/web/commit/0512fa691c5e5fe8e89d5f920b539112f0186da0))
+
+
+### Bug Fixes
+
+* **connections:** use camelCase pageToken query param for ListConnectionActivities ([acb64ef](https://github.com/fitglue/web/commit/acb64ef54a99d8827aa45aff9cbb85b0767d3acc))
+
 ## [11.38.0](https://github.com/fitglue/web/compare/v11.37.0...v11.38.0) (2026-05-27)
 
 
