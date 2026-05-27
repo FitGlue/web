@@ -64,6 +64,7 @@ interface PRCardProps {
   textColor: string;
   bg: string;
   cols: number;
+  showHeader: boolean;
   headerLabel: string;
   title: string;
   startTime: string | null;
@@ -71,7 +72,7 @@ interface PRCardProps {
 }
 
 const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
-  ({ prs, accent, textColor, bg, cols, headerLabel, title, startTime, showWatermark }, ref) => {
+  ({ prs, accent, textColor, bg, cols, showHeader, headerLabel, title, startTime, showWatermark }, ref) => {
     const isClear = bg === 'transparent';
     const effectiveCols = prs.length === 1 ? 1 : Math.min(cols, prs.length);
 
@@ -84,48 +85,50 @@ const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
         style={{ width: EXPORT_W, background: bg, fontFamily: DISPLAY, boxSizing: 'border-box' }}
       >
         {/* ── Header band ── */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '28px 60px 24px',
-          background: isClear ? 'rgba(0,0,0,0.3)' : `${accent}14`,
-          borderBottom: `2px solid ${accent}50`,
-        }}>
+        {showHeader && (
           <div style={{
-            fontFamily: DISPLAY,
-            fontSize: 28,
-            color: accent,
-            letterSpacing: '-0.01em',
-            textTransform: 'uppercase',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '28px 60px 24px',
+            background: isClear ? 'rgba(0,0,0,0.3)' : `${accent}14`,
+            borderBottom: `2px solid ${accent}50`,
           }}>
-            ★ {headerLabel || 'PERSONAL RECORDS'}
-          </div>
-          <div style={{ textAlign: 'right' }}>
             <div style={{
               fontFamily: DISPLAY,
-              fontSize: 18,
-              color: textColor,
-              textTransform: 'uppercase',
+              fontSize: 28,
+              color: accent,
               letterSpacing: '-0.01em',
-              textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined,
+              textTransform: 'uppercase',
             }}>
-              {title}
+              ★ {headerLabel || 'PERSONAL RECORDS'}
             </div>
-            {startTime && (
+            <div style={{ textAlign: 'right' }}>
               <div style={{
-                fontFamily: MONO,
-                fontSize: 13,
-                color: `${textColor}66`,
-                letterSpacing: '0.12em',
+                fontFamily: DISPLAY,
+                fontSize: 18,
+                color: textColor,
                 textTransform: 'uppercase',
-                marginTop: 4,
+                letterSpacing: '-0.01em',
+                textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined,
               }}>
-                {formatDateFull(startTime)}
+                {title}
               </div>
-            )}
+              {startTime && (
+                <div style={{
+                  fontFamily: MONO,
+                  fontSize: 13,
+                  color: `${textColor}66`,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  marginTop: 4,
+                }}>
+                  {formatDateFull(startTime)}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* ── PR grid ── */}
         <div style={{
@@ -257,6 +260,7 @@ export const PRExportTab: React.FC<Props> = ({
     if (allPRs.length <= 4) return 'square';
     return 'landscape';
   });
+  const [showHeader,    setShowHeader]    = useState(true);
   const [headerLabel,   setHeaderLabel]   = useState('PERSONAL RECORDS');
   const [showWatermark, setShowWatermark] = useState(true);
   const [exporting,     setExporting]     = useState(false);
@@ -332,6 +336,7 @@ export const PRExportTab: React.FC<Props> = ({
               textColor={textColor}
               bg={selectedBg.bg}
               cols={selectedShape.cols}
+              showHeader={showHeader}
               headerLabel={headerLabel}
               title={activity.title ?? 'Activity'}
               startTime={activity.startTime ?? null}
@@ -351,14 +356,19 @@ export const PRExportTab: React.FC<Props> = ({
 
           <div className="export-option-group">
             <span className="export-option-label">Header</span>
-            <input
-              className="export-text-input"
-              type="text"
-              value={headerLabel}
-              onChange={(e) => setHeaderLabel(e.target.value.toUpperCase())}
-              placeholder="PERSONAL RECORDS"
-              maxLength={40}
-            />
+            <div className="export-option-row" style={{ marginBottom: showHeader ? 8 : 0 }}>
+              <button className={`export-pill${showHeader ? ' export-pill--active' : ''}`} onClick={() => setShowHeader((v) => !v)}>Show</button>
+            </div>
+            {showHeader && (
+              <input
+                className="export-text-input"
+                type="text"
+                value={headerLabel}
+                onChange={(e) => setHeaderLabel(e.target.value.toUpperCase())}
+                placeholder="PERSONAL RECORDS"
+                maxLength={40}
+              />
+            )}
           </div>
 
           <div className="export-option-group">
