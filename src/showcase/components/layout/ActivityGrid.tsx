@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
+import { toPng } from 'html-to-image';
 import type { components } from '../../../shared/api/schema-public';
 import { resolveFamily, FAMILY_STAMP_CLASS, type ActivityFamily } from '../../utils/activityFamily';
 import { getActivityIcon } from '../../utils/activityMeta';
@@ -81,6 +82,105 @@ function buildSparkPath(values: number[] | undefined): string {
     .join(' ');
 }
 
+// ─── Single card ─────────────────────────────────────────────────────────────
+
+interface CardProps {
+  e: ShowcaseProfileEntry;
+  family: ActivityFamily;
+  metrics: Metric[];
+  sparkPath: string;
+  dateStr: string;
+}
+
+function ActivityCardItem({ e, family, metrics, sparkPath, dateStr }: CardProps) {
+  const cardRef = useRef<HTMLAnchorElement>(null);
+  const [downloading, setDownloading] = useState(false);
+
+  const download = useCallback(async (transparent: boolean, ev: React.MouseEvent) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (!cardRef.current || downloading) return;
+    setDownloading(true);
+    try {
+      const png = await toPng(cardRef.current, {
+        pixelRatio: 2,
+        backgroundColor: transparent ? undefined : '#0d0d0d',
+        filter: (node) => !(node as HTMLElement).classList?.contains('act__share-btns'),
+      });
+      const link = document.createElement('a');
+      link.download = `${(e.title ?? 'activity').replace(/\s+/g, '-').toLowerCase()}-fitglue.png`;
+      link.href = png;
+      link.click();
+    } catch (err) {
+      console.error('Activity card export failed:', err);
+    } finally {
+      setDownloading(false);
+    }
+  }, [e.title, downloading]);
+
+  const stampCls = FAMILY_STAMP_CLASS[family];
+  const icon = getActivityIcon(e.activityType);
+  const label = formatActivityType(e.activityType).toUpperCase();
+  const gradId = `spark-g-${e.showcaseId ?? Math.random()}`;
+
+  return (
+    <a
+      ref={cardRef}
+      href={`/showcase/activity/${e.showcaseId}`}
+      className="act"
+    >
+      <div className="act__top">
+        <span className={`act__stamp act__stamp--${stampCls}`}>{icon} {label}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span className="act__date">{dateStr}</span>
+          <div className="act__share-btns">
+            <button
+              className="mod__share-btn"
+              onClick={(ev) => download(false, ev)}
+              title="Save as image (dark)"
+              disabled={downloading}
+            >◼</button>
+            <button
+              className="mod__share-btn mod__share-btn--clear"
+              onClick={(ev) => download(true, ev)}
+              title="Save as image (transparent)"
+              disabled={downloading}
+            >◻</button>
+          </div>
+        </div>
+      </div>
+
+      <div className="act__title">{e.title ?? 'Activity'}</div>
+
+      <div className="act__metrics">
+        {metrics.map((m, i) => (
+          <div key={i} className="act__metric">
+            <div className="act__metric-n">{m.value}</div>
+            <div className="act__metric-l">{m.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {sparkPath && (
+        <svg className="act__spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id={gradId} x1="0" x2="1">
+              <stop offset="0" stopColor="#ff3da6" />
+              <stop offset=".5" stopColor="#8b5cf6" />
+              <stop offset="1" stopColor="#22d3ee" />
+            </linearGradient>
+          </defs>
+          <path d={sparkPath} stroke={`url(#${gradId})`} strokeWidth="1.5" fill="none" />
+        </svg>
+      )}
+
+      {e.prLabel && <span className="act__pr">{e.prLabel}</span>}
+    </a>
+  );
+}
+
+// ─── Grid ─────────────────────────────────────────────────────────────────────
+
 interface Props {
   entries: ShowcaseProfileEntry[];
   totalActivities?: number;
@@ -145,9 +245,6 @@ export default function ActivityGrid({ entries, totalActivities }: Props): React
       <div className="act-grid">
         {filtered.map((e) => {
           const family = familyMap.get(e.showcaseId ?? '') ?? 'other';
-          const stampCls = FAMILY_STAMP_CLASS[family];
-          const icon = getActivityIcon(e.activityType);
-          const label = formatActivityType(e.activityType).toUpperCase();
           const metrics = buildMetricTrio(family, e);
           const sparkPath = buildSparkPath(e.sparkline?.values);
           const dateStr = e.startTime
@@ -157,48 +254,14 @@ export default function ActivityGrid({ entries, totalActivities }: Props): React
             : '';
 
           return (
-            <a
+            <ActivityCardItem
               key={e.showcaseId}
-              href={`/showcase/activity/${e.showcaseId}`}
-              className="act"
-            >
-              <div className="act__top">
-                <span className={`act__stamp act__stamp--${stampCls}`}>
-                  {icon} {label}
-                </span>
-                <span className="act__date">{dateStr}</span>
-              </div>
-
-              <div className="act__title">
-                {e.title ?? 'Activity'}
-              </div>
-
-              <div className="act__metrics">
-                {metrics.map((m, i) => (
-                  <div key={i} className="act__metric">
-                    <div className="act__metric-n">{m.value}</div>
-                    <div className="act__metric-l">{m.label}</div>
-                  </div>
-                ))}
-              </div>
-
-              {sparkPath && (
-                <svg className="act__spark" viewBox="0 0 100 28" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="spark-g" x1="0" x2="1">
-                      <stop offset="0" stopColor="#ff3da6" />
-                      <stop offset=".5" stopColor="#8b5cf6" />
-                      <stop offset="1" stopColor="#22d3ee" />
-                    </linearGradient>
-                  </defs>
-                  <path d={sparkPath} stroke="url(#spark-g)" strokeWidth="1.5" fill="none" />
-                </svg>
-              )}
-
-              {e.prLabel && (
-                <span className="act__pr">{e.prLabel}</span>
-              )}
-            </a>
+              e={e}
+              family={family}
+              metrics={metrics}
+              sparkPath={sparkPath}
+              dateStr={dateStr}
+            />
           );
         })}
       </div>
