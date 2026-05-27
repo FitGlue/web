@@ -26,12 +26,16 @@ export interface ParsedRecordType {
   isStrength: boolean;
 }
 
+function toTitleCase(s: string): string {
+  return s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
 export function parseRecordType(recordType: string): ParsedRecordType {
   for (const suffix of STRENGTH_SUFFIXES) {
     if (recordType.endsWith(suffix)) {
       const exercise = recordType.slice(0, -suffix.length);
       return {
-        label: exercise,
+        label: toTitleCase(exercise),
         prType: suffix.slice(1).toUpperCase().replace(/_/g, ' '),
         isStrength: true,
       };
