@@ -101,8 +101,11 @@ function ActivityCardItem({ e, family, metrics, sparkPath, dateStr }: CardProps)
     ev.stopPropagation();
     if (!cardRef.current || downloading) return;
     setDownloading(true);
+    const el = cardRef.current;
+    const origBg = el.style.background;
+    if (transparent) el.style.background = 'transparent';
     try {
-      const png = await toPng(cardRef.current, {
+      const png = await toPng(el, {
         pixelRatio: 2,
         backgroundColor: transparent ? undefined : '#0d0d0d',
         filter: (node) => !(node as HTMLElement).classList?.contains('act__share-btns'),
@@ -114,6 +117,7 @@ function ActivityCardItem({ e, family, metrics, sparkPath, dateStr }: CardProps)
     } catch (err) {
       console.error('Activity card export failed:', err);
     } finally {
+      if (transparent) el.style.background = origBg;
       setDownloading(false);
     }
   }, [e.title, downloading]);
