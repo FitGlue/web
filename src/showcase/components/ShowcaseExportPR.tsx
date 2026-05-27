@@ -10,10 +10,10 @@ type ShowcasedActivity = components['schemas']['ShowcasedActivity'];
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const EXPORT_W    = 1080;
-const PREVIEW_W   = 280;
-const DISPLAY     = "'Archivo Black','Arial Black',system-ui,sans-serif";
-const MONO        = "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace";
+const EXPORT_W  = 1080;
+const PREVIEW_W = 280;
+const DISPLAY   = "'Archivo Black','Arial Black',system-ui,sans-serif";
+const MONO      = "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace";
 
 const PR_BACKGROUNDS = [
   { id: 'dark',     label: 'Dark',     bg: 'linear-gradient(135deg, #0a0a0a 0%, #1a0a20 50%, #0a0a0a 100%)' },
@@ -23,7 +23,6 @@ const PR_BACKGROUNDS = [
   { id: 'clear',    label: 'Clear',    bg: 'transparent' },
 ];
 
-// cols: how many PRs per row in this shape
 const PR_SHAPES = [
   { id: 'landscape', label: 'Landscape', cols: 3 },
   { id: 'square',    label: 'Square',    cols: 2 },
@@ -65,27 +64,26 @@ interface PRCardProps {
   textColor: string;
   bg: string;
   cols: number;
+  headerLabel: string;
   title: string;
   startTime: string | null;
   showWatermark: boolean;
 }
 
 const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
-  ({ prs, accent, textColor, bg, cols, title, startTime, showWatermark }, ref) => {
+  ({ prs, accent, textColor, bg, cols, headerLabel, title, startTime, showWatermark }, ref) => {
     const isClear = bg === 'transparent';
     const effectiveCols = prs.length === 1 ? 1 : Math.min(cols, prs.length);
+
+    const valueFontSize = effectiveCols === 1 ? 96 : effectiveCols === 2 ? 80 : 64;
+    const unitFontSize  = effectiveCols === 1 ? 28 : effectiveCols === 2 ? 24 : 20;
 
     return (
       <div
         ref={ref}
-        style={{
-          width: EXPORT_W,
-          background: bg,
-          fontFamily: DISPLAY,
-          boxSizing: 'border-box',
-        }}
+        style={{ width: EXPORT_W, background: bg, fontFamily: DISPLAY, boxSizing: 'border-box' }}
       >
-        {/* Header band */}
+        {/* ── Header band ── */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -101,7 +99,7 @@ const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
             letterSpacing: '-0.01em',
             textTransform: 'uppercase',
           }}>
-            ★ PERSONAL RECORDS
+            ★ {headerLabel || 'PERSONAL RECORDS'}
           </div>
           <div style={{ textAlign: 'right' }}>
             <div style={{
@@ -129,107 +127,97 @@ const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
           </div>
         </div>
 
-        {/* PR grid */}
+        {/* ── PR grid ── */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: `repeat(${effectiveCols}, 1fr)`,
-          gap: 0,
-          padding: '60px 60px 52px',
+          rowGap: 48,
+          columnGap: 60,
+          padding: '48px 60px 40px',
         }}>
-          {prs.map((pr, i) => {
-            const isNotLast = (i + 1) % effectiveCols !== 0 && i < prs.length - 1;
-            return (
-              <div
-                key={pr.id}
-                style={{
-                  padding: effectiveCols > 1 ? '0 40px 40px 0' : '0 0 40px',
-                  borderRight: isNotLast ? `1px solid ${accent}28` : 'none',
-                  paddingRight: isNotLast ? 40 : 0,
-                  marginRight: isNotLast ? 0 : undefined,
-                }}
-              >
-                {/* Exercise name */}
+          {prs.map((pr) => (
+            <div key={pr.id}>
+              {/* Exercise name */}
+              <div style={{
+                fontFamily: MONO,
+                fontSize: 15,
+                fontWeight: 700,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: `${textColor}66`,
+                marginBottom: 8,
+                textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined,
+              }}>
+                {pr.exerciseName}
+              </div>
+
+              {/* PR type badge (strength records only) */}
+              {pr.prType && (
+                <div style={{
+                  display: 'inline-block',
+                  background: `${accent}18`,
+                  border: `1.5px solid ${accent}`,
+                  padding: '3px 12px',
+                  fontFamily: MONO,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  letterSpacing: '0.18em',
+                  color: accent,
+                  textTransform: 'uppercase',
+                  marginBottom: 14,
+                }}>
+                  {pr.prType}
+                </div>
+              )}
+
+              {/* Value — Archivo Black, large, accent */}
+              <div style={{
+                fontFamily: DISPLAY,
+                fontSize: valueFontSize,
+                color: accent,
+                lineHeight: 1,
+                letterSpacing: '-0.02em',
+                textShadow: isClear ? '0 2px 20px rgba(0,0,0,0.9)' : undefined,
+                marginBottom: pr.delta ? 10 : 0,
+              }}>
+                {pr.value}
+                {pr.unit && (
+                  <span style={{
+                    fontFamily: MONO,
+                    fontSize: unitFontSize,
+                    fontWeight: 600,
+                    color: `${textColor}55`,
+                    marginLeft: 10,
+                  }}>
+                    {pr.unit}
+                  </span>
+                )}
+              </div>
+
+              {/* Delta (e.g. "−0:45" or "+5 kg") */}
+              {pr.delta && (
                 <div style={{
                   fontFamily: MONO,
                   fontSize: 16,
                   fontWeight: 700,
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  color: `${textColor}66`,
-                  marginBottom: 6,
+                  letterSpacing: '0.08em',
+                  color: `${textColor}77`,
                   textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined,
                 }}>
-                  {pr.exerciseName}
+                  {pr.delta}
                 </div>
-
-                {/* PR type badge (strength only) */}
-                {pr.prType && (
-                  <div style={{
-                    display: 'inline-block',
-                    background: `${accent}18`,
-                    border: `1.5px solid ${accent}`,
-                    padding: '3px 12px',
-                    fontFamily: MONO,
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: '0.18em',
-                    color: accent,
-                    textTransform: 'uppercase',
-                    marginBottom: 16,
-                  }}>
-                    {pr.prType}
-                  </div>
-                )}
-
-                {/* Value — big Archivo Black */}
-                <div style={{
-                  fontFamily: DISPLAY,
-                  fontSize: effectiveCols === 1 ? 96 : effectiveCols === 2 ? 80 : 64,
-                  color: accent,
-                  lineHeight: 1,
-                  letterSpacing: '-0.02em',
-                  textShadow: isClear ? '0 2px 20px rgba(0,0,0,0.9)' : undefined,
-                  marginBottom: 8,
-                }}>
-                  {pr.value}
-                  {pr.unit && (
-                    <span style={{
-                      fontFamily: MONO,
-                      fontSize: effectiveCols === 1 ? 28 : effectiveCols === 2 ? 24 : 20,
-                      fontWeight: 600,
-                      color: `${textColor}55`,
-                      marginLeft: 10,
-                    }}>
-                      {pr.unit}
-                    </span>
-                  )}
-                </div>
-
-                {/* Delta */}
-                {pr.delta && (
-                  <div style={{
-                    fontFamily: MONO,
-                    fontSize: 16,
-                    fontWeight: 700,
-                    letterSpacing: '0.08em',
-                    color: `${textColor}77`,
-                    textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined,
-                  }}>
-                    {pr.delta}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+              )}
+            </div>
+          ))}
         </div>
 
-        {/* Footer — watermark */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          padding: '0 60px 44px',
-        }}>
-          {showWatermark && (
+        {/* ── Footer / watermark ── */}
+        {showWatermark && (
+          <div style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            padding: '0 60px 40px',
+          }}>
             <div style={{
               fontFamily: DISPLAY,
               fontSize: 22,
@@ -238,8 +226,8 @@ const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
             }}>
               FIT<span style={{ color: accent }}>GLUE</span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -261,23 +249,31 @@ export const PRExportTab: React.FC<Props> = ({
   records, activity, accent, onAccentChange, textColor, onTextColorChange,
 }) => {
   const allPRs = useMemo(() => buildDisplayPRs(records), [records]);
+
   const [selectedIds, setSelectedIds] = useState<string[]>(() => allPRs.map((p) => p.id));
-  const [bgId, setBgId] = useState('dark');
-  const [shapeId, setShapeId] = useState(() => {
+  const [bgId,        setBgId]        = useState('dark');
+  const [shapeId,     setShapeId]     = useState(() => {
     if (allPRs.length === 1) return 'portrait';
     if (allPRs.length <= 4) return 'square';
     return 'landscape';
   });
+  const [headerLabel,   setHeaderLabel]   = useState('PERSONAL RECORDS');
   const [showWatermark, setShowWatermark] = useState(true);
-  const [exporting, setExporting] = useState(false);
+  const [exporting,     setExporting]     = useState(false);
+
   const frameRef = useRef<HTMLDivElement>(null);
 
   const selectedBg    = PR_BACKGROUNDS.find((b) => b.id === bgId)!;
   const selectedShape = PR_SHAPES.find((s) => s.id === shapeId)!;
-  const selectedPRs   = useMemo(() => allPRs.filter((p) => selectedIds.includes(p.id)), [allPRs, selectedIds]);
+  const selectedPRs   = useMemo(
+    () => allPRs.filter((p) => selectedIds.includes(p.id)),
+    [allPRs, selectedIds],
+  );
 
   const togglePR = useCallback((id: string) => {
-    setSelectedIds((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
   }, []);
 
   const previewScale = PREVIEW_W / EXPORT_W;
@@ -289,7 +285,6 @@ export const PRExportTab: React.FC<Props> = ({
       const h = frameRef.current.scrollHeight;
       const dataUrl = await toPng(frameRef.current, {
         width: EXPORT_W, height: h, pixelRatio: 1,
-        backgroundColor: selectedBg.bg === 'transparent' ? undefined : undefined,
       });
       const link = document.createElement('a');
       link.download = `${(activity.title ?? 'activity').replace(/\s+/g, '-').toLowerCase()}-prs-fitglue.png`;
@@ -300,10 +295,15 @@ export const PRExportTab: React.FC<Props> = ({
     } finally {
       setExporting(false);
     }
-  }, [activity.title, selectedBg.bg]);
+  }, [activity.title]);
 
   const checkerBg = 'repeating-conic-gradient(#2a2a2a 0% 25%, #1a1a1a 0% 50%) 0 0 / 12px 12px';
-  const previewH  = Math.round(PREVIEW_W * 0.75);
+
+  // Preview height: approximate card height × scale, capped so the modal doesn't blow up
+  const effectiveCols = selectedPRs.length === 1 ? 1 : Math.min(selectedShape.cols, selectedPRs.length);
+  const estimatedRows = Math.ceil((selectedPRs.length || 1) / effectiveCols);
+  const estimatedCardH = 80 + estimatedRows * 180 + 60;
+  const previewH = Math.min(Math.round(estimatedCardH * previewScale), 360);
 
   return (
     <>
@@ -314,7 +314,6 @@ export const PRExportTab: React.FC<Props> = ({
           style={{
             width: PREVIEW_W,
             height: previewH,
-            background: selectedBg.bg === 'transparent' ? undefined : undefined,
             backgroundImage: checkerBg,
             position: 'relative',
             overflow: 'hidden',
@@ -333,6 +332,7 @@ export const PRExportTab: React.FC<Props> = ({
               textColor={textColor}
               bg={selectedBg.bg}
               cols={selectedShape.cols}
+              headerLabel={headerLabel}
               title={activity.title ?? 'Activity'}
               startTime={activity.startTime ?? null}
               showWatermark={showWatermark}
@@ -348,6 +348,18 @@ export const PRExportTab: React.FC<Props> = ({
       {/* ── Right: options ── */}
       <div className="export-modal-options-col">
         <div className="export-options">
+
+          <div className="export-option-group">
+            <span className="export-option-label">Header</span>
+            <input
+              className="export-text-input"
+              type="text"
+              value={headerLabel}
+              onChange={(e) => setHeaderLabel(e.target.value.toUpperCase())}
+              placeholder="PERSONAL RECORDS"
+              maxLength={40}
+            />
+          </div>
 
           <div className="export-option-group">
             <span className="export-option-label">Layout</span>
@@ -398,7 +410,7 @@ export const PRExportTab: React.FC<Props> = ({
 
           {allPRs.length > 1 && (
             <div className="export-option-group">
-              <span className="export-option-label">PRs</span>
+              <span className="export-option-label">Include</span>
               <div className="export-option-row export-option-row--wrap">
                 {allPRs.map((pr) => (
                   <button
@@ -415,7 +427,7 @@ export const PRExportTab: React.FC<Props> = ({
           )}
 
           <div className="export-option-group">
-            <span className="export-option-label">Include</span>
+            <span className="export-option-label">Also</span>
             <div className="export-option-row">
               <button className={`export-pill${showWatermark ? ' export-pill--active' : ''}`} onClick={() => setShowWatermark((v) => !v)}>Watermark</button>
             </div>

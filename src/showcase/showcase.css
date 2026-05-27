@@ -837,12 +837,6 @@ body:has(#showcase-root) {
 .mod__share-btns {
   display: flex;
   gap: 2px;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-.mod:hover .mod__share-btns {
-  opacity: 1;
 }
 
 .mod__share-btn {
@@ -2876,6 +2870,24 @@ body:has(#showcase-root) {
 
 .export-option-group--stats .export-option-row {
   gap: 4px;
+}
+
+.export-text-input {
+  width: 100%;
+  background: var(--fg-ink-2);
+  border: 1px solid var(--fg-hairline-color);
+  color: var(--fg-paper);
+  font-family: var(--fg-font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 6px 10px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.export-text-input:focus {
+  border-color: var(--fg-paper);
 }
 
 .export-stats-hint {
