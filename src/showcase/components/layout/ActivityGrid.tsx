@@ -103,7 +103,11 @@ function ActivityCardItem({ e, family, metrics, sparkPath, dateStr }: CardProps)
     setDownloading(true);
     const el = cardRef.current;
     const origBg = el.style.background;
-    if (transparent) el.style.background = 'transparent';
+    const origBorder = el.style.border;
+    if (transparent) {
+      el.style.background = 'transparent';
+      el.style.border = 'none';
+    }
     try {
       const png = await toPng(el, {
         pixelRatio: 2,
@@ -117,7 +121,10 @@ function ActivityCardItem({ e, family, metrics, sparkPath, dateStr }: CardProps)
     } catch (err) {
       console.error('Activity card export failed:', err);
     } finally {
-      if (transparent) el.style.background = origBg;
+      if (transparent) {
+        el.style.background = origBg;
+        el.style.border = origBorder;
+      }
       setDownloading(false);
     }
   }, [e.title, downloading]);
