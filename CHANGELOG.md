@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.35.1](https://github.com/fitglue/web/compare/v11.35.0...v11.35.1) (2026-05-27)
+
+
+### Bug Fixes
+
+* **showcase:** title-case strength exercise names in PR display ([aa546ad](https://github.com/fitglue/web/commit/aa546ad4dad756b7f383405d944ad2783288b473))
+
 ## [11.35.0](https://github.com/fitglue/web/compare/v11.34.0...v11.35.0) (2026-05-26)
 
 
