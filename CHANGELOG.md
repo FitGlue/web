@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.39.2](https://github.com/fitglue/web/compare/v11.39.1...v11.39.2) (2026-05-27)
+
+
+### Bug Fixes
+
+* **PipelineSummaryCard:** change arrow direction from down to right ([8ede98a](https://github.com/fitglue/web/commit/8ede98afcb69479793c5240008d2f84f9d6df853))
+* **showcase:** strip borders from transparent activity card export ([da0424a](https://github.com/fitglue/web/commit/da0424ab93624e6998e7f9866952315d70fe8ae1))
+
 ### [11.39.1](https://github.com/fitglue/web/compare/v11.39.0...v11.39.1) (2026-05-27)
 
 
