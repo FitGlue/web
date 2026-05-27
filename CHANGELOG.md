@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.39.1](https://github.com/fitglue/web/compare/v11.39.0...v11.39.1) (2026-05-27)
+
+
+### Bug Fixes
+
+* **showcase:** clear element background before transparent card export ([940d5ac](https://github.com/fitglue/web/commit/940d5ac33ba88cd711789971ea0a91564bc45183))
+
 ## [11.39.0](https://github.com/fitglue/web/compare/v11.38.0...v11.39.0) (2026-05-27)
 
 
