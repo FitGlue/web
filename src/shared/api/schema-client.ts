@@ -1076,12 +1076,13 @@ export interface components {
             source?: string;
             sourceActivityIds?: string[];
         };
-        BackfillConnectionActivitiesGatewayRequest: {
-            sourceActivityIds?: string[];
-        };
         BackfillActivitiesGatewayResponse: {
             /** Format: int32 */
             queuedCount?: number;
+        };
+        BackfillConnectionActivitiesGatewayRequest: {
+            provider?: string;
+            sourceActivityIds?: string[];
         };
         BoosterExecution: {
             providerName?: string;
@@ -3335,7 +3336,7 @@ export interface operations {
     ClientGatewayService_ListConnectionActivities: {
         parameters: {
             query?: {
-                page_token?: string;
+                pageToken?: string;
             };
             header?: never;
             path: {

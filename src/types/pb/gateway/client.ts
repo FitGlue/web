@@ -226,6 +226,18 @@ export interface BackfillActivitiesGatewayResponse {
   queuedCount: number;
 }
 
+export interface ListConnectionActivitiesGatewayRequest {
+  /** from path */
+  provider: string;
+  pageToken: string;
+}
+
+export interface BackfillConnectionActivitiesGatewayRequest {
+  /** from path */
+  provider: string;
+  sourceActivityIds: string[];
+}
+
 export interface SubmitInputGatewayRequest {
   inputId: string;
   inputData: { [key: string]: string };
@@ -458,6 +470,12 @@ export interface ClientGatewayService {
   OAuthConnect(request: ProviderRequest): Promise<OAuthConnectResponse>;
   /** ===================== Connection Actions ===================== */
   ConnectionAction(request: ConnectionActionGatewayRequest): Promise<Empty>;
+  ListConnectionActivities(
+    request: ListConnectionActivitiesGatewayRequest,
+  ): Promise<ListSourceActivitiesGatewayResponse>;
+  BackfillConnectionActivities(
+    request: BackfillConnectionActivitiesGatewayRequest,
+  ): Promise<BackfillActivitiesGatewayResponse>;
   /** ===================== Notification Preferences ===================== */
   GetNotificationPrefs(request: EmptyRequest): Promise<NotificationPreferences>;
   UpdateNotificationPrefs(request: NotificationPreferences): Promise<NotificationPreferences>;
