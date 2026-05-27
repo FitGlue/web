@@ -4,28 +4,25 @@ import { Modal } from './library/ui/Modal';
 import { Button } from './library/ui/Button';
 import { Stack } from './library/layout/Stack';
 import { Paragraph } from './library/ui/Paragraph';
-import { TabButton } from './library/ui/TabButton';
 import { PluginIcon } from './library/ui/PluginIcon';
 import { client } from '../../shared/api/client';
 import { components } from '../../shared/api/schema-client';
-import { PluginManifest } from '../types/plugin';
 
 type SourceActivityItem = components['schemas']['SourceActivityItemGateway'];
 
-const SUPPORTED_SOURCE_IDS = ['hevy', 'strava', 'fitbit', 'intervals'] as const;
-type SupportedSourceId = typeof SUPPORTED_SOURCE_IDS[number];
+interface ProviderInfo {
+    name: string;
+    icon?: string;
+    iconType?: string;
+    iconPath?: string;
+}
 
-const SOURCE_PROTO_ID: Record<SupportedSourceId, string> = {
-    hevy: 'SOURCE_HEVY',
-    strava: 'SOURCE_STRAVA',
-    fitbit: 'SOURCE_FITBIT',
-    intervals: 'SOURCE_INTERVALS',
-};
+export const SUPPORTED_HISTORICAL_IMPORT_PROVIDERS = ['hevy', 'strava', 'fitbit', 'intervals'] as const;
+export type SupportedHistoricalImportProvider = typeof SUPPORTED_HISTORICAL_IMPORT_PROVIDERS[number];
 
 interface Props {
-    pipelineId: string;
-    selectedSources: string[];
-    sourceManifests: PluginManifest[];
+    provider: SupportedHistoricalImportProvider;
+    providerManifest: ProviderInfo | undefined;
     onClose: () => void;
 }
 
@@ -35,16 +32,10 @@ function formatDate(iso?: string): string {
 }
 
 export const SyncHistoricalModal: React.FC<Props> = ({
-    pipelineId,
-    selectedSources,
-    sourceManifests,
+    provider,
+    providerManifest,
     onClose,
 }) => {
-    const supportedSources = selectedSources.filter((s): s is SupportedSourceId =>
-        SUPPORTED_SOURCE_IDS.includes(s as SupportedSourceId)
-    );
-
-    const [activeSource, setActiveSource] = useState<SupportedSourceId>(supportedSources[0]);
     const [activities, setActivities] = useState<SourceActivityItem[]>([]);
     const [nextPageToken, setNextPageToken] = useState<string | undefined>(undefined);
     const [loadingPage, setLoadingPage] = useState(false);
@@ -53,17 +44,14 @@ export const SyncHistoricalModal: React.FC<Props> = ({
     const [syncError, setSyncError] = useState<string | null>(null);
     const [syncedCount, setSyncedCount] = useState<number | null>(null);
 
-    const loadActivities = useCallback(async (source: SupportedSourceId, pageToken?: string) => {
+    const loadActivities = useCallback(async (pageToken?: string) => {
         setLoadingPage(true);
         setSyncError(null);
         try {
-            const { data, error } = await client.GET('/users/me/pipelines/{id}/source-activities', {
+            const { data, error } = await client.GET('/users/me/connections/{provider}/activities', {
                 params: {
-                    path: { id: pipelineId },
-                    query: {
-                        source: SOURCE_PROTO_ID[source],
-                        ...(pageToken ? { page_token: pageToken } : {}),
-                    },
+                    path: { provider },
+                    query: pageToken ? { page_token: pageToken } : {},
                 },
             });
             if (error || !data) {
@@ -78,7 +66,7 @@ export const SyncHistoricalModal: React.FC<Props> = ({
         } finally {
             setLoadingPage(false);
         }
-    }, [pipelineId]);
+    }, [provider]);
 
     useEffect(() => {
         setActivities([]);
@@ -86,8 +74,8 @@ export const SyncHistoricalModal: React.FC<Props> = ({
         setSelectedIds(new Set());
         setSyncError(null);
         setSyncedCount(null);
-        loadActivities(activeSource);
-    }, [activeSource, loadActivities]);
+        loadActivities();
+    }, [loadActivities]);
 
     const toggleActivity = (id: string, alreadySynced?: boolean) => {
         if (alreadySynced) return;
@@ -107,10 +95,9 @@ export const SyncHistoricalModal: React.FC<Props> = ({
         setSyncing(true);
         setSyncError(null);
         try {
-            const { data, error } = await client.POST('/users/me/pipelines/{id}/backfill', {
-                params: { path: { id: pipelineId } },
+            const { data, error } = await client.POST('/users/me/connections/{provider}/backfill', {
+                params: { path: { provider } },
                 body: {
-                    source: SOURCE_PROTO_ID[activeSource],
                     sourceActivityIds: Array.from(selectedIds),
                 } as never,
             });
@@ -121,19 +108,15 @@ export const SyncHistoricalModal: React.FC<Props> = ({
             const response = data as { queuedCount?: number };
             setSyncedCount(response.queuedCount ?? selectedIds.size);
             setSelectedIds(new Set());
-            // Refresh to show updated already_synced flags
             setActivities([]);
             setNextPageToken(undefined);
-            loadActivities(activeSource);
+            loadActivities();
         } catch {
             setSyncError('Failed to queue activities');
         } finally {
             setSyncing(false);
         }
     };
-
-    const sourceManifest = (id: SupportedSourceId) =>
-        sourceManifests.find(m => m.id === id);
 
     const footer = (
         <Stack direction="horizontal" justify="between" align="center">
@@ -154,7 +137,7 @@ export const SyncHistoricalModal: React.FC<Props> = ({
     );
 
     return (
-        <Modal isOpen={true} onClose={onClose} title="Sync Historical Activities" size="lg" footer={footer}>
+        <Modal isOpen={true} onClose={onClose} title="Import Historical Activities" size="lg" footer={footer}>
             <Stack gap="md">
                 {syncedCount !== null && (
                     <Paragraph>
@@ -164,32 +147,10 @@ export const SyncHistoricalModal: React.FC<Props> = ({
 
                 {syncError && <Paragraph>{syncError}</Paragraph>}
 
-                {supportedSources.length > 1 && (
-                    <Stack direction="horizontal" gap="xs">
-                        {supportedSources.map(srcId => {
-                            const manifest = sourceManifest(srcId);
-                            return (
-                                <TabButton
-                                    key={srcId}
-                                    label={manifest?.name ?? srcId}
-                                    active={activeSource === srcId}
-                                    onClick={() => setActiveSource(srcId)}
-                                    icon={manifest?.icon}
-                                />
-                            );
-                        })}
-                    </Stack>
-                )}
-
-                {supportedSources.length === 1 && (
+                {providerManifest && (
                     <Stack direction="horizontal" gap="sm" align="center">
-                        {(() => {
-                            const manifest = sourceManifest(activeSource);
-                            return manifest ? (
-                                <PluginIcon icon={manifest.icon} iconType={manifest.iconType} iconPath={manifest.iconPath} size="small" />
-                            ) : null;
-                        })()}
-                        <Paragraph inline bold>{sourceManifest(activeSource)?.name ?? activeSource}</Paragraph>
+                        <PluginIcon icon={providerManifest.icon} iconType={providerManifest.iconType} iconPath={providerManifest.iconPath} size="small" />
+                        <Paragraph inline bold>{providerManifest.name}</Paragraph>
                     </Stack>
                 )}
 
@@ -236,7 +197,7 @@ export const SyncHistoricalModal: React.FC<Props> = ({
                     {loadingPage && <Paragraph>Loading...</Paragraph>}
 
                     {nextPageToken && !loadingPage && (
-                        <Button variant="secondary" onClick={() => loadActivities(activeSource, nextPageToken)}>
+                        <Button variant="secondary" onClick={() => loadActivities(nextPageToken)}>
                             Load more
                         </Button>
                     )}

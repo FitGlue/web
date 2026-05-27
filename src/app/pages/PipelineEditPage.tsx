@@ -12,7 +12,6 @@ import { PluginConfigForm } from '../components/EnricherConfigForm';
 import { EnricherConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { SharePipelineModal } from '../components/SharePipelineModal';
-import { SyncHistoricalModal } from '../components/SyncHistoricalModal';
 import { WizardExcludedSection, WizardStepHead } from '../components/wizard';
 import { BoosterExclusionPills } from '../components/BoosterExclusionPills';
 import { SourcePicker } from '../components/library/ui/SourcePicker';
@@ -154,7 +153,6 @@ const PipelineEditPage: React.FC = () => {
     const [activeStep, setActiveStep] = useState<EditStep>('name');
     const [infoEnricher, setInfoEnricher] = useState<PluginManifest | null>(null);
     const [showShareModal, setShowShareModal] = useState(false);
-    const [showSyncModal, setShowSyncModal] = useState(false);
     const [showOverflow, setShowOverflow] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
@@ -1054,9 +1052,6 @@ const PipelineEditPage: React.FC = () => {
                         onClose={() => setShowOverflow(false)}
                         items={[
                             { key: 'share', icon: '📤', label: 'Share', onClick: () => setShowShareModal(true) },
-                            ...(selectedSources.some(s => ['hevy', 'strava', 'fitbit', 'intervals'].includes(s))
-                                ? [{ key: 'sync', icon: '🕐', label: 'Sync historical', onClick: () => setShowSyncModal(true) }]
-                                : []),
                         ]}
                     />
                 )}
@@ -1122,15 +1117,6 @@ const PipelineEditPage: React.FC = () => {
                     })}
                     pipelineName={pipelineName || 'Unnamed Pipeline'}
                     onClose={() => setShowShareModal(false)}
-                />
-            )}
-
-            {showSyncModal && pipelineId && (
-                <SyncHistoricalModal
-                    pipelineId={pipelineId}
-                    selectedSources={selectedSources}
-                    sourceManifests={sources}
-                    onClose={() => setShowSyncModal(false)}
                 />
             )}
 

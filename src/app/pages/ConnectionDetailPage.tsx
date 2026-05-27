@@ -13,6 +13,7 @@ import { pipelineRunsAtom } from '../state/activitiesState';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { IntegrationAuthType } from '../types/plugin';
 import { resolveEnum } from '../utils/resolveEnum';
+import { SyncHistoricalModal, SUPPORTED_HISTORICAL_IMPORT_PROVIDERS, SupportedHistoricalImportProvider } from '../components/SyncHistoricalModal';
 import '../components/library/ui/CardSkeleton.css';
 import './ConnectionDetailPage.css';
 
@@ -47,6 +48,9 @@ const ConnectionDetailPage: React.FC = () => {
     const [copied, setCopied] = useState(false);
     const [copiedWebhook, setCopiedWebhook] = useState(false);
     const [configOpen, setConfigOpen] = useState(false);
+    const [showSyncModal, setShowSyncModal] = useState(false);
+
+    const supportsHistoricalImport = id ? (SUPPORTED_HISTORICAL_IMPORT_PROVIDERS as readonly string[]).includes(id) : false;
 
     const requiresWebhookUrlOnly = id === 'intervals';
     const webhookUrl = useMemo(() => requiresWebhookUrlOnly && id ? getWebhookUrl(id) : '', [id, requiresWebhookUrlOnly]);
@@ -240,6 +244,11 @@ const ConnectionDetailPage: React.FC = () => {
                 {isOAuth && (
                     <button className="cd-actions__btn" onClick={handleReconnect}>
                         🔄 RECONNECT
+                    </button>
+                )}
+                {supportsHistoricalImport && (
+                    <button className="cd-actions__btn" onClick={() => setShowSyncModal(true)}>
+                        🕐 IMPORT HISTORICAL
                     </button>
                 )}
                 {integration.actions?.map((action: { id: string; label: string; icon: string }) => {
@@ -444,6 +453,14 @@ const ConnectionDetailPage: React.FC = () => {
                 onCancel={() => setShowDisconnectConfirm(false)}
                 isLoading={disconnecting}
             />
+
+            {showSyncModal && supportsHistoricalImport && id && (
+                <SyncHistoricalModal
+                    provider={id as SupportedHistoricalImportProvider}
+                    providerManifest={integration}
+                    onClose={() => setShowSyncModal(false)}
+                />
+            )}
         </PageLayout>
     );
 };
