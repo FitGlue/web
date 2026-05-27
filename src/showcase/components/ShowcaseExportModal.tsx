@@ -6,6 +6,7 @@ import { formatActivityType, formatDateFull } from '../utils/format';
 import { ChartExportTab, buildChartDefs } from './ShowcaseExportChart';
 import { RouteExportTab } from './ShowcaseExportRoute';
 import { HybridRaceExportTab } from './ShowcaseExportHybridRace';
+import { PRExportTab } from './ShowcaseExportPR';
 
 type ShowcasedActivity = components['schemas']['ShowcasedActivity'];
 type ActivityRecord = components['schemas']['Record'];
@@ -292,7 +293,7 @@ ExportFrame.displayName = 'ExportFrame';
 
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
-export type Tab = 'stats' | 'chart' | 'route' | 'race';
+export type Tab = 'stats' | 'chart' | 'route' | 'race' | 'pr';
 
 interface Props {
   data: ShowcasedActivity;
@@ -351,6 +352,11 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
     [data]
   );
   const hasHybridRace = hybridSegments.length > 0;
+  const prRecords = useMemo(
+    () => data.enrichments?.personalRecords?.records ?? [],
+    [data]
+  );
+  const hasPRs = prRecords.length > 0;
 
   return createPortal(
     <div className="export-modal-overlay" onClick={onClose}>
@@ -364,6 +370,7 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
             {hasCharts && <button className={`export-tab${activeTab === 'chart' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('chart')}>Charts</button>}
             {hasRoute && <button className={`export-tab${activeTab === 'route' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('route')}>Route</button>}
             {hasHybridRace && <button className={`export-tab${activeTab === 'race' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('race')}>Race</button>}
+            {hasPRs && <button className={`export-tab${activeTab === 'pr' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('pr')}>PRs ★</button>}
           </div>
           <button className="export-modal-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
@@ -468,6 +475,18 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
               activityTitle={data.title ?? 'Race'}
               accent={accent}
               onAccentChange={setAccent}
+            />
+          )}
+
+          {/* ── PR TAB ── */}
+          {activeTab === 'pr' && (
+            <PRExportTab
+              records={prRecords}
+              activity={data}
+              accent={accent}
+              onAccentChange={setAccent}
+              textColor={textColor}
+              onTextColorChange={setTextColor}
             />
           )}
 

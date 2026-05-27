@@ -834,6 +834,37 @@ body:has(#showcase-root) {
   color: var(--color-text-muted);
 }
 
+.mod__share-btns {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.mod:hover .mod__share-btns {
+  opacity: 1;
+}
+
+.mod__share-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 1px 4px;
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
+  line-height: 1;
+  transition: color 0.1s;
+}
+
+.mod__share-btn:hover {
+  color: var(--fg-paper);
+}
+
+.mod__share-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* =====================================================
    MINI STAT (inside modules)
    ===================================================== */
