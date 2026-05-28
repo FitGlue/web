@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react';
+import React, { useRef, useState, useCallback, useMemo, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 import type { components } from '../../shared/api/schema-public';
 import { ACCENTS, TEXT_SWATCHES, buildAllStats, StatOption } from './ShowcaseExportModal';
@@ -12,13 +12,14 @@ const STORY_H = 1920;
 const PREVIEW_W = 220;
 const PREVIEW_H = Math.round(PREVIEW_W * (STORY_H / STORY_W));
 
+// Richer brand-tinted bases — photo sits on top so these show at edges
 const STORY_BACKGROUNDS = [
-  { id: 'brand',    label: 'Brand',    bg: 'linear-gradient(170deg, #2a0518 0%, #120229 40%, #08041a 70%, #040310 100%)' },
-  { id: 'midnight', label: 'Midnight', bg: 'linear-gradient(170deg, #08091f 0%, #0d1b3e 40%, #080916 70%, #04040f 100%)' },
-  { id: 'ember',    label: 'Ember',    bg: 'linear-gradient(170deg, #1a0505 0%, #2e0a0a 40%, #120505 70%, #080505 100%)' },
-  { id: 'forest',   label: 'Forest',   bg: 'linear-gradient(170deg, #041509 0%, #0a2410 40%, #050f08 70%, #030804 100%)' },
-  { id: 'neon',     label: 'Neon',     bg: 'linear-gradient(170deg, #150620 0%, #1e0833 40%, #0d051a 70%, #070310 100%)' },
-  { id: 'noir',     label: 'Noir',     bg: 'linear-gradient(170deg, #111111 0%, #1a1a1a 40%, #0d0d0d 70%, #080808 100%)' },
+  { id: 'brand',    label: 'Brand',    bg: 'linear-gradient(170deg, #4a0620 0%, #220450 40%, #0e0228 70%, #060110 100%)' },
+  { id: 'midnight', label: 'Midnight', bg: 'linear-gradient(170deg, #060818 0%, #0c1840 40%, #07091a 70%, #030408 100%)' },
+  { id: 'ember',    label: 'Ember',    bg: 'linear-gradient(170deg, #280606 0%, #420808 40%, #180404 70%, #090202 100%)' },
+  { id: 'forest',   label: 'Forest',   bg: 'linear-gradient(170deg, #031808 0%, #082e0e 40%, #041208 70%, #020804 100%)' },
+  { id: 'neon',     label: 'Neon',     bg: 'linear-gradient(170deg, #1c0428 0%, #2c0848 40%, #120320 70%, #07010f 100%)' },
+  { id: 'noir',     label: 'Noir',     bg: 'linear-gradient(170deg, #181818 0%, #242424 40%, #111111 70%, #080808 100%)' },
 ];
 
 const DISPLAY = "'Archivo Black','Arial Black',system-ui,sans-serif";
@@ -28,6 +29,7 @@ const MONO    = "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace";
 
 interface StoryFrameProps {
   data: ShowcasedActivity;
+  photoUrl: string | null;
   bg: typeof STORY_BACKGROUNDS[number];
   accent: string;
   textColor: string;
@@ -37,8 +39,7 @@ interface StoryFrameProps {
 }
 
 const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
-  ({ data, bg, accent, textColor, stats, showPRHighlight, showWatermark }, ref) => {
-    const bannerUrl = data.enrichments?.aiBanner?.imageUrl;
+  ({ data, photoUrl, bg, accent, textColor, stats, showPRHighlight, showWatermark }, ref) => {
     const prRecords = data.enrichments?.personalRecords?.records ?? [];
     const topPR = prRecords[0];
     const prCount = prRecords.length;
@@ -68,36 +69,47 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
         fontFamily: DISPLAY,
         boxSizing: 'border-box',
       }}>
-        {/* Banner photo as full-bleed atmospheric background */}
-        {bannerUrl && (
+        {/* Photo — full bleed, high opacity so it actually shows */}
+        {photoUrl && (
+          <img
+            src={photoUrl}
+            crossOrigin="anonymous"
+            style={{
+              position: 'absolute', inset: 0,
+              width: '100%', height: '100%',
+              objectFit: 'cover', objectPosition: 'center top',
+              opacity: 0.68,
+            }}
+          />
+        )}
+
+        {/* Brand-colour wash over photo — gives the FitGlue purple/pink feel */}
+        {photoUrl && (
           <div style={{
             position: 'absolute', inset: 0,
-            backgroundImage: `url(${bannerUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center top',
-            opacity: 0.38,
+            background: 'linear-gradient(180deg, rgba(80,20,120,0.45) 0%, rgba(180,30,100,0.25) 35%, rgba(0,0,0,0) 65%)',
           }} />
         )}
 
-        {/* Gradient overlay for text contrast */}
+        {/* Dark-from-bottom — keeps stats/content readable */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(0deg, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.65) 28%, rgba(0,0,0,0.10) 52%, rgba(0,0,0,0.40) 72%, rgba(0,0,0,0.82) 100%)',
+          background: 'linear-gradient(0deg, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.82) 28%, rgba(0,0,0,0.30) 52%, rgba(0,0,0,0.08) 70%, rgba(0,0,0,0.35) 100%)',
         }} />
 
-        {/* Accent glow behind main title area */}
+        {/* Accent glow behind title */}
         <div style={{
           position: 'absolute',
-          top: '44%', left: '50%',
+          top: '46%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: '1000px', height: '700px',
+          width: '1100px', height: '800px',
           borderRadius: '50%',
-          background: `radial-gradient(ellipse, ${accent}1a 0%, transparent 70%)`,
-          filter: 'blur(80px)',
+          background: `radial-gradient(ellipse, ${accent}28 0%, transparent 65%)`,
+          filter: 'blur(100px)',
           pointerEvents: 'none',
         }} />
 
-        {/* Content layout */}
+        {/* Content */}
         <div style={{
           position: 'absolute', inset: 0,
           display: 'flex',
@@ -110,7 +122,7 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap', marginBottom: '28px' }}>
             <div style={{
               display: 'inline-block',
-              background: `${accent}18`,
+              background: `${accent}22`,
               border: `2px solid ${accent}`,
               padding: '12px 32px',
               color: accent,
@@ -129,7 +141,8 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
                 fontWeight: 600,
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: `${textColor}55`,
+                color: `${textColor}66`,
+                textShadow: '0 1px 8px rgba(0,0,0,0.8)',
               }}>
                 VIA {sourceLabel}
               </div>
@@ -137,7 +150,7 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
           </div>
 
           {/* Date + PR chip */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '0' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
             {data.startTime && (
               <div style={{
                 fontFamily: MONO,
@@ -145,15 +158,16 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
                 fontWeight: 600,
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: `${textColor}60`,
+                color: `${textColor}70`,
+                textShadow: '0 1px 8px rgba(0,0,0,0.8)',
               }}>
                 {formatDateFull(data.startTime)}
               </div>
             )}
             {prCount > 0 && (
               <div style={{
-                background: `${accent}20`,
-                border: `1.5px solid ${accent}55`,
+                background: `${accent}25`,
+                border: `1.5px solid ${accent}66`,
                 padding: '8px 24px',
                 fontFamily: MONO,
                 fontSize: '22px',
@@ -166,7 +180,7 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
             )}
           </div>
 
-          {/* Flex spacer — pushes title to roughly 40% down */}
+          {/* Spacer — pushes title to roughly centre of frame */}
           <div style={{ flex: 1 }} />
 
           {/* Main title */}
@@ -178,8 +192,8 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
             lineHeight: 1.0,
             letterSpacing: '-0.02em',
             textTransform: 'uppercase',
-            textShadow: '0 4px 48px rgba(0,0,0,0.9)',
-            marginBottom: '36px',
+            textShadow: '0 4px 48px rgba(0,0,0,0.95)',
+            marginBottom: '32px',
           }}>
             {data.title ?? 'Activity'}
           </div>
@@ -191,8 +205,9 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
             fontWeight: 600,
             letterSpacing: '0.12em',
             textTransform: 'uppercase',
-            color: `${textColor}50`,
-            marginBottom: '72px',
+            color: `${textColor}55`,
+            textShadow: '0 1px 12px rgba(0,0,0,0.9)',
+            marginBottom: '68px',
           }}>
             BY {(data.ownerDisplayName ?? '').toUpperCase()}
             {boosterCount > 0 && ` · ENRICHED BY ${boosterCount} BOOSTER${boosterCount !== 1 ? 'S' : ''}`}
@@ -201,18 +216,18 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
           {/* Gradient divider */}
           <div style={{
             height: '2px',
-            background: `linear-gradient(90deg, ${accent}00, ${accent}99, ${accent}00)`,
-            marginBottom: '56px',
+            background: `linear-gradient(90deg, ${accent}00, ${accent}bb, ${accent}00)`,
+            marginBottom: '52px',
             flexShrink: 0,
           }} />
 
-          {/* Stats grid — 2-col for 3–4 stats, 1-col for 1–2 */}
+          {/* Stats grid */}
           {stats.length > 0 && (
             <div style={{
               display: 'grid',
               gridTemplateColumns: stats.length >= 3 ? 'repeat(2, 1fr)' : `repeat(${stats.length}, 1fr)`,
               gap: '36px 48px',
-              marginBottom: showPRHighlight && topPR ? '56px' : '0',
+              marginBottom: showPRHighlight && topPR ? '52px' : '0',
             }}>
               {stats.map((s, i) => (
                 <div key={i}>
@@ -229,7 +244,7 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
               <div style={{
                 height: '2px',
                 background: `linear-gradient(90deg, ${accent}00, ${accent}44, ${accent}00)`,
-                marginBottom: '44px',
+                marginBottom: '40px',
                 flexShrink: 0,
               }} />
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '32px' }}>
@@ -258,7 +273,7 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
               alignSelf: 'flex-end',
               fontFamily: DISPLAY,
               fontSize: '30px',
-              color: 'rgba(245,243,235,0.18)',
+              color: 'rgba(245,243,235,0.20)',
               letterSpacing: '0.06em',
             }}>
               FIT<span style={{ color: accent }}>GLUE</span>
@@ -288,6 +303,33 @@ export const StoryExportTab: React.FC<Props> = ({
   const [bg, setBg] = useState(STORY_BACKGROUNDS[0]);
   const [showWatermark, setShowWatermark] = useState(true);
   const [exporting, setExporting] = useState(false);
+
+  // Resolve photo to a data URL so html-to-image can inline it regardless of CORS.
+  // Falls back to photoUrls[0] if no AI banner exists (e.g. FIT file uploads with attached photos).
+  const rawPhotoUrl = useMemo(
+    () => data.enrichments?.aiBanner?.imageUrl ?? data.photoUrls?.[0] ?? null,
+    [data]
+  );
+  const [resolvedPhotoUrl, setResolvedPhotoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!rawPhotoUrl) { setResolvedPhotoUrl(null); return; }
+    let cancelled = false;
+    fetch(rawPhotoUrl)
+      .then((r) => r.blob())
+      .then(
+        (blob) =>
+          new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          })
+      )
+      .then((dataUrl) => { if (!cancelled) setResolvedPhotoUrl(dataUrl); })
+      .catch(() => { if (!cancelled) setResolvedPhotoUrl(rawPhotoUrl); });
+    return () => { cancelled = true; };
+  }, [rawPhotoUrl]);
 
   const prRecords = useMemo(() => data.enrichments?.personalRecords?.records ?? [], [data]);
   const hasPRs = prRecords.length > 0;
@@ -345,6 +387,7 @@ export const StoryExportTab: React.FC<Props> = ({
             <StoryFrame
               ref={frameRef}
               data={data}
+              photoUrl={resolvedPhotoUrl}
               bg={bg}
               accent={accent}
               textColor={textColor}
@@ -354,8 +397,13 @@ export const StoryExportTab: React.FC<Props> = ({
             />
           </div>
         </div>
-        <button className="export-download-btn" onClick={handleExport} disabled={exporting}>
-          {exporting ? 'Exporting…' : '⬇ Download PNG'}
+        {rawPhotoUrl && !resolvedPhotoUrl && (
+          <p style={{ fontFamily: MONO, fontSize: '11px', textAlign: 'center', color: 'rgba(255,255,255,0.4)', margin: '6px 0 0', letterSpacing: '0.08em' }}>
+            Loading photo…
+          </p>
+        )}
+        <button className="export-download-btn" onClick={handleExport} disabled={exporting || (rawPhotoUrl !== null && resolvedPhotoUrl === null)}>
+          {exporting ? 'Exporting…' : rawPhotoUrl && !resolvedPhotoUrl ? 'Loading photo…' : '⬇ Download PNG'}
         </button>
       </div>
 
