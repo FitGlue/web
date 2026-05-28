@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.40.1](https://github.com/fitglue/web/compare/v11.40.0...v11.40.1) (2026-05-28)
+
+
+### Bug Fixes
+
+* **firebase:** update rewrite rules for showcase paths ([1489c97](https://github.com/fitglue/web/commit/1489c97a062165b230edc6de5610f247546b054d))
+
 ## [11.40.0](https://github.com/fitglue/web/compare/v11.39.2...v11.40.0) (2026-05-28)
 
 
