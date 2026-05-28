@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react';
+import React, { useRef, useState, useCallback, useMemo, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { toPng } from 'html-to-image';
 import type { components } from '../../shared/api/schema-public';
@@ -7,6 +7,7 @@ import { ChartExportTab, buildChartDefs } from './ShowcaseExportChart';
 import { RouteExportTab } from './ShowcaseExportRoute';
 import { HybridRaceExportTab } from './ShowcaseExportHybridRace';
 import { PRExportTab } from './ShowcaseExportPR';
+import { StoryExportTab } from './ShowcaseExportStory';
 
 type ShowcasedActivity = components['schemas']['ShowcasedActivity'];
 type ActivityRecord = components['schemas']['Record'];
@@ -62,9 +63,9 @@ function fmtDuration(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-interface StatOption { id: string; label: string; value: string }
+export interface StatOption { id: string; label: string; value: string }
 
-function buildAllStats(data: ShowcasedActivity): StatOption[] {
+export function buildAllStats(data: ShowcasedActivity): StatOption[] {
   const session = data.activityData?.sessions?.[0];
   const allRecords: ActivityRecord[] = session?.laps?.flatMap((l) => l.records ?? []) ?? [];
   const stats: StatOption[] = [];
@@ -197,10 +198,14 @@ interface ExportFrameProps {
   cardShape: typeof CARD_SHAPES[number];
   stats: StatOption[];
   showWatermark: boolean;
+  showActivityType: boolean;
+  showTitle: boolean;
+  showDate: boolean;
+  showOwner: boolean;
 }
 
 const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
-  ({ data, cardBg, accent, textColor, cardShape, stats, showWatermark }, ref) => {
+  ({ data, cardBg, accent, textColor, cardShape, stats, showWatermark, showActivityType, showTitle, showDate, showOwner }, ref) => {
     const bannerUrl = data.enrichments?.aiBanner?.imageUrl;
     const isClear = cardBg.id === 'clear';
 
@@ -243,17 +248,21 @@ const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
           )}
 
           {/* Activity type badge — hard-edged brutal tag */}
-          <div style={{ position: 'relative', zIndex: 1, display: 'inline-block', background: `${accent}18`, border: `2px solid ${accent}`, padding: '8px 28px', color: accent, fontFamily: MONO, fontSize: '20px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '36px' }}>
-            {formatActivityType(data.activityType)}
-          </div>
+          {showActivityType && (
+            <div style={{ position: 'relative', zIndex: 1, display: 'inline-block', background: `${accent}18`, border: `2px solid ${accent}`, padding: '8px 28px', color: accent, fontFamily: MONO, fontSize: '20px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '36px' }}>
+              {formatActivityType(data.activityType)}
+            </div>
+          )}
 
           {/* Title — display font, all-caps */}
-          <div style={{ position: 'relative', zIndex: 1, fontFamily: DISPLAY, fontSize: '64px', color: textColor, lineHeight: 1.05, marginBottom: '20px', letterSpacing: '-0.01em', textShadow: isClear ? '0 2px 24px rgba(0,0,0,0.9)' : '0 2px 20px rgba(0,0,0,0.4)', textTransform: 'uppercase' }}>
-            {data.title ?? 'Activity'}
-          </div>
+          {showTitle && (
+            <div style={{ position: 'relative', zIndex: 1, fontFamily: DISPLAY, fontSize: '64px', color: textColor, lineHeight: 1.05, marginBottom: '20px', letterSpacing: '-0.01em', textShadow: isClear ? '0 2px 24px rgba(0,0,0,0.9)' : '0 2px 20px rgba(0,0,0,0.4)', textTransform: 'uppercase' }}>
+              {data.title ?? 'Activity'}
+            </div>
+          )}
 
           {/* Date — mono, uppercase */}
-          {data.startTime && (
+          {data.startTime && showDate && (
             <div style={{ position: 'relative', zIndex: 1, fontFamily: MONO, fontSize: '18px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: `${textColor}88`, marginBottom: '48px', textShadow: isClear ? '0 1px 12px rgba(0,0,0,0.8)' : undefined }}>
               {formatDateFull(data.startTime)}
             </div>
@@ -272,7 +281,7 @@ const ExportFrame = React.forwardRef<HTMLDivElement, ExportFrameProps>(
           )}
 
           {/* Owner — mono, dim */}
-          {data.ownerDisplayName && (
+          {data.ownerDisplayName && showOwner && (
             <div style={{ position: 'relative', zIndex: 1, fontFamily: MONO, fontSize: '18px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: `${textColor}55`, textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined }}>
               {data.ownerDisplayName}
             </div>
@@ -293,7 +302,7 @@ ExportFrame.displayName = 'ExportFrame';
 
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
-export type Tab = 'stats' | 'chart' | 'route' | 'race' | 'pr';
+export type Tab = 'stats' | 'chart' | 'route' | 'race' | 'pr' | 'story';
 
 interface Props {
   data: ShowcasedActivity;
@@ -310,7 +319,12 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
   const [cardBg, setCardBg] = useState(CARD_BACKGROUNDS[0]);
   const [cardShape, setCardShape] = useState(CARD_SHAPES[0]);
   const [showWatermark, setShowWatermark] = useState(true);
+  const [showActivityType, setShowActivityType] = useState(true);
+  const [showTitle, setShowTitle] = useState(true);
+  const [showDate, setShowDate] = useState(true);
+  const [showOwner, setShowOwner] = useState(true);
   const [exporting, setExporting] = useState(false);
+  const [statsPreviewH, setStatsPreviewH] = useState(PREVIEW_SIZE);
   const frameRef = useRef<HTMLDivElement>(null);
 
   const allStats = useMemo(() => buildAllStats(data), [data]);
@@ -321,6 +335,14 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
   }, []);
 
   const previewScale = PREVIEW_SIZE / EXPORT_W;
+
+  useLayoutEffect(() => {
+    if (frameRef.current) {
+      const h = frameRef.current.scrollHeight;
+      const newH = Math.round(h * previewScale);
+      setStatsPreviewH((prev) => prev === newH ? prev : newH);
+    }
+  });
 
   const handleStatsExport = useCallback(async () => {
     if (!frameRef.current) return;
@@ -371,6 +393,7 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
             {hasRoute && <button className={`export-tab${activeTab === 'route' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('route')}>Route</button>}
             {hasHybridRace && <button className={`export-tab${activeTab === 'race' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('race')}>Race</button>}
             {hasPRs && <button className={`export-tab${activeTab === 'pr' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('pr')}>PRs ★</button>}
+            <button className={`export-tab${activeTab === 'story' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('story')}>Story</button>
           </div>
           <button className="export-modal-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
@@ -384,11 +407,12 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
               <div className="export-modal-preview-col">
                 <div className="export-preview-wrapper" style={{
                   width: PREVIEW_SIZE,
+                  height: statsPreviewH,
                   backgroundImage: 'repeating-conic-gradient(#2a2a2a 0% 25%, #1a1a1a 0% 50%) 0 0 / 12px 12px',
                   position: 'relative', overflow: 'hidden',
                 }}>
-                  <div style={{ transform: `scale(${previewScale})`, transformOrigin: 'top left', pointerEvents: 'none', width: EXPORT_W }}>
-                    <ExportFrame ref={frameRef} data={data} cardBg={cardBg} accent={accent} textColor={textColor} cardShape={cardShape} stats={selectedStats} showWatermark={showWatermark} />
+                  <div style={{ position: 'absolute', top: 0, left: 0, transform: `scale(${previewScale})`, transformOrigin: 'top left', pointerEvents: 'none', width: EXPORT_W }}>
+                    <ExportFrame ref={frameRef} data={data} cardBg={cardBg} accent={accent} textColor={textColor} cardShape={cardShape} stats={selectedStats} showWatermark={showWatermark} showActivityType={showActivityType} showTitle={showTitle} showDate={showDate} showOwner={showOwner} />
                   </div>
                 </div>
                 <button className="export-download-btn" onClick={handleStatsExport} disabled={exporting}>
@@ -449,7 +473,11 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
                   )}
                   <div className="export-option-group">
                     <span className="export-option-label">Include</span>
-                    <div className="export-option-row">
+                    <div className="export-option-row export-option-row--wrap">
+                      <button className={`export-pill${showActivityType ? ' export-pill--active' : ''}`} onClick={() => setShowActivityType((v) => !v)}>Activity Type</button>
+                      <button className={`export-pill${showTitle ? ' export-pill--active' : ''}`} onClick={() => setShowTitle((v) => !v)}>Title</button>
+                      <button className={`export-pill${showDate ? ' export-pill--active' : ''}`} onClick={() => setShowDate((v) => !v)}>Date</button>
+                      {data.ownerDisplayName && <button className={`export-pill${showOwner ? ' export-pill--active' : ''}`} onClick={() => setShowOwner((v) => !v)}>Name</button>}
                       <button className={`export-pill${showWatermark ? ' export-pill--active' : ''}`} onClick={() => setShowWatermark((v) => !v)}>Watermark</button>
                     </div>
                   </div>
@@ -483,6 +511,17 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
             <PRExportTab
               records={prRecords}
               activity={data}
+              accent={accent}
+              onAccentChange={setAccent}
+              textColor={textColor}
+              onTextColorChange={setTextColor}
+            />
+          )}
+
+          {/* ── STORY TAB ── */}
+          {activeTab === 'story' && (
+            <StoryExportTab
+              data={data}
               accent={accent}
               onAccentChange={setAccent}
               textColor={textColor}
