@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.41.1](https://github.com/fitglue/web/compare/v11.41.0...v11.41.1) (2026-05-28)
+
+
+### Bug Fixes
+
+* **build:** sanitize external API content at SSG build time ([4dcd3f1](https://github.com/fitglue/web/commit/4dcd3f1468f22bc2b6da5498af2de55f8b067228))
+* **security:** sanitize rendered HTML and add defensive headers ([f103459](https://github.com/fitglue/web/commit/f103459965dc4c734e5c5e86e8d58e97164e48b0))
+* **share:** fix story photo loading and improve visual treatment ([ebc3f25](https://github.com/fitglue/web/commit/ebc3f25d5269ec5d977102c1a4164613920a1700))
+
 ## [11.41.0](https://github.com/fitglue/web/compare/v11.40.1...v11.41.0) (2026-05-28)
 
 
