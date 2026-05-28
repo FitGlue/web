@@ -187,7 +187,7 @@ export default function ActivityHero({ activity }: Props): React.ReactElement {
                   <b>
                     {activity.ownerProfileSlug ? (
                       <a
-                        href={`/showcase/profile/${activity.ownerProfileSlug}`}
+                        href={`/@${activity.ownerProfileSlug}`}
                         style={{ color: 'inherit', textDecoration: 'none' }}
                       >
                         {activity.ownerDisplayName!.toUpperCase()}

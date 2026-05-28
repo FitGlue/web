@@ -90,9 +90,10 @@ interface CardProps {
   metrics: Metric[];
   sparkPath: string;
   dateStr: string;
+  profileSlug?: string;
 }
 
-function ActivityCardItem({ e, family, metrics, sparkPath, dateStr }: CardProps) {
+function ActivityCardItem({ e, family, metrics, sparkPath, dateStr, profileSlug }: CardProps) {
   const cardRef = useRef<HTMLAnchorElement>(null);
   const [downloading, setDownloading] = useState(false);
 
@@ -137,7 +138,7 @@ function ActivityCardItem({ e, family, metrics, sparkPath, dateStr }: CardProps)
   return (
     <a
       ref={cardRef}
-      href={`/showcase/activity/${e.showcaseId}`}
+      href={profileSlug ? `/@${profileSlug}/${e.showcaseId}` : `/showcase/activity/${e.showcaseId}`}
       className="act"
     >
       <div className="act__top">
@@ -195,9 +196,10 @@ function ActivityCardItem({ e, family, metrics, sparkPath, dateStr }: CardProps)
 interface Props {
   entries: ShowcaseProfileEntry[];
   totalActivities?: number;
+  profileSlug?: string;
 }
 
-export default function ActivityGrid({ entries, totalActivities }: Props): React.ReactElement {
+export default function ActivityGrid({ entries, totalActivities, profileSlug }: Props): React.ReactElement {
   const [filter, setFilter] = useState<FilterKey>('ALL');
 
   const familyMap = useMemo(() => {
@@ -272,6 +274,7 @@ export default function ActivityGrid({ entries, totalActivities }: Props): React
               metrics={metrics}
               sparkPath={sparkPath}
               dateStr={dateStr}
+              profileSlug={profileSlug}
             />
           );
         })}

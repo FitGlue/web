@@ -31,6 +31,7 @@ interface Props {
   hasMore: boolean;
   loadingMore: boolean;
   onLoadMore: () => void;
+  profileSlug?: string;
 }
 
 export const ProfileActivityList: React.FC<Props> = ({
@@ -38,6 +39,7 @@ export const ProfileActivityList: React.FC<Props> = ({
   hasMore,
   loadingMore,
   onLoadMore,
+  profileSlug,
 }) => {
   const groups = groupByDate(entries);
 
@@ -67,7 +69,7 @@ export const ProfileActivityList: React.FC<Props> = ({
                 return (
                   <a
                     key={entry.showcaseId}
-                    href={`/showcase/activity/${entry.showcaseId}`}
+                    href={profileSlug ? `/@${profileSlug}/${entry.showcaseId}` : `/showcase/activity/${entry.showcaseId}`}
                     className={`activity-card cat-${cat}`}
                     style={{ animationDelay: `${delay}s` }}
                   >
