@@ -47,6 +47,12 @@ export const SvgAsset: React.FC<SvgAssetProps> = ({ url, alt, className }) => {
                     if (className) {
                         svgElement.classList.add(...className.split(' '));
                     }
+                    // Strip inline event handlers (onload, onerror, etc.) to prevent SVG XSS
+                    [svgElement, ...Array.from(svgElement.querySelectorAll('*'))].forEach(el => {
+                        Array.from(el.attributes).forEach(attr => {
+                            if (attr.name.startsWith('on')) el.removeAttribute(attr.name);
+                        });
+                    });
                     setSvgContent(svgElement.outerHTML);
                 } else {
                     setError(true);

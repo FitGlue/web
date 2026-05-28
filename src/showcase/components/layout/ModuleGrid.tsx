@@ -1,4 +1,5 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 import type { ModuleKey } from '../../utils/enricherModules';
 import type { components } from '../../../shared/api/schema-public';
 import type { ActivityEnrichments } from '../../../types/pb/models/activity/enrichments';
@@ -61,11 +62,14 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
     ? parseDescriptionSections(activity.description).find((s) => s.title === 'Description')?.content ?? null
     : null;
 
-  // Strip leading heading tag and any "AI Summary:" label from AI summary HTML
+  // Strip leading heading tag and any "AI Summary:" label from AI summary HTML, then sanitize
   const aiSummaryHtml = enrichments?.aiSummary?.html
-    ? enrichments.aiSummary.html
-        .replace(/^<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>\s*/i, '')
-        .replace(/\bAI\s*Summary\s*:\s*/i, '')
+    ? DOMPurify.sanitize(
+        enrichments.aiSummary.html
+          .replace(/^<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>\s*/i, '')
+          .replace(/\bAI\s*Summary\s*:\s*/i, ''),
+        { ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'ul', 'ol', 'li'], ALLOWED_ATTR: [] }
+      )
     : null;
 
   const photoUrls = activity.photoUrls ?? [];

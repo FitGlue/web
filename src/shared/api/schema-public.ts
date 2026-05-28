@@ -680,7 +680,6 @@ export interface components {
         ShowcasedActivity: {
             showcaseId?: string;
             activityId?: string;
-            userId?: string;
             title?: string;
             description?: string;
             /**

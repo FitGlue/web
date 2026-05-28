@@ -21,7 +21,7 @@ function serviceWorkerBuildPlugin() {
           },
           outDir: 'dist',
           emptyOutDir: false,
-          sourcemap: true,
+          sourcemap: 'hidden',
           minify: true,
           rollupOptions: {
             output: {
@@ -62,6 +62,9 @@ export default defineConfig(({ mode }) => {
         sourcemaps: {
           assets: './dist/**',
           ignore: ['node_modules'],
+          // Delete source maps from dist after uploading to Sentry so they
+          // are not served publicly via Firebase Hosting.
+          filesToDeleteAfterUpload: './dist/**/*.map',
         },
         release: {
           name: releaseName,
@@ -93,7 +96,7 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'dist',
       emptyOutDir: true,
-      sourcemap: true, // Enable source maps
+      sourcemap: mode === 'development' ? true : 'hidden',
       minify: mode !== 'development', // Disable minification in dev for React DevTools
       rollupOptions: {
         input: {
@@ -101,7 +104,7 @@ export default defineConfig(({ mode }) => {
           showcase: resolve(__dirname, 'public/showcase/index.html'),
         },
         output: {
-          sourcemapExcludeSources: false, // Include sources in source maps
+          sourcemapExcludeSources: true,
           entryFileNames: 'assets/[name]-[hash].js',
         },
       },

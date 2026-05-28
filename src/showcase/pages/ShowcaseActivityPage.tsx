@@ -36,7 +36,6 @@ export default function ShowcaseActivityPage() {
   const [activity, setActivity] = useState<ShowcasedActivity | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isOwner, setIsOwner] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
@@ -66,7 +65,7 @@ export default function ShowcaseActivityPage() {
           return;
         }
 
-        unsubscribe = onAuthStateChanged(fb.auth, async (user) => {
+        unsubscribe = onAuthStateChanged(fb.auth, async () => {
           try {
             const { data, error: apiError } = await publicClient.GET('/showcase/{id}', {
               params: { path: { id: showcaseId } },
@@ -76,7 +75,6 @@ export default function ShowcaseActivityPage() {
               setError('This activity is not available or has expired.');
             } else {
               setActivity(data);
-              if (user && data.userId === user.uid) setIsOwner(true);
             }
           } catch {
             setError('Failed to load activity.');
@@ -234,16 +232,7 @@ export default function ShowcaseActivityPage() {
               activity={activity}
             />
 
-            {isOwner && (
-              <div style={{ borderTop: 'var(--fg-rule-thin)', padding: 'var(--space-md) 0', display: 'flex', gap: 'var(--space-sm)' }}>
-                <a
-                  href="/app/settings/showcase"
-                  style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-cyan)' }}
-                >
-                  Manage showcase →
-                </a>
-              </div>
-            )}
+
           </main>
 
           <aside>

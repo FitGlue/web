@@ -27,7 +27,6 @@ export interface UploadedActivityRecord {
 export interface ShowcasedActivity {
   showcaseId: string;
   activityId: string;
-  userId: string;
   title: string;
   description: string;
   activityType: ActivityType;

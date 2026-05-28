@@ -206,7 +206,7 @@ export default function ShowcaseProfilePage() {
                 {links.map((link: ShowcaseLink, i: number) => (
                   <a
                     key={i}
-                    href={link.url}
+                    href={link.url?.startsWith('https://') || link.url?.startsWith('http://') ? link.url : '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bio__link"
