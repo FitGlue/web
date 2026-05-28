@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.45.0](https://github.com/fitglue/web/compare/v11.44.0...v11.45.0) (2026-05-28)
+
+
+### Features
+
+* **connections:** add search and date filter to historical import modal ([4df9827](https://github.com/fitglue/web/commit/4df9827424ceb8db008793b833d664fbfe479f58))
+
 ## [11.44.0](https://github.com/fitglue/web/compare/v11.43.0...v11.44.0) (2026-05-28)
 
 
