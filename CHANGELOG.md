@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.40.0](https://github.com/fitglue/web/compare/v11.39.2...v11.40.0) (2026-05-28)
+
+
+### Features
+
+* **share:** add Story export tab for Instagram Stories (9:16 format) ([52990cc](https://github.com/fitglue/web/commit/52990cc59b553ce8fb6a7fecf0da517bf63e5a9a))
+* **showcase:** rewrite URLs to [@slug](https://github.com/slug) format with legacy redirects ([2942a04](https://github.com/fitglue/web/commit/2942a048ef50e948e208ac427e8c194072e2c48a))
+
+
+### Bug Fixes
+
+* **share:** increase font sizes in PR export card ([2061ce9](https://github.com/fitglue/web/commit/2061ce9a1c545496ac3590305c8083a9d86ecc13))
+
 ### [11.39.2](https://github.com/fitglue/web/compare/v11.39.1...v11.39.2) (2026-05-27)
 
 
