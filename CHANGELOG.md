@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.43.0](https://github.com/fitglue/web/compare/v11.42.0...v11.43.0) (2026-05-28)
+
+
+### Features
+
+* **share:** add photo source picker to Story export ([7e6c666](https://github.com/fitglue/web/commit/7e6c66632a65ea44756ff83971cc55ba00c827e4))
+* **share:** add title size, show/hide controls, and fix top gradient ([7dbceeb](https://github.com/fitglue/web/commit/7dbceebd65d40825a24863922f56994787b4a700))
+
 ## [11.42.0](https://github.com/fitglue/web/compare/v11.41.1...v11.42.0) (2026-05-28)
 
 
