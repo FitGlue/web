@@ -9,6 +9,7 @@ import { writeFileSync, readFileSync, readdirSync, existsSync, mkdirSync } from 
 import { join, basename, dirname } from 'path';
 import Handlebars from 'handlebars';
 import { marked } from 'marked';
+import sanitizeHtmlLib from 'sanitize-html';
 
 // Configure marked for safe output
 marked.setOptions({
@@ -17,13 +18,41 @@ marked.setOptions({
 });
 
 /**
+ * Sanitize HTML using an allowlist-based sanitizer.
+ * Used to harden build-time content (from external API data) before baking into static pages.
+ * @param {string} html
+ * @param {import('sanitize-html').IOptions} [options]
+ * @returns {string}
+ */
+function sanitizeHtml(html, options) {
+  if (!html) return '';
+  return sanitizeHtmlLib(html, options);
+}
+
+/** Allowed tags/attributes for rich markdown output (marketingDescription). */
+const MARKDOWN_SANITIZE_OPTIONS = {
+  allowedTags: sanitizeHtmlLib.defaults.allowedTags.concat(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img']),
+  allowedAttributes: {
+    ...sanitizeHtmlLib.defaults.allowedAttributes,
+    a: ['href', 'target'],
+    img: ['src', 'alt'],
+  },
+};
+
+/** Allowed tags/attributes for plain afterHtml snippets. */
+const AFTERHTML_SANITIZE_OPTIONS = {
+  allowedTags: ['p', 'br', 'strong', 'em', 'a', 'ul', 'ol', 'li'],
+  allowedAttributes: { a: ['href'] },
+};
+
+/**
  * Parse markdown content to HTML
  * @param {string} markdown
  * @returns {string}
  */
 function parseMarkdown(markdown) {
   if (!markdown) return '';
-  return marked.parse(markdown.trim());
+  return sanitizeHtml(marked.parse(markdown.trim()), MARKDOWN_SANITIZE_OPTIONS);
 }
 
 /**
@@ -205,7 +234,7 @@ export function generateDynamicPagesTask(config) {
               label: t.label,
               before: t.before,
               // Use pre-formatted afterHtml if available, otherwise convert plain text
-              afterHtml: t.afterHtml || (t.after || '').replace(/\n/g, '<br>'),
+              afterHtml: sanitizeHtml(t.afterHtml || (t.after || '').replace(/\n/g, '<br>'), AFTERHTML_SANITIZE_OPTIONS),
               // Visual type support for SVG visuals (hr-graph, gps-map, heatmap)
               visualType: t.visualType || null,
               hasVisual: !!t.visualType,

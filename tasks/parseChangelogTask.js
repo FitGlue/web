@@ -5,12 +5,21 @@
 
 import { readFileSync } from 'fs';
 
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /**
  * Convert inline markdown bold (**text**) to HTML <strong>.
  * @param {string} text
  */
 function inlineMd(text) {
-  return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  return text.replace(/\*\*(.+?)\*\*/g, (_, inner) => `<strong>${escapeHtml(inner)}</strong>`);
 }
 
 const MONTH_ABBR = {
