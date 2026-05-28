@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.41.0](https://github.com/fitglue/web/compare/v11.40.1...v11.41.0) (2026-05-28)
+
+
+### Features
+
+* **changelog:** implement parsing of PUBLIC_CHANGELOG.md into structured entries ([367f495](https://github.com/fitglue/web/commit/367f495a23a1e55134061dddc44c353d695abb68))
+* **showcase:** implement ShowcaseNotFound component for error handling ([feb2a2b](https://github.com/fitglue/web/commit/feb2a2b3a8e5c2a8f2b350d77536686f64921f0e))
+
 ### [11.40.1](https://github.com/fitglue/web/compare/v11.40.0...v11.40.1) (2026-05-28)
 
 
