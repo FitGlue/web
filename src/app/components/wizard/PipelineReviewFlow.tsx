@@ -30,8 +30,6 @@ export interface ReviewDestination {
     iconType?: string;
     iconPath?: string;
     name: string;
-    /** Names of excluded enrichers for this destination (NerdMode only) */
-    excludedEnricherNames?: string[];
 }
 
 export interface PipelineReviewFlowProps {
@@ -137,11 +135,6 @@ export const PipelineReviewFlow: React.FC<PipelineReviewFlowProps> = ({
                                     />
                                     <Paragraph inline>{d.name}</Paragraph>
                                 </Stack>
-                                {d.excludedEnricherNames && d.excludedEnricherNames.length > 0 && (
-                                    <Paragraph size="sm" muted>
-                                        🔇 Skipping: {d.excludedEnricherNames.join(', ')}
-                                    </Paragraph>
-                                )}
                             </Stack>
                         ))}
                     </Stack>

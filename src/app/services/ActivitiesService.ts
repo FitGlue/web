@@ -41,7 +41,6 @@ export interface ExecutionRecord {
   startedAt?: string;
   completedAt?: string;
   triggerType?: string;
-  /** JSON-encoded input/output payloads for nerd mode */
   inputsJson?: string;
   outputsJson?: string;
   error?: string;

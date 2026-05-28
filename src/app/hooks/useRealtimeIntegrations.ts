@@ -173,7 +173,6 @@ export const useRealtimeIntegrations = () => {
                         return;
                     }
 
-                    // Store created_at in additionalDetails (useful for nerd mode)
                     if (CREATED_FIELDS.has(fieldKey)) {
                         const isoDate = toISOString(value);
                         if (isoDate) {

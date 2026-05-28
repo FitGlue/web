@@ -35,7 +35,6 @@ import ComponentLibraryPage from './pages/ComponentLibraryPage';
 
 import { useFCM } from './hooks/useFCM';
 import { useUser } from './hooks/useUser';
-import { NerdModeProvider } from './state/NerdModeContext';
 
 // Initialize Sentry before app renders
 initSentry();
@@ -152,7 +151,6 @@ const App: React.FC = () => {
       )}
     >
       <ToastProvider>
-        <NerdModeProvider>
           <Router basename="/app">
             <Routes>
               {/* Protected app routes */}
@@ -187,7 +185,6 @@ const App: React.FC = () => {
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Router>
-        </NerdModeProvider>
       </ToastProvider>
     </Sentry.ErrorBoundary>
   );

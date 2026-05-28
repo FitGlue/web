@@ -4,11 +4,10 @@ import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout } from '../components/library/layout';
-import { CardSkeleton, Heading, Paragraph, Code, Button, SvgAsset, useToast, IdBadge, ProgressBar } from '../components/library/ui';
+import { CardSkeleton, Heading, Paragraph, Code, Button, SvgAsset, useToast, ProgressBar } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { MagicActionsPopover } from '../components/MagicActionsPopover';
 import { client } from '../../shared/api/client';
-import { useNerdMode } from '../state/NerdModeContext';
 import { formatActivityType, formatDestination, formatDestinationStatus } from '../../types/pb/enum-formatters';
 import { buildDestinationUrl } from '../utils/destinationUrls';
 import { PluginManifest } from '../types/plugin';
@@ -256,7 +255,6 @@ const ActivityDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { pipelines } = useRealtimePipelines();
     const { sources, destinations: registryDestinations, enrichers } = usePluginRegistry();
-    const { isNerdMode, toggleNerdMode } = useNerdMode();
     const toast = useToast();
 
     // Per-run export state
@@ -475,13 +473,6 @@ const ActivityDetailPage: React.FC = () => {
                     <span className="count">{activityType.toUpperCase()}</span>
                 </span>
                 <div className="rd-tools__spacer" />
-                <button
-                    className={`rd-tools__toggle${isNerdMode ? ' on' : ''}`}
-                    onClick={toggleNerdMode}
-                >
-                    NERD MODE
-                    <span className="rd-tools__switch" />
-                </button>
             </div>
 
             {/* ── Main 2-column layout ── */}
@@ -661,7 +652,7 @@ const ActivityDetailPage: React.FC = () => {
                                             <div className="rd-provider__name">{displayName}</div>
                                             {metaEntries.length > 0 && (
                                                 <div className="rd-provider__meta">
-                                                    {metaEntries.slice(0, isNerdMode ? undefined : 4).map(([k, v]) => (
+                                                    {metaEntries.slice(0, 4).map(([k, v]) => (
                                                         <span key={k}><b>{formatMetadataKey(k)}</b> {formatMetadataValue(v)}</span>
                                                     ))}
                                                 </div>
@@ -722,47 +713,8 @@ const ActivityDetailPage: React.FC = () => {
                         </>
                     )}
 
-                    {/* Nerd mode: IDs */}
-                    {isNerdMode && (
-                        <>
-                            <div className="rd-providers-head">IDENTIFIERS &amp; REFERENCES</div>
-                            <div className="rd-ids">
-                                <div className="rd-ids__row">
-                                    <span className="rd-ids__label">ACTIVITY ID</span>
-                                    <IdBadge id={pipelineRun.activityId} showChars={12} copyable />
-                                </div>
-                                <div className="rd-ids__row">
-                                    <span className="rd-ids__label">EXECUTION ID</span>
-                                    <IdBadge id={pipelineRun.id} showChars={12} copyable />
-                                </div>
-                                <div className="rd-ids__row">
-                                    <span className="rd-ids__label">PIPELINE ID</span>
-                                    <IdBadge id={pipelineRun.pipelineId} stripPrefix="pipe_" showChars={8} copyable />
-                                </div>
-                                {pipelineRun.sourceActivityId && (
-                                    <div className="rd-ids__row">
-                                        <span className="rd-ids__label">SOURCE ACTIVITY</span>
-                                        <IdBadge id={pipelineRun.sourceActivityId} showChars={12} copyable />
-                                    </div>
-                                )}
-                                {pipelineRun.statusMessage && (
-                                    <div className="rd-ids__row">
-                                        <span className="rd-ids__label">STATUS MSG</span>
-                                        <Code>{pipelineRun.statusMessage}</Code>
-                                    </div>
-                                )}
-                                {pipelineRun.originalPayloadUri && (
-                                    <div className="rd-ids__row">
-                                        <span className="rd-ids__label">PAYLOAD URI</span>
-                                        <Code>{pipelineRun.originalPayloadUri}</Code>
-                                    </div>
-                                )}
-                            </div>
-                        </>
-                    )}
-
-                    {/* Nerd mode: timing breakdown */}
-                    {isNerdMode && pipelineRun.boosters && pipelineRun.boosters.length > 0 && (() => {
+                    {/* Timing breakdown */}
+                    {pipelineRun.boosters && pipelineRun.boosters.length > 0 && (() => {
                         const totalBoosterMs = pipelineRun.boosters.reduce((sum, b) => sum + (b.durationMs || 0), 0);
                         const maxBoosterMs = Math.max(...pipelineRun.boosters.map(b => b.durationMs || 0));
                         return (

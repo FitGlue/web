@@ -1,12 +1,11 @@
-import React, { useState, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { client } from '../../../shared/api/client';
 import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { useUser } from '../../hooks/useUser';
-import { useNerdMode } from '../../state/NerdModeContext';
 import { getEffectiveTier, TIER_ATHLETE, HOBBYIST_TIER_LIMITS } from '../../utils/tier';
 import { DashboardBand } from '../library/ui/DashboardBand';
-import { Input, Textarea, Select, FormField } from '../library/forms';
+import { Input, Textarea, FormField } from '../library/forms';
 
 type QueueStatus = 'pending' | 'uploading' | 'success' | 'error';
 
@@ -27,32 +26,15 @@ export const UploadSection: React.FC = () => {
     const navigate = useNavigate();
     const { pipelines, loading: pipelinesLoading } = useRealtimePipelines();
     const { user } = useUser();
-    const { isNerdMode } = useNerdMode();
 
     const inputRef = useRef<HTMLInputElement>(null);
     const [queue, setQueue] = useState<QueueItem[]>([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [uploading, setUploading] = useState(false);
-    const [selectedPipelineId, setSelectedPipelineId] = useState('');
 
     const hasFileUploadPipeline = pipelines.some((p: { source?: string }) =>
         p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload'
-    );
-
-    const fileUploadPipelines = useMemo(() =>
-        pipelines.filter((p: { source?: string; disabled?: boolean }) =>
-            (p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload') && !p.disabled
-        ),
-        [pipelines]
-    );
-
-    const pipelineOptions = useMemo(() =>
-        fileUploadPipelines.map((p: { id: string; name?: string }) => ({
-            value: p.id,
-            label: p.name || p.id,
-        })),
-        [fileUploadPipelines]
     );
 
     const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE &&
@@ -97,8 +79,6 @@ export const UploadSection: React.FC = () => {
             title: (isSingleFile && title) ? title : undefined,
             description: (isSingleFile && description) ? description : undefined,
         };
-        if (isNerdMode && selectedPipelineId) payload.pipelineId = selectedPipelineId;
-
         await client.POST('/users/me/parse-fit', { body: payload as never });
     };
 
@@ -210,20 +190,6 @@ export const UploadSection: React.FC = () => {
                                     onChange={e => setDescription(e.target.value)}
                                     disabled={uploading}
                                     rows={2}
-                                />
-                            </FormField>
-                        </div>
-                    )}
-                    {isNerdMode && (
-                        <div style={{ padding: '0.5rem 1.25rem' }}>
-                            <FormField label="Target Pipeline" htmlFor="upload-pipeline">
-                                <Select
-                                    id="upload-pipeline"
-                                    options={pipelineOptions}
-                                    placeholder="All pipelines (default)"
-                                    value={selectedPipelineId}
-                                    onChange={e => setSelectedPipelineId(e.target.value)}
-                                    disabled={uploading}
                                 />
                             </FormField>
                         </div>

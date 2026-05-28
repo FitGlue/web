@@ -1,12 +1,10 @@
 import React from 'react';
 import { ExecutionRecord } from '../services/ActivitiesService';
 import { StatusPill } from './library/ui/StatusPill';
-import { humanizeServiceName, humanizeKey, humanizeEnumValue, formatDurationFromRange } from '../utils/formatters';
-import { useNerdMode } from '../state/NerdModeContext';
+import { humanizeServiceName, humanizeKey, humanizeEnumValue } from '../utils/formatters';
 import { Text } from './library/ui/Text';
 import { Stack } from './library/layout/Stack';
 import { Badge } from './library/ui/Badge';
-import { Code } from './library/ui/Code';
 import { Link } from './library/navigation/Link';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { buildDestinationUrl } from '../utils/destinationUrls';
@@ -17,87 +15,7 @@ interface TraceItemProps {
     index: number;
 }
 
-// JSON Truncation Helper
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const truncateJson = (obj: any, depth = 0): any => {
-    if (depth > 5) return '[Max Depth]';
-    if (!obj) return obj;
-
-    if (Array.isArray(obj)) {
-        if (obj.length > 5) {
-            const truncated = obj.slice(0, 5).map((item) => truncateJson(item, depth + 1));
-            truncated.push(`... ${obj.length - 5} more items ...`);
-            return truncated;
-        }
-        return obj.map((item) => truncateJson(item, depth + 1));
-    }
-
-    if (typeof obj === 'object') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const newObj: any = {};
-        for (const [key, value] of Object.entries(obj)) {
-            if (['sessions', 'laps', 'records', 'points', 'heart_rate_stream', 'power_stream', 'position_lat_stream', 'position_long_stream'].includes(key) && Array.isArray(value)) {
-                if (value.length > 3) {
-                    const truncated = value.slice(0, 3).map((item) => truncateJson(item, depth + 1));
-                    truncated.push(`... ${value.length - 3} more items ...`);
-                    newObj[key] = truncated;
-                } else {
-                    newObj[key] = truncateJson(value, depth + 1);
-                }
-            } else {
-                newObj[key] = truncateJson(value, depth + 1);
-            }
-        }
-        return newObj;
-    }
-    return obj;
-};
-
 // Renderers
-const NerdRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution }) => {
-    return (
-        <Stack gap="sm">
-            <Stack direction="horizontal" gap="md" wrap>
-                <Text variant="small">{execution.timestamp ? new Date(execution.timestamp).toLocaleTimeString() : ''}</Text>
-                {execution.startTime && execution.endTime && (
-                    <Text variant="small">Duration: {formatDurationFromRange(execution.startTime, execution.endTime)}</Text>
-                )}
-                {execution.triggerType && (
-                    <Text variant="small">Trigger: {execution.triggerType}</Text>
-                )}
-            </Stack>
-            {execution.inputsJson && (
-                <details>
-                    <summary>Inputs</summary>
-                    <Code>{(() => {
-                        try {
-                            const parsed = JSON.parse(execution.inputsJson);
-                            const truncated = truncateJson(parsed);
-                            return JSON.stringify(truncated, null, 2);
-                        } catch {
-                            return execution.inputsJson;
-                        }
-                    })()}</Code>
-                </details>
-            )}
-            {execution.outputsJson && (
-                <details>
-                    <summary>Outputs</summary>
-                    <Code>{(() => {
-                        try {
-                            const parsed = JSON.parse(execution.outputsJson);
-                            const truncated = truncateJson(parsed);
-                            return JSON.stringify(truncated, null, 2);
-                        } catch {
-                            return execution.outputsJson;
-                        }
-                    })()}</Code>
-                </details>
-            )}
-        </Stack>
-    );
-};
-
 const EnricherRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution }) => {
     let details: Record<string, unknown> = {};
     try {
@@ -323,7 +241,6 @@ const WebhookRenderer: React.FC<{ execution: ExecutionRecord }> = ({ execution }
 };
 
 export const TraceItem: React.FC<TraceItemProps> = ({ execution, index }) => {
-    const { isNerdMode } = useNerdMode();
     const serviceName = humanizeServiceName(execution.service);
 
     const renderCustomContent = () => {
@@ -358,7 +275,6 @@ export const TraceItem: React.FC<TraceItemProps> = ({ execution, index }) => {
     };
 
     const customContent = renderCustomContent();
-    const hasCustomContent = customContent !== null;
 
     const isEnricher = execution.service === 'enricher';
 
@@ -370,11 +286,8 @@ export const TraceItem: React.FC<TraceItemProps> = ({ execution, index }) => {
                 {execution.errorMessage && (
                     <span className="trace-item__error">{execution.errorMessage}</span>
                 )}
-                {!isNerdMode && hasCustomContent && (
+                {customContent && (
                     <div className="trace-item__detail">{customContent}</div>
-                )}
-                {(isNerdMode || !hasCustomContent) && (
-                    <div className="trace-item__detail"><NerdRenderer execution={execution} /></div>
                 )}
             </div>
             <div className="trace-item__meta">

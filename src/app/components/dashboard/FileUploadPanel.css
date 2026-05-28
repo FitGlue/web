@@ -191,26 +191,6 @@
   color: var(--fg-rose);
 }
 
-/* Nerd Mode Panel */
-[data-panel="nerd-mode"] {
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: rgba(139, 92, 246, 0.06);
-  box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
-  border-left: 3px solid var(--fg-violet);
-  animation: nerdFadeIn 0.2s ease;
-}
-
-[data-panel="nerd-mode"] p {
-  margin-top: var(--spacing-xs);
-  font-family: var(--fg-font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.08em;
-}
-
-@keyframes nerdFadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
 @media (max-width: 768px) {
   .upload-dropzone {

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../library/ui/Card';
 import { CardHeader } from '../library/ui/CardHeader';
@@ -7,13 +7,12 @@ import '../library/ui/CardSkeleton.css';
 import { Button } from '../library/ui/Button';
 import { Paragraph } from '../library/ui/Paragraph';
 import { Heading } from '../library/ui/Heading';
-import { Input, Textarea, FormField, Select } from '../library/forms';
+import { Input, Textarea, FormField } from '../library/forms';
 import { Stack } from '../library/layout/Stack';
 import { Grid } from '../library/layout/Grid';
 import { client } from '../../../shared/api/client';
 import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { useUser } from '../../hooks/useUser';
-import { useNerdMode } from '../../state/NerdModeContext';
 import { getEffectiveTier, TIER_ATHLETE, HOBBYIST_TIER_LIMITS } from '../../utils/tier';
 import './FileUploadPanel.css';
 
@@ -50,7 +49,6 @@ export const FileUploadPanel: React.FC = () => {
   const navigate = useNavigate();
   const { pipelines, loading: pipelinesLoading } = useRealtimePipelines();
   const { user } = useUser();
-  const { isNerdMode } = useNerdMode();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -58,7 +56,6 @@ export const FileUploadPanel: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [selectedPipelineId, setSelectedPipelineId] = useState('');
 
   const isBulkMode = queue.length > 1;
   const pendingCount = queue.filter(i => i.status === 'pending').length;
@@ -68,21 +65,6 @@ export const FileUploadPanel: React.FC = () => {
 
   const hasFileUploadPipeline = pipelines.some((p: { source?: string }) =>
     p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload'
-  );
-
-  const fileUploadPipelines = useMemo(() =>
-    pipelines.filter((p: { source?: string; disabled?: boolean }) =>
-      (p.source === 'SOURCE_FILE_UPLOAD' || p.source === 'file_upload') && !p.disabled
-    ),
-    [pipelines]
-  );
-
-  const pipelineOptions = useMemo(() =>
-    fileUploadPipelines.map((p: { id: string; name?: string }) => ({
-      value: p.id,
-      label: p.name || p.id,
-    })),
-    [fileUploadPipelines]
   );
 
   const isAtLimit = user && getEffectiveTier(user) !== TIER_ATHLETE &&
@@ -135,10 +117,6 @@ export const FileUploadPanel: React.FC = () => {
       title: (!isBulkMode && title) ? title : undefined,
       description: (!isBulkMode && description) ? description : undefined,
     };
-
-    if (isNerdMode && selectedPipelineId) {
-      payload.pipelineId = selectedPipelineId;
-    }
 
     await client.POST('/users/me/parse-fit', { body: payload as never });
   };
@@ -349,27 +327,6 @@ export const FileUploadPanel: React.FC = () => {
                 {errorCount > 0 && (
                   <> · <Button variant="ghost" size="sm" onClick={retryFailed}>Retry failed</Button></>
                 )}
-              </Paragraph>
-            )}
-          </Stack>
-        )}
-
-        {/* Nerd Mode: Pipeline Selector */}
-        {isNerdMode && (
-          <Stack gap="sm" data-panel="nerd-mode">
-            <FormField label="Target Pipeline" htmlFor="nerd-pipeline">
-              <Select
-                id="nerd-pipeline"
-                options={pipelineOptions}
-                placeholder="All pipelines (default)"
-                value={selectedPipelineId}
-                onChange={e => setSelectedPipelineId(e.target.value)}
-                disabled={uploading}
-              />
-            </FormField>
-            {selectedPipelineId && (
-              <Paragraph muted>
-                ⚡ Activity will be sent only to this pipeline
               </Paragraph>
             )}
           </Stack>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PageLayout, PageAction } from '../components/library/layout';
-import { CardSkeleton, Button, Badge, EmptyState, ConfirmDialog, IdBadge, useToast } from '../components/library/ui';
+import { CardSkeleton, Button, Badge, EmptyState, ConfirmDialog, useToast } from '../components/library/ui';
 
 import { client } from '../../shared/api/client';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
@@ -9,7 +9,6 @@ import { SmartNudge } from '../components/SmartNudge';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { usePluginLookup } from '../hooks/usePluginLookup';
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
-import { useNerdMode } from '../state/NerdModeContext';
 import { ImportPipelineModal } from '../components/ImportPipelineModal';
 import '../components/library/ui/CardSkeleton.css';
 import './PipelinesPage.css';
@@ -52,8 +51,6 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
     duplicating,
 }) => {
     const { getSourceIcon, getSourceName, getEnricherIcon, getEnricherName, getDestinationIcon, getDestinationName } = usePluginLookup();
-    const { isNerdMode } = useNerdMode();
-
     const boosterCount = pipeline.enrichers?.length ?? 0;
 
     return (
@@ -62,7 +59,6 @@ const PipelineCard: React.FC<PipelineCardProps> = ({
             <div className="pipe-card__head">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', minWidth: 0 }}>
                     <span className="pipe-card__name">{pipeline.name || 'UNNAMED PIPELINE'}</span>
-                    {isNerdMode && <IdBadge id={pipeline.id} stripPrefix="pipe_" showChars={8} copyable />}
                     {boosterCount > 0 && (
                         <Badge>{boosterCount} BOOSTER{boosterCount !== 1 ? 'S' : ''}</Badge>
                     )}

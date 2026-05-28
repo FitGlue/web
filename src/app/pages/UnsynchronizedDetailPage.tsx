@@ -4,18 +4,16 @@ import { useAtom } from 'jotai';
 import { pipelineRunsAtom } from '../state/activitiesState';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
 import { PageLayout } from '../components/library/layout/PageLayout';
-import { Button, Code, IdBadge, useToast } from '../components/library/ui';
+import { Button, IdBadge, useToast } from '../components/library/ui';
 import { ExecutionStepTrace } from '../components/ExecutionStepTrace';
 import { ExecutionStepStatus, PipelineRunStatus } from '../../types/pb/models/pipeline/execution';
-import { useNerdMode } from '../state/NerdModeContext';
 import { InputsService } from '../services/InputsService';
 import '../components/ExecutionStepTrace.css';
 import './RunDetail.css';
 
 const UnsynchronizedDetailPage: React.FC = () => {
     const { pipelineExecutionId } = useParams<{ pipelineExecutionId: string }>();
-    const { isNerdMode, toggleNerdMode } = useNerdMode();
-    const [activeTab, setActiveTab] = useState<'trace' | 'json'>('trace');
+    const [activeTab, setActiveTab] = useState<'trace'>('trace');
     const [cancelling, setCancelling] = useState(false);
     const toast = useToast();
     const navigate = useNavigate();
@@ -124,22 +122,7 @@ const UnsynchronizedDetailPage: React.FC = () => {
                     TRACE
                     <span className="count">{stepCount} STEPS</span>
                 </button>
-                {isNerdMode && (
-                    <button
-                        className={`rd-tools__tab${activeTab === 'json' ? ' rd-tools__tab--active' : ''}`}
-                        onClick={() => setActiveTab('json')}
-                    >
-                        RAW JSON
-                    </button>
-                )}
                 <div className="rd-tools__spacer" />
-                <button
-                    className={`rd-tools__toggle${isNerdMode ? ' on' : ''}`}
-                    onClick={toggleNerdMode}
-                >
-                    NERD MODE
-                    <span className="rd-tools__switch" />
-                </button>
             </div>
 
             {/* ── Main 2-column layout ── */}
@@ -232,14 +215,6 @@ const UnsynchronizedDetailPage: React.FC = () => {
                         </>
                     )}
 
-                    {activeTab === 'json' && isNerdMode && (
-                        <>
-                            <div className="rd-providers-head">RAW JSON</div>
-                            <div className="rd-json">
-                                <Code>{JSON.stringify(run, null, 2)}</Code>
-                            </div>
-                        </>
-                    )}
                 </div>
             </div>
         </PageLayout>

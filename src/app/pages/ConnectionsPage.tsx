@@ -7,7 +7,6 @@ import { PluginIcon } from '../components/library/ui/PluginIcon';
 
 import { useRealtimeIntegrations } from '../hooks/useRealtimeIntegrations';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
-import { useNerdMode } from '../state/NerdModeContext';
 import '../components/library/ui/CardSkeleton.css';
 import { IntegrationManifest } from '../types/plugin';
 import './ConnectionsPage.css';
@@ -35,7 +34,6 @@ const ConnectionTile: React.FC<ConnectionTileProps> = ({
     onView,
 }) => {
     const isConnected = status?.connected ?? false;
-    const { isNerdMode } = useNerdMode();
 
     const formatLastSynced = (dateStr?: string) => {
         if (!dateStr) return null;
@@ -74,15 +72,9 @@ const ConnectionTile: React.FC<ConnectionTileProps> = ({
 
             {isConnected && (
                 <div className="conn-tile__meta">
-                    {isNerdMode && status?.externalUserId && (
-                        <span>ID: <b>{status.externalUserId}</b></span>
-                    )}
                     {lastSynced && (
                         <span>SYNCED: <b>{lastSynced}</b></span>
                     )}
-                    {isNerdMode && status?.additionalDetails && Object.entries(status.additionalDetails).map(([key, value]) => (
-                        <span key={key}>{key}: <b>{value}</b></span>
-                    ))}
                     {integration.actions && integration.actions.length > 0 && (
                         <span>⚡ {integration.actions.length} {integration.actions.length === 1 ? 'ACTION' : 'ACTIONS'}</span>
                     )}

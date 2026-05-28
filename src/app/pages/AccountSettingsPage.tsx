@@ -6,7 +6,6 @@ import { client } from '../../shared/api/client';
 import { useUser } from '../hooks/useUser';
 import { useAuth } from '../hooks/useAuth';
 import { userAtom } from '../state/authState';
-import { useNerdMode } from '../state/NerdModeContext';
 import { getEffectiveTier, TIER_ATHLETE, TIER_HOBBYIST, HOBBYIST_TIER_LIMITS } from '../utils/tier';
 import { NotificationPreferencesCard } from '../components/NotificationPreferencesCard';
 import { ReauthModal } from '../components/ReauthModal';
@@ -18,7 +17,6 @@ const AccountSettingsPage: React.FC = () => {
     const [firebaseUser] = useAtom(userAtom);
     const { user: profile } = useUser();
     const toast = useToast();
-    const { isNerdMode } = useNerdMode();
     const { changePassword } = useAuth();
     const navigate = useNavigate();
 
@@ -35,8 +33,6 @@ const AccountSettingsPage: React.FC = () => {
     const [deleteConfirmation, setDeleteConfirmation] = useState('');
     const [deleting, setDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState<string | null>(null);
-
-    const [copied, setCopied] = useState(false);
 
     // Password change state
     const [currentPassword, setCurrentPassword] = useState('');
@@ -130,18 +126,6 @@ const AccountSettingsPage: React.FC = () => {
         (p) => p.providerId === 'password'
     ) ?? false;
 
-    const handleCopyUserId = async () => {
-        if (!firebaseUser?.uid) return;
-        try {
-            await navigator.clipboard.writeText(firebaseUser.uid);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-            toast.success('Copied', 'User ID copied to clipboard');
-        } catch (err) {
-            console.error('Failed to copy:', err);
-            toast.error('Copy Failed', 'Failed to copy to clipboard');
-        }
-    };
 
     const handleDeleteAccount = async () => {
         if (deleteConfirmation !== 'DELETE') { setDeleteError('Please type DELETE to confirm'); return; }
@@ -194,7 +178,7 @@ const AccountSettingsPage: React.FC = () => {
                     {/* Plan banner */}
                     <div className="stx-plan">
                         <span className="stx-plan__icon">✦</span>
-                        <div style={{ flex: 1, display: 'flex', alignItems: 'baseline', gap: '1rem' }}>
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.125rem' }}>
                             <span className="stx-plan__title">
                                 {isAthlete ? 'ATHLETE · UNLIMITED SYNCS' : 'HOBBYIST'}
                             </span>
@@ -411,37 +395,6 @@ const AccountSettingsPage: React.FC = () => {
                             </div>
                         </div>
                     </section>
-
-                    {/* Nerd Mode — Advanced */}
-                    {isNerdMode && (
-                        <section className="stx-section">
-                            <div className="stx-section__head">
-                                <div>
-                                    <h2>ADVANCED</h2>
-                                    <p className="stx-section__sub">Developer details — nerd mode only.</p>
-                                </div>
-                            </div>
-                            <div className="stx-section__body">
-                                <div className="settings-field">
-                                    <div><div className="settings-field__label-name">User ID</div><div className="settings-field__label-hint">Firebase UID — nerd mode only.</div></div>
-                                    <div className="stx-field__input">
-                                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                                            <code style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', color: 'var(--fg-cyan)', background: 'var(--fg-ink)', padding: '0.5rem 0.75rem' }}>
-                                                {firebaseUser?.uid || 'N/A'}
-                                            </code>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={handleCopyUserId}
-                                            >
-                                                {copied ? '✓ COPIED' : 'COPY'}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                    )}
 
                     {/* Danger Zone */}
                     <div className="stx-danger">
