@@ -76,7 +76,11 @@
         "destination": "/app/index.html"
       },
       {
-        "source": "/@**",
+        "source": "/@*/**",
+        "destination": "/showcase/index.html"
+      },
+      {
+        "source": "/@*",
         "destination": "/showcase/index.html"
       },
       {
