@@ -22,6 +22,10 @@ const FILTERS: FilterKey[] = ['ALL', 'RUN', 'RIDE', 'STRENGTH', 'SWIM', 'OTHER']
 
 interface Metric { value: string; label: string; }
 
+function firstAvailable(...candidates: Metric[]): Metric {
+  return candidates.find(m => m.value !== '—') ?? candidates[0];
+}
+
 function buildMetricTrio(family: ActivityFamily, e: ShowcaseProfileEntry): Metric[] {
   const distKm = (e.distanceMeters ?? 0) / 1000;
   const distKmStr = distKm >= 10 ? distKm.toFixed(1) : distKm > 0 ? distKm.toFixed(2) : '—';
@@ -37,33 +41,41 @@ function buildMetricTrio(family: ActivityFamily, e: ShowcaseProfileEntry): Metri
   const setsStr = (e.totalSets ?? 0) > 0 ? String(e.totalSets) : '—';
   const kgStr = (e.totalWeightKg ?? 0) > 0 ? Math.round(e.totalWeightKg!).toLocaleString() : '—';
 
+  const km     = { value: distKmStr, label: 'KM' };
+  const m      = { value: distMStr,  label: 'M' };
+  const dur    = { value: durStr,    label: 'DURATION' };
+  const hr     = { value: hrStr,     label: 'AVG BPM' };
+  const kcal   = { value: kcalStr,   label: 'KCAL' };
+  const sets   = { value: setsStr,   label: 'SETS' };
+  const kg     = { value: kgStr,     label: 'KG MOVED' };
+
   switch (family) {
     case 'run':
     case 'ride':
     case 'hike':
       return [
-        { value: distKmStr, label: 'KM' },
-        { value: durStr, label: 'DURATION' },
-        { value: hrStr, label: 'AVG BPM' },
+        firstAvailable(km, kcal, dur),
+        firstAvailable(dur, kcal, hr),
+        firstAvailable(hr, kcal, dur),
       ];
     case 'swim':
       return [
-        { value: distMStr, label: 'M' },
-        { value: durStr, label: 'DURATION' },
-        { value: hrStr, label: 'AVG BPM' },
+        firstAvailable(m, kcal, dur),
+        firstAvailable(dur, kcal, hr),
+        firstAvailable(hr, kcal, dur),
       ];
     case 'strength':
     case 'crossfit':
       return [
-        { value: setsStr, label: 'SETS' },
-        { value: kgStr, label: 'KG MOVED' },
-        { value: durStr, label: 'DURATION' },
+        firstAvailable(sets, kcal, hr),
+        firstAvailable(kg, kcal, hr),
+        firstAvailable(dur, kcal, hr),
       ];
     default:
       return [
-        { value: durStr, label: 'DURATION' },
-        { value: hrStr, label: 'AVG BPM' },
-        { value: kcalStr, label: 'KCAL' },
+        firstAvailable(dur, kcal, hr),
+        firstAvailable(hr, kcal, dur),
+        firstAvailable(kcal, hr, dur),
       ];
   }
 }
