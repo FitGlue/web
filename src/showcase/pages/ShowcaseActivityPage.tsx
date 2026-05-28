@@ -9,6 +9,7 @@ import { resolveCategory } from '../utils/activityCategory';
 import { buildModuleOrder } from '../utils/enricherModules';
 import { getActivityIcon } from '../utils/activityMeta';
 import { useShowcaseMeta } from '../utils/useShowcaseMeta';
+import ShowcaseNotFound from '../components/ShowcaseNotFound';
 import ActivityHero from '../components/layout/ActivityHero';
 import ModuleGrid from '../components/layout/ModuleGrid';
 import BoosterTimeline from '../components/layout/BoosterTimeline';
@@ -29,21 +30,6 @@ function LoadingScreen() {
   );
 }
 
-function ErrorScreen({ message }: { message: string }) {
-  return (
-    <div className="showcase-page">
-      <div style={{ padding: 'var(--space-xl) var(--space-md)', textAlign: 'center' }}>
-        <h1 style={{ fontFamily: 'var(--fg-font-display)', fontSize: '2rem', textTransform: 'uppercase' }}>
-          Activity not found
-        </h1>
-        <p style={{ color: 'var(--color-text-muted)', marginTop: 'var(--space-sm)' }}>{message}</p>
-        <a href="/" style={{ display: 'inline-block', marginTop: 'var(--space-md)', fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-cyan)' }}>
-          ← Explore FitGlue
-        </a>
-      </div>
-    </div>
-  );
-}
 
 export default function ShowcaseActivityPage() {
   const { id } = useParams<{ id: string }>();
@@ -135,7 +121,7 @@ export default function ShowcaseActivityPage() {
   } : null);
 
   if (loading) return <LoadingScreen />;
-  if (error || !activity) return <ErrorScreen message={error ?? 'Unknown error'} />;
+  if (error || !activity) return <ShowcaseNotFound type="activity" />;
 
   const enrichments = activity.enrichments as ActivityEnrichments | undefined;
   const appliedEnrichments = activity.appliedEnrichments ?? [];

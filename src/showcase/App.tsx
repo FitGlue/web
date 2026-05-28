@@ -1,6 +1,7 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
 import publicClient from '../shared/api/public-client';
+import ShowcaseNotFound from './components/ShowcaseNotFound';
 
 const ShowcaseActivityPage = React.lazy(() => import('./pages/ShowcaseActivityPage'));
 const ShowcaseProfilePage = React.lazy(() => import('./pages/ShowcaseProfilePage'));
@@ -50,20 +51,11 @@ const App: React.FC = () => (
   <BrowserRouter>
     <Suspense fallback={<Fallback />}>
       <Routes>
-        <Route path="/@:slug/:id" element={<ShowcaseActivityPage />} />
-        <Route path="/@:slug" element={<ShowcaseProfilePage />} />
+        <Route path="/:slug/:id" element={<ShowcaseActivityPage />} />
+        <Route path="/:slug" element={<ShowcaseProfilePage />} />
         <Route path="/showcase/profile/:slug" element={<LegacyProfileRedirect />} />
         <Route path="/showcase/activity/:id" element={<LegacyActivityRedirect />} />
-        <Route path="*" element={
-          <div className="showcase-page">
-            <div className="showcase-error" style={{ display: 'block' }}>
-              <div className="error-icon">🔍</div>
-              <h1>Page Not Found</h1>
-              <p className="error-subtitle">This showcase page doesn&apos;t exist.</p>
-              <a href="/" className="btn btn-primary">Explore FitGlue</a>
-            </div>
-          </div>
-        } />
+        <Route path="*" element={<ShowcaseNotFound type="page" />} />
       </Routes>
     </Suspense>
   </BrowserRouter>

@@ -11,6 +11,7 @@ import RouteMosaic from '../components/layout/RouteMosaic';
 import ActivityGrid from '../components/layout/ActivityGrid';
 import { PhotoGallery } from '../components/PhotoGallery';
 import { useShowcaseMeta } from '../utils/useShowcaseMeta';
+import ShowcaseNotFound from '../components/ShowcaseNotFound';
 
 type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
 type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
@@ -38,26 +39,10 @@ function LoadingScreen() {
   );
 }
 
-function ErrorScreen() {
-  return (
-    <div className="showcase-page">
-      <div style={{ padding: '64px 32px', textAlign: 'center' }}>
-        <h1 style={{ fontFamily: 'var(--fg-font-display)', fontSize: '2rem', textTransform: 'uppercase' }}>
-          Profile not found
-        </h1>
-        <p style={{ color: 'var(--color-text-muted)', marginTop: '1rem' }}>
-          This athlete profile doesn&apos;t exist or hasn&apos;t been created yet.
-        </p>
-        <a href="/" style={{ display: 'inline-block', marginTop: '1.5rem', fontFamily: 'var(--fg-font-mono)', fontSize: '0.75rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-cyan)' }}>
-          ← Explore FitGlue
-        </a>
-      </div>
-    </div>
-  );
-}
 
 export default function ShowcaseProfilePage() {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug: rawSlug } = useParams<{ slug: string }>();
+  const slug = rawSlug?.startsWith('@') ? rawSlug.slice(1) : rawSlug;
   const [profile, setProfile] = useState<ShowcaseProfile | null>(null);
   const [entries, setEntries] = useState<ShowcaseProfileEntry[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -110,7 +95,7 @@ export default function ShowcaseProfilePage() {
   }, [slug, currentPage, totalPages, loadingMore]);
 
   if (loading) return <LoadingScreen />;
-  if (error || !profile) return <ErrorScreen />;
+  if (error || !profile) return <ShowcaseNotFound type="profile" />;
 
   const hasMore = currentPage < totalPages;
   const links = (profile.links ?? []).filter((l: ShowcaseLink) => l.url);
