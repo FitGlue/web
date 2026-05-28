@@ -2705,6 +2705,14 @@ body:has(#showcase-root) {
   display: flex;
   gap: 4px;
   flex: 1;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.export-modal-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .export-tab {
@@ -2901,11 +2909,17 @@ body:has(#showcase-root) {
 @media (max-width: 680px) {
   .export-modal-body {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   .export-modal-preview-col {
     border-right: 0;
     border-bottom: var(--fg-rule-thin);
+    overflow-y: visible;
+  }
+  .export-modal-options-col {
+    overflow-y: visible;
   }
 }
 
