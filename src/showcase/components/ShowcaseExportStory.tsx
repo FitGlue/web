@@ -100,6 +100,13 @@ const TEXT_POSITIONS = [
   { id: 'lower', label: 'Lower', topFlex: 1.65, bottomFlex: 0.1 },
 ];
 
+// Title font size
+const TITLE_SIZES = [
+  { id: 'sm', label: 'Small', px: 72  },
+  { id: 'md', label: 'Med',   px: 95  },
+  { id: 'lg', label: 'Large', px: 118 },
+];
+
 const DISPLAY = "'Archivo Black','Arial Black',system-ui,sans-serif";
 const MONO    = "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace";
 
@@ -111,15 +118,19 @@ interface StoryFrameProps {
   bg: typeof STORY_BACKGROUNDS[number];
   overlay: typeof STORY_OVERLAYS[number];
   textPos: typeof TEXT_POSITIONS[number];
+  titleSize: typeof TITLE_SIZES[number];
   accent: string;
   textColor: string;
   stats: StatOption[];
+  showChips: boolean;
+  showDate: boolean;
+  showByline: boolean;
   showPRHighlight: boolean;
   showWatermark: boolean;
 }
 
 const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
-  ({ data, photoUrl, bg, overlay, textPos, accent, textColor, stats, showPRHighlight, showWatermark }, ref) => {
+  ({ data, photoUrl, bg, overlay, textPos, titleSize, accent, textColor, stats, showChips, showDate, showByline, showPRHighlight, showWatermark }, ref) => {
     const prRecords = data.enrichments?.personalRecords?.records ?? [];
     const topPR = prRecords[0];
     const prCount = prRecords.length;
@@ -163,10 +174,10 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
           />
         )}
 
-        {/* Dark fade — strong at bottom for text contrast, light in the middle */}
+        {/* Dark fade — strong at bottom for text contrast, fully transparent by 62% */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.78) 22%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.08) 68%, rgba(0,0,0,0.32) 100%)',
+          background: 'linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 22%, rgba(0,0,0,0.18) 46%, transparent 62%)',
         }} />
 
         {/* Aurora / colour overlay — sits on top of the dark fade, adds the glow */}
@@ -196,66 +207,70 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
         }}>
 
           {/* Activity type badge + source */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap', marginBottom: '28px' }}>
-            <div style={{
-              display: 'inline-block',
-              background: `${accent}22`,
-              border: `2px solid ${accent}`,
-              padding: '12px 32px',
-              color: accent,
-              fontFamily: MONO,
-              fontSize: '26px',
-              fontWeight: 700,
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-            }}>
-              {formatActivityType(data.activityType)}
-            </div>
-            {sourceLabel && (
+          {showChips && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap', marginBottom: '28px' }}>
               <div style={{
+                display: 'inline-block',
+                background: `${accent}22`,
+                border: `2px solid ${accent}`,
+                padding: '12px 32px',
+                color: accent,
                 fontFamily: MONO,
-                fontSize: '24px',
-                fontWeight: 600,
-                letterSpacing: '0.14em',
+                fontSize: '26px',
+                fontWeight: 700,
+                letterSpacing: '0.16em',
                 textTransform: 'uppercase',
-                color: `${textColor}66`,
-                textShadow: '0 1px 8px rgba(0,0,0,0.8)',
               }}>
-                VIA {sourceLabel}
+                {formatActivityType(data.activityType)}
               </div>
-            )}
-          </div>
+              {sourceLabel && (
+                <div style={{
+                  fontFamily: MONO,
+                  fontSize: '24px',
+                  fontWeight: 600,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: `${textColor}66`,
+                  textShadow: '0 1px 8px rgba(0,0,0,0.8)',
+                }}>
+                  VIA {sourceLabel}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Date + PR chip */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            {data.startTime && (
-              <div style={{
-                fontFamily: MONO,
-                fontSize: '24px',
-                fontWeight: 600,
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: `${textColor}70`,
-                textShadow: '0 1px 8px rgba(0,0,0,0.8)',
-              }}>
-                {formatDateFull(data.startTime)}
-              </div>
-            )}
-            {prCount > 0 && (
-              <div style={{
-                background: `${accent}25`,
-                border: `1.5px solid ${accent}66`,
-                padding: '8px 24px',
-                fontFamily: MONO,
-                fontSize: '22px',
-                fontWeight: 700,
-                letterSpacing: '0.12em',
-                color: accent,
-              }}>
-                +{prCount} PR
-              </div>
-            )}
-          </div>
+          {showDate && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+              {data.startTime && (
+                <div style={{
+                  fontFamily: MONO,
+                  fontSize: '24px',
+                  fontWeight: 600,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: `${textColor}70`,
+                  textShadow: '0 1px 8px rgba(0,0,0,0.8)',
+                }}>
+                  {formatDateFull(data.startTime)}
+                </div>
+              )}
+              {prCount > 0 && (
+                <div style={{
+                  background: `${accent}25`,
+                  border: `1.5px solid ${accent}66`,
+                  padding: '8px 24px',
+                  fontFamily: MONO,
+                  fontSize: '22px',
+                  fontWeight: 700,
+                  letterSpacing: '0.12em',
+                  color: accent,
+                }}>
+                  +{prCount} PR
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Top spacer — size controls how far down the title sits */}
           <div style={{ flex: textPos.topFlex }} />
@@ -263,7 +278,7 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
           {/* Main title */}
           <div style={{
             fontFamily: DISPLAY,
-            fontSize: '118px',
+            fontSize: `${titleSize.px}px`,
             fontWeight: 900,
             color: textColor,
             lineHeight: 1.0,
@@ -276,25 +291,28 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
           </div>
 
           {/* Owner / enricher line */}
-          <div style={{
-            fontFamily: MONO,
-            fontSize: '24px',
-            fontWeight: 600,
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            color: `${textColor}55`,
-            textShadow: '0 1px 12px rgba(0,0,0,0.9)',
-            marginBottom: '68px',
-          }}>
-            BY {(data.ownerDisplayName ?? '').toUpperCase()}
-            {boosterCount > 0 && ` · ENRICHED BY ${boosterCount} BOOSTER${boosterCount !== 1 ? 'S' : ''}`}
-          </div>
+          {showByline && (
+            <div style={{
+              fontFamily: MONO,
+              fontSize: '24px',
+              fontWeight: 600,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: `${textColor}55`,
+              textShadow: '0 1px 12px rgba(0,0,0,0.9)',
+              marginBottom: '68px',
+            }}>
+              BY {(data.ownerDisplayName ?? '').toUpperCase()}
+              {boosterCount > 0 && ` · ENRICHED BY ${boosterCount} BOOSTER${boosterCount !== 1 ? 'S' : ''}`}
+            </div>
+          )}
 
           {/* Gradient divider */}
           <div style={{
             height: '2px',
             background: `linear-gradient(90deg, ${accent}00, ${accent}bb, ${accent}00)`,
             marginBottom: '52px',
+            marginTop: showByline ? '0' : '68px',
             flexShrink: 0,
           }} />
 
@@ -381,6 +399,10 @@ export const StoryExportTab: React.FC<Props> = ({
   const [bg, setBg] = useState(STORY_BACKGROUNDS[0]);
   const [overlay, setOverlay] = useState(STORY_OVERLAYS[0]);
   const [textPos, setTextPos] = useState(TEXT_POSITIONS[1]); // mid by default
+  const [titleSize, setTitleSize] = useState(TITLE_SIZES[2]); // large by default
+  const [showChips, setShowChips] = useState(true);
+  const [showDate, setShowDate] = useState(true);
+  const [showByline, setShowByline] = useState(true);
   const [showWatermark, setShowWatermark] = useState(true);
   const [exporting, setExporting] = useState(false);
 
@@ -472,9 +494,13 @@ export const StoryExportTab: React.FC<Props> = ({
               bg={bg}
               overlay={overlay}
               textPos={textPos}
+              titleSize={titleSize}
               accent={accent}
               textColor={textColor}
               stats={selectedStats}
+              showChips={showChips}
+              showDate={showDate}
+              showByline={showByline}
               showPRHighlight={showPRHighlight}
               showWatermark={showWatermark}
             />
@@ -516,6 +542,20 @@ export const StoryExportTab: React.FC<Props> = ({
                   onClick={() => setTextPos(p)}
                 >
                   {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="export-option-group">
+            <span className="export-option-label">Title size</span>
+            <div className="export-option-row">
+              {TITLE_SIZES.map((s) => (
+                <button
+                  key={s.id}
+                  className={`export-pill${titleSize.id === s.id ? ' export-pill--active' : ''}`}
+                  onClick={() => setTitleSize(s)}
+                >
+                  {s.label}
                 </button>
               ))}
             </div>
@@ -584,22 +624,15 @@ export const StoryExportTab: React.FC<Props> = ({
             </div>
           )}
           <div className="export-option-group">
-            <span className="export-option-label">Include</span>
+            <span className="export-option-label">Show</span>
             <div className="export-option-row export-option-row--wrap">
+              <button className={`export-pill${showChips ? ' export-pill--active' : ''}`} onClick={() => setShowChips((v) => !v)}>Badges</button>
+              <button className={`export-pill${showDate ? ' export-pill--active' : ''}`} onClick={() => setShowDate((v) => !v)}>Date</button>
+              <button className={`export-pill${showByline ? ' export-pill--active' : ''}`} onClick={() => setShowByline((v) => !v)}>By line</button>
               {hasPRs && (
-                <button
-                  className={`export-pill${showPRHighlight ? ' export-pill--active' : ''}`}
-                  onClick={() => setShowPRHighlight((v) => !v)}
-                >
-                  PR Highlight
-                </button>
+                <button className={`export-pill${showPRHighlight ? ' export-pill--active' : ''}`} onClick={() => setShowPRHighlight((v) => !v)}>PR highlight</button>
               )}
-              <button
-                className={`export-pill${showWatermark ? ' export-pill--active' : ''}`}
-                onClick={() => setShowWatermark((v) => !v)}
-              >
-                Watermark
-              </button>
+              <button className={`export-pill${showWatermark ? ' export-pill--active' : ''}`} onClick={() => setShowWatermark((v) => !v)}>Watermark</button>
             </div>
           </div>
         </div>
