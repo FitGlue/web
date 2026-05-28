@@ -12,7 +12,7 @@ const STORY_H = 1920;
 const PREVIEW_W = 220;
 const PREVIEW_H = Math.round(PREVIEW_W * (STORY_H / STORY_W));
 
-// Richer brand-tinted bases — photo sits on top so these show at edges
+// Dark base — visible at edges/corners and when there's no photo
 const STORY_BACKGROUNDS = [
   { id: 'brand',    label: 'Brand',    bg: 'linear-gradient(170deg, #4a0620 0%, #220450 40%, #0e0228 70%, #060110 100%)' },
   { id: 'midnight', label: 'Midnight', bg: 'linear-gradient(170deg, #060818 0%, #0c1840 40%, #07091a 70%, #030408 100%)' },
@@ -20,6 +20,84 @@ const STORY_BACKGROUNDS = [
   { id: 'forest',   label: 'Forest',   bg: 'linear-gradient(170deg, #031808 0%, #082e0e 40%, #041208 70%, #020804 100%)' },
   { id: 'neon',     label: 'Neon',     bg: 'linear-gradient(170deg, #1c0428 0%, #2c0848 40%, #120320 70%, #07010f 100%)' },
   { id: 'noir',     label: 'Noir',     bg: 'linear-gradient(170deg, #181818 0%, #242424 40%, #111111 70%, #080808 100%)' },
+];
+
+// Aurora-style overlays — coloured blobs + upward fade sitting above the photo/dark layer.
+// Each uses two radial blobs at different positions along the bottom edge, plus a linear
+// base fade to give the "glow rising from the bottom" northern-lights feel.
+const STORY_OVERLAYS = [
+  {
+    id: 'aurora',
+    label: 'Aurora',
+    // Pink-violet-cyan — the FitGlue signature shimmer
+    style: [
+      'radial-gradient(ellipse 70% 40% at 22% 100%, rgba(255,61,166,0.72) 0%, transparent 100%)',
+      'radial-gradient(ellipse 65% 38% at 78% 100%, rgba(34,211,238,0.62) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(139,92,246,0.45) 0%, rgba(139,92,246,0.08) 32%, transparent 55%)',
+    ].join(', '),
+  },
+  {
+    id: 'solar',
+    label: 'Solar',
+    // Gold-orange-pink — warm and fiery
+    style: [
+      'radial-gradient(ellipse 72% 40% at 28% 100%, rgba(251,146,60,0.75) 0%, transparent 100%)',
+      'radial-gradient(ellipse 68% 38% at 72% 100%, rgba(255,61,166,0.58) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(251,191,36,0.38) 0%, rgba(249,115,22,0.08) 30%, transparent 52%)',
+    ].join(', '),
+  },
+  {
+    id: 'arctic',
+    label: 'Arctic',
+    // Cyan-blue — cold and electric
+    style: [
+      'radial-gradient(ellipse 70% 40% at 24% 100%, rgba(34,211,238,0.76) 0%, transparent 100%)',
+      'radial-gradient(ellipse 65% 38% at 74% 100%, rgba(59,130,246,0.62) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(99,102,241,0.38) 0%, rgba(34,211,238,0.08) 32%, transparent 55%)',
+    ].join(', '),
+  },
+  {
+    id: 'inferno',
+    label: 'Inferno',
+    // Red-amber — intense heat
+    style: [
+      'radial-gradient(ellipse 70% 40% at 30% 100%, rgba(239,68,68,0.78) 0%, transparent 100%)',
+      'radial-gradient(ellipse 65% 38% at 70% 100%, rgba(251,146,60,0.62) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(239,68,68,0.38) 0%, rgba(251,191,36,0.08) 28%, transparent 52%)',
+    ].join(', '),
+  },
+  {
+    id: 'jade',
+    label: 'Jade',
+    // Emerald-teal — deep forest
+    style: [
+      'radial-gradient(ellipse 70% 40% at 26% 100%, rgba(52,211,153,0.72) 0%, transparent 100%)',
+      'radial-gradient(ellipse 65% 38% at 74% 100%, rgba(34,211,238,0.58) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(16,185,129,0.38) 0%, rgba(52,211,153,0.08) 30%, transparent 52%)',
+    ].join(', '),
+  },
+  {
+    id: 'violet',
+    label: 'Violet',
+    // Deep indigo-violet — cosmic and dark
+    style: [
+      'radial-gradient(ellipse 70% 40% at 28% 100%, rgba(139,92,246,0.80) 0%, transparent 100%)',
+      'radial-gradient(ellipse 65% 38% at 70% 100%, rgba(99,102,241,0.65) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(79,70,229,0.42) 0%, rgba(139,92,246,0.10) 30%, transparent 55%)',
+    ].join(', '),
+  },
+  {
+    id: 'none',
+    label: 'None',
+    style: null as string | null,
+  },
+];
+
+// Text/stats position — controls how far down the title sits by adjusting the flex spacer
+const TEXT_POSITIONS = [
+  { id: 'upper', label: 'Upper', topFlex: 0.3,  bottomFlex: 1.3 },
+  { id: 'mid',   label: 'Mid',   topFlex: 1.0,  bottomFlex: 0.6 },
+  { id: 'lower', label: 'Lower', topFlex: 1.65, bottomFlex: 0.1 },
 ];
 
 const DISPLAY = "'Archivo Black','Arial Black',system-ui,sans-serif";
@@ -31,6 +109,8 @@ interface StoryFrameProps {
   data: ShowcasedActivity;
   photoUrl: string | null;
   bg: typeof STORY_BACKGROUNDS[number];
+  overlay: typeof STORY_OVERLAYS[number];
+  textPos: typeof TEXT_POSITIONS[number];
   accent: string;
   textColor: string;
   stats: StatOption[];
@@ -39,7 +119,7 @@ interface StoryFrameProps {
 }
 
 const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
-  ({ data, photoUrl, bg, accent, textColor, stats, showPRHighlight, showWatermark }, ref) => {
+  ({ data, photoUrl, bg, overlay, textPos, accent, textColor, stats, showPRHighlight, showWatermark }, ref) => {
     const prRecords = data.enrichments?.personalRecords?.records ?? [];
     const topPR = prRecords[0];
     const prCount = prRecords.length;
@@ -83,28 +163,25 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
           />
         )}
 
-        {/* Brand-colour wash over photo — gives the FitGlue purple/pink feel */}
-        {photoUrl && (
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, rgba(80,20,120,0.45) 0%, rgba(180,30,100,0.25) 35%, rgba(0,0,0,0) 65%)',
-          }} />
-        )}
-
-        {/* Dark-from-bottom — keeps stats/content readable */}
+        {/* Dark fade — strong at bottom for text contrast, light in the middle */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(0deg, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.82) 28%, rgba(0,0,0,0.30) 52%, rgba(0,0,0,0.08) 70%, rgba(0,0,0,0.35) 100%)',
+          background: 'linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.78) 22%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.08) 68%, rgba(0,0,0,0.32) 100%)',
         }} />
 
-        {/* Accent glow behind title */}
+        {/* Aurora / colour overlay — sits on top of the dark fade, adds the glow */}
+        {overlay.style && (
+          <div style={{ position: 'absolute', inset: 0, background: overlay.style }} />
+        )}
+
+        {/* Accent glow centred behind title */}
         <div style={{
           position: 'absolute',
           top: '46%', left: '50%',
           transform: 'translate(-50%, -50%)',
           width: '1100px', height: '800px',
           borderRadius: '50%',
-          background: `radial-gradient(ellipse, ${accent}28 0%, transparent 65%)`,
+          background: `radial-gradient(ellipse, ${accent}24 0%, transparent 65%)`,
           filter: 'blur(100px)',
           pointerEvents: 'none',
         }} />
@@ -180,8 +257,8 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
             )}
           </div>
 
-          {/* Spacer — pushes title to roughly centre of frame */}
-          <div style={{ flex: 1 }} />
+          {/* Top spacer — size controls how far down the title sits */}
+          <div style={{ flex: textPos.topFlex }} />
 
           {/* Main title */}
           <div style={{
@@ -265,7 +342,8 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
             </>
           )}
 
-          <div style={{ flex: 0.6 }} />
+          {/* Bottom spacer */}
+          <div style={{ flex: textPos.bottomFlex }} />
 
           {/* Watermark */}
           {showWatermark && (
@@ -301,11 +379,13 @@ export const StoryExportTab: React.FC<Props> = ({
 }) => {
   const frameRef = useRef<HTMLDivElement>(null);
   const [bg, setBg] = useState(STORY_BACKGROUNDS[0]);
+  const [overlay, setOverlay] = useState(STORY_OVERLAYS[0]);
+  const [textPos, setTextPos] = useState(TEXT_POSITIONS[1]); // mid by default
   const [showWatermark, setShowWatermark] = useState(true);
   const [exporting, setExporting] = useState(false);
 
   // Resolve photo to a data URL so html-to-image can inline it regardless of CORS.
-  // Falls back to photoUrls[0] if no AI banner exists (e.g. FIT file uploads with attached photos).
+  // Falls back to photoUrls[0] when no AI banner exists (e.g. FIT file uploads).
   const rawPhotoUrl = useMemo(
     () => data.enrichments?.aiBanner?.imageUrl ?? data.photoUrls?.[0] ?? null,
     [data]
@@ -345,6 +425,7 @@ export const StoryExportTab: React.FC<Props> = ({
   }, []);
 
   const previewScale = PREVIEW_W / STORY_W;
+  const photoLoading = rawPhotoUrl !== null && resolvedPhotoUrl === null;
 
   const handleExport = useCallback(async () => {
     if (!frameRef.current) return;
@@ -389,6 +470,8 @@ export const StoryExportTab: React.FC<Props> = ({
               data={data}
               photoUrl={resolvedPhotoUrl}
               bg={bg}
+              overlay={overlay}
+              textPos={textPos}
               accent={accent}
               textColor={textColor}
               stats={selectedStats}
@@ -397,20 +480,48 @@ export const StoryExportTab: React.FC<Props> = ({
             />
           </div>
         </div>
-        {rawPhotoUrl && !resolvedPhotoUrl && (
+        {photoLoading && (
           <p style={{ fontFamily: MONO, fontSize: '11px', textAlign: 'center', color: 'rgba(255,255,255,0.4)', margin: '6px 0 0', letterSpacing: '0.08em' }}>
             Loading photo…
           </p>
         )}
-        <button className="export-download-btn" onClick={handleExport} disabled={exporting || (rawPhotoUrl !== null && resolvedPhotoUrl === null)}>
-          {exporting ? 'Exporting…' : rawPhotoUrl && !resolvedPhotoUrl ? 'Loading photo…' : '⬇ Download PNG'}
+        <button className="export-download-btn" onClick={handleExport} disabled={exporting || photoLoading}>
+          {exporting ? 'Exporting…' : photoLoading ? 'Loading photo…' : '⬇ Download PNG'}
         </button>
       </div>
 
       <div className="export-modal-options-col">
         <div className="export-options">
           <div className="export-option-group">
-            <span className="export-option-label">Background</span>
+            <span className="export-option-label">Overlay</span>
+            <div className="export-option-row export-option-row--wrap">
+              {STORY_OVERLAYS.map((o) => (
+                <button
+                  key={o.id}
+                  className={`export-pill${overlay.id === o.id ? ' export-pill--active' : ''}`}
+                  onClick={() => setOverlay(o)}
+                >
+                  {o.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="export-option-group">
+            <span className="export-option-label">Position</span>
+            <div className="export-option-row">
+              {TEXT_POSITIONS.map((p) => (
+                <button
+                  key={p.id}
+                  className={`export-pill${textPos.id === p.id ? ' export-pill--active' : ''}`}
+                  onClick={() => setTextPos(p)}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="export-option-group">
+            <span className="export-option-label">Base</span>
             <div className="export-option-row export-option-row--wrap">
               {STORY_BACKGROUNDS.map((b) => (
                 <button
