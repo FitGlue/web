@@ -76,8 +76,11 @@ const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
     const isClear = bg === 'transparent';
     const effectiveCols = prs.length === 1 ? 1 : Math.min(cols, prs.length);
 
-    const valueFontSize = effectiveCols === 1 ? 96 : effectiveCols === 2 ? 80 : 64;
-    const unitFontSize  = effectiveCols === 1 ? 28 : effectiveCols === 2 ? 24 : 20;
+    const valueFontSize    = effectiveCols === 1 ? 96 : effectiveCols === 2 ? 80 : 64;
+    const unitFontSize     = effectiveCols === 1 ? 32 : effectiveCols === 2 ? 28 : 24;
+    const nameFontSize     = effectiveCols === 1 ? 28 : effectiveCols === 2 ? 24 : 20;
+    const badgeFontSize    = effectiveCols === 1 ? 18 : effectiveCols === 2 ? 16 : 14;
+    const deltaFontSize    = effectiveCols === 1 ? 24 : effectiveCols === 2 ? 20 : 18;
 
     return (
       <div
@@ -96,7 +99,7 @@ const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
           }}>
             <div style={{
               fontFamily: DISPLAY,
-              fontSize: 28,
+              fontSize: 34,
               color: accent,
               letterSpacing: '-0.01em',
               textTransform: 'uppercase',
@@ -106,7 +109,7 @@ const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
             <div style={{ textAlign: 'right' }}>
               <div style={{
                 fontFamily: DISPLAY,
-                fontSize: 18,
+                fontSize: 22,
                 color: textColor,
                 textTransform: 'uppercase',
                 letterSpacing: '-0.01em',
@@ -117,7 +120,7 @@ const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
               {startTime && (
                 <div style={{
                   fontFamily: MONO,
-                  fontSize: 13,
+                  fontSize: 16,
                   color: `${textColor}66`,
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
@@ -143,12 +146,12 @@ const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
               {/* Exercise name */}
               <div style={{
                 fontFamily: MONO,
-                fontSize: 15,
+                fontSize: nameFontSize,
                 fontWeight: 700,
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
                 color: `${textColor}66`,
-                marginBottom: 8,
+                marginBottom: 10,
                 textShadow: isClear ? '0 1px 8px rgba(0,0,0,0.8)' : undefined,
               }}>
                 {pr.exerciseName}
@@ -160,14 +163,14 @@ const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
                   display: 'inline-block',
                   background: `${accent}18`,
                   border: `1.5px solid ${accent}`,
-                  padding: '3px 12px',
+                  padding: '5px 16px',
                   fontFamily: MONO,
-                  fontSize: 12,
+                  fontSize: badgeFontSize,
                   fontWeight: 700,
                   letterSpacing: '0.18em',
                   color: accent,
                   textTransform: 'uppercase',
-                  marginBottom: 14,
+                  marginBottom: 16,
                 }}>
                   {pr.prType}
                 </div>
@@ -201,7 +204,7 @@ const PRCard = React.forwardRef<HTMLDivElement, PRCardProps>(
               {pr.delta && (
                 <div style={{
                   fontFamily: MONO,
-                  fontSize: 16,
+                  fontSize: deltaFontSize,
                   fontWeight: 700,
                   letterSpacing: '0.08em',
                   color: `${textColor}77`,
