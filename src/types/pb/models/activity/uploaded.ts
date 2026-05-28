@@ -79,6 +79,7 @@ export interface ShowcaseProfileEntry {
   hrZoneMinutes: number[];
   /** Photo URLs for activities with attached images; populated from ShowcasedActivity.photo_urls. */
   photoUrls: string[];
+  createdAt?: Date | undefined;
 }
 
 /** EntrySparkline is a downsampled timeseries for card-level sparklines. */

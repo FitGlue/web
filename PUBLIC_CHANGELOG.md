@@ -1,6 +1,30 @@
 # FitGlue Changelog
 
-<!-- LAST_PUBLISHED: server=v16.2.0, web=v10.38.0 -->
+<!-- LAST_PUBLISHED: server=v16.24.2, web=v11.39.2 -->
+
+## Server v16.24.2 / Web v11.39.2 - May 28, 2026
+
+### ✨ New Features
+
+- **Import your past workouts!** You can now import your historical activity data when connecting a new app to FitGlue.
+- **See a complete picture of your fitness journey.** Your profile now shows your full workout history, including lifetime heart rate zone splits, streak heatmaps, and personal records for strength exercises.
+- **Share your progress in new ways!** Export your activity and profile stats as images with customizable backgrounds, colors, and layouts. Share your hybrid race breakdowns with animated bars.
+- **Enhancements to Hevy Integration:** You can now choose to keep your Hevy uploads private. We've also improved how we handle different types of cardio activities from Hevy.
+- **Get notified when things happen!** Receive push notifications for important connection updates.
+- **Manually add workouts!** You can now manually enter workouts directly into FitGlue.
+- **Upload photos to your workouts!** Add photos to your workouts and display them in a beautiful photo gallery on your profile and activity pages.
+- **Improved Timezone Handling:** Better support for different timezones, especially for Parkrun activities.
+- **New and Improved Design!** Enjoy a completely refreshed and modernized look and feel throughout the app and website, including updated user interfaces, layouts, and branding.
+
+### 🐛 Bug Fixes
+
+- **No more duplicate workouts!** We've fixed several issues that could cause duplicate activities to be synced or displayed.
+- **Personal records are now more accurate.** We've addressed several bugs related to calculating and displaying personal records, including filtering for 1RM weight PRs, including time-based PRs, and improving sorting.
+- **Better Hevy integration:** Fixed issues with uploading workouts to Hevy.
+- **Improved stability and reliability:** Resolved various bugs related to data enrichment, pipeline processing, and showcase rendering for a smoother overall experience.
+- **Fixed issues with intervals.icu integration** Improved setup process and error message handling.
+- **Fixed issues with showcase** Resolved various bugs related to rendering on activity and profile pages.
+
 
 ## Server v16.2.0 / Web v10.38.0 - April 13, 2026
 

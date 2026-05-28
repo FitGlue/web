@@ -19,7 +19,7 @@ const CountersSection: React.FC = () => {
         try {
             const { data } = await client.GET('/users/me/counters');
             const response = data as unknown as { counters: Counter[] };
-            setCounters(response?.counters || []);
+            setCounters((response?.counters || []).map(c => ({ ...c, count: Number(c.count) })));
         } catch (err) {
             console.error('Failed to fetch counters:', err);
         } finally {

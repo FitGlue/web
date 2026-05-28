@@ -656,6 +656,8 @@ export interface components {
             hrZoneMinutes?: number[];
             /** @description Photo URLs for activities with attached images; populated from ShowcasedActivity.photo_urls. */
             photoUrls?: string[];
+            /** Format: date-time */
+            createdAt?: string;
         };
         ShowcaseTheme: {
             themeId?: string;

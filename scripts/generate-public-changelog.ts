@@ -100,16 +100,16 @@ function parseChangelog(filePath: string): VersionBlock[] {
     if (line.startsWith('* ') && currentType) {
       let entryLine = line.slice(2); // Remove "* "
 
-      // Extract scope if present: **scope:** message
+      // Extract scope if present: **scope:** message (standard-version format: **scope:** not **scope**:)
       let scope: string | undefined;
-      const scopeMatch = entryLine.match(/^\*\*([^*]+)\*\*:\s*/);
+      const scopeMatch = entryLine.match(/^\*\*([^*]+):\*\*\s*/);
       if (scopeMatch) {
         scope = scopeMatch[1];
         entryLine = entryLine.slice(scopeMatch[0].length);
       }
 
-      // Remove trailing commit link: ([abc123](https://...))
-      let message = entryLine.replace(/\s*\(\[[a-f0-9]+\]\([^)]+\)\)\s*$/, '').trim();
+      // Remove trailing commit link and any following closes/issue references
+      let message = entryLine.replace(/\s*\(\[[a-f0-9]+\]\([^)]+\)\).*$/, '').trim();
 
       if (message) {
         currentVersion.entries.push({
