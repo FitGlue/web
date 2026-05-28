@@ -14,6 +14,7 @@ const SWATCHES = [
   { id: 'green',  color: '#4ADE80' },
   { id: 'purple', color: '#E040FB' },
   { id: 'gold',   color: '#FBBF24' },
+  { id: 'white',  color: '#ffffff' },
 ];
 
 const BG_OPTIONS = [
@@ -396,7 +397,7 @@ export const HybridRaceExportTab: React.FC<Props> = ({ segments, activityTitle }
                 <button
                   key={a.id}
                   className={`export-swatch${runColor === a.color ? ' export-swatch--active' : ''}`}
-                  style={{ background: a.color }}
+                  style={{ background: a.color, ...(a.color === '#ffffff' ? { boxShadow: 'inset 0 0 0 1.5px rgba(0,0,0,0.28)' } : {}) }}
                   onClick={() => setRunColor(a.color)}
                   aria-label={a.id}
                 />
@@ -411,7 +412,7 @@ export const HybridRaceExportTab: React.FC<Props> = ({ segments, activityTitle }
                 <button
                   key={a.id}
                   className={`export-swatch${stnColor === a.color ? ' export-swatch--active' : ''}`}
-                  style={{ background: a.color }}
+                  style={{ background: a.color, ...(a.color === '#ffffff' ? { boxShadow: 'inset 0 0 0 1.5px rgba(0,0,0,0.28)' } : {}) }}
                   onClick={() => setStnColor(a.color)}
                   aria-label={a.id}
                 />

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import type { components } from '../../shared/api/schema-public';
-import { ACCENTS, TEXT_SWATCHES } from './ShowcaseExportModal';
+import { ACCENTS, TEXT_SWATCHES, accentSwatchStyle, textSwatchStyle } from './ShowcaseExportModal';
 import { parseRecordType, prValueString, prDeltaString } from '../utils/prFormat';
 import { formatDateFull } from '../utils/format';
 
@@ -401,7 +401,7 @@ export const PRExportTab: React.FC<Props> = ({
             <div className="export-option-row">
               {ACCENTS.map((a) => (
                 <button key={a.id} className={`export-swatch${accent === a.color ? ' export-swatch--active' : ''}`}
-                  style={{ background: a.color }} onClick={() => onAccentChange(a.color)} aria-label={a.id} />
+                  style={{ background: a.color, ...accentSwatchStyle(a.color) }} onClick={() => onAccentChange(a.color)} aria-label={a.id} />
               ))}
             </div>
           </div>
@@ -413,7 +413,7 @@ export const PRExportTab: React.FC<Props> = ({
                 <button
                   key={a.id}
                   className={`export-swatch${textColor === a.color ? ' export-swatch--active' : ''}`}
-                  style={{ background: a.color, ...(a.color === '#ffffff' ? { boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.25)' } : {}) }}
+                  style={{ background: a.color, ...textSwatchStyle(a.color) }}
                   onClick={() => onTextColorChange(a.color)}
                   aria-label={a.id}
                 />

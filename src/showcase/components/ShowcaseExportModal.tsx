@@ -21,10 +21,22 @@ export const ACCENTS = [
   { id: 'green',  color: '#4ADE80' },
   { id: 'purple', color: '#E040FB' },
   { id: 'gold',   color: '#FBBF24' },
+  { id: 'white',  color: '#ffffff' },
 ];
+
+export function accentSwatchStyle(color: string): React.CSSProperties {
+  return color === '#ffffff' ? { boxShadow: 'inset 0 0 0 1.5px rgba(0,0,0,0.28)' } : {};
+}
+
+export function textSwatchStyle(color: string): React.CSSProperties {
+  if (color === '#ffffff') return { boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.25)' };
+  if (color === '#000000') return { boxShadow: 'inset 0 0 0 1.5px rgba(255,255,255,0.35)' };
+  return {};
+}
 
 export const TEXT_SWATCHES = [
   { id: 'white',  color: '#ffffff' },
+  { id: 'black',  color: '#000000' },
   { id: 'pink',   color: '#ff3da6' },
   { id: 'cyan',   color: '#22d3ee' },
   { id: 'orange', color: '#FF6B35' },
@@ -442,7 +454,7 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
                     <span className="export-option-label">Accent</span>
                     <div className="export-option-row">
                       {ACCENTS.map((a) => (
-                        <button key={a.id} className={`export-swatch${accent === a.color ? ' export-swatch--active' : ''}`} style={{ background: a.color }} onClick={() => setAccent(a.color)} aria-label={a.id} />
+                        <button key={a.id} className={`export-swatch${accent === a.color ? ' export-swatch--active' : ''}`} style={{ background: a.color, ...accentSwatchStyle(a.color) }} onClick={() => setAccent(a.color)} aria-label={a.id} />
                       ))}
                     </div>
                   </div>
@@ -453,7 +465,7 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
                         <button
                           key={a.id}
                           className={`export-swatch${textColor === a.color ? ' export-swatch--active' : ''}`}
-                          style={{ background: a.color, ...(a.color === '#ffffff' ? { boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.25)' } : {}) }}
+                          style={{ background: a.color, ...textSwatchStyle(a.color) }}
                           onClick={() => setTextColor(a.color)}
                           aria-label={a.id}
                         />

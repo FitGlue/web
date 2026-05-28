@@ -1,7 +1,7 @@
 import React, { useRef, useState, useCallback, useMemo, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 import type { components } from '../../shared/api/schema-public';
-import { ACCENTS, TEXT_SWATCHES, buildAllStats, StatOption } from './ShowcaseExportModal';
+import { ACCENTS, TEXT_SWATCHES, accentSwatchStyle, textSwatchStyle, buildAllStats, StatOption } from './ShowcaseExportModal';
 import { formatActivityType, formatDateFull, formatSource } from '../utils/format';
 import { parseRecordType, prValueString } from '../utils/prFormat';
 
@@ -20,6 +20,7 @@ const STORY_BACKGROUNDS = [
   { id: 'forest',   label: 'Forest',   bg: 'linear-gradient(170deg, #031808 0%, #082e0e 40%, #041208 70%, #020804 100%)' },
   { id: 'neon',     label: 'Neon',     bg: 'linear-gradient(170deg, #1c0428 0%, #2c0848 40%, #120320 70%, #07010f 100%)' },
   { id: 'noir',     label: 'Noir',     bg: 'linear-gradient(170deg, #181818 0%, #242424 40%, #111111 70%, #080808 100%)' },
+  { id: 'none',     label: 'None',     bg: 'transparent' },
 ];
 
 // Aurora-style overlays — coloured blobs + upward fade sitting above the photo/dark layer.
@@ -29,61 +30,55 @@ const STORY_OVERLAYS = [
   {
     id: 'aurora',
     label: 'Aurora',
-    // Pink-violet-cyan — the FitGlue signature shimmer
     style: [
-      'radial-gradient(ellipse 70% 40% at 22% 100%, rgba(255,61,166,0.72) 0%, transparent 100%)',
-      'radial-gradient(ellipse 65% 38% at 78% 100%, rgba(34,211,238,0.62) 0%, transparent 100%)',
-      'linear-gradient(0deg, rgba(139,92,246,0.45) 0%, rgba(139,92,246,0.08) 32%, transparent 55%)',
+      'radial-gradient(ellipse 70% 40% at 22% 100%, rgba(255,61,166,0.44) 0%, transparent 100%)',
+      'radial-gradient(ellipse 65% 38% at 78% 100%, rgba(34,211,238,0.38) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(139,92,246,0.28) 0%, rgba(139,92,246,0.05) 32%, transparent 55%)',
     ].join(', '),
   },
   {
     id: 'solar',
     label: 'Solar',
-    // Gold-orange-pink — warm and fiery
     style: [
-      'radial-gradient(ellipse 72% 40% at 28% 100%, rgba(251,146,60,0.75) 0%, transparent 100%)',
-      'radial-gradient(ellipse 68% 38% at 72% 100%, rgba(255,61,166,0.58) 0%, transparent 100%)',
-      'linear-gradient(0deg, rgba(251,191,36,0.38) 0%, rgba(249,115,22,0.08) 30%, transparent 52%)',
+      'radial-gradient(ellipse 72% 40% at 28% 100%, rgba(251,146,60,0.46) 0%, transparent 100%)',
+      'radial-gradient(ellipse 68% 38% at 72% 100%, rgba(255,61,166,0.36) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(251,191,36,0.24) 0%, rgba(249,115,22,0.05) 30%, transparent 52%)',
     ].join(', '),
   },
   {
     id: 'arctic',
     label: 'Arctic',
-    // Cyan-blue — cold and electric
     style: [
-      'radial-gradient(ellipse 70% 40% at 24% 100%, rgba(34,211,238,0.76) 0%, transparent 100%)',
-      'radial-gradient(ellipse 65% 38% at 74% 100%, rgba(59,130,246,0.62) 0%, transparent 100%)',
-      'linear-gradient(0deg, rgba(99,102,241,0.38) 0%, rgba(34,211,238,0.08) 32%, transparent 55%)',
+      'radial-gradient(ellipse 70% 40% at 24% 100%, rgba(34,211,238,0.46) 0%, transparent 100%)',
+      'radial-gradient(ellipse 65% 38% at 74% 100%, rgba(59,130,246,0.38) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(99,102,241,0.24) 0%, rgba(34,211,238,0.05) 32%, transparent 55%)',
     ].join(', '),
   },
   {
     id: 'inferno',
     label: 'Inferno',
-    // Red-amber — intense heat
     style: [
-      'radial-gradient(ellipse 70% 40% at 30% 100%, rgba(239,68,68,0.78) 0%, transparent 100%)',
-      'radial-gradient(ellipse 65% 38% at 70% 100%, rgba(251,146,60,0.62) 0%, transparent 100%)',
-      'linear-gradient(0deg, rgba(239,68,68,0.38) 0%, rgba(251,191,36,0.08) 28%, transparent 52%)',
+      'radial-gradient(ellipse 70% 40% at 30% 100%, rgba(239,68,68,0.48) 0%, transparent 100%)',
+      'radial-gradient(ellipse 65% 38% at 70% 100%, rgba(251,146,60,0.38) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(239,68,68,0.24) 0%, rgba(251,191,36,0.05) 28%, transparent 52%)',
     ].join(', '),
   },
   {
     id: 'jade',
     label: 'Jade',
-    // Emerald-teal — deep forest
     style: [
-      'radial-gradient(ellipse 70% 40% at 26% 100%, rgba(52,211,153,0.72) 0%, transparent 100%)',
-      'radial-gradient(ellipse 65% 38% at 74% 100%, rgba(34,211,238,0.58) 0%, transparent 100%)',
-      'linear-gradient(0deg, rgba(16,185,129,0.38) 0%, rgba(52,211,153,0.08) 30%, transparent 52%)',
+      'radial-gradient(ellipse 70% 40% at 26% 100%, rgba(52,211,153,0.44) 0%, transparent 100%)',
+      'radial-gradient(ellipse 65% 38% at 74% 100%, rgba(34,211,238,0.36) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(16,185,129,0.24) 0%, rgba(52,211,153,0.05) 30%, transparent 52%)',
     ].join(', '),
   },
   {
     id: 'violet',
     label: 'Violet',
-    // Deep indigo-violet — cosmic and dark
     style: [
-      'radial-gradient(ellipse 70% 40% at 28% 100%, rgba(139,92,246,0.80) 0%, transparent 100%)',
-      'radial-gradient(ellipse 65% 38% at 70% 100%, rgba(99,102,241,0.65) 0%, transparent 100%)',
-      'linear-gradient(0deg, rgba(79,70,229,0.42) 0%, rgba(139,92,246,0.10) 30%, transparent 55%)',
+      'radial-gradient(ellipse 70% 40% at 28% 100%, rgba(139,92,246,0.48) 0%, transparent 100%)',
+      'radial-gradient(ellipse 65% 38% at 70% 100%, rgba(99,102,241,0.40) 0%, transparent 100%)',
+      'linear-gradient(0deg, rgba(79,70,229,0.26) 0%, rgba(139,92,246,0.06) 30%, transparent 55%)',
     ].join(', '),
   },
   {
@@ -122,7 +117,9 @@ interface StoryFrameProps {
   accent: string;
   textColor: string;
   stats: StatOption[];
-  showChips: boolean;
+  showDarkFade: boolean;
+  showBadge: boolean;
+  showSource: boolean;
   showDate: boolean;
   showByline: boolean;
   showPRHighlight: boolean;
@@ -130,7 +127,7 @@ interface StoryFrameProps {
 }
 
 const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
-  ({ data, photoUrl, bg, overlay, textPos, titleSize, accent, textColor, stats, showChips, showDate, showByline, showPRHighlight, showWatermark }, ref) => {
+  ({ data, photoUrl, bg, overlay, textPos, titleSize, accent, textColor, stats, showDarkFade, showBadge, showSource, showDate, showByline, showPRHighlight, showWatermark }, ref) => {
     const prRecords = data.enrichments?.personalRecords?.records ?? [];
     const topPR = prRecords[0];
     const prCount = prRecords.length;
@@ -169,16 +166,18 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
               position: 'absolute', inset: 0,
               width: '100%', height: '100%',
               objectFit: 'cover', objectPosition: 'center top',
-              opacity: 0.68,
+              opacity: 1.0,
             }}
           />
         )}
 
-        {/* Dark fade — strong at bottom for text contrast, fully transparent by 62% */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 22%, rgba(0,0,0,0.18) 46%, transparent 62%)',
-        }} />
+        {/* Dark fade — toggleable, keeps bottom text readable without killing photo vibrancy */}
+        {showDarkFade && (
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(0deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.70) 22%, rgba(0,0,0,0.15) 46%, transparent 62%)',
+          }} />
+        )}
 
         {/* Aurora / colour overlay — sits on top of the dark fade, adds the glow */}
         {overlay.style && (
@@ -206,24 +205,26 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
           boxSizing: 'border-box',
         }}>
 
-          {/* Activity type badge + source */}
-          {showChips && (
+          {/* Activity type badge + source — independently toggleable */}
+          {(showBadge || (showSource && sourceLabel)) && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap', marginBottom: '28px' }}>
-              <div style={{
-                display: 'inline-block',
-                background: `${accent}22`,
-                border: `2px solid ${accent}`,
-                padding: '12px 32px',
-                color: accent,
-                fontFamily: MONO,
-                fontSize: '26px',
-                fontWeight: 700,
-                letterSpacing: '0.16em',
-                textTransform: 'uppercase',
-              }}>
-                {formatActivityType(data.activityType)}
-              </div>
-              {sourceLabel && (
+              {showBadge && (
+                <div style={{
+                  display: 'inline-block',
+                  background: `${accent}22`,
+                  border: `2px solid ${accent}`,
+                  padding: '12px 32px',
+                  color: accent,
+                  fontFamily: MONO,
+                  fontSize: '26px',
+                  fontWeight: 700,
+                  letterSpacing: '0.16em',
+                  textTransform: 'uppercase',
+                }}>
+                  {formatActivityType(data.activityType)}
+                </div>
+              )}
+              {showSource && sourceLabel && (
                 <div style={{
                   fontFamily: MONO,
                   fontSize: '24px',
@@ -400,7 +401,9 @@ export const StoryExportTab: React.FC<Props> = ({
   const [overlay, setOverlay] = useState(STORY_OVERLAYS[0]);
   const [textPos, setTextPos] = useState(TEXT_POSITIONS[1]); // mid by default
   const [titleSize, setTitleSize] = useState(TITLE_SIZES[2]); // large by default
-  const [showChips, setShowChips] = useState(true);
+  const [showDarkFade, setShowDarkFade] = useState(true);
+  const [showBadge, setShowBadge] = useState(true);
+  const [showSource, setShowSource] = useState(false); // off by default — "VIA FILE UPLOAD" rarely looks good
   const [showDate, setShowDate] = useState(true);
   const [showByline, setShowByline] = useState(true);
   const [showWatermark, setShowWatermark] = useState(true);
@@ -513,7 +516,9 @@ export const StoryExportTab: React.FC<Props> = ({
               accent={accent}
               textColor={textColor}
               stats={selectedStats}
-              showChips={showChips}
+              showDarkFade={showDarkFade}
+              showBadge={showBadge}
+              showSource={showSource}
               showDate={showDate}
               showByline={showByline}
               showPRHighlight={showPRHighlight}
@@ -618,7 +623,7 @@ export const StoryExportTab: React.FC<Props> = ({
                 <button
                   key={a.id}
                   className={`export-swatch${accent === a.color ? ' export-swatch--active' : ''}`}
-                  style={{ background: a.color }}
+                  style={{ background: a.color, ...accentSwatchStyle(a.color) }}
                   onClick={() => onAccentChange(a.color)}
                   aria-label={a.id}
                 />
@@ -632,10 +637,7 @@ export const StoryExportTab: React.FC<Props> = ({
                 <button
                   key={a.id}
                   className={`export-swatch${textColor === a.color ? ' export-swatch--active' : ''}`}
-                  style={{
-                    background: a.color,
-                    ...(a.color === '#ffffff' ? { boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.25)' } : {}),
-                  }}
+                  style={{ background: a.color, ...textSwatchStyle(a.color) }}
                   onClick={() => onTextColorChange(a.color)}
                   aria-label={a.id}
                 />
@@ -663,7 +665,9 @@ export const StoryExportTab: React.FC<Props> = ({
           <div className="export-option-group">
             <span className="export-option-label">Show</span>
             <div className="export-option-row export-option-row--wrap">
-              <button className={`export-pill${showChips ? ' export-pill--active' : ''}`} onClick={() => setShowChips((v) => !v)}>Badges</button>
+              <button className={`export-pill${showDarkFade ? ' export-pill--active' : ''}`} onClick={() => setShowDarkFade((v) => !v)}>Dark fade</button>
+              <button className={`export-pill${showBadge ? ' export-pill--active' : ''}`} onClick={() => setShowBadge((v) => !v)}>Badge</button>
+              <button className={`export-pill${showSource ? ' export-pill--active' : ''}`} onClick={() => setShowSource((v) => !v)}>Source</button>
               <button className={`export-pill${showDate ? ' export-pill--active' : ''}`} onClick={() => setShowDate((v) => !v)}>Date</button>
               <button className={`export-pill${showByline ? ' export-pill--active' : ''}`} onClick={() => setShowByline((v) => !v)}>By line</button>
               {hasPRs && (
