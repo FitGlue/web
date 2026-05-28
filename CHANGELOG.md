@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.42.0](https://github.com/fitglue/web/compare/v11.41.1...v11.42.0) (2026-05-28)
+
+
+### Features
+
+* **share:** add overlay gradient and text position options to Story export ([839b230](https://github.com/fitglue/web/commit/839b230c87ff122f5ee992806bb3cc2ac6d90af5))
+
+
+### Bug Fixes
+
+* **metrics:** refactor buildMetricTrio to use firstAvailable for metric selection ([cdfc45e](https://github.com/fitglue/web/commit/cdfc45e017b1f997fb63e040229df17af0c40e94))
+
 ### [11.41.1](https://github.com/fitglue/web/compare/v11.41.0...v11.41.1) (2026-05-28)
 
 
