@@ -351,3 +351,23 @@
     text-transform: uppercase;
     margin-bottom: 1rem;
 }
+
+/* --------------------------------------------------------------------------
+   Responsive — mobile/tablet
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .admin-head-stats {
+        flex-wrap: wrap;
+        gap: 1rem 1.5rem;
+        padding: 1rem;
+    }
+
+    .admin-body-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-side-panel {
+        display: none;
+    }
+}

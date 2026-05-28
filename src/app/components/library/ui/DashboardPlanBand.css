@@ -38,9 +38,18 @@
 
 @media (max-width: 640px) {
     .dash-plan-band {
-        padding: 1rem 1.25rem;
-        gap: 0.875rem;
+        padding: 0.75rem 1.25rem;
+        gap: 0.625rem;
         flex-wrap: wrap;
+    }
+
+    .dash-plan-band__icon {
+        font-size: 1.125rem;
+    }
+
+    .dash-plan-band__title {
+        font-size: 0.9375rem;
+        flex: 1;
     }
 
     .dash-plan-band__spacer {

@@ -149,7 +149,7 @@ export default function ShowcaseActivityPage() {
   const prData = appliedSet2.has('ENRICHER_PROVIDER_PERSONAL_RECORDS') ? enrichments?.personalRecords : undefined;
 
   const ownerProfileHref = activity.ownerProfileSlug
-    ? `/showcase/profile/${activity.ownerProfileSlug}`
+    ? `/@${activity.ownerProfileSlug}`
     : null;
 
   return (
