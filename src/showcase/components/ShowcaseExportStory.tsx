@@ -406,11 +406,26 @@ export const StoryExportTab: React.FC<Props> = ({
   const [showWatermark, setShowWatermark] = useState(true);
   const [exporting, setExporting] = useState(false);
 
-  // Resolve photo to a data URL so html-to-image can inline it regardless of CORS.
-  // Falls back to photoUrls[0] when no AI banner exists (e.g. FIT file uploads).
+  // Build the list of available photo sources for this activity.
+  const photoSources = useMemo(() => {
+    const sources: Array<{ id: string; label: string; url: string }> = [];
+    if (data.enrichments?.aiBanner?.imageUrl)
+      sources.push({ id: 'banner', label: 'AI Banner', url: data.enrichments.aiBanner.imageUrl });
+    (data.photoUrls ?? []).forEach((url, i) =>
+      sources.push({ id: `photo-${i}`, label: `Photo ${i + 1}`, url })
+    );
+    return sources;
+  }, [data]);
+
+  const [selectedSourceId, setSelectedSourceId] = useState<string | null>(() => {
+    if (data.enrichments?.aiBanner?.imageUrl) return 'banner';
+    if ((data.photoUrls?.length ?? 0) > 0) return 'photo-0';
+    return null;
+  });
+
   const rawPhotoUrl = useMemo(
-    () => data.enrichments?.aiBanner?.imageUrl ?? data.photoUrls?.[0] ?? null,
-    [data]
+    () => photoSources.find((s) => s.id === selectedSourceId)?.url ?? null,
+    [photoSources, selectedSourceId]
   );
   const [resolvedPhotoUrl, setResolvedPhotoUrl] = useState<string | null>(null);
 
@@ -518,6 +533,28 @@ export const StoryExportTab: React.FC<Props> = ({
 
       <div className="export-modal-options-col">
         <div className="export-options">
+          {photoSources.length > 0 && (
+            <div className="export-option-group">
+              <span className="export-option-label">Photo</span>
+              <div className="export-option-row export-option-row--wrap">
+                {photoSources.map((s) => (
+                  <button
+                    key={s.id}
+                    className={`export-pill${selectedSourceId === s.id ? ' export-pill--active' : ''}`}
+                    onClick={() => setSelectedSourceId(s.id)}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+                <button
+                  className={`export-pill${selectedSourceId === null ? ' export-pill--active' : ''}`}
+                  onClick={() => setSelectedSourceId(null)}
+                >
+                  None
+                </button>
+              </div>
+            </div>
+          )}
           <div className="export-option-group">
             <span className="export-option-label">Overlay</span>
             <div className="export-option-row export-option-row--wrap">
