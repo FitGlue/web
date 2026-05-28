@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.44.0](https://github.com/fitglue/web/compare/v11.43.0...v11.44.0) (2026-05-28)
+
+
+### Features
+
+* **share:** polish story card controls and fix photo vibrancy ([2b3ff76](https://github.com/fitglue/web/commit/2b3ff76b0fec2ed751f24da4ea62121f7df4e332))
+
 ## [11.43.0](https://github.com/fitglue/web/compare/v11.42.0...v11.43.0) (2026-05-28)
 
 
