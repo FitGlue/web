@@ -8,7 +8,6 @@ import {
   bundleCssTask,
   copyStaticTask,
   setGlobalsTask,
-  setGlobalFromMarkdownTask,
   generatePagesTask,
   generateItemsTask,
 } from 'skier';
@@ -18,6 +17,7 @@ import { fetchRegistryTask } from './tasks/fetchRegistryTask.js';
 import { generateDynamicPagesTask } from './tasks/generateDynamicPagesTask.js';
 import { updateVersionTask } from './tasks/updateVersionTask.js';
 import { transformRegistryTask } from './tasks/transformRegistryTask.js';
+import { parseChangelogTask } from './tasks/parseChangelogTask.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -72,10 +72,10 @@ export const tasks = [
     to: './dist',
   }),
 
-  // Read PUBLIC_CHANGELOG.md and expose as template variable
-  setGlobalFromMarkdownTask({
+  // Parse PUBLIC_CHANGELOG.md into structured entries for the changelog page
+  parseChangelogTask({
     mdPath: './PUBLIC_CHANGELOG.md',
-    outputVar: 'changelogContent',
+    outputVar: 'changelogEntries',
   }),
 
   setGlobalsTask({

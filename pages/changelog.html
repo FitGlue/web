@@ -54,135 +54,40 @@
   <div class="clog">
     <!-- Sticky rail -->
     <aside class="clog__rail" aria-label="Version navigation">
-      <div class="clog__rail-h">VERSIONS · 2026</div>
-      <a class="clog__rail-link on" href="#v3-4">v3.4 · MAY</a>
-      <a class="clog__rail-link" href="#v3-3">v3.3 · APR</a>
-      <a class="clog__rail-link" href="#v3-2">v3.2 · MAR</a>
-      <a class="clog__rail-link" href="#v3-1">v3.1 · FEB</a>
-      <div class="clog__rail-h">2025</div>
-      <a class="clog__rail-link" href="#v3-0">v3.0 · DEC</a>
-      <a class="clog__rail-link" href="#v2-x">v2.x · NOV</a>
+      <div class="clog__rail-h">VERSIONS</div>
+      {{#each changelogEntries}}
+      <a class="clog__rail-link{{#if @first}} on{{/if}}" href="#{{id}}">{{displayVersion}} · {{displayDate}}</a>
+      {{/each}}
     </aside>
 
     <!-- Entries -->
     <div>
-      <div class="clog__entry" id="v3-4">
+      {{#each changelogEntries}}
+      <div class="clog__entry" id="{{id}}">
         <div class="clog__ver">
-          <div class="clog__ver-n">v3.4</div>
-          <div class="clog__ver-date">19 MAY 2026 · "BRUTAL × AURORA"</div>
+          <div class="clog__ver-n">{{displayVersion}}</div>
+          <div class="clog__ver-date">{{displayDateFull}}</div>
         </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--new">NEW</span>
-          <div class="clog__row-body">Complete visual redesign. New colour system, new typography (Archivo Black + JetBrains Mono), tighter information density across all marketing pages.</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--new">NEW</span>
-          <div class="clog__row-body">Pipeline Run Detail rebuilt with scrubable horizontal step timeline and side-by-side input/output diff view.</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--new">NEW</span>
-          <div class="clog__row-body">Showcase Activity becomes cinematic — AI banner is now the full-page hero, modules align to a 12-column grid.</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--fix">FIX</span>
-          <div class="clog__row-body">Source and destination selectors styled correctly across all pipeline wizard flows. They were inheriting old chrome styles.</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--fix">FIX</span>
-          <div class="clog__row-body">Streak Tracker now correctly resets midnight boundary in UTC+1 and BST. Previously off by one hour in summer.</div>
-        </div>
-      </div>
-
-      <div class="clog__entry" id="v3-3">
-        <div class="clog__ver">
-          <div class="clog__ver-n">v3.3</div>
-          <div class="clog__ver-date">14 APR 2026</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--new">NEW</span>
-          <div class="clog__row-body">Typed enricher outputs land in proto schema — <code>ActivityEnrichments</code> sibling message replaces the generic map.</div>
-        </div>
+        {{#each breaking}}
         <div class="clog__row">
           <span class="clog__row-tag clog__row-tag--brk">BRK</span>
-          <div class="clog__row-body"><code>enrichment_metadata</code> map deprecated — readers should switch to typed fields. Will be removed in v4.0.</div>
+          <div class="clog__row-body">{{{text}}}</div>
         </div>
+        {{/each}}
+        {{#each features}}
         <div class="clog__row">
           <span class="clog__row-tag clog__row-tag--new">NEW</span>
-          <div class="clog__row-body">Streak Tracker booster now writes <code>current_streak_days</code> to the profile aggregate in real time.</div>
+          <div class="clog__row-body">{{{text}}}</div>
         </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--change">CHANGE</span>
-          <div class="clog__row-body">Athlete plan price increased from £5/mo to £8/mo. Existing subscribers locked at old rate until renewal or plan change.</div>
-        </div>
-      </div>
-
-      <div class="clog__entry" id="v3-2">
-        <div class="clog__ver">
-          <div class="clog__ver-n">v3.2</div>
-          <div class="clog__ver-date">21 MAR 2026</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--new">NEW</span>
-          <div class="clog__row-body">Parkrun Results booster: auto-detects Saturday morning activities, fetches official time + age grade + position from the results page.</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--new">NEW</span>
-          <div class="clog__row-body">Weather Context booster now supports historic lookups — FIT file upload workouts get accurate conditions at the recorded time.</div>
-        </div>
+        {{/each}}
+        {{#each fixes}}
         <div class="clog__row">
           <span class="clog__row-tag clog__row-tag--fix">FIX</span>
-          <div class="clog__row-body">Garmin FIT upload: fixed elevation data extraction for Fenix 7 series devices where elevation field ordering differs.</div>
+          <div class="clog__row-body">{{{text}}}</div>
         </div>
+        {{/each}}
       </div>
-
-      <div class="clog__entry" id="v3-1">
-        <div class="clog__ver">
-          <div class="clog__ver-n">v3.1</div>
-          <div class="clog__ver-date">7 FEB 2026</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--new">NEW</span>
-          <div class="clog__row-body">Apple Health sync in the mobile app. Workouts, heart rate samples, and active energy now sync automatically in background.</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--new">NEW</span>
-          <div class="clog__row-body">Recovery Advisor booster: acute-to-chronic workload ratio + estimated hours-to-recover. Catches over-reaching before it bites.</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--fix">FIX</span>
-          <div class="clog__row-body">Fitbit OAuth token refresh now retries with exponential backoff. Tokens expiring at 3am no longer silently fail until morning.</div>
-        </div>
-      </div>
-
-      <div class="clog__entry" id="v3-0">
-        <div class="clog__ver">
-          <div class="clog__ver-n">v3.0</div>
-          <div class="clog__ver-date">1 DEC 2025 · "GLUE"</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--new">NEW</span>
-          <div class="clog__row-body">Full pipeline architecture rewrite. Sources, enrichers, and destinations are now independent plugin packages — hot-swappable at runtime.</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--new">NEW</span>
-          <div class="clog__row-body">Showcase profiles go live — public activity pages with 8 themes, shareable by URL, no Strava account required to view.</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--brk">BRK</span>
-          <div class="clog__row-body">Legacy v2 pipeline configs are not forward-compatible. Run the migration tool in Account Settings before upgrading.</div>
-        </div>
-      </div>
-
-      <div class="clog__entry" id="v2-x">
-        <div class="clog__ver">
-          <div class="clog__ver-n">v2.x</div>
-          <div class="clog__ver-date">NOV 2025 AND EARLIER</div>
-        </div>
-        <div class="clog__row">
-          <span class="clog__row-tag clog__row-tag--change">CHANGE</span>
-          <div class="clog__row-body">v2.x release series archived. See the GitHub repository for historical release notes going back to initial launch in June 2024.</div>
-        </div>
-      </div>
+      {{/each}}
     </div>
   </div>
 
