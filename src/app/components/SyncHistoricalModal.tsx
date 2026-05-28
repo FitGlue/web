@@ -45,6 +45,10 @@ export const SyncHistoricalModal: React.FC<Props> = ({
     const [syncing, setSyncing] = useState(false);
     const [syncError, setSyncError] = useState<string | null>(null);
     const [syncedCount, setSyncedCount] = useState<number | null>(null);
+    const [search, setSearch] = useState('');
+    const [dateFrom, setDateFrom] = useState('');
+    const [dateTo, setDateTo] = useState('');
+    const [hideAlreadySynced, setHideAlreadySynced] = useState(false);
 
     const loadActivities = useCallback(async (pageToken?: string) => {
         setLoadingPage(true);
@@ -120,6 +124,17 @@ export const SyncHistoricalModal: React.FC<Props> = ({
         }
     };
 
+    const visibleActivities = activities.filter(a => {
+        if (hideAlreadySynced && a.alreadySynced) return false;
+        if (search) {
+            const q = search.toLowerCase();
+            if (!((a.title ?? '').toLowerCase().includes(q) || (a.type ?? '').toLowerCase().includes(q))) return false;
+        }
+        if (dateFrom && a.startTime && a.startTime < dateFrom) return false;
+        if (dateTo && a.startTime && a.startTime > dateTo + 'T23:59:59Z') return false;
+        return true;
+    });
+
     const footer = (
         <Stack direction="horizontal" justify="between" align="center">
             <Paragraph inline>
@@ -156,12 +171,47 @@ export const SyncHistoricalModal: React.FC<Props> = ({
                     </Stack>
                 )}
 
+                <div className="sync-historical-filters">
+                    <input
+                        className="sync-historical-filters__search"
+                        type="search"
+                        placeholder="Search by name or type…"
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                    />
+                    <div className="sync-historical-filters__dates">
+                        <input
+                            className="sync-historical-filters__date"
+                            type="date"
+                            value={dateFrom}
+                            onChange={e => setDateFrom(e.target.value)}
+                            title="From date"
+                        />
+                        <span className="sync-historical-filters__date-sep">—</span>
+                        <input
+                            className="sync-historical-filters__date"
+                            type="date"
+                            value={dateTo}
+                            onChange={e => setDateTo(e.target.value)}
+                            title="To date"
+                        />
+                    </div>
+                    <label className="sync-historical-filters__toggle">
+                        <input
+                            type="checkbox"
+                            checked={hideAlreadySynced}
+                            onChange={e => setHideAlreadySynced(e.target.checked)}
+                        />
+                        Hide synced
+                    </label>
+                </div>
+
                 <div className="sync-historical-list">
-                    {activities.length === 0 && !loadingPage && (
-                        <Paragraph>No activities found.</Paragraph>
+                    {visibleActivities.length === 0 && !loadingPage && (
+                        <Paragraph>{activities.length === 0 ? 'No activities found.' : 'No activities match your filters.'}</Paragraph>
                     )}
 
-                    {activities.map(activity => {
+                    {visibleActivities.map(activity => {
                         const id = activity.sourceActivityId ?? '';
                         const checked = selectedIds.has(id);
                         const disabled = activity.alreadySynced ?? false;
