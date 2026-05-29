@@ -3,8 +3,6 @@
    Uses design tokens from claude-design/handoff/css/tokens.css
    ======================================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
 /* ---- Reset ---- */
 html:has(#showcase-root),
 body:has(#showcase-root) {
