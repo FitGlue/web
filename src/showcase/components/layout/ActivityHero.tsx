@@ -59,9 +59,10 @@ interface AnchorStat {
 
 interface Props {
   activity: ShowcasedActivity;
+  ownerProfileSlug?: string;
 }
 
-export default function ActivityHero({ activity }: Props): React.ReactElement {
+export default function ActivityHero({ activity, ownerProfileSlug }: Props): React.ReactElement {
   const category = resolveCategory(activity);
   const stampClass = CATEGORY_STAMP_CLASS[category];
   const emoji = getActivityIcon(activity.activityType) || '🏃';
@@ -185,9 +186,9 @@ export default function ActivityHero({ activity }: Props): React.ReactElement {
                 <>
                   BY{' '}
                   <b>
-                    {activity.ownerProfileSlug ? (
+                    {(ownerProfileSlug || activity.ownerProfileSlug) ? (
                       <a
-                        href={`/@${activity.ownerProfileSlug}`}
+                        href={`/@${ownerProfileSlug || activity.ownerProfileSlug}`}
                         style={{ color: 'inherit', textDecoration: 'none' }}
                       >
                         {activity.ownerDisplayName!.toUpperCase()}

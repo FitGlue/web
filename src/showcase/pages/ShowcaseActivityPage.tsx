@@ -32,7 +32,8 @@ function LoadingScreen() {
 
 
 export default function ShowcaseActivityPage() {
-  const { id } = useParams<{ id: string }>();
+  const { slug: rawSlug, id } = useParams<{ slug?: string; id: string }>();
+  const slugFromUrl = rawSlug?.startsWith('@') ? rawSlug.slice(1) : rawSlug;
   const [activity, setActivity] = useState<ShowcasedActivity | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -132,8 +133,9 @@ export default function ShowcaseActivityPage() {
   const milestoneData = enrichments?.distanceMilestone?.milestoneKm ? enrichments.distanceMilestone : undefined;
   const prData = appliedSet2.has('ENRICHER_PROVIDER_PERSONAL_RECORDS') ? enrichments?.personalRecords : undefined;
 
-  const ownerProfileHref = activity.ownerProfileSlug
-    ? `/@${activity.ownerProfileSlug}`
+  const resolvedOwnerSlug = activity.ownerProfileSlug || slugFromUrl;
+  const ownerProfileHref = resolvedOwnerSlug
+    ? `/@${resolvedOwnerSlug}`
     : null;
 
   return (
@@ -171,7 +173,7 @@ export default function ShowcaseActivityPage() {
         </nav>
 
         {/* Full-bleed hero — outside the layout grid */}
-        <ActivityHero activity={activity} />
+        <ActivityHero activity={activity} ownerProfileSlug={resolvedOwnerSlug} />
 
         {/* Full-bleed parkrun band (only when enricher ran and data present) */}
         {parkrunData?.eventName && (
