@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.46.1](https://github.com/fitglue/web/compare/v11.46.0...v11.46.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* **showcase:** restore profile links on activity page using URL slug ([9e6c163](https://github.com/fitglue/web/commit/9e6c16357987b69fb20f69240894f15214e491c5))
+
 ## [11.46.0](https://github.com/fitglue/web/compare/v11.45.1...v11.46.0) (2026-05-29)
 
 
