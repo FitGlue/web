@@ -22,8 +22,10 @@ const FILTERS: FilterKey[] = ['ALL', 'RUN', 'RIDE', 'STRENGTH', 'SWIM', 'OTHER']
 
 interface Metric { value: string; label: string; }
 
-function firstAvailable(...candidates: Metric[]): Metric {
-  return candidates.find(m => m.value !== '—') ?? candidates[0];
+function pickMetrics(priority: Metric[], count = 3): Metric[] {
+  const withValue = priority.filter(m => m.value !== '—');
+  const withoutValue = priority.filter(m => m.value === '—');
+  return [...withValue, ...withoutValue].slice(0, count);
 }
 
 function buildMetricTrio(family: ActivityFamily, e: ShowcaseProfileEntry): Metric[] {
@@ -53,30 +55,14 @@ function buildMetricTrio(family: ActivityFamily, e: ShowcaseProfileEntry): Metri
     case 'run':
     case 'ride':
     case 'hike':
-      return [
-        firstAvailable(km, kcal, dur),
-        firstAvailable(dur, kcal, hr),
-        firstAvailable(hr, kcal, dur),
-      ];
+      return pickMetrics([km, dur, hr, kcal]);
     case 'swim':
-      return [
-        firstAvailable(m, kcal, dur),
-        firstAvailable(dur, kcal, hr),
-        firstAvailable(hr, kcal, dur),
-      ];
+      return pickMetrics([m, dur, hr, kcal]);
     case 'strength':
     case 'crossfit':
-      return [
-        firstAvailable(sets, kcal, hr),
-        firstAvailable(kg, kcal, hr),
-        firstAvailable(dur, kcal, hr),
-      ];
+      return pickMetrics([sets, kg, dur, kcal, hr]);
     default:
-      return [
-        firstAvailable(dur, kcal, hr),
-        firstAvailable(hr, kcal, dur),
-        firstAvailable(kcal, hr, dur),
-      ];
+      return pickMetrics([dur, hr, kcal]);
   }
 }
 
