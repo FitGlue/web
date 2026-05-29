@@ -30,7 +30,11 @@ const getInputDisplayInfo = (
         ? pipelines.find(p => p.id === input.pipelineId)
         : undefined;
 
+    // Prefer the stored source field; fall back to pipeline config, then activityId prefix parsing.
     let sourceId = pipeline?.source?.toLowerCase() || '';
+    if (!sourceId && input.sourceActivitySource) {
+        sourceId = input.sourceActivitySource.toLowerCase().replace(/^source_/, '');
+    }
     if (!sourceId) {
         const [sourcePart] = (input.activityId || '').split(':');
         sourceId = sourcePart?.toLowerCase().replace('source_', '') || 'unknown';
@@ -352,7 +356,25 @@ const PendingInputsPage: React.FC = () => {
                         const activityIcon = ACTIVITY_TYPE_ICONS[activityTypeRaw] || '🏅';
                         const stampLabel = urgent ? '⚠ URGENT' : (activityTypeRaw || 'INPUT');
 
-                        const titleText = input.sourceDisplayName || input.activityId;
+                        // Humanise "WEIGHT_TRAINING" → "Weight Training" for use in fallback titles.
+                        const activityTypeHuman = activityTypeRaw
+                            .toLowerCase()
+                            .replace(/_/g, ' ')
+                            .replace(/\b\w/g, (c) => c.toUpperCase());
+
+                        // When sourceDisplayName is empty, build "Source ActivityType" (e.g. "Hevy Weight Training").
+                        const titleBase = input.sourceDisplayName
+                            || [displayInfo.sourceName, activityTypeHuman].filter(Boolean).join(' ')
+                            || 'Activity';
+
+                        // Always append a short timestamp so multiple same-type inputs are distinguishable.
+                        const titleTime = input.sourceStartTime
+                            ? input.sourceStartTime.toLocaleString(undefined, {
+                                day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit',
+                              })
+                            : '';
+                        const titleText = titleTime ? `${titleBase} · ${titleTime}` : titleBase;
+
                         const metaSource = displayInfo.sourceName;
                         const metaTime = input.sourceStartTime ? formatSourceStartTime(input.sourceStartTime) : '';
                         const metaPipeline = displayInfo.pipelineName;

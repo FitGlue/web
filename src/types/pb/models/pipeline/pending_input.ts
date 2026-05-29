@@ -41,6 +41,7 @@ export interface PendingInput {
   sourceDisplayName: string;
   sourceActivityType: string;
   sourceStartTime?: Date | undefined;
+  sourceActivitySource: string;
 }
 
 export enum PendingInput_Status {

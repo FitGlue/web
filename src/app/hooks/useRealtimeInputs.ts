@@ -97,6 +97,7 @@ export const useRealtimeInputs = () => {
                 sourceDisplayName:        String(d.source_display_name ?? d.sourceDisplayName ?? ''),
                 sourceActivityType:       String(d.source_activity_type ?? d.sourceActivityType ?? ''),
                 sourceStartTime:          toDate(d.source_start_time ?? d.sourceStartTime),
+                sourceActivitySource:     String(d.source_activity_source ?? d.sourceActivitySource ?? ''),
             };
             input.displayConfig = parseDisplayConfig(providerMetadata);
             return input;
