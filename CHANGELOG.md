@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.46.0](https://github.com/fitglue/web/compare/v11.45.1...v11.46.0) (2026-05-29)
+
+
+### Features
+
+* **pending-inputs:** improve activity title for user clarity ([1e95344](https://github.com/fitglue/web/commit/1e953444c88d4d48122092ccc6fad0109f0f92a0))
+
 ### [11.45.1](https://github.com/fitglue/web/compare/v11.45.0...v11.45.1) (2026-05-29)
 
 
