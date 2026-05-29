@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.45.1](https://github.com/fitglue/web/compare/v11.45.0...v11.45.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* **showcase:** prevent FOUC on activity and profile pages ([dff2fe1](https://github.com/fitglue/web/commit/dff2fe19612dfd20c8c39560f04141f0d422ccae))
+* **showcase:** replace slot fallbacks with priority-array metric selection ([1a51e10](https://github.com/fitglue/web/commit/1a51e10c096c26cabe6f650b5a720d3fa2497907))
+
 ## [11.45.0](https://github.com/fitglue/web/compare/v11.44.0...v11.45.0) (2026-05-28)
 
 
