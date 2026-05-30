@@ -49,6 +49,7 @@ export interface ActivityEnrichments {
   spotify?: SpotifyTracksSummary | undefined;
   intervals?: IntervalsSummary | undefined;
   muscleHeatmap?: MuscleHeatmapSummary | undefined;
+  temperature?: TemperatureSummary | undefined;
 }
 
 export interface HeartRateSummary {
@@ -301,6 +302,12 @@ export interface IntervalsSummary {
   segments: IntervalSegment[];
   /** e.g. "4×400m" if structured workout */
   workoutName: string;
+}
+
+export interface TemperatureSummary {
+  minC: number;
+  avgC: number;
+  maxC: number;
 }
 
 export interface MuscleHeatmapSummary {

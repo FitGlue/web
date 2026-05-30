@@ -152,6 +152,7 @@ export interface components {
             spotify?: components["schemas"]["SpotifyTracksSummary"];
             intervals?: components["schemas"]["IntervalsSummary"];
             muscleHeatmap?: components["schemas"]["MuscleHeatmapSummary"];
+            temperature?: components["schemas"]["TemperatureSummary"];
         };
         AiBanner: {
             imageUrl?: string;
@@ -523,6 +524,8 @@ export interface components {
             stepLength?: number;
             /** Format: double */
             distance?: number;
+            /** Format: int32 */
+            temperature?: number;
         };
         RecoverySummary: {
             /** Format: int32 */
@@ -799,6 +802,14 @@ export interface components {
             /** Format: double */
             distanceMeters?: number;
             setType?: string;
+        };
+        TemperatureSummary: {
+            /** Format: int32 */
+            minC?: number;
+            /** Format: int32 */
+            avgC?: number;
+            /** Format: int32 */
+            maxC?: number;
         };
         TimeMarker: {
             /** Format: date-time */

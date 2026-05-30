@@ -108,6 +108,8 @@ export interface Record {
     | undefined;
   /** Cumulative distance in meters from activity start */
   distance: number;
+  /** Ambient temperature in °C (from device sensor) */
+  temperature?: number | undefined;
 }
 
 export interface StrengthSet {

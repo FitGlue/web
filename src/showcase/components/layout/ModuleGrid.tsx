@@ -21,6 +21,7 @@ import TrainingLoadModule from '../modules/TrainingLoadModule';
 import RecoveryModule from '../modules/RecoveryModule';
 import StreakModule from '../modules/StreakModule';
 import WeatherModule from '../modules/WeatherModule';
+import TemperatureModule from '../modules/TemperatureModule';
 import IntervalsModule from '../modules/IntervalsModule';
 import RunningDynamicsModule from '../modules/RunningDynamicsModule';
 import SpotifyModule from '../modules/SpotifyModule';
@@ -225,6 +226,8 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
                 return <StreakModule key={key} data={enrichments?.streak} />;
               case 'weather':
                 return <WeatherModule key={key} data={enrichments?.weather} />;
+              case 'temperature':
+                return <TemperatureModule key={key} data={enrichments?.temperature} records={flatRecords} />;
               case 'intervals':
                 return <IntervalsModule key={key} data={enrichments?.intervals} />;
               case 'running-dynamics':

@@ -1448,6 +1448,10 @@ const EnricherProviderTypeNames: Record<string, string> = {
     'ICAL_TITLE': 'Ical Title',
     'Ical Title': 'Ical Title',
     '43': 'Ical Title',
+    'ENRICHER_PROVIDER_TEMPERATURE_SUMMARY': 'Temperature Summary',
+    'TEMPERATURE_SUMMARY': 'Temperature Summary',
+    'Temperature Summary': 'Temperature Summary',
+    '44': 'Temperature Summary',
     'ENRICHER_PROVIDER_MOCK': 'Mock',
     'MOCK': 'Mock',
     'Mock': 'Mock',
@@ -1516,6 +1520,7 @@ export function formatEnricherProviderType(value: EnricherProviderType | number 
     case EnricherProviderType.ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY: return 'Manual Workout Entry';
     case EnricherProviderType.ENRICHER_PROVIDER_AI_ACTIVITY_TYPE: return 'Ai Activity Type';
     case EnricherProviderType.ENRICHER_PROVIDER_ICAL_TITLE: return 'Ical Title';
+    case EnricherProviderType.ENRICHER_PROVIDER_TEMPERATURE_SUMMARY: return 'Temperature Summary';
     case EnricherProviderType.ENRICHER_PROVIDER_MOCK: return 'Mock';
     default: return 'Unknown';
   }
@@ -1691,6 +1696,10 @@ const EnricherProviderTypeValues: Record<string, EnricherProviderType> = {
     'ical_title': EnricherProviderType.ENRICHER_PROVIDER_ICAL_TITLE,
     'ical title': EnricherProviderType.ENRICHER_PROVIDER_ICAL_TITLE,
     '43': EnricherProviderType.ENRICHER_PROVIDER_ICAL_TITLE,
+    'enricher_provider_temperature_summary': EnricherProviderType.ENRICHER_PROVIDER_TEMPERATURE_SUMMARY,
+    'temperature_summary': EnricherProviderType.ENRICHER_PROVIDER_TEMPERATURE_SUMMARY,
+    'temperature summary': EnricherProviderType.ENRICHER_PROVIDER_TEMPERATURE_SUMMARY,
+    '44': EnricherProviderType.ENRICHER_PROVIDER_TEMPERATURE_SUMMARY,
     'enricher_provider_mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     'mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     '99': EnricherProviderType.ENRICHER_PROVIDER_MOCK,

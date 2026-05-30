@@ -31,6 +31,7 @@ export type ModuleKey =
   | 'streak'
   | 'goals'
   | 'weather'
+  | 'temperature'
   | 'spotify'
   | 'auto-increment-footer'
   | 'source-link-footer';
@@ -62,6 +63,7 @@ const ENRICHER_TO_MODULE: Record<string, ModuleKey | null> = {
   ENRICHER_PROVIDER_STREAK_TRACKER:       'streak',
   ENRICHER_PROVIDER_GOAL_TRACKER:         'goals',
   ENRICHER_PROVIDER_WEATHER:              'weather',
+  ENRICHER_PROVIDER_TEMPERATURE_SUMMARY:  'temperature',
   ENRICHER_PROVIDER_SPOTIFY_TRACKS:       'spotify',
   ENRICHER_PROVIDER_AUTO_INCREMENT:       'auto-increment-footer',
   ENRICHER_PROVIDER_SOURCE_LINK:          'source-link-footer',
@@ -187,6 +189,7 @@ export function buildModuleOrder(
   if (has('ENRICHER_PROVIDER_STREAK_TRACKER')) push('streak');
   if (has('ENRICHER_PROVIDER_GOAL_TRACKER')) push('goals');
   if (has('ENRICHER_PROVIDER_WEATHER') && category === 'cardio-distance') push('weather');
+  if (has('ENRICHER_PROVIDER_TEMPERATURE_SUMMARY')) push('temperature');
   if (has('ENRICHER_PROVIDER_SPOTIFY_TRACKS')) push('spotify');
 
   // 8. Footer enrichers
