@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.49.0](https://github.com/fitglue/web/compare/v11.48.0...v11.49.0) (2026-05-30)
+
+
+### Features
+
+* **showcase:** show generated roundups list in settings roundup tab ([0e53260](https://github.com/fitglue/web/commit/0e532607521cb3b0bf158fe94f9aebdf62e488be))
+
 ## [11.48.0](https://github.com/fitglue/web/compare/v11.47.0...v11.48.0) (2026-05-30)
 
 
