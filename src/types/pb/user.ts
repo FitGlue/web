@@ -96,6 +96,8 @@ export enum EnricherProviderType {
   ENRICHER_PROVIDER_AI_ACTIVITY_TYPE = 42,
   /** ENRICHER_PROVIDER_ICAL_TITLE - Config inputs: "ical_url", "min_overlap_seconds" - sets activity title from matching calendar event */
   ENRICHER_PROVIDER_ICAL_TITLE = 43,
+  /** ENRICHER_PROVIDER_TEMPERATURE_SUMMARY - Reads ambient temperature from FIT file records and computes min/avg/max °C */
+  ENRICHER_PROVIDER_TEMPERATURE_SUMMARY = 44,
   ENRICHER_PROVIDER_MOCK = 99,
   UNRECOGNIZED = -1,
 }
