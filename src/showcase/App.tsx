@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
 import publicClient from '../shared/api/public-client';
 import ShowcaseNotFound from './components/ShowcaseNotFound';
 import ShowcaseActivityPage from './pages/ShowcaseActivityPage';
 import ShowcaseProfilePage from './pages/ShowcaseProfilePage';
-import ShowcaseRoundupPage from './pages/ShowcaseRoundupPage';
+// Roundup is WIP — keep lazy so its unresolved schema types don't block the main bundle
+const ShowcaseRoundupPage = React.lazy(() => import('./pages/ShowcaseRoundupPage'));
 
 const ROUNDUP_PERIOD_RE = /^(week|month|year)-/;
 
@@ -58,7 +59,7 @@ function LegacyActivityRedirect() {
 const App: React.FC = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/:slug/:id" element={<ShowcaseSlugRouter />} />
+      <Route path="/:slug/:id" element={<Suspense fallback={<Fallback />}><ShowcaseSlugRouter /></Suspense>} />
       <Route path="/:slug" element={<ShowcaseProfilePage />} />
       <Route path="/showcase/profile/:slug" element={<LegacyProfileRedirect />} />
       <Route path="/showcase/activity/:id" element={<LegacyActivityRedirect />} />
