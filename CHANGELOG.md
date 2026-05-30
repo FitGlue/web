@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.48.0](https://github.com/fitglue/web/compare/v11.47.0...v11.48.0) (2026-05-30)
+
+
+### Features
+
+* **showcase:** add roundup page, profile links, and settings UI ([6b91315](https://github.com/fitglue/web/commit/6b913154d8de25778af0bb166fc0a3417ba025f1))
+
+
+### Bug Fixes
+
+* **showcase:** fix pre-existing type errors in ShowcaseRoundupPage ([6f839d5](https://github.com/fitglue/web/commit/6f839d5a5667b74fa00f9df924d7996b1fedbb77))
+* **showcase:** keep ShowcaseRoundupPage lazy (WIP, schema types pending) ([c230b30](https://github.com/fitglue/web/commit/c230b30e1567fbd27de79df8540f9204884407fd))
+* **showcase:** remove lazy loading to eliminate CSS injection FOUC ([9babb0a](https://github.com/fitglue/web/commit/9babb0ab8bbd174ed77b36cfd7c5a5a970ce3b72))
+
 ## [11.47.0](https://github.com/fitglue/web/compare/v11.46.1...v11.47.0) (2026-05-30)
 
 
