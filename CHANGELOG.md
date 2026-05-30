@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.47.0](https://github.com/fitglue/web/compare/v11.46.1...v11.47.0) (2026-05-30)
+
+
+### Features
+
+* **showcase:** add temperature module ([b3e6342](https://github.com/fitglue/web/commit/b3e63423ce5551d48652c2a29efa7787ded77d5e))
+* **types:** add ENRICHER_PROVIDER_TEMPERATURE_SUMMARY to user.ts enum ([326ea75](https://github.com/fitglue/web/commit/326ea757f228a62e2499fc46f81fc2f7469af9df))
+
 ### [11.46.1](https://github.com/fitglue/web/compare/v11.46.0...v11.46.1) (2026-05-29)
 
 
