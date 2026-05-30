@@ -7,7 +7,12 @@
 /* eslint-disable */
 import type { Empty } from "../google/protobuf/empty";
 import type { StandardizedActivity } from "../models/activity/standardized";
-import type { ShowcasedActivity, ShowcaseProfile, ShowcaseProfileEntry } from "../models/activity/uploaded";
+import type {
+  RoundupSettings,
+  ShowcasedActivity,
+  ShowcaseProfile,
+  ShowcaseProfileEntry,
+} from "../models/activity/uploaded";
 import type { PipelineConfig } from "../models/pipeline/config";
 import type { PipelineRun } from "../models/pipeline/execution";
 import type { PluginManifest, PluginRegistryResponse } from "../models/plugin/manifest";
@@ -326,6 +331,10 @@ export interface UpdateShowcaseSlugGatewayRequest {
   slug: string;
 }
 
+export interface UpdateRoundupSettingsGatewayRequest {
+  settings?: RoundupSettings | undefined;
+}
+
 export interface UpdateShowcaseSlugGatewayResponse {
   slug: string;
 }
@@ -540,6 +549,7 @@ export interface ClientGatewayService {
   GetShowcaseProfilePictureUploadUrl(
     request: GetPictureUploadUrlGatewayRequest,
   ): Promise<GetPictureUploadUrlGatewayResponse>;
+  UpdateRoundupSettings(request: UpdateRoundupSettingsGatewayRequest): Promise<ShowcaseProfile>;
   GetActivityPhotoUploadUrl(
     request: GetActivityPhotoUploadUrlGatewayRequest,
   ): Promise<GetActivityPhotoUploadUrlGatewayResponse>;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import publicClient from '../../shared/api/public-client';
 import type { components } from '../../shared/api/schema-public';
 import ProfileHero from '../components/layout/ProfileHero';
@@ -16,6 +16,28 @@ import ShowcaseNotFound from '../components/ShowcaseNotFound';
 type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
 type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
 type ShowcaseLink = components['schemas']['ShowcaseLink'];
+type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
+
+function roundupLabel(periodKey: string): string {
+  if (periodKey.startsWith('week-')) {
+    const [, week, year] = periodKey.split('-');
+    return `Week ${parseInt(week, 10)}, ${year}`;
+  }
+  if (periodKey.startsWith('month-')) {
+    const [, month, year] = periodKey.split('-');
+    const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
+    return date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  }
+  if (periodKey.startsWith('year-')) return periodKey.replace('year-', '');
+  return periodKey;
+}
+
+function roundupTypeLabel(periodKey: string): string {
+  if (periodKey.startsWith('week-')) return 'Weekly Roundup';
+  if (periodKey.startsWith('month-')) return 'Monthly Roundup';
+  if (periodKey.startsWith('year-')) return 'Year in Review';
+  return 'Roundup';
+}
 
 function getLinkIcon(url: string | undefined): string {
   if (!url) return '↗';
@@ -48,6 +70,7 @@ export default function ShowcaseProfilePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [roundups, setRoundups] = useState<ShowcaseRoundup[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(false);
 
@@ -64,6 +87,11 @@ export default function ShowcaseProfilePage() {
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
+
+    publicClient
+      .GET('/showcase/{slug}/roundups/recent', { params: { path: { slug }, query: { limit: 3 } } })
+      .then(({ data }) => { if (data?.roundups) setRoundups(data.roundups); })
+      .catch(() => {/* roundups optional — fail silently */});
   }, [slug]);
 
   const profileMeta = useMemo(() => profile ? ({
@@ -133,6 +161,31 @@ export default function ShowcaseProfilePage() {
 
         {/* Lifetime HR zone distribution */}
         <ZoneBar zoneSplit={profile.zoneSplit} />
+
+        {/* Recent roundups */}
+        {roundups.length > 0 && (
+          <div className="roundup-profile-band">
+            <div className="roundup-profile-band__label">📅 ROUNDUPS</div>
+            <div className="roundup-profile-band__cards">
+              {roundups.map((r) => (
+                <Link
+                  key={r.roundupId}
+                  to={`/@${slug}/${r.periodKey}`}
+                  className="roundup-profile-card"
+                >
+                  <div className="roundup-profile-card__type">{roundupTypeLabel(r.periodKey ?? '')}</div>
+                  <div className="roundup-profile-card__period">{roundupLabel(r.periodKey ?? '')}</div>
+                  <div className="roundup-profile-card__stat">
+                    {r.totalActivities} sessions
+                    {r.totalDistanceMeters && r.totalDistanceMeters > 1000
+                      ? ` · ${(r.totalDistanceMeters / 1000).toFixed(0)} km`
+                      : null}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Activity photo gallery — aggregated from all entries with photos */}
         {profile.showPhotoGallery && (() => {

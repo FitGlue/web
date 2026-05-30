@@ -969,6 +969,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/me/showcase-management/roundup-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ClientGatewayService_UpdateRoundupSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/me/showcases": {
         parameters: {
             query?: never;
@@ -1865,6 +1881,15 @@ export interface components {
             activityId?: string;
             destination?: string;
         };
+        /**
+         * @description RoundupSettings controls auto-generation of showcase roundup pages.
+         *      Athlete-tier only; all fields default to false.
+         */
+        RoundupSettings: {
+            enabledWeekly?: boolean;
+            enabledMonthly?: boolean;
+            enabledYearly?: boolean;
+        };
         RunningDynamicsSummary: {
             /** Format: double */
             avgGroundContactMs?: number;
@@ -1963,6 +1988,7 @@ export interface components {
             streakHistory?: components["schemas"]["WeeklyStreakHistory"];
             /** @description Top strength PRs — populated at request time from users/{userId}/personal_records/ */
             topPrs?: components["schemas"]["ShowcaseTopPR"][];
+            roundupSettings?: components["schemas"]["RoundupSettings"];
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;
@@ -2125,6 +2151,8 @@ export interface components {
             timeMarkers?: components["schemas"]["TimeMarker"][];
             workout?: components["schemas"]["WorkoutDefinition"];
             hybridRaceSummary?: components["schemas"]["HybridRaceSummary"];
+            id?: string;
+            pipelineRunStatus?: string;
         };
         /** @description The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors). */
         Status: {
@@ -2270,6 +2298,9 @@ export interface components {
         /** @description User */
         UpdateProfileGatewayRequest: {
             profile?: components["schemas"]["UserProfile"];
+        };
+        UpdateRoundupSettingsGatewayRequest: {
+            settings?: components["schemas"]["RoundupSettings"];
         };
         UpdateShowcaseGatewayRequest: {
             id?: string;
@@ -4717,6 +4748,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UpdateShowcaseSlugGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_UpdateRoundupSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateRoundupSettingsGatewayRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcaseProfile"];
                 };
             };
             /** @description Default error response */

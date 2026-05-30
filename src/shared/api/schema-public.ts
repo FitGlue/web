@@ -118,6 +118,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/showcase/{slug}/roundup/{periodKey}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicGatewayService_GetPublicRoundup"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/showcase/{slug}/roundups/recent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicGatewayService_GetRecentPublicRoundups"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -254,6 +286,9 @@ export interface components {
             totalPages?: number;
             /** Format: int32 */
             currentPage?: number;
+        };
+        GetRecentPublicRoundupsGatewayResponse: {
+            roundups?: components["schemas"]["ShowcaseRoundup"][];
         };
         GoalEntry: {
             label?: string;
@@ -541,6 +576,34 @@ export interface components {
             /** Format: int32 */
             twentyEightDayAvgLoad?: number;
         };
+        RoundupActivityTypeBreakdown: {
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            activityType?: "ACTIVITY_TYPE_UNSPECIFIED" | "ACTIVITY_TYPE_ALPINE_SKI" | "ACTIVITY_TYPE_BACKCOUNTRY_SKI" | "ACTIVITY_TYPE_BADMINTON" | "ACTIVITY_TYPE_CANOEING" | "ACTIVITY_TYPE_CROSSFIT" | "ACTIVITY_TYPE_EBIKE_RIDE" | "ACTIVITY_TYPE_ELLIPTICAL" | "ACTIVITY_TYPE_EMOUNTAIN_BIKE_RIDE" | "ACTIVITY_TYPE_GOLF" | "ACTIVITY_TYPE_GRAVEL_RIDE" | "ACTIVITY_TYPE_HANDCYCLE" | "ACTIVITY_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING" | "ACTIVITY_TYPE_HIKE" | "ACTIVITY_TYPE_ICE_SKATE" | "ACTIVITY_TYPE_INLINE_SKATE" | "ACTIVITY_TYPE_KAYAKING" | "ACTIVITY_TYPE_KITESURF" | "ACTIVITY_TYPE_MOUNTAIN_BIKE_RIDE" | "ACTIVITY_TYPE_NORDIC_SKI" | "ACTIVITY_TYPE_PICKLEBALL" | "ACTIVITY_TYPE_PILATES" | "ACTIVITY_TYPE_RACQUETBALL" | "ACTIVITY_TYPE_RIDE" | "ACTIVITY_TYPE_ROCK_CLIMBING" | "ACTIVITY_TYPE_ROLLER_SKI" | "ACTIVITY_TYPE_ROWING" | "ACTIVITY_TYPE_RUN" | "ACTIVITY_TYPE_SAIL" | "ACTIVITY_TYPE_SKATEBOARD" | "ACTIVITY_TYPE_SNOWBOARD" | "ACTIVITY_TYPE_SNOWSHOE" | "ACTIVITY_TYPE_SOCCER" | "ACTIVITY_TYPE_SQUASH" | "ACTIVITY_TYPE_STAIR_STEPPER" | "ACTIVITY_TYPE_STAND_UP_PADDLING" | "ACTIVITY_TYPE_SURFING" | "ACTIVITY_TYPE_SWIM" | "ACTIVITY_TYPE_TABLE_TENNIS" | "ACTIVITY_TYPE_TENNIS" | "ACTIVITY_TYPE_TRAIL_RUN" | "ACTIVITY_TYPE_VELOMOBILE" | "ACTIVITY_TYPE_VIRTUAL_RIDE" | "ACTIVITY_TYPE_VIRTUAL_ROW" | "ACTIVITY_TYPE_VIRTUAL_RUN" | "ACTIVITY_TYPE_WALK" | "ACTIVITY_TYPE_WEIGHT_TRAINING" | "ACTIVITY_TYPE_WHEELCHAIR" | "ACTIVITY_TYPE_WINDSURF" | "ACTIVITY_TYPE_WORKOUT" | "ACTIVITY_TYPE_YOGA";
+            /** Format: int32 */
+            activityCount?: number;
+            /** Format: double */
+            totalDistanceMeters?: number;
+            /** Format: double */
+            totalDurationSeconds?: number;
+            /** Format: double */
+            totalWeightKg?: number;
+            /** Format: int32 */
+            totalSets?: number;
+            /** Format: int32 */
+            totalReps?: number;
+        };
+        /**
+         * @description RoundupSettings controls auto-generation of showcase roundup pages.
+         *      Athlete-tier only; all fields default to false.
+         */
+        RoundupSettings: {
+            enabledWeekly?: boolean;
+            enabledMonthly?: boolean;
+            enabledYearly?: boolean;
+        };
         RunningDynamicsSummary: {
             /** Format: double */
             avgGroundContactMs?: number;
@@ -611,6 +674,7 @@ export interface components {
             streakHistory?: components["schemas"]["WeeklyStreakHistory"];
             /** @description Top strength PRs — populated at request time from users/{userId}/personal_records/ */
             topPrs?: components["schemas"]["ShowcaseTopPR"][];
+            roundupSettings?: components["schemas"]["RoundupSettings"];
         };
         ShowcaseProfileEntry: {
             showcaseId?: string;
@@ -661,6 +725,47 @@ export interface components {
             photoUrls?: string[];
             /** Format: date-time */
             createdAt?: string;
+        };
+        /** @description ShowcaseRoundup is a period-aggregated training summary stored as a public snapshot. */
+        ShowcaseRoundup: {
+            roundupId?: string;
+            slug?: string;
+            userId?: string;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            periodType?: "ROUNDUP_PERIOD_TYPE_UNSPECIFIED" | "ROUNDUP_PERIOD_TYPE_WEEK" | "ROUNDUP_PERIOD_TYPE_MONTH" | "ROUNDUP_PERIOD_TYPE_YEAR";
+            periodKey?: string;
+            /** Format: date-time */
+            periodStart?: string;
+            /** Format: date-time */
+            periodEnd?: string;
+            /** Format: date-time */
+            generatedAt?: string;
+            /** Format: int32 */
+            totalActivities?: number;
+            /** Format: double */
+            totalDurationSeconds?: number;
+            /** Format: double */
+            totalDistanceMeters?: number;
+            /** Format: double */
+            totalElevationGainMeters?: number;
+            /** Format: int32 */
+            totalCaloriesKcal?: number;
+            activityTypeBreakdowns?: components["schemas"]["RoundupActivityTypeBreakdown"][];
+            hrZoneMinutes?: number[];
+            prsAchieved?: components["schemas"]["ShowcaseTopPR"][];
+            sources?: ("SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_GARMIN" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST")[];
+            /** Format: int32 */
+            effortEasyCount?: number;
+            /** Format: int32 */
+            effortModerateCount?: number;
+            /** Format: int32 */
+            effortHardCount?: number;
+            ownerDisplayName?: string;
+            ownerProfilePictureUrl?: string;
+            ownerProfileSlug?: string;
         };
         ShowcaseTheme: {
             themeId?: string;
@@ -753,6 +858,8 @@ export interface components {
             timeMarkers?: components["schemas"]["TimeMarker"][];
             workout?: components["schemas"]["WorkoutDefinition"];
             hybridRaceSummary?: components["schemas"]["HybridRaceSummary"];
+            id?: string;
+            pipelineRunStatus?: string;
         };
         /** @description The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors). */
         Status: {
@@ -1074,6 +1181,71 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ShowcasedActivity"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    PublicGatewayService_GetPublicRoundup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                periodKey: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcaseRoundup"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    PublicGatewayService_GetRecentPublicRoundups: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetRecentPublicRoundupsGatewayResponse"];
                 };
             };
             /** @description Default error response */

@@ -6,8 +6,14 @@
 
 /* eslint-disable */
 import type { Empty } from "../../google/protobuf/empty";
+import type { ShowcaseRoundup } from "../../models/activity/roundup";
 import type { StandardizedActivity } from "../../models/activity/standardized";
-import type { ShowcasedActivity, ShowcaseProfile, ShowcaseProfileEntry } from "../../models/activity/uploaded";
+import type {
+  RoundupSettings,
+  ShowcasedActivity,
+  ShowcaseProfile,
+  ShowcaseProfileEntry,
+} from "../../models/activity/uploaded";
 
 export const protobufPackage = "fitglue.services.activity";
 
@@ -203,6 +209,25 @@ export interface GetActivityStatsResponse {
   longestStreakDays: number;
 }
 
+export interface GetPublicRoundupRequest {
+  slug: string;
+  periodKey: string;
+}
+
+export interface GetRecentPublicRoundupsRequest {
+  slug: string;
+  limit: number;
+}
+
+export interface GetRecentPublicRoundupsResponse {
+  roundups: ShowcaseRoundup[];
+}
+
+export interface UpdateRoundupSettingsRequest {
+  userId: string;
+  settings?: RoundupSettings | undefined;
+}
+
 export interface ActivityService {
   GetActivity(request: GetActivityRequest): Promise<StandardizedActivity>;
   ListActivities(request: ListActivitiesRequest): Promise<ListActivitiesResponse>;
@@ -230,4 +255,7 @@ export interface ActivityService {
     request: GetShowcaseProfilePictureUploadUrlRequest,
   ): Promise<GetShowcaseProfilePictureUploadUrlResponse>;
   GetActivityPhotoUploadUrl(request: GetActivityPhotoUploadUrlRequest): Promise<GetActivityPhotoUploadUrlResponse>;
+  GetPublicRoundup(request: GetPublicRoundupRequest): Promise<ShowcaseRoundup>;
+  GetRecentPublicRoundups(request: GetRecentPublicRoundupsRequest): Promise<GetRecentPublicRoundupsResponse>;
+  UpdateRoundupSettings(request: UpdateRoundupSettingsRequest): Promise<ShowcaseProfile>;
 }

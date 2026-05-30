@@ -48,6 +48,8 @@ export interface StandardizedActivity {
   timeMarkers: TimeMarker[];
   workout?: WorkoutDefinition | undefined;
   hybridRaceSummary?: HybridRaceSummary | undefined;
+  id: string;
+  pipelineRunStatus: string;
 }
 
 export interface HybridRaceSummary {

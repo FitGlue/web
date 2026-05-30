@@ -9,7 +9,7 @@ import { ImageCropModal } from '../components/ImageCropModal';
 import { formatActivityType, formatActivitySource } from '../../types/pb/enum-formatters';
 import './ShowcaseManagementPage.css';
 
-type ShowcaseSection = 'profile' | 'activities' | 'theme' | 'links' | 'danger';
+type ShowcaseSection = 'profile' | 'activities' | 'theme' | 'links' | 'roundup' | 'danger';
 
 interface ShowcaseActivity {
     showcaseId: string;
@@ -84,6 +84,7 @@ const NAV_ITEMS: { id: ShowcaseSection; icon: string; label: string }[] = [
     { id: 'activities', icon: '🏃', label: 'ACTIVITIES' },
     { id: 'theme', icon: '🎨', label: 'THEME' },
     { id: 'links', icon: '🔗', label: 'LINKS' },
+    { id: 'roundup', icon: '📅', label: 'ROUNDUP' },
     { id: 'danger', icon: '⊗', label: 'DANGER ZONE' },
 ];
 
@@ -144,6 +145,12 @@ const ShowcaseManagementPage: React.FC = () => {
     const [calloutError, setCalloutError] = useState('');
     const [savingCallouts, setSavingCallouts] = useState(false);
 
+    // Roundup settings (Athlete-tier)
+    const [roundupWeekly, setRoundupWeekly] = useState(false);
+    const [roundupMonthly, setRoundupMonthly] = useState(false);
+    const [roundupYearly, setRoundupYearly] = useState(false);
+    const [savingRoundup, setSavingRoundup] = useState(false);
+
 
     // Fetch profile data
     const fetchProfile = useCallback(async () => {
@@ -169,6 +176,10 @@ const ShowcaseManagementPage: React.FC = () => {
                 setLinks(typedData.profile.links || []);
                 setCallouts(typedData.profile.callouts || []);
                 setShowPhotoGallery(typedData.profile.showPhotoGallery ?? false);
+                const rs = (typedData.profile as unknown as { roundupSettings?: { enabledWeekly?: boolean; enabledMonthly?: boolean; enabledYearly?: boolean } }).roundupSettings;
+                setRoundupWeekly(rs?.enabledWeekly ?? false);
+                setRoundupMonthly(rs?.enabledMonthly ?? false);
+                setRoundupYearly(rs?.enabledYearly ?? false);
             }
         } catch (err) {
             console.error('Failed to load showcase profile:', err);
@@ -375,6 +386,24 @@ const ShowcaseManagementPage: React.FC = () => {
             setShowPhotoGallery(!newVal);
             console.error('Failed to update photo gallery setting:', err);
             showError('Failed to update photo gallery setting');
+        }
+    };
+
+    const handleSaveRoundupSettings = async (weekly: boolean, monthly: boolean, yearly: boolean) => {
+        setSavingRoundup(true);
+        try {
+            await client.PUT('/users/me/showcase-management/roundup-settings', {
+                body: { settings: { enabledWeekly: weekly, enabledMonthly: monthly, enabledYearly: yearly } } as never,
+            });
+            setRoundupWeekly(weekly);
+            setRoundupMonthly(monthly);
+            setRoundupYearly(yearly);
+            showSuccess('Roundup settings saved');
+        } catch (err) {
+            console.error('Failed to save roundup settings:', err);
+            showError('Failed to save roundup settings');
+        } finally {
+            setSavingRoundup(false);
         }
     };
 
@@ -963,6 +992,49 @@ const ShowcaseManagementPage: React.FC = () => {
                                 </Stack>
                             </Card>
                         </>
+                    )}
+
+                    {/* ── ROUNDUP ── */}
+                    {activeSection === 'roundup' && (
+                        <Card className="showcase-mgmt__section">
+                            <Stack gap="md">
+                                <Heading level={3} className="showcase-mgmt__section-title">
+                                    📅 Roundup Pages
+                                </Heading>
+                                <Paragraph>
+                                    Auto-generate a shareable training summary at the end of each period.
+                                    Roundup pages are public and linked from your Showcase profile.
+                                    Available on Athlete tier only.
+                                </Paragraph>
+                                <Toggle
+                                    label="Weekly roundup"
+                                    description={roundupWeekly
+                                        ? `Generated every Monday · fitglue.tech/@${profile?.slug}/week-XX-YYYY`
+                                        : 'Off — no weekly roundup page will be generated'}
+                                    checked={roundupWeekly}
+                                    onChange={() => handleSaveRoundupSettings(!roundupWeekly, roundupMonthly, roundupYearly)}
+                                    disabled={savingRoundup}
+                                />
+                                <Toggle
+                                    label="Monthly roundup"
+                                    description={roundupMonthly
+                                        ? `Generated on the 1st of each month · fitglue.tech/@${profile?.slug}/month-MM-YYYY`
+                                        : 'Off — no monthly roundup page will be generated'}
+                                    checked={roundupMonthly}
+                                    onChange={() => handleSaveRoundupSettings(roundupWeekly, !roundupMonthly, roundupYearly)}
+                                    disabled={savingRoundup}
+                                />
+                                <Toggle
+                                    label="Yearly roundup"
+                                    description={roundupYearly
+                                        ? `Generated on 1 Jan each year · fitglue.tech/@${profile?.slug}/year-YYYY`
+                                        : 'Off — no yearly roundup page will be generated'}
+                                    checked={roundupYearly}
+                                    onChange={() => handleSaveRoundupSettings(roundupWeekly, roundupMonthly, !roundupYearly)}
+                                    disabled={savingRoundup}
+                                />
+                            </Stack>
+                        </Card>
                     )}
 
                     {/* ── DANGER ZONE ── */}

@@ -5,6 +5,7 @@
 // source: gateway/public.proto
 
 /* eslint-disable */
+import type { ShowcaseRoundup } from "../models/activity/roundup";
 import type { ShowcasedActivity, ShowcaseProfile } from "../models/activity/uploaded";
 import type { PluginManifest, PluginRegistryResponse } from "../models/plugin/manifest";
 
@@ -53,6 +54,20 @@ export interface GetPublicShowcaseProfileResponse {
   currentPage: number;
 }
 
+export interface GetPublicRoundupGatewayRequest {
+  slug: string;
+  periodKey: string;
+}
+
+export interface GetRecentPublicRoundupsGatewayRequest {
+  slug: string;
+  limit: number;
+}
+
+export interface GetRecentPublicRoundupsGatewayResponse {
+  roundups: ShowcaseRoundup[];
+}
+
 /**
  * PublicGatewayService describes the unauthenticated REST API surface
  * served by api-public at /api/public/*.
@@ -70,4 +85,8 @@ export interface PublicGatewayService {
   /** ===================== Public Showcase ===================== */
   GetPublicShowcase(request: GetPublicShowcaseRequest): Promise<ShowcasedActivity>;
   GetPublicShowcaseProfile(request: GetPublicShowcaseProfileRequest): Promise<GetPublicShowcaseProfileResponse>;
+  GetPublicRoundup(request: GetPublicRoundupGatewayRequest): Promise<ShowcaseRoundup>;
+  GetRecentPublicRoundups(
+    request: GetRecentPublicRoundupsGatewayRequest,
+  ): Promise<GetRecentPublicRoundupsGatewayResponse>;
 }

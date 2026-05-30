@@ -138,6 +138,17 @@ export interface ShowcaseProfile {
     | undefined;
   /** Top strength PRs — populated at request time from users/{userId}/personal_records/ */
   topPrs: ShowcaseTopPR[];
+  roundupSettings?: RoundupSettings | undefined;
+}
+
+/**
+ * RoundupSettings controls auto-generation of showcase roundup pages.
+ * Athlete-tier only; all fields default to false.
+ */
+export interface RoundupSettings {
+  enabledWeekly: boolean;
+  enabledMonthly: boolean;
+  enabledYearly: boolean;
 }
 
 /** ShowcaseTopPR is a lightweight personal record for display on the profile medal wall. */
