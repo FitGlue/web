@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.52.0](https://github.com/fitglue/web/compare/v11.51.1...v11.52.0) (2026-05-31)
+
+
+### Features
+
+* **showcase:** add roundup page CSS ([31b53b1](https://github.com/fitglue/web/commit/31b53b16a4b6b765133ebecc46d532ccae413394))
+
 ### [11.51.1](https://github.com/fitglue/web/compare/v11.51.0...v11.51.1) (2026-05-31)
 
 
