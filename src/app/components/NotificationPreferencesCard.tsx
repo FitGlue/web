@@ -13,6 +13,7 @@ interface NotificationPreferences {
     notifyPendingInput: boolean;
     notifyPipelineSuccess: boolean;
     notifyPipelineFailure: boolean;
+    notifyConnectionAction: boolean;
 }
 
 /**
@@ -24,6 +25,7 @@ export const NotificationPreferencesCard: React.FC = () => {
         notifyPendingInput: true,
         notifyPipelineSuccess: true,
         notifyPipelineFailure: true,
+        notifyConnectionAction: true,
     });
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState<string | null>(null);
@@ -36,6 +38,7 @@ export const NotificationPreferencesCard: React.FC = () => {
                     notifyPendingInput: data?.notifyPendingInput ?? true,
                     notifyPipelineSuccess: data?.notifyPipelineSuccess ?? true,
                     notifyPipelineFailure: data?.notifyPipelineFailure ?? true,
+                    notifyConnectionAction: data?.notifyConnectionAction ?? true,
                 });
             } catch (err) {
                 console.error('Failed to fetch notification preferences:', err);
@@ -94,6 +97,14 @@ export const NotificationPreferencesCard: React.FC = () => {
                     checked={preferences.notifyPipelineFailure}
                     disabled={updating === 'notifyPipelineFailure'}
                     onChange={(checked) => updatePreference('notifyPipelineFailure', checked)}
+                />
+
+                <PreferenceToggle
+                    label="Connection Issues"
+                    description="When a destination connection needs to be re-authorised"
+                    checked={preferences.notifyConnectionAction}
+                    disabled={updating === 'notifyConnectionAction'}
+                    onChange={(checked) => updatePreference('notifyConnectionAction', checked)}
                 />
             </Stack>
         </SettingsSection>
