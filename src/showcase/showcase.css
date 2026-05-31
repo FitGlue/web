@@ -3180,3 +3180,263 @@ body:has(#showcase-root) {
   .photo-lightbox-nav--prev { left: 0.5rem; }
   .photo-lightbox-nav--next { right: 0.5rem; }
 }
+
+/* ============================================================
+   ROUNDUP PAGE
+   ============================================================ */
+
+/* ── Hero ── */
+.roundup-hero {
+  padding: 64px 32px 48px;
+  text-align: center;
+  border-bottom: var(--fg-rule-thin);
+  background: linear-gradient(180deg, rgba(255,61,166,.08) 0%, transparent 100%);
+}
+
+.roundup-hero__eyebrow {
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--fg-cyan);
+  margin-bottom: 10px;
+}
+
+.roundup-hero__period {
+  font-family: var(--fg-font-display, var(--fg-font-mono));
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 900;
+  letter-spacing: -.02em;
+  color: var(--fg-paper);
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.roundup-hero__athlete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--fg-font-mono);
+  font-size: .8125rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 28px;
+}
+
+.roundup-hero__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--fg-pink);
+}
+
+.roundup-hero__headline {
+  font-family: var(--fg-font-mono);
+  font-size: clamp(1.25rem, 4vw, 2rem);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
+}
+
+/* ── Stats Banner ── */
+.roundup-stats-banner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  background: var(--fg-rule-thin, rgba(245,243,235,.08));
+  border-bottom: var(--fg-rule-thin);
+}
+
+.roundup-stat {
+  padding: 28px 24px;
+  background: var(--fg-ink);
+  text-align: center;
+}
+
+.roundup-stat__val {
+  font-family: var(--fg-font-mono);
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 900;
+  letter-spacing: -.01em;
+  color: var(--fg-paper);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.roundup-stat__lbl {
+  font-family: var(--fg-font-mono);
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ── Sections ── */
+.roundup-section {
+  padding: 32px 32px 28px;
+  border-bottom: var(--fg-rule-thin);
+}
+
+.roundup-section__title {
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 18px;
+}
+
+/* ── Activity Type Breakdown ── */
+.roundup-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.roundup-type-card {
+  background: var(--fg-ink-2);
+  border: 1px solid rgba(245,243,235,.06);
+  border-radius: 6px;
+  padding: 16px 18px;
+}
+
+.roundup-type-card__name {
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--fg-cyan);
+  margin-bottom: 6px;
+}
+
+.roundup-type-card__count {
+  font-family: var(--fg-font-mono);
+  font-size: .75rem;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.roundup-type-card__stat {
+  font-family: var(--fg-font-mono);
+  font-size: .9375rem;
+  font-weight: 700;
+  color: var(--fg-paper);
+  line-height: 1.3;
+}
+
+.roundup-type-card__dur {
+  font-family: var(--fg-font-mono);
+  font-size: .75rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+/* ── Sources ── */
+.roundup-sources {
+  padding: 20px 32px;
+  border-bottom: var(--fg-rule-thin);
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ── Back link ── */
+.roundup-back {
+  padding: 32px;
+  text-align: center;
+}
+
+.roundup-back__link {
+  font-family: var(--fg-font-mono);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--fg-cyan);
+  text-decoration: none;
+}
+
+.roundup-back__link:hover { text-decoration: underline; }
+
+/* ── Profile page roundup band ── */
+.roundup-profile-band {
+  padding: 28px 32px;
+  border-bottom: var(--fg-rule-thin);
+}
+
+.roundup-profile-band__label {
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 14px;
+}
+
+.roundup-profile-band__cards {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.roundup-profile-card {
+  background: var(--fg-ink-2);
+  border: 1px solid rgba(245,243,235,.06);
+  border-radius: 6px;
+  padding: 14px 18px;
+  text-decoration: none;
+  flex: 1;
+  min-width: 160px;
+  max-width: 260px;
+  transition: border-color .15s;
+}
+
+.roundup-profile-card:hover {
+  border-color: var(--fg-cyan);
+}
+
+.roundup-profile-card__type {
+  font-family: var(--fg-font-mono);
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--fg-cyan);
+  margin-bottom: 4px;
+}
+
+.roundup-profile-card__period {
+  font-family: var(--fg-font-mono);
+  font-size: .9375rem;
+  font-weight: 700;
+  color: var(--fg-paper);
+  margin-bottom: 4px;
+}
+
+.roundup-profile-card__stat {
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 640px) {
+  .roundup-hero { padding: 48px 20px 36px; }
+  .roundup-stats-banner { grid-template-columns: repeat(2, 1fr); }
+  .roundup-section { padding: 24px 20px 20px; }
+  .roundup-type-grid { grid-template-columns: repeat(2, 1fr); }
+  .roundup-profile-band { padding: 20px; }
+  .roundup-sources { padding: 16px 20px; }
+  .roundup-back { padding: 24px 20px; }
+}
