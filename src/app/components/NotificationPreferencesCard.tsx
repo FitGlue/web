@@ -9,7 +9,8 @@ import './NotificationPreferencesCard.css';
 type NotificationTypePreference = components['schemas']['NotificationTypePreference'];
 type NotificationPreferences = components['schemas']['NotificationPreferences'];
 
-const PUSH = 'NOTIFICATION_CHANNEL_PUSH';
+const PUSH  = 'NOTIFICATION_CHANNEL_PUSH';
+const EMAIL = 'NOTIFICATION_CHANNEL_EMAIL';
 
 const NOTIFICATION_TYPES = [
     { key: 'pendingInput',    label: 'Action Required',     description: 'When a pipeline needs your input' },
@@ -91,13 +92,15 @@ export const NotificationPreferencesCard: React.FC = () => {
             <div className="notif-matrix-cols">
                 <div className="notif-matrix-cols__spacer" />
                 <div className="notif-matrix-cols__label">Push</div>
-                <div className="notif-matrix-cols__label notif-matrix-cols__label--disabled">Email</div>
+                <div className="notif-matrix-cols__label">Email</div>
             </div>
 
             {NOTIFICATION_TYPES.map(({ key, label, description }) => {
                 const pref = prefs?.[key];
-                const pushEnabled = hasChannel(pref, PUSH);
-                const pushUpdating = updating === `${key}.${PUSH}`;
+                const pushEnabled  = hasChannel(pref, PUSH);
+                const emailEnabled = hasChannel(pref, EMAIL);
+                const pushUpdating  = updating === `${key}.${PUSH}`;
+                const emailUpdating = updating === `${key}.${EMAIL}`;
 
                 return (
                     <div key={key} className="notif-matrix-row">
@@ -114,13 +117,13 @@ export const NotificationPreferencesCard: React.FC = () => {
                                 aria-label={`${label} push notifications`}
                             />
                         </div>
-                        <div className="notif-matrix-row__cell notif-matrix-row__cell--disabled">
+                        <div className="notif-matrix-row__cell">
                             <input
                                 type="checkbox"
-                                checked={false}
-                                disabled
-                                title="Email notifications coming soon"
-                                aria-label={`${label} email notifications (coming soon)`}
+                                checked={emailEnabled}
+                                disabled={emailUpdating}
+                                onChange={e => updateChannel(key, EMAIL, e.target.checked)}
+                                aria-label={`${label} email notifications`}
                             />
                         </div>
                     </div>

@@ -25,9 +25,6 @@
   text-align: center;
 }
 
-.notif-matrix-cols__label--disabled {
-  opacity: 0.35;
-}
 
 /* ── Each notification-type row ──────────────────────────────────────────── */
 
@@ -66,9 +63,6 @@
   justify-content: center;
 }
 
-.notif-matrix-row__cell--disabled {
-  opacity: 0.3;
-}
 
 /* ── Checkbox styling ────────────────────────────────────────────────────── */
 
@@ -79,6 +73,3 @@
   accent-color: var(--fg-aurora-cyan, #00d4ff);
 }
 
-.notif-matrix-row__cell--disabled input[type="checkbox"] {
-  cursor: not-allowed;
-}
