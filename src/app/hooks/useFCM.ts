@@ -105,6 +105,7 @@ export function useFCM() {
                 'CONNECTION_ACTION': `/connections/${sourceId}`,
                 'CONNECTION_ACTION_FAILED': `/connections/${sourceId}`,
                 'SHOWCASE_ROUNDUP': payload.data?.slug ? `/showcase/${payload.data.slug}` : '/',
+                'PIPELINE_CANCELLED': '/activities',
               };
               const targetPath = urlMap[notificationType];
               if (targetPath) {

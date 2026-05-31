@@ -68,6 +68,7 @@ export interface NotificationPreferences {
   pipelineFailure?: NotificationTypePreference | undefined;
   connectionAction?: NotificationTypePreference | undefined;
   showcaseRoundup?: NotificationTypePreference | undefined;
+  pipelineCancelled?: NotificationTypePreference | undefined;
 }
 
 export interface Counter {

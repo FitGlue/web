@@ -100,6 +100,7 @@ self.addEventListener('notificationclick', (event) => {
             'CONNECTION_ACTION': `/app/connections/${sourceId}`,
             'CONNECTION_ACTION_FAILED': `/app/connections/${sourceId}`,
             'SHOWCASE_ROUNDUP': data?.slug ? `/showcase/${data.slug}` : '/',
+            'PIPELINE_CANCELLED': '/app/activities',
         };
         targetUrl = urlMap[notificationType] || '/app/';
     }

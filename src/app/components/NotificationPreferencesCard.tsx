@@ -16,7 +16,8 @@ const NOTIFICATION_TYPES = [
     { key: 'pipelineSuccess', label: 'Activity Synced',     description: 'When activities finish syncing to all destinations' },
     { key: 'pipelineFailure', label: 'Pipeline Failures',   description: 'When a pipeline fails to process an activity' },
     { key: 'connectionAction',label: 'Connection Issues',   description: 'When a destination needs to be re-authorised' },
-    { key: 'showcaseRoundup', label: 'Showcase Roundup',    description: 'Weekly/monthly training summary' },
+    { key: 'showcaseRoundup',    label: 'Showcase Roundup',    description: 'Weekly/monthly training summary' },
+    { key: 'pipelineCancelled', label: 'Pipeline Cancelled',  description: 'When you cancel a pending activity pipeline' },
 ] as const;
 
 type NotificationTypeKey = typeof NOTIFICATION_TYPES[number]['key'];

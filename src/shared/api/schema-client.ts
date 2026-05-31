@@ -1624,6 +1624,7 @@ export interface components {
             pipelineFailure?: components["schemas"]["NotificationTypePreference"];
             connectionAction?: components["schemas"]["NotificationTypePreference"];
             showcaseRoundup?: components["schemas"]["NotificationTypePreference"];
+            pipelineCancelled?: components["schemas"]["NotificationTypePreference"];
         };
         /**
          * @description NotificationTypePreference holds which channels are active for one notification type.
