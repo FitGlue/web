@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.51.0](https://github.com/fitglue/web/compare/v11.50.0...v11.51.0) (2026-05-31)
+
+
+### Features
+
+* **notifications:** dedicated notification service, channel prefs, matrix UI ([a428480](https://github.com/fitglue/web/commit/a428480f114595f4b80e56a02f53193a90afc749))
+
+
+### Bug Fixes
+
+* **notifications:** remove unused EMAIL constant in prefs card ([e16d26e](https://github.com/fitglue/web/commit/e16d26e714853f1862ac5aab9487e605f9a3d981))
+
 ## [11.50.0](https://github.com/fitglue/web/compare/v11.49.0...v11.50.0) (2026-05-31)
 
 
