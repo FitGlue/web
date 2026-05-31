@@ -137,13 +137,17 @@ All routes have basename `/app`. Protected routes require Firebase auth + `profi
 | `/connections` | ConnectionsPage |
 | `/connections/:id` | ConnectionDetailPage |
 | `/connections/:id/setup` | ConnectionSetupPage |
+| `/connections/:id/success` | ConnectionSuccessPage |
+| `/connections/:id/error` | ConnectionErrorPage |
 | `/settings/pipelines` | PipelinesPage |
 | `/settings/pipelines/new` | PipelineWizardPage |
 | `/settings/pipelines/:pipelineId/edit` | PipelineEditPage |
 | `/settings/account` | AccountSettingsPage |
 | `/settings/enricher-data` | EnricherDataPage |
 | `/settings/subscription` | SubscriptionPage |
+| `/settings/upgrade` | SubscriptionPage (alias) |
 | `/settings/showcase` | ShowcaseManagementPage |
+| `/settings/integrations` | ConnectionsPage (legacy redirect) |
 | `/recipes` | RecipesPage |
 | `/admin` | AdminPage (admin only) |
 

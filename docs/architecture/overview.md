@@ -80,13 +80,22 @@ The React app uses a **split architecture** for data access:
 | `/app` | DashboardPage |
 | `/app/activities` | ActivitiesListPage |
 | `/app/activities/:id` | ActivityDetailPage |
+| `/app/activities/unsynchronized/:id` | UnsynchronizedDetailPage |
 | `/app/inputs` | PendingInputsPage |
+| `/app/connections` | ConnectionsPage |
+| `/app/connections/:id` | ConnectionDetailPage |
+| `/app/connections/:id/setup` | ConnectionSetupPage |
+| `/app/connections/:id/success` | ConnectionSuccessPage |
+| `/app/connections/:id/error` | ConnectionErrorPage |
 | `/app/settings/pipelines` | PipelinesPage |
 | `/app/settings/pipelines/new` | PipelineWizardPage |
-| `/app/settings/integrations` | ConnectionsPage |
 | `/app/settings/account` | AccountSettingsPage |
 | `/app/settings/enricher-data` | EnricherDataPage |
 | `/app/settings/subscription` | SubscriptionPage |
+| `/app/settings/upgrade` | SubscriptionPage (alias) |
+| `/app/settings/showcase` | ShowcaseManagementPage |
+| `/app/recipes` | RecipesPage |
+| `/app/settings/integrations` | ConnectionsPage (legacy) |
 | `/app/admin` | AdminPage |
 
 ## Build Pipeline

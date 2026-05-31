@@ -21,14 +21,21 @@ The React app is mounted at `/app`, so all routes are prefixed:
 | `/activities` | `ActivitiesListPage` | Protected | Activity history |
 | `/activities/:id` | `ActivityDetailPage` | Protected | Single activity detail |
 | `/activities/unsynchronized/:id` | `UnsynchronizedDetailPage` | Protected | Failed sync detail |
-| `/settings` | `SettingsPage` | Protected | Settings hub |
-| `/settings/integrations` | `ConnectionsPage` | Protected | Connected services |
+| `/connections` | `ConnectionsPage` | Protected | Connected services (primary nav) |
+| `/connections/:id` | `ConnectionDetailPage` | Protected | Integration detail |
+| `/connections/:id/setup` | `ConnectionSetupPage` | Protected | OAuth setup flow |
+| `/connections/:id/success` | `ConnectionSuccessPage` | Protected | OAuth success landing |
+| `/connections/:id/error` | `ConnectionErrorPage` | Protected | OAuth error landing |
 | `/settings/pipelines` | `PipelinesPage` | Protected | Pipeline list |
 | `/settings/pipelines/new` | `PipelineWizardPage` | Protected | Create pipeline |
 | `/settings/pipelines/:id/edit` | `PipelineEditPage` | Protected | Edit pipeline |
 | `/settings/account` | `AccountSettingsPage` | Protected | Account settings |
 | `/settings/subscription` | `SubscriptionPage` | Protected | Subscription management |
+| `/settings/upgrade` | `SubscriptionPage` | Protected | Subscription management (alias) |
 | `/settings/enricher-data` | `EnricherDataPage` | Protected | Enricher data (PRs, etc.) |
+| `/settings/showcase` | `ShowcaseManagementPage` | Protected | Showcase management |
+| `/settings/integrations` | `ConnectionsPage` | Protected | Legacy redirect (prefer `/connections`) |
+| `/recipes` | `RecipesPage` | Protected | Recipe browser |
 | `/admin` | `AdminPage` | Admin | Admin console |
 | `*` | `NotFoundPage` | None | 404 handler |
 
@@ -38,25 +45,32 @@ The React app is mounted at `/app`, so all routes are prefixed:
 // src/app/App.tsx
 <Router basename="/app">
   <Routes>
-    {/* Dashboard */}
     <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+    <Route path="/inputs" element={<ProtectedRoute><PendingInputsPage /></ProtectedRoute>} />
 
     {/* Activities */}
     <Route path="/activities" element={<ProtectedRoute><ActivitiesListPage /></ProtectedRoute>} />
+    <Route path="/activities/unsynchronized/:pipelineExecutionId" element={<ProtectedRoute><UnsynchronizedDetailPage /></ProtectedRoute>} />
     <Route path="/activities/:id" element={<ProtectedRoute><ActivityDetailPage /></ProtectedRoute>} />
 
-    {/* Inputs */}
-    <Route path="/inputs" element={<ProtectedRoute><PendingInputsPage /></ProtectedRoute>} />
+    {/* Connections (primary nav) */}
+    <Route path="/connections" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
+    <Route path="/connections/:id/setup" element={<ProtectedRoute><ConnectionSetupPage /></ProtectedRoute>} />
+    <Route path="/connections/:id/success" element={<ProtectedRoute><ConnectionSuccessPage /></ProtectedRoute>} />
+    <Route path="/connections/:id/error" element={<ProtectedRoute><ConnectionErrorPage /></ProtectedRoute>} />
+    <Route path="/connections/:id" element={<ProtectedRoute><ConnectionDetailPage /></ProtectedRoute>} />
 
     {/* Settings */}
-    <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
     <Route path="/settings/integrations" element={<ProtectedRoute><ConnectionsPage /></ProtectedRoute>} />
     <Route path="/settings/pipelines" element={<ProtectedRoute><PipelinesPage /></ProtectedRoute>} />
     <Route path="/settings/pipelines/new" element={<ProtectedRoute><PipelineWizardPage /></ProtectedRoute>} />
-    <Route path="/settings/pipelines/:id/edit" element={<ProtectedRoute><PipelineEditPage /></ProtectedRoute>} />
+    <Route path="/settings/pipelines/:pipelineId/edit" element={<ProtectedRoute><PipelineEditPage /></ProtectedRoute>} />
     <Route path="/settings/account" element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
-    <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
     <Route path="/settings/enricher-data" element={<ProtectedRoute><EnricherDataPage /></ProtectedRoute>} />
+    <Route path="/settings/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
+    <Route path="/settings/upgrade" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
+    <Route path="/settings/showcase" element={<ProtectedRoute><ShowcaseManagementPage /></ProtectedRoute>} />
+    <Route path="/recipes" element={<ProtectedRoute><RecipesPage /></ProtectedRoute>} />
 
     {/* Admin-only */}
     <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
@@ -177,21 +191,26 @@ All page components are in `src/app/pages/`:
 
 ```
 pages/
-├── DashboardPage.tsx           # Main dashboard with panels
-├── ActivitiesListPage.tsx      # Activity gallery
-├── ActivityDetailPage.tsx      # Activity detail + trace
-├── UnsynchronizedDetailPage.tsx # Failed activity detail
-├── PendingInputsPage.tsx       # Pending inputs list
-├── SettingsPage.tsx            # Settings hub
-├── ConnectionsPage.tsx         # Connected services
-├── PipelinesPage.tsx           # Pipeline list
-├── PipelineWizardPage.tsx      # Create pipeline wizard
-├── PipelineEditPage.tsx        # Edit pipeline
-├── AccountSettingsPage.tsx     # Profile, password, delete
-├── SubscriptionPage.tsx        # Subscription management
-├── EnricherDataPage.tsx        # Personal records, etc.
-├── AdminPage.tsx               # Admin console
-└── NotFoundPage.tsx            # 404 handler
+├── DashboardPage.tsx              # Main dashboard with panels
+├── ActivitiesListPage.tsx         # Activity gallery
+├── ActivityDetailPage.tsx         # Activity detail + trace
+├── UnsynchronizedDetailPage.tsx   # Failed activity detail
+├── PendingInputsPage.tsx          # Pending inputs list
+├── ConnectionsPage.tsx            # Connected services
+├── ConnectionDetailPage.tsx       # Integration detail
+├── ConnectionSetupPage.tsx        # OAuth setup flow
+├── ConnectionSuccessPage.tsx      # OAuth success landing
+├── ConnectionErrorPage.tsx        # OAuth error landing
+├── PipelinesPage.tsx              # Pipeline list
+├── PipelineWizardPage.tsx         # Create pipeline wizard
+├── PipelineEditPage.tsx           # Edit pipeline
+├── AccountSettingsPage.tsx        # Profile, password, delete
+├── SubscriptionPage.tsx           # Subscription management
+├── ShowcaseManagementPage.tsx     # Showcase management
+├── EnricherDataPage.tsx           # Personal records, etc.
+├── RecipesPage.tsx                # Recipe browser
+├── AdminPage.tsx                  # Admin console
+└── NotFoundPage.tsx               # 404 handler
 ```
 
 ## Adding a New Route
