@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.50.0](https://github.com/fitglue/web/compare/v11.49.0...v11.50.0) (2026-05-31)
+
+
+### Features
+
+* **notifications:** add connection issues toggle to preferences card ([59f52bc](https://github.com/fitglue/web/commit/59f52bcae7a42d93ab8be4b5ae569ae500d87989))
+
 ## [11.49.0](https://github.com/fitglue/web/compare/v11.48.0...v11.49.0) (2026-05-30)
 
 
