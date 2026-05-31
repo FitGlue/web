@@ -10,7 +10,6 @@ type NotificationTypePreference = components['schemas']['NotificationTypePrefere
 type NotificationPreferences = components['schemas']['NotificationPreferences'];
 
 const PUSH = 'NOTIFICATION_CHANNEL_PUSH';
-const EMAIL = 'NOTIFICATION_CHANNEL_EMAIL';
 
 const NOTIFICATION_TYPES = [
     { key: 'pendingInput',    label: 'Action Required',     description: 'When a pipeline needs your input' },
