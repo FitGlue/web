@@ -86,47 +86,45 @@ export const NotificationPreferencesCard: React.FC = () => {
 
     return (
         <SettingsSection title="🔔 Notifications" description="Choose how you'd like to be notified for each event type">
-            <div className="notif-matrix">
-                {/* Header row */}
-                <div className="notif-matrix__header">
-                    <div className="notif-matrix__label-col" />
-                    <div className="notif-matrix__channel-col">Push</div>
-                    <div className="notif-matrix__channel-col notif-matrix__channel-col--disabled">Email</div>
-                </div>
-
-                {NOTIFICATION_TYPES.map(({ key, label, description }) => {
-                    const pref = prefs?.[key];
-                    const pushEnabled = hasChannel(pref, PUSH);
-                    const pushUpdating = updating === `${key}.${PUSH}`;
-
-                    return (
-                        <div key={key} className="notif-matrix__row">
-                            <div className="notif-matrix__label-col">
-                                <span className="notif-matrix__label">{label}</span>
-                                <span className="notif-matrix__description">{description}</span>
-                            </div>
-                            <div className="notif-matrix__channel-col">
-                                <input
-                                    type="checkbox"
-                                    checked={pushEnabled}
-                                    disabled={pushUpdating}
-                                    onChange={e => updateChannel(key, PUSH, e.target.checked)}
-                                    aria-label={`${label} push notifications`}
-                                />
-                            </div>
-                            <div className="notif-matrix__channel-col notif-matrix__channel-col--disabled">
-                                <input
-                                    type="checkbox"
-                                    checked={false}
-                                    disabled
-                                    title="Email notifications coming soon"
-                                    aria-label={`${label} email notifications (coming soon)`}
-                                />
-                            </div>
-                        </div>
-                    );
-                })}
+            {/* Column headers */}
+            <div className="notif-matrix-cols">
+                <div className="notif-matrix-cols__spacer" />
+                <div className="notif-matrix-cols__label">Push</div>
+                <div className="notif-matrix-cols__label notif-matrix-cols__label--disabled">Email</div>
             </div>
+
+            {NOTIFICATION_TYPES.map(({ key, label, description }) => {
+                const pref = prefs?.[key];
+                const pushEnabled = hasChannel(pref, PUSH);
+                const pushUpdating = updating === `${key}.${PUSH}`;
+
+                return (
+                    <div key={key} className="notif-matrix-row">
+                        <div className="notif-matrix-row__info">
+                            <div className="notif-matrix-row__label">{label}</div>
+                            <div className="notif-matrix-row__desc">{description}</div>
+                        </div>
+                        <div className="notif-matrix-row__cell">
+                            <input
+                                type="checkbox"
+                                checked={pushEnabled}
+                                disabled={pushUpdating}
+                                onChange={e => updateChannel(key, PUSH, e.target.checked)}
+                                aria-label={`${label} push notifications`}
+                            />
+                        </div>
+                        <div className="notif-matrix-row__cell notif-matrix-row__cell--disabled">
+                            <input
+                                type="checkbox"
+                                checked={false}
+                                disabled
+                                title="Email notifications coming soon"
+                                aria-label={`${label} email notifications (coming soon)`}
+                            />
+                        </div>
+                    </div>
+                );
+            })}
         </SettingsSection>
     );
 };

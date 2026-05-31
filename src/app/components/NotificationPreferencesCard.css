@@ -1,64 +1,84 @@
 /* ==========================================================================
    NotificationPreferencesCard — Brutal × Aurora
-   Settings toggle-row pattern from stx-field / stx-toggle
    ========================================================================== */
 
-.notification-prefs-card {
-  background: var(--fg-ink-2);
-  box-shadow: inset 0 0 0 1px var(--fg-hairline-color);
+/* ── Column-header strip ─────────────────────────────────────────────────── */
+
+.notif-matrix-cols {
+  display: grid;
+  grid-template-columns: 1fr 64px 64px;
+  padding: 0.25rem 0.875rem 0.25rem calc(0.875rem + 1px);
+  gap: 0;
 }
 
-.notification-prefs-card__header {
-  padding: 0.4375rem 0.875rem;
-  background: var(--gradient-primary);
-  color: var(--fg-ink);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.notif-matrix-cols__spacer {
+  /* fills the label column */
 }
 
-.notification-prefs-card__heading {
-  font-family: var(--fg-font-display);
-  font-size: 0.75rem;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.notification-prefs-card__sub {
-  padding: 0.625rem 0.875rem 0;
+.notif-matrix-cols__label {
   font-family: var(--fg-font-mono);
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--fg-paper-dim);
+  text-align: center;
 }
 
-.notification-prefs-row {
-  display: flex;
+.notif-matrix-cols__label--disabled {
+  opacity: 0.35;
+}
+
+/* ── Each notification-type row ──────────────────────────────────────────── */
+
+.notif-matrix-row {
+  display: grid;
+  grid-template-columns: 1fr 64px 64px;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.875rem;
+  gap: 0;
+  padding: 0.75rem 0.875rem;
   border-top: var(--fg-rule-thin);
 }
 
-.notification-prefs-row__info {
+.notif-matrix-row__info {
   display: flex;
   flex-direction: column;
-  gap: 0.125rem;
+  gap: 2px;
+  padding-right: 1rem;
 }
 
-.notification-prefs-row__label {
-  font-family: var(--fg-font-display);
-  font-size: 0.875rem;
-  letter-spacing: -0.005em;
-  text-transform: uppercase;
+.notif-matrix-row__label {
+  font-family: var(--fg-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
   color: var(--fg-paper);
 }
 
-.notification-prefs-row__desc {
+.notif-matrix-row__desc {
   font-family: var(--fg-font-body);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--fg-paper-dim);
+}
+
+.notif-matrix-row__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notif-matrix-row__cell--disabled {
+  opacity: 0.3;
+}
+
+/* ── Checkbox styling ────────────────────────────────────────────────────── */
+
+.notif-matrix-row__cell input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--fg-aurora-cyan, #00d4ff);
+}
+
+.notif-matrix-row__cell--disabled input[type="checkbox"] {
+  cursor: not-allowed;
 }
