@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.53.0](https://github.com/fitglue/web/compare/v11.52.0...v11.53.0) (2026-05-31)
+
+
+### Features
+
+* **notification:** add NotificationType enum and NotificationRequest interface [skip ci] ([0d59e01](https://github.com/fitglue/web/commit/0d59e01e568b2f2adedba7b7fe71ba2597c30216))
+* **notifications:** add PIPELINE_CANCELLED notification type ([a82a7eb](https://github.com/fitglue/web/commit/a82a7eb2feac8d05e05c9e642dfb7c1804d09ea5))
+* **routing:** add new connection routes and update existing route structure [skip ci] ([edee3b5](https://github.com/fitglue/web/commit/edee3b576d65348a8eec253dbaf29d3680b7ab4a))
+
 ## [11.52.0](https://github.com/fitglue/web/compare/v11.51.1...v11.52.0) (2026-05-31)
 
 
