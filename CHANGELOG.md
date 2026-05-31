@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.51.1](https://github.com/fitglue/web/compare/v11.51.0...v11.51.1) (2026-05-31)
+
+
+### Bug Fixes
+
+* **notifications:** fix prefs card layout — grid CSS and block-level label/desc ([5bfb9b6](https://github.com/fitglue/web/commit/5bfb9b6fd86201d79a6d70c14603093aa9e33a30))
+
 ## [11.51.0](https://github.com/fitglue/web/compare/v11.50.0...v11.51.0) (2026-05-31)
 
 
