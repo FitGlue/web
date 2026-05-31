@@ -28,7 +28,6 @@ export interface RoundupActivityTypeBreakdown {
   totalReps: number;
 }
 
-/** ShowcaseRoundup is a period-aggregated training summary stored as a public snapshot. */
 export interface ShowcaseRoundup {
   roundupId: string;
   slug: string;

@@ -104,6 +104,7 @@ export function useFCM() {
                 'PIPELINE_FAILED': `/activities/${activityId}`,
                 'CONNECTION_ACTION': `/connections/${sourceId}`,
                 'CONNECTION_ACTION_FAILED': `/connections/${sourceId}`,
+                'SHOWCASE_ROUNDUP': payload.data?.slug ? `/showcase/${payload.data.slug}` : '/',
               };
               const targetPath = urlMap[notificationType];
               if (targetPath) {

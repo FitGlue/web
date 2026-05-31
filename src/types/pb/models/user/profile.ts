@@ -9,6 +9,13 @@ import type { ActivityType } from "../activity/source";
 
 export const protobufPackage = "fitglue.models.user";
 
+export enum NotificationChannel {
+  NOTIFICATION_CHANNEL_UNSPECIFIED = 0,
+  NOTIFICATION_CHANNEL_PUSH = 1,
+  NOTIFICATION_CHANNEL_EMAIL = 2,
+  UNRECOGNIZED = -1,
+}
+
 export enum UserTier {
   USER_TIER_UNSPECIFIED = 0,
   USER_TIER_HOBBYIST = 1,
@@ -46,11 +53,21 @@ export interface UserProfile {
   longestStreakDays?: number | undefined;
 }
 
+/**
+ * NotificationTypePreference holds which channels are active for one notification type.
+ * An empty channels list means the notification type is disabled entirely.
+ * A nil/absent preference means "use the default" which is [PUSH].
+ */
+export interface NotificationTypePreference {
+  channels: NotificationChannel[];
+}
+
 export interface NotificationPreferences {
-  notifyPendingInput: boolean;
-  notifyPipelineSuccess: boolean;
-  notifyPipelineFailure: boolean;
-  notifyConnectionAction: boolean;
+  pendingInput?: NotificationTypePreference | undefined;
+  pipelineSuccess?: NotificationTypePreference | undefined;
+  pipelineFailure?: NotificationTypePreference | undefined;
+  connectionAction?: NotificationTypePreference | undefined;
+  showcaseRoundup?: NotificationTypePreference | undefined;
 }
 
 export interface Counter {

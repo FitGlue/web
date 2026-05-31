@@ -726,7 +726,6 @@ export interface components {
             /** Format: date-time */
             createdAt?: string;
         };
-        /** @description ShowcaseRoundup is a period-aggregated training summary stored as a public snapshot. */
         ShowcaseRoundup: {
             roundupId?: string;
             slug?: string;

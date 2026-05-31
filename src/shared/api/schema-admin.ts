@@ -208,10 +208,19 @@ export interface components {
             nextPageToken?: string;
         };
         NotificationPreferences: {
-            notifyPendingInput?: boolean;
-            notifyPipelineSuccess?: boolean;
-            notifyPipelineFailure?: boolean;
-            notifyConnectionAction?: boolean;
+            pendingInput?: components["schemas"]["NotificationTypePreference"];
+            pipelineSuccess?: components["schemas"]["NotificationTypePreference"];
+            pipelineFailure?: components["schemas"]["NotificationTypePreference"];
+            connectionAction?: components["schemas"]["NotificationTypePreference"];
+            showcaseRoundup?: components["schemas"]["NotificationTypePreference"];
+        };
+        /**
+         * @description NotificationTypePreference holds which channels are active for one notification type.
+         *      An empty channels list means the notification type is disabled entirely.
+         *      A nil/absent preference means "use the default" which is [PUSH].
+         */
+        NotificationTypePreference: {
+            channels?: ("NOTIFICATION_CHANNEL_UNSPECIFIED" | "NOTIFICATION_CHANNEL_PUSH" | "NOTIFICATION_CHANNEL_EMAIL")[];
         };
         PipelineConfig: {
             id?: string;
