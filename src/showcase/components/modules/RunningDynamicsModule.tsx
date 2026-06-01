@@ -11,7 +11,7 @@ export default function RunningDynamicsModule({ data }: Props): React.ReactEleme
 
   return (
     <Module title="Running Dynamics" span={6}>
-      <div className="mini-row">
+      <div className="weather-grid">
         <div className="mini">
           <span className="mini__value mini__value--aurora">
             {Math.round(data.avgGroundContactMs)}ms

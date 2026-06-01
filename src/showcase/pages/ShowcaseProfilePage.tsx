@@ -200,12 +200,12 @@ export default function ShowcaseProfilePage() {
         <div className="profile-main">
           <div className="profile-feed">
             {/* Route thumbnail strip — only shown if ≥3 activities have map thumbnails */}
-            <RouteMosaic entries={entries} profileSlug={slug} />
+            <RouteMosaic entries={entries} profileSlug={slug!} />
 
             <ActivityGrid
               entries={entries}
               totalActivities={profile.totalActivities}
-              profileSlug={slug}
+              profileSlug={slug!}
             />
 
             {/* Pagination */}

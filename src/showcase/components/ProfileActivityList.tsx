@@ -31,7 +31,7 @@ interface Props {
   hasMore: boolean;
   loadingMore: boolean;
   onLoadMore: () => void;
-  profileSlug?: string;
+  profileSlug: string;
 }
 
 export const ProfileActivityList: React.FC<Props> = ({
@@ -69,7 +69,7 @@ export const ProfileActivityList: React.FC<Props> = ({
                 return (
                   <a
                     key={entry.showcaseId}
-                    href={profileSlug ? `/@${profileSlug}/${entry.showcaseId}` : `/showcase/activity/${entry.showcaseId}`}
+                    href={`/@${profileSlug}/${entry.showcaseId}`}
                     className={`activity-card cat-${cat}`}
                     style={{ animationDelay: `${delay}s` }}
                   >

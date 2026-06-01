@@ -185,6 +185,7 @@ export interface components {
             intervals?: components["schemas"]["IntervalsSummary"];
             muscleHeatmap?: components["schemas"]["MuscleHeatmapSummary"];
             temperature?: components["schemas"]["TemperatureSummary"];
+            bestEfforts?: components["schemas"]["BestEffortsSummary"];
         };
         AiBanner: {
             imageUrl?: string;
@@ -196,6 +197,17 @@ export interface components {
             model?: string;
             /** Format: date-time */
             generatedAt?: string;
+        };
+        BestEffort: {
+            distanceKey?: string;
+            display?: string;
+            /** Format: double */
+            distanceM?: number;
+            /** Format: double */
+            timeSeconds?: number;
+        };
+        BestEffortsSummary: {
+            efforts?: components["schemas"]["BestEffort"][];
         };
         CadenceSummary: {
             /** Format: int32 */

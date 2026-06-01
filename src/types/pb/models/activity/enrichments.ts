@@ -50,6 +50,7 @@ export interface ActivityEnrichments {
   intervals?: IntervalsSummary | undefined;
   muscleHeatmap?: MuscleHeatmapSummary | undefined;
   temperature?: TemperatureSummary | undefined;
+  bestEfforts?: BestEffortsSummary | undefined;
 }
 
 export interface HeartRateSummary {
@@ -317,4 +318,17 @@ export interface MuscleHeatmapSummary {
   secondary: string[];
   /** populated by MUSCLE_HEATMAP_IMAGE if it ran */
   imageUrl: string;
+}
+
+export interface BestEffort {
+  /** e.g. "5k", "half_marathon", "1_mile" */
+  distanceKey: string;
+  /** e.g. "5K", "Half Marathon", "1 Mile" */
+  display: string;
+  distanceM: number;
+  timeSeconds: number;
+}
+
+export interface BestEffortsSummary {
+  efforts: BestEffort[];
 }

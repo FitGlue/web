@@ -88,7 +88,7 @@ interface CardProps {
   metrics: Metric[];
   sparkPath: string;
   dateStr: string;
-  profileSlug?: string;
+  profileSlug: string;
 }
 
 function ActivityCardItem({ e, family, metrics, sparkPath, dateStr, profileSlug }: CardProps) {
@@ -136,7 +136,7 @@ function ActivityCardItem({ e, family, metrics, sparkPath, dateStr, profileSlug 
   return (
     <a
       ref={cardRef}
-      href={profileSlug ? `/@${profileSlug}/${e.showcaseId}` : `/showcase/activity/${e.showcaseId}`}
+      href={`/@${profileSlug}/${e.showcaseId}`}
       className="act"
     >
       <div className="act__top">
@@ -194,7 +194,7 @@ function ActivityCardItem({ e, family, metrics, sparkPath, dateStr, profileSlug 
 interface Props {
   entries: ShowcaseProfileEntry[];
   totalActivities?: number;
-  profileSlug?: string;
+  profileSlug: string;
 }
 
 export default function ActivityGrid({ entries, totalActivities, profileSlug }: Props): React.ReactElement {

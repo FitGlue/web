@@ -1452,6 +1452,10 @@ const EnricherProviderTypeNames: Record<string, string> = {
     'TEMPERATURE_SUMMARY': 'Temperature Summary',
     'Temperature Summary': 'Temperature Summary',
     '44': 'Temperature Summary',
+    'ENRICHER_PROVIDER_BEST_EFFORTS': 'Best Efforts',
+    'BEST_EFFORTS': 'Best Efforts',
+    'Best Efforts': 'Best Efforts',
+    '45': 'Best Efforts',
     'ENRICHER_PROVIDER_MOCK': 'Mock',
     'MOCK': 'Mock',
     'Mock': 'Mock',
@@ -1521,6 +1525,7 @@ export function formatEnricherProviderType(value: EnricherProviderType | number 
     case EnricherProviderType.ENRICHER_PROVIDER_AI_ACTIVITY_TYPE: return 'Ai Activity Type';
     case EnricherProviderType.ENRICHER_PROVIDER_ICAL_TITLE: return 'Ical Title';
     case EnricherProviderType.ENRICHER_PROVIDER_TEMPERATURE_SUMMARY: return 'Temperature Summary';
+    case EnricherProviderType.ENRICHER_PROVIDER_BEST_EFFORTS: return 'Best Efforts';
     case EnricherProviderType.ENRICHER_PROVIDER_MOCK: return 'Mock';
     default: return 'Unknown';
   }
@@ -1700,6 +1705,10 @@ const EnricherProviderTypeValues: Record<string, EnricherProviderType> = {
     'temperature_summary': EnricherProviderType.ENRICHER_PROVIDER_TEMPERATURE_SUMMARY,
     'temperature summary': EnricherProviderType.ENRICHER_PROVIDER_TEMPERATURE_SUMMARY,
     '44': EnricherProviderType.ENRICHER_PROVIDER_TEMPERATURE_SUMMARY,
+    'enricher_provider_best_efforts': EnricherProviderType.ENRICHER_PROVIDER_BEST_EFFORTS,
+    'best_efforts': EnricherProviderType.ENRICHER_PROVIDER_BEST_EFFORTS,
+    'best efforts': EnricherProviderType.ENRICHER_PROVIDER_BEST_EFFORTS,
+    '45': EnricherProviderType.ENRICHER_PROVIDER_BEST_EFFORTS,
     'enricher_provider_mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     'mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     '99': EnricherProviderType.ENRICHER_PROVIDER_MOCK,

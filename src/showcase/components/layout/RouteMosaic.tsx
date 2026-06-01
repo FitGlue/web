@@ -5,7 +5,7 @@ type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
 
 interface Props {
   entries: ShowcaseProfileEntry[];
-  profileSlug?: string;
+  profileSlug: string;
 }
 
 export default function RouteMosaic({ entries, profileSlug }: Props): React.ReactElement | null {
@@ -19,7 +19,7 @@ export default function RouteMosaic({ entries, profileSlug }: Props): React.Reac
       {show.map((e, i) => (
         <a
           key={i}
-          href={profileSlug ? `/@${profileSlug}/${e.showcaseId}` : `/showcase/activity/${e.showcaseId}`}
+          href={`/@${profileSlug}/${e.showcaseId}`}
           className="route-mosaic__item"
           title={e.title ?? 'Activity'}
         >
