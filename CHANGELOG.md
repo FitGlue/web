@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.55.0](https://github.com/fitglue/web/compare/v11.54.0...v11.55.0) (2026-06-01)
+
+
+### Features
+
+* **proto:** add ENRICHER_PROVIDER_BEST_EFFORTS = 45 to EnricherProviderType ([78eb606](https://github.com/fitglue/web/commit/78eb60621052cf79903eda9493a8549b4836fa1c))
+
+
+### Bug Fixes
+
+* **tests:** remove unused ENRICHER_CATEGORIES import in pluginCategories.test.ts ([c5a0d39](https://github.com/fitglue/web/commit/c5a0d39afd1b1cb3cf7ab8bbba3d7b4e4000c79d))
+
 ## [11.54.0](https://github.com/fitglue/web/compare/v11.53.0...v11.54.0) (2026-06-01)
 
 
