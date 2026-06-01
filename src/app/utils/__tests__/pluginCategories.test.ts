@@ -5,7 +5,6 @@ import {
   getRecommendedPlugins,
   filterPluginsBySearch,
   SOURCE_CATEGORIES,
-  ENRICHER_CATEGORIES,
   CATEGORY_WEARABLES,
   CATEGORY_APPS,
 } from '../pluginCategories';
