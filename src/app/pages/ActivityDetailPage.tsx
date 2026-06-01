@@ -728,7 +728,7 @@ const ActivityDetailPage: React.FC = () => {
                                     .map((booster, idx) => {
                                         const pct = maxBoosterMs > 0 ? Math.max(5, Math.round(((booster.durationMs || 0) / maxBoosterMs) * 100)) : 0;
                                         return (
-                                            <div key={idx} className="rd-provider" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 8 }}>
+                                            <div key={idx} className="rd-provider" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 8 }}>
                                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 12, alignItems: 'center' }}>
                                                     <Paragraph size="sm"><strong>{booster.providerName}</strong></Paragraph>
                                                     <span className={`rd-step-row__pill ${booster.status === 'SUCCESS' ? 'rd-step-row__pill--ok' : booster.status === 'FAILED' ? 'rd-step-row__pill--err' : 'rd-step-row__pill--skip'}`}>

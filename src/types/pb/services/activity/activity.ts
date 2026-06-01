@@ -201,12 +201,16 @@ export interface GetActivityStatsResponse {
   totalActivities: number;
   totalShowcases: number;
   lastActivityAt: string;
-  /** DEPRECATED — prefer activities_this_month */
+  /** Total destination posts this month (one per destination per activity) */
   uploadsThisMonth: number;
+  /** Distinct activities successfully synced this month */
   activitiesThisMonth: number;
+  /** Distinct activities successfully synced this week */
   activitiesThisWeek: number;
   currentStreakDays: number;
   longestStreakDays: number;
+  /** Total destination posts this week (one per destination per activity) */
+  uploadsThisWeek: number;
 }
 
 export interface GetPublicRoundupRequest {

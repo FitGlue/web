@@ -36,6 +36,48 @@ export type ModuleKey =
   | 'auto-increment-footer'
   | 'source-link-footer';
 
+// Where each ModuleKey is rendered. TypeScript enforces that every key in the
+// union is listed here — add a new ModuleKey to the union and this will fail
+// to compile until you declare its placement.
+//
+//   'page'      — rendered directly in ShowcaseActivityPage (outside ModuleGrid)
+//   'pre-grid'  — full-width row above the module grid (ModuleGrid preGrid switch)
+//   'grid'      — card inside the 12-col module grid (ModuleGrid gridModules switch)
+//   'footer'    — enricher footer strip (ModuleGrid footer switch)
+export const MODULE_PLACEMENT = {
+  'parkrun':               'page',
+  'hybrid-race-segments':  'pre-grid',
+  'ai-story':              'pre-grid',
+  'milestone-callout':     'pre-grid',
+  'description':           'pre-grid',
+  'tags':                  'pre-grid',
+  'photos':                'pre-grid',
+  'map':                   'pre-grid',
+  'pr-callout':            'grid',
+  'heart-rate':            'grid',
+  'zones':                 'grid',
+  'pace':                  'grid',
+  'speed':                 'grid',
+  'cadence':               'grid',
+  'elevation':             'grid',
+  'power':                 'grid',
+  'effort':                'grid',
+  'calories':              'grid',
+  'training-load':         'grid',
+  'running-dynamics':      'grid',
+  'intervals':             'grid',
+  'muscle-heatmap':        'grid',
+  'set-list':              'grid',
+  'recovery':              'grid',
+  'streak':                'grid',
+  'goals':                 'grid',
+  'weather':               'grid',
+  'temperature':           'grid',
+  'spotify':               'grid',
+  'auto-increment-footer': 'footer',
+  'source-link-footer':    'footer',
+} satisfies Record<ModuleKey, 'page' | 'pre-grid' | 'grid' | 'footer'>;
+
 // Enricher key → module key mapping
 const ENRICHER_TO_MODULE: Record<string, ModuleKey | null> = {
   ENRICHER_PROVIDER_PARKRUN:              'parkrun',

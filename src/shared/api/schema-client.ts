@@ -1338,6 +1338,8 @@ export interface components {
             currentStreakDays?: number;
             /** Format: int32 */
             longestStreakDays?: number;
+            /** Format: int32 */
+            uploadsThisWeek?: number;
         };
         /** @description Booster Data */
         GetBoosterDataGatewayResponse: {

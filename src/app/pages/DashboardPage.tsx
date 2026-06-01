@@ -76,7 +76,9 @@ const DashboardPageInner: React.FC = () => {
 
     const [heroStats, setHeroStats] = useState<{
         activitiesThisMonth: number;
+        uploadsThisMonth: number;
         activitiesThisWeek: number;
+        uploadsThisWeek: number;
         currentStreakDays: number;
     } | null>(null);
 
@@ -85,7 +87,9 @@ const DashboardPageInner: React.FC = () => {
             if (!data) return;
             setHeroStats({
                 activitiesThisMonth: data.activitiesThisMonth ?? 0,
+                uploadsThisMonth: data.uploadsThisMonth ?? 0,
                 activitiesThisWeek: data.activitiesThisWeek ?? 0,
+                uploadsThisWeek: data.uploadsThisWeek ?? 0,
                 currentStreakDays: data.currentStreakDays ?? 0,
             });
         }).catch(() => { /* non-critical */ });
@@ -175,8 +179,10 @@ const DashboardPageInner: React.FC = () => {
                     eyebrow={getEyebrow()}
                     title={<>Hey {firstName} <Gr>—</Gr> Welcome back</>}
                     stats={[
-                        { n: heroStats?.activitiesThisMonth ?? '—', l: 'THIS MONTH', tone: 'gradient' },
-                        { n: heroStats?.activitiesThisWeek ?? '—', l: 'THIS WEEK' },
+                        { n: heroStats?.activitiesThisMonth ?? '—', l: 'SYNCED THIS MONTH', tone: 'gradient' },
+                        { n: heroStats?.uploadsThisMonth ?? '—', l: 'POSTS THIS MONTH' },
+                        { n: heroStats?.activitiesThisWeek ?? '—', l: 'SYNCED THIS WEEK' },
+                        { n: heroStats?.uploadsThisWeek ?? '—', l: 'POSTS THIS WEEK' },
                         { n: activePipelines, l: 'ACTIVE PIPELINES' },
                         { n: heroStats ? `${heroStats.currentStreakDays}d 🔥` : '—', l: 'DAY STREAK' },
                     ]}
