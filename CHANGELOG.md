@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.54.0](https://github.com/fitglue/web/compare/v11.53.0...v11.54.0) (2026-06-01)
+
+
+### Features
+
+* **dashboard:** split synced and posts stats; add MODULE_PLACEMENT map ([e418fae](https://github.com/fitglue/web/commit/e418faee95671794f43efce0276bf75fce05ad75))
+* **notification:** add additional notification types to NotificationType enum [skip ci] ([7e8c3dc](https://github.com/fitglue/web/commit/7e8c3dcb38eef8c4243d80d809eb5ff943ff2421))
+* **notifications:** enable email channel in notification preferences ([4a1e5a1](https://github.com/fitglue/web/commit/4a1e5a1860b480ea91d22ea31913e2a49f761e72))
+
 ## [11.53.0](https://github.com/fitglue/web/compare/v11.52.0...v11.53.0) (2026-05-31)
 
 
