@@ -98,6 +98,7 @@ export enum EnricherProviderType {
   ENRICHER_PROVIDER_ICAL_TITLE = 43,
   /** ENRICHER_PROVIDER_TEMPERATURE_SUMMARY - Reads ambient temperature from FIT file records and computes min/avg/max °C */
   ENRICHER_PROVIDER_TEMPERATURE_SUMMARY = 44,
+  ENRICHER_PROVIDER_BEST_EFFORTS = 45,
   ENRICHER_PROVIDER_MOCK = 99,
   UNRECOGNIZED = -1,
 }
