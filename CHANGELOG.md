@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.57.0](https://github.com/fitglue/web/compare/v11.56.1...v11.57.0) (2026-06-02)
+
+
+### Features
+
+* **pipeline:** add per-destination booster output exclusion UI ([059f9e7](https://github.com/fitglue/web/commit/059f9e7f16ccd5aa94e72ab2b92633f4468ba090))
+
 ### [11.56.1](https://github.com/fitglue/web/compare/v11.56.0...v11.56.1) (2026-06-02)
 
 
