@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.57.1](https://github.com/fitglue/web/compare/v11.57.0...v11.57.1) (2026-06-02)
+
+
+### Bug Fixes
+
+* **logging:** unified logger utility and full Sentry coverage ([57b2d89](https://github.com/fitglue/web/commit/57b2d89b9d653f75b35330c41a95f317a928d51d))
+* **notifications:** avoid TS excess property check in SW push handler ([843ffdb](https://github.com/fitglue/web/commit/843ffdb7be758328c0aeb2c5af35bd4a9abf9a1e))
+* **notifications:** fix PWA background push and email default mismatch ([bceabec](https://github.com/fitglue/web/commit/bceabec9ed7813a0c560a124c889bda5e6eb12c0))
+
 ## [11.57.0](https://github.com/fitglue/web/compare/v11.56.1...v11.57.0) (2026-06-02)
 
 
