@@ -29,6 +29,7 @@ import GoalTrackerModule from '../modules/GoalTrackerModule';
 import MuscleHeatmapModule from '../modules/MuscleHeatmapModule';
 import SetListModule from '../modules/SetListModule';
 import PersonalRecordsModule from '../modules/PersonalRecordsModule';
+import BestEffortsModule from '../modules/BestEffortsModule';
 import { PhotoGallery } from '../PhotoGallery';
 
 type Session = components['schemas']['Session'];
@@ -247,6 +248,8 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
                 return <GoalTrackerModule key={key} data={enrichments?.goalTracker} />;
               case 'spotify':
                 return <SpotifyModule key={key} data={enrichments?.spotify} />;
+              case 'best-efforts':
+                return <BestEffortsModule key={key} data={enrichments?.bestEfforts} />;
               default:
                 return null;
             }

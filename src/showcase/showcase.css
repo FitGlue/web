@@ -987,6 +987,38 @@ body:has(#showcase-root) {
   overflow: hidden;
 }
 
+.best-efforts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+}
+
+.best-efforts__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--fg-ink-2);
+}
+
+.best-efforts__row:last-child {
+  border-bottom: none;
+}
+
+.best-efforts__distance {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  font-family: var(--fg-font-mono);
+  letter-spacing: 0.04em;
+}
+
+.best-efforts__time {
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--fg-font-mono);
+}
+
 .split-row__bar {
   position: absolute;
   top: 0;

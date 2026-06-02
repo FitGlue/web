@@ -33,6 +33,7 @@ export type ModuleKey =
   | 'weather'
   | 'temperature'
   | 'spotify'
+  | 'best-efforts'
   | 'auto-increment-footer'
   | 'source-link-footer';
 
@@ -74,6 +75,7 @@ export const MODULE_PLACEMENT = {
   'weather':               'grid',
   'temperature':           'grid',
   'spotify':               'grid',
+  'best-efforts':          'grid',
   'auto-increment-footer': 'footer',
   'source-link-footer':    'footer',
 } satisfies Record<ModuleKey, 'page' | 'pre-grid' | 'grid' | 'footer'>;
@@ -107,6 +109,7 @@ const ENRICHER_TO_MODULE: Record<string, ModuleKey | null> = {
   ENRICHER_PROVIDER_WEATHER:              'weather',
   ENRICHER_PROVIDER_TEMPERATURE_SUMMARY:  'temperature',
   ENRICHER_PROVIDER_SPOTIFY_TRACKS:       'spotify',
+  ENRICHER_PROVIDER_BEST_EFFORTS:         'best-efforts',
   ENRICHER_PROVIDER_AUTO_INCREMENT:       'auto-increment-footer',
   ENRICHER_PROVIDER_SOURCE_LINK:          'source-link-footer',
   // always-hidden (booster timeline only)
@@ -192,6 +195,7 @@ export function buildModuleOrder(
       if (has('ENRICHER_PROVIDER_TRAINING_LOAD')) push('training-load');
       if (has('ENRICHER_PROVIDER_RUNNING_DYNAMICS')) push('running-dynamics');
       if (has('ENRICHER_PROVIDER_INTERVALS')) push('intervals');
+      if (has('ENRICHER_PROVIDER_BEST_EFFORTS')) push('best-efforts');
       break;
 
     case 'cardio-time':
