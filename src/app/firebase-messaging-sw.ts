@@ -142,7 +142,9 @@ self.addEventListener('push', (event) => {
     const title = notif?.title || customData.title || 'FitGlue';
     const body  = notif?.body  || customData.body  || '';
 
-    const showNotification = self.registration.showNotification(title, {
+    // Use plain object — browser Notification API supports these properties
+    // even though TypeScript's NotificationOptions type is incomplete.
+    const notificationOptions = {
         body,
         icon: '/app/icons/icon-192.png',
         badge: '/app/icons/badge-72.png',
@@ -151,7 +153,8 @@ self.addEventListener('push', (event) => {
         data: customData,
         vibrate: [100, 50, 100],
         requireInteraction: customData.type === 'PENDING_INPUT',
-    });
+    };
+    const showNotification = self.registration.showNotification(title, notificationOptions);
 
     // Also (re-)initialize Firebase messaging so onBackgroundMessage is registered
     // for any subsequent pushes while the SW stays alive.
