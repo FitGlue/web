@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.56.0](https://github.com/fitglue/web/compare/v11.55.0...v11.56.0) (2026-06-02)
+
+
+### Features
+
+* **showcase:** add Best Efforts module to showcase activity page ([e173e08](https://github.com/fitglue/web/commit/e173e08e6315621d6ed4d36c250abcbf0ae60e3f))
+
 ## [11.55.0](https://github.com/fitglue/web/compare/v11.54.0...v11.55.0) (2026-06-01)
 
 
