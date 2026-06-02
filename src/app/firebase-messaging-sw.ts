@@ -122,33 +122,40 @@ self.addEventListener('notificationclick', (event) => {
     );
 });
 
-// Native push handler - synchronous fallback that always fires
-// This ensures notifications display even if Firebase messaging hasn't initialized
+// Native push handler — fires for every push, including when the service worker
+// restarts cold (activate does NOT re-fire on restart, so onBackgroundMessage may
+// not be registered yet). We always show the notification here and also kick off
+// initializeMessaging() so future pushes can use onBackgroundMessage.
 self.addEventListener('push', (event) => {
-    const data = event.data?.json();
-    console.log('[firebase-messaging-sw] Push event received:', data);
-
-    // FCM wraps payload in 'notification' and 'data' fields
-    const notification = data?.notification;
-    const customData = data?.data;
-
-    if (notification) {
-        const notificationTitle = notification.title || 'FitGlue';
-        const notificationOptions = {
-            body: notification.body || '',
-            icon: '/app/icons/icon-192.png',
-            badge: '/app/icons/badge-72.png',
-            tag: customData?.type || 'default',
-            renotify: true,
-            data: customData,
-            vibrate: [100, 50, 100],
-            requireInteraction: customData?.type === 'PENDING_INPUT',
-        };
-
-        event.waitUntil(
-            self.registration.showNotification(notificationTitle, notificationOptions)
-        );
+    let payload: Record<string, unknown> | undefined;
+    try {
+        payload = event.data?.json();
+    } catch {
+        // ignore parse errors
     }
+    console.log('[firebase-messaging-sw] Push event received:', payload);
+
+    // FCM wraps payload in 'notification' and 'data' fields. Title/body may also
+    // appear directly in data (server puts them there as a reliable fallback).
+    const notif = payload?.notification as Record<string, string> | undefined;
+    const customData = (payload?.data ?? {}) as Record<string, string>;
+    const title = notif?.title || customData.title || 'FitGlue';
+    const body  = notif?.body  || customData.body  || '';
+
+    const showNotification = self.registration.showNotification(title, {
+        body,
+        icon: '/app/icons/icon-192.png',
+        badge: '/app/icons/badge-72.png',
+        tag: customData.type || 'default',
+        renotify: true,
+        data: customData,
+        vibrate: [100, 50, 100],
+        requireInteraction: customData.type === 'PENDING_INPUT',
+    });
+
+    // Also (re-)initialize Firebase messaging so onBackgroundMessage is registered
+    // for any subsequent pushes while the SW stays alive.
+    event.waitUntil(Promise.all([showNotification, initializeMessaging()]));
 });
 
 // Log service worker lifecycle events for debugging

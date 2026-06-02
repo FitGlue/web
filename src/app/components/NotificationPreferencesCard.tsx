@@ -24,7 +24,9 @@ const NOTIFICATION_TYPES = [
 type NotificationTypeKey = typeof NOTIFICATION_TYPES[number]['key'];
 
 function hasChannel(pref: NotificationTypePreference | undefined, channel: string): boolean {
-    return pref?.channels?.includes(channel as never) ?? true; // default: push enabled
+    // Match the server default: push enabled, email disabled when no preference is saved.
+    if (pref?.channels === undefined) return channel === PUSH;
+    return pref.channels.includes(channel as never);
 }
 
 function toggleChannel(pref: NotificationTypePreference | undefined, channel: string, enabled: boolean): NotificationTypePreference {
