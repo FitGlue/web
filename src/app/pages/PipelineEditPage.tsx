@@ -13,6 +13,7 @@ import { EnricherConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
 import { SharePipelineModal } from '../components/SharePipelineModal';
 import { WizardExcludedSection, WizardStepHead } from '../components/wizard';
+import { DestinationEnricherExclusion, EnricherExclusionItem } from '../components/DestinationEnricherExclusion';
 import { SourcePicker } from '../components/library/ui/SourcePicker';
 import { WizardOptionGrid } from '../components/wizard';
 import { CardSkeleton } from '../components/library/ui/CardSkeleton';
@@ -141,6 +142,7 @@ const PipelineEditPage: React.FC = () => {
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
     const [sourceConfig, setSourceConfig] = useState<Record<string, string>>({});
     const [destinationConfigs, setDestinationConfigs] = useState<Record<string, Record<string, string>>>({});
+    const [destinationExcludedEnrichers, setDestinationExcludedEnrichers] = useState<Record<string, string[]>>({});
 
     // Original loaded state for dirty tracking
     const [originalState, setOriginalState] = useState<string>('');
@@ -164,6 +166,7 @@ const PipelineEditPage: React.FC = () => {
         selectedDestinations,
         sourceConfig,
         destinationConfigs,
+        destinationExcludedEnrichers,
     });
 
     const isDirty = !!originalState && currentStateStr !== originalState;
@@ -212,11 +215,16 @@ const PipelineEditPage: React.FC = () => {
             setSelectedEnrichers(enricherConfigs);
 
             setSourceConfig(pipelineData.sourceConfig || {});
-            setDestinationConfigs(
-                Object.fromEntries(
-                    Object.entries(pipelineData.destinationConfigs || {}).map(([k, v]) => [k, v.config || {}])
-                )
+            const initDestConfigs = Object.fromEntries(
+                Object.entries(pipelineData.destinationConfigs || {}).map(([k, v]) => [k, v.config || {}])
             );
+            const initDestExcluded = Object.fromEntries(
+                Object.entries(pipelineData.destinationConfigs || {})
+                    .filter(([, v]) => (v.excludedEnrichers?.length ?? 0) > 0)
+                    .map(([k, v]) => [k, v.excludedEnrichers!])
+            );
+            setDestinationConfigs(initDestConfigs);
+            setDestinationExcludedEnrichers(initDestExcluded);
 
             // Snapshot original state after load
             const snap = JSON.stringify({
@@ -226,9 +234,8 @@ const PipelineEditPage: React.FC = () => {
                 enricherIds: enricherConfigs.map(e => ({ id: e.manifest.id, pt: e.manifest.enricherProviderType, config: e.config })),
                 selectedDestinations: initDests,
                 sourceConfig: pipelineData.sourceConfig || {},
-                destinationConfigs: Object.fromEntries(
-                    Object.entries(pipelineData.destinationConfigs || {}).map(([k, v]) => [k, v.config || {}])
-                ),
+                destinationConfigs: initDestConfigs,
+                destinationExcludedEnrichers: initDestExcluded,
             });
             setOriginalState(snap);
         } catch (err) {
@@ -279,9 +286,17 @@ const PipelineEditPage: React.FC = () => {
                 providerType: EnricherProviderType[e.manifest.enricherProviderType as number] || String(e.manifest.enricherProviderType),
                 typedConfig: e.config
             }));
-            const mergedDestConfigs: Record<string, { config: Record<string, string> }> = {};
-            for (const k of Object.keys(destinationConfigs)) {
-                mergedDestConfigs[k] = { config: destinationConfigs[k] || {} };
+            const mergedDestConfigs: Record<string, { config: Record<string, string>; excludedEnrichers?: string[] }> = {};
+            const destConfigKeys = new Set([
+                ...Object.keys(destinationConfigs),
+                ...Object.keys(destinationExcludedEnrichers).filter(k => (destinationExcludedEnrichers[k]?.length ?? 0) > 0),
+            ]);
+            for (const k of destConfigKeys) {
+                const excluded = destinationExcludedEnrichers[k] ?? [];
+                mergedDestConfigs[k] = {
+                    config: destinationConfigs[k] || {},
+                    ...(excluded.length > 0 ? { excludedEnrichers: excluded } : {}),
+                };
             }
             await client.PUT('/users/me/pipelines/{id}', {
                 params: { path: { id: pipelineId! } },
@@ -404,9 +419,24 @@ const PipelineEditPage: React.FC = () => {
     const configurableEnrichers = selectedEnrichers.filter(e =>
         isPluginAvailable(e.manifest) && (e.manifest.configSchema?.length ?? 0) > 0
     );
-    const configurableDestinations = selectedDestinations
+    // Destinations with their own plugin config schema (used for unsaved count)
+    const pluginConfigurableDestinations = selectedDestinations
         .map(id => destinations.find(d => d.id === id))
         .filter((d): d is PluginManifest => !!d && (d.configSchema?.length ?? 0) > 0);
+    // All destinations shown in the configure step: when enrichers are active, every destination
+    // gets a block so the user can control booster output per-destination.
+    const configurableDestinations = selectedEnrichers.length > 0
+        ? selectedDestinations.map(id => destinations.find(d => d.id === id)).filter((d): d is PluginManifest => !!d)
+        : pluginConfigurableDestinations;
+    // Pre-compute enricher items for the exclusion picker (resolved from enum)
+    const enricherExclusionItems: EnricherExclusionItem[] = selectedEnrichers
+        .filter(e => e.manifest.enricherProviderType != null && Number(e.manifest.enricherProviderType) !== 0)
+        .map(e => ({
+            key: EnricherProviderType[e.manifest.enricherProviderType as number] || String(e.manifest.enricherProviderType),
+            name: getBoosterDisplayName(e.manifest),
+            icon: e.manifest.icon,
+        }))
+        .filter(e => e.key && e.key !== 'undefined');
 
     const sourceLabel = selectedSources
         .map(id => {
@@ -425,7 +455,7 @@ const PipelineEditPage: React.FC = () => {
     const boostersSummary = `${selectedEnrichers.length} picked${ghostEnrichers.length ? ` · ${ghostEnrichers.length} disabled` : ''}`;
     const unsavedConfigCount = configurableEnrichers.filter(e =>
         hasMissingRequiredConfig(e.manifest, e.config)
-    ).length + configurableDestinations.filter(d =>
+    ).length + pluginConfigurableDestinations.filter(d =>
         !destinationConfigs[d.id] || Object.keys(destinationConfigs[d.id]).length === 0
     ).length;
 
@@ -898,23 +928,36 @@ const PipelineEditPage: React.FC = () => {
                 {configurableDestinations.length > 0 && (
                     <>
                         <div className="wiz__sec-label">DESTINATIONS</div>
-                        {configurableDestinations.map(d => (
-                            <div key={d.id} id={`conf-${d.id}`} className="conf-block">
-                                <div className="conf-block__head">
-                                    <div className="conf-block__icon">{d.icon}</div>
-                                    <div className="conf-block__name">{d.name}</div>
-                                    <div className="conf-block__type">DESTINATION</div>
+                        {configurableDestinations.map(d => {
+                            const hasPluginConfig = (d.configSchema?.length ?? 0) > 0;
+                            return (
+                                <div key={d.id} id={`conf-${d.id}`} className="conf-block">
+                                    <div className="conf-block__head">
+                                        <div className="conf-block__icon">{d.icon}</div>
+                                        <div className="conf-block__name">{d.name}</div>
+                                        <div className="conf-block__type">DESTINATION</div>
+                                    </div>
+                                    <div className="conf-block__body">
+                                        {hasPluginConfig && (
+                                            <PluginConfigForm
+                                                key={d.id}
+                                                schema={d.configSchema!}
+                                                initialValues={destinationConfigs[d.id] || getPluginDefault(d.id) || {}}
+                                                onChange={values => setDestinationConfigs(prev => ({ ...prev, [d.id]: values }))}
+                                            />
+                                        )}
+                                        {enricherExclusionItems.length > 0 && (
+                                            <DestinationEnricherExclusion
+                                                enrichers={enricherExclusionItems}
+                                                excludedEnrichers={destinationExcludedEnrichers[d.id] || []}
+                                                onChange={excluded => setDestinationExcludedEnrichers(prev => ({ ...prev, [d.id]: excluded }))}
+                                                standalone={!hasPluginConfig}
+                                            />
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="conf-block__body">
-                                    <PluginConfigForm
-                                        key={d.id}
-                                        schema={d.configSchema!}
-                                        initialValues={destinationConfigs[d.id] || getPluginDefault(d.id) || {}}
-                                        onChange={values => setDestinationConfigs(prev => ({ ...prev, [d.id]: values }))}
-                                    />
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </>
                 )}
             </div>

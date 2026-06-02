@@ -19,6 +19,7 @@ import { EnricherTimeline } from '../components/EnricherTimeline';
 import { EnricherInfoModal } from '../components/EnricherInfoModal';
 import { PluginCategorySection } from '../components/PluginCategorySection';
 import { WizardOptionGrid, WizardExcludedSection, PipelineReviewFlow, WizardStepHead } from '../components/wizard';
+import { DestinationEnricherExclusion, EnricherExclusionItem } from '../components/DestinationEnricherExclusion';
 import { SourcePicker } from '../components/library/ui/SourcePicker';
 import '../components/library/ui/DestinationPicker.css';
 import { useShowcasePreferences } from '../hooks/useShowcasePreferences';
@@ -98,6 +99,7 @@ const PipelineWizardPage: React.FC = () => {
     const [currentEnricherIndex, setCurrentEnricherIndex] = useState<number>(0);
     const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
     const [destinationConfigs, setDestinationConfigs] = useState<Record<string, Record<string, string>>>({});
+    const [destinationExcludedEnrichers, setDestinationExcludedEnrichers] = useState<Record<string, string[]>>({});
     const [currentDestConfigIndex, setCurrentDestConfigIndex] = useState<number>(0);
     const [pipelineName, setPipelineName] = useState('');
     const [creating, setCreating] = useState(false);
@@ -122,7 +124,7 @@ const PipelineWizardPage: React.FC = () => {
     const sourceNeedsConfig = (selectedSourceManifest?.configSchema?.length ?? 0) > 0;
     const destinationsWithConfig = selectedDestinations
         .map(id => destinations.find(d => d.id === id))
-        .filter((d): d is PluginManifest => !!d && (d.configSchema?.length ?? 0) > 0);
+        .filter((d): d is PluginManifest => !!d && ((d.configSchema?.length ?? 0) > 0 || selectedEnrichers.length > 0));
     const destinationsNeedConfig = destinationsWithConfig.length > 0;
 
     const canProceed = () => {
@@ -245,9 +247,17 @@ const PipelineWizardPage: React.FC = () => {
                 providerType: EnricherProviderType[e.manifest.enricherProviderType as number] || String(e.manifest.enricherProviderType),
                 typedConfig: e.config
             }));
-            const mergedDestConfigs: Record<string, { config: Record<string, string> }> = {};
-            for (const k of Object.keys(destinationConfigs)) {
-                mergedDestConfigs[k] = { config: destinationConfigs[k] || {} };
+            const mergedDestConfigs: Record<string, { config: Record<string, string>; excludedEnrichers?: string[] }> = {};
+            const destConfigKeys = new Set([
+                ...Object.keys(destinationConfigs),
+                ...Object.keys(destinationExcludedEnrichers).filter(k => (destinationExcludedEnrichers[k]?.length ?? 0) > 0),
+            ]);
+            for (const k of destConfigKeys) {
+                const excluded = destinationExcludedEnrichers[k] ?? [];
+                mergedDestConfigs[k] = {
+                    config: destinationConfigs[k] || {},
+                    ...(excluded.length > 0 ? { excludedEnrichers: excluded } : {}),
+                };
             }
             await client.POST('/users/me/pipelines', {
                 body: {
@@ -755,21 +765,47 @@ const PipelineWizardPage: React.FC = () => {
             ? `DESTINATION CONFIG · ${currentDestConfigIndex + 1} OF ${destinationsWithConfig.length}`
             : 'DESTINATION CONFIGURATION';
 
+        const hasPluginConfig = (destManifest.configSchema?.length ?? 0) > 0;
+        const enricherItems: EnricherExclusionItem[] = selectedEnrichers
+            .filter(e => e.manifest.enricherProviderType != null && Number(e.manifest.enricherProviderType) !== 0)
+            .map(e => ({
+                key: EnricherProviderType[e.manifest.enricherProviderType as number] || String(e.manifest.enricherProviderType),
+                name: e.manifest.name,
+                icon: e.manifest.icon,
+            }))
+            .filter(e => e.key && e.key !== 'undefined');
+
+        const description = hasPluginConfig && enricherItems.length > 0
+            ? 'Configure this destination and control which booster outputs reach it.'
+            : hasPluginConfig
+            ? 'Set up your destination configuration.'
+            : 'Choose which booster outputs to include in the description for this destination.';
+
         return (
             <>
                 <WizardStepHead
                     step={stepNum} total={displaySteps.length} section={destSection}
                     title={<>Configure <span className="gr">{destManifest.name.toLowerCase()}.</span></>}
-                    description="Set up your destination configuration."
+                    description={description}
                 />
                 <div className="pipe-wiz__content">
                     <Card>
-                        <PluginConfigForm
-                            key={destManifest.id}
-                            schema={destManifest.configSchema!}
-                            initialValues={destinationConfigs[destManifest.id] || getPluginDefault(destManifest.id) || {}}
-                            onChange={(values) => setDestinationConfigs(prev => ({ ...prev, [destManifest.id]: values }))}
-                        />
+                        {hasPluginConfig && (
+                            <PluginConfigForm
+                                key={destManifest.id}
+                                schema={destManifest.configSchema!}
+                                initialValues={destinationConfigs[destManifest.id] || getPluginDefault(destManifest.id) || {}}
+                                onChange={(values) => setDestinationConfigs(prev => ({ ...prev, [destManifest.id]: values }))}
+                            />
+                        )}
+                        {enricherItems.length > 0 && (
+                            <DestinationEnricherExclusion
+                                enrichers={enricherItems}
+                                excludedEnrichers={destinationExcludedEnrichers[destManifest.id] || []}
+                                onChange={(excluded) => setDestinationExcludedEnrichers(prev => ({ ...prev, [destManifest.id]: excluded }))}
+                                standalone={!hasPluginConfig}
+                            />
+                        )}
                     </Card>
                 </div>
             </>
