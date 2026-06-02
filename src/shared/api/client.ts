@@ -3,6 +3,7 @@ import type { paths } from "./schema-client";
 import { getFirebaseAuth } from "../firebase";
 import type { ThrowingClient } from "./throwing-client";
 import { createErrorMiddleware } from "./throwing-client";
+import { logger } from "../logger";
 
 // Authenticated client for api-client gateway (/api/v2/*)
 const BASE_URL = "/api/v2";
@@ -20,7 +21,7 @@ rawClient.use({
         const token = await auth.currentUser.getIdToken();
         if (token) request.headers.set("Authorization", `Bearer ${token}`);
       } catch (err) {
-        console.error("Failed to get auth token:", err);
+        logger.error("Failed to get auth token:", err);
       }
     }
     return request;

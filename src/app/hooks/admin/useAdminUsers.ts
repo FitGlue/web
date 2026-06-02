@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { adminClient } from '../../../shared/api/admin-client';
+import { logger } from '../../../shared/logger';
 import type { components } from '../../../shared/api/schema-admin';
 import {
   AdminUser,
@@ -63,7 +64,7 @@ export function useAdminUsers(): UseAdminUsersResult {
         setPagination({ page } as Pagination);
       }
     } catch (err) {
-      console.error('Failed to fetch users:', err);
+      logger.warn('Failed to fetch users:', err);
       setError('Failed to load users. Admin access required.');
     } finally {
       setLoading(false);
@@ -78,7 +79,7 @@ export function useAdminUsers(): UseAdminUsersResult {
       });
       setSelectedUser(data as unknown as AdminUserDetail);
     } catch (err) {
-      console.error('Failed to fetch user details:', err);
+      logger.warn('Failed to fetch user details:', err);
     } finally {
       setSelectedUserLoading(false);
     }
@@ -101,7 +102,7 @@ export function useAdminUsers(): UseAdminUsersResult {
         await fetchUserDetail(userId);
       }
     } catch (err) {
-      console.error('Failed to update user:', err);
+      logger.error('Failed to update user:', err);
       throw new Error('Failed to update user');
     }
   }, [fetchUsers, fetchUserDetail, pagination, selectedUser]);
@@ -120,7 +121,7 @@ export function useAdminUsers(): UseAdminUsersResult {
       // Refresh user detail
       await fetchUserDetail(userId);
     } catch (err) {
-      console.error(`Failed to delete ${dataType}:`, err);
+      logger.error(`Failed to delete ${dataType}:`, err);
       throw new Error(`Failed to delete ${dataType}`);
     }
   }, [fetchUserDetail]);

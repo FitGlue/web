@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
+import { logger } from '../../shared/logger';
 import { Modal } from './library/ui/Modal';
 import { Button } from './library/ui/Button';
 import { Stack } from './library/layout/Stack';
@@ -79,7 +80,7 @@ export const ImageCropModal: React.FC<ImageCropModalProps> = ({
             const blob = await getCroppedBlob(imageSrc, croppedAreaPixels);
             onCropComplete(blob);
         } catch (err) {
-            console.error('Failed to crop image:', err);
+            logger.error('Failed to crop image:', err);
         } finally {
             setProcessing(false);
         }

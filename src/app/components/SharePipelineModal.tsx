@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from './library/ui/Modal';
 import { Button } from './library/ui/Button';
+import { logger } from '../../shared/logger';
 
 interface Props {
     encodedPipeline: string;
@@ -17,7 +18,7 @@ export const SharePipelineModal: React.FC<Props> = ({ encodedPipeline, pipelineN
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         } catch (err) {
-            console.error('Failed to copy:', err);
+            logger.error('Failed to copy:', err);
         }
     };
 

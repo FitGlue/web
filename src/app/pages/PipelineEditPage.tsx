@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { logger } from '../../shared/logger';
 import { PageLayout } from '../components/library/layout/PageLayout';
 import { PageAction, OverflowMenu } from '../components/library/layout';
 import { Button } from '../components/library/ui/Button';
@@ -240,7 +241,7 @@ const PipelineEditPage: React.FC = () => {
             setOriginalState(snap);
         } catch (err) {
             setError('Failed to load pipeline');
-            console.error(err);
+            logger.warn('Failed to load pipeline:', err);
         } finally {
             setLoading(false);
         }
@@ -313,9 +314,9 @@ const PipelineEditPage: React.FC = () => {
             toast.success('Pipeline Saved', `"${pipelineName || 'Pipeline'}" has been updated`);
             setOriginalState(currentStateStr);
         } catch (err) {
+            logger.error('Failed to save pipeline:', err);
             setError('Failed to save pipeline');
             toast.error('Save Failed', 'Failed to save pipeline. Please try again.');
-            console.error(err);
         } finally {
             setSaving(false);
         }
@@ -332,8 +333,8 @@ const PipelineEditPage: React.FC = () => {
             toast.success('Pipeline Deleted', `"${pipelineName || 'Pipeline'}" has been deleted`);
             navigate('/settings/pipelines');
         } catch (err) {
+            logger.error('Failed to delete pipeline:', err);
             toast.error('Delete Failed', 'Failed to delete pipeline. Please try again.');
-            console.error(err);
             setDeleting(false);
         }
     };

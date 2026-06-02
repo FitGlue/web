@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { logger } from '../../shared/logger';
 import { Card, Paragraph, CardSkeleton, Button, Badge, PlanBand, UsageGrid } from '../components/library/ui';
 import { FeatureItem, Stack, Grid, SettingsLayout } from '../components/library/layout';
 import { client } from '../../shared/api/client';
@@ -38,7 +39,7 @@ const SubscriptionPage: React.FC = () => {
             });
             window.location.href = (data as Record<string, string>).sessionUrl;
         } catch (error) {
-            console.error('Failed to start checkout:', error);
+            logger.error('Failed to start checkout:', error);
             setStatus({ type: 'error', message: 'Failed to start checkout process. Please try again later.' });
             setProcessing(false);
         }
@@ -51,7 +52,7 @@ const SubscriptionPage: React.FC = () => {
             const { url } = data as unknown as { url: string };
             window.location.href = url;
         } catch (error) {
-            console.error('Failed to open billing portal:', error);
+            logger.error('Failed to open billing portal:', error);
             setStatus({ type: 'error', message: 'Failed to open billing portal. Please try again later.' });
             setProcessing(false);
         }

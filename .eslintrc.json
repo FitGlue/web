@@ -24,8 +24,45 @@
   ],
   "rules": {
     "react/react-in-jsx-scope": "off",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "CatchClause BlockStatement:has(CallExpression[callee.object.name='console'][callee.property.name='error']):not(:has(CallExpression[callee.property.name='error'][callee.object.name='logger']))",
+        "message": "Use logger.error() instead of console.error() in catch blocks — it logs to the console and captures to Sentry in one call."
+      }
+    ],
+    "no-restricted-properties": [
+      "error",
+      {
+        "object": "Sentry",
+        "property": "captureException",
+        "message": "Use logger.error() from shared/logger instead of calling Sentry.captureException() directly."
+      },
+      {
+        "object": "Sentry",
+        "property": "captureMessage",
+        "message": "Use logger.error() from shared/logger instead of calling Sentry.captureMessage() directly."
+      }
+    ]
   },
+  "overrides": [
+    {
+      "files": [
+        "src/shared/logger.ts",
+        "src/app/infrastructure/sentry.ts",
+        "src/shared/api/throwing-client.ts",
+        "src/app/hooks/useApi.ts",
+        "src/app/App.tsx",
+        "src/app/firebase-messaging-sw.ts",
+        "src/auth.ts"
+      ],
+      "rules": {
+        "no-restricted-properties": "off",
+        "no-restricted-syntax": "off"
+      }
+    }
+  ],
   "settings": {
     "react": {
       "version": "detect"

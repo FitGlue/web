@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from './library/ui';
+import { logger } from '../../shared/logger';
 import { SettingsSection } from './library/layout/SettingsSection';
 import { LoadingState } from './library/ui/LoadingState';
 import { client } from '../../shared/api/client';
@@ -72,7 +73,7 @@ export const NotificationPreferencesCard: React.FC = () => {
                 body: { [typeKey]: updated } as never,
             });
         } catch (err) {
-            console.error('Failed to update preference:', err);
+            logger.error('Failed to update preference:', err);
             setPrefs(prefs); // rollback
             toast.error('Update Failed', 'Failed to save notification preference');
         } finally {

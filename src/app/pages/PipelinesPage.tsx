@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { logger } from '../../shared/logger';
 import { PageLayout, PageAction } from '../components/library/layout';
 import { CardSkeleton, Button, Badge, EmptyState, ConfirmDialog, useToast } from '../components/library/ui';
 
@@ -201,7 +202,7 @@ const PipelinesPage: React.FC = () => {
             await refreshPipelines();
             toast.success('Pipeline Deleted', `"${pipeline?.name || 'Pipeline'}" has been deleted`);
         } catch (error) {
-            console.error('Failed to delete pipeline:', error);
+            logger.error('Failed to delete pipeline:', error);
             toast.error('Delete Failed', 'Failed to delete pipeline. Please try again.');
         } finally {
             setDeleting(null);
@@ -219,7 +220,7 @@ const PipelinesPage: React.FC = () => {
                 `"${pipeline?.name || 'Pipeline'}" has been ${disabled ? 'disabled' : 'enabled'}`
             );
         } catch (error) {
-            console.error('Failed to toggle pipeline:', error);
+            logger.error('Failed to toggle pipeline:', error);
             toast.error('Update Failed', 'Failed to update pipeline. Please try again.');
         } finally {
             setToggling(null);
@@ -241,7 +242,7 @@ const PipelinesPage: React.FC = () => {
             await refreshPipelines();
             toast.success('Pipeline Duplicated', `"${copyName}" has been created`);
         } catch (error) {
-            console.error('Failed to duplicate pipeline:', error);
+            logger.error('Failed to duplicate pipeline:', error);
             toast.error('Duplicate Failed', 'Failed to duplicate pipeline. Please try again.');
         } finally {
             setDuplicating(null);

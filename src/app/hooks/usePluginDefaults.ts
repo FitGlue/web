@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { client } from '../../shared/api/client';
+import { logger } from '../../shared/logger';
 
 export interface PluginDefault {
     pluginId: string;
@@ -33,7 +34,7 @@ export const usePluginDefaults = () => {
             }));
             setDefaults(normalised);
         } catch (err) {
-            console.error('Failed to fetch plugin defaults:', err);
+            logger.warn('Failed to fetch plugin defaults:', err);
             setError('Failed to load plugin defaults');
             setDefaults([]);
         } finally {
@@ -69,7 +70,7 @@ export const usePluginDefaults = () => {
                 });
                 await fetchDefaults();
             } catch (err) {
-                console.error('Failed to save plugin default:', err);
+                logger.error('Failed to save plugin default:', err);
                 throw err;
             }
         },
@@ -87,7 +88,7 @@ export const usePluginDefaults = () => {
                 });
                 await fetchDefaults();
             } catch (err) {
-                console.error('Failed to delete plugin default:', err);
+                logger.error('Failed to delete plugin default:', err);
                 throw err;
             }
         },

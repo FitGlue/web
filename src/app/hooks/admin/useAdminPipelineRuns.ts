@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { logger } from '../../../shared/logger';
 import { useAtom, useAtomValue } from 'jotai';
 import { adminClient } from '../../../shared/api/admin-client';
 import { AdminPipelineRun, pipelineRunFiltersAtom, selectedPipelineRunDetailAtom } from '../../state/adminState';
@@ -63,7 +64,7 @@ export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
       setCursor(typedData.nextCursor);
       setHasMore(typedData.hasMore);
     } catch (err) {
-      console.error('Failed to fetch pipeline runs:', err);
+      logger.warn('Failed to fetch pipeline runs:', err);
       setError('Failed to load pipeline runs');
     } finally {
       setLoading(false);
@@ -91,7 +92,7 @@ export function useAdminPipelineRuns(): UseAdminPipelineRunsResult {
       setCursor(typedData.nextCursor);
       setHasMore(typedData.hasMore);
     } catch (err) {
-      console.error('Failed to load more pipeline runs:', err);
+      logger.warn('Failed to load more pipeline runs:', err);
     } finally {
       setLoading(false);
     }

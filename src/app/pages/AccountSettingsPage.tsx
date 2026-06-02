@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '../../shared/logger';
 import { useAtom } from 'jotai';
 import { updateProfile } from 'firebase/auth';
 import { client } from '../../shared/api/client';
@@ -70,7 +71,7 @@ const AccountSettingsPage: React.FC = () => {
             await firebaseUser.reload();
             toast.success('Name Updated', 'Your display name has been saved');
         } catch (err) {
-            console.error('Failed to update name:', err);
+            logger.error('Failed to update name:', err);
             toast.error('Update Failed', 'Failed to update name. Please try again.');
         } finally {
             setSavingName(false);
@@ -88,7 +89,7 @@ const AccountSettingsPage: React.FC = () => {
             setEmailSent(true);
             toast.info('Verification Sent', `Check ${editedEmail} for the verification link`);
         } catch (err: unknown) {
-            console.error('Failed to send email change verification:', err);
+            logger.error('Failed to send email change verification:', err);
             const errorMsg = err instanceof Error ? err.message : 'Failed to send verification email';
             setEmailError(errorMsg);
             toast.error('Email Update Failed', errorMsg);
@@ -135,7 +136,7 @@ const AccountSettingsPage: React.FC = () => {
             await client.DELETE('/users/me');
             window.location.href = '/auth/logout';
         } catch (err) {
-            console.error('Failed to delete account:', err);
+            logger.error('Failed to delete account:', err);
             setDeleteError('Failed to delete account. Please try again.');
         } finally {
             setDeleting(false);
@@ -154,7 +155,7 @@ const AccountSettingsPage: React.FC = () => {
             setExportDownloadUrl(downloadUrl);
             toast.success('Export Ready', 'Your data export is ready to download');
         } catch (err) {
-            console.error('Failed to export data:', err);
+            logger.error('Failed to export data:', err);
             setExportStatus('failed');
             setExportError('Failed to generate data export');
             toast.error('Export Failed', 'Could not generate data export');

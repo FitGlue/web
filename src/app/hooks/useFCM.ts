@@ -4,6 +4,7 @@ import { getFirebaseMessaging } from '../../shared/firebase';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '../state/authState';
 import { InputsService } from '../services/InputsService';
+import { logger } from '../../shared/logger';
 
 const FIREBASE_VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
@@ -33,7 +34,7 @@ export function useFCM() {
           console.log('[useFCM] Service worker registered:', registration.scope);
           return registration;
         } catch (error) {
-          console.error('[useFCM] Service worker registration failed:', error);
+          logger.error('[useFCM] Service worker registration failed:', error);
         }
       }
       return undefined;
@@ -65,7 +66,7 @@ export function useFCM() {
           }
         }
       } catch (err) {
-        console.error('[useFCM] An error occurred while retrieving token:', err);
+        logger.error('[useFCM] An error occurred while retrieving token:', err);
       }
     };
 

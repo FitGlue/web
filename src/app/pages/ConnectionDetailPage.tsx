@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { logger } from '../../shared/logger';
 import { useAtom } from 'jotai';
 import { PageLayout } from '../components/library/layout';
 import { CardSkeleton, Badge, Button, ConfirmDialog, RunRow, useToast } from '../components/library/ui';
@@ -129,7 +130,7 @@ const ConnectionDetailPage: React.FC = () => {
             toast.success('Disconnected', `${integration?.name} has been disconnected`);
             navigate('/connections');
         } catch (error) {
-            console.error('Failed to disconnect:', error);
+            logger.error('Failed to disconnect:', error);
             toast.error('Failed', 'Could not disconnect. Please try again.');
         } finally {
             setDisconnecting(false);

@@ -7,6 +7,7 @@ import { PersonalRecord } from './types';
 import { CARDIO_RECORDS, STRENGTH_SUFFIXES, HYBRID_RACE_TYPES, HYBRID_STATIONS } from './constants';
 import { RecordCategory, formatDate, formatRecordValue, getRecordDisplayName, getGroupedExercises } from './helpers';
 import DurationInput from './DurationInput';
+import { logger } from '../../../shared/logger';
 
 const PersonalRecordsSection: React.FC = () => {
     const [records, setRecords] = useState<PersonalRecord[]>([]);
@@ -60,7 +61,7 @@ const PersonalRecordsSection: React.FC = () => {
             const { data } = await client.GET('/users/me/personal-records');
             setRecords((data as { records: PersonalRecord[] })?.records || []);
         } catch (err) {
-            console.error('Failed to fetch personal records:', err);
+            logger.warn('Failed to fetch personal records:', err);
         } finally {
             setLoading(false);
         }
@@ -76,7 +77,7 @@ const PersonalRecordsSection: React.FC = () => {
             setEditingRecord(null);
             fetchRecords();
         } catch (err) {
-            console.error('Failed to save personal record:', err);
+            logger.error('Failed to save personal record:', err);
         }
     };
 
@@ -90,7 +91,7 @@ const PersonalRecordsSection: React.FC = () => {
             resetForm();
             fetchRecords();
         } catch (err) {
-            console.error('Failed to create personal record:', err);
+            logger.error('Failed to create personal record:', err);
         }
     };
 
@@ -100,7 +101,7 @@ const PersonalRecordsSection: React.FC = () => {
             await client.DELETE('/users/me/personal-records/{recordType}', { params: { path: { recordType } } });
             fetchRecords();
         } catch (err) {
-            console.error('Failed to delete personal record:', err);
+            logger.error('Failed to delete personal record:', err);
         }
     };
 

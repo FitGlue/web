@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { logger } from '../../../shared/logger';
 import { adminClient } from '../../../shared/api/admin-client';
 import { AdminStats } from '../../state/adminState';
 
@@ -24,7 +25,7 @@ export function useAdminStats(): UseAdminStatsResult {
       const { data } = await adminClient.GET('/stats' as never);
       setStats(data as unknown as AdminStats);
     } catch (err) {
-      console.error('Failed to fetch admin stats:', err);
+      logger.warn('Failed to fetch admin stats:', err);
       setError('Failed to load platform statistics');
     } finally {
       setLoading(false);

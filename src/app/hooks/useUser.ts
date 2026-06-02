@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { client } from '../../shared/api/client';
 import { userProfileAtom, profileLoadingAtom, profileErrorAtom, UserProfile } from '../state/userState';
 import { userAtom, authLoadingAtom } from '../state/authState';
+import { logger } from '../../shared/logger';
 
 export function useUser() {
   const firebaseUser = useAtomValue(userAtom);
@@ -25,7 +26,7 @@ export function useUser() {
       const { data } = await client.GET('/users/me');
       setUser(data as UserProfile);
     } catch (err) {
-      console.error('Failed to fetch user profile:', err);
+      logger.error('Failed to fetch user profile:', err);
       setError('Failed to load user profile');
     } finally {
       fetchInProgressRef.current = false;

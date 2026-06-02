@@ -1,4 +1,5 @@
 import { useAtom } from 'jotai';
+import { logger } from '../../shared/logger';
 import { useCallback, useEffect, useRef } from 'react';
 import { client } from '../../shared/api/client';
 import { PluginRegistryResponse } from '../types/plugin';
@@ -41,7 +42,7 @@ export const usePluginRegistry = () => {
       setLoaded(true);
       setError(null);
     } catch (err) {
-      console.error('Failed to fetch plugin registry:', err);
+      logger.warn('Failed to fetch plugin registry:', err);
       setError(err instanceof Error ? err.message : 'Failed to load plugins');
     } finally {
       fetchInProgressRef.current = false;

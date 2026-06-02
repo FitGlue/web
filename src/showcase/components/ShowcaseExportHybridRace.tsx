@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback, useLayoutEffect } from 'react';
 import { toPng } from 'html-to-image';
+import { logger } from '../../shared/logger';
 import type { components } from '../../shared/api/schema-public';
 
 type HybridRaceSegment = components['schemas']['HybridRaceSegment'];
@@ -309,7 +310,7 @@ export const HybridRaceExportTab: React.FC<Props> = ({ segments, activityTitle }
       link.href = dataUrl;
       link.click();
     } catch (err) {
-      console.error('Export failed:', err);
+      logger.error('Export failed:', err);
     } finally {
       setExporting(false);
     }

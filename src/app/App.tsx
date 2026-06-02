@@ -39,6 +39,11 @@ import { useUser } from './hooks/useUser';
 // Initialize Sentry before app renders
 initSentry();
 
+// Catch unhandled promise rejections outside React's tree (timers, event listeners, etc.)
+window.addEventListener('unhandledrejection', (event) => {
+  Sentry.captureException(event.reason);
+});
+
 // Protected route wrapper - redirects to static /auth/login page
 // Also enforces waitlist by checking accessEnabled from user profile
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {

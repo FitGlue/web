@@ -1,4 +1,5 @@
 import { client } from '../../shared/api/client';
+import { logger } from '../../shared/logger';
 
 // These types would come from the generated schema once activities
 // endpoints are added to the gateway proto. For now, defined locally.
@@ -79,7 +80,7 @@ export const ActivitiesService: IActivitiesService = {
         uploadsThisMonth: data?.uploadsThisMonth ?? 0,
       };
     } catch (err) {
-      console.error('Failed to fetch activity stats', err);
+      logger.warn('Failed to fetch activity stats', err);
       return { totalSynced: 0, uploadsThisMonth: 0 };
     }
   },
@@ -103,7 +104,7 @@ export const ActivitiesService: IActivitiesService = {
       });
       return ((data as Record<string, unknown>)?.executions as UnsynchronizedEntry[]) || [];
     } catch (err) {
-      console.error('Failed to fetch unsynchronized executions', err);
+      logger.warn('Failed to fetch unsynchronized executions', err);
       return [];
     }
   },

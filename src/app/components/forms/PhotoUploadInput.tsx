@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { client } from '../../../shared/api/client';
+import { logger } from '../../../shared/logger';
 
 interface UploadedPhoto {
     publicUrl: string;
@@ -95,7 +96,7 @@ export const PhotoUploadInput: React.FC<Props> = ({ activityId, value, onChange 
                 });
             } catch (err) {
                 setError(`Failed to upload ${file.name}. Please try again.`);
-                console.error('Photo upload error:', err);
+                logger.error('Photo upload error:', err);
                 break;
             }
         }

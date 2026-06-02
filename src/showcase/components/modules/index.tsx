@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { toPng } from 'html-to-image';
+import { logger } from '../../../shared/logger';
 
 interface ModuleProps {
   title: string;
@@ -28,7 +29,7 @@ export function Module({ title, right, span = 6, children }: ModuleProps): React
       link.href = png;
       link.click();
     } catch (err) {
-      console.error('Module export failed:', err);
+      logger.error('Module export failed:', err);
     } finally {
       if (transparent) el.style.background = origBg;
       setDownloading(false);

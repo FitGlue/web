@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { activityStatsAtom } from '../state/activitiesState';
 import { getFirebaseFirestore, getFirebaseAuth } from '../../shared/firebase';
+import { logger } from '../../shared/logger';
 
 /**
  * useRealtimeStats - Live Statistics Hook
@@ -36,7 +37,7 @@ export const useRealtimeStats = (enabled = true) => {
                 }
             },
             (err: Error) => {
-                console.error('[useRealtimeStats] Listener error:', err);
+                logger.error('[useRealtimeStats] Listener error:', err);
             }
         );
 

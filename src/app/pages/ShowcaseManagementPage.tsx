@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { logger } from '../../shared/logger';
 import { Stack, SettingsLayout, SubNavTabs } from '../components/library/layout';
 import { Button, Paragraph, Card, Heading, Link, CardSkeleton, Avatar, Pagination } from '../components/library/ui';
 import { FormField, Input, Textarea, Toggle } from '../components/library/forms';
@@ -192,7 +193,7 @@ const ShowcaseManagementPage: React.FC = () => {
                 setRoundupYearly(rs?.enabledYearly ?? false);
             }
         } catch (err) {
-            console.error('Failed to load showcase profile:', err);
+            logger.warn('Failed to load showcase profile:', err);
             showError('Failed to load profile');
         } finally {
             setLoading(false);
@@ -206,7 +207,7 @@ const ShowcaseManagementPage: React.FC = () => {
             const typedData = data as { defaultDestination: boolean };
             setDefaultDestination(typedData?.defaultDestination ?? false);
         } catch (err) {
-            console.error('Failed to load preferences:', err);
+            logger.warn('Failed to load preferences:', err);
         } finally {
             setLoadingPrefs(false);
         }
@@ -233,7 +234,7 @@ const ShowcaseManagementPage: React.FC = () => {
             await client.PUT('/users/me/showcase-management/profile', { body: { subtitle, bio } as never });
             showSuccess('Profile updated');
         } catch (err) {
-            console.error('Failed to save profile:', err);
+            logger.error('Failed to save profile:', err);
             showError('Failed to save profile');
         } finally {
             setSaving(false);
@@ -273,7 +274,7 @@ const ShowcaseManagementPage: React.FC = () => {
             });
             showSuccess('Theme updated');
         } catch (err) {
-            console.error('Failed to save theme:', err);
+            logger.error('Failed to save theme:', err);
             showError('Failed to save theme');
         } finally {
             setSavingTheme(false);
@@ -301,7 +302,7 @@ const ShowcaseManagementPage: React.FC = () => {
             setNewLinkUrl('');
             showSuccess('Link added');
         } catch (err) {
-            console.error('Failed to save links:', err);
+            logger.error('Failed to save links:', err);
             showError('Failed to save link');
         } finally {
             setSavingLinks(false);
@@ -316,7 +317,7 @@ const ShowcaseManagementPage: React.FC = () => {
             setLinks(updatedLinks);
             showSuccess('Link removed');
         } catch (err) {
-            console.error('Failed to remove link:', err);
+            logger.error('Failed to remove link:', err);
             showError('Failed to remove link');
         } finally {
             setSavingLinks(false);
@@ -339,7 +340,7 @@ const ShowcaseManagementPage: React.FC = () => {
             setNewCalloutText('');
             showSuccess('Callout added');
         } catch (err) {
-            console.error('Failed to save callout:', err);
+            logger.error('Failed to save callout:', err);
             showError('Failed to save callout');
         } finally {
             setSavingCallouts(false);
@@ -354,7 +355,7 @@ const ShowcaseManagementPage: React.FC = () => {
             setCallouts(updated);
             showSuccess('Callout removed');
         } catch (err) {
-            console.error('Failed to remove callout:', err);
+            logger.error('Failed to remove callout:', err);
             showError('Failed to remove callout');
         } finally {
             setSavingCallouts(false);
@@ -373,7 +374,7 @@ const ShowcaseManagementPage: React.FC = () => {
         } catch (err) {
             // Revert on failure
             setDefaultDestination(!newVal);
-            console.error('Failed to update preference:', err);
+            logger.error('Failed to update preference:', err);
             showError('Failed to update preference');
         }
     };
@@ -387,7 +388,7 @@ const ShowcaseManagementPage: React.FC = () => {
             showSuccess(newVal ? 'Profile is now publicly visible' : 'Profile is now hidden');
         } catch (err) {
             setProfileVisible(!newVal);
-            console.error('Failed to update visibility:', err);
+            logger.error('Failed to update visibility:', err);
             showError('Failed to update visibility');
         }
     };
@@ -403,7 +404,7 @@ const ShowcaseManagementPage: React.FC = () => {
             showSuccess(newVal ? 'Photo gallery enabled' : 'Photo gallery disabled');
         } catch (err) {
             setShowPhotoGallery(!newVal);
-            console.error('Failed to update photo gallery setting:', err);
+            logger.error('Failed to update photo gallery setting:', err);
             showError('Failed to update photo gallery setting');
         }
     };
@@ -419,7 +420,7 @@ const ShowcaseManagementPage: React.FC = () => {
             setRoundupYearly(yearly);
             showSuccess('Roundup settings saved');
         } catch (err) {
-            console.error('Failed to save roundup settings:', err);
+            logger.error('Failed to save roundup settings:', err);
             showError('Failed to save roundup settings');
         } finally {
             setSavingRoundup(false);
@@ -440,7 +441,7 @@ const ShowcaseManagementPage: React.FC = () => {
             setActivities(prev => prev.map(a =>
                 a.showcaseId === showcaseId ? { ...a, inProfile: true } : a
             ));
-            console.error('Failed to remove entry:', err);
+            logger.error('Failed to remove entry:', err);
             showError('Failed to remove entry');
         }
     };
@@ -459,7 +460,7 @@ const ShowcaseManagementPage: React.FC = () => {
             setActivities(prev => prev.map(a =>
                 a.showcaseId === showcaseId ? { ...a, inProfile: false } : a
             ));
-            console.error('Failed to add entry:', err);
+            logger.error('Failed to add entry:', err);
             showError('Failed to add entry');
         }
     };
@@ -542,7 +543,7 @@ const ShowcaseManagementPage: React.FC = () => {
             showSuccess('Profile picture updated');
             fetchProfile();
         } catch (err) {
-            console.error('Failed to upload picture:', err);
+            logger.error('Failed to upload picture:', err);
             const msg = err instanceof Error && err.message.startsWith('GCS upload')
                 ? 'Failed to upload photo — please try again'
                 : 'Failed to update profile picture';

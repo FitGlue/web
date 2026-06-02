@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { useAtom } from 'jotai';
+import { logger } from '../../../shared/logger';
 import { Stack } from '../library/layout';
 import { Card, Button, Badge, EmptyState, useToast, Code, Text } from '../library/ui';
 import './admin.css';
@@ -60,7 +61,7 @@ export const AdminUsers: React.FC = () => {
         `${user.accessEnabled ? 'Revoked' : 'Enabled'} access for user ${user.userId.slice(0, 8)}...`
       );
     } catch (err) {
-      console.error('Failed to toggle access:', err);
+      logger.error('Failed to toggle access:', err);
       toast.error('Update Failed', 'Failed to update user access');
     }
   }, [updateUser, toast]);

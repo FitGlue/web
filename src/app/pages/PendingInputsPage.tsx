@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRealtimeInputs, PendingInput } from '../hooks/useRealtimeInputs';
+import { logger } from '../../shared/logger';
 import { InputsService } from '../services/InputsService';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { usePluginLookup } from '../hooks/usePluginLookup';
@@ -140,8 +141,8 @@ const PendingInputsPage: React.FC = () => {
                 setFormValues(prev => { const next = { ...prev }; delete next[activityId]; return next; });
             }
         } catch (error) {
+            logger.error('Failed to submit details:', error);
             toast.error('Submission Failed', 'Failed to submit details. Please try again.');
-            console.error(error);
         } finally {
             setSubmittingIds(prev => { const next = new Set(prev); next.delete(activityId); return next; });
         }

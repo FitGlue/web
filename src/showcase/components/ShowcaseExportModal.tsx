@@ -1,6 +1,7 @@
 import React, { useRef, useState, useCallback, useMemo, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { toPng } from 'html-to-image';
+import { logger } from '../../shared/logger';
 import type { components } from '../../shared/api/schema-public';
 import { formatActivityType, formatDateFull } from '../utils/format';
 import { ChartExportTab, buildChartDefs } from './ShowcaseExportChart';
@@ -366,7 +367,7 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
       link.download = `${(data.title ?? 'activity').replace(/\s+/g, '-').toLowerCase()}-fitglue.png`;
       link.href = dataUrl;
       link.click();
-    } catch (err) { console.error('Export failed:', err); }
+    } catch (err) { logger.error('Export failed:', err); }
     finally { setExporting(false); }
   }, [data.title]);
 

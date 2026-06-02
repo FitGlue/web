@@ -3,6 +3,7 @@ import { useAtomValue } from 'jotai';
 import { getFirebaseAuth } from '../../shared/firebase';
 import { Sentry } from '../infrastructure/sentry';
 import { authLoadingAtom } from '../state/authState';
+import { logger } from '../../shared/logger';
 
 /**
  * Capture API error in Sentry with context
@@ -81,7 +82,7 @@ export const useApi = () => {
       const token = await auth.currentUser.getIdToken();
       return token ? { Authorization: `Bearer ${token}` } : {};
     } catch (err) {
-      console.error('Failed to get auth token:', err);
+      logger.error('Failed to get auth token:', err);
       return {};
     }
   }, [authLoading]);

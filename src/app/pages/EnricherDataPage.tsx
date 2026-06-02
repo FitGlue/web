@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { logger } from '../../shared/logger';
 import { SettingsLayout, Stack } from '../components/library/layout';
 import { client } from '../../shared/api/client';
 import { BoosterDataEntry } from '../components/enricher-data/types';
@@ -25,7 +26,7 @@ const EnricherDataPage: React.FC = () => {
             }));
             setBoosterData(entries);
         } catch (err) {
-            console.error('Failed to fetch booster data:', err);
+            logger.warn('Failed to fetch booster data:', err);
         } finally {
             setBoosterDataLoading(false);
         }

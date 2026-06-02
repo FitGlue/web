@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { logger } from '../../../shared/logger';
 import { Stack } from '../library/layout';
 import { Select } from '../library/forms';
 import { Button, Paragraph, Heading, useToast } from '../library/ui';
@@ -83,14 +84,14 @@ export const HybridRaceTaggerInput: React.FC<HybridRaceTaggerInputProps> = ({
                 duration: lap.duration_seconds,
             })));
         } catch {
-            console.error('Failed to parse laps JSON');
+            logger.warn('Failed to parse laps JSON');
         }
 
         try {
             const parsedPresets = JSON.parse(presetsJson || '[]');
             setPresets(parsedPresets);
         } catch {
-            console.error('Failed to parse presets JSON');
+            logger.warn('Failed to parse presets JSON');
         }
     }, [lapsJson, presetsJson]);
 

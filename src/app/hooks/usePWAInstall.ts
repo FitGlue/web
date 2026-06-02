@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { logger } from '../../shared/logger';
 
 const DISMISSED_KEY = 'fitglue_pwa_install_dismissed';
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
@@ -111,7 +112,7 @@ export function usePWAInstall(): UsePWAInstallResult {
             }
             return false;
         } catch (error) {
-            console.error('[PWA Install] Error during prompt:', error);
+            logger.error('[PWA Install] Error during prompt:', error);
             return false;
         }
     }, [deferredPrompt]);

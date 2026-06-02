@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback, useMemo, useEffect } from 'react';
 import { toPng } from 'html-to-image';
+import { logger } from '../../shared/logger';
 import type { components } from '../../shared/api/schema-public';
 import { ACCENTS, TEXT_SWATCHES, accentSwatchStyle, textSwatchStyle, buildAllStats, StatOption } from './ShowcaseExportModal';
 import { formatActivityType, formatDateFull, formatSource } from '../utils/format';
@@ -481,7 +482,7 @@ export const StoryExportTab: React.FC<Props> = ({
       link.href = dataUrl;
       link.click();
     } catch (err) {
-      console.error('Story export failed:', err);
+      logger.error('Story export failed:', err);
     } finally {
       setExporting(false);
     }

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { toPng } from 'html-to-image';
+import { logger } from '../../../shared/logger';
 import type { components } from '../../../shared/api/schema-public';
 import { resolveFamily, FAMILY_STAMP_CLASS, type ActivityFamily } from '../../utils/activityFamily';
 import { getActivityIcon } from '../../utils/activityMeta';
@@ -118,7 +119,7 @@ function ActivityCardItem({ e, family, metrics, sparkPath, dateStr, profileSlug 
       link.href = png;
       link.click();
     } catch (err) {
-      console.error('Activity card export failed:', err);
+      logger.error('Activity card export failed:', err);
     } finally {
       if (transparent) {
         el.style.background = origBg;

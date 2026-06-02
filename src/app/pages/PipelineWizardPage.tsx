@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '../../shared/logger';
 import { PageLayout } from '../components/library/layout/PageLayout';
 import { PageAction } from '../components/library/layout';
 import { Card } from '../components/library/ui/Card';
@@ -273,7 +274,7 @@ const PipelineWizardPage: React.FC = () => {
             toast.success('Pipeline Created', `"${pipelineName || 'New Pipeline'}" has been created`);
             navigate('/settings/pipelines');
         } catch (err) {
-            console.error('Failed to create pipeline:', err);
+            logger.error('Failed to create pipeline:', err);
             setError('Failed to create pipeline. Please try again.');
             toast.error('Creation Failed', 'Failed to create pipeline. Please try again.');
         } finally {

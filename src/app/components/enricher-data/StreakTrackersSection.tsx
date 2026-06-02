@@ -5,6 +5,7 @@ import './enricher-data.css';
 import { client } from '../../../shared/api/client';
 import { BoosterDataEntry } from './types';
 import { getBoosterLabel, formatDate } from './helpers';
+import { logger } from '../../../shared/logger';
 
 interface StreakTrackersSectionProps {
     entries: BoosterDataEntry[];
@@ -26,7 +27,7 @@ const StreakTrackersSection: React.FC<StreakTrackersSectionProps> = ({ entries, 
             setEditingBooster(null);
             onRefresh();
         } catch (err) {
-            console.error('Failed to save booster data:', err);
+            logger.error('Failed to save booster data:', err);
         }
     };
 
@@ -36,7 +37,7 @@ const StreakTrackersSection: React.FC<StreakTrackersSectionProps> = ({ entries, 
             await client.DELETE('/users/me/booster-data/{boosterId}', { params: { path: { boosterId: id } } });
             onRefresh();
         } catch (err) {
-            console.error('Failed to delete booster data:', err);
+            logger.error('Failed to delete booster data:', err);
         }
     };
 
@@ -53,7 +54,7 @@ const StreakTrackersSection: React.FC<StreakTrackersSectionProps> = ({ entries, 
             setNewLongest(0);
             onRefresh();
         } catch (err) {
-            console.error('Failed to create streak tracker:', err);
+            logger.error('Failed to create streak tracker:', err);
         }
     };
 

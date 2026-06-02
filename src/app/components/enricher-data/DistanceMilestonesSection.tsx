@@ -5,6 +5,7 @@ import './enricher-data.css';
 import { client } from '../../../shared/api/client';
 import { BoosterDataEntry } from './types';
 import { getBoosterLabel, formatDate } from './helpers';
+import { logger } from '../../../shared/logger';
 
 interface DistanceMilestonesSectionProps {
     entries: BoosterDataEntry[];
@@ -25,7 +26,7 @@ const DistanceMilestonesSection: React.FC<DistanceMilestonesSectionProps> = ({ e
             setEditingBooster(null);
             onRefresh();
         } catch (err) {
-            console.error('Failed to save booster data:', err);
+            logger.error('Failed to save booster data:', err);
         }
     };
 
@@ -35,7 +36,7 @@ const DistanceMilestonesSection: React.FC<DistanceMilestonesSectionProps> = ({ e
             await client.DELETE('/users/me/booster-data/{boosterId}', { params: { path: { boosterId: id } } });
             onRefresh();
         } catch (err) {
-            console.error('Failed to delete booster data:', err);
+            logger.error('Failed to delete booster data:', err);
         }
     };
 
@@ -51,7 +52,7 @@ const DistanceMilestonesSection: React.FC<DistanceMilestonesSectionProps> = ({ e
             setNewDistance(0);
             onRefresh();
         } catch (err) {
-            console.error('Failed to create distance milestone:', err);
+            logger.error('Failed to create distance milestone:', err);
         }
     };
 

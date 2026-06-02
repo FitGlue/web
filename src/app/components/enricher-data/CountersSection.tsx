@@ -5,6 +5,7 @@ import './enricher-data.css';
 import { client } from '../../../shared/api/client';
 import { Counter } from './types';
 import { formatDate } from './helpers';
+import { logger } from '../../../shared/logger';
 
 const CountersSection: React.FC = () => {
     const [counters, setCounters] = useState<Counter[]>([]);
@@ -21,7 +22,7 @@ const CountersSection: React.FC = () => {
             const response = data as unknown as { counters: Counter[] };
             setCounters((response?.counters || []).map(c => ({ ...c, count: Number(c.count) })));
         } catch (err) {
-            console.error('Failed to fetch counters:', err);
+            logger.warn('Failed to fetch counters:', err);
         } finally {
             setLoading(false);
         }
@@ -37,7 +38,7 @@ const CountersSection: React.FC = () => {
             setEditingCounter(null);
             fetchCounters();
         } catch (err) {
-            console.error('Failed to save counter:', err);
+            logger.error('Failed to save counter:', err);
         }
     };
 
@@ -49,7 +50,7 @@ const CountersSection: React.FC = () => {
             setShowNew(false);
             fetchCounters();
         } catch (err) {
-            console.error('Failed to create counter:', err);
+            logger.error('Failed to create counter:', err);
         }
     };
 
@@ -59,7 +60,7 @@ const CountersSection: React.FC = () => {
             await client.DELETE('/users/me/counters/{name}', { params: { path: { name: id } } });
             fetchCounters();
         } catch (err) {
-            console.error('Failed to delete counter:', err);
+            logger.error('Failed to delete counter:', err);
         }
     };
 

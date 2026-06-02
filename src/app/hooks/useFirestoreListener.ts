@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Query, DocumentReference, onSnapshot, Unsubscribe } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../../shared/firebase';
+import { logger } from '../../shared/logger';
 
 export type FirestoreQueryFactory<T> = (
     firestore: ReturnType<typeof getFirebaseFirestore>,
@@ -204,7 +205,7 @@ export function useFirestoreListener<TData>(
                             try {
                                 cb(snapshot);
                             } catch (err) {
-                                console.error('[useFirestoreListener] Callback error:', err);
+                                logger.error('[useFirestoreListener] Callback error:', err);
                             }
                         });
                     }
@@ -214,7 +215,7 @@ export function useFirestoreListener<TData>(
                     setLoading(false);
                 },
                 (err) => {
-                    console.error('[useFirestoreListener] Listener error:', err);
+                    logger.error('[useFirestoreListener] Listener error:', err);
                     const entry = listenerRegistry.get(fullKey);
                     if (entry) {
                         entry.error = err;
@@ -251,7 +252,7 @@ export function useFirestoreListener<TData>(
                 setIsListening(false);
             };
         } catch (err) {
-            console.error('[useFirestoreListener] Failed to set up listener:', err);
+            logger.error('[useFirestoreListener] Failed to set up listener:', err);
             setError(err instanceof Error ? err : new Error('Unknown error'));
             setLoading(false);
             return;

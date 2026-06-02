@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { toPng } from 'html-to-image';
+import { logger } from '../../shared/logger';
 import type { components } from '../../shared/api/schema-public';
 import { ACCENTS, TEXT_SWATCHES, accentSwatchStyle, textSwatchStyle } from './ShowcaseExportModal';
 
@@ -242,7 +243,7 @@ export const ChartExportTab: React.FC<Props> = ({
       link.href = dataUrl;
       link.click();
     } catch (err) {
-      console.error('Chart export failed:', err);
+      logger.error('Chart export failed:', err);
     } finally {
       setExporting(false);
     }
