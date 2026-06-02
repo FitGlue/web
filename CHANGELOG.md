@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.56.1](https://github.com/fitglue/web/compare/v11.56.0...v11.56.1) (2026-06-02)
+
+
+### Bug Fixes
+
+* **showcase:** correct view-on-showcase URL and add enricher coverage test ([0816adf](https://github.com/fitglue/web/commit/0816adf951985de074d8070777db905ef9e708e2))
+
 ## [11.56.0](https://github.com/fitglue/web/compare/v11.55.0...v11.56.0) (2026-06-02)
 
 
