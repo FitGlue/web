@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
+import { useShowcaseSlug } from '../hooks/useShowcaseSlug';
 import { PageLayout } from '../components/library/layout';
 import { CardSkeleton, Heading, Paragraph, Code, Button, SvgAsset, useToast, ProgressBar } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
@@ -265,6 +266,7 @@ const ActivityDetailPage: React.FC = () => {
 
     // Get pipeline runs - this is now the PRIMARY data source
     const { pipelineRuns, loading } = useRealtimePipelineRuns(true, 50);
+    const showcaseSlug = useShowcaseSlug();
 
     // Find the pipeline run for this activity by activityId
     const pipelineRun = useMemo((): PipelineRun | undefined => {
@@ -313,12 +315,14 @@ const ActivityDetailPage: React.FC = () => {
             ? pipelines.find(p => p.id === pipelineRun.pipelineId)?.name
             : undefined;
 
-        // Build showcase URL if this activity was synced there
+        // Build showcase URL if this activity was synced there.
+        // Uses /@{slug}/{showcaseId} format. Falls back to /showcase/{showcaseId}
+        // (which the showcase router also handles) if the slug isn't loaded yet.
         const showcaseDest = pipelineRun.destinations?.find(d => formatDestination(d.destination) === 'Showcase');
-        const pipeline = pipelineRun.pipelineId ? pipelines.find(p => p.id === pipelineRun.pipelineId) : undefined;
-        const showcaseConfig = pipeline?.destinationConfigs?.['showcase']?.config;
         const showcaseUrl = showcaseDest?.externalId
-            ? buildDestinationUrl(registryDestinations, 'showcase', showcaseDest.externalId, showcaseConfig)
+            ? (showcaseSlug
+                ? `/@${showcaseSlug}/${showcaseDest.externalId}`
+                : `/showcase/${showcaseDest.externalId}`)
             : undefined;
 
         return {
@@ -330,7 +334,7 @@ const ActivityDetailPage: React.FC = () => {
             pipelineName,
             showcaseUrl,
         };
-    }, [pipelineRun, sources, registryDestinations, pipelines]);
+    }, [pipelineRun, sources, registryDestinations, pipelines, showcaseSlug]);
 
     if (loading && !pipelineRun) {
         return (
