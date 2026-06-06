@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.57.2](https://github.com/fitglue/web/compare/v11.57.1...v11.57.2) (2026-06-06)
+
+
+### Bug Fixes
+
+* **enricher-data:** add toast notifications for save success and failure in Distance, Goal, and Streak trackers ([37d8af2](https://github.com/fitglue/web/commit/37d8af236bbefb8321812507a573268389f19cab))
+
 ### [11.57.1](https://github.com/fitglue/web/compare/v11.57.0...v11.57.1) (2026-06-02)
 
 
