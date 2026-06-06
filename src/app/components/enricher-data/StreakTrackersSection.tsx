@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Grid } from '../library/layout';
 import { Input, FormField, Select } from '../library/forms';
+import { useToast } from '../library/ui';
 import './enricher-data.css';
 import { client } from '../../../shared/api/client';
 import { BoosterDataEntry } from './types';
@@ -14,6 +15,7 @@ interface StreakTrackersSectionProps {
 }
 
 const StreakTrackersSection: React.FC<StreakTrackersSectionProps> = ({ entries, loading, onRefresh }) => {
+    const toast = useToast();
     const [editingBooster, setEditingBooster] = useState<BoosterDataEntry | null>(null);
     const [showNew, setShowNew] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -26,8 +28,10 @@ const StreakTrackersSection: React.FC<StreakTrackersSectionProps> = ({ entries, 
             await client.PUT('/users/me/booster-data/{boosterId}', { params: { path: { boosterId: entry.id } }, body: entry.data as never });
             setEditingBooster(null);
             onRefresh();
+            toast.success('Saved', 'Streak tracker updated.');
         } catch (err) {
             logger.error('Failed to save booster data:', err);
+            toast.error('Save failed', 'Could not update streak tracker.');
         }
     };
 

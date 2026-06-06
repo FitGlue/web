@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Grid } from '../library/layout';
 import { Input, FormField, Select } from '../library/forms';
+import { useToast } from '../library/ui';
 import './enricher-data.css';
 import { client } from '../../../shared/api/client';
 import { BoosterDataEntry } from './types';
@@ -14,6 +15,7 @@ interface DistanceMilestonesSectionProps {
 }
 
 const DistanceMilestonesSection: React.FC<DistanceMilestonesSectionProps> = ({ entries, loading, onRefresh }) => {
+    const toast = useToast();
     const [editingBooster, setEditingBooster] = useState<BoosterDataEntry | null>(null);
     const [showNew, setShowNew] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -25,8 +27,10 @@ const DistanceMilestonesSection: React.FC<DistanceMilestonesSectionProps> = ({ e
             await client.PUT('/users/me/booster-data/{boosterId}', { params: { path: { boosterId: entry.id } }, body: entry.data as never });
             setEditingBooster(null);
             onRefresh();
+            toast.success('Saved', 'Distance milestone updated.');
         } catch (err) {
             logger.error('Failed to save booster data:', err);
+            toast.error('Save failed', 'Could not update distance milestone.');
         }
     };
 
