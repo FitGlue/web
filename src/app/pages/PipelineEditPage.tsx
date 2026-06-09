@@ -431,7 +431,8 @@ const PipelineEditPage: React.FC = () => {
     const ghostEnrichers = selectedEnrichers.filter(e => !isPluginAvailable(e.manifest));
 
     const configurableEnrichers = selectedEnrichers.filter(e =>
-        isPluginAvailable(e.manifest) && (e.manifest.configSchema?.length ?? 0) > 0
+        isPluginAvailable(e.manifest) &&
+        ((e.manifest.configSchema?.length ?? 0) > 0 || e.manifest.supportsNonBlocking)
     );
     // Destinations with their own plugin config schema (used for unsaved count)
     const pluginConfigurableDestinations = selectedDestinations
