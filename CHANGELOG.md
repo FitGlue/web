@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.59.0](https://github.com/fitglue/web/compare/v11.58.0...v11.59.0) (2026-06-09)
+
+
+### Features
+
+* **showcase:** add hDrop sweat analysis module and non-blocking pending input support ([f39cd13](https://github.com/fitglue/web/commit/f39cd13fde8f2b1c591ab66d5b96b2c0a10819c7))
+
 ## [11.58.0](https://github.com/fitglue/web/compare/v11.57.2...v11.58.0) (2026-06-09)
 
 
