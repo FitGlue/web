@@ -186,6 +186,7 @@ export interface components {
             muscleHeatmap?: components["schemas"]["MuscleHeatmapSummary"];
             temperature?: components["schemas"]["TemperatureSummary"];
             bestEfforts?: components["schemas"]["BestEffortsSummary"];
+            hdrop?: components["schemas"]["HDropSummary"];
         };
         AiBanner: {
             imageUrl?: string;
@@ -322,6 +323,40 @@ export interface components {
             "@type"?: string;
         } & {
             [key: string]: unknown;
+        };
+        HDropSummary: {
+            /** Format: double */
+            totalFluidLossL?: number;
+            /** Format: double */
+            sweatRateLPerHr?: number;
+            /** Format: double */
+            totalSodiumMg?: number;
+            /** Format: double */
+            totalPotassiumMg?: number;
+            /** Format: double */
+            sodiumConcentrationMgPerL?: number;
+            /** Format: double */
+            avgHdropScore?: number;
+            /** Format: double */
+            minHdropScore?: number;
+            bodyLocation?: string;
+            /** Format: double */
+            minTemperatureC?: number;
+            /** Format: double */
+            maxTemperatureC?: number;
+            timeseries?: components["schemas"]["HDropTimeseriesPoint"][];
+        };
+        HDropTimeseriesPoint: {
+            /** Format: double */
+            timeMinutes?: number;
+            /** Format: double */
+            sweatRate?: number;
+            /** Format: double */
+            fluidLossCumulative?: number;
+            /** Format: double */
+            sodiumConcentration?: number;
+            /** Format: double */
+            temperature?: number;
         };
         HeartRateSummary: {
             /** Format: int32 */
@@ -700,7 +735,7 @@ export interface components {
              * Format: enum
              * @enum {string}
              */
-            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_GARMIN" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
+            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
             /** Format: date-time */
             startTime?: string;
             routeThumbnailUrl?: string;
@@ -767,7 +802,7 @@ export interface components {
             activityTypeBreakdowns?: components["schemas"]["RoundupActivityTypeBreakdown"][];
             hrZoneMinutes?: number[];
             prsAchieved?: components["schemas"]["ShowcaseTopPR"][];
-            sources?: ("SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_GARMIN" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST")[];
+            sources?: ("SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST")[];
             /** Format: int32 */
             effortEasyCount?: number;
             /** Format: int32 */
@@ -810,7 +845,7 @@ export interface components {
              * Format: enum
              * @enum {string}
              */
-            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_GARMIN" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
+            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
             /** Format: date-time */
             startTime?: string;
             activityData?: components["schemas"]["StandardizedActivity"];
@@ -851,7 +886,7 @@ export interface components {
              * Format: enum
              * @enum {string}
              */
-            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_GARMIN" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
+            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
             externalId?: string;
             userId?: string;
             /** Format: date-time */

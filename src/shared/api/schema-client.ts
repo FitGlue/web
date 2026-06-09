@@ -1070,6 +1070,7 @@ export interface components {
             muscleHeatmap?: components["schemas"]["MuscleHeatmapSummary"];
             temperature?: components["schemas"]["TemperatureSummary"];
             bestEfforts?: components["schemas"]["BestEffortsSummary"];
+            hdrop?: components["schemas"]["HDropSummary"];
         };
         AiBanner: {
             imageUrl?: string;
@@ -1266,10 +1267,11 @@ export interface components {
              * Format: enum
              * @enum {string}
              */
-            providerType?: "ENRICHER_PROVIDER_UNSPECIFIED" | "ENRICHER_PROVIDER_FITBIT_HEART_RATE" | "ENRICHER_PROVIDER_WORKOUT_SUMMARY" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP" | "ENRICHER_PROVIDER_SOURCE_LINK" | "ENRICHER_PROVIDER_VIRTUAL_GPS" | "ENRICHER_PROVIDER_TYPE_MAPPER" | "ENRICHER_PROVIDER_PARKRUN" | "ENRICHER_PROVIDER_CONDITION_MATCHER" | "ENRICHER_PROVIDER_AUTO_INCREMENT" | "ENRICHER_PROVIDER_USER_INPUT" | "ENRICHER_PROVIDER_ACTIVITY_FILTER" | "ENRICHER_PROVIDER_LOGIC_GATE" | "ENRICHER_PROVIDER_HEART_RATE_SUMMARY" | "ENRICHER_PROVIDER_AI_COMPANION" | "ENRICHER_PROVIDER_PACE_SUMMARY" | "ENRICHER_PROVIDER_CADENCE_SUMMARY" | "ENRICHER_PROVIDER_POWER_SUMMARY" | "ENRICHER_PROVIDER_SPEED_SUMMARY" | "ENRICHER_PROVIDER_PERSONAL_RECORDS" | "ENRICHER_PROVIDER_TRAINING_LOAD" | "ENRICHER_PROVIDER_SPOTIFY_TRACKS" | "ENRICHER_PROVIDER_WEATHER" | "ENRICHER_PROVIDER_ELEVATION_SUMMARY" | "ENRICHER_PROVIDER_LOCATION_NAMING" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP_IMAGE" | "ENRICHER_PROVIDER_ROUTE_THUMBNAIL" | "ENRICHER_PROVIDER_AI_BANNER" | "ENRICHER_PROVIDER_FIT_FILE_HEART_RATE" | "ENRICHER_PROVIDER_HYBRID_RACE_TAGGER" | "ENRICHER_PROVIDER_RUNNING_DYNAMICS" | "ENRICHER_PROVIDER_HEART_RATE_ZONES" | "ENRICHER_PROVIDER_CALORIES_BURNED" | "ENRICHER_PROVIDER_GOAL_TRACKER" | "ENRICHER_PROVIDER_STREAK_TRACKER" | "ENRICHER_PROVIDER_DISTANCE_MILESTONES" | "ENRICHER_PROVIDER_RECOVERY_ADVISOR" | "ENRICHER_PROVIDER_EFFORT_SCORE" | "ENRICHER_PROVIDER_INTERVALS" | "ENRICHER_PROVIDER_PHOTO_UPLOAD" | "ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY" | "ENRICHER_PROVIDER_AI_ACTIVITY_TYPE" | "ENRICHER_PROVIDER_ICAL_TITLE" | "ENRICHER_PROVIDER_TEMPERATURE_SUMMARY" | "ENRICHER_PROVIDER_BEST_EFFORTS" | "ENRICHER_PROVIDER_MOCK";
+            providerType?: "ENRICHER_PROVIDER_UNSPECIFIED" | "ENRICHER_PROVIDER_FITBIT_HEART_RATE" | "ENRICHER_PROVIDER_WORKOUT_SUMMARY" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP" | "ENRICHER_PROVIDER_SOURCE_LINK" | "ENRICHER_PROVIDER_VIRTUAL_GPS" | "ENRICHER_PROVIDER_TYPE_MAPPER" | "ENRICHER_PROVIDER_PARKRUN" | "ENRICHER_PROVIDER_CONDITION_MATCHER" | "ENRICHER_PROVIDER_AUTO_INCREMENT" | "ENRICHER_PROVIDER_USER_INPUT" | "ENRICHER_PROVIDER_ACTIVITY_FILTER" | "ENRICHER_PROVIDER_LOGIC_GATE" | "ENRICHER_PROVIDER_HEART_RATE_SUMMARY" | "ENRICHER_PROVIDER_AI_COMPANION" | "ENRICHER_PROVIDER_PACE_SUMMARY" | "ENRICHER_PROVIDER_CADENCE_SUMMARY" | "ENRICHER_PROVIDER_POWER_SUMMARY" | "ENRICHER_PROVIDER_SPEED_SUMMARY" | "ENRICHER_PROVIDER_PERSONAL_RECORDS" | "ENRICHER_PROVIDER_TRAINING_LOAD" | "ENRICHER_PROVIDER_SPOTIFY_TRACKS" | "ENRICHER_PROVIDER_WEATHER" | "ENRICHER_PROVIDER_ELEVATION_SUMMARY" | "ENRICHER_PROVIDER_LOCATION_NAMING" | "ENRICHER_PROVIDER_MUSCLE_HEATMAP_IMAGE" | "ENRICHER_PROVIDER_ROUTE_THUMBNAIL" | "ENRICHER_PROVIDER_AI_BANNER" | "ENRICHER_PROVIDER_FIT_FILE_HEART_RATE" | "ENRICHER_PROVIDER_HYBRID_RACE_TAGGER" | "ENRICHER_PROVIDER_RUNNING_DYNAMICS" | "ENRICHER_PROVIDER_HEART_RATE_ZONES" | "ENRICHER_PROVIDER_CALORIES_BURNED" | "ENRICHER_PROVIDER_GOAL_TRACKER" | "ENRICHER_PROVIDER_STREAK_TRACKER" | "ENRICHER_PROVIDER_DISTANCE_MILESTONES" | "ENRICHER_PROVIDER_RECOVERY_ADVISOR" | "ENRICHER_PROVIDER_EFFORT_SCORE" | "ENRICHER_PROVIDER_INTERVALS" | "ENRICHER_PROVIDER_PHOTO_UPLOAD" | "ENRICHER_PROVIDER_MANUAL_WORKOUT_ENTRY" | "ENRICHER_PROVIDER_AI_ACTIVITY_TYPE" | "ENRICHER_PROVIDER_ICAL_TITLE" | "ENRICHER_PROVIDER_TEMPERATURE_SUMMARY" | "ENRICHER_PROVIDER_BEST_EFFORTS" | "ENRICHER_PROVIDER_HDROP" | "ENRICHER_PROVIDER_MOCK";
             typedConfig?: {
                 [key: string]: string;
             };
+            nonBlocking?: boolean;
         };
         /** @description EntrySparkline is a downsampled timeseries for card-level sparklines. */
         EntrySparkline: {
@@ -1446,6 +1448,40 @@ export interface components {
             "@type"?: string;
         } & {
             [key: string]: unknown;
+        };
+        HDropSummary: {
+            /** Format: double */
+            totalFluidLossL?: number;
+            /** Format: double */
+            sweatRateLPerHr?: number;
+            /** Format: double */
+            totalSodiumMg?: number;
+            /** Format: double */
+            totalPotassiumMg?: number;
+            /** Format: double */
+            sodiumConcentrationMgPerL?: number;
+            /** Format: double */
+            avgHdropScore?: number;
+            /** Format: double */
+            minHdropScore?: number;
+            bodyLocation?: string;
+            /** Format: double */
+            minTemperatureC?: number;
+            /** Format: double */
+            maxTemperatureC?: number;
+            timeseries?: components["schemas"]["HDropTimeseriesPoint"][];
+        };
+        HDropTimeseriesPoint: {
+            /** Format: double */
+            timeMinutes?: number;
+            /** Format: double */
+            sweatRate?: number;
+            /** Format: double */
+            fluidLossCumulative?: number;
+            /** Format: double */
+            sodiumConcentration?: number;
+            /** Format: double */
+            temperature?: number;
         };
         HealthConnectIntegration: {
             enabled?: boolean;
@@ -1763,7 +1799,7 @@ export interface components {
              * Format: enum
              * @enum {string}
              */
-            status?: "PIPELINE_RUN_STATUS_UNSPECIFIED" | "PIPELINE_RUN_STATUS_RUNNING" | "PIPELINE_RUN_STATUS_SYNCED" | "PIPELINE_RUN_STATUS_PARTIAL" | "PIPELINE_RUN_STATUS_FAILED" | "PIPELINE_RUN_STATUS_PENDING" | "PIPELINE_RUN_STATUS_SKIPPED" | "PIPELINE_RUN_STATUS_ARCHIVED" | "PIPELINE_RUN_STATUS_TIER_BLOCKED" | "PIPELINE_RUN_STATUS_CANCELLED";
+            status?: "PIPELINE_RUN_STATUS_UNSPECIFIED" | "PIPELINE_RUN_STATUS_RUNNING" | "PIPELINE_RUN_STATUS_SYNCED" | "PIPELINE_RUN_STATUS_PARTIAL" | "PIPELINE_RUN_STATUS_FAILED" | "PIPELINE_RUN_STATUS_PENDING" | "PIPELINE_RUN_STATUS_SKIPPED" | "PIPELINE_RUN_STATUS_ARCHIVED" | "PIPELINE_RUN_STATUS_TIER_BLOCKED" | "PIPELINE_RUN_STATUS_CANCELLED" | "PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING";
             /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
@@ -1774,6 +1810,11 @@ export interface components {
             pendingInputId?: string;
             originalPayloadUri?: string;
             enrichedEventUri?: string;
+            /**
+             * @description IDs of non-blocking PendingInputs still awaiting user input for this run.
+             *      Cleared as each one is resolved; when empty the status transitions to SYNCED.
+             */
+            nonBlockingPendingInputIds?: string[];
             /**
              * @description Unified record of every step in a pipeline run — source, parse, gate,
              *      enricher batch, router, and per-destination uploaders.
@@ -2026,7 +2067,7 @@ export interface components {
              * Format: enum
              * @enum {string}
              */
-            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_GARMIN" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
+            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
             /** Format: date-time */
             startTime?: string;
             routeThumbnailUrl?: string;
@@ -2096,7 +2137,7 @@ export interface components {
              * Format: enum
              * @enum {string}
              */
-            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_GARMIN" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
+            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
             /** Format: date-time */
             startTime?: string;
             activityData?: components["schemas"]["StandardizedActivity"];
@@ -2157,7 +2198,7 @@ export interface components {
              * Format: enum
              * @enum {string}
              */
-            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_GARMIN" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
+            source?: "SOURCE_UNSPECIFIED" | "SOURCE_HEVY" | "SOURCE_FITBIT" | "SOURCE_PARKRUN_RESULTS" | "SOURCE_FILE_UPLOAD" | "SOURCE_STRAVA" | "SOURCE_APPLE_HEALTH" | "SOURCE_HEALTH_CONNECT" | "SOURCE_OURA" | "SOURCE_POLAR" | "SOURCE_WAHOO" | "SOURCE_INTERVALS" | "SOURCE_TRAININGPEAKS" | "SOURCE_GOOGLESHEETS" | "SOURCE_GITHUB" | "SOURCE_TEST";
             externalId?: string;
             userId?: string;
             /** Format: date-time */

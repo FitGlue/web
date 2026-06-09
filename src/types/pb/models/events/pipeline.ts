@@ -89,7 +89,14 @@ export interface EnrichedActivityEvent {
   tags: string[];
   pipelineExecutionId?: string | undefined;
   activityDataUri: string;
-  enrichments?: ActivityEnrichments | undefined;
+  enrichments?:
+    | ActivityEnrichments
+    | undefined;
+  /**
+   * Non-blocking pending input IDs still awaiting user input after this enrichment run.
+   * The destination service writes these to the PipelineRun and sets SYNCED_WITH_PENDING status.
+   */
+  nonBlockingPendingInputIds: string[];
 }
 
 export interface EnrichedActivityEvent_EnrichmentMetadataEntry {

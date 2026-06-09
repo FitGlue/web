@@ -144,7 +144,7 @@ const DashboardPageInner: React.FC = () => {
                         <div className="dashboard-first-run__card">
                             <div className="dashboard-first-run__card-icon">🔗</div>
                             <div className="dashboard-first-run__card-title">No connections yet</div>
-                            <div className="dashboard-first-run__card-body">Hook in Strava, Hevy, Fitbit, Garmin — wherever your activities live.</div>
+                            <div className="dashboard-first-run__card-body">Hook in Strava, Hevy, Fitbit, Polar — wherever your activities live.</div>
                             <button className="fg-button" onClick={() => navigate('/connections')}>CONNECT A SOURCE →</button>
                         </div>
                         <div className="dashboard-first-run__card dashboard-first-run__card--dim">

@@ -51,6 +51,7 @@ export interface ActivityEnrichments {
   muscleHeatmap?: MuscleHeatmapSummary | undefined;
   temperature?: TemperatureSummary | undefined;
   bestEfforts?: BestEffortsSummary | undefined;
+  hdrop?: HDropSummary | undefined;
 }
 
 export interface HeartRateSummary {
@@ -331,4 +332,30 @@ export interface BestEffort {
 
 export interface BestEffortsSummary {
   efforts: BestEffort[];
+}
+
+export interface HDropTimeseriesPoint {
+  timeMinutes: number;
+  /** L/hr */
+  sweatRate: number;
+  /** L, cumulative */
+  fluidLossCumulative: number;
+  /** mg/L */
+  sodiumConcentration: number;
+  /** °C skin temperature */
+  temperature: number;
+}
+
+export interface HDropSummary {
+  totalFluidLossL: number;
+  sweatRateLPerHr: number;
+  totalSodiumMg: number;
+  totalPotassiumMg: number;
+  sodiumConcentrationMgPerL: number;
+  avgHdropScore: number;
+  minHdropScore: number;
+  bodyLocation: string;
+  minTemperatureC: number;
+  maxTemperatureC: number;
+  timeseries: HDropTimeseriesPoint[];
 }

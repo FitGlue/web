@@ -21,6 +21,11 @@ export enum PipelineRunStatus {
   PIPELINE_RUN_STATUS_ARCHIVED = 7,
   PIPELINE_RUN_STATUS_TIER_BLOCKED = 8,
   PIPELINE_RUN_STATUS_CANCELLED = 9,
+  /**
+   * PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING - Destinations were called successfully, but one or more non-blocking enrichers
+   * are still awaiting user input. Destinations will be updated when they resolve.
+   */
+  PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING = 10,
   UNRECOGNIZED = -1,
 }
 
@@ -93,6 +98,11 @@ export interface PipelineRun {
   pendingInputId?: string | undefined;
   originalPayloadUri: string;
   enrichedEventUri: string;
+  /**
+   * IDs of non-blocking PendingInputs still awaiting user input for this run.
+   * Cleared as each one is resolved; when empty the status transitions to SYNCED.
+   */
+  nonBlockingPendingInputIds: string[];
   /**
    * Unified record of every step in a pipeline run — source, parse, gate,
    * enricher batch, router, and per-destination uploaders.

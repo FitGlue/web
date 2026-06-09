@@ -42,6 +42,12 @@ export interface PendingInput {
   sourceActivityType: string;
   sourceStartTime?: Date | undefined;
   sourceActivitySource: string;
+  /**
+   * When true, this pending input does not block the pipeline — destinations are called
+   * immediately with whatever enrichment is available. On resolution, destinations are
+   * updated via Update() rather than Create().
+   */
+  nonBlocking: boolean;
 }
 
 export enum PendingInput_Status {

@@ -1124,10 +1124,6 @@ const ActivitySourceNames: Record<string, string> = {
     'STRAVA': 'Strava',
     'Strava': 'Strava',
     '6': 'Strava',
-    'SOURCE_GARMIN': 'Garmin',
-    'GARMIN': 'Garmin',
-    'Garmin': 'Garmin',
-    '7': 'Garmin',
     'SOURCE_APPLE_HEALTH': 'Apple Health',
     'APPLE_HEALTH': 'Apple Health',
     'Apple Health': 'Apple Health',
@@ -1195,7 +1191,6 @@ export function formatActivitySource(value: ActivitySource | number | string | u
     case ActivitySource.SOURCE_PARKRUN_RESULTS: return 'Parkrun Results';
     case ActivitySource.SOURCE_FILE_UPLOAD: return 'File Upload';
     case ActivitySource.SOURCE_STRAVA: return 'Strava';
-    case ActivitySource.SOURCE_GARMIN: return 'Garmin';
     case ActivitySource.SOURCE_APPLE_HEALTH: return 'Apple Health';
     case ActivitySource.SOURCE_HEALTH_CONNECT: return 'Health Connect';
     case ActivitySource.SOURCE_OURA: return 'Oura';
@@ -1231,9 +1226,6 @@ const ActivitySourceValues: Record<string, ActivitySource> = {
     'source_strava': ActivitySource.SOURCE_STRAVA,
     'strava': ActivitySource.SOURCE_STRAVA,
     '6': ActivitySource.SOURCE_STRAVA,
-    'source_garmin': ActivitySource.SOURCE_GARMIN,
-    'garmin': ActivitySource.SOURCE_GARMIN,
-    '7': ActivitySource.SOURCE_GARMIN,
     'source_apple_health': ActivitySource.SOURCE_APPLE_HEALTH,
     'apple_health': ActivitySource.SOURCE_APPLE_HEALTH,
     'apple health': ActivitySource.SOURCE_APPLE_HEALTH,
@@ -1456,6 +1448,10 @@ const EnricherProviderTypeNames: Record<string, string> = {
     'BEST_EFFORTS': 'Best Efforts',
     'Best Efforts': 'Best Efforts',
     '45': 'Best Efforts',
+    'ENRICHER_PROVIDER_HDROP': 'Hdrop',
+    'HDROP': 'Hdrop',
+    'Hdrop': 'Hdrop',
+    '46': 'Hdrop',
     'ENRICHER_PROVIDER_MOCK': 'Mock',
     'MOCK': 'Mock',
     'Mock': 'Mock',
@@ -1526,6 +1522,7 @@ export function formatEnricherProviderType(value: EnricherProviderType | number 
     case EnricherProviderType.ENRICHER_PROVIDER_ICAL_TITLE: return 'Ical Title';
     case EnricherProviderType.ENRICHER_PROVIDER_TEMPERATURE_SUMMARY: return 'Temperature Summary';
     case EnricherProviderType.ENRICHER_PROVIDER_BEST_EFFORTS: return 'Best Efforts';
+    case EnricherProviderType.ENRICHER_PROVIDER_HDROP: return 'Hdrop';
     case EnricherProviderType.ENRICHER_PROVIDER_MOCK: return 'Mock';
     default: return 'Unknown';
   }
@@ -1709,6 +1706,9 @@ const EnricherProviderTypeValues: Record<string, EnricherProviderType> = {
     'best_efforts': EnricherProviderType.ENRICHER_PROVIDER_BEST_EFFORTS,
     'best efforts': EnricherProviderType.ENRICHER_PROVIDER_BEST_EFFORTS,
     '45': EnricherProviderType.ENRICHER_PROVIDER_BEST_EFFORTS,
+    'enricher_provider_hdrop': EnricherProviderType.ENRICHER_PROVIDER_HDROP,
+    'hdrop': EnricherProviderType.ENRICHER_PROVIDER_HDROP,
+    '46': EnricherProviderType.ENRICHER_PROVIDER_HDROP,
     'enricher_provider_mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     'mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     '99': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
@@ -2575,6 +2575,10 @@ const PipelineRunStatusNames: Record<string, string> = {
     'CANCELLED': 'Cancelled',
     'Cancelled': 'Cancelled',
     '9': 'Cancelled',
+    'PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING': 'Synced With Pending',
+    'SYNCED_WITH_PENDING': 'Synced With Pending',
+    'Synced With Pending': 'Synced With Pending',
+    '10': 'Synced With Pending',
 };
 
 export function formatPipelineRunStatus(value: PipelineRunStatus | number | string | undefined | null): string {
@@ -2606,6 +2610,7 @@ export function formatPipelineRunStatus(value: PipelineRunStatus | number | stri
     case PipelineRunStatus.PIPELINE_RUN_STATUS_ARCHIVED: return 'Archived';
     case PipelineRunStatus.PIPELINE_RUN_STATUS_TIER_BLOCKED: return 'Tier Blocked';
     case PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED: return 'Cancelled';
+    case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING: return 'Synced With Pending';
     default: return 'Unknown';
   }
 }
@@ -2644,6 +2649,10 @@ const PipelineRunStatusValues: Record<string, PipelineRunStatus> = {
     'pipeline_run_status_cancelled': PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED,
     'cancelled': PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED,
     '9': PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED,
+    'pipeline_run_status_synced_with_pending': PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING,
+    'synced_with_pending': PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING,
+    'synced with pending': PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING,
+    '10': PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING,
 };
 
 export function parsePipelineRunStatus(input: string | number | undefined | null): PipelineRunStatus {

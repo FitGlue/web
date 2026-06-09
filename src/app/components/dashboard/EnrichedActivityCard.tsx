@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { EnricherBadge } from './EnricherBadge';
 import { useRealtimePipelines } from '../../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../../hooks/usePluginRegistry';
@@ -59,6 +59,8 @@ const getStatusStamp = (status?: PipelineRunStatus): { variant: 'success' | 'war
     switch (status) {
         case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED:
             return { variant: 'success', label: '✓ SYNCED' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING:
+            return { variant: 'success', label: '✓ SYNCED+' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL:
             return { variant: 'warning', label: '⚠ PARTIAL' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED:
@@ -248,11 +250,26 @@ export const EnrichedActivityCard: React.FC<EnrichedActivityCardProps> = ({
 
             {/* Non-terminal status message */}
             {!tierBlocked && pipelineRun?.statusMessage &&
-                pipelineRun.status !== PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED && (
+                pipelineRun.status !== PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED &&
+                pipelineRun.status !== PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING && (
                     <div className="enriched-activity-card__status-msg">
                         ℹ {pipelineRun.statusMessage}
                     </div>
                 )}
+
+            {/* Non-blocking pending enricher inputs */}
+            {pipelineRun.status === PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING && (
+                <div className="enriched-activity-card__status-msg" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span>⏳ {pipelineRun.nonBlockingPendingInputIds?.length ?? 0} enricher input{(pipelineRun.nonBlockingPendingInputIds?.length ?? 0) !== 1 ? 's' : ''} pending</span>
+                    <Link
+                        to="/inputs"
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ fontSize: '0.75rem', fontWeight: 600, textDecoration: 'underline' }}
+                    >
+                        Add now →
+                    </Link>
+                </div>
+            )}
         </div>
     );
 };

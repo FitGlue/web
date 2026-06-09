@@ -3,11 +3,13 @@ import { useParams } from 'react-router-dom';
 import { useRealtimePipelines } from '../hooks/useRealtimePipelines';
 import { usePluginRegistry } from '../hooks/usePluginRegistry';
 import { useRealtimePipelineRuns } from '../hooks/useRealtimePipelineRuns';
+import { useRealtimeInputs } from '../hooks/useRealtimeInputs';
 import { useShowcaseSlug } from '../hooks/useShowcaseSlug';
 import { PageLayout } from '../components/library/layout';
 import { CardSkeleton, Heading, Paragraph, Code, Button, SvgAsset, useToast, ProgressBar } from '../components/library/ui';
 import '../components/library/ui/CardSkeleton.css';
 import { MagicActionsPopover } from '../components/MagicActionsPopover';
+import PendingInputCard from '../components/PendingInputCard';
 import { client } from '../../shared/api/client';
 import { formatActivityType, formatDestination, formatDestinationStatus } from '../../types/pb/enum-formatters';
 import { buildDestinationUrl } from '../utils/destinationUrls';
@@ -247,6 +249,8 @@ const getStatusInfo = (status?: PipelineRunStatus): {
             return { cardVariant: 'premium', badgeVariant: 'default', statusLabel: 'Skipped', statusIcon: '⏭️' };
         case PipelineRunStatus.PIPELINE_RUN_STATUS_CANCELLED:
             return { cardVariant: 'default', badgeVariant: 'error', statusLabel: 'Cancelled', statusIcon: '⊗' };
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING:
+            return { cardVariant: 'needs-input', badgeVariant: 'warning', statusLabel: 'Synced · Pending Input', statusIcon: '⏳' };
         default:
             return { cardVariant: 'default', badgeVariant: 'default' };
     }
@@ -266,12 +270,26 @@ const ActivityDetailPage: React.FC = () => {
 
     // Get pipeline runs - this is now the PRIMARY data source
     const { pipelineRuns, loading } = useRealtimePipelineRuns(true, 50);
+    const { inputs, refresh: refreshInputs } = useRealtimeInputs();
     const showcaseSlug = useShowcaseSlug();
 
     // Find the pipeline run for this activity by activityId
     const pipelineRun = useMemo((): PipelineRun | undefined => {
         return pipelineRuns.find(run => run.activityId === id);
     }, [pipelineRuns, id]);
+
+    // Find pending inputs belonging to this run
+    const relevantInputs = useMemo(() => {
+        if (!pipelineRun) return [];
+        const pendingIds = new Set(
+            [pipelineRun.pendingInputId, ...pipelineRun.nonBlockingPendingInputIds]
+                .filter((v): v is string => Boolean(v))
+        );
+        return inputs.filter(i =>
+            i.activityId === pipelineRun.activityId ||
+            (pendingIds.size > 0 && (pendingIds.has(i.activityId) || pendingIds.has(i.id ?? '')))
+        );
+    }, [inputs, pipelineRun]);
 
     // Memoized data extraction from PipelineRun
     const {
@@ -478,6 +496,25 @@ const ActivityDetailPage: React.FC = () => {
                 </span>
                 <div className="rd-tools__spacer" />
             </div>
+
+            {/* ── Pending inputs ── */}
+            {relevantInputs.length > 0 && (
+                <>
+                    <div className="rd-providers-head">
+                        ACTION REQUIRED{' '}
+                        <b>{relevantInputs.length} PENDING {relevantInputs.length === 1 ? 'INPUT' : 'INPUTS'}</b>
+                    </div>
+                    <div className="pi-grid">
+                        {relevantInputs.map((input) => (
+                            <PendingInputCard
+                                key={input.id || input.activityId}
+                                input={input}
+                                onResolved={refreshInputs}
+                            />
+                        ))}
+                    </div>
+                </>
+            )}
 
             {/* ── Main 2-column layout ── */}
             <div className="rd-main">

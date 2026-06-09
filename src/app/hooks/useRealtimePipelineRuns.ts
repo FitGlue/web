@@ -68,6 +68,7 @@ const mapFirestoreToPipelineRun = (docId: string, data: Record<string, unknown>)
         originalPayloadUri: (data.original_payload_uri || data.originalPayloadUri || '') as string,
         enrichedEventUri: (data.enriched_event_uri || data.enrichedEventUri || '') as string,
         pendingInputId: (data.pending_input_id || data.pendingInputId) as string | undefined,
+        nonBlockingPendingInputIds: ((data.non_blocking_pending_input_ids ?? data.nonBlockingPendingInputIds ?? []) as string[]),
         steps: ((data.steps || []) as Array<Record<string, unknown>>).map((s): ExecutionStep => ({
             id: (s.id || '') as string,
             ordinal: (s.ordinal || 0) as number,

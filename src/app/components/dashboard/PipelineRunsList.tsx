@@ -13,6 +13,7 @@ export type FilterMode = 'all' | 'completed' | 'attention';
 // Status groupings for filtering
 const COMPLETED_STATUSES = [
     PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED,
+    PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING,
     PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL,
 ];
 

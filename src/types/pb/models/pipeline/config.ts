@@ -50,6 +50,7 @@ export interface SourceEnrichmentConfig {
 export interface EnricherConfig {
   providerType: EnricherProviderType;
   typedConfig: { [key: string]: string };
+  nonBlocking: boolean;
 }
 
 export interface EnricherConfig_TypedConfigEntry {

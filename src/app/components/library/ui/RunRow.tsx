@@ -38,6 +38,7 @@ function getTypeClass(type?: ActivityType): string {
 function getStatusClass(status?: PipelineRunStatus): string {
     switch (status) {
         case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED:
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING:
         case PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL:
             return 'run-row__pill--ok';
         case PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED:
@@ -57,6 +58,7 @@ function getStatusClass(status?: PipelineRunStatus): string {
 function getStatusLabel(status?: PipelineRunStatus): string {
     switch (status) {
         case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED: return 'SYNCED';
+        case PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING: return 'SYNCED+';
         case PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL: return 'PARTIAL';
         case PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED: return 'FAILED';
         case PipelineRunStatus.PIPELINE_RUN_STATUS_RUNNING: return 'RUNNING';
@@ -90,6 +92,7 @@ export const RunRow: React.FC<RunRowProps> = ({ run, variant = 'feed', pipelineN
     if (variant === 'dashboard') {
         const status = run.status;
         const synced = status === PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED
+            || status === PipelineRunStatus.PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING
             || status === PipelineRunStatus.PIPELINE_RUN_STATUS_PARTIAL;
         const skippedOrFailed = status === PipelineRunStatus.PIPELINE_RUN_STATUS_SKIPPED
             || status === PipelineRunStatus.PIPELINE_RUN_STATUS_FAILED

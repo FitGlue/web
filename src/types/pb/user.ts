@@ -184,6 +184,8 @@ export enum PipelineRunStatus {
   PIPELINE_RUN_STATUS_TIER_BLOCKED = 8,
   /** PIPELINE_RUN_STATUS_CANCELLED - Cancelled before completion */
   PIPELINE_RUN_STATUS_CANCELLED = 9,
+  /** PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING - Destinations synced; non-blocking enricher inputs still awaiting user input */
+  PIPELINE_RUN_STATUS_SYNCED_WITH_PENDING = 10,
   UNRECOGNIZED = -1,
 }
 
@@ -711,6 +713,8 @@ export interface PipelineRun {
   enrichedEventUri: string;
   /** Unified execution steps — populated for runs after the reskin rollout. */
   steps: ExecutionStep[];
+  /** IDs of non-blocking PendingInputs still awaiting user input for this run. */
+  nonBlockingPendingInputIds: string[];
 }
 
 /** BoosterExecution tracks a single enricher provider's execution. */
