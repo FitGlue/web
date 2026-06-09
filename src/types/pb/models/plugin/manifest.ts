@@ -86,7 +86,15 @@ export interface PluginManifest {
    * PipelineStage groups boosters in the pipeline editor UI.
    * Only meaningful for type == PLUGIN_TYPE_ENRICHER.
    */
-  stage?: PipelineStage | undefined;
+  stage?:
+    | PipelineStage
+    | undefined;
+  /**
+   * supportsNonBlocking indicates this enricher can run in non-blocking mode:
+   * the pipeline continues to destinations while the enricher waits for user
+   * input, then destinations are updated (not duplicated) when input is resolved.
+   */
+  supportsNonBlocking?: boolean | undefined;
 }
 
 export interface Transformation {

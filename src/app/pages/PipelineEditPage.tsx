@@ -12,6 +12,7 @@ import { PluginCategorySection } from '../components/PluginCategorySection';
 import { PluginConfigForm } from '../components/EnricherConfigForm';
 import { EnricherConfigForm } from '../components/EnricherConfigForm';
 import { LogicGateConfigForm } from '../components/LogicGateConfigForm';
+import { Checkbox } from '../components/library/forms/Checkbox';
 import { SharePipelineModal } from '../components/SharePipelineModal';
 import { WizardExcludedSection, WizardStepHead } from '../components/wizard';
 import { DestinationEnricherExclusion, EnricherExclusionItem } from '../components/DestinationEnricherExclusion';
@@ -77,6 +78,7 @@ function hasMissingRequiredConfig(manifest: PluginManifest, config: Record<strin
 interface EnricherConfig {
     providerType: SchemaEnricherProviderType;
     typedConfig?: Record<string, string>;
+    nonBlocking?: boolean;
 }
 
 interface PipelineConfig {
@@ -94,6 +96,7 @@ interface PipelineConfig {
 interface SelectedEnricher {
     manifest: PluginManifest;
     config: Record<string, string>;
+    nonBlocking?: boolean;
 }
 
 const PipelineEditPage: React.FC = () => {
@@ -163,7 +166,7 @@ const PipelineEditPage: React.FC = () => {
         pipelineName,
         pipelineDisabled,
         selectedSources,
-        enricherIds: selectedEnrichers.map(e => ({ id: e.manifest.id, pt: e.manifest.enricherProviderType, config: e.config })),
+        enricherIds: selectedEnrichers.map(e => ({ id: e.manifest.id, pt: e.manifest.enricherProviderType, config: e.config, nonBlocking: e.nonBlocking ?? false })),
         selectedDestinations,
         sourceConfig,
         destinationConfigs,
@@ -210,7 +213,8 @@ const PipelineEditPage: React.FC = () => {
                 );
                 return {
                     manifest: manifest || { id: `unknown-${e.providerType}`, name: `Enricher ${e.providerType}`, enricherProviderType: resolveEnum(e.providerType, EnricherProviderType) } as unknown as PluginManifest,
-                    config: e.typedConfig || {}
+                    config: e.typedConfig || {},
+                    nonBlocking: e.nonBlocking ?? false,
                 };
             }).filter(e => e.manifest);
             setSelectedEnrichers(enricherConfigs);
@@ -285,7 +289,8 @@ const PipelineEditPage: React.FC = () => {
         try {
             const enricherConfigs = selectedEnrichers.map(e => ({
                 providerType: EnricherProviderType[e.manifest.enricherProviderType as number] || String(e.manifest.enricherProviderType),
-                typedConfig: e.config
+                typedConfig: e.config,
+                ...(e.nonBlocking ? { nonBlocking: true } : {}),
             }));
             const mergedDestConfigs: Record<string, { config: Record<string, string>; excludedEnrichers?: string[] }> = {};
             const destConfigKeys = new Set([
@@ -366,6 +371,14 @@ const PipelineEditPage: React.FC = () => {
         setSelectedEnrichers(prev => {
             const updated = [...prev];
             if (updated[index]) updated[index] = { ...updated[index], config };
+            return updated;
+        });
+    }, []);
+
+    const updateEnricherNonBlocking = useCallback((index: number, nonBlocking: boolean) => {
+        setSelectedEnrichers(prev => {
+            const updated = [...prev];
+            if (updated[index]) updated[index] = { ...updated[index], nonBlocking };
             return updated;
         });
     }, []);
@@ -918,6 +931,25 @@ const PipelineEditPage: React.FC = () => {
                                                 initialValues={e.config}
                                                 onChange={config => updateEnricherConfig(absoluteIndex, config)}
                                             />
+                                        )}
+                                        {e.manifest.supportsNonBlocking && (
+                                            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(245,243,235,0.08)' }}>
+                                                <Checkbox
+                                                    id={`non-blocking-${absoluteIndex}`}
+                                                    checked={e.nonBlocking ?? false}
+                                                    onChange={ev => updateEnricherNonBlocking(absoluteIndex, ev.target.checked)}
+                                                    label="Non-blocking"
+                                                />
+                                                <p style={{
+                                                    margin: '0.25rem 0 0 1.625rem',
+                                                    fontFamily: 'var(--fg-font-mono)',
+                                                    fontSize: '0.6875rem',
+                                                    color: 'var(--color-text-muted)',
+                                                    letterSpacing: '0.04em',
+                                                }}>
+                                                    Pipeline continues to destinations without waiting. When you submit the input, destinations are updated rather than duplicated.
+                                                </p>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
