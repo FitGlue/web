@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.61.0](https://github.com/fitglue/web/compare/v11.60.1...v11.61.0) (2026-06-09)
+
+
+### Features
+
+* **web:** add native app embed mode for mobile WebView hybrid ([9910955](https://github.com/fitglue/web/commit/991095504e086933daf6914203e2c9ba1f4d8bf5))
+
 ### [11.60.1](https://github.com/fitglue/web/compare/v11.60.0...v11.60.1) (2026-06-09)
 
 
