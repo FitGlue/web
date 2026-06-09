@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.60.0](https://github.com/fitglue/web/compare/v11.59.0...v11.60.0) (2026-06-09)
+
+
+### Features
+
+* **pipeline-edit:** add non-blocking toggle for enrichers that support it ([9ca8581](https://github.com/fitglue/web/commit/9ca8581b3dc4ca87cc62ae6c05ea3a96bc6a58c2))
+
 ## [11.59.0](https://github.com/fitglue/web/compare/v11.58.0...v11.59.0) (2026-06-09)
 
 
