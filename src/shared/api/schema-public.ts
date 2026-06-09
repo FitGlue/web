@@ -560,6 +560,12 @@ export interface components {
              * @enum {string}
              */
             stage?: "PIPELINE_STAGE_UNSPECIFIED" | "PIPELINE_STAGE_GATE" | "PIPELINE_STAGE_ENRICHMENT" | "PIPELINE_STAGE_METRICS" | "PIPELINE_STAGE_CONTEXT_AI" | "PIPELINE_STAGE_INPUT" | "PIPELINE_STAGE_VIZ";
+            /**
+             * @description supportsNonBlocking indicates this enricher can run in non-blocking mode:
+             *      the pipeline continues to destinations while the enricher waits for user
+             *      input, then destinations are updated (not duplicated) when input is resolved.
+             */
+            supportsNonBlocking?: boolean;
         };
         PluginRegistryResponse: {
             sources?: components["schemas"]["PluginManifest"][];
