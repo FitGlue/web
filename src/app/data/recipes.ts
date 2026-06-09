@@ -122,25 +122,6 @@ export const RECIPES: Recipe[] = [
         guideSlug: 'parkrun-automation',
     },
     {
-        id: 'garmin-supercharger',
-        title: 'Your Garmin Captures Amazing Data. Let FitGlue Tell the Story.',
-        tagline: 'Weather conditions, location titles, elevation profiles, and shareable pages — transform raw FIT files into rich activity posts',
-        icon: '⌚',
-        category: 'device',
-        recommendedSource: 'file_upload',
-        sourceNote: 'Upload .FIT files exported from Garmin Connect',
-        destinations: ['strava', 'showcase'],
-        enricherProviderTypes: [14, 23, 24, 25], // Fitbit HR, Weather, Location Naming, Elevation Profile
-        importCode: 'eyJ2IjoxLCJuIjoiR2FybWluIEFjdGl2aXR5IFN1cGVyY2hhcmdlciIsInMiOiJmaWxlX3VwbG9hZCIsImUiOlt7InAiOjE0fSx7InAiOjIzfSx7InAiOjI0fSx7InAiOjI1fV0sImQiOlsic3RyYXZhIiwic2hvd2Nhc2UiXX0=',
-        transformation: {
-            before: 'Morning Run\n10.2 km | 52:15\nAvg HR: 152 bpm',
-            after: '📍 Morning Run in Hyde Park\n10.2 km | 52:15 | 5:07/km\n\n❤️ Heart Rate: 98 bpm min • 152 bpm avg • 175 bpm max\n\n⛰️ Elevation: +127m gain • −125m loss • 45m max\n\n🌤️ Weather: 14°C, Clear • Wind: 8 km/h NW\n\n💪 Training Load: 112 (Hard)',
-        },
-        requiredConnections: [],
-        includesAthleteFeatures: false,
-        guideSlug: 'garmin-fit-upload',
-    },
-    {
         id: 'showcase-strength',
         title: 'Share Your Workouts With Anyone — No Strava Needed',
         tagline: 'Beautiful public pages with full exercise breakdowns, muscle heatmaps, and AI summaries — perfect for coaches, friends, or social media',

@@ -24,7 +24,7 @@ The Workout Summary booster has no configurable options. It automatically format
 This booster requires activity data from a connected source. For the richest output:
 
 - **Hevy source** — Produces detailed exercise/set/rep/weight breakdowns.
-- **Strava / Garmin / Fitbit sources** — Produces metric summaries (distance, pace, HR).
+- **Strava / Fitbit / GPS sources** — Produces metric summaries (distance, pace, HR).
 - If no exercise data is available, the summary will be minimal.
 
 ## How Content Appears

@@ -32,7 +32,7 @@ Strava can also be used as a **destination** — and FitGlue is smart enough to 
 ### What is NOT available
 
 - **Individual exercise sets/reps/weights** — Strava does not provide detailed strength data. For strength workouts, use the [Hevy source](/help/articles/registry/sources/hevy) instead.
-- **Lap-level detail** — Strava's API provides summary data; for full FIT-file-level detail, use the source device directly (e.g., [Garmin](/help/articles/registry/sources/garmin) or [File Upload](/help/articles/registry/sources/file_upload)).
+- **Lap-level detail** — Strava's API provides summary data; for full FIT-file-level detail, upload your FIT file directly via [File Upload](/help/articles/registry/sources/file_upload).
 
 ### Sync mechanism
 
@@ -57,7 +57,7 @@ If Strava is configured as both a **source** and a **destination** in your pipel
 
 **Activities not syncing** — Check that your Strava connection is active in Dashboard → Connections. If Strava shows "Connected" but activities aren't appearing, try disconnecting and reconnecting. Webhooks can occasionally stall if Strava's API has an outage.
 
-**Duplicate activities appearing** — This should not happen with loop prevention enabled. If you see duplicates, check whether you have the same activity arriving from multiple sources (e.g., Strava _and_ Garmin both sending the same run). Use the [Activity Filter](/help/articles/registry/enrichers/activity-filter) booster to deduplicate.
+**Duplicate activities appearing** — This should not happen with loop prevention enabled. If you see duplicates, check whether you have the same activity arriving from multiple sources (e.g., Strava _and_ another source both sending the same run). Use the [Activity Filter](/help/articles/registry/enrichers/activity-filter) booster to deduplicate.
 
 **Heart rate data missing** — Strava only includes heart rate if it was recorded by a connected device (chest strap, wrist HR watch). If your activity has no HR data from Strava, use the [Fitbit Heart Rate](/help/articles/registry/enrichers/fitbit-heart-rate) booster to merge it.
 

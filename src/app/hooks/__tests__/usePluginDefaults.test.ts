@@ -134,7 +134,7 @@ describe('usePluginDefaults', () => {
   it('refresh re-fetches defaults', async () => {
     mockGet
       .mockResolvedValueOnce({ data: { defaults: {} } })
-      .mockResolvedValueOnce({ data: { defaults: { garmin: { x: '1' } } } });
+      .mockResolvedValueOnce({ data: { defaults: { polar: { x: '1' } } } });
 
     const { result } = renderHook(() => usePluginDefaults());
     await waitFor(() => expect(result.current.loading).toBe(false));
@@ -143,6 +143,6 @@ describe('usePluginDefaults', () => {
       await result.current.refresh();
     });
 
-    expect(result.current.defaults).toEqual([{ pluginId: 'garmin', config: { x: '1' } }]);
+    expect(result.current.defaults).toEqual([{ pluginId: 'polar', config: { x: '1' } }]);
   });
 });

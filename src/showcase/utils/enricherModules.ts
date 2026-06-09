@@ -34,6 +34,7 @@ export type ModuleKey =
   | 'temperature'
   | 'spotify'
   | 'best-efforts'
+  | 'hdrop'
   | 'auto-increment-footer'
   | 'source-link-footer';
 
@@ -76,6 +77,7 @@ export const MODULE_PLACEMENT = {
   'temperature':           'grid',
   'spotify':               'grid',
   'best-efforts':          'grid',
+  'hdrop':                 'grid',
   'auto-increment-footer': 'footer',
   'source-link-footer':    'footer',
 } satisfies Record<ModuleKey, 'page' | 'pre-grid' | 'grid' | 'footer'>;
@@ -110,6 +112,7 @@ const ENRICHER_TO_MODULE: Record<string, ModuleKey | null> = {
   ENRICHER_PROVIDER_TEMPERATURE_SUMMARY:  'temperature',
   ENRICHER_PROVIDER_SPOTIFY_TRACKS:       'spotify',
   ENRICHER_PROVIDER_BEST_EFFORTS:         'best-efforts',
+  ENRICHER_PROVIDER_HDROP:                'hdrop',
   ENRICHER_PROVIDER_AUTO_INCREMENT:       'auto-increment-footer',
   ENRICHER_PROVIDER_SOURCE_LINK:          'source-link-footer',
   // always-hidden (booster timeline only)
@@ -236,6 +239,7 @@ export function buildModuleOrder(
   if (has('ENRICHER_PROVIDER_GOAL_TRACKER')) push('goals');
   if (has('ENRICHER_PROVIDER_WEATHER') && category === 'cardio-distance') push('weather');
   if (has('ENRICHER_PROVIDER_TEMPERATURE_SUMMARY')) push('temperature');
+  if (has('ENRICHER_PROVIDER_HDROP')) push('hdrop');
   if (has('ENRICHER_PROVIDER_SPOTIFY_TRACKS')) push('spotify');
 
   // 8. Footer enrichers

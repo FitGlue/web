@@ -54,6 +54,6 @@ The Running Dynamics booster requires the **Athlete** (paid) tier.
 
 ## Related
 
-- [Garmin source](/help/articles/registry/sources/garmin)
+- [File Upload source](/help/articles/registry/sources/file_upload)
 - [Cadence Summary booster](/help/articles/registry/enrichers/cadence-summary)
 - [Pace Summary booster](/help/articles/registry/enrichers/pace-summary)

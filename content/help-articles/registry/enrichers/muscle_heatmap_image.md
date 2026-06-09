@@ -35,7 +35,7 @@ The Muscle Heatmap Image booster requires the **Athlete** (paid) tier.
 
 ## Common Issues
 
-**No image generated** — Like the text heatmap, this booster requires exercise data. Activities from Strava or Garmin without exercise details will not produce an image.
+**No image generated** — Like the text heatmap, this booster requires exercise data. Activities from Strava or GPS sources without exercise details will not produce an image.
 
 **Image not visible on Strava** — Strava's API doesn't support image attachment in descriptions. The image is only visible on your Showcase page. You can download it from Showcase and manually add it to your Strava photos.
 

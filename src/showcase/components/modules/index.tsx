@@ -90,3 +90,4 @@ export { default as SetListModule } from './SetListModule';
 export { default as PersonalRecordsCallout } from './PersonalRecordsCallout';
 export { default as MilestoneCallout } from './MilestoneCallout';
 export { default as BestEffortsModule } from './BestEffortsModule';
+export { default as HDropModule } from './HDropModule';

@@ -5,7 +5,7 @@
       "type": 1,
       "name": "Hevy",
       "description": "Import strength training workouts from Hevy",
-      "icon": "🏋️",
+      "icon": "\ud83c\udfcb\ufe0f",
       "enabled": true,
       "requiredIntegrations": [
         "hevy"
@@ -13,10 +13,10 @@
       "configSchema": [],
       "marketingDescription": "\n### Strength Training Source\nImport your weight training workouts from Hevy into FitGlue for enhancement and distribution. Every exercise, set, rep, and weight is captured with full fidelity.\n\n### How it works\nWhen you complete a workout in Hevy, FitGlue receives a webhook notification and imports the full workout data. The activity enters your FitGlue pipeline where it can be enriched with AI descriptions, muscle heatmaps, and more.\n  ",
       "features": [
-        "✅ Import strength workouts with full exercise details",
-        "✅ Capture sets, reps, weights, and rest periods",
-        "✅ Real-time sync via webhooks",
-        "✅ Works seamlessly with all FitGlue boosters"
+        "\u2705 Import strength workouts with full exercise details",
+        "\u2705 Capture sets, reps, weights, and rest periods",
+        "\u2705 Real-time sync via webhooks",
+        "\u2705 Works seamlessly with all FitGlue boosters"
       ],
       "transformations": [],
       "useCases": [],
@@ -32,7 +32,7 @@
       "type": 1,
       "name": "Fitbit",
       "description": "Import activities from Fitbit",
-      "icon": "⌚",
+      "icon": "\u231a",
       "enabled": true,
       "requiredIntegrations": [
         "fitbit"
@@ -40,10 +40,10 @@
       "configSchema": [],
       "marketingDescription": "\n### Wearable Activity Source\nImport activities tracked by your Fitbit device into FitGlue. Runs, walks, bike rides, and workouts with heart rate and calorie data are all supported.\n\n### How it works\nFitGlue connects to the Fitbit API and receives notifications when you complete activities. The full activity data, including heart rate zones and GPS tracks (if available), is imported into your pipeline.\n  ",
       "features": [
-        "✅ Import all Fitbit-tracked activities",
-        "✅ Heart rate data included automatically",
-        "✅ GPS tracks for outdoor activities",
-        "✅ Automatic sync when activities complete"
+        "\u2705 Import all Fitbit-tracked activities",
+        "\u2705 Heart rate data included automatically",
+        "\u2705 GPS tracks for outdoor activities",
+        "\u2705 Automatic sync when activities complete"
       ],
       "transformations": [],
       "useCases": [],
@@ -59,7 +59,7 @@
       "type": 1,
       "name": "Apple Health",
       "description": "Import workouts and health data from iOS devices",
-      "icon": "🍎",
+      "icon": "\ud83c\udf4e",
       "enabled": true,
       "requiredIntegrations": [
         "apple-health"
@@ -67,10 +67,10 @@
       "configSchema": [],
       "marketingDescription": "\n### iOS Health Data Source\nImport workouts, heart rate data, and GPS routes directly from Apple Health on your iPhone or Apple Watch. FitGlue's mobile app syncs your health data seamlessly.\n\n### How it works\nInstall the FitGlue mobile app on your iOS device and grant access to Apple Health. Workouts are automatically synced in the background and flow through your FitGlue pipeline.\n  ",
       "features": [
-        "✅ Import workouts from Apple Watch and iPhone",
-        "✅ Heart rate data included automatically",
-        "✅ GPS routes for outdoor activities",
-        "✅ Background sync when app is installed"
+        "\u2705 Import workouts from Apple Watch and iPhone",
+        "\u2705 Heart rate data included automatically",
+        "\u2705 GPS routes for outdoor activities",
+        "\u2705 Background sync when app is installed"
       ],
       "transformations": [],
       "useCases": [],
@@ -84,7 +84,7 @@
       "type": 1,
       "name": "Health Connect",
       "description": "Import workouts and health data from Android devices",
-      "icon": "🤖",
+      "icon": "\ud83e\udd16",
       "enabled": true,
       "requiredIntegrations": [
         "health-connect"
@@ -92,10 +92,10 @@
       "configSchema": [],
       "marketingDescription": "\n### Android Health Data Source\nImport workouts, heart rate data, and GPS routes from Android Health Connect. FitGlue's mobile app syncs your health data from any compatible fitness tracker or app.\n\n### How it works\nInstall the FitGlue mobile app on your Android device and grant access to Health Connect. Workouts are automatically synced in the background and flow through your FitGlue pipeline.\n  ",
       "features": [
-        "✅ Import workouts from any Health Connect-compatible device",
-        "✅ Heart rate data included automatically",
-        "✅ GPS routes for outdoor activities",
-        "✅ Background sync when app is installed"
+        "\u2705 Import workouts from any Health Connect-compatible device",
+        "\u2705 Heart rate data included automatically",
+        "\u2705 GPS routes for outdoor activities",
+        "\u2705 Background sync when app is installed"
       ],
       "transformations": [],
       "useCases": [],
@@ -109,20 +109,20 @@
       "type": 1,
       "name": "File Upload",
       "description": "Upload FIT files directly from your device",
-      "icon": "📤",
+      "icon": "\ud83d\udce4",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [],
       "marketingDescription": "\n### Direct FIT File Upload\nUpload activity files directly from your device. Perfect for importing data from fitness devices or recovering workouts not captured by connected services.\n\n### How it works\nSelect a FIT file, optionally add title/description, then upload. The activity enters your pipeline for enrichment and distribution.\n  ",
       "features": [
-        "✅ Upload FIT files from any device",
-        "✅ Set custom title and description",
-        "✅ Works with all FitGlue boosters",
-        "✅ No external service connection required"
+        "\u2705 Upload FIT files from any device",
+        "\u2705 Set custom title and description",
+        "\u2705 Works with all FitGlue boosters",
+        "\u2705 No external service connection required"
       ],
       "transformations": [],
       "useCases": [
-        "Import workouts from Garmin or other standalone GPS devices",
+        "Import workouts from standalone GPS devices and FIT files",
         "Bring in activities from platforms FitGlue doesn't integrate with yet",
         "Recover activities from device backups"
       ],
@@ -136,7 +136,7 @@
       "type": 1,
       "name": "Strava",
       "description": "Import activities from Strava via real-time webhooks",
-      "icon": "🚴",
+      "icon": "\ud83d\udeb4",
       "enabled": true,
       "requiredIntegrations": [
         "strava"
@@ -144,11 +144,11 @@
       "configSchema": [],
       "marketingDescription": "\n### The World's Leading Fitness Platform\nImport your runs, rides, swims, and workouts from Strava into FitGlue. Activities are synced in real-time via webhooks the moment they're uploaded to Strava.\n\n### How it works\nConnect your Strava account to FitGlue via OAuth. When you complete an activity on Strava (or sync from your device), FitGlue receives a webhook notification and imports the full activity data. Your activity then flows through your pipeline for enrichment and distribution.\n\n### Seamless Loop Prevention\nFitGlue's intelligent loop prevention ensures that activities uploaded TO Strava aren't re-imported FROM Strava. No duplicates, no infinite loops.\n  ",
       "features": [
-        "✅ Real-time sync via Strava webhooks",
-        "✅ Import all activity types (runs, rides, swims, workouts)",
-        "✅ Heart rate, GPS, and power data included",
-        "✅ Automatic sync when activities are uploaded",
-        "✅ Smart loop prevention prevents duplicates"
+        "\u2705 Real-time sync via Strava webhooks",
+        "\u2705 Import all activity types (runs, rides, swims, workouts)",
+        "\u2705 Heart rate, GPS, and power data included",
+        "\u2705 Automatic sync when activities are uploaded",
+        "\u2705 Smart loop prevention prevents duplicates"
       ],
       "transformations": [],
       "useCases": [
@@ -164,47 +164,23 @@
       "iconPath": "/images/icons/strava.svg"
     },
     {
-      "id": "garmin",
-      "type": 1,
-      "name": "Garmin",
-      "description": "Import activities from Garmin Connect",
-      "icon": "⌚",
-      "enabled": true,
-      "requiredIntegrations": [
-        "garmin"
-      ],
-      "configSchema": [],
-      "marketingDescription": "\n### Garmin Connect Source\nStandard Garmin Connect integration for importing activities.\n  ",
-      "features": [
-        "✅ Import activities from Garmin devices"
-      ],
-      "transformations": [],
-      "useCases": [],
-      "category": "wearables",
-      "sortOrder": 3,
-      "isPremium": false,
-      "popularityScore": 88,
-      "iconType": "svg",
-      "iconPath": "/images/icons/garmin.svg"
-    },
-    {
       "id": "wahoo",
       "type": 1,
       "name": "Wahoo",
       "description": "Import workouts from Wahoo Cloud with full FIT file support",
-      "icon": "📱",
+      "icon": "\ud83d\udcf1",
       "enabled": true,
       "requiredIntegrations": [
         "wahoo"
       ],
       "configSchema": [],
-      "marketingDescription": "\n### Wahoo Cloud Source\nImport workouts from your Wahoo ELEMNT bike computers, KICKR trainers, and other Wahoo devices. Activities are synced in real-time via webhooks with full FIT file data.\n\n### How it works\nConnect your Wahoo account to FitGlue via OAuth. When you complete a workout on your Wahoo device, FitGlue receives a webhook notification, downloads the full FIT file, and imports your activity with all sensor data.\n\n### Full Sensor Data\nPower meters, heart rate monitors, cadence sensors, and GPS data — all captured in the FIT file and available for your enrichment pipeline.\n  ",
+      "marketingDescription": "\n### Wahoo Cloud Source\nImport workouts from your Wahoo ELEMNT bike computers, KICKR trainers, and other Wahoo devices. Activities are synced in real-time via webhooks with full FIT file data.\n\n### How it works\nConnect your Wahoo account to FitGlue via OAuth. When you complete a workout on your Wahoo device, FitGlue receives a webhook notification, downloads the full FIT file, and imports your activity with all sensor data.\n\n### Full Sensor Data\nPower meters, heart rate monitors, cadence sensors, and GPS data \u2014 all captured in the FIT file and available for your enrichment pipeline.\n  ",
       "features": [
-        "✅ Real-time sync via Wahoo Cloud webhooks",
-        "✅ Full FIT file download with complete sensor data",
-        "✅ Power, HR, cadence, and GPS data included",
-        "✅ Works with ELEMNT, KICKR, and all Wahoo devices",
-        "✅ Automatic sync when workouts complete"
+        "\u2705 Real-time sync via Wahoo Cloud webhooks",
+        "\u2705 Full FIT file download with complete sensor data",
+        "\u2705 Power, HR, cadence, and GPS data included",
+        "\u2705 Works with ELEMNT, KICKR, and all Wahoo devices",
+        "\u2705 Automatic sync when workouts complete"
       ],
       "isTemporarilyUnavailable": true,
       "transformations": [],
@@ -223,7 +199,7 @@
       "type": 1,
       "name": "Oura Ring",
       "description": "Import workouts from Oura Ring",
-      "icon": "💍",
+      "icon": "\ud83d\udc8d",
       "enabled": true,
       "requiredIntegrations": [
         "oura"
@@ -231,11 +207,11 @@
       "configSchema": [],
       "marketingDescription": "\n### Smart Ring Workout Source\nImport workouts tracked by your Oura Ring into FitGlue. Heart rate data, calories, and workout metrics are captured for enhancement and distribution.\n\n### How it works\nWhen you complete a workout tracked by your Oura Ring, FitGlue receives a webhook notification and imports the workout data. The activity enters your FitGlue pipeline where it can be enriched with AI descriptions and more.\n  ",
       "features": [
-        "✅ Import workouts from Oura Ring",
-        "✅ Heart rate data (average and max)",
-        "✅ Calories and duration tracking",
-        "✅ Real-time sync via webhooks",
-        "✅ Works seamlessly with all FitGlue boosters"
+        "\u2705 Import workouts from Oura Ring",
+        "\u2705 Heart rate data (average and max)",
+        "\u2705 Calories and duration tracking",
+        "\u2705 Real-time sync via webhooks",
+        "\u2705 Works seamlessly with all FitGlue boosters"
       ],
       "isTemporarilyUnavailable": true,
       "transformations": [],
@@ -254,7 +230,7 @@
       "type": 1,
       "name": "Polar Flow",
       "description": "Import activities from Polar wearables",
-      "icon": "❄️",
+      "icon": "\u2744\ufe0f",
       "enabled": true,
       "requiredIntegrations": [
         "polar"
@@ -262,11 +238,11 @@
       "configSchema": [],
       "marketingDescription": "\n### Polar Wearable Source\nImport your runs, rides, swims, and workouts from Polar devices. Activities are synced via webhooks when you complete them on your Polar watch or sync with Polar Flow.\n\n### How it works\nConnect your Polar Flow account to FitGlue via OAuth. When you complete an activity, FitGlue receives a webhook notification and imports the full activity data including heart rate, GPS tracks, and training load metrics.\n\n### Transaction-Based Sync\nPolar uses a unique transaction-based API that ensures reliable data delivery. FitGlue handles all the complexity automatically.\n  ",
       "features": [
-        "✅ Import all Polar-tracked activities",
-        "✅ Heart rate data with zones",
-        "✅ GPS routes for outdoor activities",
-        "✅ Training load metrics included",
-        "✅ Real-time sync via webhooks"
+        "\u2705 Import all Polar-tracked activities",
+        "\u2705 Heart rate data with zones",
+        "\u2705 GPS routes for outdoor activities",
+        "\u2705 Training load metrics included",
+        "\u2705 Real-time sync via webhooks"
       ],
       "isTemporarilyUnavailable": true,
       "transformations": [],
@@ -287,7 +263,7 @@
       "type": 1,
       "name": "Intervals.icu",
       "description": "Import activities from Intervals.icu",
-      "icon": "📊",
+      "icon": "\ud83d\udcca",
       "enabled": true,
       "requiredIntegrations": [
         "intervals"
@@ -295,10 +271,10 @@
       "configSchema": [],
       "marketingDescription": "\n### Advanced Training Analytics Source\nImport your activities from Intervals.icu into FitGlue. Power data, heart rate, cadence, GPS, and all performance metrics are captured for enhancement and distribution.\n\n### How it works\nFitGlue polls your Intervals.icu account for new activities. When new activities are found, they're imported into your pipeline where they can be enriched with AI descriptions, training load calculations, and more.\n  ",
       "features": [
-        "✅ Import activities with full power data",
-        "✅ Heart rate, cadence, and GPS included",
-        "✅ Performance metrics and training load",
-        "✅ Works seamlessly with all FitGlue boosters"
+        "\u2705 Import activities with full power data",
+        "\u2705 Heart rate, cadence, and GPS included",
+        "\u2705 Performance metrics and training load",
+        "\u2705 Works seamlessly with all FitGlue boosters"
       ],
       "isTemporarilyUnavailable": true,
       "transformations": [],
@@ -319,7 +295,7 @@
       "type": 2,
       "name": "Workout Summary",
       "description": "Generates a text summary of strength training exercises",
-      "icon": "📋",
+      "icon": "\ud83d\udccb",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -333,11 +309,11 @@
           "options": [
             {
               "value": "compact",
-              "label": "Compact (4×10×100kg)"
+              "label": "Compact (4\u00d710\u00d7100kg)"
             },
             {
               "value": "detailed",
-              "label": "Detailed (4 x 10 × 100.0kg)"
+              "label": "Detailed (4 x 10 \u00d7 100.0kg)"
             },
             {
               "value": "verbose",
@@ -361,17 +337,17 @@
       ],
       "marketingDescription": "\n### What is Workout Summary?\nThis booster uses advanced AI to analyze your strength training data and generate engaging, human-readable summaries of your sessions. Instead of just a list of numbers, you get a narrative description of your workout intensity, volume, and focus areas.\n\n### How it works\nFitGlue analyzes your sets, reps, and weight data, identifies your primary muscle groups targeted, and calculates total volume. It then uses a Large Language Model (LLM) to craft a summary that highlights your achievements, personal bests, and overall effort.\n  ",
       "features": [
-        "✅ Narrative summaries of your strength workouts",
-        "✅ Highlights key lifts and personal bests",
-        "✅ Analyzes volume trends and intensity",
-        "✅ Customizable formats (Compact, Detailed, Verbose)"
+        "\u2705 Narrative summaries of your strength workouts",
+        "\u2705 Highlights key lifts and personal bests",
+        "\u2705 Analyzes volume trends and intensity",
+        "\u2705 Customizable formats (Compact, Detailed, Verbose)"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "(empty)",
-          "after": "📋 Workout Summary:\n20 sets • 8,240kg volume • 57 reps • Heaviest: 80kg (Bench Press)\n\n- Bench Press: 4 × 8 × 80.0kg\n- Overhead Press: 4 × 10 × 40.0kg\n- Incline DB Press: 4 × 12 × 24.0kg\n- Lateral Raises: 4 × 15 × 10.0kg\n- Tricep Pushdowns: 4 × 12 × 25.0kg",
+          "after": "\ud83d\udccb Workout Summary:\n20 sets \u2022 8,240kg volume \u2022 57 reps \u2022 Heaviest: 80kg (Bench Press)\n\n- Bench Press: 4 \u00d7 8 \u00d7 80.0kg\n- Overhead Press: 4 \u00d7 10 \u00d7 40.0kg\n- Incline DB Press: 4 \u00d7 12 \u00d7 24.0kg\n- Lateral Raises: 4 \u00d7 15 \u00d7 10.0kg\n- Tricep Pushdowns: 4 \u00d7 12 \u00d7 25.0kg",
           "visualType": "",
           "afterHtml": ""
         }
@@ -392,7 +368,7 @@
       "type": 2,
       "name": "Muscle Heatmap",
       "description": "Generates an emoji-based heatmap showing muscle group volume",
-      "icon": "🔥",
+      "icon": "\ud83d\udd25",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -406,7 +382,7 @@
           "options": [
             {
               "value": "emoji",
-              "label": "Emoji Bars (🟪🟪🟪⬜⬜)"
+              "label": "Emoji Bars (\ud83d\udfea\ud83d\udfea\ud83d\udfea\u2b1c\u2b1c)"
             },
             {
               "value": "percentage",
@@ -468,12 +444,12 @@
       ],
       "marketingDescription": "\n### Visualize Your Training\nThe Muscle Heatmap booster generates a visual representation of your training volume by muscle group. Using a heatmap style visualization, you can instantly see which muscles you hit hardest and which ones might be lagging.\n\n### How it works\nEvery exercise in your workout is mapped to primary and secondary muscle groups using our built-in exercise taxonomy. We calculate the volume load for each muscle and generate a \"heatmap\" bar or chart that is appended to your activity description.\n\n### Smart Exercise Recognition\nOur database includes 100+ canonical exercises with fuzzy matching, so even custom-named exercises like \"Dave's Bench Press\" are correctly identified. Abbreviations (DB, BB, KB) are automatically expanded, and typos are handled gracefully.\n  ",
       "features": [
-        "✅ Visual heatmap of trained muscles",
-        "✅ Supports Emoji, Percentage, and Text formats",
-        "✅ Smart exercise recognition with fuzzy matching",
-        "✅ 100+ exercises in canonical database",
-        "✅ Adjustable muscle coefficients (Standard, Powerlifting, Bodybuilding)",
-        "✅ Works with all strength activities"
+        "\u2705 Visual heatmap of trained muscles",
+        "\u2705 Supports Emoji, Percentage, and Text formats",
+        "\u2705 Smart exercise recognition with fuzzy matching",
+        "\u2705 100+ exercises in canonical database",
+        "\u2705 Adjustable muscle coefficients (Standard, Powerlifting, Bodybuilding)",
+        "\u2705 Works with all strength activities"
       ],
       "transformations": [
         {
@@ -482,7 +458,7 @@
           "before": "Weight Training\n45 min",
           "after": "",
           "visualType": "",
-          "afterHtml": "<strong>🔥 Muscle Activation</strong><br><br><span class=\"heatmap-row\">Chest: <span class=\"heatmap-bar high\">🟪🟪🟪🟪🟪</span></span><br><span class=\"heatmap-row\">Shoulders: <span class=\"heatmap-bar high\">🟪🟪🟪🟪⬛</span></span><br><span class=\"heatmap-row\">Triceps: <span class=\"heatmap-bar med\">🟪🟪⬛⬛⬛</span></span><br><span class=\"heatmap-row\">Core: <span class=\"heatmap-bar low\">🟪⬛⬛⬛⬛</span></span>"
+          "afterHtml": "<strong>\ud83d\udd25 Muscle Activation</strong><br><br><span class=\"heatmap-row\">Chest: <span class=\"heatmap-bar high\">\ud83d\udfea\ud83d\udfea\ud83d\udfea\ud83d\udfea\ud83d\udfea</span></span><br><span class=\"heatmap-row\">Shoulders: <span class=\"heatmap-bar high\">\ud83d\udfea\ud83d\udfea\ud83d\udfea\ud83d\udfea\u2b1b</span></span><br><span class=\"heatmap-row\">Triceps: <span class=\"heatmap-bar med\">\ud83d\udfea\ud83d\udfea\u2b1b\u2b1b\u2b1b</span></span><br><span class=\"heatmap-row\">Core: <span class=\"heatmap-bar low\">\ud83d\udfea\u2b1b\u2b1b\u2b1b\u2b1b</span></span>"
         }
       ],
       "useCases": [
@@ -502,19 +478,19 @@
       "type": 2,
       "name": "Muscle Heatmap Image",
       "description": "Generates an anatomical SVG diagram with muscle activation highlighting",
-      "icon": "🔥",
+      "icon": "\ud83d\udd25",
       "enabled": true,
       "requiredIntegrations": [],
       "requiredTier": "athlete",
       "configSchema": [],
       "marketingDescription": "\n### Premium Visual Muscle Activation\nThe Muscle Heatmap Image booster creates a stunning anatomical diagram showing exactly which muscles you trained and how hard. Unlike the text-based heatmap, this generates a shareable visual asset perfect for social media and the Showcase.\n\n### How it works\nEvery exercise is analyzed to calculate volume per muscle group. We then generate an SVG image of the human body with muscles colored by intensity - from gray (no activation) through purple gradients to hot pink (maximum activation).\n\n### Athlete-Tier Exclusive\nThis premium visual enricher is available exclusively to Athlete-tier users. The generated image is stored in Cloud Storage and automatically embedded in your Showcase page.\n  ",
       "features": [
-        "✅ Anatomical SVG diagram with muscle highlighting",
-        "✅ Color-coded intensity (gray → purple → hot pink)",
-        "✅ Stored as shareable image asset",
-        "✅ Automatically embedded in Showcase",
-        "✅ Perfect for social media sharing",
-        "✅ Athlete-tier exclusive"
+        "\u2705 Anatomical SVG diagram with muscle highlighting",
+        "\u2705 Color-coded intensity (gray \u2192 purple \u2192 hot pink)",
+        "\u2705 Stored as shareable image asset",
+        "\u2705 Automatically embedded in Showcase",
+        "\u2705 Perfect for social media sharing",
+        "\u2705 Athlete-tier exclusive"
       ],
       "transformations": [
         {
@@ -542,20 +518,20 @@
       "type": 2,
       "name": "Route Thumbnail",
       "description": "Generates a stunning SVG map image of your GPS route",
-      "icon": "🗺️",
+      "icon": "\ud83d\uddfa\ufe0f",
       "enabled": true,
       "requiredIntegrations": [],
       "requiredTier": "athlete",
       "configSchema": [],
       "marketingDescription": "\n### Beautiful Route Visualization\nThe Route Thumbnail booster creates a beautiful stylized SVG map of your GPS route. Perfect for sharing on social media and displaying in your Showcase.\n\n### How it works\nFitGlue extracts GPS coordinates from your activity, simplifies the route using the Douglas-Peucker algorithm for optimal rendering, and generates a stunning SVG visualization with FitGlue's signature gradient colors and animated start/finish markers.\n\n### Athlete-Tier Exclusive\nThis premium visual enricher is available exclusively to Athlete-tier users. The generated SVG is stored in Cloud Storage and automatically embedded in your Showcase page.\n  ",
       "features": [
-        "✅ Stunning SVG route visualization",
-        "✅ FitGlue signature gradient colors (pink → purple → green)",
-        "✅ Animated start and finish markers",
-        "✅ Route simplification for clean rendering",
-        "✅ Stored as shareable image asset",
-        "✅ Automatically embedded in Showcase",
-        "✅ Athlete-tier exclusive"
+        "\u2705 Stunning SVG route visualization",
+        "\u2705 FitGlue signature gradient colors (pink \u2192 purple \u2192 green)",
+        "\u2705 Animated start and finish markers",
+        "\u2705 Route simplification for clean rendering",
+        "\u2705 Stored as shareable image asset",
+        "\u2705 Automatically embedded in Showcase",
+        "\u2705 Athlete-tier exclusive"
       ],
       "transformations": [
         {
@@ -583,7 +559,7 @@
       "type": 2,
       "name": "AI Activity Banner",
       "description": "Generates a custom AI header image for your activity",
-      "icon": "🎨",
+      "icon": "\ud83c\udfa8",
       "enabled": true,
       "requiredIntegrations": [],
       "requiredTier": "athlete",
@@ -615,12 +591,12 @@
       ],
       "marketingDescription": "\n### AI-Generated Activity Banners\nCreate stunning, custom header images for your activities using Google's Gemini AI. Each banner is uniquely generated based on your activity type, time of day, and conditions.\n\n### How it works\nWhen enabled, FitGlue analyzes your activity context and generates a custom banner image using Gemini 2.0 Flash. The image is stored in Cloud Storage and displayed as the hero background in your Showcase page.\n\n### Athlete-Tier Exclusive\nThis premium visual enricher is available exclusively to Athlete-tier users. The generated image is also used for OpenGraph/Twitter social sharing cards.\n  ",
       "features": [
-        "✅ AI-generated custom banners for each activity",
-        "✅ Context-aware (activity type, time of day)",
-        "✅ Multiple style options (Vibrant, Minimal, Dramatic)",
-        "✅ Displayed as Showcase hero background",
-        "✅ Used for social sharing (OpenGraph/Twitter cards)",
-        "✅ Athlete-tier exclusive"
+        "\u2705 AI-generated custom banners for each activity",
+        "\u2705 Context-aware (activity type, time of day)",
+        "\u2705 Multiple style options (Vibrant, Minimal, Dramatic)",
+        "\u2705 Displayed as Showcase hero background",
+        "\u2705 Used for social sharing (OpenGraph/Twitter cards)",
+        "\u2705 Athlete-tier exclusive"
       ],
       "transformations": [
         {
@@ -648,7 +624,7 @@
       "type": 2,
       "name": "Fitbit Heart Rate",
       "description": "Adds heart rate data from Fitbit to your activity with smart GPS alignment",
-      "icon": "🩵",
+      "icon": "\ud83e\ude75",
       "enabled": true,
       "requiredIntegrations": [
         "fitbit"
@@ -666,14 +642,14 @@
           "valueOptions": []
         }
       ],
-      "marketingDescription": "\n### Unified Heart Data\nSync your heart rate data from your Fitbit device and overlay it onto your imported activities. This is perfect for when you track a workout (like weightlifting) on one app but wear your Fitbit for health monitoring.\n\n### How it works\nWhen an activity is imported (e.g., from Hevy), FitGlue checks your Fitbit account for heart rate data recorded during that time window. It creates a second-by-second heart rate stream and attaches it to the activity before sending it to Strava or other destinations.\n\n### Smart GPS Alignment\nWhen your activity has GPS data (from a phone app or watch), FitGlue uses an \"Elastic Match\" algorithm to align Fitbit heart rate data with your GPS timestamps. This handles minor clock drift between devices automatically, ensuring your HR matches the correct location points within ±2 seconds accuracy.\n  ",
+      "marketingDescription": "\n### Unified Heart Data\nSync your heart rate data from your Fitbit device and overlay it onto your imported activities. This is perfect for when you track a workout (like weightlifting) on one app but wear your Fitbit for health monitoring.\n\n### How it works\nWhen an activity is imported (e.g., from Hevy), FitGlue checks your Fitbit account for heart rate data recorded during that time window. It creates a second-by-second heart rate stream and attaches it to the activity before sending it to Strava or other destinations.\n\n### Smart GPS Alignment\nWhen your activity has GPS data (from a phone app or watch), FitGlue uses an \"Elastic Match\" algorithm to align Fitbit heart rate data with your GPS timestamps. This handles minor clock drift between devices automatically, ensuring your HR matches the correct location points within \u00b12 seconds accuracy.\n  ",
       "features": [
-        "✅ Merges heart rate from Fitbit to any activity",
-        "✅ Smart GPS alignment handles clock drift between devices",
-        "✅ Perfect for activities where you don't start a GPS watch",
-        "✅ Accurate calorie data based on heart rate",
-        "✅ Linear interpolation for precise timestamp matching",
-        "✅ Seamless background synchronization"
+        "\u2705 Merges heart rate from Fitbit to any activity",
+        "\u2705 Smart GPS alignment handles clock drift between devices",
+        "\u2705 Perfect for activities where you don't start a GPS watch",
+        "\u2705 Accurate calorie data based on heart rate",
+        "\u2705 Linear interpolation for precise timestamp matching",
+        "\u2705 Seamless background synchronization"
       ],
       "transformations": [
         {
@@ -702,7 +678,7 @@
       "type": 2,
       "name": "Virtual GPS",
       "description": "Adds GPS coordinates from a virtual route to indoor activities",
-      "icon": "🗺️",
+      "icon": "\ud83d\uddfa\ufe0f",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -738,12 +714,12 @@
           "valueOptions": []
         }
       ],
-      "marketingDescription": "\n### Virtual GPS for Indoor Workouts\nAdd GPS coordinates to indoor activities so they appear with a map on Strava. Choose from preset routes in famous locations like London’s Hyde Park or NYC’s Central Park.\n\n### How it works\nWhen an activity is processed, Virtual GPS overlays a pre-defined GPS route onto the activity. The route is scaled to match your workout duration, giving your indoor session a scenic virtual location.\n  ",
+      "marketingDescription": "\n### Virtual GPS for Indoor Workouts\nAdd GPS coordinates to indoor activities so they appear with a map on Strava. Choose from preset routes in famous locations like London\u2019s Hyde Park or NYC\u2019s Central Park.\n\n### How it works\nWhen an activity is processed, Virtual GPS overlays a pre-defined GPS route onto the activity. The route is scaled to match your workout duration, giving your indoor session a scenic virtual location.\n  ",
       "features": [
-        "✅ Adds GPS to indoor/gym activities",
-        "✅ Activities appear with a map on Strava",
-        "✅ Choice of scenic routes (London, NYC)",
-        "✅ Route scaled to match workout duration"
+        "\u2705 Adds GPS to indoor/gym activities",
+        "\u2705 Activities appear with a map on Strava",
+        "\u2705 Choice of scenic routes (London, NYC)",
+        "\u2705 Route scaled to match workout duration"
       ],
       "transformations": [
         {
@@ -758,7 +734,7 @@
           "field": "description",
           "label": "Virtual Tour Message",
           "before": "(empty)",
-          "after": "🗺️ Took a virtual tour of London Hyde Park (GPS generated for this indoor workout)",
+          "after": "\ud83d\uddfa\ufe0f Took a virtual tour of London Hyde Park (GPS generated for this indoor workout)",
           "visualType": "",
           "afterHtml": ""
         }
@@ -779,22 +755,22 @@
       "type": 2,
       "name": "Source Link",
       "description": "Appends a link to the original activity in the description",
-      "icon": "🔗",
+      "icon": "\ud83d\udd17",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [],
       "marketingDescription": "\n### Link Back to the Source\nAutomatically appends a deep link to the original activity in your workout description. Great for cross-referencing your data.\n\n### How it works\nWhen activities are imported from sources like Hevy or Fitbit, Source Link adds a clickable URL pointing back to the original activity. This makes it easy to see the full details in the source app.\n  ",
       "features": [
-        "✅ Adds a link to the original activity",
-        "✅ Easy cross-referencing between apps",
-        "✅ Works with all source integrations"
+        "\u2705 Adds a link to the original activity",
+        "\u2705 Easy cross-referencing between apps",
+        "\u2705 Works with all source integrations"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "Upper Body Workout",
-          "after": "Upper Body Workout\n\n🔗 View in Hevy: https://hevy.app/workout/abc123",
+          "after": "Upper Body Workout\n\n\ud83d\udd17 View in Hevy: https://hevy.app/workout/abc123",
           "visualType": "",
           "afterHtml": ""
         }
@@ -814,8 +790,8 @@
       "id": "type-mapper",
       "type": 2,
       "name": "Type Mapper",
-      "description": "Maps activity types based on title keywords (e.g., title containing \"Zwift\" → Virtual Ride)",
-      "icon": "🏷️",
+      "description": "Maps activity types based on title keywords (e.g., title containing \"Zwift\" \u2192 Virtual Ride)",
+      "icon": "\ud83c\udff7\ufe0f",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -1032,12 +1008,12 @@
           "keyOptions": []
         }
       ],
-      "marketingDescription": "\n### Remap Activity Types by Title\nAutomatically change an activity's type based on keywords in the title. Perfect for when your source app doesn't correctly categorize your workouts.\n\n### How it works\nDefine matching rules like \"title contains 'Zwift'\" → \"Virtual Ride\" or \"title contains 'Treadmill'\" → \"Run\". When activities are processed, their type is automatically updated if the title matches your pattern.\n  ",
+      "marketingDescription": "\n### Remap Activity Types by Title\nAutomatically change an activity's type based on keywords in the title. Perfect for when your source app doesn't correctly categorize your workouts.\n\n### How it works\nDefine matching rules like \"title contains 'Zwift'\" \u2192 \"Virtual Ride\" or \"title contains 'Treadmill'\" \u2192 \"Run\". When activities are processed, their type is automatically updated if the title matches your pattern.\n  ",
       "features": [
-        "✅ Match activity titles with keywords",
-        "✅ Full Strava activity type dropdown",
-        "✅ Case-insensitive matching",
-        "✅ Multiple rules per enricher"
+        "\u2705 Match activity titles with keywords",
+        "\u2705 Full Strava activity type dropdown",
+        "\u2705 Case-insensitive matching",
+        "\u2705 Multiple rules per enricher"
       ],
       "transformations": [
         {
@@ -1065,7 +1041,7 @@
       "type": 2,
       "name": "Parkrun",
       "description": "Detects Parkrun events, sets title, and enriches with official results",
-      "icon": "🏃",
+      "icon": "\ud83c\udfc3",
       "enabled": true,
       "requiredIntegrations": [
         "parkrun"
@@ -1141,13 +1117,13 @@
       ],
       "marketingDescription": "\n### Automatic Parkrun Detection & Results\nAutomatically detects when your activity is a Parkrun event based on GPS location and time, then boosts it with your official results.\n\n### How it works\n1. **Detection**: If your Saturday morning run starts near any of 2,500+ Parkrun locations at the right time, FitGlue recognizes it\n2. **Immediate Update**: Your activity title is updated to \"Parkrun @ [Location]\"\n3. **Delayed Results**: ~2 hours after your run, we fetch your **official results** from parkrun.org and update your activity with position, time, age grade, and PB status\n\n### Special Events\nChristmas Day and New Year's Day Parkruns get festive titles automatically!\n  ",
       "features": [
-        "✅ Automatic Parkrun detection via GPS",
-        "✅ 2,500+ worldwide Parkrun locations supported",
-        "✅ Official results fetched automatically",
-        "✅ Position, time, and age grade in description",
-        "✅ PB celebrations highlighted 🎉",
-        "✅ Special Christmas & New Year event titles",
-        "✅ Customizable title patterns"
+        "\u2705 Automatic Parkrun detection via GPS",
+        "\u2705 2,500+ worldwide Parkrun locations supported",
+        "\u2705 Official results fetched automatically",
+        "\u2705 Position, time, and age grade in description",
+        "\u2705 PB celebrations highlighted \ud83c\udf89",
+        "\u2705 Special Christmas & New Year event titles",
+        "\u2705 Customizable title patterns"
       ],
       "transformations": [
         {
@@ -1162,7 +1138,7 @@
           "field": "description",
           "label": "Official Results",
           "before": "(empty)",
-          "after": "🏃 **Official Parkrun Results**\n\n📍 Newark Parkrun\n🏁 Position: 42\n⏱️ Official Time: 24:12\n📊 Age Grade: 65.2%",
+          "after": "\ud83c\udfc3 **Official Parkrun Results**\n\n\ud83d\udccd Newark Parkrun\n\ud83c\udfc1 Position: 42\n\u23f1\ufe0f Official Time: 24:12\n\ud83d\udcca Age Grade: 65.2%",
           "visualType": "",
           "afterHtml": ""
         }
@@ -1184,7 +1160,7 @@
       "type": 2,
       "name": "Condition Matcher",
       "description": "Applies title/description templates when conditions match (type, day, time, location)",
-      "icon": "🎯",
+      "icon": "\ud83c\udfaf",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -1374,12 +1350,12 @@
           "valueOptions": []
         }
       ],
-      "marketingDescription": "\n### Smart Conditional Templates\nApply custom titles and descriptions based on when, where, and what type of activity you’re doing.\n\n### How it works\nDefine conditions like \"Saturday morning run near the park\" and specify a title template. When activities match your conditions, the template is applied automatically. Perfect for recurring workouts like \"Morning Gym Session\" or \"Sunday Long Run\".\n  ",
+      "marketingDescription": "\n### Smart Conditional Templates\nApply custom titles and descriptions based on when, where, and what type of activity you\u2019re doing.\n\n### How it works\nDefine conditions like \"Saturday morning run near the park\" and specify a title template. When activities match your conditions, the template is applied automatically. Perfect for recurring workouts like \"Morning Gym Session\" or \"Sunday Long Run\".\n  ",
       "features": [
-        "✅ Match by activity type, day, time, or location",
-        "✅ Custom title and description templates",
-        "✅ Perfect for recurring workout names",
-        "✅ Radius-based location matching"
+        "\u2705 Match by activity type, day, time, or location",
+        "\u2705 Custom title and description templates",
+        "\u2705 Perfect for recurring workout names",
+        "\u2705 Radius-based location matching"
       ],
       "transformations": [
         {
@@ -1415,7 +1391,7 @@
       "type": 2,
       "name": "Auto Increment",
       "description": "Appends an incrementing counter number to activity titles",
-      "icon": "🔢",
+      "icon": "\ud83d\udd22",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -1456,10 +1432,10 @@
       ],
       "marketingDescription": "\n### Numbered Activity Series\nAutomatically add incrementing numbers to your activity titles. Great for tracking workout series.\n\n### How it works\nDefine a counter key and optional title filter. Activities matching the filter get an incrementing number appended, like \"Leg Day #1\", \"Leg Day #2\", etc. Each counter key maintains its own sequence.\n  ",
       "features": [
-        "✅ Automatic sequential numbering",
-        "✅ Multiple independent counters",
-        "✅ Title filtering for targeted numbering",
-        "✅ Configurable starting value"
+        "\u2705 Automatic sequential numbering",
+        "\u2705 Multiple independent counters",
+        "\u2705 Title filtering for targeted numbering",
+        "\u2705 Configurable starting value"
       ],
       "transformations": [
         {
@@ -1487,7 +1463,7 @@
       "type": 2,
       "name": "User Input",
       "description": "Pauses pipeline to wait for user input (title, description, etc.)",
-      "icon": "✍️",
+      "icon": "\u270d\ufe0f",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -1512,12 +1488,12 @@
           "valueOptions": []
         }
       ],
-      "marketingDescription": "\n### Manual Intervention Point\nPauses the pipeline to let you manually add or edit activity details before continuing.\n\n### How it works\nWhen an activity reaches this booster, it’s held pending your input. You receive a notification and can update the title, description, or other fields. Once you confirm, the activity continues through the pipeline.\n  ",
+      "marketingDescription": "\n### Manual Intervention Point\nPauses the pipeline to let you manually add or edit activity details before continuing.\n\n### How it works\nWhen an activity reaches this booster, it\u2019s held pending your input. You receive a notification and can update the title, description, or other fields. Once you confirm, the activity continues through the pipeline.\n  ",
       "features": [
-        "✅ Manual title and description editing",
-        "✅ Activity held until you approve",
-        "✅ Notification when input is needed",
-        "✅ Configurable required fields"
+        "\u2705 Manual title and description editing",
+        "\u2705 Activity held until you approve",
+        "\u2705 Notification when input is needed",
+        "\u2705 Configurable required fields"
       ],
       "transformations": [
         {
@@ -1553,7 +1529,7 @@
       "type": 2,
       "name": "Activity Filter",
       "description": "Skips activities matching exclude patterns or not matching include patterns",
-      "icon": "🚫",
+      "icon": "\ud83d\udeab",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -1730,12 +1706,12 @@
           "valueOptions": []
         }
       ],
-      "marketingDescription": "\n### Filter Unwanted Activities\nSkip activities you don’t want synced based on type or title patterns.\n\n### How it works\nDefine include or exclude rules by activity type or title keywords. Activities matching exclude patterns (or not matching include patterns) are skipped and won’t be sent to destinations. Perfect for filtering out test workouts or specific activity types.\n  ",
+      "marketingDescription": "\n### Filter Unwanted Activities\nSkip activities you don\u2019t want synced based on type or title patterns.\n\n### How it works\nDefine include or exclude rules by activity type or title keywords. Activities matching exclude patterns (or not matching include patterns) are skipped and won\u2019t be sent to destinations. Perfect for filtering out test workouts or specific activity types.\n  ",
       "features": [
-        "✅ Include or exclude by activity type",
-        "✅ Title keyword filtering",
-        "✅ Stop unwanted activities from syncing",
-        "✅ Flexible pattern matching"
+        "\u2705 Include or exclude by activity type",
+        "\u2705 Title keyword filtering",
+        "\u2705 Stop unwanted activities from syncing",
+        "\u2705 Flexible pattern matching"
       ],
       "transformations": [],
       "useCases": [
@@ -1754,7 +1730,7 @@
       "type": 2,
       "name": "Logic Gate",
       "description": "Evaluate rules to conditionally continue or halt the pipeline",
-      "icon": "🚦",
+      "icon": "\ud83d\udea6",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -1836,11 +1812,11 @@
       ],
       "marketingDescription": "\n### Conditional Pipeline Control\nLogic Gate lets you create powerful rules to filter, route, or halt activities based on any combination of conditions.\n\n### How it works\nDefine rules using fields like activity type, day of week, time, location, or title/description content. Combine them with AND/ANY/NONE logic and choose whether to continue or halt the pipeline.\n\n### Supported Rule Fields\n- **activity_type**: Match by activity type (Run, Ride, etc.)\n- **days**: Match by day of week (Mon, Tue, etc.)\n- **time_start / time_end**: Match by time of day (HH:MM)\n- **location**: Match by GPS coordinates within radius\n- **title_contains / description_contains**: Match text content\n  ",
       "features": [
-        "✅ Match by activity type, day, time, location",
-        "✅ Title and description content matching",
-        "✅ Flexible AND/OR/NOR logic modes",
-        "✅ Continue or halt pipeline on match",
-        "✅ Negate individual rules for inverse matching"
+        "\u2705 Match by activity type, day, time, location",
+        "\u2705 Title and description content matching",
+        "\u2705 Flexible AND/OR/NOR logic modes",
+        "\u2705 Continue or halt pipeline on match",
+        "\u2705 Negate individual rules for inverse matching"
       ],
       "transformations": [],
       "useCases": [
@@ -1860,23 +1836,23 @@
       "type": 2,
       "name": "Heart Rate Summary",
       "description": "Adds min/avg/max heart rate stats to the activity description",
-      "icon": "❤️",
+      "icon": "\u2764\ufe0f",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [],
       "marketingDescription": "\n### Heart Rate Stats at a Glance\nAutomatically calculates and appends heart rate statistics to your activity description. See your min, average, and max heart rate without diving into charts.\n\n### How it works\nWhen your activity has heart rate data (from Fitbit, Apple Watch, or any source), this enricher analyzes all the data points and adds a clean summary showing your minimum, average, and maximum heart rates during the workout.\n  ",
       "features": [
-        "✅ Calculates min/avg/max heart rate",
-        "✅ Appends clean summary to description",
-        "✅ Works with any heart rate source",
-        "✅ No configuration required"
+        "\u2705 Calculates min/avg/max heart rate",
+        "\u2705 Appends clean summary to description",
+        "\u2705 Works with any heart rate source",
+        "\u2705 No configuration required"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "Morning Run",
-          "after": "Morning Run\n\n❤️ Heart Rate: 95 bpm min • 145 bpm avg • 178 bpm max",
+          "after": "Morning Run\n\n\u2764\ufe0f Heart Rate: 95 bpm min \u2022 145 bpm avg \u2022 178 bpm max",
           "visualType": "",
           "afterHtml": ""
         }
@@ -1897,7 +1873,7 @@
       "type": 2,
       "name": "AI Activity Companion",
       "description": "Generates AI-powered titles, descriptions, and summaries for your activities (Athlete tier only)",
-      "icon": "✨",
+      "icon": "\u2728",
       "enabled": true,
       "requiredIntegrations": [],
       "requiredTier": "athlete",
@@ -1929,7 +1905,7 @@
         {
           "key": "section_header",
           "label": "Show Section Header",
-          "description": "Prepend \"✨ AI Summary:\" to the generated description",
+          "description": "Prepend \"\u2728 AI Summary:\" to the generated description",
           "fieldType": 3,
           "required": false,
           "defaultValue": "true",
@@ -1938,13 +1914,13 @@
           "valueOptions": []
         }
       ],
-      "marketingDescription": "\n### AI-Powered Activity Companion\nLet AI craft engaging titles and descriptions for your workouts. Turn raw data into compelling stories.\n\n### How it works\nWhen enabled, this Booster uses a large language model to analyze your activity data—type, duration, distance, heart rate, exercises—and generates a human-like title and/or description. Perfect for making your Strava feed more interesting!\n\n### Configurable Summaries\nYou can choose whether to include a \"✨ AI Summary:\" header. This is useful if you want to keep your own description and add the AI-generated one below it.\n\n### Athlete Tier Only\nThis premium feature is exclusively available to Athlete tier subscribers.\n  ",
+      "marketingDescription": "\n### AI-Powered Activity Companion\nLet AI craft engaging titles and descriptions for your workouts. Turn raw data into compelling stories.\n\n### How it works\nWhen enabled, this Booster uses a large language model to analyze your activity data\u2014type, duration, distance, heart rate, exercises\u2014and generates a human-like title and/or description. Perfect for making your Strava feed more interesting!\n\n### Configurable Summaries\nYou can choose whether to include a \"\u2728 AI Summary:\" header. This is useful if you want to keep your own description and add the AI-generated one below it.\n\n### Athlete Tier Only\nThis premium feature is exclusively available to Athlete tier subscribers.\n  ",
       "features": [
-        "✅ AI-generated titles and descriptions",
-        "✅ Analyzes activity context and data (HR, Cadence, Sets, etc.)",
-        "✅ Optional \"✨ AI Summary:\" section header",
-        "✅ Creates engaging workout narratives",
-        "✅ Athlete tier exclusive"
+        "\u2705 AI-generated titles and descriptions",
+        "\u2705 Analyzes activity context and data (HR, Cadence, Sets, etc.)",
+        "\u2705 Optional \"\u2728 AI Summary:\" section header",
+        "\u2705 Creates engaging workout narratives",
+        "\u2705 Athlete tier exclusive"
       ],
       "transformations": [
         {
@@ -1959,7 +1935,7 @@
           "field": "description",
           "label": "Activity Description (mode: description or both)",
           "before": "45 min session",
-          "after": "✨ AI Summary:\n💪 Crushed an intense upper body session today! Focused on compound movements with progressive overload. Feeling strong!",
+          "after": "\u2728 AI Summary:\n\ud83d\udcaa Crushed an intense upper body session today! Focused on compound movements with progressive overload. Feeling strong!",
           "visualType": "",
           "afterHtml": ""
         }
@@ -1980,23 +1956,23 @@
       "type": 2,
       "name": "Pace Summary",
       "description": "Adds avg/best pace stats (min/km) to the activity description",
-      "icon": "⚡",
+      "icon": "\u26a1",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [],
       "marketingDescription": "\n### Pace Stats at a Glance\nAutomatically calculates and appends pace statistics to your activity description. See your average and best pace without diving into charts.\n\n### How it works\nWhen your activity has speed data (from GPS or sensors), this enricher converts speed to pace and adds a clean summary showing your average and best pace in min/km format.\n  ",
       "features": [
-        "✅ Calculates avg/best pace from speed data",
-        "✅ Formats pace as min/km",
-        "✅ Appends clean summary to description",
-        "✅ No configuration required"
+        "\u2705 Calculates avg/best pace from speed data",
+        "\u2705 Formats pace as min/km",
+        "\u2705 Appends clean summary to description",
+        "\u2705 No configuration required"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "Morning Run",
-          "after": "Morning Run\n\n⚡ Pace: 5:32/km avg • 4:45/km best",
+          "after": "Morning Run\n\n\u26a1 Pace: 5:32/km avg \u2022 4:45/km best",
           "visualType": "",
           "afterHtml": ""
         }
@@ -2017,23 +1993,23 @@
       "type": 2,
       "name": "Cadence Summary",
       "description": "Adds avg/max cadence stats to the activity description",
-      "icon": "🦶",
+      "icon": "\ud83e\uddb6",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [],
       "marketingDescription": "\n### Cadence Stats at a Glance\nAutomatically calculates and appends cadence statistics to your activity description. See your average and max cadence at a glance.\n\n### How it works\nWhen your activity has cadence data (from sensors), this enricher calculates avg/max cadence and adds a clean summary. Uses spm (steps per minute) for running activities and rpm for cycling.\n  ",
       "features": [
-        "✅ Calculates avg/max cadence",
-        "✅ Appends clean summary to description",
-        "✅ Smart unit detection (spm vs rpm)",
-        "✅ No configuration required"
+        "\u2705 Calculates avg/max cadence",
+        "\u2705 Appends clean summary to description",
+        "\u2705 Smart unit detection (spm vs rpm)",
+        "\u2705 No configuration required"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "Morning Run",
-          "after": "Morning Run\n\n🦶 Cadence: 172 spm avg • 185 spm max",
+          "after": "Morning Run\n\n\ud83e\uddb6 Cadence: 172 spm avg \u2022 185 spm max",
           "visualType": "",
           "afterHtml": ""
         }
@@ -2054,23 +2030,23 @@
       "type": 2,
       "name": "Power Summary",
       "description": "Adds avg/max power stats (watts) to the activity description",
-      "icon": "⚡",
+      "icon": "\u26a1",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [],
       "marketingDescription": "\n### Power Stats at a Glance\nAutomatically calculates and appends power statistics to your activity description. Perfect for cyclists with power meters.\n\n### How it works\nWhen your activity has power data (from a power meter), this enricher calculates avg/max power and adds a clean summary in watts.\n  ",
       "features": [
-        "✅ Calculates avg/max power from power meter data",
-        "✅ Appends clean summary to description",
-        "✅ Works with any power source",
-        "✅ No configuration required"
+        "\u2705 Calculates avg/max power from power meter data",
+        "\u2705 Appends clean summary to description",
+        "\u2705 Works with any power source",
+        "\u2705 No configuration required"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "Morning Ride",
-          "after": "Morning Ride\n\n⚡ Power: 245W avg • 380W max",
+          "after": "Morning Ride\n\n\u26a1 Power: 245W avg \u2022 380W max",
           "visualType": "",
           "afterHtml": ""
         }
@@ -2091,23 +2067,23 @@
       "type": 2,
       "name": "Speed Summary",
       "description": "Adds avg/max speed stats (km/h) to the activity description",
-      "icon": "🚀",
+      "icon": "\ud83d\ude80",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [],
       "marketingDescription": "\n### Speed Stats at a Glance\nAutomatically calculates and appends speed statistics to your activity description. See your average and max speed in km/h.\n\n### How it works\nWhen your activity has speed data (from GPS or sensors), this enricher calculates avg/max speed and adds a clean summary in km/h format.\n  ",
       "features": [
-        "✅ Calculates avg/max speed from GPS or sensor data",
-        "✅ Formats speed as km/h",
-        "✅ Appends clean summary to description",
-        "✅ No configuration required"
+        "\u2705 Calculates avg/max speed from GPS or sensor data",
+        "\u2705 Formats speed as km/h",
+        "\u2705 Appends clean summary to description",
+        "\u2705 No configuration required"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "Morning Ride",
-          "after": "Morning Ride\n\n🚀 Speed: 28.5 km/h avg • 42.1 km/h max",
+          "after": "Morning Ride\n\n\ud83d\ude80 Speed: 28.5 km/h avg \u2022 42.1 km/h max",
           "visualType": "",
           "afterHtml": ""
         }
@@ -2128,7 +2104,7 @@
       "type": 2,
       "name": "Training Load",
       "description": "Calculates Training Impulse (TRIMP) from heart rate data",
-      "icon": "💪",
+      "icon": "\ud83d\udcaa",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -2177,18 +2153,18 @@
       ],
       "marketingDescription": "\n### Measure Your Training Intensity\nThe Training Load booster calculates your Training Impulse (TRIMP) using the scientifically validated Banister Formula. This gives you a single number to represent the physiological load of your workout based on heart rate and duration.\n\n### How it works\nFitGlue analyzes your heart rate stream throughout the activity. It calculates your Heart Rate Reserve (HRR) and applies the Banister Formula (weighted for gender) to determine total TRIMP. This load is then categorized into Effort Zones from Recovery to Very Hard.\n\n### Know Your Hardest Sessions\nTRIMP is cumulative, meaning a long easy session can have the same load as a short intense one. This helps you track total training stimulus across different workout types.\n  ",
       "features": [
-        "✅ Calculates cumulative TRIMP (Training Impulse)",
-        "✅ Uses the Banister Formula (weighted for gender)",
-        "✅ categorizes effort into 5 zones",
-        "✅ Works with any heart rate data source",
-        "✅ Customizable max and resting heart rate"
+        "\u2705 Calculates cumulative TRIMP (Training Impulse)",
+        "\u2705 Uses the Banister Formula (weighted for gender)",
+        "\u2705 categorizes effort into 5 zones",
+        "\u2705 Works with any heart rate data source",
+        "\u2705 Customizable max and resting heart rate"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "Morning Run",
-          "after": "Morning Run\\n\\n💪 Training Load: 142 (Hard)",
+          "after": "Morning Run\\n\\n\ud83d\udcaa Training Load: 142 (Hard)",
           "visualType": "",
           "afterHtml": ""
         }
@@ -2210,7 +2186,7 @@
       "type": 2,
       "name": "Personal Records",
       "description": "Detects and celebrates new PRs for cardio and strength activities",
-      "icon": "🏆",
+      "icon": "\ud83c\udfc6",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -2239,7 +2215,7 @@
         {
           "key": "celebrate_in_title",
           "label": "Celebrate in Title",
-          "description": "Add 🎉 emoji to activity title when a PR is achieved",
+          "description": "Add \ud83c\udf89 emoji to activity title when a PR is achieved",
           "fieldType": 3,
           "required": false,
           "defaultValue": "false",
@@ -2248,21 +2224,21 @@
           "valueOptions": []
         }
       ],
-      "marketingDescription": "\n### Automatic Personal Record Detection\nNever miss a PR again! FitGlue automatically detects when you've achieved a new personal record and adds a celebration to your activity.\n\n### Cardio Records Tracked\n- **Fastest 5K, 10K, Half Marathon**: Time-based records for running\n- **Longest Run**: Your greatest single-run distance\n- **Longest Ride**: Your greatest single-ride distance\n- **Highest Elevation Gain**: Most climbing in one activity\n\n### Strength Records Tracked (per exercise)\n- **1RM**: Uses the Epley formula to estimate your one-rep max\n- **Volume**: Most total volume (sets × reps × weight) in one session\n- **Reps**: Most reps in a single set\n\nAll records are stored in Firestore, so your PRs persist across time.\n  ",
+      "marketingDescription": "\n### Automatic Personal Record Detection\nNever miss a PR again! FitGlue automatically detects when you've achieved a new personal record and adds a celebration to your activity.\n\n### Cardio Records Tracked\n- **Fastest 5K, 10K, Half Marathon**: Time-based records for running\n- **Longest Run**: Your greatest single-run distance\n- **Longest Ride**: Your greatest single-ride distance\n- **Highest Elevation Gain**: Most climbing in one activity\n\n### Strength Records Tracked (per exercise)\n- **1RM**: Uses the Epley formula to estimate your one-rep max\n- **Volume**: Most total volume (sets \u00d7 reps \u00d7 weight) in one session\n- **Reps**: Most reps in a single set\n\nAll records are stored in Firestore, so your PRs persist across time.\n  ",
       "features": [
-        "✅ Automatic PR detection for cardio and strength",
-        "✅ Epley formula for estimated 1RM",
-        "✅ Smart exercise name normalization",
-        "✅ Percentage improvement shown",
-        "✅ Persistent storage in Firestore",
-        "✅ Optional title celebration emoji"
+        "\u2705 Automatic PR detection for cardio and strength",
+        "\u2705 Epley formula for estimated 1RM",
+        "\u2705 Smart exercise name normalization",
+        "\u2705 Percentage improvement shown",
+        "\u2705 Persistent storage in Firestore",
+        "\u2705 Optional title celebration emoji"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "Weight Training",
-          "after": "Weight Training\\n\\n🏆 NEW PR! Deadlift 1RM: 140kg (previous: 135kg, +3.7%)",
+          "after": "Weight Training\\n\\n\ud83c\udfc6 NEW PR! Deadlift 1RM: 140kg (previous: 135kg, +3.7%)",
           "visualType": "",
           "afterHtml": ""
         }
@@ -2284,24 +2260,24 @@
       "type": 2,
       "name": "Elevation Summary",
       "description": "Calculates elevation gain, loss, and maximum altitude from activity records",
-      "icon": "⛰️",
+      "icon": "\u26f0\ufe0f",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [],
       "marketingDescription": "\n### Total Ascent & Descent\nAutomatically calculates and appends elevation statistics to your activity description. Perfect for hilly runs, mountain bike rides, or mountain hikes.\n\n### How it works\nWhen your activity contains altitude data (from GPS tracks or barometric sensors), this enricher calculates your total ascent (gain), total descent (loss), and the maximum altitude reached during the activity.\n\n### Clean Data Processing\nFilters out zero or negative altitude records to ensure accurate calculations even if your GPS occasionally loses altitude data.\n  ",
       "features": [
-        "✅ Calculates total elevation gain (ascent)",
-        "✅ Calculates total elevation loss (descent)",
-        "✅ Tracks maximum altitude seen during the activity",
-        "✅ Appends clean summary with emoji to description",
-        "✅ No configuration required"
+        "\u2705 Calculates total elevation gain (ascent)",
+        "\u2705 Calculates total elevation loss (descent)",
+        "\u2705 Tracks maximum altitude seen during the activity",
+        "\u2705 Appends clean summary with emoji to description",
+        "\u2705 No configuration required"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "Mountain Hike",
-          "after": "Mountain Hike\n\n⛰️ Elevation: +342m gain • -289m loss • 1,245m max",
+          "after": "Mountain Hike\n\n\u26f0\ufe0f Elevation: +342m gain \u2022 -289m loss \u2022 1,245m max",
           "visualType": "",
           "afterHtml": ""
         }
@@ -2322,7 +2298,7 @@
       "type": 2,
       "name": "Weather",
       "description": "Adds weather conditions to outdoor activities",
-      "icon": "🌤️",
+      "icon": "\ud83c\udf24\ufe0f",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -2340,18 +2316,18 @@
       ],
       "marketingDescription": "\n### Weather Context for Outdoor Activities\nAutomatically adds weather conditions to your outdoor activities. See temperature, conditions, and wind at a glance.\n\n### How it works\nWhen your activity has GPS data, this enricher fetches historical weather data from Open-Meteo for the exact time and location of your workout. It adds a clean summary showing temperature, weather conditions, and optionally wind information.\n  ",
       "features": [
-        "✅ Fetches historical weather data",
-        "✅ Shows temperature and conditions",
-        "✅ Optional wind speed and direction",
-        "✅ Works with any GPS-enabled activity",
-        "✅ Free API, no authentication required"
+        "\u2705 Fetches historical weather data",
+        "\u2705 Shows temperature and conditions",
+        "\u2705 Optional wind speed and direction",
+        "\u2705 Works with any GPS-enabled activity",
+        "\u2705 Free API, no authentication required"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "Morning Run",
-          "after": "Morning Run\\n\\n🌤️ Weather: 18°C, Partly Cloudy • Wind: 12 km/h W",
+          "after": "Morning Run\\n\\n\ud83c\udf24\ufe0f Weather: 18\u00b0C, Partly Cloudy \u2022 Wind: 12 km/h W",
           "visualType": "",
           "afterHtml": ""
         }
@@ -2372,7 +2348,7 @@
       "type": 2,
       "name": "Spotify Soundtrack",
       "description": "Shows what music you listened to during your activity",
-      "icon": "🎵",
+      "icon": "\ud83c\udfb5",
       "enabled": true,
       "requiredIntegrations": [
         "spotify"
@@ -2381,17 +2357,17 @@
       "configSchema": [],
       "marketingDescription": "\n### Your Activity Soundtrack\nAutomatically track what music you listened to during your workouts. See your top played tracks and workout playlists.\n\n### How it works\nWhen you complete an activity, FitGlue checks your Spotify listening history for tracks played during that time window and adds a summary to your activity description.\n  ",
       "features": [
-        "✅ Track count and top played songs",
-        "✅ Playlist identification",
-        "✅ Automatic time-window matching",
-        "✅ Works with all activity types"
+        "\u2705 Track count and top played songs",
+        "\u2705 Playlist identification",
+        "\u2705 Automatic time-window matching",
+        "\u2705 Works with all activity types"
       ],
       "transformations": [
         {
           "field": "description",
           "label": "Activity Description",
           "before": "Morning Run",
-          "after": "Morning Run\\n\\n🎵 Soundtrack: 12 tracks • Top played: Blinding Lights - The Weeknd • From playlist: Running Hits 2026",
+          "after": "Morning Run\\n\\n\ud83c\udfb5 Soundtrack: 12 tracks \u2022 Top played: Blinding Lights - The Weeknd \u2022 From playlist: Running Hits 2026",
           "visualType": "",
           "afterHtml": ""
         }
@@ -2414,7 +2390,7 @@
       "type": 2,
       "name": "Location Naming",
       "description": "Auto-generates activity titles from GPS location",
-      "icon": "📍",
+      "icon": "\ud83d\udccd",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [
@@ -2469,11 +2445,11 @@
       ],
       "marketingDescription": "\n### Automatic Location-Based Titles\nGive your activities meaningful names based on where you exercised. Instead of generic \"Morning Run\", get \"Morning Run in Hyde Park\".\n\n### How it works\nWhen your activity has GPS data, this enricher uses OpenStreetMap's Nominatim API to reverse geocode your starting location. It prioritizes parks and leisure venues, falling back to suburb or city names when no specific location is found.\n  ",
       "features": [
-        "✅ Automatic location detection from GPS",
-        "✅ Prioritizes parks and leisure venues",
-        "✅ Customizable title templates",
-        "✅ City fallback for urban activities",
-        "✅ Free API, no authentication required"
+        "\u2705 Automatic location detection from GPS",
+        "\u2705 Prioritizes parks and leisure venues",
+        "\u2705 Customizable title templates",
+        "\u2705 City fallback for urban activities",
+        "\u2705 Free API, no authentication required"
       ],
       "transformations": [
         {
@@ -2503,7 +2479,7 @@
       "type": 3,
       "name": "Strava",
       "description": "Upload activities to Strava",
-      "icon": "🚴",
+      "icon": "\ud83d\udeb4",
       "enabled": true,
       "requiredIntegrations": [
         "strava"
@@ -2512,10 +2488,10 @@
       "destinationType": 1,
       "marketingDescription": "\n### Share Your Boosted Activities\nUpload your boosted activities to Strava automatically. Your AI descriptions, muscle heatmaps, and merged heart rate data will appear on your Strava feed.\n\n### How it works\nOnce activities pass through your Pipeline, FitGlue uploads them to Strava via the official API. They appear as native Strava activities, complete with all the Boosters you've configured.\n  ",
       "features": [
-        "✅ Upload activities to Strava automatically",
-        "✅ AI descriptions and muscle heatmaps included",
-        "✅ Heart rate and GPS data attached",
-        "✅ Secure OAuth connection to your Strava account"
+        "\u2705 Upload activities to Strava automatically",
+        "\u2705 AI descriptions and muscle heatmaps included",
+        "\u2705 Heart rate and GPS data attached",
+        "\u2705 Secure OAuth connection to your Strava account"
       ],
       "transformations": [],
       "useCases": [],
@@ -2532,18 +2508,18 @@
       "type": 3,
       "name": "Showcase",
       "description": "Generate a public, shareable link to your boosted activity",
-      "icon": "🔗",
+      "icon": "\ud83d\udd17",
       "enabled": true,
       "requiredIntegrations": [],
       "configSchema": [],
       "destinationType": 2,
-      "marketingDescription": "\n### Share Your Magic\nCreate beautiful, public links to your boosted activities. Share your activity data—HR graphs, GPS maps, Boosters applied—with anyone, no login required.\n\n### Tiered Retention\n- **Hobbyist**: Showcase links expire after 1 month\n- **Athlete**: Showcase links never expire\n  ",
+      "marketingDescription": "\n### Share Your Magic\nCreate beautiful, public links to your boosted activities. Share your activity data\u2014HR graphs, GPS maps, Boosters applied\u2014with anyone, no login required.\n\n### Tiered Retention\n- **Hobbyist**: Showcase links expire after 1 month\n- **Athlete**: Showcase links never expire\n  ",
       "features": [
-        "✅ Beautiful public activity pages",
-        "✅ Heart rate graphs and GPS maps",
-        "✅ Shows all applied FitGlue boosters",
-        "✅ Social sharing with rich previews",
-        "✅ Mobile-optimized design"
+        "\u2705 Beautiful public activity pages",
+        "\u2705 Heart rate graphs and GPS maps",
+        "\u2705 Shows all applied FitGlue boosters",
+        "\u2705 Social sharing with rich previews",
+        "\u2705 Mobile-optimized design"
       ],
       "transformations": [],
       "useCases": [
@@ -2562,7 +2538,7 @@
       "type": 3,
       "name": "Hevy",
       "description": "Upload boosted activities to Hevy",
-      "icon": "🏋️",
+      "icon": "\ud83c\udfcb\ufe0f",
       "enabled": true,
       "requiredIntegrations": [
         "hevy"
@@ -2583,10 +2559,10 @@
       "destinationType": 3,
       "marketingDescription": "\n### Complete Activity Target\nUpload all your activities to Hevy - from strength training to cardio. Perfect for centralizing your complete fitness history.\n\n### How it works\nActivities pass through your Pipeline and are uploaded to Hevy via the official API. Strength sets, reps, and weights are preserved. Cardio activities (runs, rides, walks) are mapped to Hevy's distance-based exercise templates.\n\n### Smart Template Matching\nExercise names are fuzzy-matched to Hevy's library. Unknown exercises automatically create custom templates.\n  ",
       "features": [
-        "✅ Upload all activity types to Hevy",
-        "✅ Strength sets, reps, and weights preserved",
-        "✅ Cardio mapped to distance-based templates",
-        "✅ Smart exercise template matching"
+        "\u2705 Upload all activity types to Hevy",
+        "\u2705 Strength sets, reps, and weights preserved",
+        "\u2705 Cardio mapped to distance-based templates",
+        "\u2705 Smart exercise template matching"
       ],
       "transformations": [],
       "useCases": [
@@ -2607,7 +2583,7 @@
       "type": 3,
       "name": "TrainingPeaks",
       "description": "Upload activities to TrainingPeaks",
-      "icon": "📈",
+      "icon": "\ud83d\udcc8",
       "enabled": true,
       "requiredIntegrations": [
         "trainingpeaks"
@@ -2616,10 +2592,10 @@
       "destinationType": 4,
       "marketingDescription": "\n### Professional Training Platform\nUpload your boosted activities to TrainingPeaks. Perfect for athletes who use TrainingPeaks for training planning and analysis.\n\n### How it works\nActivities pass through your Pipeline and are uploaded to TrainingPeaks via the official API. Duration, distance, heart rate data, and activity type are all preserved.\n\n### Smart Activity Mapping\nActivity types are automatically mapped to TrainingPeaks workout types (Run, Bike, Swim, Strength, Other).\n  ",
       "features": [
-        "✅ Upload activities to TrainingPeaks automatically",
-        "✅ Duration, distance, and heart rate data included",
-        "✅ Activity types mapped intelligently",
-        "✅ Secure OAuth connection"
+        "\u2705 Upload activities to TrainingPeaks automatically",
+        "\u2705 Duration, distance, and heart rate data included",
+        "\u2705 Activity types mapped intelligently",
+        "\u2705 Secure OAuth connection"
       ],
       "isTemporarilyUnavailable": true,
       "transformations": [],
@@ -2641,20 +2617,20 @@
       "type": 3,
       "name": "Intervals.icu",
       "description": "Upload boosted activities to Intervals.icu",
-      "icon": "📊",
+      "icon": "\ud83d\udcca",
       "enabled": true,
       "requiredIntegrations": [
         "intervals"
       ],
       "configSchema": [],
       "destinationType": 5,
-      "marketingDescription": "\n### Advanced Training Analytics Platform\nUpload your boosted activities to Intervals.icu for detailed power analysis, training load tracking, and fitness modeling. Perfect for cyclists and triathletes who want advanced analytics.\n\n### How it works\nActivities pass through your Pipeline and are uploaded to Intervals.icu via the official API. FIT files are uploaded with full data fidelity, preserving all power, heart rate, cadence, and GPS data. Your AI descriptions and enriched titles appear on your Intervals calendar.\n\n### Complete Data Fidelity\nUnlike some platforms, Intervals.icu accepts raw FIT files, meaning all your data—power curves, GPS tracks, metrics—are preserved exactly as recorded.\n  ",
+      "marketingDescription": "\n### Advanced Training Analytics Platform\nUpload your boosted activities to Intervals.icu for detailed power analysis, training load tracking, and fitness modeling. Perfect for cyclists and triathletes who want advanced analytics.\n\n### How it works\nActivities pass through your Pipeline and are uploaded to Intervals.icu via the official API. FIT files are uploaded with full data fidelity, preserving all power, heart rate, cadence, and GPS data. Your AI descriptions and enriched titles appear on your Intervals calendar.\n\n### Complete Data Fidelity\nUnlike some platforms, Intervals.icu accepts raw FIT files, meaning all your data\u2014power curves, GPS tracks, metrics\u2014are preserved exactly as recorded.\n  ",
       "features": [
-        "✅ Upload activities to Intervals.icu automatically",
-        "✅ FIT files uploaded for full data fidelity",
-        "✅ Power, heart rate, cadence, and GPS preserved",
-        "✅ AI descriptions and enriched titles included",
-        "✅ Simple API key connection"
+        "\u2705 Upload activities to Intervals.icu automatically",
+        "\u2705 FIT files uploaded for full data fidelity",
+        "\u2705 Power, heart rate, cadence, and GPS preserved",
+        "\u2705 AI descriptions and enriched titles included",
+        "\u2705 Simple API key connection"
       ],
       "isTemporarilyUnavailable": true,
       "transformations": [],
@@ -2674,7 +2650,7 @@
       "type": 3,
       "name": "Google Sheets",
       "description": "Log activities to a Google Spreadsheet",
-      "icon": "📊",
+      "icon": "\ud83d\udcca",
       "enabled": true,
       "externalUrlTemplate": "https://docs.google.com/spreadsheets/d/${spreadsheet_id}/edit#gid=0&range=A${row_number}",
       "requiredIntegrations": [
@@ -2729,11 +2705,11 @@
       "destinationType": 6,
       "marketingDescription": "\n### Personal Activity Log\nAutomatically log all your activities to a Google Sheet for personal tracking, analysis, and visualization. Perfect for creating custom dashboards and long-term fitness tracking.\n\n### How it works\nOnce you connect your Google account and provide a Spreadsheet ID, FitGlue appends a new row for each activity. Columns include date, type, title, duration, distance, calories, heart rate, and more.\n\n### Visual Assets\nIf enabled, muscle heatmaps and route thumbnails are embedded using Google Sheets IMAGE formulas, making your spreadsheet a rich visual log of your training.\n  ",
       "features": [
-        "✅ Automatic activity logging to your spreadsheet",
-        "✅ Customizable columns (date, type, stats, description)",
-        "✅ Visual assets via IMAGE formulas",
-        "✅ Showcase links for sharing",
-        "✅ Perfect for custom dashboards and analysis"
+        "\u2705 Automatic activity logging to your spreadsheet",
+        "\u2705 Customizable columns (date, type, stats, description)",
+        "\u2705 Visual assets via IMAGE formulas",
+        "\u2705 Showcase links for sharing",
+        "\u2705 Perfect for custom dashboards and analysis"
       ],
       "isTemporarilyUnavailable": true,
       "transformations": [],
@@ -2754,7 +2730,7 @@
       "id": "hevy",
       "name": "Hevy",
       "description": "Import strength training workouts",
-      "icon": "🏋️",
+      "icon": "\ud83c\udfcb\ufe0f",
       "authType": 2,
       "enabled": true,
       "docsUrl": "https://docs.hevy.com",
@@ -2762,59 +2738,59 @@
       "setupInstructions": "To connect Hevy, you'll need a **Hevy Pro** subscription and an API key:\n\n1. Open the **Hevy app** on your phone\n2. Go to **Settings** (gear icon)\n3. Scroll down and tap **Developer** (requires Hevy Pro)\n4. Tap **Generate API Key**\n5. Copy the key and enter it in your **FitGlue Dashboard**\n\n**Note:** The Developer API requires **Hevy Pro**. Free tier accounts cannot access this feature.",
       "apiKeyLabel": "Hevy API Key",
       "apiKeyHelpUrl": "https://docs.hevy.com/developer-api",
-      "marketingDescription": "\n### What is Hevy?\nHevy is a popular workout tracking app designed for strength training enthusiasts. It lets you log exercises, sets, reps, and weights with a clean, intuitive interface.\n\n### What FitGlue Does\nFitGlue connects to your Hevy account via API key, allowing your logged activities to flow into the FitGlue Pipeline. From there, you can boost them with AI summaries, muscle heatmaps, and more — then sync them to your Targets.\n  ",
+      "marketingDescription": "\n### What is Hevy?\nHevy is a popular workout tracking app designed for strength training enthusiasts. It lets you log exercises, sets, reps, and weights with a clean, intuitive interface.\n\n### What FitGlue Does\nFitGlue connects to your Hevy account via API key, allowing your logged activities to flow into the FitGlue Pipeline. From there, you can boost them with AI summaries, muscle heatmaps, and more \u2014 then sync them to your Targets.\n  ",
       "features": [
-        "✅ Import all your strength workouts automatically",
-        "✅ Exercises, sets, reps, and weights included",
-        "✅ Real-time sync when you finish a workout",
-        "✅ Simple API key setup — no OAuth required"
+        "\u2705 Import all your strength workouts automatically",
+        "\u2705 Exercises, sets, reps, and weights included",
+        "\u2705 Real-time sync when you finish a workout",
+        "\u2705 Simple API key setup \u2014 no OAuth required"
       ]
     },
     {
       "id": "fitbit",
       "name": "Fitbit",
       "description": "Sync activities and health data from your Fitbit device",
-      "icon": "⌚",
+      "icon": "\u231a",
       "authType": 1,
       "enabled": true,
       "docsUrl": "",
       "setupTitle": "Connect Fitbit",
-      "setupInstructions": "Connect your Fitbit account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Fitbit\n3. Sign in to your **Fitbit account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue access\n5. You're connected! Activities will sync automatically\n\nFitGlue uses secure OAuth — your Fitbit password is never stored.",
+      "setupInstructions": "Connect your Fitbit account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Fitbit\n3. Sign in to your **Fitbit account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue access\n5. You're connected! Activities will sync automatically\n\nFitGlue uses secure OAuth \u2014 your Fitbit password is never stored.",
       "apiKeyLabel": "",
       "apiKeyHelpUrl": "",
       "marketingDescription": "\n### What is Fitbit?\nFitbit is a leading wearable fitness tracker that monitors your activity, heart rate, sleep, and more. Millions of users rely on Fitbit devices to track their daily health metrics.\n\n### What FitGlue Does\nFitGlue connects to your Fitbit account via OAuth, enabling you to import activities and heart rate data. Use Fitbit as a Source for activities, or overlay heart rate data onto activities from other Sources like Hevy.\n  ",
       "features": [
-        "✅ Import activities tracked by your Fitbit device",
-        "✅ Use heart rate data to boost activities from other Sources",
-        "✅ Secure OAuth connection — no passwords stored",
-        "✅ Automatic sync of new activities"
+        "\u2705 Import activities tracked by your Fitbit device",
+        "\u2705 Use heart rate data to boost activities from other Sources",
+        "\u2705 Secure OAuth connection \u2014 no passwords stored",
+        "\u2705 Automatic sync of new activities"
       ]
     },
     {
       "id": "strava",
       "name": "Strava",
       "description": "Upload activities to Strava",
-      "icon": "🚴",
+      "icon": "\ud83d\udeb4",
       "authType": 1,
       "enabled": true,
       "docsUrl": "",
       "setupTitle": "Connect Strava",
-      "setupInstructions": "Connect your Strava account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Strava\n3. Sign in to your **Strava account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to upload activities\n5. You're connected! Boosted activities will appear on your Strava feed\n\nFitGlue uses secure OAuth — your Strava password is never stored.",
+      "setupInstructions": "Connect your Strava account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Strava\n3. Sign in to your **Strava account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to upload activities\n5. You're connected! Boosted activities will appear on your Strava feed\n\nFitGlue uses secure OAuth \u2014 your Strava password is never stored.",
       "apiKeyLabel": "",
       "apiKeyHelpUrl": "",
-      "marketingDescription": "\n### What is Strava?\nStrava is the social network for athletes. Share your activities with friends, compete on segments, and track your training progress over time.\n\n### What FitGlue Does\nFitGlue connects to your Strava account via OAuth and can upload your boosted activities directly. Activities from Hevy or Fitbit — boosted with AI descriptions, muscle heatmaps, and heart rate data — appear on your Strava feed automatically.\n  ",
+      "marketingDescription": "\n### What is Strava?\nStrava is the social network for athletes. Share your activities with friends, compete on segments, and track your training progress over time.\n\n### What FitGlue Does\nFitGlue connects to your Strava account via OAuth and can upload your boosted activities directly. Activities from Hevy or Fitbit \u2014 boosted with AI descriptions, muscle heatmaps, and heart rate data \u2014 appear on your Strava feed automatically.\n  ",
       "features": [
-        "✅ Upload boosted activities to Strava automatically",
-        "✅ AI-generated descriptions appear in your feed",
-        "✅ Muscle heatmaps and stats included",
-        "✅ Secure OAuth connection"
+        "\u2705 Upload boosted activities to Strava automatically",
+        "\u2705 AI-generated descriptions appear in your feed",
+        "\u2705 Muscle heatmaps and stats included",
+        "\u2705 Secure OAuth connection"
       ]
     },
     {
       "id": "apple-health",
       "name": "Apple Health",
       "description": "Sync workouts and health data from your iOS device",
-      "icon": "🍎",
+      "icon": "\ud83c\udf4e",
       "authType": 3,
       "enabled": true,
       "docsUrl": "",
@@ -2824,17 +2800,17 @@
       "apiKeyHelpUrl": "",
       "marketingDescription": "\n### What is Apple Health?\nApple Health is the centralized health data repository on iOS devices. It aggregates data from your Apple Watch, iPhone sensors, and third-party fitness apps.\n\n### What FitGlue Does\nFitGlue's mobile app reads your workout data from Apple Health and syncs it to the cloud. Workouts complete with heart rate data and GPS routes flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava.\n  ",
       "features": [
-        "✅ Import workouts from Apple Watch and iPhone",
-        "✅ Heart rate data from wrist sensors",
-        "✅ GPS routes for outdoor activities",
-        "✅ Background sync via FitGlue mobile app"
+        "\u2705 Import workouts from Apple Watch and iPhone",
+        "\u2705 Heart rate data from wrist sensors",
+        "\u2705 GPS routes for outdoor activities",
+        "\u2705 Background sync via FitGlue mobile app"
       ]
     },
     {
       "id": "health-connect",
       "name": "Health Connect",
       "description": "Sync workouts and health data from your Android device",
-      "icon": "🤖",
+      "icon": "\ud83e\udd16",
       "authType": 3,
       "enabled": true,
       "docsUrl": "",
@@ -2842,185 +2818,185 @@
       "setupInstructions": "To connect Health Connect, install the **FitGlue mobile app** on your Android device:\n\n1. Download **FitGlue** from the Google Play Store\n2. Sign in with your FitGlue account\n3. Grant access to Health Connect when prompted\n4. Your workouts will sync automatically in the background\n\n**Note:** Health Connect data can only be accessed from the mobile app running on your Android device.",
       "apiKeyLabel": "",
       "apiKeyHelpUrl": "",
-      "marketingDescription": "\n### What is Health Connect?\nHealth Connect is Android's unified health data platform. It allows apps and wearables to share health and fitness data in a standardized way.\n\n### What FitGlue Does\nFitGlue's mobile app reads your workout data from Health Connect and syncs it to the cloud. Workouts from Garmin, Samsung, Fitbit, and other compatible devices flow through your FitGlue pipeline for enhancement and distribution.\n  ",
+      "marketingDescription": "\n### What is Health Connect?\nHealth Connect is Android's unified health data platform. It allows apps and wearables to share health and fitness data in a standardized way.\n\n### What FitGlue Does\nFitGlue's mobile app reads your workout data from Health Connect and syncs it to the cloud. Workouts from Samsung, Fitbit, and other compatible devices flow through your FitGlue pipeline for enhancement and distribution.\n  ",
       "features": [
-        "✅ Import workouts from any Health Connect-compatible device",
-        "✅ Works with Garmin, Samsung, Fitbit, and more",
-        "✅ Heart rate and GPS data included",
-        "✅ Background sync via FitGlue mobile app"
+        "\u2705 Import workouts from any Health Connect-compatible device",
+        "\u2705 Works with Samsung, Fitbit, and more",
+        "\u2705 Heart rate and GPS data included",
+        "\u2705 Background sync via FitGlue mobile app"
       ]
     },
     {
       "id": "parkrun",
       "name": "Parkrun",
       "description": "Enhanced Parkrun detection with official results",
-      "icon": "🏃",
+      "icon": "\ud83c\udfc3",
       "authType": 4,
       "enabled": true,
       "docsUrl": "https://www.parkrun.com",
       "setupTitle": "Connect Parkrun",
-      "setupInstructions": "To connect Parkrun, you'll need your athlete barcode number:\n\n1. **Find your barcode** — Your Parkrun barcode starts with \"A\" followed by numbers (e.g. A12345678)\n2. **Check your barcode card** — This is printed on your physical barcode card, or find it on the Parkrun website in your profile\n3. **Enter your barcode** — Enter your barcode number (including the A) in the form below\n\nOnce connected, FitGlue can fetch your official results and update your activities automatically.",
+      "setupInstructions": "To connect Parkrun, you'll need your athlete barcode number:\n\n1. **Find your barcode** \u2014 Your Parkrun barcode starts with \"A\" followed by numbers (e.g. A12345678)\n2. **Check your barcode card** \u2014 This is printed on your physical barcode card, or find it on the Parkrun website in your profile\n3. **Enter your barcode** \u2014 Enter your barcode number (including the A) in the form below\n\nOnce connected, FitGlue can fetch your official results and update your activities automatically.",
       "apiKeyLabel": "Barcode Number",
       "apiKeyHelpUrl": "https://www.parkrun.com/register/",
-      "marketingDescription": "\n### What is Parkrun?\nParkrun is a free, community-organized 5K running event held every Saturday morning at locations worldwide. Millions of people participate, from first-timers to elite runners.\n\n### What FitGlue Does\nFitGlue automatically detects when your run is a Parkrun based on GPS location and time. With your barcode connected, we can fetch your **official results** — position, time, age grade, and PB status — and update your activity with all the details.\n  ",
+      "marketingDescription": "\n### What is Parkrun?\nParkrun is a free, community-organized 5K running event held every Saturday morning at locations worldwide. Millions of people participate, from first-timers to elite runners.\n\n### What FitGlue Does\nFitGlue automatically detects when your run is a Parkrun based on GPS location and time. With your barcode connected, we can fetch your **official results** \u2014 position, time, age grade, and PB status \u2014 and update your activity with all the details.\n  ",
       "features": [
-        "✅ Automatic Parkrun event detection via GPS",
-        "✅ Official results fetched after the event",
-        "✅ Position, time, and age grade added to description",
-        "✅ PB celebrations highlighted",
-        "✅ Special event detection (Christmas, New Year)",
-        "✅ 2,500+ worldwide Parkrun locations supported"
+        "\u2705 Automatic Parkrun event detection via GPS",
+        "\u2705 Official results fetched after the event",
+        "\u2705 Position, time, and age grade added to description",
+        "\u2705 PB celebrations highlighted",
+        "\u2705 Special event detection (Christmas, New Year)",
+        "\u2705 2,500+ worldwide Parkrun locations supported"
       ]
     },
     {
       "id": "trainingpeaks",
       "name": "TrainingPeaks",
       "description": "Upload activities to TrainingPeaks",
-      "icon": "📈",
+      "icon": "\ud83d\udcc8",
       "authType": 1,
       "enabled": true,
       "isTemporarilyUnavailable": true,
       "docsUrl": "https://developer.trainingpeaks.com",
       "setupTitle": "Connect TrainingPeaks",
-      "setupInstructions": "Connect your TrainingPeaks account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on TrainingPeaks\n3. Sign in to your **TrainingPeaks account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to upload workouts\n5. You're connected! Boosted activities will appear in your TrainingPeaks calendar\n\nFitGlue uses secure OAuth — your TrainingPeaks password is never stored.",
+      "setupInstructions": "Connect your TrainingPeaks account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on TrainingPeaks\n3. Sign in to your **TrainingPeaks account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to upload workouts\n5. You're connected! Boosted activities will appear in your TrainingPeaks calendar\n\nFitGlue uses secure OAuth \u2014 your TrainingPeaks password is never stored.",
       "apiKeyLabel": "",
       "apiKeyHelpUrl": "",
-      "marketingDescription": "\n### What is TrainingPeaks?\nTrainingPeaks is a professional training platform used by athletes and coaches worldwide. It provides structured training plans, workout analysis, and performance tracking.\n\n### What FitGlue Does\nFitGlue connects to your TrainingPeaks account via OAuth and uploads your boosted activities. Activities from your connected sources — enhanced with AI descriptions, muscle heatmaps, and heart rate data — appear in your TrainingPeaks calendar automatically.\n  ",
+      "marketingDescription": "\n### What is TrainingPeaks?\nTrainingPeaks is a professional training platform used by athletes and coaches worldwide. It provides structured training plans, workout analysis, and performance tracking.\n\n### What FitGlue Does\nFitGlue connects to your TrainingPeaks account via OAuth and uploads your boosted activities. Activities from your connected sources \u2014 enhanced with AI descriptions, muscle heatmaps, and heart rate data \u2014 appear in your TrainingPeaks calendar automatically.\n  ",
       "features": [
-        "✅ Upload boosted activities to TrainingPeaks automatically",
-        "✅ Duration, distance, and heart rate data included",
-        "✅ Activity types mapped to TrainingPeaks workout types",
-        "✅ Secure OAuth connection"
+        "\u2705 Upload boosted activities to TrainingPeaks automatically",
+        "\u2705 Duration, distance, and heart rate data included",
+        "\u2705 Activity types mapped to TrainingPeaks workout types",
+        "\u2705 Secure OAuth connection"
       ]
     },
     {
       "id": "spotify",
       "name": "Spotify",
       "description": "Connect your Spotify account to track music during activities",
-      "icon": "🎵",
+      "icon": "\ud83c\udfb5",
       "authType": 1,
       "enabled": true,
       "isTemporarilyUnavailable": true,
       "docsUrl": "https://www.spotify.com",
       "setupTitle": "Connect Spotify",
-      "setupInstructions": "To connect Spotify, you'll authorize FitGlue to access your listening history:\n\n1. **Click Connect** — You'll be redirected to Spotify's authorization page\n2. **Sign in to Spotify** — Use your Spotify account credentials\n3. **Authorize FitGlue** — Grant permission to read your recently played tracks\n4. **Done!** — You'll be redirected back to FitGlue\n\nOnce connected, FitGlue can track what music you listened to during your activities.",
+      "setupInstructions": "To connect Spotify, you'll authorize FitGlue to access your listening history:\n\n1. **Click Connect** \u2014 You'll be redirected to Spotify's authorization page\n2. **Sign in to Spotify** \u2014 Use your Spotify account credentials\n3. **Authorize FitGlue** \u2014 Grant permission to read your recently played tracks\n4. **Done!** \u2014 You'll be redirected back to FitGlue\n\nOnce connected, FitGlue can track what music you listened to during your activities.",
       "apiKeyLabel": "",
       "apiKeyHelpUrl": "",
       "marketingDescription": "\n### What is Spotify?\nSpotify is the world's leading music streaming platform with millions of songs, podcasts, and playlists.\n\n### What FitGlue Does\nFitGlue connects to your Spotify account and tracks what music you listened to during your workouts. See your top played tracks, discover your workout playlists, and share your activity soundtrack.\n  ",
       "features": [
-        "✅ Track music played during activities",
-        "✅ See top played tracks",
-        "✅ Identify workout playlists",
-        "✅ Automatic time-window matching"
+        "\u2705 Track music played during activities",
+        "\u2705 See top played tracks",
+        "\u2705 Identify workout playlists",
+        "\u2705 Automatic time-window matching"
       ]
     },
     {
       "id": "google",
       "name": "Google",
       "description": "Connect your Google account for Sheets integration",
-      "icon": "🔵",
+      "icon": "\ud83d\udd35",
       "authType": 1,
       "enabled": true,
       "isTemporarilyUnavailable": true,
       "docsUrl": "https://developers.google.com/sheets",
       "setupTitle": "Connect Google",
-      "setupInstructions": "To connect Google, you'll authorize FitGlue to access your Google Sheets:\n\n1. **Click Connect** — You'll be redirected to Google's authorization page\n2. **Sign in to Google** — Use your Google account credentials\n3. **Authorize FitGlue** — Grant permission to read and write to your spreadsheets\n4. **Done!** — You'll be redirected back to FitGlue\n\nOnce connected, FitGlue can log your activities to any Google Sheet you specify.",
+      "setupInstructions": "To connect Google, you'll authorize FitGlue to access your Google Sheets:\n\n1. **Click Connect** \u2014 You'll be redirected to Google's authorization page\n2. **Sign in to Google** \u2014 Use your Google account credentials\n3. **Authorize FitGlue** \u2014 Grant permission to read and write to your spreadsheets\n4. **Done!** \u2014 You'll be redirected back to FitGlue\n\nOnce connected, FitGlue can log your activities to any Google Sheet you specify.",
       "apiKeyLabel": "",
       "apiKeyHelpUrl": "",
       "marketingDescription": "\n### What is Google Sheets?\nGoogle Sheets is a powerful, cloud-based spreadsheet application that's part of Google Workspace. It's perfect for tracking, analyzing, and visualizing your fitness data.\n\n### What FitGlue Does\nFitGlue connects to your Google account and automatically logs your activities to a spreadsheet of your choice. Each activity becomes a row with customizable columns including stats, visual assets, and showcase links.\n  ",
       "features": [
-        "✅ Automatic activity logging to Google Sheets",
-        "✅ Customizable columns and data fields",
-        "✅ Visual assets via IMAGE formulas",
-        "✅ Secure OAuth connection"
+        "\u2705 Automatic activity logging to Google Sheets",
+        "\u2705 Customizable columns and data fields",
+        "\u2705 Visual assets via IMAGE formulas",
+        "\u2705 Secure OAuth connection"
       ]
     },
     {
       "id": "oura",
       "name": "Oura Ring",
       "description": "Import workouts from your Oura Ring",
-      "icon": "💍",
+      "icon": "\ud83d\udc8d",
       "authType": 1,
       "enabled": true,
       "isTemporarilyUnavailable": true,
       "docsUrl": "https://cloud.ouraring.com/docs",
       "setupTitle": "Connect Oura Ring",
-      "setupInstructions": "Connect your Oura account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Oura Ring\n3. Sign in to your **Oura account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to access your workouts\n5. You're connected! Workouts will sync automatically\n\nFitGlue uses secure OAuth — your Oura password is never stored.",
+      "setupInstructions": "Connect your Oura account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Oura Ring\n3. Sign in to your **Oura account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to access your workouts\n5. You're connected! Workouts will sync automatically\n\nFitGlue uses secure OAuth \u2014 your Oura password is never stored.",
       "apiKeyLabel": "",
       "apiKeyHelpUrl": "",
       "marketingDescription": "\n### What is Oura Ring?\nOura Ring is a smart ring that tracks sleep, readiness, and activity. It provides detailed insights into your recovery and overall health, with workout tracking capabilities.\n\n### What FitGlue Does\nFitGlue connects to your Oura account via OAuth and imports your tracked workouts. Heart rate data, calories, and workout duration flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava.\n  ",
       "features": [
-        "✅ Import workouts tracked by your Oura Ring",
-        "✅ Heart rate data (average and max) included",
-        "✅ Automatic sync of new workouts",
-        "✅ Secure OAuth connection"
+        "\u2705 Import workouts tracked by your Oura Ring",
+        "\u2705 Heart rate data (average and max) included",
+        "\u2705 Automatic sync of new workouts",
+        "\u2705 Secure OAuth connection"
       ]
     },
     {
       "id": "polar",
       "name": "Polar Flow",
       "description": "Import activities from Polar wearables",
-      "icon": "❄️",
+      "icon": "\u2744\ufe0f",
       "authType": 1,
       "enabled": true,
       "isTemporarilyUnavailable": true,
       "docsUrl": "https://www.polar.com/accesslink-api",
       "setupTitle": "Connect Polar Flow",
-      "setupInstructions": "Connect your Polar Flow account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Polar Flow\n3. Sign in to your **Polar account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to access your activities\n5. You're connected! Activities will sync automatically\n\nFitGlue uses secure OAuth — your Polar password is never stored.\n\n**Note:** App registration at admin.polaraccesslink.com is required.",
+      "setupInstructions": "Connect your Polar Flow account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Polar Flow\n3. Sign in to your **Polar account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to access your activities\n5. You're connected! Activities will sync automatically\n\nFitGlue uses secure OAuth \u2014 your Polar password is never stored.\n\n**Note:** App registration at admin.polaraccesslink.com is required.",
       "apiKeyLabel": "",
       "apiKeyHelpUrl": "",
       "marketingDescription": "\n### What is Polar Flow?\nPolar Flow is the cloud platform for Polar wearables and sports watches. It stores your training data, provides analytics, and syncs across devices.\n\n### What FitGlue Does\nFitGlue connects to your Polar Flow account via OAuth and imports your activities via webhooks. Heart rate data, GPS routes, and training metrics flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava.\n\n### Transaction-Based Reliability\nPolar uses a unique transaction-based API that ensures no activities are lost. FitGlue handles the transaction lifecycle automatically.\n  ",
       "features": [
-        "✅ Import activities from Polar watches",
-        "✅ Heart rate data with zones included",
-        "✅ GPS routes for outdoor activities",
-        "✅ Training load metrics",
-        "✅ Real-time sync via webhooks",
-        "✅ Secure OAuth connection"
+        "\u2705 Import activities from Polar watches",
+        "\u2705 Heart rate data with zones included",
+        "\u2705 GPS routes for outdoor activities",
+        "\u2705 Training load metrics",
+        "\u2705 Real-time sync via webhooks",
+        "\u2705 Secure OAuth connection"
       ]
     },
     {
       "id": "intervals",
       "name": "Intervals.icu",
       "description": "Advanced training analytics with power and performance metrics",
-      "icon": "📊",
+      "icon": "\ud83d\udcca",
       "authType": 2,
       "enabled": true,
       "isTemporarilyUnavailable": true,
       "docsUrl": "https://intervals.icu/api",
       "setupTitle": "Connect Intervals.icu",
-      "setupInstructions": "To connect Intervals.icu, you'll need your **API Key** and **Athlete ID**:\n\n1. Go to **Intervals.icu** and log in\n2. Navigate to **Settings** → **Developer Settings**\n3. Click **Generate API Key** and copy the key\n4. Find your **Athlete ID** in the URL: intervals.icu/athlete/**{your-id}**/calendar\n5. Enter both values in your **FitGlue Dashboard**\n\n**Note:** The API key and athlete ID are unique to your account. Keep them secure.",
+      "setupInstructions": "To connect Intervals.icu, you'll need your **API Key** and **Athlete ID**:\n\n1. Go to **Intervals.icu** and log in\n2. Navigate to **Settings** \u2192 **Developer Settings**\n3. Click **Generate API Key** and copy the key\n4. Find your **Athlete ID** in the URL: intervals.icu/athlete/**{your-id}**/calendar\n5. Enter both values in your **FitGlue Dashboard**\n\n**Note:** The API key and athlete ID are unique to your account. Keep them secure.",
       "apiKeyLabel": "API Key",
       "apiKeyHelpUrl": "https://intervals.icu/api",
-      "marketingDescription": "\n### What is Intervals.icu?\nIntervals.icu is a free, advanced training analytics platform popular with cyclists and triathletes. It provides detailed power analysis, training load tracking, fitness modeling (CTL/ATL/TSB), and race planning tools.\n\n### What FitGlue Does\nFitGlue connects to your Intervals.icu account via API key and can upload your boosted activities. Your enriched workouts — with AI descriptions, heart rate summaries, and performance metrics — appear in your Intervals.icu calendar for detailed analysis.\n  ",
+      "marketingDescription": "\n### What is Intervals.icu?\nIntervals.icu is a free, advanced training analytics platform popular with cyclists and triathletes. It provides detailed power analysis, training load tracking, fitness modeling (CTL/ATL/TSB), and race planning tools.\n\n### What FitGlue Does\nFitGlue connects to your Intervals.icu account via API key and can upload your boosted activities. Your enriched workouts \u2014 with AI descriptions, heart rate summaries, and performance metrics \u2014 appear in your Intervals.icu calendar for detailed analysis.\n  ",
       "features": [
-        "✅ Upload boosted activities to Intervals.icu automatically",
-        "✅ Power, heart rate, and GPS data included",
-        "✅ FIT files uploaded for full data fidelity",
-        "✅ Simple API key setup — no OAuth required",
-        "✅ Works with all FitGlue boosters"
+        "\u2705 Upload boosted activities to Intervals.icu automatically",
+        "\u2705 Power, heart rate, and GPS data included",
+        "\u2705 FIT files uploaded for full data fidelity",
+        "\u2705 Simple API key setup \u2014 no OAuth required",
+        "\u2705 Works with all FitGlue boosters"
       ]
     },
     {
       "id": "wahoo",
       "name": "Wahoo",
       "description": "Import workouts from Wahoo Cloud",
-      "icon": "📱",
+      "icon": "\ud83d\udcf1",
       "authType": 1,
       "enabled": true,
       "isTemporarilyUnavailable": true,
       "docsUrl": "https://developers.wahooligan.com",
       "setupTitle": "Connect Wahoo",
-      "setupInstructions": "Connect your Wahoo account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Wahoo\n3. Sign in to your **Wahoo account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to access your workouts\n5. You're connected! Activities will sync automatically\n\nFitGlue uses secure OAuth — your Wahoo password is never stored.",
+      "setupInstructions": "Connect your Wahoo account to FitGlue with secure OAuth:\n\n1. Open the **FitGlue Dashboard**\n2. Navigate to **Connections** and click **Connect** on Wahoo\n3. Sign in to your **Wahoo account** when redirected\n4. Review and **Accept Permissions** to allow FitGlue to access your workouts\n5. You're connected! Activities will sync automatically\n\nFitGlue uses secure OAuth \u2014 your Wahoo password is never stored.",
       "apiKeyLabel": "",
       "apiKeyHelpUrl": "",
       "marketingDescription": "\n### What is Wahoo?\nWahoo is a leading cycling technology company known for ELEMNT bike computers, KICKR smart trainers, and TICKR heart rate monitors. Wahoo Cloud stores your workout data from all Wahoo devices.\n\n### What FitGlue Does\nFitGlue connects to your Wahoo account via OAuth and imports your workouts with full FIT file data. Power, heart rate, cadence, and GPS data flow through your FitGlue pipeline for enhancement and distribution to destinations like Strava or TrainingPeaks.\n  ",
       "features": [
-        "✅ Import workouts from ELEMNT, KICKR, and all Wahoo devices",
-        "✅ Full FIT file support with complete sensor data",
-        "✅ Power, HR, cadence, and GPS data included",
-        "✅ Real-time sync via webhooks",
-        "✅ Secure OAuth connection"
+        "\u2705 Import workouts from ELEMNT, KICKR, and all Wahoo devices",
+        "\u2705 Full FIT file support with complete sensor data",
+        "\u2705 Power, HR, cadence, and GPS data included",
+        "\u2705 Real-time sync via webhooks",
+        "\u2705 Secure OAuth connection"
       ]
     }
   ]

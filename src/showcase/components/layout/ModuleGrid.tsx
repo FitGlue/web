@@ -30,6 +30,7 @@ import MuscleHeatmapModule from '../modules/MuscleHeatmapModule';
 import SetListModule from '../modules/SetListModule';
 import PersonalRecordsModule from '../modules/PersonalRecordsModule';
 import BestEffortsModule from '../modules/BestEffortsModule';
+import HDropModule from '../modules/HDropModule';
 import { PhotoGallery } from '../PhotoGallery';
 
 type Session = components['schemas']['Session'];
@@ -250,6 +251,8 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
                 return <SpotifyModule key={key} data={enrichments?.spotify} />;
               case 'best-efforts':
                 return <BestEffortsModule key={key} data={enrichments?.bestEfforts} />;
+              case 'hdrop':
+                return <HDropModule key={key} data={enrichments?.hdrop} />;
               default:
                 return null;
             }

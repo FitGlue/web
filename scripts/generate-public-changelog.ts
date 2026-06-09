@@ -296,7 +296,7 @@ BUG FIXES:
 ${merged.fixes.length > 0 ? formatEntries(merged.fixes) : '(none)'}
 `.trim();
 
-  const prompt = `You are a technical writer for FitGlue, a fitness activity sync platform that automatically syncs workouts between apps like Strava, Fitbit, Garmin, Apple Health, and Hevy.
+  const prompt = `You are a technical writer for FitGlue, a fitness activity sync platform that automatically syncs workouts between apps like Strava, Fitbit, Polar, Apple Health, and Hevy.
 
 Rewrite the following technical changelog entries into user-friendly language that non-technical users can understand. Focus on the USER BENEFIT, not implementation details.
 

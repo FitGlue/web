@@ -62,7 +62,7 @@ The AI Companion booster requires the **Athlete** (paid) tier.
 
 ## Common Issues
 
-**Commentary feels generic** — The AI needs data to personalize. Activities with just a title and no exercise details, no HR, no distance will produce generic motivational text. Use a rich source like Hevy or Garmin for the best results.
+**Commentary feels generic** — The AI needs data to personalize. Activities with just a title and no exercise details, no HR, no distance will produce generic motivational text. Use a rich source like Hevy or upload a FIT file for the best results.
 
 **Commentary references wrong exercises** — If exercise data is incorrect or missing, the AI may hallucinate exercise names. This is a known limitation of AI models. Ensure your source data is accurate.
 

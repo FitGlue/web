@@ -24,7 +24,7 @@ function makePlugin(overrides: Partial<PluginManifest> & { id: string; name: str
 describe('groupPluginsByCategory', () => {
   const plugins: PluginManifest[] = [
     makePlugin({ id: 'fitbit', name: 'Fitbit', category: CATEGORY_WEARABLES }),
-    makePlugin({ id: 'garmin', name: 'Garmin', category: CATEGORY_WEARABLES, isPremium: true }),
+    makePlugin({ id: 'polar', name: 'Polar', category: CATEGORY_WEARABLES, isPremium: true }),
     makePlugin({ id: 'strava', name: 'Strava', category: CATEGORY_APPS }),
     makePlugin({ id: 'orphan', name: 'Orphan', category: 'nonexistent' }),
   ];
@@ -35,14 +35,14 @@ describe('groupPluginsByCategory', () => {
     expect(wearableCategory).toBeDefined();
     const wearables = grouped.get(wearableCategory!);
     expect(wearables?.map(p => p.id)).toContain('fitbit');
-    expect(wearables?.map(p => p.id)).toContain('garmin');
+    expect(wearables?.map(p => p.id)).toContain('polar');
   });
 
   it('puts premium plugins first within a category', () => {
     const grouped = groupPluginsByCategory(plugins, SOURCE_CATEGORIES);
     const wearableCategory = [...grouped.keys()].find(c => c.id === CATEGORY_WEARABLES)!;
     const wearables = grouped.get(wearableCategory)!;
-    expect(wearables[0].id).toBe('garmin');
+    expect(wearables[0].id).toBe('polar');
   });
 
   it('sorts non-premium plugins alphabetically', () => {
@@ -96,7 +96,7 @@ describe('getRecommendedPlugins', () => {
     makePlugin({ id: 'a', name: 'A', popularityScore: 10 }),
     makePlugin({ id: 'b', name: 'B', popularityScore: 5 }),
     makePlugin({ id: 'c', name: 'C', popularityScore: 8, requiredIntegrations: ['strava'] }),
-    makePlugin({ id: 'd', name: 'D', popularityScore: 7, requiredIntegrations: ['garmin'] }),
+    makePlugin({ id: 'd', name: 'D', popularityScore: 7, requiredIntegrations: ['polar'] }),
   ];
 
   it('returns plugins sorted by popularity descending', () => {
@@ -125,7 +125,7 @@ describe('filterPluginsBySearch', () => {
   const plugins: PluginManifest[] = [
     makePlugin({ id: 'strava', name: 'Strava', description: 'Social fitness network' }),
     makePlugin({ id: 'fitbit', name: 'Fitbit', description: 'Wearable tracker' }),
-    makePlugin({ id: 'garmin', name: 'Garmin', description: 'GPS fitness device' }),
+    makePlugin({ id: 'polar', name: 'Polar', description: 'Heart rate monitor' }),
   ];
 
   it('returns all plugins for empty query', () => {

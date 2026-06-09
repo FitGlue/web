@@ -32,7 +32,7 @@ Custom BPM boundaries for Zone 1–5. Example: `120, 140, 160, 175` (values repr
 
 ## Data Requirements
 
-- **Heart rate data** must exist on the activity — either from the source (Strava, Garmin, Fitbit) or merged by another booster ([Fitbit Heart Rate](/help/articles/registry/enrichers/fitbit-heart-rate), [FIT File Heart Rate](/help/articles/registry/enrichers/fit-file-heart-rate)).
+- **Heart rate data** must exist on the activity — either from the source (Strava, Fitbit, Polar) or merged by another booster ([Fitbit Heart Rate](/help/articles/registry/enrichers/fitbit-heart-rate), [FIT File Heart Rate](/help/articles/registry/enrichers/fit-file-heart-rate)).
 - Without HR data, no output is produced.
 
 ## How Content Appears

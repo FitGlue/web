@@ -46,7 +46,7 @@ const Specimen: React.FC<{ label: string; children: React.ReactNode }> = ({ labe
 const SAMPLE_SOURCES: SourceTile[] = [
     { id: 'strava', name: 'Strava', icon: '🚴', connected: true },
     { id: 'hevy', name: 'Hevy', icon: '🏋️', meta: 'Webhook' },
-    { id: 'garmin', name: 'Garmin', icon: '⌚' },
+    { id: 'polar', name: 'Polar', icon: '⌚' },
     { id: 'fitbit', name: 'Fitbit', icon: '📱', disabled: true },
 ];
 
@@ -253,7 +253,7 @@ const ComponentLibraryPage: React.FC = () => {
                     <EmptyState
                         icon="🔗"
                         title="No connections yet"
-                        description="Hook in Strava, Hevy, Fitbit, Garmin — wherever your activities live."
+                        description="Hook in Strava, Hevy, Fitbit, Polar — wherever your activities live."
                         actionLabel="CONNECT A SOURCE →"
                         onAction={() => {}}
                     />

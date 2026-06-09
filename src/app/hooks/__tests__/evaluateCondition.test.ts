@@ -81,10 +81,10 @@ describe('evaluateCondition: missing_enricher', () => {
   it('filters by sourceId when specified', () => {
     const conditionWithSource: NudgeCondition = { type: 'missing_enricher', enricherProviderType: 5, sourceId: 'strava' };
     const pipelines: Pipeline[] = [
-      { id: 'p1', source: 'garmin', enrichers: [{ providerType: 5 }], destinations: [] },
+      { id: 'p1', source: 'polar', enrichers: [{ providerType: 5 }], destinations: [] },
       { id: 'p2', source: 'strava', enrichers: [{ providerType: 1 }], destinations: [] },
     ];
-    // p1 has the enricher but is garmin, p2 is strava but missing the enricher → true
+    // p1 has the enricher but is polar, p2 is strava but missing the enricher → true
     expect(evaluateCondition(conditionWithSource, pipelines, makeIntegrations())).toBe(true);
   });
 
@@ -105,7 +105,7 @@ describe('evaluateCondition: missing_destination', () => {
   });
 
   it('returns true when no pipeline targets the destination', () => {
-    const pipelines: Pipeline[] = [{ id: 'p1', source: 'garmin', destinations: ['hevy'] }];
+    const pipelines: Pipeline[] = [{ id: 'p1', source: 'polar', destinations: ['hevy'] }];
     expect(evaluateCondition(condition, pipelines, makeIntegrations())).toBe(true);
   });
 });
@@ -113,10 +113,10 @@ describe('evaluateCondition: missing_destination', () => {
 // ── unused_connection ────────────────────────────────────────────
 
 describe('evaluateCondition: unused_connection', () => {
-  const condition: NudgeCondition = { type: 'unused_connection', integrationId: 'garmin' };
+  const condition: NudgeCondition = { type: 'unused_connection', integrationId: 'polar' };
 
   it('returns false when integration is not connected', () => {
-    expect(evaluateCondition(condition, [], makeIntegrations({ garmin: disconnected }))).toBe(false);
+    expect(evaluateCondition(condition, [], makeIntegrations({ polar: disconnected }))).toBe(false);
   });
 
   it('returns false when integrations is null', () => {
@@ -125,17 +125,17 @@ describe('evaluateCondition: unused_connection', () => {
 
   it('returns true when connected but not used in any pipeline', () => {
     const pipelines: Pipeline[] = [{ id: 'p1', source: 'strava', destinations: [] }];
-    expect(evaluateCondition(condition, pipelines, makeIntegrations({ garmin: connected }))).toBe(true);
+    expect(evaluateCondition(condition, pipelines, makeIntegrations({ polar: connected }))).toBe(true);
   });
 
   it('returns false when connected and used as source', () => {
-    const pipelines: Pipeline[] = [{ id: 'p1', source: 'garmin', destinations: [] }];
-    expect(evaluateCondition(condition, pipelines, makeIntegrations({ garmin: connected }))).toBe(false);
+    const pipelines: Pipeline[] = [{ id: 'p1', source: 'polar', destinations: [] }];
+    expect(evaluateCondition(condition, pipelines, makeIntegrations({ polar: connected }))).toBe(false);
   });
 
   it('returns false when no integrationId specified', () => {
     const noIdCondition: NudgeCondition = { type: 'unused_connection' };
-    expect(evaluateCondition(noIdCondition, [], makeIntegrations({ garmin: connected }))).toBe(false);
+    expect(evaluateCondition(noIdCondition, [], makeIntegrations({ polar: connected }))).toBe(false);
   });
 });
 

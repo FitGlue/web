@@ -78,7 +78,7 @@ The Muscle Heatmap booster is available on the **Hobbyist** (free) tier.
 
 ## Common Issues
 
-**All muscles showing 0% or no output** — This booster requires exercise data. If your activity comes from Strava or Garmin (which don't include exercise details), there are no exercises to map. Use the [Hevy source](/help/articles/registry/sources/hevy) for strength workouts.
+**All muscles showing 0% or no output** — This booster requires exercise data. If your activity comes from Strava or a GPS source (which don't include exercise details), there are no exercises to map. Use the [Hevy source](/help/articles/registry/sources/hevy) for strength workouts.
 
 **Unknown exercise mapped to wrong muscles** — FitGlue uses fuzzy matching against a database of 100+ exercises. Very unusual custom exercise names (e.g., "Dave's Special Move") may map incorrectly or fall back to generic muscle groups. Consider renaming exercises in Hevy to standard names for better accuracy.
 
