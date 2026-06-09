@@ -3,6 +3,7 @@ import { AppHeader } from './AppHeader';
 import { PageHeader } from './PageHeader';
 import { RefreshControl } from '../../RefreshControl';
 import { Footer } from './Footer';
+import { isNativeApp } from '../../../../shared/nativeBridge';
 import './PageLayout.css';
 
 interface PageLayoutProps {
@@ -67,7 +68,10 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
     return (
         <div className="app-page-layout">
             <AppHeader />
-            <div className={contentClasses}>
+            <div
+                className={contentClasses}
+                style={isNativeApp ? { paddingBottom: '80px' } : undefined}
+            >
                 {showPageHeader && (
                     <PageHeader
                         title={title}
@@ -81,7 +85,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
                 <main>
                     {children}
                 </main>
-                <Footer />
+                {!isNativeApp && <Footer />}
             </div>
         </div>
     );

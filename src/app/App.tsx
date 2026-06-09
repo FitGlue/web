@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signInWithCustomToken } from 'firebase/auth';
 import { initFirebase } from '../shared/firebase';
+import { isNativeApp, sendToNative } from '../shared/nativeBridge';
 import { userAtom, authLoadingAtom } from './state/authState';
 import { initSentry, setUser as setSentryUser, Sentry } from './infrastructure/sentry';
 import { Stack } from './components/library/layout';
@@ -56,9 +57,11 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     return <AppLoadingScreen />;
   }
 
-  // Not authenticated - redirect to login
+  // Not authenticated - redirect to login (skipped in native app; native handles auth)
   if (!firebaseUser) {
-    window.location.href = '/auth/login';
+    if (!isNativeApp) {
+      window.location.href = '/auth/login';
+    }
     return (
       <Card>
         <Paragraph>Redirecting to login...</Paragraph>
@@ -112,6 +115,25 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 
+// Bridges the React Router navigation API to the native app via window.__fg and postMessage.
+// Must be rendered inside <Router> to access useNavigate/useLocation.
+const NativeBridge: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    window.__fg = { navigate: (path: string) => navigate(path) };
+    sendToNative({ type: 'ready' });
+    return () => { window.__fg = undefined; };
+  }, [navigate]);
+
+  useEffect(() => {
+    sendToNative({ type: 'routeChange', path: location.pathname });
+  }, [location.pathname]);
+
+  return null;
+};
+
 const App: React.FC = () => {
   const [, setUser] = useAtom(userAtom);
   const [, setLoading] = useAtom(authLoadingAtom);
@@ -124,6 +146,18 @@ const App: React.FC = () => {
       if (!fb) {
         setLoading(false);
         return;
+      }
+
+      // In native mode: sign in with the injected custom token before registering the auth
+      // listener, so the first onAuthStateChanged fires with a user (not null).
+      const nativeToken = window.__fitglueCustomToken;
+      if (nativeToken) {
+        window.__fitglueCustomToken = undefined;
+        try {
+          await signInWithCustomToken(fb.auth, nativeToken);
+        } catch (e) {
+          console.error('[FitGlue] Native token sign-in failed', e);
+        }
       }
 
       onAuthStateChanged(fb.auth, (u) => {
@@ -157,6 +191,7 @@ const App: React.FC = () => {
     >
       <ToastProvider>
           <Router basename="/app">
+            <NativeBridge />
             <Routes>
               {/* Protected app routes */}
               <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />

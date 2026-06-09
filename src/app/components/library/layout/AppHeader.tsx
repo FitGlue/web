@@ -8,6 +8,7 @@ import { profilePictureUrlAtom } from '../../../state/userState';
 import { getEffectiveTier, TIER_ATHLETE } from '../../../utils/tier';
 import { AvatarMenu } from './AvatarMenu';
 import { CommandPalette } from './CommandPalette';
+import { isNativeApp } from '../../../../shared/nativeBridge';
 import './AppHeader.css';
 
 // Module-level flag — survives component remounts (page navigation)
@@ -97,6 +98,8 @@ export const AppHeader: React.FC = () => {
     const displayName = firebaseUser?.displayName || firebaseUser?.email || 'User';
     const email = firebaseUser?.email || '';
     const shortName = (firebaseUser?.displayName || firebaseUser?.email?.split('@')[0] || 'User').toUpperCase();
+
+    if (isNativeApp) return null;
 
     return (
         <>
