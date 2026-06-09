@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.58.0](https://github.com/fitglue/web/compare/v11.57.2...v11.58.0) (2026-06-09)
+
+
+### Features
+
+* **photos:** resize images client-side before GCS upload ([9a53a2f](https://github.com/fitglue/web/commit/9a53a2f121362cf426e6fef41128a0c99a4f0326))
+* **pipeline:** add non-blocking enricher support and SYNCED_WITH_PENDING status ([e383228](https://github.com/fitglue/web/commit/e383228db9d6ef284a3744de52f57c441ebeb369))
+
+
+### Bug Fixes
+
+* **types:** add missing ENRICHER_PROVIDER_HDROP = 46 to user.ts enum ([49a2a1f](https://github.com/fitglue/web/commit/49a2a1f18edc4e856e8a58b79c02c467520cbc34))
+
 ### [11.57.2](https://github.com/fitglue/web/compare/v11.57.1...v11.57.2) (2026-06-06)
 
 
