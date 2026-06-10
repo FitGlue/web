@@ -122,7 +122,17 @@ const NativeBridge: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    window.__fg = { navigate: (path: string) => navigate(path) };
+    window.__fg = {
+      navigate: (path: string) => navigate(path),
+      refreshAuth: async (token: string) => {
+        try {
+          const fb = await initFirebase();
+          if (fb) await signInWithCustomToken(fb.auth, token);
+        } catch (e) {
+          console.error('[FitGlue] refreshAuth failed', e);
+        }
+      },
+    };
     sendToNative({ type: 'ready' });
     return () => { window.__fg = undefined; };
   }, [navigate]);
@@ -160,12 +170,18 @@ const App: React.FC = () => {
         }
       }
 
+      let wasAuthenticated = false;
       onAuthStateChanged(fb.auth, (u) => {
         setUser(u);
         setLoading(false);
-
-        // Update Sentry user context
         setSentryUser(u?.uid || null);
+
+        // If the session dropped while the web app is embedded in the native app,
+        // tell native to re-fetch and re-inject a fresh custom token.
+        if (!u && wasAuthenticated && isNativeApp) {
+          sendToNative({ type: 'authExpired' });
+        }
+        wasAuthenticated = !!u;
       });
     };
 

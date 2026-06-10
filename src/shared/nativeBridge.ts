@@ -1,7 +1,7 @@
 declare global {
   interface Window {
     ReactNativeWebView?: { postMessage: (message: string) => void };
-    __fg?: { navigate: (path: string) => void };
+    __fg?: { navigate: (path: string) => void; refreshAuth: (token: string) => void };
     __fitglueCustomToken?: string;
   }
 }
