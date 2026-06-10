@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.62.0](https://github.com/fitglue/web/compare/v11.61.0...v11.62.0) (2026-06-10)
+
+
+### Features
+
+* **web:** authExpired bridge and refreshAuth for native token refresh ([8272ff4](https://github.com/fitglue/web/commit/8272ff4c1afa58c2e4c915c77fe47602b1e44782))
+
 ## [11.61.0](https://github.com/fitglue/web/compare/v11.60.1...v11.61.0) (2026-06-09)
 
 
