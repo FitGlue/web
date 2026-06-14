@@ -36,3 +36,25 @@
     padding: 0 1rem;
   }
 }
+
+/* Native app (WebView): lock to viewport width, prevent horizontal overflow */
+body.is-native-app {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+body.is-native-app .app-page-layout {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body.is-native-app main {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body.is-native-app table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
