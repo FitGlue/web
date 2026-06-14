@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.63.1](https://github.com/fitglue/web/compare/v11.63.0...v11.63.1) (2026-06-14)
+
+
+### Bug Fixes
+
+* **web:** add is-native-app body class and mobile viewport width overrides ([2000427](https://github.com/fitglue/web/commit/200042756b72adb7270dd6090307d294ba14c0d5))
+
 ## [11.63.0](https://github.com/fitglue/web/compare/v11.62.0...v11.63.0) (2026-06-14)
 
 
