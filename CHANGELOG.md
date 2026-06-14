@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.64.0](https://github.com/fitglue/web/compare/v11.63.1...v11.64.0) (2026-06-14)
+
+
+### Features
+
+* **web:** hide navigation bar in native app for ShowcaseActivity and ShowcaseProfile pages ([6b7a4d5](https://github.com/fitglue/web/commit/6b7a4d5d410b4dc1d037f4bd38e10013bb8909c1))
+
 ### [11.63.1](https://github.com/fitglue/web/compare/v11.63.0...v11.63.1) (2026-06-14)
 
 
