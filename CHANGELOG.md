@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.63.0](https://github.com/fitglue/web/compare/v11.62.0...v11.63.0) (2026-06-14)
+
+
+### Features
+
+* **web:** native showcase modal bridge and enricher label in pending inputs ([43d591c](https://github.com/fitglue/web/commit/43d591c75b769c00dbf5adc835305b61e02e5b5a))
+
 ## [11.62.0](https://github.com/fitglue/web/compare/v11.61.0...v11.62.0) (2026-06-10)
 
 
