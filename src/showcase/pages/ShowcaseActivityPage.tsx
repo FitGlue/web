@@ -2,9 +2,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import publicClient from '../../shared/api/public-client';
+import client from '../../shared/api/client';
 import type { components } from '../../shared/api/schema-public';
 import type { ActivityEnrichments } from '../../types/pb/models/activity/enrichments';
 import { initFirebase } from '../../shared/firebase';
+import { isNativeApp } from '../../shared/nativeBridge';
 import { resolveCategory } from '../utils/activityCategory';
 import { buildModuleOrder } from '../utils/enricherModules';
 import { getActivityIcon } from '../utils/activityMeta';
@@ -38,6 +40,7 @@ export default function ShowcaseActivityPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [shareOpen, setShareOpen] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -66,7 +69,7 @@ export default function ShowcaseActivityPage() {
           return;
         }
 
-        unsubscribe = onAuthStateChanged(fb.auth, async () => {
+        unsubscribe = onAuthStateChanged(fb.auth, async (user) => {
           try {
             const { data, error: apiError } = await publicClient.GET('/showcase/{id}', {
               params: { path: { id: showcaseId } },
@@ -76,6 +79,15 @@ export default function ShowcaseActivityPage() {
               setError('This activity is not available or has expired.');
             } else {
               setActivity(data);
+              if (user && data.ownerProfileSlug) {
+                try {
+                  const { data: profileData } = await client.GET('/users/me/showcase-management/profile');
+                  const mySlug = (profileData as { profile?: { slug?: string } | null })?.profile?.slug;
+                  if (mySlug && mySlug === data.ownerProfileSlug) setIsOwner(true);
+                } catch {
+                  // not authenticated or no showcase — not the owner
+                }
+              }
             }
           } catch {
             setError('Failed to load activity.');
@@ -144,10 +156,12 @@ export default function ShowcaseActivityPage() {
       <div className="showcase-page-wrap">
         {/* Sticky public nav bar */}
         <nav className="showcase-pubbar">
-          <a className="showcase-pubbar__brand" href="/">
-            <span className="showcase-pubbar__brand-icon" aria-hidden="true">FG</span>
-            <span className="showcase-pubbar__brand-wordmark" aria-hidden="true">FITGLUE</span>
-          </a>
+          {!isNativeApp && (
+            <a className="showcase-pubbar__brand" href="/">
+              <span className="showcase-pubbar__brand-icon" aria-hidden="true">FG</span>
+              <span className="showcase-pubbar__brand-wordmark" aria-hidden="true">FITGLUE</span>
+            </a>
+          )}
           <span className="showcase-pubbar__crumb">
             {ownerProfileHref ? (
               <a href={ownerProfileHref}>{activity.ownerDisplayName?.toUpperCase() ?? 'PROFILE'}</a>
@@ -156,19 +170,22 @@ export default function ShowcaseActivityPage() {
             )}
           </span>
           <div className="showcase-pubbar__actions">
-            <button
-              className="showcase-pubbar__share-btn"
-              onClick={() => setShareOpen(true)}
-              aria-label="Share activity"
-            >
-              ↑ SHARE
-            </button>
-            <a
-              href="/"
-              style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-cyan)', textDecoration: 'none' }}
-            >
-              Try FitGlue →
-            </a>
+            {isOwner ? (
+              <button
+                className="showcase-pubbar__share-btn"
+                onClick={() => setShareOpen(true)}
+                aria-label="Share activity"
+              >
+                ↑ SHARE
+              </button>
+            ) : !isNativeApp ? (
+              <a
+                href="/"
+                style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-cyan)', textDecoration: 'none' }}
+              >
+                Try FitGlue →
+              </a>
+            ) : null}
           </div>
         </nav>
 
