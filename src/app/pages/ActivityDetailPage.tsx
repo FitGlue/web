@@ -13,6 +13,7 @@ import PendingInputCard from '../components/PendingInputCard';
 import { client } from '../../shared/api/client';
 import { formatActivityType, formatDestination, formatDestinationStatus } from '../../types/pb/enum-formatters';
 import { buildDestinationUrl } from '../utils/destinationUrls';
+import { isNativeApp, sendToNative } from '../../shared/nativeBridge';
 import { PluginManifest } from '../types/plugin';
 import { BoosterExecution, PipelineRun, PipelineRunStatus } from '../../types/pb/user';
 import { SynchronizedActivity } from '../services/ActivitiesService';
@@ -432,9 +433,18 @@ const ActivityDetailPage: React.FC = () => {
                         {exportStatus === 'loading' ? '⏳ EXPORTING…' : '📦 EXPORT'}
                     </Button>
                     {showcaseUrl && (
-                        <a href={showcaseUrl} target="_blank" rel="noopener noreferrer" className="fg-button fg-button--ghost fg-button--sm">
-                            ↗ VIEW ON SHOWCASE
-                        </a>
+                        isNativeApp ? (
+                            <button
+                                className="fg-button fg-button--ghost fg-button--sm"
+                                onClick={() => sendToNative({ type: 'openShowcase', url: `${window.location.origin}${showcaseUrl}` })}
+                            >
+                                ↗ VIEW ON SHOWCASE
+                            </button>
+                        ) : (
+                            <a href={showcaseUrl} target="_blank" rel="noopener noreferrer" className="fg-button fg-button--ghost fg-button--sm">
+                                ↗ VIEW ON SHOWCASE
+                            </a>
+                        )
                     )}
                     <MagicActionsPopover
                         activity={{

@@ -253,7 +253,8 @@ const PendingInputCard: React.FC<PendingInputCardProps> = ({ input, onResolved }
     const deadlinePassed = autoDeadline ? new Date() > autoDeadline : false;
     const activityTypeRaw = input.sourceActivityType?.replace(/^ACTIVITY_TYPE_/, '') || '';
     const activityIcon = ACTIVITY_TYPE_ICONS[activityTypeRaw] || '🏅';
-    const stampLabel = urgent ? '⚠ URGENT' : (activityTypeRaw || 'INPUT');
+    const enricherLabel = input.displayConfig?.title || enricherName;
+    const stampLabel = urgent ? '⚠ URGENT' : (enricherLabel || activityTypeRaw || 'INPUT');
 
     const activityTypeHuman = activityTypeRaw
         .toLowerCase()
