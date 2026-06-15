@@ -1,13 +1,16 @@
-// Inline types — replace with components['schemas'] equivalents once roundup API is deployed
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import publicClient from '../../shared/api/public-client';
+import type { components } from '../../shared/api/schema-public';
+import { isNativeApp } from '../../shared/nativeBridge';
 import ShowcaseNotFound from '../components/ShowcaseNotFound';
-import { formatDuration, formatDistance, formatWeight, formatActivityType, formatSource } from '../utils/format';
+import { ShowcaseRoundupExportModal } from '../components/ShowcaseRoundupExportModal';
+import { resolveFamily, FAMILY_STAMP_CLASS } from '../utils/activityFamily';
+import { ACTIVITY_TYPE_ICONS } from '../utils/activityMeta';
+import { formatDuration, formatWeight, formatActivityType, formatSource } from '../utils/format';
 
-type ShowcaseTopPR = { recordType?: string; value?: number; previousValue?: number; unit?: string };
-type RoundupActivityTypeBreakdown = { activityType?: string; activityCount?: number; totalDistanceMeters?: number; totalDurationSeconds?: number; totalSets?: number; totalWeightKg?: number };
-type ShowcaseRoundup = { roundupId?: string; slug?: string; periodKey?: string; totalActivities?: number; totalDurationSeconds?: number; totalDistanceMeters?: number; totalCaloriesKcal?: number; ownerDisplayName?: string; ownerProfilePictureUrl?: string; ownerProfileSlug?: string; prsAchieved?: ShowcaseTopPR[]; hrZoneMinutes?: number[]; activityTypeBreakdowns?: RoundupActivityTypeBreakdown[]; sources?: string[] };
+type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
+type RoundupActivityTypeBreakdown = components['schemas']['RoundupActivityTypeBreakdown'];
 
 const ZONE_COLORS = ['#334155', '#22d3ee', '#a3ff3d', '#ffd60a', '#ff3da6', '#ff0000'];
 const ZONE_NAMES = ['Z1 · RECOVERY', 'Z2 · BASE', 'Z3 · AEROBIC', 'Z4 · THRESHOLD', 'Z5 · MAX', 'Z6 · ANAEROBIC'];
@@ -35,7 +38,22 @@ function periodTitle(periodKey: string): string {
   return 'TRAINING ROUNDUP';
 }
 
-function PRValue({ pr }: { pr: ShowcaseTopPR }) {
+function formatDateRange(start?: string, end?: string): string | null {
+  if (!start && !end) return null;
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).toUpperCase();
+  if (start && end) return `${fmt(start)} – ${fmt(end)}`;
+  if (start) return fmt(start);
+  return null;
+}
+
+function formatDurationAnchor(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
+function PRValue({ pr }: { pr: NonNullable<ShowcaseRoundup['prsAchieved']>[number] }) {
   const { value, unit } = pr;
   if (!value) return null;
 
@@ -64,25 +82,92 @@ function PRValue({ pr }: { pr: ShowcaseTopPR }) {
   );
 }
 
-function TypeBreakdownCard({ bd }: { bd: RoundupActivityTypeBreakdown }) {
-  const name = formatActivityType(bd.activityType);
-  const isStrength = bd.totalSets && bd.totalSets > 0;
+function SportCard({ bd }: { bd: RoundupActivityTypeBreakdown }) {
+  const family = resolveFamily(bd.activityType);
+  const stampSuffix = FAMILY_STAMP_CLASS[family];
+  const icon = ACTIVITY_TYPE_ICONS[bd.activityType ?? ''] ?? '🏃';
+  const isStrength = (bd.totalSets ?? 0) > 0;
+  const hasDistance = (bd.totalDistanceMeters ?? 0) > 500;
+
+  let heroVal = '';
+  let heroUnit = '';
+  let heroLbl = '';
+  if (hasDistance) {
+    const km = (bd.totalDistanceMeters ?? 0) / 1000;
+    heroVal = km >= 10 ? km.toFixed(1) : km.toFixed(2);
+    heroUnit = 'KM';
+    heroLbl = 'Distance';
+  } else if (isStrength) {
+    heroVal = String(bd.totalSets);
+    heroUnit = '';
+    heroLbl = 'Sets';
+  } else {
+    const mins = Math.round((bd.totalDurationSeconds ?? 0) / 60);
+    heroVal = String(mins);
+    heroUnit = 'MIN';
+    heroLbl = 'Duration';
+  }
 
   return (
-    <div className="roundup-type-card">
-      <div className="roundup-type-card__name">{name}</div>
-      <div className="roundup-type-card__count">{bd.activityCount} {bd.activityCount === 1 ? 'session' : 'sessions'}</div>
-      {bd.totalDistanceMeters && bd.totalDistanceMeters > 0
-        ? <div className="roundup-type-card__stat">{formatDistance(bd.totalDistanceMeters)}</div>
-        : null}
-      {isStrength && (
-        <div className="roundup-type-card__stat">
-          {bd.totalSets} sets · {formatWeight(bd.totalWeightKg) ?? '—'}
+    <div className={`roundup-sport-card roundup-sport-card--${stampSuffix}`}>
+      <div className="roundup-sport-card__top">
+        <span className={`act__stamp act__stamp--${stampSuffix}`}>
+          {icon} {formatActivityType(bd.activityType)}
+        </span>
+        <span className="roundup-sport-card__count">
+          {bd.activityCount} {bd.activityCount === 1 ? 'session' : 'sessions'}
+        </span>
+      </div>
+      <div className="roundup-sport-card__hero">
+        <span className="roundup-sport-card__hero-val">{heroVal}</span>
+        {heroUnit && <span className="roundup-sport-card__hero-unit">{heroUnit}</span>}
+      </div>
+      <div className="roundup-sport-card__hero-lbl">{heroLbl}</div>
+      {isStrength && (bd.totalWeightKg ?? 0) > 0 && (
+        <div className="roundup-sport-card__sub">
+          {formatWeight(bd.totalWeightKg)}
+          {(bd.totalReps ?? 0) > 0 ? ` · ${(bd.totalReps ?? 0).toLocaleString()} reps` : ''}
         </div>
       )}
-      {bd.totalDurationSeconds && bd.totalDurationSeconds > 0
-        ? <div className="roundup-type-card__dur">{formatDuration(bd.totalDurationSeconds)}</div>
-        : null}
+      {(bd.totalDurationSeconds ?? 0) > 0 && !(!hasDistance && !isStrength) && (
+        <div className="roundup-sport-card__dur">{formatDuration(bd.totalDurationSeconds) ?? '—'}</div>
+      )}
+    </div>
+  );
+}
+
+function EffortBand({ easy, moderate, hard }: { easy: number; moderate: number; hard: number }) {
+  const total = easy + moderate + hard;
+  if (total === 0) return null;
+
+  const pctEasy = (easy / total) * 100;
+  const pctMod = (moderate / total) * 100;
+  const pctHard = (hard / total) * 100;
+
+  return (
+    <div className="roundup-effort-band">
+      <div className="roundup-effort-band__inner">
+        <div className="roundup-effort-band__cell">
+          <div className="roundup-effort-band__n">{easy}</div>
+          <div className="roundup-effort-band__l">EASY</div>
+        </div>
+        <div className="roundup-effort-band__cell">
+          <div className="roundup-effort-band__n roundup-effort-band__n--moderate">{moderate}</div>
+          <div className="roundup-effort-band__l">MODERATE</div>
+        </div>
+        <div className="roundup-effort-band__cell">
+          <div className="roundup-effort-band__n roundup-effort-band__n--hard">{hard}</div>
+          <div className="roundup-effort-band__l">HARD</div>
+        </div>
+        <div className="roundup-effort-band__cell roundup-effort-band__cell--bar">
+          <div className="roundup-effort-bar">
+            {pctEasy > 0.5 && <div className="roundup-effort-bar__seg roundup-effort-bar__seg--easy" style={{ width: `${pctEasy.toFixed(1)}%` }} />}
+            {pctMod > 0.5 && <div className="roundup-effort-bar__seg roundup-effort-bar__seg--moderate" style={{ width: `${pctMod.toFixed(1)}%` }} />}
+            {pctHard > 0.5 && <div className="roundup-effort-bar__seg roundup-effort-bar__seg--hard" style={{ width: `${pctHard.toFixed(1)}%` }} />}
+          </div>
+          <div className="roundup-effort-band__l">TRAINING LOAD</div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -137,6 +222,7 @@ export default function ShowcaseRoundupPage() {
   const [roundup, setRoundup] = useState<ShowcaseRoundup | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
     if (!slug || !periodKey) { setNotFound(true); setLoading(false); return; }
@@ -170,65 +256,139 @@ export default function ShowcaseRoundupPage() {
 
   const hasPRs = (roundup.prsAchieved?.length ?? 0) > 0;
   const hasZones = (roundup.hrZoneMinutes?.some(m => (m ?? 0) > 0)) ?? false;
-  const hasStrength = roundup.activityTypeBreakdowns?.some(bd => (bd.totalSets ?? 0) > 0) ?? false;
   const hasSources = (roundup.sources?.length ?? 0) > 0;
+  const hasEffort = ((roundup.effortEasyCount ?? 0) + (roundup.effortModerateCount ?? 0) + (roundup.effortHardCount ?? 0)) > 0;
+
+  const key = periodKey ?? '';
+  const ownerProfileHref = roundup.ownerProfileSlug ? `/@${roundup.ownerProfileSlug}` : `/@${slug}`;
+
+  const dateRange = formatDateRange(roundup.periodStart, roundup.periodEnd);
+  const prCount = roundup.prsAchieved?.length ?? 0;
+
+  // Total weight across all breakdowns
+  const totalWeightKg = roundup.activityTypeBreakdowns?.reduce((s, bd) => s + (bd.totalWeightKg ?? 0), 0) ?? 0;
+  const hasStrength = roundup.activityTypeBreakdowns?.some(bd => (bd.totalSets ?? 0) > 0) ?? false;
+  const hasDistance = (roundup.totalDistanceMeters ?? 0) > 500;
+  const hasElevation = (roundup.totalElevationGainMeters ?? 0) > 50;
+
+  // Anchor stats: sessions / time / distance-or-weight / elevation-or-calories
+  const anchorStats: Array<{ val: string; unit?: string; lbl: string }> = [
+    {
+      val: String(roundup.totalActivities ?? 0),
+      lbl: roundup.totalActivities === 1 ? 'Session' : 'Sessions',
+    },
+  ];
+
+  if ((roundup.totalDurationSeconds ?? 0) > 0) {
+    anchorStats.push({ val: formatDurationAnchor(roundup.totalDurationSeconds!), lbl: 'Total Time' });
+  }
+
+  if (hasDistance) {
+    const km = (roundup.totalDistanceMeters ?? 0) / 1000;
+    anchorStats.push({ val: km >= 10 ? km.toFixed(1) : km.toFixed(2), unit: 'KM', lbl: 'Distance' });
+  } else if (hasStrength && totalWeightKg > 0) {
+    anchorStats.push({ val: formatWeight(totalWeightKg) ?? '—', lbl: 'Weight Moved' });
+  }
+
+  if (hasElevation) {
+    anchorStats.push({ val: `+${Math.round(roundup.totalElevationGainMeters!).toLocaleString()}`, unit: 'M', lbl: 'Elevation' });
+  } else if ((roundup.totalCaloriesKcal ?? 0) > 0) {
+    anchorStats.push({ val: roundup.totalCaloriesKcal!.toLocaleString(), lbl: 'Calories' });
+  }
+
+  // Pad to 4
+  while (anchorStats.length < 4) anchorStats.push({ val: '—', lbl: '—' });
+  const stats = anchorStats.slice(0, 4);
 
   return (
     <div className="showcase-page">
-        {/* Hero */}
-        <div className="roundup-hero">
-          <div className="roundup-hero__eyebrow">{periodTitle(periodKey ?? '')}</div>
-          <div className="roundup-hero__period">{periodLabel(periodKey ?? '')}</div>
-          {roundup.ownerDisplayName && (
-            <div className="roundup-hero__athlete">
-              {roundup.ownerProfilePictureUrl && (
-                <img className="roundup-hero__avatar" src={roundup.ownerProfilePictureUrl} alt="" />
+      <div className="showcase-page-bg" aria-hidden="true" />
+      <div className="showcase-page-wrap">
+
+        {/* Sticky public nav */}
+        {!isNativeApp && (
+          <nav className="showcase-pubbar">
+            <a className="showcase-pubbar__brand" href="/">
+              <span className="showcase-pubbar__brand-icon" aria-hidden="true">FG</span>
+              <span className="showcase-pubbar__brand-wordmark" aria-hidden="true">FITGLUE</span>
+            </a>
+            <span className="showcase-pubbar__crumb">
+              <a href={ownerProfileHref}>{roundup.ownerDisplayName?.toUpperCase() ?? 'PROFILE'}</a>
+              {' '}
+              <b>· {periodTitle(key)}</b>
+            </span>
+            <div className="showcase-pubbar__actions">
+              <button
+                className="showcase-pubbar__share-btn"
+                onClick={() => setShareOpen(true)}
+                aria-label="Share roundup"
+              >
+                ↑ SHARE
+              </button>
+            </div>
+          </nav>
+        )}
+
+        {/* Full-bleed gradient hero */}
+        <section className="activity-hero-section">
+          <div className="activity-hero__grain" aria-hidden="true" />
+          <div className="activity-hero__inner">
+            {/* Top stamps */}
+            <div className="activity-hero__stamps">
+              <span className="stamp stamp--untraditional">{periodTitle(key)}</span>
+              {dateRange && <span className="stamp stamp--hero-date">{dateRange}</span>}
+              {prCount > 0 && <span className="stamp stamp--hero-pr">+{prCount} PRS</span>}
+              {hasSources && roundup.sources!.map(s => (
+                <span key={s} className="stamp stamp--hero-source">
+                  VIA {formatSource(s).toUpperCase()}
+                </span>
+              ))}
+            </div>
+
+            {/* Title + credit + stats */}
+            <div>
+              <h1 className="activity-hero__quote">{periodLabel(key)}</h1>
+              {roundup.ownerDisplayName && (
+                <div className="activity-hero__credit">
+                  BY{' '}
+                  <b>
+                    <a href={ownerProfileHref} style={{ color: 'inherit', textDecoration: 'none' }}>
+                      {roundup.ownerDisplayName.toUpperCase()}
+                    </a>
+                  </b>
+                </div>
               )}
-              <span>{roundup.ownerDisplayName}</span>
-            </div>
-          )}
-          <div className="roundup-hero__headline">
-            {roundup.totalActivities} {roundup.totalActivities === 1 ? 'SESSION' : 'SESSIONS'}
-          </div>
-        </div>
-
-        {/* Stats banner */}
-        <div className="roundup-stats-banner">
-          {roundup.totalDurationSeconds && roundup.totalDurationSeconds > 0 ? (
-            <div className="roundup-stat">
-              <div className="roundup-stat__val">{formatDuration(roundup.totalDurationSeconds)}</div>
-              <div className="roundup-stat__lbl">TOTAL TIME</div>
-            </div>
-          ) : null}
-          {roundup.totalDistanceMeters && roundup.totalDistanceMeters > 0 ? (
-            <div className="roundup-stat">
-              <div className="roundup-stat__val">{formatDistance(roundup.totalDistanceMeters)}</div>
-              <div className="roundup-stat__lbl">DISTANCE</div>
-            </div>
-          ) : null}
-          {hasStrength && roundup.activityTypeBreakdowns ? (
-            <div className="roundup-stat">
-              <div className="roundup-stat__val">
-                {formatWeight(roundup.activityTypeBreakdowns.reduce((s, bd) => s + (bd.totalWeightKg ?? 0), 0)) ?? '—'}
+              <div className="activity-hero__anchor">
+                {stats.map((s, i) => (
+                  <div key={i} className="activity-hero__anchor-cell">
+                    <div className="activity-hero__anchor-n">
+                      {s.val}
+                      {s.unit && <span>{s.unit}</span>}
+                    </div>
+                    <div className="activity-hero__anchor-l">{s.lbl}</div>
+                  </div>
+                ))}
               </div>
-              <div className="roundup-stat__lbl">WEIGHT MOVED</div>
             </div>
-          ) : null}
-          {roundup.totalCaloriesKcal && roundup.totalCaloriesKcal > 0 ? (
-            <div className="roundup-stat">
-              <div className="roundup-stat__val">{roundup.totalCaloriesKcal.toLocaleString()}</div>
-              <div className="roundup-stat__lbl">CALORIES</div>
-            </div>
-          ) : null}
-        </div>
+          </div>
+        </section>
 
-        {/* Activity type breakdown */}
+        {/* Effort distribution band */}
+        {hasEffort && (
+          <EffortBand
+            easy={roundup.effortEasyCount ?? 0}
+            moderate={roundup.effortModerateCount ?? 0}
+            hard={roundup.effortHardCount ?? 0}
+          />
+        )}
+
+        {/* Sport breakdown */}
         {(roundup.activityTypeBreakdowns?.length ?? 0) > 0 && (
           <div className="roundup-section">
             <div className="roundup-section__title">BY SPORT</div>
-            <div className="roundup-type-grid">
+            <div className="roundup-sport-grid">
               {roundup.activityTypeBreakdowns!.map((bd, i) => (
-                <TypeBreakdownCard key={i} bd={bd} />
+                <SportCard key={i} bd={bd} />
               ))}
             </div>
           </div>
@@ -239,8 +399,11 @@ export default function ShowcaseRoundupPage() {
 
         {/* PRs */}
         {hasPRs && (
-          <div className="roundup-section medal-band">
-            <div className="medal-band__label">🏆 PRS THIS PERIOD · {roundup.prsAchieved!.length} NEW</div>
+          <div className="roundup-section medal-band" style={{ paddingTop: '32px' }}>
+            <div className="medal-band__label">
+              🏆 PRS THIS PERIOD
+              <b>{roundup.prsAchieved!.length} NEW</b>
+            </div>
             <div className="medals">
               {roundup.prsAchieved!.map((pr, i) => (
                 <div key={i} className="medal medal--gr">
@@ -266,7 +429,7 @@ export default function ShowcaseRoundupPage() {
           </div>
         )}
 
-        {/* Sources */}
+        {/* Footer */}
         {hasSources && (
           <div className="roundup-sources">
             DATA FROM{' '}
@@ -274,12 +437,22 @@ export default function ShowcaseRoundupPage() {
           </div>
         )}
 
-        {/* Back link */}
         <div className="roundup-back">
-          <Link to={`/@${roundup.ownerProfileSlug ?? slug}`} className="roundup-back__link">
+          <Link to={ownerProfileHref} className="roundup-back__link">
             ← {roundup.ownerDisplayName ?? 'Athlete'}&apos;s Profile
           </Link>
         </div>
+
+      </div>
+
+      {/* Export modal */}
+      {shareOpen && (
+        <ShowcaseRoundupExportModal
+          roundup={roundup}
+          periodKey={key}
+          onClose={() => setShareOpen(false)}
+        />
+      )}
     </div>
   );
 }

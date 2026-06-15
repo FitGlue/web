@@ -3241,102 +3241,14 @@ body:has(#showcase-root) {
    ROUNDUP PAGE
    ============================================================ */
 
-/* ── Hero ── */
-.roundup-hero {
-  padding: 64px 32px 48px;
-  text-align: center;
-  border-bottom: var(--fg-rule-thin);
-  background: linear-gradient(180deg, rgba(255,61,166,.08) 0%, transparent 100%);
-}
-
-.roundup-hero__eyebrow {
-  font-family: var(--fg-font-mono);
-  font-size: .6875rem;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--fg-cyan);
-  margin-bottom: 10px;
-}
-
-.roundup-hero__period {
-  font-family: var(--fg-font-display, var(--fg-font-mono));
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  font-weight: 900;
-  letter-spacing: -.02em;
-  color: var(--fg-paper);
-  line-height: 1;
-  margin-bottom: 20px;
-}
-
-.roundup-hero__athlete {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-family: var(--fg-font-mono);
-  font-size: .8125rem;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-bottom: 28px;
-}
-
-.roundup-hero__avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--fg-pink);
-}
-
-.roundup-hero__headline {
-  font-family: var(--fg-font-mono);
-  font-size: clamp(1.25rem, 4vw, 2rem);
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--fg-paper);
-}
-
-/* ── Stats Banner ── */
-.roundup-stats-banner {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1px;
-  background: var(--fg-rule-thin, rgba(245,243,235,.08));
-  border-bottom: var(--fg-rule-thin);
-}
-
-.roundup-stat {
-  padding: 28px 24px;
-  background: var(--fg-ink);
-  text-align: center;
-}
-
-.roundup-stat__val {
-  font-family: var(--fg-font-mono);
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
-  font-weight: 900;
-  letter-spacing: -.01em;
-  color: var(--fg-paper);
-  line-height: 1;
-  margin-bottom: 6px;
-}
-
-.roundup-stat__lbl {
-  font-family: var(--fg-font-mono);
-  font-size: .625rem;
-  font-weight: 700;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-/* ── Sections ── */
+/* ── Section shell ── */
 .roundup-section {
   padding: 32px 32px 28px;
   border-bottom: var(--fg-rule-thin);
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .roundup-section__title {
@@ -3349,50 +3261,182 @@ body:has(#showcase-root) {
   margin-bottom: 18px;
 }
 
-/* ── Activity Type Breakdown ── */
-.roundup-type-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 10px;
-}
-
-.roundup-type-card {
+/* ── Effort distribution band ── */
+.roundup-effort-band {
   background: var(--fg-ink-2);
-  border: 1px solid rgba(245,243,235,.06);
-  border-radius: 6px;
-  padding: 16px 18px;
+  border-bottom: var(--fg-rule-thin);
 }
 
-.roundup-type-card__name {
+.roundup-effort-band__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 32px;
+  display: grid;
+  grid-template-columns: repeat(3, auto) 1fr;
+  gap: 0 40px;
+  align-items: center;
+}
+
+.roundup-effort-band__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.roundup-effort-band__cell--bar {
+  min-width: 0;
+}
+
+.roundup-effort-band__n {
+  font-family: var(--fg-font-display);
+  font-size: 2.25rem;
+  line-height: 1;
+  letter-spacing: -.025em;
+  color: var(--fg-paper);
+}
+
+.roundup-effort-band__n--moderate {
+  color: var(--fg-gold);
+}
+
+.roundup-effort-band__n--hard {
+  color: var(--fg-pink);
+}
+
+.roundup-effort-band__l {
   font-family: var(--fg-font-mono);
-  font-size: .6875rem;
+  font-size: .625rem;
   font-weight: 700;
-  letter-spacing: .12em;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--fg-cyan);
+  color: var(--color-text-muted);
+}
+
+.roundup-effort-bar {
+  display: flex;
+  height: 6px;
+  gap: 2px;
+  overflow: hidden;
   margin-bottom: 6px;
 }
 
-.roundup-type-card__count {
-  font-family: var(--fg-font-mono);
-  font-size: .75rem;
-  color: var(--color-text-muted);
-  margin-bottom: 8px;
+.roundup-effort-bar__seg {
+  height: 100%;
 }
 
-.roundup-type-card__stat {
+.roundup-effort-bar__seg--easy     { background: var(--fg-cyan); }
+.roundup-effort-bar__seg--moderate { background: var(--fg-gold); }
+.roundup-effort-bar__seg--hard     { background: var(--fg-pink); }
+
+@media (max-width: 640px) {
+  .roundup-effort-band__inner {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .roundup-effort-band__cell--bar { grid-column: 1 / -1; }
+}
+
+/* ── Sport breakdown grid ── */
+.roundup-sport-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1px;
+  background: rgba(245,243,235,.06);
+  border: var(--fg-rule-thin);
+}
+
+.roundup-sport-card {
+  background: var(--fg-ink-2);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 3px solid transparent;
+  transition: background .15s;
+}
+
+.roundup-sport-card:hover {
+  background: var(--fg-ink-3);
+}
+
+.roundup-sport-card--run     { border-top-color: var(--fg-paper); }
+.roundup-sport-card--ride    { border-top-color: var(--fg-cyan); }
+.roundup-sport-card--swim    { border-top-color: var(--fg-cyan); }
+.roundup-sport-card--hike    { border-top-color: var(--fg-paper); }
+.roundup-sport-card--strength { border-top-color: var(--fg-pink); }
+.roundup-sport-card--crossfit { border-top-color: var(--fg-rose); }
+.roundup-sport-card--hiit    { border-top-color: var(--fg-gold); }
+.roundup-sport-card--yoga    { border-top-color: var(--fg-violet); }
+.roundup-sport-card--sport   { border-top-color: var(--fg-gold); }
+.roundup-sport-card--paddle  { border-top-color: var(--fg-cyan); }
+.roundup-sport-card--other   { border-top-color: var(--fg-paper); }
+
+.roundup-sport-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.roundup-sport-card__count {
   font-family: var(--fg-font-mono);
-  font-size: .9375rem;
+  font-size: .625rem;
   font-weight: 700;
-  color: var(--fg-paper);
-  line-height: 1.3;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
-.roundup-type-card__dur {
+.roundup-sport-card__hero {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.roundup-sport-card__hero-val {
+  font-family: var(--fg-font-display);
+  font-size: 2.5rem;
+  line-height: 1;
+  letter-spacing: -.03em;
+  color: var(--fg-paper);
+}
+
+.roundup-sport-card__hero-unit {
+  font-family: var(--fg-font-mono);
+  font-size: .875rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.roundup-sport-card__hero-lbl {
+  font-family: var(--fg-font-mono);
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.roundup-sport-card__sub {
   font-family: var(--fg-font-mono);
   font-size: .75rem;
-  color: var(--color-text-muted);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--fg-paper);
   margin-top: 4px;
+}
+
+.roundup-sport-card__dur {
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
 }
 
 /* ── Sources ── */
@@ -3405,6 +3449,10 @@ body:has(#showcase-root) {
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* ── Back link ── */
@@ -3427,8 +3475,16 @@ body:has(#showcase-root) {
 
 /* ── Profile page roundup band ── */
 .roundup-profile-band {
-  padding: 28px 32px;
+  padding: 28px 0 28px 32px;
   border-bottom: var(--fg-rule-thin);
+}
+
+.roundup-profile-band__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-right: 32px;
+  margin-bottom: 16px;
 }
 
 .roundup-profile-band__label {
@@ -3438,61 +3494,156 @@ body:has(#showcase-root) {
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--color-text-muted);
-  margin-bottom: 14px;
 }
 
-.roundup-profile-band__cards {
+/* ── Roundup mosaic (horizontal scroll strip) ── */
+.roundup-profile-mosaic {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  padding-right: 32px;
+  scrollbar-width: none;
 }
 
-.roundup-profile-card {
+.roundup-profile-mosaic::-webkit-scrollbar { display: none; }
+
+.roundup-profile-tile {
+  flex: 0 0 220px;
   background: var(--fg-ink-2);
-  border: 1px solid rgba(245,243,235,.06);
-  border-radius: 6px;
-  padding: 14px 18px;
+  border: var(--fg-rule-thin);
+  padding: 18px 20px;
   text-decoration: none;
-  flex: 1;
-  min-width: 160px;
-  max-width: 260px;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   transition: border-color .15s;
 }
 
-.roundup-profile-card:hover {
+.roundup-profile-tile:hover {
   border-color: var(--fg-cyan);
 }
 
-.roundup-profile-card__type {
+.roundup-profile-tile--latest {
+  background: var(--gradient-primary);
+  color: var(--fg-ink);
+  border-color: transparent;
+}
+
+.roundup-profile-tile--latest:hover {
+  border-color: transparent;
+  opacity: .92;
+}
+
+.roundup-profile-tile__type {
+  font-family: var(--fg-font-mono);
+  font-size: .5625rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  opacity: .65;
+}
+
+.roundup-profile-tile--latest .roundup-profile-tile__type {
+  color: var(--fg-ink);
+}
+
+.roundup-profile-tile__period {
+  font-family: var(--fg-font-display);
+  font-size: 1rem;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  color: var(--fg-paper);
+  margin-top: 2px;
+}
+
+.roundup-profile-tile--latest .roundup-profile-tile__period {
+  color: var(--fg-ink);
+}
+
+.roundup-profile-tile__dates {
+  font-family: var(--fg-font-mono);
+  font-size: .5625rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.roundup-profile-tile--latest .roundup-profile-tile__dates {
+  color: rgba(7,7,16,.55);
+}
+
+.roundup-profile-tile__hero {
+  font-family: var(--fg-font-display);
+  font-size: 2.25rem;
+  letter-spacing: -.03em;
+  line-height: 1;
+  color: var(--fg-paper);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.roundup-profile-tile--latest .roundup-profile-tile__hero {
+  color: var(--fg-ink);
+}
+
+.roundup-profile-tile__hero span {
   font-family: var(--fg-font-mono);
   font-size: .625rem;
   font-weight: 700;
-  letter-spacing: .14em;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--fg-cyan);
-  margin-bottom: 4px;
-}
-
-.roundup-profile-card__period {
-  font-family: var(--fg-font-mono);
-  font-size: .9375rem;
-  font-weight: 700;
-  color: var(--fg-paper);
-  margin-bottom: 4px;
-}
-
-.roundup-profile-card__stat {
-  font-family: var(--fg-font-mono);
-  font-size: .6875rem;
   color: var(--color-text-muted);
 }
 
+.roundup-profile-tile--latest .roundup-profile-tile__hero span {
+  color: rgba(7,7,16,.55);
+}
+
+.roundup-profile-tile__stat {
+  font-family: var(--fg-font-mono);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.roundup-profile-tile--latest .roundup-profile-tile__stat {
+  color: rgba(7,7,16,.6);
+}
+
+.roundup-profile-tile__pr {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 7px;
+  background: var(--fg-ink);
+  color: var(--fg-gold);
+  font-family: var(--fg-font-mono);
+  font-size: .5625rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.roundup-profile-tile--latest .roundup-profile-tile__pr {
+  background: rgba(7,7,16,.25);
+  color: var(--fg-ink);
+}
+
 @media (max-width: 640px) {
-  .roundup-hero { padding: 48px 20px 36px; }
-  .roundup-stats-banner { grid-template-columns: repeat(2, 1fr); }
   .roundup-section { padding: 24px 20px 20px; }
-  .roundup-type-grid { grid-template-columns: repeat(2, 1fr); }
-  .roundup-profile-band { padding: 20px; }
+  .roundup-sport-grid { grid-template-columns: repeat(2, 1fr); }
+  .roundup-profile-band { padding: 20px 0 20px 20px; }
+  .roundup-profile-band__header { padding-right: 20px; }
+  .roundup-profile-mosaic { padding-right: 20px; }
   .roundup-sources { padding: 16px 20px; }
   .roundup-back { padding: 24px 20px; }
 }

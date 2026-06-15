@@ -19,25 +19,33 @@ type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
 type ShowcaseLink = components['schemas']['ShowcaseLink'];
 type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
 
-function roundupLabel(periodKey: string): string {
+function roundupPeriodLabel(periodKey: string): string {
   if (periodKey.startsWith('week-')) {
     const [, week, year] = periodKey.split('-');
-    return `Week ${parseInt(week, 10)}, ${year}`;
+    return `Week ${parseInt(week, 10)} · ${year}`;
   }
   if (periodKey.startsWith('month-')) {
     const [, month, year] = periodKey.split('-');
     const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
-    return date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+    return date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }).toUpperCase();
   }
   if (periodKey.startsWith('year-')) return periodKey.replace('year-', '');
   return periodKey;
 }
 
 function roundupTypeLabel(periodKey: string): string {
-  if (periodKey.startsWith('week-')) return 'Weekly Roundup';
-  if (periodKey.startsWith('month-')) return 'Monthly Roundup';
-  if (periodKey.startsWith('year-')) return 'Year in Review';
-  return 'Roundup';
+  if (periodKey.startsWith('week-')) return 'WEEKLY ROUNDUP';
+  if (periodKey.startsWith('month-')) return 'MONTHLY ROUNDUP';
+  if (periodKey.startsWith('year-')) return 'YEAR IN REVIEW';
+  return 'ROUNDUP';
+}
+
+function roundupDateRange(r: ShowcaseRoundup): string | null {
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).toUpperCase();
+  if (r.periodStart && r.periodEnd) return `${fmt(r.periodStart)} – ${fmt(r.periodEnd)}`;
+  if (r.periodStart) return fmt(r.periodStart);
+  return null;
 }
 
 function getLinkIcon(url: string | undefined): string {
@@ -168,24 +176,52 @@ export default function ShowcaseProfilePage() {
         {/* Recent roundups */}
         {roundups.length > 0 && (
           <div className="roundup-profile-band">
-            <div className="roundup-profile-band__label">📅 ROUNDUPS</div>
-            <div className="roundup-profile-band__cards">
-              {roundups.map((r) => (
-                <Link
-                  key={r.roundupId}
-                  to={`/@${slug}/${r.periodKey}`}
-                  className="roundup-profile-card"
-                >
-                  <div className="roundup-profile-card__type">{roundupTypeLabel(r.periodKey ?? '')}</div>
-                  <div className="roundup-profile-card__period">{roundupLabel(r.periodKey ?? '')}</div>
-                  <div className="roundup-profile-card__stat">
-                    {r.totalActivities} sessions
-                    {r.totalDistanceMeters && r.totalDistanceMeters > 1000
-                      ? ` · ${(r.totalDistanceMeters / 1000).toFixed(0)} km`
-                      : null}
-                  </div>
-                </Link>
-              ))}
+            <div className="roundup-profile-band__header">
+              <div className="roundup-profile-band__label">📅 ROUNDUPS</div>
+            </div>
+            <div className="roundup-profile-mosaic">
+              {roundups.map((r, i) => {
+                const totalWeightKg = r.activityTypeBreakdowns?.reduce((s, bd) => s + (bd.totalWeightKg ?? 0), 0) ?? 0;
+                const hasStrength = r.activityTypeBreakdowns?.some(bd => (bd.totalSets ?? 0) > 0) ?? false;
+                const hasDistance = (r.totalDistanceMeters ?? 0) > 500;
+                const prCount = r.prsAchieved?.length ?? 0;
+                const dateRange = roundupDateRange(r);
+
+                let secondaryStat = '';
+                if (hasDistance && (r.totalDistanceMeters ?? 0) > 0) {
+                  const km = r.totalDistanceMeters! / 1000;
+                  secondaryStat = `${km >= 10 ? km.toFixed(1) : km.toFixed(2)} km`;
+                } else if (hasStrength && totalWeightKg > 0) {
+                  const t = totalWeightKg / 1000;
+                  secondaryStat = t >= 1 ? `${t.toFixed(1)}t moved` : `${Math.round(totalWeightKg)}kg moved`;
+                } else if ((r.totalDurationSeconds ?? 0) > 0) {
+                  const h = Math.floor(r.totalDurationSeconds! / 3600);
+                  const m = Math.floor((r.totalDurationSeconds! % 3600) / 60);
+                  secondaryStat = h > 0 ? `${h}h ${m}m` : `${m}m`;
+                }
+
+                return (
+                  <Link
+                    key={r.roundupId}
+                    to={`/@${slug}/${r.periodKey}`}
+                    className={`roundup-profile-tile${i === 0 ? ' roundup-profile-tile--latest' : ''}`}
+                  >
+                    <div className="roundup-profile-tile__type">{roundupTypeLabel(r.periodKey ?? '')}</div>
+                    <div className="roundup-profile-tile__period">{roundupPeriodLabel(r.periodKey ?? '')}</div>
+                    {dateRange && <div className="roundup-profile-tile__dates">{dateRange}</div>}
+                    <div className="roundup-profile-tile__hero">
+                      {r.totalActivities}
+                      <span>{r.totalActivities === 1 ? 'session' : 'sessions'}</span>
+                    </div>
+                    {secondaryStat && (
+                      <div className="roundup-profile-tile__stat">{secondaryStat}</div>
+                    )}
+                    {prCount > 0 && (
+                      <div className="roundup-profile-tile__pr">+{prCount} PRS</div>
+                    )}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}
