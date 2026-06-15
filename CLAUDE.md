@@ -112,6 +112,22 @@ Three openapi-fetch clients, all in `src/shared/api/`:
 
 Never call the API directly — always use one of these clients or the service wrappers in `src/app/services/`.
 
+### Error Tracking & Logging
+
+Never call `Sentry.captureException()` or `console.error()` directly in application code. Use `logger.error(message, error)` from `src/shared/logger.ts` — it combines console output and Sentry capture in one call. Enforced by ESLint `no-restricted-properties`.
+
+The only files exempt from this rule (they may import Sentry directly):
+- `src/shared/logger.ts`
+- `src/app/infrastructure/sentry.ts`
+- `src/app/firebase-messaging-sw.ts`
+- `src/app/hooks/useApi.ts`
+- `src/app/App.tsx`
+- `src/auth.ts`
+
+### Test Coverage
+
+Vitest coverage thresholds are currently set to 0% (not enforced by CI). Tests are still required per workspace policy — write them even though the threshold won't fail the build. Improve coverage incrementally.
+
 ### Marketing Site (Skier)
 
 Skier is a custom Node SSG. The build pipeline in `skier.tasks.mjs`:
