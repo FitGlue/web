@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.71.0](https://github.com/fitglue/web/compare/v11.70.0...v11.71.0) (2026-06-15)
+
+
+### Features
+
+* **icons:** add icon generation script with Archivo Black + Canvas ([e1b011e](https://github.com/fitglue/web/commit/e1b011e00b959c84745e225781a2600ba06205f8))
+
 ## [11.70.0](https://github.com/fitglue/web/compare/v11.69.0...v11.70.0) (2026-06-15)
 
 
