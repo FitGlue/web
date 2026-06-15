@@ -154,40 +154,40 @@ export default function ShowcaseActivityPage() {
     <div className="showcase-page">
       <div className="showcase-page-bg" aria-hidden="true" />
       <div className="showcase-page-wrap">
-        {/* Sticky public nav bar */}
-        <nav className="showcase-pubbar">
-          {!isNativeApp && (
+        {/* Sticky public nav bar — hidden entirely inside the native app */}
+        {!isNativeApp && (
+          <nav className="showcase-pubbar">
             <a className="showcase-pubbar__brand" href="/">
               <span className="showcase-pubbar__brand-icon" aria-hidden="true">FG</span>
               <span className="showcase-pubbar__brand-wordmark" aria-hidden="true">FITGLUE</span>
             </a>
-          )}
-          <span className="showcase-pubbar__crumb">
-            {ownerProfileHref ? (
-              <a href={ownerProfileHref}>{activity.ownerDisplayName?.toUpperCase() ?? 'PROFILE'}</a>
-            ) : (
-              <span>{activity.ownerDisplayName?.toUpperCase() ?? ''}</span>
-            )}
-          </span>
-          <div className="showcase-pubbar__actions">
-            {isOwner ? (
-              <button
-                className="showcase-pubbar__share-btn"
-                onClick={() => setShareOpen(true)}
-                aria-label="Share activity"
-              >
-                ↑ SHARE
-              </button>
-            ) : !isNativeApp ? (
-              <a
-                href="/"
-                style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-cyan)', textDecoration: 'none' }}
-              >
-                Try FitGlue →
-              </a>
-            ) : null}
-          </div>
-        </nav>
+            <span className="showcase-pubbar__crumb">
+              {ownerProfileHref ? (
+                <a href={ownerProfileHref}>{activity.ownerDisplayName?.toUpperCase() ?? 'PROFILE'}</a>
+              ) : (
+                <span>{activity.ownerDisplayName?.toUpperCase() ?? ''}</span>
+              )}
+            </span>
+            <div className="showcase-pubbar__actions">
+              {isOwner ? (
+                <button
+                  className="showcase-pubbar__share-btn"
+                  onClick={() => setShareOpen(true)}
+                  aria-label="Share activity"
+                >
+                  ↑ SHARE
+                </button>
+              ) : (
+                <a
+                  href="/"
+                  style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-cyan)', textDecoration: 'none' }}
+                >
+                  Try FitGlue →
+                </a>
+              )}
+            </div>
+          </nav>
+        )}
 
         {/* Full-bleed hero — outside the layout grid */}
         <ActivityHero activity={activity} ownerProfileSlug={resolvedOwnerSlug} />
@@ -259,6 +259,16 @@ export default function ShowcaseActivityPage() {
           </aside>
         </div>
       </div>
+
+      {isNativeApp && isOwner && (
+        <button
+          className="showcase-fab-share"
+          onClick={() => setShareOpen(true)}
+          aria-label="Share activity"
+        >
+          ↑ SHARE
+        </button>
+      )}
 
       {shareOpen && (
         <ShowcaseExportModal
