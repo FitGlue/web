@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.65.0](https://github.com/fitglue/web/compare/v11.64.0...v11.65.0) (2026-06-15)
+
+
+### Features
+
+* **web:** add floating share button for owner's activities in native app ([fcb5711](https://github.com/fitglue/web/commit/fcb5711968c0bb88dedf38308910a0481a2c4957))
+
+
+### Bug Fixes
+
+* **web:** hide settings/showcase nav rails in native app, fix mobile overflow ([bc3c2ba](https://github.com/fitglue/web/commit/bc3c2baa40aa3519c663cbb836013388fae552c1))
+* **web:** repair media query structure broken by previous CSS edit ([80e9431](https://github.com/fitglue/web/commit/80e9431de1967c5b95d63018a6b7e3f698dc5378))
+* **web:** update SHOWCASE_ROUNDUP URL structure to include period parameter ([75e864d](https://github.com/fitglue/web/commit/75e864dedfad24f0e300306ff4aca7b5ec3a7415))
+
 ## [11.64.0](https://github.com/fitglue/web/compare/v11.63.1...v11.64.0) (2026-06-14)
 
 
