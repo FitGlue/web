@@ -18,6 +18,31 @@ export enum RoundupPeriodType {
   UNRECOGNIZED = -1,
 }
 
+/** Per-day effort record for the consistency calendar heatmap. */
+export interface RoundupDayEntry {
+  /** YYYY-MM-DD (UTC) */
+  date: string;
+  /** 0=rest 1=easy 2=moderate 3=hard 4=peak */
+  effortLevel: number;
+  activityCount: number;
+}
+
+/** Pre-computed spotlight card — biggest session, longest streak, peak PR day. */
+export interface ShowcaseCalloutActivity {
+  /** e.g. "BIGGEST SESSION" */
+  kind: string;
+  title: string;
+  /** pre-formatted primary stat, e.g. "5:42" */
+  statValue: string;
+  /** unit/sub-stat line, e.g. "H:MM · 142 KM" */
+  statUnit: string;
+  /** second detail line */
+  sub: string;
+  /** e.g. "14 Sep" */
+  date: string;
+  activityType: ActivityType;
+}
+
 export interface RoundupActivityTypeBreakdown {
   activityType: ActivityType;
   activityCount: number;
@@ -60,4 +85,8 @@ export interface ShowcaseRoundup {
   highestAvgBpm: number;
   /** AI-generated narrative summary of the period, empty if unavailable */
   aiSummary: string;
+  /** Pre-computed spotlight callouts (biggest session, longest streak, peak PR day) */
+  calloutActivities: ShowcaseCalloutActivity[];
+  /** Per-day effort entries for the consistency calendar heatmap */
+  dayEntries: RoundupDayEntry[];
 }
