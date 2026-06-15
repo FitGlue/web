@@ -232,6 +232,11 @@ export interface UpdateRoundupSettingsRequest {
   settings?: RoundupSettings | undefined;
 }
 
+export interface RecomputeRoundupRequest {
+  userId: string;
+  periodKey: string;
+}
+
 export interface ActivityService {
   GetActivity(request: GetActivityRequest): Promise<StandardizedActivity>;
   ListActivities(request: ListActivitiesRequest): Promise<ListActivitiesResponse>;
@@ -262,4 +267,5 @@ export interface ActivityService {
   GetPublicRoundup(request: GetPublicRoundupRequest): Promise<ShowcaseRoundup>;
   GetRecentPublicRoundups(request: GetRecentPublicRoundupsRequest): Promise<GetRecentPublicRoundupsResponse>;
   UpdateRoundupSettings(request: UpdateRoundupSettingsRequest): Promise<ShowcaseProfile>;
+  RecomputeRoundup(request: RecomputeRoundupRequest): Promise<ShowcaseRoundup>;
 }

@@ -394,6 +394,37 @@ export default function ShowcaseRoundupPage() {
           </div>
         )}
 
+        {/* Highlights — best single activity stats */}
+        {(() => {
+          const highlights: Array<{ label: string; value: string; sub?: string }> = [];
+          const longest = roundup.longestActivityDurationSeconds ?? 0;
+          if (longest > 60) {
+            const h = Math.floor(longest / 3600);
+            const m = Math.floor((longest % 3600) / 60);
+            highlights.push({ label: 'LONGEST SESSION', value: h > 0 ? `${h}h ${m}m` : `${m}m` });
+          }
+          const cph = roundup.highestCaloriesPerHourKcal ?? 0;
+          if (cph > 0)
+            highlights.push({ label: 'HIGHEST CAL/HR', value: `${Math.round(cph)} kcal/h` });
+          const bpm = roundup.highestAvgBpm ?? 0;
+          if (bpm > 0)
+            highlights.push({ label: 'PEAK AVG BPM', value: `${bpm} bpm`, sub: roundup.highestAvgBpmActivityTitle ?? undefined });
+          return highlights.length > 0 ? (
+            <div className="roundup-section">
+              <div className="roundup-section__title">✦ HIGHLIGHTS</div>
+              <div className="roundup-highlights">
+                {highlights.map((h, i) => (
+                  <div key={i} className="roundup-highlight-card">
+                    <div className="roundup-highlight-card__val">{h.value}</div>
+                    <div className="roundup-highlight-card__lbl">{h.label}</div>
+                    {h.sub && <div className="roundup-highlight-card__sub">{h.sub}</div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null;
+        })()}
+
         {/* HR Zones */}
         {hasZones && <RoundupZoneBar zoneMinutes={roundup.hrZoneMinutes} />}
 

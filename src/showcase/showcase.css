@@ -3336,6 +3336,47 @@ body:has(#showcase-root) {
   .roundup-effort-band__cell--bar { grid-column: 1 / -1; }
 }
 
+/* ── Highlights band ── */
+.roundup-highlights {
+  display: flex;
+  gap: 1px;
+  background: rgba(245,243,235,.06);
+  border: var(--fg-rule-thin);
+  overflow: hidden;
+}
+.roundup-highlight-card {
+  flex: 1;
+  padding: 28px 24px;
+  background: var(--fg-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.roundup-highlight-card__val {
+  font-family: var(--fg-font-display);
+  font-size: 2.25rem;
+  color: var(--fg-cyan);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.roundup-highlight-card__lbl {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.roundup-highlight-card__sub {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ── Sport breakdown grid ── */
 .roundup-sport-grid {
   display: grid;

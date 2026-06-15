@@ -52,4 +52,10 @@ export interface ShowcaseRoundup {
   ownerDisplayName: string;
   ownerProfilePictureUrl: string;
   ownerProfileSlug: string;
+  /** Highlight stats — best single activity across the period */
+  longestActivityDurationSeconds: number;
+  highestSingleLiftKg: number;
+  highestCaloriesPerHourKcal: number;
+  highestAvgBpmActivityTitle: string;
+  highestAvgBpm: number;
 }

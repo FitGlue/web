@@ -161,6 +161,7 @@ const ShowcaseManagementPage: React.FC = () => {
     const [roundupYearly, setRoundupYearly] = useState(false);
     const [savingRoundup, setSavingRoundup] = useState(false);
     const [recentRoundups, setRecentRoundups] = useState<ShowcaseRoundup[]>([]);
+    const [recomputingKey, setRecomputingKey] = useState<string | null>(null);
 
 
     // Fetch profile data
@@ -424,6 +425,21 @@ const ShowcaseManagementPage: React.FC = () => {
             showError('Failed to save roundup settings');
         } finally {
             setSavingRoundup(false);
+        }
+    };
+
+    const handleRecomputeRoundup = async (periodKey: string) => {
+        setRecomputingKey(periodKey);
+        try {
+            await client.POST('/users/me/showcase-management/roundup/{periodKey}/recompute', {
+                params: { path: { periodKey } },
+            });
+            showSuccess(`Roundup recomputed — refresh the page to see updated stats`);
+        } catch (err) {
+            logger.error('Failed to recompute roundup:', err);
+            showError('Failed to recompute roundup');
+        } finally {
+            setRecomputingKey(null);
         }
     };
 
@@ -1060,6 +1076,7 @@ const ShowcaseManagementPage: React.FC = () => {
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                             {recentRoundups.map((r) => {
                                                 const url = `https://fitglue.tech/@${profile?.slug}/${r.periodKey}`;
+                                                const isRecomputing = recomputingKey === r.periodKey;
                                                 return (
                                                     <div key={r.roundupId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0.75rem', borderRadius: '0.375rem', background: 'var(--color-surface-raised)' }}>
                                                         <div>
@@ -1069,7 +1086,28 @@ const ShowcaseManagementPage: React.FC = () => {
                                                                 {r.totalDistanceMeters && r.totalDistanceMeters > 1000 ? ` · ${(r.totalDistanceMeters / 1000).toFixed(0)} km` : ''}
                                                             </div>
                                                         </div>
-                                                        <a href={url} target="_blank" rel="noreferrer" style={{ fontSize: '0.8125rem', color: 'var(--fg-cyan)', textDecoration: 'none', fontWeight: 500 }}>View →</a>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                                            <button
+                                                                onClick={() => r.periodKey && handleRecomputeRoundup(r.periodKey)}
+                                                                disabled={isRecomputing || !!recomputingKey}
+                                                                title="Recompute this roundup (use if you've logged more activities for this period)"
+                                                                style={{
+                                                                    fontSize: '0.75rem',
+                                                                    color: isRecomputing ? 'var(--color-text-muted)' : 'var(--color-text-muted)',
+                                                                    background: 'none',
+                                                                    border: '1px solid var(--color-border)',
+                                                                    borderRadius: '0.25rem',
+                                                                    padding: '0.2rem 0.5rem',
+                                                                    cursor: isRecomputing ? 'default' : 'pointer',
+                                                                    fontFamily: 'var(--fg-font-mono)',
+                                                                    letterSpacing: '0.06em',
+                                                                    textTransform: 'uppercase',
+                                                                }}
+                                                            >
+                                                                {isRecomputing ? '⟳ Computing…' : '⟳ Recompute'}
+                                                            </button>
+                                                            <a href={url} target="_blank" rel="noreferrer" style={{ fontSize: '0.8125rem', color: 'var(--fg-cyan)', textDecoration: 'none', fontWeight: 500 }}>View →</a>
+                                                        </div>
                                                     </div>
                                                 );
                                             })}

@@ -818,6 +818,18 @@ export interface components {
             ownerDisplayName?: string;
             ownerProfilePictureUrl?: string;
             ownerProfileSlug?: string;
+            /**
+             * Format: double
+             * @description Highlight stats — best single activity across the period
+             */
+            longestActivityDurationSeconds?: number;
+            /** Format: double */
+            highestSingleLiftKg?: number;
+            /** Format: double */
+            highestCaloriesPerHourKcal?: number;
+            highestAvgBpmActivityTitle?: string;
+            /** Format: int32 */
+            highestAvgBpm?: number;
         };
         ShowcaseTheme: {
             themeId?: string;

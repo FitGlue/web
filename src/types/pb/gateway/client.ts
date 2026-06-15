@@ -6,6 +6,7 @@
 
 /* eslint-disable */
 import type { Empty } from "../google/protobuf/empty";
+import type { ShowcaseRoundup } from "../models/activity/roundup";
 import type { StandardizedActivity } from "../models/activity/standardized";
 import type {
   RoundupSettings,
@@ -339,6 +340,10 @@ export interface UpdateRoundupSettingsGatewayRequest {
   settings?: RoundupSettings | undefined;
 }
 
+export interface RecomputeRoundupGatewayRequest {
+  periodKey: string;
+}
+
 export interface UpdateShowcaseSlugGatewayResponse {
   slug: string;
 }
@@ -554,6 +559,7 @@ export interface ClientGatewayService {
     request: GetPictureUploadUrlGatewayRequest,
   ): Promise<GetPictureUploadUrlGatewayResponse>;
   UpdateRoundupSettings(request: UpdateRoundupSettingsGatewayRequest): Promise<ShowcaseProfile>;
+  RecomputeRoundup(request: RecomputeRoundupGatewayRequest): Promise<ShowcaseRoundup>;
   GetActivityPhotoUploadUrl(
     request: GetActivityPhotoUploadUrlGatewayRequest,
   ): Promise<GetActivityPhotoUploadUrlGatewayResponse>;

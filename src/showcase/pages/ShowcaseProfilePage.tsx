@@ -98,7 +98,7 @@ export default function ShowcaseProfilePage() {
       .finally(() => setLoading(false));
 
     publicClient
-      .GET('/showcase/{slug}/roundups/recent', { params: { path: { slug }, query: { limit: 3 } } })
+      .GET('/showcase/{slug}/roundups/recent', { params: { path: { slug }, query: { limit: 6 } } })
       .then(({ data }) => { if (data?.roundups) setRoundups(data.roundups); })
       .catch(() => {/* roundups optional — fail silently */});
   }, [slug]);
