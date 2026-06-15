@@ -13,7 +13,7 @@
   .logo-bed__section-title { font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; margin: 48px 0 16px; }
   .logo-bed__section-title:first-child { margin-top: 0; }
   .logo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  .logo-cell { padding: 60px 32px; display: flex; flex-direction: column; align-items: center; gap: 18px; background: var(--fg-ink-2); }
+  .logo-cell { position: relative; padding: 60px 32px; display: flex; flex-direction: column; align-items: center; gap: 18px; background: var(--fg-ink-2); }
   .logo-cell--paper { background: var(--fg-paper); color: var(--fg-ink); }
   .logo-cell--aurora { background: var(--gradient-primary); color: var(--fg-ink); }
   .logo-cell__caption { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; opacity: .6; text-transform: uppercase; }
@@ -43,6 +43,32 @@
   .dark-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-paper); text-transform: uppercase; }
   .dark-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
 
+  /* ── Download buttons ── */
+  .logo-dl-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 9px;
+    font-family: var(--fg-font-mono);
+    font-size: .5625rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid rgba(245,243,235,.22);
+    background: rgba(245,243,235,.07);
+    color: rgba(245,243,235,.55);
+    transition: background .15s, color .15s;
+    line-height: 1;
+  }
+  .logo-dl-btn:hover { background: rgba(245,243,235,.18); color: var(--fg-paper); }
+  .logo-dl-btn--on-light {
+    border-color: rgba(7,7,16,.18);
+    background: rgba(7,7,16,.05);
+    color: rgba(7,7,16,.45);
+  }
+  .logo-dl-btn--on-light:hover { background: rgba(7,7,16,.12); color: var(--fg-ink); }
+
   @media (max-width: 900px) {
     .logo-grid { grid-template-columns: repeat(2, 1fr); }
   }
@@ -69,6 +95,7 @@
     <div class="logo-grid">
       <!-- On ink (dark bg) -->
       <div class="logo-cell">
+        <button class="logo-dl-btn" data-config='{"bg":"ink","type":"lockup","size":"md","markFill":"aurora","filename":"fitglue-logo-ink.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">ON INK</span>
         <div class="logo-lk">
           <div class="logo-mk">FG</div>
@@ -78,6 +105,7 @@
 
       <!-- On paper (light bg) -->
       <div class="logo-cell logo-cell--paper">
+        <button class="logo-dl-btn logo-dl-btn--on-light" data-config='{"bg":"paper","type":"lockup","size":"md","markFill":"aurora","filename":"fitglue-logo-paper.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">ON PAPER</span>
         <div class="logo-lk">
           <div class="logo-mk logo-mk--paper-bg">FG</div>
@@ -87,6 +115,7 @@
 
       <!-- On aurora gradient -->
       <div class="logo-cell logo-cell--aurora">
+        <button class="logo-dl-btn logo-dl-btn--on-light" data-config='{"bg":"aurora","type":"lockup","size":"md","markFill":"inv","filename":"fitglue-logo-aurora.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">ON AURORA</span>
         <div class="logo-lk">
           <div class="logo-mk logo-mk--inv">FG</div>
@@ -99,6 +128,7 @@
     <div class="logo-bed__section-title">SIZE SCALE</div>
     <div class="logo-grid">
       <div class="logo-cell">
+        <button class="logo-dl-btn" data-config='{"bg":"ink","type":"lockup","size":"lg","markFill":"aurora","filename":"fitglue-logo-large.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">LARGE · 72PX MARK</span>
         <div class="logo-lk logo-lk--lg">
           <div class="logo-mk">FG</div>
@@ -106,6 +136,7 @@
         </div>
       </div>
       <div class="logo-cell">
+        <button class="logo-dl-btn" data-config='{"bg":"ink","type":"lockup","size":"md","markFill":"aurora","filename":"fitglue-logo-default.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">DEFAULT · 48PX MARK</span>
         <div class="logo-lk">
           <div class="logo-mk">FG</div>
@@ -113,6 +144,7 @@
         </div>
       </div>
       <div class="logo-cell">
+        <button class="logo-dl-btn" data-config='{"bg":"ink","type":"lockup","size":"sm","markFill":"aurora","filename":"fitglue-logo-small.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">SMALL · 32PX MARK</span>
         <div class="logo-lk logo-lk--sm">
           <div class="logo-mk">FG</div>
@@ -125,14 +157,17 @@
     <div class="logo-bed__section-title">MARK ONLY + WORDMARK ONLY</div>
     <div class="logo-grid">
       <div class="logo-cell">
+        <button class="logo-dl-btn" data-config='{"bg":"ink","type":"mark","markSize":80,"markFont":36,"markFill":"aurora","filename":"fitglue-mark-80.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">MARK ONLY · 80PX</span>
         <div class="logo-mk" style="width:80px;height:80px;font-size:2.25rem">FG</div>
       </div>
       <div class="logo-cell">
+        <button class="logo-dl-btn" data-config='{"bg":"ink","type":"wordmark","wordmarkFont":40,"filename":"fitglue-wordmark.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">WORDMARK ONLY</span>
         <span style="font-family:var(--fg-font-display);font-size:2.5rem;letter-spacing:-.035em;text-transform:uppercase;line-height:1">FITGLUE</span>
       </div>
       <div class="logo-cell">
+        <button class="logo-dl-btn" data-config='{"bg":"ink","type":"mark","markSize":48,"markFont":20,"markFill":"aurora","filename":"fitglue-favicon-48.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">FAVICON · 48PX</span>
         <div class="logo-mk" style="width:48px;height:48px;font-size:1.25rem">FG</div>
       </div>
@@ -142,19 +177,161 @@
     <div class="logo-bed__section-title">MARK VARIANTS</div>
     <div class="logo-grid">
       <div class="logo-cell">
+        <button class="logo-dl-btn" data-config='{"bg":"ink","type":"mark","markSize":80,"markFont":36,"markFill":"aurora","filename":"fitglue-mark-aurora-fill.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">AURORA FILL</span>
         <div class="logo-mk" style="width:80px;height:80px;font-size:2.25rem">FG</div>
       </div>
       <div class="logo-cell logo-cell--paper">
+        <button class="logo-dl-btn logo-dl-btn--on-light" data-config='{"bg":"paper","type":"mark","markSize":80,"markFont":36,"markFill":"aurora","filename":"fitglue-mark-aurora-fill-paper.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">ON LIGHT · AURORA FILL</span>
         <div class="logo-mk" style="width:80px;height:80px;font-size:2.25rem">FG</div>
       </div>
       <div class="logo-cell logo-cell--aurora">
+        <button class="logo-dl-btn logo-dl-btn--on-light" data-config='{"bg":"aurora","type":"mark","markSize":80,"markFont":36,"markFill":"inv","filename":"fitglue-mark-inv-aurora.png"}'>↓ PNG</button>
         <span class="logo-cell__caption">ON AURORA · INK FILL</span>
         <div class="logo-mk logo-mk--inv" style="width:80px;height:80px;font-size:2.25rem">FG</div>
       </div>
     </div>
   </div>
 </main>
+
+<script>
+(function () {
+  var COLORS = {
+    ink: '#070710',
+    ink2: '#0d0c18',
+    paper: '#f5f3eb',
+    pink: '#ff3da6',
+    violet: '#8b5cf6',
+    cyan: '#22d3ee',
+  };
+
+  var SIZES = {
+    sm: { mark: 32, markFont: 16, wordmarkFont: 20, gap: 10 },
+    md: { mark: 48, markFont: 24, wordmarkFont: 32, gap: 12 },
+    lg: { mark: 72, markFont: 36, wordmarkFont: 48, gap: 12 },
+  };
+
+  var SCALE = 3;
+  var PAD = 32;
+
+  function aurora(ctx, x1, y1, x2, y2) {
+    var g = ctx.createLinearGradient(x1, y1, x2, y2);
+    g.addColorStop(0, COLORS.pink);
+    g.addColorStop(0.5, COLORS.violet);
+    g.addColorStop(1, COLORS.cyan);
+    return g;
+  }
+
+  function setFont(ctx, size) {
+    ctx.font = size + "px 'Archivo Black', 'Arial Black', sans-serif";
+  }
+
+  function measureWordmark(fontSize) {
+    var c = document.createElement('canvas');
+    var ctx = c.getContext('2d');
+    setFont(ctx, fontSize);
+    if ('letterSpacing' in ctx) ctx.letterSpacing = (-0.035 * fontSize) + 'px';
+    return ctx.measureText('FITGLUE').width;
+  }
+
+  function downloadLogo(config) {
+    return document.fonts.ready.then(function () {
+      var sz = config.size ? SIZES[config.size] : null;
+      var markPx   = config.markSize   || (sz ? sz.mark        : 48);
+      var markFont = config.markFont   || (sz ? sz.markFont     : 24);
+      var wFont    = config.wordmarkFont || (sz ? sz.wordmarkFont : 32);
+      var gap      = sz ? sz.gap : 12;
+
+      var wMeasured = (config.type !== 'mark') ? measureWordmark(wFont * SCALE) : 0;
+
+      var logicW, logicH;
+      if (config.type === 'lockup') {
+        logicW = markPx + gap + wMeasured / SCALE + PAD * 2;
+        logicH = Math.max(markPx, wFont) + PAD * 2;
+      } else if (config.type === 'mark') {
+        logicW = markPx + PAD * 2;
+        logicH = markPx + PAD * 2;
+      } else {
+        logicW = wMeasured / SCALE + PAD * 2;
+        logicH = wFont + PAD * 2;
+      }
+
+      var cW = Math.ceil(logicW * SCALE);
+      var cH = Math.ceil(logicH * SCALE);
+      var canvas = document.createElement('canvas');
+      canvas.width = cW;
+      canvas.height = cH;
+      var ctx = canvas.getContext('2d');
+
+      // Background
+      if (config.bg === 'paper') {
+        ctx.fillStyle = COLORS.paper;
+      } else if (config.bg === 'aurora') {
+        ctx.fillStyle = aurora(ctx, 0, 0, cW, cH);
+      } else {
+        ctx.fillStyle = COLORS.ink2;
+      }
+      ctx.fillRect(0, 0, cW, cH);
+
+      var pX = PAD * SCALE;
+      var cY = cH / 2;
+
+      // Mark
+      if (config.type !== 'wordmark') {
+        var mSz = markPx * SCALE;
+        var mX = pX;
+        var mY = cY - mSz / 2;
+
+        if (config.markFill === 'inv') {
+          ctx.fillStyle = COLORS.ink;
+        } else {
+          ctx.fillStyle = aurora(ctx, mX, mY, mX + mSz, mY);
+        }
+        ctx.fillRect(mX, mY, mSz, mSz);
+
+        ctx.fillStyle = config.markFill === 'inv' ? COLORS.paper : COLORS.ink;
+        var fgSz = markFont * SCALE;
+        setFont(ctx, fgSz);
+        if ('letterSpacing' in ctx) ctx.letterSpacing = (-0.04 * fgSz) + 'px';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('FG', mX + mSz / 2, mY + mSz / 2);
+      }
+
+      // Wordmark
+      if (config.type !== 'mark') {
+        var wColor = (config.bg === 'paper' || config.bg === 'aurora') ? COLORS.ink : COLORS.paper;
+        var wSz = wFont * SCALE;
+        setFont(ctx, wSz);
+        if ('letterSpacing' in ctx) ctx.letterSpacing = (-0.035 * wSz) + 'px';
+        ctx.fillStyle = wColor;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        var wX = config.type === 'lockup' ? pX + (markPx + gap) * SCALE : pX;
+        ctx.fillText('FITGLUE', wX, cY);
+      }
+
+      canvas.toBlob(function (blob) {
+        if (!blob) return;
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = config.filename || 'fitglue-logo.png';
+        a.click();
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    });
+  }
+
+  document.querySelectorAll('.logo-dl-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var config = JSON.parse(this.dataset.config);
+      downloadLogo(config).catch(function (err) { console.error(err); });
+    });
+  });
+})();
+</script>
 
 {{> footer}}
