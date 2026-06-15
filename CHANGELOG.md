@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.72.0](https://github.com/fitglue/web/compare/v11.71.0...v11.72.0) (2026-06-15)
+
+
+### Features
+
+* **roundup:** redesign showcase roundup page ([f5c03a7](https://github.com/fitglue/web/commit/f5c03a7e76391d7442b2f6e1cc5e8c42ce3e7639))
+
 ## [11.71.0](https://github.com/fitglue/web/compare/v11.70.0...v11.71.0) (2026-06-15)
 
 
