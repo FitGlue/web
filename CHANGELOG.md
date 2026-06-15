@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.74.0](https://github.com/fitglue/web/compare/v11.73.0...v11.74.0) (2026-06-15)
+
+
+### Features
+
+* **roundup:** add enrichment-powered sections ([9a92d76](https://github.com/fitglue/web/commit/9a92d76756af6d558c78c9dac5225540b5e8fa4e))
+
 ## [11.73.0](https://github.com/fitglue/web/compare/v11.72.0...v11.73.0) (2026-06-15)
 
 
