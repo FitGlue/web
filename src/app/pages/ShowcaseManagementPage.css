@@ -573,3 +573,25 @@
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* Native app: hide internal subnav (navigation handled by More tab) */
+body.is-native-app .sm-layout {
+    grid-template-columns: 1fr;
+}
+body.is-native-app .sm-subnav {
+    display: none;
+}
+
+/* General mobile: prevent content overflow */
+@media (max-width: 480px) {
+    .sm-layout {
+        grid-template-columns: 1fr;
+    }
+    .sm-subnav {
+        flex-direction: row;
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: var(--fg-rule-thin);
+        padding: 0;
+    }
+}
