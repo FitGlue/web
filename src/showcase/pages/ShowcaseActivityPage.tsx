@@ -6,7 +6,7 @@ import client from '../../shared/api/client';
 import type { components } from '../../shared/api/schema-public';
 import type { ActivityEnrichments } from '../../types/pb/models/activity/enrichments';
 import { initFirebase } from '../../shared/firebase';
-import { isNativeApp } from '../../shared/nativeBridge';
+import { isNativeShowcase } from '../../shared/nativeBridge';
 import { resolveCategory } from '../utils/activityCategory';
 import { buildModuleOrder } from '../utils/enricherModules';
 import { getActivityIcon } from '../utils/activityMeta';
@@ -155,7 +155,7 @@ export default function ShowcaseActivityPage() {
       <div className="showcase-page-bg" aria-hidden="true" />
       <div className="showcase-page-wrap">
         {/* Sticky public nav bar — hidden entirely inside the native app */}
-        {!isNativeApp && (
+        {!isNativeShowcase && (
           <nav className="showcase-pubbar">
             <a className="showcase-pubbar__brand" href="/">
               <span className="showcase-pubbar__brand-icon" aria-hidden="true">FG</span>
@@ -260,7 +260,7 @@ export default function ShowcaseActivityPage() {
         </div>
       </div>
 
-      {isNativeApp && isOwner && (
+      {isNativeShowcase && isOwner && (
         <button
           className="showcase-fab-share"
           onClick={() => setShareOpen(true)}
