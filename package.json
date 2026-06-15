@@ -26,6 +26,7 @@
     "release": "standard-version --releaseCommitMessageFormat \"chore(release): {{currentTag}} [skip ci]\"",
     "generate-changelog": "npx tsx scripts/generate-public-changelog.ts",
     "generate-changelog:ai": "npx tsx scripts/generate-public-changelog.ts --ai-polish",
+    "gen-icons": "node scripts/generate-icons.mjs",
     "check-proto-sync": "node scripts/check-proto-sync.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -39,6 +40,8 @@
   "author": "James King",
   "license": "MIT",
   "devDependencies": {
+    "@fontsource/archivo-black": "^5.2.8",
+    "@napi-rs/canvas": "^1.0.0",
     "@sentry/vite-plugin": "^2.0.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
