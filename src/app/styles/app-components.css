@@ -1260,16 +1260,6 @@
   .settings__rail-section { display: none; }
   .settings__rail a { border-left: none; border-bottom: 3px solid transparent; padding: 0.625rem 1rem; }
   .settings__rail a.active { border-bottom-color: var(--fg-pink); background: var(--fg-ink-3); }
-}
-
-/* Native app (WebView): navigation is handled by the More tab — hide all
-   settings sidebars/rails so they don't duplicate the native chrome */
-body.is-native-app .settings {
-  grid-template-columns: 1fr;
-}
-body.is-native-app .settings__rail {
-  display: none;
-}
 
   .stx-field,
   .settings-field {
@@ -1303,6 +1293,15 @@ body.is-native-app .settings__rail {
   .wiz__content { padding: 1rem 1.25rem; }
   .wiz__source-grid { grid-template-columns: 1fr 1fr; }
   .wiz__actions { padding: 1rem 1.25rem; }
+}
+
+/* Native app (WebView): navigation is handled by the More tab — hide all
+   settings sidebars/rails so they don't duplicate the native chrome */
+body.is-native-app .settings {
+  grid-template-columns: 1fr;
+}
+body.is-native-app .settings__rail {
+  display: none;
 }
 
 @media (max-width: 480px) {
