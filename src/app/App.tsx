@@ -133,9 +133,9 @@ const NativeBridge: React.FC = () => {
         }
       },
     };
-    document.body.classList.add('is-native-app');
+    if (isNativeApp) document.body.classList.add('is-native-app');
     sendToNative({ type: 'ready' });
-    return () => { window.__fg = undefined; document.body.classList.remove('is-native-app'); };
+    return () => { window.__fg = undefined; if (isNativeApp) document.body.classList.remove('is-native-app'); };
   }, [navigate]);
 
   useEffect(() => {
