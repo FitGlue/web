@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.66.1](https://github.com/fitglue/web/compare/v11.66.0...v11.66.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* **showcase:** correct in-app detection and WebView downloads ([1821b3f](https://github.com/fitglue/web/commit/1821b3fe3c04cd1eb4ad69909a9ed9495a818fae))
+
 ## [11.66.0](https://github.com/fitglue/web/compare/v11.65.0...v11.66.0) (2026-06-15)
 
 
