@@ -5,6 +5,7 @@
 // source: models/activity/roundup.proto
 
 /* eslint-disable */
+import type { BestEffort } from "./enrichments";
 import type { ActivitySource, ActivityType } from "./source";
 import type { ShowcaseTopPR } from "./uploaded";
 
@@ -62,6 +63,29 @@ export interface RoundupRoute {
   activityType: ActivityType;
 }
 
+/** A place trained at during the period (from LocationSummary). */
+export interface RoundupPlace {
+  name: string;
+  country: string;
+  activityCount: number;
+}
+
+/** Aggregate weather grit over the period (from WeatherSummary). */
+export interface RoundupWeather {
+  /** sessions that carried weather data */
+  sessionCount: number;
+  /** sessions in rain/drizzle/snow */
+  rainCount: number;
+  coldestTempC: number;
+  hottestTempC: number;
+}
+
+/** A muscle group worked across the period, with frequency (from MuscleHeatmapSummary). */
+export interface RoundupMuscle {
+  name: string;
+  count: number;
+}
+
 export interface RoundupActivityTypeBreakdown {
   activityType: ActivityType;
   activityCount: number;
@@ -112,4 +136,12 @@ export interface ShowcaseRoundup {
   photos: RoundupPhoto[];
   /** GPS route thumbnails collected from the period's activities */
   routes: RoundupRoute[];
+  /** Enrichment aggregates (elevation feeds total_elevation_gain_meters above) */
+  places: RoundupPlace[];
+  weather?:
+    | RoundupWeather
+    | undefined;
+  /** fastest per distance across the period */
+  bestEfforts: BestEffort[];
+  muscles: RoundupMuscle[];
 }

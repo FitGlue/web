@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import type { DestinationType } from "../plugin/provider";
-import type { ActivityEnrichments, HeartRateZoneBucket } from "./enrichments";
+import type { ActivityEnrichments, BestEffort, HeartRateZoneBucket } from "./enrichments";
 import type { ActivitySource, ActivityType } from "./source";
 import type { StandardizedActivity } from "./standardized";
 
@@ -78,7 +78,31 @@ export interface ShowcaseProfileEntry {
   hrZoneMinutes: number[];
   /** Photo URLs for activities with attached images; populated from ShowcasedActivity.photo_urls. */
   photoUrls: string[];
-  createdAt?: Date | undefined;
+  createdAt?:
+    | Date
+    | undefined;
+  /**
+   * Enrichment summaries projected at entry creation time (from the hydrated
+   * ActivityEnrichments) so roundups can aggregate them without re-reading GCS.
+   * All optional; absent means the source enrichment did not run for this activity.
+   */
+  elevationGainM?:
+    | number
+    | undefined;
+  /** e.g. "Bushy Park, London" */
+  locationName?: string | undefined;
+  country?: string | undefined;
+  tempC?:
+    | number
+    | undefined;
+  /** "Clear", "Rain", etc. */
+  weatherDescription?:
+    | string
+    | undefined;
+  /** reuse enrichments.BestEffort */
+  bestEfforts: BestEffort[];
+  /** primary muscles worked (strength) */
+  primaryMuscles: string[];
 }
 
 /** EntrySparkline is a downsampled timeseries for card-level sparklines. */
