@@ -43,6 +43,25 @@ export interface ShowcaseCalloutActivity {
   activityType: ActivityType;
 }
 
+/** A photo surfaced in the roundup photo mosaic. */
+export interface RoundupPhoto {
+  url: string;
+  activityTitle: string;
+  /** e.g. "14 Sep" */
+  date: string;
+  activityType: ActivityType;
+}
+
+/** A GPS route thumbnail surfaced in the roundup route wall. */
+export interface RoundupRoute {
+  thumbnailUrl: string;
+  activityTitle: string;
+  /** e.g. "14 Sep" */
+  date: string;
+  distanceMeters: number;
+  activityType: ActivityType;
+}
+
 export interface RoundupActivityTypeBreakdown {
   activityType: ActivityType;
   activityCount: number;
@@ -89,4 +108,8 @@ export interface ShowcaseRoundup {
   calloutActivities: ShowcaseCalloutActivity[];
   /** Per-day effort entries for the consistency calendar heatmap */
   dayEntries: RoundupDayEntry[];
+  /** Photos collected from the period's activities (gated by show_photo_gallery) */
+  photos: RoundupPhoto[];
+  /** GPS route thumbnails collected from the period's activities */
+  routes: RoundupRoute[];
 }
