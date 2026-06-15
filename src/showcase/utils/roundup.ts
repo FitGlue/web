@@ -13,6 +13,10 @@ export type RoundupDayEntry = components['schemas']['RoundupDayEntry'];
 export type ShowcaseTopPR = components['schemas']['ShowcaseTopPR'];
 export type RoundupPhoto = components['schemas']['RoundupPhoto'];
 export type RoundupRoute = components['schemas']['RoundupRoute'];
+export type RoundupPlace = components['schemas']['RoundupPlace'];
+export type RoundupWeather = components['schemas']['RoundupWeather'];
+export type RoundupMuscle = components['schemas']['RoundupMuscle'];
+export type BestEffort = components['schemas']['BestEffort'];
 
 // Emoji glyph for an activity type, with a sensible fallback.
 export function activityGlyph(type?: string): string {
@@ -51,6 +55,40 @@ export function fmtHM(sec: number): { h: number; m: number } {
 
 export function pad2(n: number): string {
   return String(n).padStart(2, '0');
+}
+
+// Clock format: m:ss under an hour, h:mm:ss otherwise.
+export function formatClock(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  return h > 0 ? `${h}:${pad2(m)}:${pad2(s)}` : `${m}:${pad2(s)}`;
+}
+
+// Title-case a muscle key ("upper_back" -> "Upper Back").
+export function formatMuscle(name: string): string {
+  return name.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+// Landmarks for an evocative elevation comparison, largest first.
+const ELEVATION_LANDMARKS = [
+  { name: 'Everest', m: 8849 },
+  { name: 'Mont Blanc', m: 4808 },
+  { name: 'Ben Nevis', m: 1345 },
+  { name: 'Snowdon', m: 1085 },
+  { name: 'the Shard', m: 310 },
+];
+
+// e.g. "2.0× Ben Nevis". Returns null below a meaningful threshold.
+export function elevationComparison(m: number): string | null {
+  if (m < 150) return null;
+  for (const l of ELEVATION_LANDMARKS) {
+    if (m >= l.m) {
+      const x = m / l.m;
+      return `${x.toFixed(x >= 10 ? 0 : 1)}× ${l.name}`;
+    }
+  }
+  return null;
 }
 
 export function periodWord(periodType?: string): string {
@@ -237,12 +275,7 @@ export function buildPRVM(pr: ShowcaseTopPR): PRVm {
   let unitStr = '';
   const value = pr.value ?? 0;
   if (unit === 'seconds') {
-    const h = Math.floor(value / 3600);
-    const m = Math.floor((value % 3600) / 60);
-    const s = Math.floor(value % 60);
-    valueStr = h > 0
-      ? `${h}:${pad2(m)}:${pad2(s)}`
-      : `${m}:${pad2(s)}`;
+    valueStr = formatClock(value);
   } else if (unit === 'kg') {
     valueStr = String(Math.round(value));
     unitStr = 'kg';

@@ -25,6 +25,9 @@ import {
   buildPRVM,
   buildDeltas,
   activityGlyph,
+  formatClock,
+  formatMuscle,
+  elevationComparison,
 } from '../utils/roundup';
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -485,6 +488,17 @@ export default function ShowcaseRoundupPage() {
   if (bpm > 0) {
     highlights.push({ value: String(bpm), unit: 'bpm', label: 'Peak Avg HR', sub: roundup.highestAvgBpmActivityTitle ?? '' });
   }
+  const elevation = roundup.totalElevationGainMeters ?? 0;
+  if (elevation > 50) {
+    highlights.push({
+      value: `+${Math.round(elevation).toLocaleString()}`,
+      unit: 'm climbed',
+      label: 'Total Vertical',
+      sub: elevationComparison(elevation) ?? '',
+    });
+  }
+
+  const bestEfforts = roundup.bestEfforts ?? [];
 
   const prVMs = (roundup.prsAchieved ?? []).map(buildPRVM);
   const prTotal = prVMs.length;
@@ -657,6 +671,30 @@ export default function ShowcaseRoundupPage() {
           </section>
         )}
 
+        {/* 5a · Muscles worked */}
+        {(roundup.muscles?.length ?? 0) > 0 && (() => {
+          const maxCount = Math.max(...roundup.muscles!.map((m) => m.count ?? 0), 1);
+          return (
+            <section className="rp-sec" id="sec-muscles">
+              <div className="rp-wrap">
+                <ShareStat onShare={onShare} />
+                <SecHead eyebrow="Anatomy" title="Muscles under load" note="Primary movers, by session count" />
+                <div className="rp-muscles rp-anim">
+                  {roundup.muscles!.map((m, i) => (
+                    <div key={i} className="rp-muscle">
+                      <span className="rp-muscle__n">{formatMuscle(m.name ?? '')}</span>
+                      <div className="rp-muscle__track">
+                        <div className="rp-muscle__fill" style={{ width: `${((m.count ?? 0) / maxCount) * 100}%` }} />
+                      </div>
+                      <span className="rp-muscle__c">{m.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        })()}
+
         {/* 5b · Route wall */}
         {(roundup.routes?.length ?? 0) > 0 && (
           <section className="rp-sec" id="sec-routes">
@@ -688,6 +726,59 @@ export default function ShowcaseRoundupPage() {
             </div>
           </section>
         )}
+
+        {/* 5c · Places trained */}
+        {(roundup.places?.length ?? 0) > 0 && (() => {
+          const countries = new Set(
+            roundup.places!.map((p) => p.country).filter((c): c is string => !!c),
+          );
+          const note = countries.size > 1
+            ? `${roundup.places!.length} places · ${countries.size} countries`
+            : `${roundup.places!.length} ${roundup.places!.length === 1 ? 'place' : 'places'}`;
+          return (
+            <section className="rp-sec" id="sec-places">
+              <div className="rp-wrap">
+                <ShareStat onShare={onShare} />
+                <SecHead eyebrow="Geography" title="Where it happened" note={note} />
+                <div className="rp-places rp-anim">
+                  {roundup.places!.map((p, i) => (
+                    <div key={i} className="rp-place">
+                      <span className="rp-place__n">{p.name}</span>
+                      {p.country && <span className="rp-place__c">{p.country}</span>}
+                      <span className="rp-place__x">×{p.activityCount}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        })()}
+
+        {/* 5d · Weather grit */}
+        {roundup.weather && (roundup.weather.sessionCount ?? 0) > 0 && (() => {
+          const w = roundup.weather!;
+          const cells: Array<{ n: string; l: string }> = [];
+          if ((w.rainCount ?? 0) > 0) cells.push({ n: String(w.rainCount), l: 'Sessions in the wet' });
+          if (w.coldestTempC != null) cells.push({ n: `${Math.round(w.coldestTempC)}°`, l: 'Coldest start' });
+          if (w.hottestTempC != null) cells.push({ n: `${Math.round(w.hottestTempC)}°`, l: 'Hottest start' });
+          cells.push({ n: String(w.sessionCount), l: 'Sessions tracked' });
+          return (
+            <section className="rp-sec" id="sec-weather">
+              <div className="rp-wrap">
+                <ShareStat onShare={onShare} />
+                <SecHead eyebrow="Conditions" title="Whatever the weather" note="The grit index" />
+                <div className="rp-weather rp-anim">
+                  {cells.map((c, i) => (
+                    <div key={i} className="rp-weather__cell">
+                      <div className="rp-weather__n">{c.n}</div>
+                      <div className="rp-weather__l">{c.l}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        })()}
 
         {/* 6 · Consistency calendar */}
         {calDays.length > 1 && (
@@ -724,6 +815,25 @@ export default function ShowcaseRoundupPage() {
             )}
           </div>
         </section>
+
+        {/* 7b · Best efforts */}
+        {bestEfforts.length > 0 && (
+          <section className="rp-sec" id="sec-efforts">
+            <div className="rp-wrap">
+              <ShareStat onShare={onShare} />
+              <SecHead eyebrow="Benchmarks" title="Fastest known times" note="Quickest effort at each distance this period" />
+              <div className="rp-efforts rp-anim">
+                {bestEfforts.map((be, i) => (
+                  <div key={i} className="rp-effort-card">
+                    <div className="rp-effort-card__d">{be.display ?? be.distanceKey}</div>
+                    <div className="rp-effort-card__t">{formatClock(be.timeSeconds ?? 0)}</div>
+                    <div className="rp-effort-card__u">Fastest</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* 8 · Highlights */}
         {highlights.length > 0 && (

@@ -4073,6 +4073,40 @@ body:has(#showcase-root) {
 .rp-photo__t { font-family: var(--fg-font-display); font-size: 0.8rem; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1; }
 .rp-photo__d { font-family: var(--fg-font-mono); font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.14em; color: var(--color-text-muted); text-transform: uppercase; margin-top: 4px; }
 
+/* ---- Best efforts ---- */
+.rp-efforts { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+.rp-effort-card {
+  padding: 24px; background: var(--fg-ink-2); border: 1px solid rgba(245,243,235,0.1);
+  display: flex; flex-direction: column; gap: 10px;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+.rp-effort-card:hover { transform: translateY(-4px); border-color: rgba(34,211,238,0.4); }
+.rp-effort-card__d { font-family: var(--fg-font-mono); font-size: 0.625rem; font-weight: 700; letter-spacing: 0.16em; color: var(--color-text-muted); text-transform: uppercase; }
+.rp-effort-card__t { font-family: var(--fg-font-display); font-size: 2rem; letter-spacing: -0.03em; line-height: 0.9; color: var(--fg-paper); }
+.rp-effort-card__u { font-family: var(--fg-font-mono); font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.14em; color: var(--fg-cyan); text-transform: uppercase; }
+
+/* ---- Muscles worked ---- */
+.rp-muscles { display: flex; flex-direction: column; gap: 12px; }
+.rp-muscle { display: grid; grid-template-columns: 150px 1fr 44px; gap: 16px; align-items: center; }
+.rp-muscle__n { font-family: var(--fg-font-display); font-size: 1rem; text-transform: uppercase; letter-spacing: -0.01em; }
+.rp-muscle__track { height: 22px; background: rgba(245,243,235,0.06); overflow: hidden; }
+.rp-muscle__fill { height: 100%; background: var(--gradient-primary); transition: width 0.9s cubic-bezier(0.16,1,0.3,1); }
+.rp-muscle__c { font-family: var(--fg-font-display); font-size: 1.1rem; letter-spacing: -0.02em; text-align: right; }
+
+/* ---- Places trained ---- */
+.rp-places { display: flex; flex-wrap: wrap; gap: 10px; }
+.rp-place { display: inline-flex; align-items: baseline; gap: 12px; padding: 13px 16px; background: var(--fg-ink-2); border: 1px solid rgba(245,243,235,0.1); }
+.rp-place__n { font-family: var(--fg-font-display); font-size: 1rem; text-transform: uppercase; letter-spacing: -0.01em; }
+.rp-place__c { font-family: var(--fg-font-mono); font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.14em; color: var(--color-text-muted); text-transform: uppercase; }
+.rp-place__x { font-family: var(--fg-font-mono); font-size: 0.6875rem; font-weight: 700; color: var(--fg-cyan); }
+
+/* ---- Weather grit ---- */
+.rp-weather { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); border: 1px solid rgba(245,243,235,0.12); background: var(--fg-ink-2); }
+.rp-weather__cell { padding: 28px 24px; display: flex; flex-direction: column; gap: 8px; }
+.rp-weather__cell + .rp-weather__cell { border-left: 1px solid rgba(245,243,235,0.12); }
+.rp-weather__n { font-family: var(--fg-font-display); font-size: 2.2rem; letter-spacing: -0.04em; line-height: 0.86; }
+.rp-weather__l { font-family: var(--fg-font-mono); font-size: 0.625rem; font-weight: 700; letter-spacing: 0.16em; color: var(--color-text-muted); text-transform: uppercase; }
+
 /* ---- Footer ---- */
 .rp-foot { border-top: var(--fg-rule-thick); padding: 56px 0 80px; }
 .rp-foot__row { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
@@ -4160,4 +4194,5 @@ body:has(#showcase-root) {
   .rp-bar__crumb { display: none; }
   .rp-stack__seg b { display: none; }
   .rp-photo--feature { grid-column: auto; grid-row: auto; }
+  .rp-muscle { grid-template-columns: 96px 1fr 32px; gap: 10px; }
 }

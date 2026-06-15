@@ -9,6 +9,9 @@ import {
   formatDateRange,
   ownerInitials,
   activityGlyph,
+  formatClock,
+  formatMuscle,
+  elevationComparison,
   isoWeek,
   computePrevPeriodKey,
   buildSportVMs,
@@ -59,6 +62,26 @@ describe('format helpers', () => {
     expect(activityGlyph('ACTIVITY_TYPE_RUN')).toBeTruthy();
     expect(activityGlyph(undefined)).toBe('🏅');
     expect(activityGlyph('ACTIVITY_TYPE_NONSENSE')).toBe('🏅');
+  });
+
+  it('formatClock renders m:ss and h:mm:ss', () => {
+    expect(formatClock(0)).toBe('0:00');
+    expect(formatClock(95)).toBe('1:35');
+    expect(formatClock(1360)).toBe('22:40');
+    expect(formatClock(3661)).toBe('1:01:01');
+  });
+
+  it('formatMuscle title-cases keys', () => {
+    expect(formatMuscle('quads')).toBe('Quads');
+    expect(formatMuscle('upper_back')).toBe('Upper Back');
+    expect(formatMuscle('')).toBe('');
+  });
+
+  it('elevationComparison picks the biggest landmark that fits', () => {
+    expect(elevationComparison(40)).toBeNull();
+    expect(elevationComparison(2690)).toBe('2.0× Ben Nevis');
+    expect(elevationComparison(500)).toBe('1.6× the Shard');
+    expect(elevationComparison(1085)).toBe('1.0× Snowdon');
   });
 });
 
