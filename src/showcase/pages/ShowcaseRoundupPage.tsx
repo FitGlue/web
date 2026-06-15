@@ -373,6 +373,14 @@ export default function ShowcaseRoundupPage() {
           </div>
         </section>
 
+        {/* AI summary pull-quote */}
+        {roundup.aiSummary && (
+          <div className="roundup-ai-summary">
+            <div className="roundup-ai-summary__quote-mark" aria-hidden="true">&ldquo;</div>
+            <p className="roundup-ai-summary__body">{roundup.aiSummary}</p>
+          </div>
+        )}
+
         {/* Effort distribution band */}
         {hasEffort && (
           <EffortBand

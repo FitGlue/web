@@ -58,4 +58,6 @@ export interface ShowcaseRoundup {
   highestCaloriesPerHourKcal: number;
   highestAvgBpmActivityTitle: string;
   highestAvgBpm: number;
+  /** AI-generated narrative summary of the period, empty if unavailable */
+  aiSummary: string;
 }

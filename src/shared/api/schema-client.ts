@@ -2197,6 +2197,8 @@ export interface components {
             highestAvgBpmActivityTitle?: string;
             /** Format: int32 */
             highestAvgBpm?: number;
+            /** @description AI-generated narrative summary of the period, empty if unavailable */
+            aiSummary?: string;
         };
         ShowcaseTheme: {
             themeId?: string;

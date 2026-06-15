@@ -3481,6 +3481,41 @@ body:has(#showcase-root) {
 }
 
 /* ── Sources ── */
+/* ── AI Summary pull-quote ── */
+.roundup-ai-summary {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 40px 32px 40px 48px;
+  border-left: 3px solid;
+  border-image: var(--gradient-primary) 1;
+}
+.roundup-ai-summary__quote-mark {
+  position: absolute;
+  top: 20px;
+  left: 12px;
+  font-family: var(--fg-font-display);
+  font-size: 5rem;
+  line-height: 1;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.4;
+  pointer-events: none;
+  user-select: none;
+}
+.roundup-ai-summary__body {
+  font-family: var(--fg-font-body, sans-serif);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--fg-muted);
+  margin: 0;
+  font-style: italic;
+}
+
 .roundup-sources {
   padding: 20px 32px;
   border-bottom: var(--fg-rule-thin);
