@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.66.0](https://github.com/fitglue/web/compare/v11.65.0...v11.66.0) (2026-06-15)
+
+
+### Features
+
+* **showcase:** hide pubbar in native app, show share for owner only ([e588e6a](https://github.com/fitglue/web/commit/e588e6ab2b5ad91d1d07ea79bce364f7cbc55203))
+
+
+### Bug Fixes
+
+* **web:** add min-width:0 to settings grid children to fix showcase overflow ([0473926](https://github.com/fitglue/web/commit/0473926ea6e6343fbaf6311c876b4f3a60d73503))
+
 ## [11.65.0](https://github.com/fitglue/web/compare/v11.64.0...v11.65.0) (2026-06-15)
 
 
