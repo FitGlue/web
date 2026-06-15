@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.70.0](https://github.com/fitglue/web/compare/v11.69.0...v11.70.0) (2026-06-15)
+
+
+### Features
+
+* **showcase:** render AI roundup summary as pull-quote card ([1bfbc91](https://github.com/fitglue/web/commit/1bfbc91f66f0bdf091ab4837ef2459d08c8ec0ea))
+
 ## [11.69.0](https://github.com/fitglue/web/compare/v11.68.0...v11.69.0) (2026-06-15)
 
 
