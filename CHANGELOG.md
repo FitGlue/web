@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.68.0](https://github.com/fitglue/web/compare/v11.67.0...v11.68.0) (2026-06-15)
+
+
+### Features
+
+* **roundup:** recompute button, configurable share modal, highlight stats, profile fix ([518c7bc](https://github.com/fitglue/web/commit/518c7bc6c13bb42c424515e82251b5784b632477))
+
 ## [11.67.0](https://github.com/fitglue/web/compare/v11.66.1...v11.67.0) (2026-06-15)
 
 
