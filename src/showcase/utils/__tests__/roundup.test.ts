@@ -8,6 +8,7 @@ import {
   periodShortLabel,
   formatDateRange,
   ownerInitials,
+  activityGlyph,
   isoWeek,
   computePrevPeriodKey,
   buildSportVMs,
@@ -52,6 +53,12 @@ describe('format helpers', () => {
     expect(ownerInitials('Darcey')).toBe('DA');
     expect(ownerInitials('Jane Doe')).toBe('JD');
     expect(ownerInitials('  mary jane watson ')).toBe('MW');
+  });
+
+  it('activityGlyph returns an icon with a fallback', () => {
+    expect(activityGlyph('ACTIVITY_TYPE_RUN')).toBeTruthy();
+    expect(activityGlyph(undefined)).toBe('🏅');
+    expect(activityGlyph('ACTIVITY_TYPE_NONSENSE')).toBe('🏅');
   });
 });
 

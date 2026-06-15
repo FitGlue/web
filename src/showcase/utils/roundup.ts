@@ -11,6 +11,13 @@ export type RoundupActivityTypeBreakdown = components['schemas']['RoundupActivit
 export type ShowcaseCalloutActivity = components['schemas']['ShowcaseCalloutActivity'];
 export type RoundupDayEntry = components['schemas']['RoundupDayEntry'];
 export type ShowcaseTopPR = components['schemas']['ShowcaseTopPR'];
+export type RoundupPhoto = components['schemas']['RoundupPhoto'];
+export type RoundupRoute = components['schemas']['RoundupRoute'];
+
+// Emoji glyph for an activity type, with a sensible fallback.
+export function activityGlyph(type?: string): string {
+  return ACTIVITY_TYPE_ICONS[type ?? ''] ?? '🏅';
+}
 
 // Distinct aurora palette, assigned by index so adjacent donut segments differ.
 export const SPORT_PALETTE = [

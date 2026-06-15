@@ -24,6 +24,7 @@ import {
   calloutVisual,
   buildPRVM,
   buildDeltas,
+  activityGlyph,
 } from '../utils/roundup';
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -656,6 +657,38 @@ export default function ShowcaseRoundupPage() {
           </section>
         )}
 
+        {/* 5b · Route wall */}
+        {(roundup.routes?.length ?? 0) > 0 && (
+          <section className="rp-sec" id="sec-routes">
+            <div className="rp-wrap">
+              <ShareStat onShare={onShare} />
+              <SecHead
+                eyebrow="Terrain"
+                title="Ground covered"
+                note={`${roundup.routes!.length} ${roundup.routes!.length === 1 ? 'route' : 'routes'} mapped`}
+              />
+              <div className="rp-routes rp-anim">
+                {roundup.routes!.map((r, i) => (
+                  <article key={i} className="rp-route">
+                    <img src={r.thumbnailUrl} alt={r.activityTitle ?? 'Route'} loading="lazy" />
+                    <div className="rp-route__grad" aria-hidden="true" />
+                    <span className="rp-route__glyph" aria-hidden="true">{activityGlyph(r.activityType)}</span>
+                    <div className="rp-route__meta">
+                      <div>
+                        <div className="rp-route__t">{r.activityTitle}</div>
+                        {r.date && <div className="rp-route__d">{r.date}</div>}
+                      </div>
+                      {(r.distanceMeters ?? 0) > 500 && (
+                        <div className="rp-route__dist">{fmtKm(r.distanceMeters ?? 0)}<sub>km</sub></div>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* 6 · Consistency calendar */}
         {calDays.length > 1 && (
           <section className="rp-sec" id="sec-cal">
@@ -749,6 +782,34 @@ export default function ShowcaseRoundupPage() {
             )}
           </div>
         </section>
+
+        {/* 9b · Photo mosaic */}
+        {(roundup.photos?.length ?? 0) > 0 && (
+          <section className="rp-sec" id="sec-photos">
+            <div className="rp-wrap">
+              <ShareStat onShare={onShare} />
+              <SecHead
+                eyebrow="Moments"
+                title="Caught in motion"
+                note={`${roundup.photos!.length} ${roundup.photos!.length === 1 ? 'photo' : 'photos'} this period`}
+              />
+              <div className="rp-photos rp-anim">
+                {roundup.photos!.map((p, i) => (
+                  <figure
+                    key={i}
+                    className={`rp-photo${i === 0 && roundup.photos!.length >= 5 ? ' rp-photo--feature' : ''}`}
+                  >
+                    <img src={p.url} alt={p.activityTitle ?? 'Activity photo'} loading="lazy" />
+                    <figcaption className="rp-photo__cap">
+                      {p.activityTitle && <div className="rp-photo__t">{p.activityTitle}</div>}
+                      {p.date && <div className="rp-photo__d">{p.date}</div>}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Footer */}
         <footer className="rp-foot">
