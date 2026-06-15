@@ -357,6 +357,12 @@
   min-height: 80vh;
 }
 
+/* Grid children must have min-width:0 or flex/overflow children can expand
+   the column beyond 1fr (e.g. subnav-tabs with white-space:nowrap tabs) */
+.settings > * {
+  min-width: 0;
+}
+
 .settings__rail {
   background: var(--fg-ink-2);
   border-right: var(--fg-rule-thin);
