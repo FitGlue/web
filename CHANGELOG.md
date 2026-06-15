@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.69.0](https://github.com/fitglue/web/compare/v11.68.0...v11.69.0) (2026-06-15)
+
+
+### Features
+
+* **logo:** add download buttons for logo variants and implement download functionality ([14e70bc](https://github.com/fitglue/web/commit/14e70bc60db0fc66b41099b2d16f163b94acaea3))
+
 ## [11.68.0](https://github.com/fitglue/web/compare/v11.67.0...v11.68.0) (2026-06-15)
 
 
