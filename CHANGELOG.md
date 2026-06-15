@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.67.0](https://github.com/fitglue/web/compare/v11.66.1...v11.67.0) (2026-06-15)
+
+
+### Features
+
+* update showcase styles and add Roundup export modal component ([3104570](https://github.com/fitglue/web/commit/310457059cfc9989ce7954f2f0449404e36256c1))
+
+
+### Bug Fixes
+
+* **web:** guard is-native-app body class behind isNativeApp check ([82de01c](https://github.com/fitglue/web/commit/82de01cdb516c765832fa4fcb5ca5b960a0f6a53))
+
 ### [11.66.1](https://github.com/fitglue/web/compare/v11.66.0...v11.66.1) (2026-06-15)
 
 
