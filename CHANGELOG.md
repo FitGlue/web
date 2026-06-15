@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.73.0](https://github.com/fitglue/web/compare/v11.72.0...v11.73.0) (2026-06-15)
+
+
+### Features
+
+* **roundup:** add photo mosaic and route wall sections ([01841e1](https://github.com/fitglue/web/commit/01841e1608cc7f1ec27dfa448c76cbfde1c1874d))
+
 ## [11.72.0](https://github.com/fitglue/web/compare/v11.71.0...v11.72.0) (2026-06-15)
 
 
