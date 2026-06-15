@@ -1,234 +1,369 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import publicClient from '../../shared/api/public-client';
-import type { components } from '../../shared/api/schema-public';
 import { isNativeApp } from '../../shared/nativeBridge';
 import ShowcaseNotFound from '../components/ShowcaseNotFound';
 import { ShowcaseRoundupExportModal } from '../components/ShowcaseRoundupExportModal';
-import { resolveFamily, FAMILY_STAMP_CLASS } from '../utils/activityFamily';
-import { ACTIVITY_TYPE_ICONS } from '../utils/activityMeta';
-import { formatDuration, formatWeight, formatActivityType, formatSource } from '../utils/format';
+import { formatSource, formatWeight } from '../utils/format';
+import {
+  type ShowcaseRoundup,
+  type SportVM,
+  type CalDay,
+  HR_ZONES,
+  SOURCE_PALETTE,
+  fmtKm,
+  fmtHM,
+  periodWord,
+  heroTitle,
+  periodShortLabel,
+  formatDateRange,
+  ownerInitials,
+  computePrevPeriodKey,
+  buildSportVMs,
+  buildCalendarDays,
+  calloutVisual,
+  buildPRVM,
+  buildDeltas,
+} from '../utils/roundup';
 
-type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
-type RoundupActivityTypeBreakdown = components['schemas']['RoundupActivityTypeBreakdown'];
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+const DOW = ['', 'MON', '', 'WED', '', 'FRI', ''];
 
-const ZONE_COLORS = ['#334155', '#22d3ee', '#a3ff3d', '#ffd60a', '#ff3da6', '#ff0000'];
-const ZONE_NAMES = ['Z1 · RECOVERY', 'Z2 · BASE', 'Z3 · AEROBIC', 'Z4 · THRESHOLD', 'Z5 · MAX', 'Z6 · ANAEROBIC'];
+/* ============================================================
+   SVG charts (pure, no chart lib)
+   ============================================================ */
 
-function periodLabel(periodKey: string): string {
-  if (periodKey.startsWith('week-')) {
-    const [, week, year] = periodKey.split('-');
-    return `Week ${parseInt(week, 10)} · ${year}`;
-  }
-  if (periodKey.startsWith('month-')) {
-    const [, month, year] = periodKey.split('-');
-    const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
-    return date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }).toUpperCase();
-  }
-  if (periodKey.startsWith('year-')) {
-    return periodKey.replace('year-', '');
-  }
-  return periodKey;
-}
-
-function periodTitle(periodKey: string): string {
-  if (periodKey.startsWith('week-')) return 'WEEKLY ROUNDUP';
-  if (periodKey.startsWith('month-')) return 'MONTHLY ROUNDUP';
-  if (periodKey.startsWith('year-')) return 'YEAR IN REVIEW';
-  return 'TRAINING ROUNDUP';
-}
-
-function formatDateRange(start?: string, end?: string): string | null {
-  if (!start && !end) return null;
-  const fmt = (iso: string) =>
-    new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).toUpperCase();
-  if (start && end) return `${fmt(start)} – ${fmt(end)}`;
-  if (start) return fmt(start);
-  return null;
-}
-
-function formatDurationAnchor(seconds: number): string {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  return h > 0 ? `${h}h ${m}m` : `${m}m`;
-}
-
-function PRValue({ pr }: { pr: NonNullable<ShowcaseRoundup['prsAchieved']>[number] }) {
-  const { value, unit } = pr;
-  if (!value) return null;
-
-  let display = '';
-  let sup = '';
-  if (unit === 'seconds') {
-    const h = Math.floor(value / 3600);
-    const m = Math.floor((value % 3600) / 60);
-    const s = Math.floor(value % 60);
-    display = h > 0
-      ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-      : `${m}:${String(s).padStart(2, '0')}`;
-  } else if (unit === 'kg') {
-    display = String(Math.round(value));
-    sup = 'kg';
-  } else {
-    display = String(Math.round(value));
-    sup = unit ?? '';
-  }
-
+function SportDonut({ data, total }: { data: SportVM[]; total: number }) {
+  const R = 70, C = 2 * Math.PI * R, cx = 100, cy = 100;
+  let offset = 0;
+  const segs = data.map((d) => {
+    const frac = total > 0 ? d.count / total : 0;
+    const seg = { ...d, frac, dash: frac * C, offset: offset * C };
+    offset += frac;
+    return seg;
+  });
   return (
-    <span>
-      {display}
-      {sup && <sup>{sup}</sup>}
-    </span>
-  );
-}
-
-function SportCard({ bd }: { bd: RoundupActivityTypeBreakdown }) {
-  const family = resolveFamily(bd.activityType);
-  const stampSuffix = FAMILY_STAMP_CLASS[family];
-  const icon = ACTIVITY_TYPE_ICONS[bd.activityType ?? ''] ?? '🏃';
-  const isStrength = (bd.totalSets ?? 0) > 0;
-  const hasDistance = (bd.totalDistanceMeters ?? 0) > 500;
-
-  let heroVal = '';
-  let heroUnit = '';
-  let heroLbl = '';
-  if (hasDistance) {
-    const km = (bd.totalDistanceMeters ?? 0) / 1000;
-    heroVal = km >= 10 ? km.toFixed(1) : km.toFixed(2);
-    heroUnit = 'KM';
-    heroLbl = 'Distance';
-  } else if (isStrength) {
-    heroVal = String(bd.totalSets);
-    heroUnit = '';
-    heroLbl = 'Sets';
-  } else {
-    const mins = Math.round((bd.totalDurationSeconds ?? 0) / 60);
-    heroVal = String(mins);
-    heroUnit = 'MIN';
-    heroLbl = 'Duration';
-  }
-
-  return (
-    <div className={`roundup-sport-card roundup-sport-card--${stampSuffix}`}>
-      <div className="roundup-sport-card__top">
-        <span className={`act__stamp act__stamp--${stampSuffix}`}>
-          {icon} {formatActivityType(bd.activityType)}
-        </span>
-        <span className="roundup-sport-card__count">
-          {bd.activityCount} {bd.activityCount === 1 ? 'session' : 'sessions'}
-        </span>
-      </div>
-      <div className="roundup-sport-card__hero">
-        <span className="roundup-sport-card__hero-val">{heroVal}</span>
-        {heroUnit && <span className="roundup-sport-card__hero-unit">{heroUnit}</span>}
-      </div>
-      <div className="roundup-sport-card__hero-lbl">{heroLbl}</div>
-      {isStrength && (bd.totalWeightKg ?? 0) > 0 && (
-        <div className="roundup-sport-card__sub">
-          {formatWeight(bd.totalWeightKg)}
-          {(bd.totalReps ?? 0) > 0 ? ` · ${(bd.totalReps ?? 0).toLocaleString()} reps` : ''}
-        </div>
-      )}
-      {(bd.totalDurationSeconds ?? 0) > 0 && !(!hasDistance && !isStrength) && (
-        <div className="roundup-sport-card__dur">{formatDuration(bd.totalDurationSeconds) ?? '—'}</div>
-      )}
-    </div>
-  );
-}
-
-function EffortBand({ easy, moderate, hard }: { easy: number; moderate: number; hard: number }) {
-  const total = easy + moderate + hard;
-  if (total === 0) return null;
-
-  const pctEasy = (easy / total) * 100;
-  const pctMod = (moderate / total) * 100;
-  const pctHard = (hard / total) * 100;
-
-  return (
-    <div className="roundup-effort-band">
-      <div className="roundup-effort-band__inner">
-        <div className="roundup-effort-band__cell">
-          <div className="roundup-effort-band__n">{easy}</div>
-          <div className="roundup-effort-band__l">EASY</div>
-        </div>
-        <div className="roundup-effort-band__cell">
-          <div className="roundup-effort-band__n roundup-effort-band__n--moderate">{moderate}</div>
-          <div className="roundup-effort-band__l">MODERATE</div>
-        </div>
-        <div className="roundup-effort-band__cell">
-          <div className="roundup-effort-band__n roundup-effort-band__n--hard">{hard}</div>
-          <div className="roundup-effort-band__l">HARD</div>
-        </div>
-        <div className="roundup-effort-band__cell roundup-effort-band__cell--bar">
-          <div className="roundup-effort-bar">
-            {pctEasy > 0.5 && <div className="roundup-effort-bar__seg roundup-effort-bar__seg--easy" style={{ width: `${pctEasy.toFixed(1)}%` }} />}
-            {pctMod > 0.5 && <div className="roundup-effort-bar__seg roundup-effort-bar__seg--moderate" style={{ width: `${pctMod.toFixed(1)}%` }} />}
-            {pctHard > 0.5 && <div className="roundup-effort-bar__seg roundup-effort-bar__seg--hard" style={{ width: `${pctHard.toFixed(1)}%` }} />}
-          </div>
-          <div className="roundup-effort-band__l">TRAINING LOAD</div>
-        </div>
+    <div className="rp-donut-wrap">
+      <svg className="rp-donut" viewBox="0 0 200 200" role="img" aria-label="Sessions by sport">
+        <circle cx={cx} cy={cy} r={R} fill="none" stroke="rgba(245,243,235,0.06)" strokeWidth="26" />
+        <g transform={`rotate(-90 ${cx} ${cy})`}>
+          {segs.map((s) => (
+            <circle
+              key={s.type}
+              cx={cx}
+              cy={cy}
+              r={R}
+              fill="none"
+              stroke={s.color}
+              strokeWidth="26"
+              strokeDasharray={`${s.dash} ${C - s.dash}`}
+              strokeDashoffset={-s.offset}
+            >
+              <title>{`${s.label}: ${s.count} sessions (${Math.round(s.frac * 100)}%)`}</title>
+            </circle>
+          ))}
+        </g>
+      </svg>
+      <div className="rp-donut__center">
+        <b>{total}</b>
+        <span>Sessions</span>
       </div>
     </div>
   );
 }
 
-function RoundupZoneBar({ zoneMinutes }: { zoneMinutes?: number[] }) {
-  if (!zoneMinutes || zoneMinutes.length === 0) return null;
-  const total = zoneMinutes.reduce((s, m) => s + (m ?? 0), 0);
-  if (total < 30) return null;
-
-  const totalHours = Math.round(total / 60);
-
+function StackedDistance({ data }: { data: SportVM[] }) {
+  const withDist = data.filter((d) => d.distanceMeters > 0);
+  if (withDist.length === 0) return null;
+  const total = withDist.reduce((a, d) => a + d.distanceMeters, 0);
   return (
-    <div className="zone-band">
-      <div className="zone-band__label">❤️ HR ZONES THIS PERIOD · {totalHours}H TRACKED</div>
-      <div className="zone-bar">
-        {zoneMinutes.map((mins, i) => {
-          const pct = (mins / total) * 100;
-          if (pct < 0.5) return null;
+    <div className="rp-stack">
+      <div className="rp-stack__head">
+        <span className="rp-stack__title">Distance by sport</span>
+        <span className="rp-stack__total">{fmtKm(total)} km</span>
+      </div>
+      <div className="rp-stack__bar">
+        {withDist.map((d) => {
+          const pct = (d.distanceMeters / total) * 100;
           return (
             <div
-              key={i}
-              className="zone-bar__seg"
-              style={{ width: `${pct.toFixed(2)}%`, background: ZONE_COLORS[i] ?? ZONE_COLORS[5] }}
-              title={`${ZONE_NAMES[i]}: ${Math.round(pct)}%`}
-            />
-          );
-        })}
-      </div>
-      <div className="zone-legend">
-        {zoneMinutes.map((mins, i) => {
-          const pct = Math.round((mins / total) * 100);
-          if (pct < 1) return null;
-          const hours = Math.round(mins / 60);
-          return (
-            <div key={i} className="zone-legend__item">
-              <span className="zone-legend__dot" style={{ background: ZONE_COLORS[i] ?? ZONE_COLORS[5] }} />
-              <span className="zone-legend__name">{ZONE_NAMES[i]}</span>
-              <span className="zone-legend__pct">{pct}%</span>
-              {hours > 0 && <span className="zone-legend__hours">{hours}h</span>}
+              key={d.type}
+              className="rp-stack__seg"
+              style={{ width: `${pct}%`, background: d.color }}
+              title={`${d.label}: ${fmtKm(d.distanceMeters)} km`}
+            >
+              {pct > 12 && <b>{fmtKm(d.distanceMeters)} km</b>}
             </div>
           );
         })}
       </div>
+      <div className="rp-stack__legend">
+        {withDist.map((d) => (
+          <span key={d.type} className="rp-stack__item">
+            <i style={{ background: d.color }} />
+            {d.label} <b>{fmtKm(d.distanceMeters)} km</b>
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
 
+function HRRings({ minutes }: { minutes: number[] }) {
+  const zoneMin = [1, 2, 3, 4, 5].map((i) => minutes[i] ?? 0);
+  const total = zoneMin.reduce((a, b) => a + b, 0) || 1;
+  const cx = 100, cy = 100;
+  const radii = [86, 70, 54, 38, 22]; // outer Z1 → inner Z5
+  return (
+    <div className="rp-hrring-wrap">
+      <svg className="rp-hrring" viewBox="0 0 200 200" role="img" aria-label="Time in heart-rate zones">
+        {radii.map((R, idx) => {
+          const C = 2 * Math.PI * R;
+          const frac = zoneMin[idx] / total;
+          const z = HR_ZONES[idx];
+          return (
+            <g key={z.z} transform={`rotate(-90 ${cx} ${cy})`}>
+              <circle cx={cx} cy={cy} r={R} fill="none" stroke="rgba(245,243,235,0.06)" strokeWidth="11" />
+              <circle
+                cx={cx}
+                cy={cy}
+                r={R}
+                fill="none"
+                stroke={z.color}
+                strokeWidth="11"
+                strokeLinecap="round"
+                strokeDasharray={`${frac * C} ${C}`}
+                style={{ filter: idx >= 3 ? `drop-shadow(0 0 4px ${z.color})` : 'none' }}
+              >
+                <title>{`${z.z} ${z.name}: ${Math.round(zoneMin[idx] / 60)}h (${Math.round(frac * 100)}%)`}</title>
+              </circle>
+            </g>
+          );
+        })}
+      </svg>
+      <div className="rp-hrring__center">
+        <b>{Math.round(total / 60)}h</b>
+        <span>HR Tracked</span>
+      </div>
+    </div>
+  );
+}
+
+function HRLegend({ minutes }: { minutes: number[] }) {
+  const zoneMin = [1, 2, 3, 4, 5].map((i) => minutes[i] ?? 0);
+  const total = zoneMin.reduce((a, b) => a + b, 0) || 1;
+  return (
+    <div className="rp-hrlegend">
+      {HR_ZONES.map((z, idx) => {
+        const { h, m } = fmtHM(zoneMin[idx] * 60);
+        return (
+          <div key={z.z} className="rp-hrlegend__row">
+            <span className="rp-hrlegend__dot" style={{ background: z.color }} />
+            <span className="rp-hrlegend__name">{z.z}<span>{z.name}</span></span>
+            <span className="rp-hrlegend__time">{h}h {m}m</span>
+            <span className="rp-hrlegend__pct">{Math.round((zoneMin[idx] / total) * 100)}%</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ConsistencyCalendar({ days, yearLabel }: { days: CalDay[]; yearLabel: string }) {
+  const weeks = useMemo(() => {
+    const cols: (CalDay | null)[][] = [];
+    let cur: (CalDay | null)[] = [];
+    if (days.length === 0) return cols;
+    const first = days[0];
+    for (let i = 0; i < first.dow; i++) cur.push(null);
+    days.forEach((d) => {
+      cur.push(d);
+      if (d.dow === 6) { cols.push(cur); cur = []; }
+    });
+    if (cur.length) { while (cur.length < 7) cur.push(null); cols.push(cur); }
+    return cols;
+  }, [days]);
+
+  const monthMarks = useMemo(() => {
+    const marks: { wi: number; mo: number }[] = [];
+    let lastMonth = -1;
+    weeks.forEach((wk, wi) => {
+      const firstReal = wk.find((d) => d);
+      if (!firstReal) return;
+      const mo = new Date(firstReal.ts).getUTCMonth();
+      if (mo !== lastMonth) { marks.push({ wi, mo }); lastMonth = mo; }
+    });
+    return marks;
+  }, [weeks]);
+
+  const active = days.filter((d) => d.level > 0).length;
+  const hard = days.filter((d) => d.level >= 3).length;
+  const levelNames = ['Rest', 'Easy', 'Moderate', 'Hard', 'Peak'];
+
+  return (
+    <div>
+      <div className="rp-cal">
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridAutoFlow: 'column',
+              gap: '3px',
+              marginLeft: '34px',
+              marginBottom: '6px',
+              gridTemplateColumns: `repeat(${weeks.length}, 14px)`,
+            }}
+          >
+            {weeks.map((_, wi) => {
+              const mk = monthMarks.find((m) => m.wi === wi);
+              return (
+                <div key={wi} className="rp-cal__monthlbl" style={{ gridColumn: `${wi + 1}` }}>
+                  {mk ? MONTHS[mk.mo] : ''}
+                </div>
+              );
+            })}
+          </div>
+          <div className="rp-cal__row">
+            <div className="rp-cal__days">
+              {DOW.map((d, i) => <div key={i} className="rp-cal__daylbl">{d}</div>)}
+            </div>
+            <div className="rp-cal__weeks" style={{ gridTemplateColumns: `repeat(${weeks.length}, 14px)` }}>
+              {weeks.map((wk, wi) => (
+                <div key={wi} className="rp-cal__week">
+                  {wk.map((d, di) => d
+                    ? (
+                      <div
+                        key={di}
+                        className="rp-cal__cell"
+                        data-l={d.level}
+                        title={`${new Date(d.ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${levelNames[d.level]}`}
+                      />
+                    )
+                    : <div key={di} className="rp-cal__cell rp-cal__cell--empty" />)}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="rp-cal-foot">
+        <div className="rp-cal-legend">
+          Less
+          <i style={{ background: 'rgba(245,243,235,0.05)' }} />
+          <i style={{ background: 'rgba(139,92,246,0.4)' }} />
+          <i style={{ background: 'rgba(139,92,246,0.7)' }} />
+          <i style={{ background: 'var(--fg-pink)' }} />
+          <i style={{ background: 'var(--fg-cyan)', boxShadow: '0 0 8px rgba(34,211,238,0.7)' }} />
+          More
+        </div>
+        <div className="rp-cal-stats">
+          <div className="rp-cal-stat"><b>{active}</b><span>Active Days</span></div>
+          <div className="rp-cal-stat"><b>{days.length > 0 ? Math.round((active / days.length) * 100) : 0}%</b><span>Of {yearLabel}</span></div>
+          <div className="rp-cal-stat"><b>{hard}</b><span>Hard / Peak</span></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   Small shared bits
+   ============================================================ */
+
+function ShareIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+      <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" /><line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+    </svg>
+  );
+}
+
+function ShareStat({ onShare }: { onShare: () => void }) {
+  return (
+    <button className="rp-share-stat" onClick={onShare} type="button">
+      <ShareIcon /> Share
+    </button>
+  );
+}
+
+function SecHead({ eyebrow, title, note }: { eyebrow: string; title: React.ReactNode; note?: string }) {
+  return (
+    <div className="rp-sec-head">
+      <div className="rp-sec-head__l">
+        <span className="rp-eyebrow">{eyebrow}</span>
+        <h2 className="rp-sec-title">{title}</h2>
+      </div>
+      {note && <div className="rp-sec-note">{note}</div>}
+    </div>
+  );
+}
+
+/* ============================================================
+   Hooks
+   ============================================================ */
+
+// Entrance reveal — adds .rp-reveal to .rp-anim elements as they scroll in.
+function useReveal(active: boolean) {
+  useEffect(() => {
+    if (!active) return;
+    const els = document.querySelectorAll('.rp-anim:not(.rp-reveal)');
+    if (!('IntersectionObserver' in window)) {
+      els.forEach((e) => e.classList.add('rp-reveal'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          en.target.classList.add('rp-reveal');
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    els.forEach((e) => io.observe(e));
+    return () => io.disconnect();
+  }, [active]);
+}
+
+function usePreviousRoundup(slug: string | undefined, prevKey: string | null): ShowcaseRoundup | null {
+  const [prev, setPrev] = useState<ShowcaseRoundup | null>(null);
+  useEffect(() => {
+    if (!slug || !prevKey) { setPrev(null); return; }
+    let cancelled = false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (publicClient.GET as any)('/showcase/{slug}/roundup/{periodKey}', {
+      params: { path: { slug, periodKey: prevKey } },
+    })
+      .then(({ data }: { data?: ShowcaseRoundup }) => {
+        if (!cancelled && data) setPrev(data);
+      })
+      .catch(() => { /* comparison is best-effort */ });
+    return () => { cancelled = true; };
+  }, [slug, prevKey]);
+  return prev;
+}
+
+/* ============================================================
+   Page
+   ============================================================ */
+
 export default function ShowcaseRoundupPage() {
-  const { slug: rawSlug, id: periodKey } = useParams<{ slug: string; id: string }>();
+  const { slug: rawSlug, id: periodKeyParam } = useParams<{ slug: string; id: string }>();
   const slug = rawSlug?.startsWith('@') ? rawSlug.slice(1) : rawSlug;
 
   const [roundup, setRoundup] = useState<ShowcaseRoundup | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [barVisible, setBarVisible] = useState(false);
+  const [toast, setToast] = useState('');
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (!slug || !periodKey) { setNotFound(true); setLoading(false); return; }
+    if (!slug || !periodKeyParam) { setNotFound(true); setLoading(false); return; }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (publicClient.GET as any)('/showcase/{slug}/roundup/{periodKey}', {
-      params: { path: { slug, periodKey } },
+      params: { path: { slug, periodKey: periodKeyParam } },
     })
       .then(({ data }: { data?: ShowcaseRoundup }) => {
         if (!data) { setNotFound(true); return; }
@@ -236,7 +371,35 @@ export default function ShowcaseRoundupPage() {
       })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
-  }, [slug, periodKey]);
+  }, [slug, periodKeyParam]);
+
+  const prevKey = useMemo(() => (roundup ? computePrevPeriodKey(roundup) : null), [roundup]);
+  const previousRoundup = usePreviousRoundup(slug, prevKey);
+
+  useReveal(!!roundup);
+
+  // Sticky share bar appears after the hero.
+  useEffect(() => {
+    if (!roundup) return;
+    const onScroll = () => setBarVisible(window.scrollY > window.innerHeight * 0.7);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [roundup]);
+
+  const showToast = useCallback((msg: string) => {
+    setToast(msg);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(''), 2400);
+  }, []);
+
+  const onShare = useCallback(() => setShareOpen(true), []);
+  const onCopy = useCallback(() => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href).catch(() => { /* noop */ });
+    }
+    showToast('✓ Public link copied');
+  }, [showToast]);
 
   if (loading) {
     return (
@@ -254,234 +417,386 @@ export default function ShowcaseRoundupPage() {
     return <ShowcaseNotFound type="activity" />;
   }
 
-  const hasPRs = (roundup.prsAchieved?.length ?? 0) > 0;
-  const hasZones = (roundup.hrZoneMinutes?.some(m => (m ?? 0) > 0)) ?? false;
-  const hasSources = (roundup.sources?.length ?? 0) > 0;
-  const hasEffort = ((roundup.effortEasyCount ?? 0) + (roundup.effortModerateCount ?? 0) + (roundup.effortHardCount ?? 0)) > 0;
-
-  const key = periodKey ?? '';
+  const key = periodKeyParam ?? '';
   const ownerProfileHref = roundup.ownerProfileSlug ? `/@${roundup.ownerProfileSlug}` : `/@${slug}`;
-
+  const pWord = periodWord(roundup.periodType);
   const dateRange = formatDateRange(roundup.periodStart, roundup.periodEnd);
-  const prCount = roundup.prsAchieved?.length ?? 0;
 
-  // Total weight across all breakdowns
-  const totalWeightKg = roundup.activityTypeBreakdowns?.reduce((s, bd) => s + (bd.totalWeightKg ?? 0), 0) ?? 0;
-  const hasStrength = roundup.activityTypeBreakdowns?.some(bd => (bd.totalSets ?? 0) > 0) ?? false;
+  // Anchor stats (adaptive 4-up).
+  const { h: totH, m: totM } = fmtHM(roundup.totalDurationSeconds ?? 0);
   const hasDistance = (roundup.totalDistanceMeters ?? 0) > 500;
+  const totalWeightKg = roundup.activityTypeBreakdowns?.reduce((s, bd) => s + (bd.totalWeightKg ?? 0), 0) ?? 0;
+  const hasStrength = (roundup.activityTypeBreakdowns?.some((bd) => (bd.totalSets ?? 0) > 0)) ?? false;
   const hasElevation = (roundup.totalElevationGainMeters ?? 0) > 50;
 
-  // Anchor stats: sessions / time / distance-or-weight / elevation-or-calories
-  const anchorStats: Array<{ val: string; unit?: string; lbl: string }> = [
-    {
-      val: String(roundup.totalActivities ?? 0),
-      lbl: roundup.totalActivities === 1 ? 'Session' : 'Sessions',
-    },
+  const anchorCells: Array<{ n: React.ReactNode; l: string }> = [
+    { n: roundup.totalActivities ?? 0, l: 'Total Sessions' },
+    { n: <>{totH}<sub>h</sub> {totM}<sub>m</sub></>, l: 'Total Time' },
   ];
-
-  if ((roundup.totalDurationSeconds ?? 0) > 0) {
-    anchorStats.push({ val: formatDurationAnchor(roundup.totalDurationSeconds!), lbl: 'Total Time' });
-  }
-
   if (hasDistance) {
-    const km = (roundup.totalDistanceMeters ?? 0) / 1000;
-    anchorStats.push({ val: km >= 10 ? km.toFixed(1) : km.toFixed(2), unit: 'KM', lbl: 'Distance' });
+    anchorCells.push({ n: <>{fmtKm(roundup.totalDistanceMeters ?? 0)}<sub>km</sub></>, l: 'Distance Covered' });
   } else if (hasStrength && totalWeightKg > 0) {
-    anchorStats.push({ val: formatWeight(totalWeightKg) ?? '—', lbl: 'Weight Moved' });
+    anchorCells.push({ n: formatWeight(totalWeightKg) ?? '—', l: 'Weight Moved' });
+  } else if (hasElevation) {
+    anchorCells.push({ n: <>+{Math.round(roundup.totalElevationGainMeters ?? 0).toLocaleString()}<sub>m</sub></>, l: 'Elevation' });
+  }
+  if ((roundup.totalCaloriesKcal ?? 0) > 0) {
+    const kcal = roundup.totalCaloriesKcal ?? 0;
+    anchorCells.push(
+      kcal >= 1000
+        ? { n: <>{(kcal / 1000).toFixed(1)}<sub>k</sub></>, l: 'Calories Burned' }
+        : { n: kcal.toLocaleString(), l: 'Calories Burned' },
+    );
+  } else if (hasElevation && anchorCells.length < 4) {
+    anchorCells.push({ n: <>+{Math.round(roundup.totalElevationGainMeters ?? 0).toLocaleString()}<sub>m</sub></>, l: 'Elevation' });
+  }
+  while (anchorCells.length < 4) anchorCells.push({ n: '—', l: '—' });
+  const anchors = anchorCells.slice(0, 4);
+
+  // Section data.
+  const sportVMs = buildSportVMs(roundup.activityTypeBreakdowns ?? []);
+  const sportTotal = sportVMs.reduce((a, s) => a + s.count, 0);
+
+  const callouts = roundup.calloutActivities ?? [];
+
+  const calDays = (roundup.periodStart && roundup.periodEnd)
+    ? buildCalendarDays(roundup.periodStart, roundup.periodEnd, roundup.dayEntries ?? [])
+    : [];
+  const calYearLabel = roundup.periodStart
+    ? String(new Date(roundup.periodStart).getUTCFullYear())
+    : pWord;
+
+  const hrMinutes = roundup.hrZoneMinutes ?? [];
+  const hrTracked = [1, 2, 3, 4, 5].reduce((s, i) => s + (hrMinutes[i] ?? 0), 0);
+  const hasHR = hrTracked >= 30;
+
+  const highlights: Array<{ value: string; unit: string; label: string; sub: string }> = [];
+  const longest = roundup.longestActivityDurationSeconds ?? 0;
+  if (longest > 60) {
+    const { h, m } = fmtHM(longest);
+    highlights.push({ value: h > 0 ? `${h}h ${m}m` : `${m}m`, unit: '', label: 'Longest Session', sub: '' });
+  }
+  const cph = roundup.highestCaloriesPerHourKcal ?? 0;
+  if (cph > 0) {
+    highlights.push({ value: String(Math.round(cph)), unit: 'kcal/h', label: 'Highest Burn Rate', sub: '' });
+  }
+  const bpm = roundup.highestAvgBpm ?? 0;
+  if (bpm > 0) {
+    highlights.push({ value: String(bpm), unit: 'bpm', label: 'Peak Avg HR', sub: roundup.highestAvgBpmActivityTitle ?? '' });
   }
 
-  if (hasElevation) {
-    anchorStats.push({ val: `+${Math.round(roundup.totalElevationGainMeters!).toLocaleString()}`, unit: 'M', lbl: 'Elevation' });
-  } else if ((roundup.totalCaloriesKcal ?? 0) > 0) {
-    anchorStats.push({ val: roundup.totalCaloriesKcal!.toLocaleString(), lbl: 'Calories' });
-  }
+  const prVMs = (roundup.prsAchieved ?? []).map(buildPRVM);
+  const prTotal = prVMs.length;
 
-  // Pad to 4
-  while (anchorStats.length < 4) anchorStats.push({ val: '—', lbl: '—' });
-  const stats = anchorStats.slice(0, 4);
+  const sources = roundup.sources ?? [];
+  const deltas = previousRoundup ? buildDeltas(roundup, previousRoundup) : [];
 
   return (
     <div className="showcase-page">
-      <div className="showcase-page-bg" aria-hidden="true" />
-      <div className="showcase-page-wrap">
+      <div className="rp-grain" aria-hidden="true" />
+      <div className="rp-aura" aria-hidden="true">
+        <span className="a1" /><span className="a2" /><span className="a3" />
+      </div>
 
-        {/* Sticky public nav */}
+      <div className="rp-root">
+        {/* Public nav */}
         {!isNativeApp && (
-          <nav className="showcase-pubbar">
-            <a className="showcase-pubbar__brand" href="/">
-              <span className="showcase-pubbar__brand-icon" aria-hidden="true">FG</span>
-              <span className="showcase-pubbar__brand-wordmark" aria-hidden="true">FITGLUE</span>
+          <nav className="rp-bar" id="top">
+            <a className="rp-bar__brand" href="/">
+              <span className="rp-bar__mark">FG</span>
+              <span className="rp-bar__word">FitGlue</span>
             </a>
-            <span className="showcase-pubbar__crumb">
-              <a href={ownerProfileHref}>{roundup.ownerDisplayName?.toUpperCase() ?? 'PROFILE'}</a>
-              {' '}
-              <b>· {periodTitle(key)}</b>
+            <span className="rp-bar__crumb">
+              <a href={ownerProfileHref} style={{ color: 'inherit', textDecoration: 'none' }}>
+                <b>{roundup.ownerDisplayName?.toUpperCase() ?? 'PROFILE'}</b>
+              </a>{' '}
+              · {periodShortLabel(key)} ROUNDUP
             </span>
-            <div className="showcase-pubbar__actions">
-              <button
-                className="showcase-pubbar__share-btn"
-                onClick={() => setShareOpen(true)}
-                aria-label="Share roundup"
-              >
-                ↑ SHARE
-              </button>
-            </div>
+            <button className="rp-bar__share" onClick={onShare} type="button">↑ Share</button>
           </nav>
         )}
 
-        {/* Full-bleed gradient hero */}
-        <section className="activity-hero-section">
-          <div className="activity-hero__grain" aria-hidden="true" />
-          <div className="activity-hero__inner">
-            {/* Top stamps */}
-            <div className="activity-hero__stamps">
-              <span className="stamp stamp--untraditional">{periodTitle(key)}</span>
-              {dateRange && <span className="stamp stamp--hero-date">{dateRange}</span>}
-              {prCount > 0 && <span className="stamp stamp--hero-pr">+{prCount} PRS</span>}
-              {hasSources && roundup.sources!.map(s => (
-                <span key={s} className="stamp stamp--hero-source">
-                  VIA {formatSource(s).toUpperCase()}
-                </span>
-              ))}
-            </div>
-
-            {/* Title + credit + stats */}
-            <div>
-              <h1 className="activity-hero__quote">{periodLabel(key)}</h1>
-              {roundup.ownerDisplayName && (
-                <div className="activity-hero__credit">
-                  BY{' '}
-                  <b>
-                    <a href={ownerProfileHref} style={{ color: 'inherit', textDecoration: 'none' }}>
-                      {roundup.ownerDisplayName.toUpperCase()}
-                    </a>
-                  </b>
+        {/* 1 · Hero */}
+        <header className="rp-hero">
+          <div className="rp-wrap rp-hero__inner">
+            <div className="rp-hero__crest">
+              <div className="rp-hero__avatar">
+                {roundup.ownerProfilePictureUrl
+                  ? <img src={roundup.ownerProfilePictureUrl} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                  : ownerInitials(roundup.ownerDisplayName)}
+              </div>
+              <div className="rp-hero__meta">
+                <div className="rp-hero__byline">
+                  By <b>{roundup.ownerDisplayName ?? 'Athlete'}</b>
+                  {roundup.ownerProfileSlug ? ` · @${roundup.ownerProfileSlug}` : ''}
                 </div>
-              )}
-              <div className="activity-hero__anchor">
-                {stats.map((s, i) => (
-                  <div key={i} className="activity-hero__anchor-cell">
-                    <div className="activity-hero__anchor-n">
-                      {s.val}
-                      {s.unit && <span>{s.unit}</span>}
-                    </div>
-                    <div className="activity-hero__anchor-l">{s.lbl}</div>
-                  </div>
-                ))}
               </div>
             </div>
+            <p className="rp-hero__kicker">Your {pWord} in Sport</p>
+            <h1 className="rp-hero__title"><span className="rp-grad">{heroTitle(key)}</span></h1>
+            <div className="rp-hero__dates">
+              {dateRange ?? periodShortLabel(key)}<span />{roundup.totalActivities ?? 0} Sessions Logged
+            </div>
+
+            <div className="rp-anchor rp-anim">
+              {anchors.map((a, i) => (
+                <div key={i} className="rp-anchor__cell">
+                  <div className="rp-anchor__n">{a.n}</div>
+                  <div className="rp-anchor__l">{a.l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rp-hero__scroll">Scroll</div>
+        </header>
+
+        {/* 2 · AI Summary */}
+        {roundup.aiSummary && (
+          <section className="rp-sec" id="sec-summary">
+            <div className="rp-wrap">
+              <ShareStat onShare={onShare} />
+              <div className="rp-quote rp-anim">
+                <div className="rp-quote__bar" />
+                <div className="rp-quote__body">
+                  <span className="rp-quote__mark" aria-hidden="true">&ldquo;</span>
+                  <div className="rp-quote__lede">✦ The {pWord.toLowerCase()}, in words · AI-written</div>
+                  <p className="rp-quote__text">{roundup.aiSummary}</p>
+                  <div className="rp-quote__sig">— FitGlue AI Companion · synthesised from {roundup.totalActivities ?? 0} sessions</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 3 · Comparison */}
+        {deltas.length > 0 && previousRoundup && (
+          <section className="rp-sec" id="sec-vs" style={{ padding: 0 }}>
+            <div className="rp-ticker-wrap rp-anim">
+              <div className="rp-ticker">
+                <div className="rp-ticker__lead">
+                  <b>VS {periodShortLabel(previousRoundup.periodKey ?? '')}</b>
+                  <span>PERIOD ON PERIOD</span>
+                </div>
+                <div className="rp-ticker__track">
+                  {deltas.map((dl) => {
+                    const cls = dl.dir === 'up' ? 'rp-delta--up' : dl.dir === 'reg' ? 'rp-delta--reg' : 'rp-delta--down';
+                    const arrow = dl.dir === 'up' ? '↑' : dl.dir === 'down' ? '↓' : '→';
+                    return (
+                      <div key={dl.label} className={`rp-delta ${cls}`}>
+                        <span className="rp-delta__arrow">{arrow}</span>
+                        <div>
+                          <div className="rp-delta__v">{dl.value}</div>
+                          <div className="rp-delta__l">{dl.label}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 4 · Callouts */}
+        {callouts.length > 0 && (
+          <section className="rp-sec" id="sec-callouts">
+            <div className="rp-wrap">
+              <ShareStat onShare={onShare} />
+              <SecHead eyebrow="Spotlight" title={<>The moments<br />that defined it</>} note="Sessions that earned their place" />
+              <div className="rp-callouts">
+                {callouts.map((c, i) => {
+                  const { glyph, color } = calloutVisual(c);
+                  const subParts = [c.sub, c.date].filter((p): p is string => !!p);
+                  return (
+                    <article key={i} className="rp-callout rp-anim" style={{ transitionDelay: `${i * 80}ms` }}>
+                      <div className="rp-callout__glow" style={{ background: color }} />
+                      <div className="rp-callout__top">
+                        <span className="rp-callout__kind">{c.kind}</span>
+                        <span className="rp-callout__glyph">{glyph}</span>
+                      </div>
+                      <h3 className="rp-callout__title">{c.title}</h3>
+                      <div className="rp-callout__stat">
+                        <div className="rp-callout__n" style={{ color }}>{c.statValue}</div>
+                        <div className="rp-callout__u">{c.statUnit}</div>
+                        {subParts.length > 0 && <div className="rp-callout__sub">{subParts.join(' · ')}</div>}
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 5 · Sport breakdown */}
+        {sportVMs.length > 0 && (
+          <section className="rp-sec" id="sec-sport">
+            <div className="rp-wrap">
+              <ShareStat onShare={onShare} />
+              <SecHead
+                eyebrow="Discipline"
+                title="Where the work went"
+                note={`${sportVMs.length} ${sportVMs.length === 1 ? 'sport' : 'sports'} · ${sportTotal} sessions`}
+              />
+              <div className="rp-sport rp-anim">
+                <SportDonut data={sportVMs} total={sportTotal} />
+                <div className="rp-legend">
+                  {sportVMs.map((s) => (
+                    <div key={s.type} className="rp-legend__row">
+                      <span className="rp-legend__dot" style={{ background: s.color }} />
+                      <span className="rp-legend__name"><span>{s.glyph}</span>{s.label}</span>
+                      <span className="rp-legend__count">{s.count}</span>
+                      <span className="rp-legend__pct">{sportTotal > 0 ? Math.round((s.count / sportTotal) * 100) : 0}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rp-anim"><StackedDistance data={sportVMs} /></div>
+            </div>
+          </section>
+        )}
+
+        {/* 6 · Consistency calendar */}
+        {calDays.length > 1 && (
+          <section className="rp-sec" id="sec-cal">
+            <div className="rp-wrap">
+              <ShareStat onShare={onShare} />
+              <SecHead eyebrow="Consistency" title="Every day, accounted for" note="Cell intensity = effort level" />
+              <div className="rp-anim"><ConsistencyCalendar days={calDays} yearLabel={calYearLabel} /></div>
+            </div>
+          </section>
+        )}
+
+        {/* 7 · Effort deep dive */}
+        <section className="rp-sec" id="sec-effort">
+          <div className="rp-wrap">
+            {hasHR ? (
+              <>
+                <ShareStat onShare={onShare} />
+                <SecHead eyebrow="Effort" title="Time under tension" note={`${Math.round(hrTracked / 60)}h tracked · Z1 easy → Z5 max`} />
+                <div className="rp-effort rp-anim">
+                  <HRRings minutes={hrMinutes} />
+                  <HRLegend minutes={hrMinutes} />
+                </div>
+              </>
+            ) : (
+              <>
+                <SecHead eyebrow="Effort" title="Heart-rate zones" />
+                <div className="rp-empty rp-anim">
+                  <div className="rp-empty__glyph">❤️</div>
+                  <div className="rp-empty__h">No heart-rate data</div>
+                  <div className="rp-empty__p">None of this period&apos;s sessions carried HR. Connect a chest strap or watch to unlock zone analysis.</div>
+                </div>
+              </>
+            )}
           </div>
         </section>
 
-        {/* AI summary pull-quote */}
-        {roundup.aiSummary && (
-          <div className="roundup-ai-summary">
-            <div className="roundup-ai-summary__quote-mark" aria-hidden="true">&ldquo;</div>
-            <p className="roundup-ai-summary__body">{roundup.aiSummary}</p>
-          </div>
-        )}
-
-        {/* Effort distribution band */}
-        {hasEffort && (
-          <EffortBand
-            easy={roundup.effortEasyCount ?? 0}
-            moderate={roundup.effortModerateCount ?? 0}
-            hard={roundup.effortHardCount ?? 0}
-          />
-        )}
-
-        {/* Sport breakdown */}
-        {(roundup.activityTypeBreakdowns?.length ?? 0) > 0 && (
-          <div className="roundup-section">
-            <div className="roundup-section__title">BY SPORT</div>
-            <div className="roundup-sport-grid">
-              {roundup.activityTypeBreakdowns!.map((bd, i) => (
-                <SportCard key={i} bd={bd} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Highlights — best single activity stats */}
-        {(() => {
-          const highlights: Array<{ label: string; value: string; sub?: string }> = [];
-          const longest = roundup.longestActivityDurationSeconds ?? 0;
-          if (longest > 60) {
-            const h = Math.floor(longest / 3600);
-            const m = Math.floor((longest % 3600) / 60);
-            highlights.push({ label: 'LONGEST SESSION', value: h > 0 ? `${h}h ${m}m` : `${m}m` });
-          }
-          const cph = roundup.highestCaloriesPerHourKcal ?? 0;
-          if (cph > 0)
-            highlights.push({ label: 'HIGHEST CAL/HR', value: `${Math.round(cph)} kcal/h` });
-          const bpm = roundup.highestAvgBpm ?? 0;
-          if (bpm > 0)
-            highlights.push({ label: 'PEAK AVG BPM', value: `${bpm} bpm`, sub: roundup.highestAvgBpmActivityTitle ?? undefined });
-          return highlights.length > 0 ? (
-            <div className="roundup-section">
-              <div className="roundup-section__title">✦ HIGHLIGHTS</div>
-              <div className="roundup-highlights">
-                {highlights.map((h, i) => (
-                  <div key={i} className="roundup-highlight-card">
-                    <div className="roundup-highlight-card__val">{h.value}</div>
-                    <div className="roundup-highlight-card__lbl">{h.label}</div>
-                    {h.sub && <div className="roundup-highlight-card__sub">{h.sub}</div>}
+        {/* 8 · Highlights */}
+        {highlights.length > 0 && (
+          <section className="rp-sec" id="sec-highlights">
+            <div className="rp-wrap">
+              <ShareStat onShare={onShare} />
+              <SecHead eyebrow="Personal Bests" title="The ceiling, raised" note="Single-session peaks" />
+              <div className="rp-highlights rp-anim">
+                {highlights.map((hl, i) => (
+                  <div key={i} className="rp-highlight">
+                    <div className="rp-highlight__n">{hl.value}</div>
+                    <div className="rp-highlight__u">{hl.unit}</div>
+                    <div className="rp-highlight__l">{hl.label}</div>
+                    <div className="rp-highlight__sub">{hl.sub}</div>
                   </div>
                 ))}
               </div>
             </div>
-          ) : null;
-        })()}
-
-        {/* HR Zones */}
-        {hasZones && <RoundupZoneBar zoneMinutes={roundup.hrZoneMinutes} />}
-
-        {/* PRs */}
-        {hasPRs && (
-          <div className="roundup-section medal-band" style={{ paddingTop: '32px' }}>
-            <div className="medal-band__label">
-              🏆 PRS THIS PERIOD
-              <b>{roundup.prsAchieved!.length} NEW</b>
-            </div>
-            <div className="medals">
-              {roundup.prsAchieved!.map((pr, i) => (
-                <div key={i} className="medal medal--gr">
-                  <div>
-                    <div className="medal__icon">{pr.unit === 'seconds' ? '⚡' : '🏋️'}</div>
-                    <div className="medal__label">
-                      {(pr.recordType ?? '').replace(/_/g, ' ').toUpperCase()}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="medal__n"><PRValue pr={pr} /></div>
-                    {pr.previousValue != null && pr.value != null && (
-                      <div className="medal__sub">
-                        {pr.unit === 'kg'
-                          ? `+${Math.round(pr.value - pr.previousValue)} kg`
-                          : `−${Math.round(pr.previousValue - pr.value)}s`}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          </section>
         )}
+
+        {/* 9 · PR wall */}
+        <section className="rp-sec" id="sec-prs">
+          <div className="rp-wrap">
+            {prTotal > 0 ? (
+              <>
+                <ShareStat onShare={onShare} />
+                <SecHead eyebrow="Records" title="The records wall" note={`${prTotal} broken`} />
+                <div className="rp-pr-count rp-anim">
+                  <b className="rp-grad">{prTotal}</b>
+                  <span>Personal records<br />broken in {periodShortLabel(key)}</span>
+                </div>
+                <div className="rp-prs">
+                  {prVMs.map((pr, i) => (
+                    <article key={i} className="rp-pr rp-anim" style={{ transitionDelay: `${(i % 6) * 50}ms` }}>
+                      <div className="rp-pr__top">
+                        <span className="rp-pr__sport">{pr.glyph} {pr.sport}</span>
+                        {pr.date && <span className="rp-pr__date">{pr.date}</span>}
+                      </div>
+                      <div className="rp-pr__label">{pr.label}</div>
+                      <div className="rp-pr__val"><b>{pr.value}</b>{pr.unit && <i>{pr.unit}</i>}</div>
+                      {pr.delta && <span className={`rp-pr__delta ${pr.delta === 'NEW' ? 'rp-pr__delta--new' : ''}`}>{pr.delta}</span>}
+                    </article>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <SecHead eyebrow="Records" title="Personal records" />
+                <div className="rp-empty rp-anim">
+                  <div className="rp-empty__glyph">🏆</div>
+                  <div className="rp-empty__h">No new records this period</div>
+                  <div className="rp-empty__p">Maintenance blocks matter too. PRs return when the load ramps back up.</div>
+                </div>
+              </>
+            )}
+          </div>
+        </section>
 
         {/* Footer */}
-        {hasSources && (
-          <div className="roundup-sources">
-            DATA FROM{' '}
-            {roundup.sources!.map(s => formatSource(s)).join(' · ')}
+        <footer className="rp-foot">
+          <div className="rp-wrap">
+            <div className="rp-foot__row">
+              {sources.length > 0 && (
+                <div className="rp-foot__sources">
+                  <span style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.625rem', fontWeight: 700, letterSpacing: '0.16em', color: 'var(--color-text-muted)', textTransform: 'uppercase', marginRight: '4px' }}>
+                    Data from
+                  </span>
+                  {sources.map((s, i) => (
+                    <span key={s} className="rp-foot__src">
+                      <i style={{ background: SOURCE_PALETTE[i % SOURCE_PALETTE.length] }} />
+                      {formatSource(s)}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <Link className="rp-foot__back" to={ownerProfileHref}>
+                {`← ${roundup.ownerDisplayName ?? 'Athlete'}'s profile`}
+              </Link>
+            </div>
+            <div className="rp-foot__note">
+              FitGlue · Brutal × Aurora · {dateRange ? `Roundup synthesised ${dateRange}` : 'Roundup'} · Numbers are earned, not estimated.
+            </div>
           </div>
-        )}
+        </footer>
 
-        <div className="roundup-back">
-          <Link to={ownerProfileHref} className="roundup-back__link">
-            ← {roundup.ownerDisplayName ?? 'Athlete'}&apos;s Profile
-          </Link>
+        {/* Sticky share bar */}
+        <div className={`rp-sharebar ${barVisible ? 'is-visible' : ''}`}>
+          <button className="rp-sharebtn rp-sharebtn--primary" onClick={onShare} type="button">
+            <ShareIcon /> Share Card
+          </button>
+          <div className="rp-sharebar__div" />
+          <button className="rp-sharebtn rp-sharebtn--ghost" onClick={onCopy} type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" />
+              <path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" />
+            </svg>
+            <span className="rp-lbl-long">Copy Link</span>
+          </button>
+          <div className="rp-sharebar__div" />
+          <button className="rp-sharebtn rp-sharebtn--soon" disabled type="button">
+            Create Reel <span className="rp-soon">Soon</span>
+          </button>
         </div>
 
+        <div className={`rp-toast ${toast ? 'is-visible' : ''}`}>{toast}</div>
       </div>
 
       {/* Export modal */}
