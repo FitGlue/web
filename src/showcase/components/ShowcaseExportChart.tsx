@@ -1,6 +1,7 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import { logger } from '../../shared/logger';
+import { saveImage } from '../utils/exportImage';
 import type { components } from '../../shared/api/schema-public';
 import { ACCENTS, TEXT_SWATCHES, accentSwatchStyle, textSwatchStyle } from './ShowcaseExportModal';
 
@@ -238,10 +239,7 @@ export const ChartExportTab: React.FC<Props> = ({
         pixelRatio: 1,
         backgroundColor: selectedBg.color ?? undefined,
       });
-      const link = document.createElement('a');
-      link.download = `${(activityTitle || 'activity').replace(/\s+/g, '-').toLowerCase()}-${selectedId}-fitglue.png`;
-      link.href = dataUrl;
-      link.click();
+      await saveImage(dataUrl, `${(activityTitle || 'activity').replace(/\s+/g, '-').toLowerCase()}-${selectedId}-fitglue.png`);
     } catch (err) {
       logger.error('Chart export failed:', err);
     } finally {

@@ -1,6 +1,7 @@
 import React, { useRef, useState, useCallback, useLayoutEffect } from 'react';
 import { toPng } from 'html-to-image';
 import { logger } from '../../shared/logger';
+import { saveImage } from '../utils/exportImage';
 import type { components } from '../../shared/api/schema-public';
 
 type HybridRaceSegment = components['schemas']['HybridRaceSegment'];
@@ -305,10 +306,7 @@ export const HybridRaceExportTab: React.FC<Props> = ({ segments, activityTitle }
     try {
       const h = frameRef.current.scrollHeight;
       const dataUrl = await toPng(frameRef.current, { width: EXPORT_W, height: h, pixelRatio: 1 });
-      const link = document.createElement('a');
-      link.download = 'race-breakdown-fitglue.png';
-      link.href = dataUrl;
-      link.click();
+      await saveImage(dataUrl, 'race-breakdown-fitglue.png');
     } catch (err) {
       logger.error('Export failed:', err);
     } finally {

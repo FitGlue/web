@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { saveImage } from '../utils/exportImage';
 
 export interface LatLng { lat: number; lng: number }
 
@@ -151,13 +152,10 @@ export const RouteExportTab: React.FC<Props> = ({ gpsPoints, accent, onAccentCha
     renderRoute(canvas, gpsPoints, accent, selectedBg.fill, selectedStroke.value, showMarkers);
   }, [gpsPoints, accent, bgId, strokeId, showMarkers, selectedBg.fill, selectedStroke.value]);
 
-  const handleExport = useCallback(() => {
+  const handleExport = useCallback(async () => {
     if (!canvasRef.current) return;
     const dataUrl = canvasRef.current.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.download = 'route-fitglue.png';
-    link.href = dataUrl;
-    link.click();
+    await saveImage(dataUrl, 'route-fitglue.png');
   }, []);
 
   if (gpsPoints.length < 2) {

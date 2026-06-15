@@ -1,6 +1,7 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import { logger } from '../../../shared/logger';
+import { saveImage } from '../../utils/exportImage';
 import type { components } from '../../../shared/api/schema-public';
 import { resolveFamily, FAMILY_STAMP_CLASS, type ActivityFamily } from '../../utils/activityFamily';
 import { getActivityIcon } from '../../utils/activityMeta';
@@ -114,10 +115,7 @@ function ActivityCardItem({ e, family, metrics, sparkPath, dateStr, profileSlug 
         backgroundColor: transparent ? undefined : '#0d0d0d',
         filter: (node) => !(node as HTMLElement).classList?.contains('act__share-btns'),
       });
-      const link = document.createElement('a');
-      link.download = `${(e.title ?? 'activity').replace(/\s+/g, '-').toLowerCase()}-fitglue.png`;
-      link.href = png;
-      link.click();
+      await saveImage(png, `${(e.title ?? 'activity').replace(/\s+/g, '-').toLowerCase()}-fitglue.png`);
     } catch (err) {
       logger.error('Activity card export failed:', err);
     } finally {

@@ -2,6 +2,7 @@ import React, { useRef, useState, useCallback, useMemo, useLayoutEffect } from '
 import { createPortal } from 'react-dom';
 import { toPng } from 'html-to-image';
 import { logger } from '../../shared/logger';
+import { saveImage } from '../utils/exportImage';
 import type { components } from '../../shared/api/schema-public';
 import { formatActivityType, formatDateFull } from '../utils/format';
 import { ChartExportTab, buildChartDefs } from './ShowcaseExportChart';
@@ -363,10 +364,7 @@ export const ShowcaseExportModal: React.FC<Props> = ({ data, onClose, initialTab
     try {
       const h = frameRef.current.scrollHeight;
       const dataUrl = await toPng(frameRef.current, { width: EXPORT_W, height: h, pixelRatio: 1 });
-      const link = document.createElement('a');
-      link.download = `${(data.title ?? 'activity').replace(/\s+/g, '-').toLowerCase()}-fitglue.png`;
-      link.href = dataUrl;
-      link.click();
+      await saveImage(dataUrl, `${(data.title ?? 'activity').replace(/\s+/g, '-').toLowerCase()}-fitglue.png`);
     } catch (err) { logger.error('Export failed:', err); }
     finally { setExporting(false); }
   }, [data.title]);

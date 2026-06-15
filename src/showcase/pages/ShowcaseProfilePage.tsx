@@ -12,7 +12,7 @@ import ActivityGrid from '../components/layout/ActivityGrid';
 import { PhotoGallery } from '../components/PhotoGallery';
 import { useShowcaseMeta } from '../utils/useShowcaseMeta';
 import ShowcaseNotFound from '../components/ShowcaseNotFound';
-import { isNativeShowcase } from '../../shared/nativeBridge';
+import { isNativeApp } from '../../shared/nativeBridge';
 
 type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
 type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
@@ -136,7 +136,7 @@ export default function ShowcaseProfilePage() {
       <div className="showcase-page-wrap">
 
         {/* Sticky public nav bar — hidden when rendered inside the native app */}
-        {!isNativeShowcase && (
+        {!isNativeApp && (
           <nav className="showcase-pubbar">
             <a className="showcase-pubbar__brand" href="/">
               <span className="showcase-pubbar__brand-icon" aria-hidden="true">FG</span>

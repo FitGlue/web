@@ -1,6 +1,7 @@
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { toPng } from 'html-to-image';
 import { logger } from '../../shared/logger';
+import { saveImage } from '../utils/exportImage';
 import type { components } from '../../shared/api/schema-public';
 import { ACCENTS, TEXT_SWATCHES, accentSwatchStyle, textSwatchStyle } from './ShowcaseExportModal';
 import { parseRecordType, prValueString, prDeltaString } from '../utils/prFormat';
@@ -294,10 +295,7 @@ export const PRExportTab: React.FC<Props> = ({
       const dataUrl = await toPng(frameRef.current, {
         width: EXPORT_W, height: h, pixelRatio: 1,
       });
-      const link = document.createElement('a');
-      link.download = `${(activity.title ?? 'activity').replace(/\s+/g, '-').toLowerCase()}-prs-fitglue.png`;
-      link.href = dataUrl;
-      link.click();
+      await saveImage(dataUrl, `${(activity.title ?? 'activity').replace(/\s+/g, '-').toLowerCase()}-prs-fitglue.png`);
     } catch (err) {
       logger.error('PR export failed:', err);
     } finally {
