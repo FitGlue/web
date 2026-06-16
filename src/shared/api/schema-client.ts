@@ -535,8 +535,28 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description ===================== Data Export ===================== */
+        /**
+         * @description ===================== Data Export =====================
+         *      Enqueue an asynchronous whole-account export; returns the job. Poll
+         *      GetExportJob until status is READY (download_url set) or FAILED.
+         */
         post: operations["ClientGatewayService_ExportData"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/export/{jobId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetExportJob"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -735,6 +755,27 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["ClientGatewayService_CancelPipelineRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/pipeline-runs/{runId}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description ExportPipelineRun returns a signed URL to a per-run ZIP (enriched + payload
+         *      JSON and the raw FIT file, where still retained). Replaces the single-JSON
+         *      payload download used by the activity detail page's Export button.
+         */
+        get: operations["ClientGatewayService_ExportPipelineRun"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1390,9 +1431,20 @@ export interface components {
             primaryMuscle?: string;
             source?: string;
         };
-        /** @description Data Export */
-        ExportDataGatewayResponse: {
+        /** @description status is one of: PENDING | PROCESSING | READY | FAILED */
+        ExportJobGatewayResponse: {
+            jobId?: string;
+            status?: string;
             downloadUrl?: string;
+            sizeBytes?: string;
+            expiresAt?: string;
+            error?: string;
+            createdAt?: string;
+        };
+        ExportPipelineRunGatewayResponse: {
+            downloadUrl?: string;
+            sizeBytes?: string;
+            expiresAt?: string;
         };
         FitbitIntegration: {
             enabled?: boolean;
@@ -3941,7 +3993,38 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ExportDataGatewayResponse"];
+                    "application/json": components["schemas"]["ExportJobGatewayResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetExportJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportJobGatewayResponse"];
                 };
             };
             /** @description Default error response */
@@ -4441,6 +4524,37 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ExportPipelineRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                runId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportPipelineRunGatewayResponse"];
+                };
             };
             /** @description Default error response */
             default: {

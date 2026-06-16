@@ -143,17 +143,37 @@ const AccountSettingsPage: React.FC = () => {
         }
     };
 
+    // The whole-account export is built asynchronously: POST enqueues a job, then
+    // we poll until it is READY (download link) or FAILED.
+    const pollExportJob = async (jobId: string) => {
+        const maxAttempts = 60; // ~3 minutes at 3s intervals
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            const { data } = await client.GET('/users/me/export/{jobId}', {
+                params: { path: { jobId } },
+            });
+            if (data?.status === 'READY' && data.downloadUrl) {
+                setExportStatus('completed');
+                setExportDownloadUrl(data.downloadUrl);
+                toast.success('Export Ready', 'Your data export is ready to download');
+                return;
+            }
+            if (data?.status === 'FAILED') {
+                throw new Error(data.error || 'Export failed');
+            }
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+        }
+        throw new Error('Export timed out');
+    };
+
     const handleExportData = async () => {
         setExportStatus('loading');
         setExportError(null);
         setExportDownloadUrl(null);
         try {
             const { data } = await client.POST('/users/me/export');
-            const downloadUrl = data?.downloadUrl;
-            if (!downloadUrl) throw new Error('No download URL in response');
-            setExportStatus('completed');
-            setExportDownloadUrl(downloadUrl);
-            toast.success('Export Ready', 'Your data export is ready to download');
+            const jobId = data?.jobId;
+            if (!jobId) throw new Error('No job id in response');
+            await pollExportJob(jobId);
         } catch (err) {
             logger.error('Failed to export data:', err);
             setExportStatus('failed');

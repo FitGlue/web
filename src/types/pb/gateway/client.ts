@@ -390,6 +390,36 @@ export interface ExportDataGatewayResponse {
   downloadUrl: string;
 }
 
+/** status is one of: PENDING | PROCESSING | READY | FAILED */
+export interface ExportJobGatewayResponse {
+  jobId: string;
+  status: string;
+  /** populated when status == READY */
+  downloadUrl: string;
+  sizeBytes: number;
+  /** RFC3339; signed-URL expiry */
+  expiresAt: string;
+  /** populated when status == FAILED */
+  error: string;
+  /** RFC3339 */
+  createdAt: string;
+}
+
+export interface GetExportJobGatewayRequest {
+  jobId: string;
+}
+
+export interface ExportPipelineRunGatewayRequest {
+  runId: string;
+}
+
+export interface ExportPipelineRunGatewayResponse {
+  downloadUrl: string;
+  sizeBytes: number;
+  /** RFC3339 */
+  expiresAt: string;
+}
+
 /** FIT File Parse */
 export interface ParseFitFileGatewayRequest {
   fitFileContent: Uint8Array;
@@ -581,8 +611,13 @@ export interface ClientGatewayService {
   GetShowcaseProfileViewStats(request: EmptyRequest): Promise<ShowcaseViewStats>;
   GetShowcaseRoundupViewStats(request: GetShowcaseRoundupViewStatsGatewayRequest): Promise<ShowcaseViewStats>;
   ListShowcaseViewStats(request: EmptyRequest): Promise<ListShowcaseViewStatsGatewayResponse>;
-  /** ===================== Data Export ===================== */
-  ExportData(request: EmptyRequest): Promise<ExportDataGatewayResponse>;
+  /**
+   * ===================== Data Export =====================
+   * Enqueue an asynchronous whole-account export; returns the job. Poll
+   * GetExportJob until status is READY (download_url set) or FAILED.
+   */
+  ExportData(request: EmptyRequest): Promise<ExportJobGatewayResponse>;
+  GetExportJob(request: GetExportJobGatewayRequest): Promise<ExportJobGatewayResponse>;
   /** ===================== FIT File Parse ===================== */
   ParseFitFile(request: ParseFitFileGatewayRequest): Promise<StandardizedActivity>;
   /** ===================== Exercise Library ===================== */
@@ -600,6 +635,12 @@ export interface ClientGatewayService {
   CreateBillingPortal(request: CreateBillingPortalGatewayRequest): Promise<CreateBillingPortalGatewayResponse>;
   /** ===================== Pipeline Run Payloads ===================== */
   GetPipelineRunPayload(request: GetPipelineRunPayloadGatewayRequest): Promise<GetPipelineRunPayloadGatewayResponse>;
+  /**
+   * ExportPipelineRun returns a signed URL to a per-run ZIP (enriched + payload
+   * JSON and the raw FIT file, where still retained). Replaces the single-JSON
+   * payload download used by the activity detail page's Export button.
+   */
+  ExportPipelineRun(request: ExportPipelineRunGatewayRequest): Promise<ExportPipelineRunGatewayResponse>;
   /** ===================== Registry (Unauthenticated, but on api-client) ===================== */
   GetPluginRegistry(request: EmptyRequest): Promise<PluginRegistryResponse>;
   GetPluginRegistryPlugins(request: EmptyRequest): Promise<PluginRegistryResponse>;

@@ -19,6 +19,15 @@ import type {
 
 export const protobufPackage = "fitglue.services.activity";
 
+export enum ExportJobStatus {
+  EXPORT_JOB_STATUS_UNSPECIFIED = 0,
+  EXPORT_JOB_STATUS_PENDING = 1,
+  EXPORT_JOB_STATUS_PROCESSING = 2,
+  EXPORT_JOB_STATUS_READY = 3,
+  EXPORT_JOB_STATUS_FAILED = 4,
+  UNRECOGNIZED = -1,
+}
+
 export interface GetActivityRequest {
   userId: string;
   activityId: string;
@@ -73,8 +82,40 @@ export interface ExportDataRequest {
   userId: string;
 }
 
-export interface ExportDataResponse {
+export interface ExportJob {
+  jobId: string;
+  status: ExportJobStatus;
+  /** populated when status == READY */
   downloadUrl: string;
+  /** ZIP size, populated when READY */
+  sizeBytes: number;
+  /** RFC3339; when the signed download URL expires */
+  expiresAt: string;
+  /** populated when status == FAILED */
+  error: string;
+  /** RFC3339 */
+  createdAt: string;
+}
+
+export interface ExportDataResponse {
+  job?: ExportJob | undefined;
+}
+
+export interface GetExportJobRequest {
+  userId: string;
+  jobId: string;
+}
+
+export interface ExportPipelineRunRequest {
+  userId: string;
+  runId: string;
+}
+
+export interface ExportPipelineRunResponse {
+  downloadUrl: string;
+  sizeBytes: number;
+  /** RFC3339 */
+  expiresAt: string;
 }
 
 export interface ParseFitFileRequest {
@@ -289,7 +330,19 @@ export interface ActivityService {
   CreateShowcase(request: CreateShowcaseRequest): Promise<ShowcasedActivity>;
   UpdateShowcase(request: UpdateShowcaseRequest): Promise<ShowcasedActivity>;
   DeleteShowcase(request: DeleteShowcaseRequest): Promise<Empty>;
+  /**
+   * ExportData enqueues an asynchronous whole-account GDPR export job and returns
+   * it immediately. A background worker builds the ZIP and updates the job; poll
+   * GetExportJob until status is READY (download_url populated) or FAILED.
+   */
   ExportData(request: ExportDataRequest): Promise<ExportDataResponse>;
+  /** GetExportJob returns the current state of a whole-account export job. */
+  GetExportJob(request: GetExportJobRequest): Promise<ExportJob>;
+  /**
+   * ExportPipelineRun synchronously builds a per-run ZIP (enriched + payload JSON
+   * and the raw FIT file, where still retained) and returns a signed download URL.
+   */
+  ExportPipelineRun(request: ExportPipelineRunRequest): Promise<ExportPipelineRunResponse>;
   ParseFitFile(request: ParseFitFileRequest): Promise<StandardizedActivity>;
   GetShowcasePreferences(request: GetShowcasePreferencesRequest): Promise<ShowcaseProfile>;
   UpdateShowcasePreferences(request: UpdateShowcasePreferencesRequest): Promise<ShowcaseProfile>;

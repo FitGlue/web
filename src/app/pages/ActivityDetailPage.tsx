@@ -385,21 +385,20 @@ const ActivityDetailPage: React.FC = () => {
     const handleExport = async () => {
         setExportStatus('loading');
         try {
-            const { data } = await client.GET('/users/me/pipeline-runs/{runId}/payload', {
+            const { data } = await client.GET('/users/me/pipeline-runs/{runId}/export', {
                 params: {
                     path: { runId: pipelineRun.id },
-                    query: { which: 'PAYLOAD_KIND_ENRICHED' },
                 },
             });
             if (!data?.downloadUrl) throw new Error('No download URL');
             const link = document.createElement('a');
             link.href = data.downloadUrl;
-            link.download = `run-${pipelineRun.id}.json`;
+            link.download = `run-${pipelineRun.id}.zip`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             setExportStatus('done');
-            toast.success('Export Ready', 'Run data saved as JSON');
+            toast.success('Export Ready', 'Run data saved as a ZIP archive');
         } catch {
             setExportStatus('error');
             toast.error('Export Failed', 'Could not export run data. Try again.');

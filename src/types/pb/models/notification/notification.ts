@@ -22,6 +22,11 @@ export enum NotificationType {
   NOTIFICATION_TYPE_SUBSCRIPTION_ENDED = 9,
   NOTIFICATION_TYPE_TRIAL_EXPIRING = 10,
   NOTIFICATION_TYPE_TRIAL_EXPIRED = 11,
+  /**
+   * NOTIFICATION_TYPE_DATA_EXPORT_READY - Whole-account data export is ready to download. data["download_url"] carries
+   * the signed link. Transactional — always delivered via email.
+   */
+  NOTIFICATION_TYPE_DATA_EXPORT_READY = 12,
   UNRECOGNIZED = -1,
 }
 
