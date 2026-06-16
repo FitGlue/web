@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.81.0](https://github.com/fitglue/web/compare/v11.80.1...v11.81.0) (2026-06-16)
+
+
+### Features
+
+* **roundup:** make wall photos and routes click through to their activity ([67f1062](https://github.com/fitglue/web/commit/67f106297e7a01f7099b63f3c45f99b756e321f6))
+
 ### [11.80.1](https://github.com/fitglue/web/compare/v11.80.0...v11.80.1) (2026-06-16)
 
 
