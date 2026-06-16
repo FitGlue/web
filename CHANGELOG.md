@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.77.0](https://github.com/fitglue/web/compare/v11.76.0...v11.77.0) (2026-06-16)
+
+
+### Features
+
+* **roundup:** client-side Roundup Reel video export ([8609a1e](https://github.com/fitglue/web/commit/8609a1e921dd11ed4ea863ffbcef39e59fe0e322))
+
+
+### Bug Fixes
+
+* **notifications:** deep-link pending input to pipeline run detail page ([c7f615e](https://github.com/fitglue/web/commit/c7f615ebb6ea6d774793d5c9e013489771988400))
+
 ## [11.76.0](https://github.com/fitglue/web/compare/v11.75.0...v11.76.0) (2026-06-16)
 
 
