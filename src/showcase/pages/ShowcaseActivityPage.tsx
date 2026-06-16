@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import publicClient from '../../shared/api/public-client';
 import client from '../../shared/api/client';
 import type { components } from '../../shared/api/schema-public';
+import type { components as clientComponents } from '../../shared/api/schema-client';
 import type { ActivityEnrichments } from '../../types/pb/models/activity/enrichments';
 import { initFirebase } from '../../shared/firebase';
 import { isNativeApp } from '../../shared/nativeBridge';
@@ -12,6 +13,8 @@ import { buildModuleOrder } from '../utils/enricherModules';
 import { getActivityIcon } from '../utils/activityMeta';
 import { useShowcaseMeta } from '../utils/useShowcaseMeta';
 import ShowcaseNotFound from '../components/ShowcaseNotFound';
+import { ViewCountBadge } from '../components/ViewCountBadge';
+import { recordShowcaseView } from '../utils/recordView';
 import ActivityHero from '../components/layout/ActivityHero';
 import ModuleGrid from '../components/layout/ModuleGrid';
 import BoosterTimeline from '../components/layout/BoosterTimeline';
@@ -41,6 +44,7 @@ export default function ShowcaseActivityPage() {
   const [loading, setLoading] = useState(true);
   const [shareOpen, setShareOpen] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  const [viewStats, setViewStats] = useState<clientComponents['schemas']['ShowcaseViewStats'] | null>(null);
 
   useEffect(() => {
     if (!id) {
@@ -106,6 +110,28 @@ export default function ShowcaseActivityPage() {
     return () => unsubscribe?.();
   }, [id]);
 
+  // Record a view once loading settles — but never for the owner's own visits.
+  // By the time `loading` is false, ownership has been resolved (the owner check
+  // is awaited before setLoading(false)), so this won't count the owner.
+  useEffect(() => {
+    if (loading || error || !activity || isOwner) return;
+    const showcaseId = activity.showcaseId ?? id;
+    if (showcaseId) recordShowcaseView({ kind: 'activity', id: showcaseId });
+  }, [loading, error, activity, isOwner, id]);
+
+  // Owner-only: fetch de-duplicated view metrics for the inline badge.
+  useEffect(() => {
+    if (!isOwner) { setViewStats(null); return; }
+    const showcaseId = activity?.showcaseId ?? id;
+    if (!showcaseId) return;
+    let cancelled = false;
+    client
+      .GET('/users/me/showcases/{id}/views', { params: { path: { id: showcaseId } } })
+      .then(({ data }) => { if (!cancelled && data) setViewStats(data); })
+      .catch(() => { /* not the owner / unauthenticated — leave badge hidden */ });
+    return () => { cancelled = true; };
+  }, [isOwner, activity, id]);
+
   const { moduleOrder, appliedSet } = useMemo(() => {
     if (!activity) return { moduleOrder: [], appliedSet: new Set<string>() };
     const cat = resolveCategory(activity);
@@ -169,6 +195,7 @@ export default function ShowcaseActivityPage() {
               )}
             </span>
             <div className="showcase-pubbar__actions">
+              {isOwner && <ViewCountBadge stats={viewStats} />}
               {isOwner ? (
                 <button
                   className="showcase-pubbar__share-btn"

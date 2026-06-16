@@ -5,6 +5,7 @@
 // source: gateway/public.proto
 
 /* eslint-disable */
+import type { Empty } from "../google/protobuf/empty";
 import type { ShowcaseRoundup } from "../models/activity/roundup";
 import type { ShowcasedActivity, ShowcaseProfile } from "../models/activity/uploaded";
 import type { PluginManifest, PluginRegistryResponse } from "../models/plugin/manifest";
@@ -68,6 +69,20 @@ export interface GetRecentPublicRoundupsGatewayResponse {
   roundups: ShowcaseRoundup[];
 }
 
+/** Showcase view beacons (visitor identity is derived server-side from IP/UA) */
+export interface RecordShowcaseActivityViewRequest {
+  id: string;
+}
+
+export interface RecordShowcaseProfileViewRequest {
+  slug: string;
+}
+
+export interface RecordShowcaseRoundupViewRequest {
+  slug: string;
+  periodKey: string;
+}
+
 /**
  * PublicGatewayService describes the unauthenticated REST API surface
  * served by api-public at /api/public/*.
@@ -89,4 +104,12 @@ export interface PublicGatewayService {
   GetRecentPublicRoundups(
     request: GetRecentPublicRoundupsGatewayRequest,
   ): Promise<GetRecentPublicRoundupsGatewayResponse>;
+  /**
+   * ===================== Showcase View Beacons =====================
+   * Fire-and-forget view beacons fired by the public showcase SPA on page load.
+   * Always respond 204; counts are never returned here.
+   */
+  RecordShowcaseActivityView(request: RecordShowcaseActivityViewRequest): Promise<Empty>;
+  RecordShowcaseProfileView(request: RecordShowcaseProfileViewRequest): Promise<Empty>;
+  RecordShowcaseRoundupView(request: RecordShowcaseRoundupViewRequest): Promise<Empty>;
 }

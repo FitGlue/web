@@ -13,6 +13,7 @@ import type {
   ShowcasedActivity,
   ShowcaseProfile,
   ShowcaseProfileEntry,
+  ShowcaseViewStats,
 } from "../models/activity/uploaded";
 import type { PipelineConfig } from "../models/pipeline/config";
 import type { PipelineRun } from "../models/pipeline/execution";
@@ -344,6 +345,13 @@ export interface RecomputeRoundupGatewayRequest {
   periodKey: string;
 }
 
+export interface ListShowcaseViewStatsGatewayResponse {
+  profile?: ShowcaseViewStats | undefined;
+  showcases: ShowcaseViewStats[];
+  totalViews: number;
+  totalVisitors: number;
+}
+
 export interface UpdateShowcaseSlugGatewayResponse {
   slug: string;
 }
@@ -563,6 +571,10 @@ export interface ClientGatewayService {
   GetActivityPhotoUploadUrl(
     request: GetActivityPhotoUploadUrlGatewayRequest,
   ): Promise<GetActivityPhotoUploadUrlGatewayResponse>;
+  /** ===================== Showcase View Metrics (owner-facing) ===================== */
+  GetShowcaseViewStats(request: ShowcaseIdRequest): Promise<ShowcaseViewStats>;
+  GetShowcaseProfileViewStats(request: EmptyRequest): Promise<ShowcaseViewStats>;
+  ListShowcaseViewStats(request: EmptyRequest): Promise<ListShowcaseViewStatsGatewayResponse>;
   /** ===================== Data Export ===================== */
   ExportData(request: EmptyRequest): Promise<ExportDataGatewayResponse>;
   /** ===================== FIT File Parse ===================== */

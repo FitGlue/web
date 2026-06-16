@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import publicClient from '../../shared/api/public-client';
+import { recordShowcaseView } from '../utils/recordView';
 import { isNativeApp } from '../../shared/nativeBridge';
 import ShowcaseNotFound from '../components/ShowcaseNotFound';
 import { ShowcaseRoundupExportModal, type RoundupExportTab } from '../components/ShowcaseRoundupExportModal';
@@ -141,6 +142,13 @@ export default function ShowcaseRoundupPage() {
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
   }, [slug, periodKeyParam]);
+
+  // Record a view once the roundup loads (session-debounced server-side dedup
+  // handles refreshes/repeat visitors).
+  useEffect(() => {
+    if (loading || notFound || !roundup || !slug || !periodKeyParam) return;
+    recordShowcaseView({ kind: 'roundup', slug, periodKey: periodKeyParam });
+  }, [loading, notFound, roundup, slug, periodKeyParam]);
 
   const prevKey = useMemo(() => (roundup ? computePrevPeriodKey(roundup) : null), [roundup]);
   const previousRoundup = usePreviousRoundup(slug, prevKey);

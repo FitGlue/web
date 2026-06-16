@@ -9,9 +9,18 @@ import { publicClient } from '../../shared/api/public-client';
 import { useToast } from '../components/library/ui/Toast/Toast';
 import { ImageCropModal } from '../components/ImageCropModal';
 import { formatActivityType, formatActivitySource } from '../../types/pb/enum-formatters';
+import type { components } from '../../shared/api/schema-client';
 import './ShowcaseManagementPage.css';
 
-type ShowcaseSection = 'profile' | 'activities' | 'theme' | 'links' | 'roundup' | 'danger';
+type ShowcaseViewStats = components['schemas']['ShowcaseViewStats'];
+type ShowcaseViewStatsList = components['schemas']['ListShowcaseViewStatsGatewayResponse'];
+
+function viewCount(v: string | undefined): number {
+    const n = Number(v ?? 0);
+    return Number.isFinite(n) ? n : 0;
+}
+
+type ShowcaseSection = 'profile' | 'activities' | 'views' | 'theme' | 'links' | 'roundup' | 'danger';
 
 interface ShowcaseActivity {
     showcaseId: string;
@@ -92,6 +101,7 @@ const CARD_STYLE_OPTIONS = [
 const NAV_ITEMS: { id: ShowcaseSection; icon: string; label: string }[] = [
     { id: 'profile', icon: '👤', label: 'PROFILE' },
     { id: 'activities', icon: '🏃', label: 'ACTIVITIES' },
+    { id: 'views', icon: '👁', label: 'VIEWS' },
     { id: 'theme', icon: '🎨', label: 'THEME' },
     { id: 'links', icon: '🔗', label: 'LINKS' },
     { id: 'roundup', icon: '📅', label: 'ROUNDUP' },
@@ -163,6 +173,10 @@ const ShowcaseManagementPage: React.FC = () => {
     const [recentRoundups, setRecentRoundups] = useState<ShowcaseRoundup[]>([]);
     const [recomputingKey, setRecomputingKey] = useState<string | null>(null);
 
+    // View metrics (aggregate + per-showcase)
+    const [viewStats, setViewStats] = useState<ShowcaseViewStatsList | null>(null);
+    const [loadingViews, setLoadingViews] = useState(false);
+
 
     // Fetch profile data
     const fetchProfile = useCallback(async () => {
@@ -228,6 +242,19 @@ const ShowcaseManagementPage: React.FC = () => {
             .then(({ data }) => { if (data?.roundups) setRecentRoundups(data.roundups as ShowcaseRoundup[]); })
             .catch(() => { /* non-critical */ });
     }, [activeSection, profile?.slug]);
+
+    // Lazy-load view metrics when the Views tab is opened.
+    useEffect(() => {
+        if (activeSection !== 'views') return;
+        let cancelled = false;
+        setLoadingViews(true);
+        client
+            .GET('/users/me/showcase-management/views')
+            .then(({ data }) => { if (!cancelled && data) setViewStats(data as ShowcaseViewStatsList); })
+            .catch((err) => { logger.warn('Failed to load showcase view metrics:', err); })
+            .finally(() => { if (!cancelled) setLoadingViews(false); });
+        return () => { cancelled = true; };
+    }, [activeSection]);
 
     const handleSaveProfile = async () => {
         setSaving(true);
@@ -805,6 +832,83 @@ const ShowcaseManagementPage: React.FC = () => {
                                         )}
                                     </>
                                 )}
+                            </Stack>
+                        </Card>
+                    )}
+
+                    {/* ── VIEWS ── */}
+                    {activeSection === 'views' && (
+                        <Card className="showcase-mgmt__section">
+                            <Stack gap="md">
+                                <Heading level={3} className="showcase-mgmt__section-title">
+                                    👁 Showcase Views
+                                </Heading>
+                                <Paragraph size="sm" muted>
+                                    De-duplicated public view metrics. Your own visits and known bots aren&apos;t counted.
+                                </Paragraph>
+
+                                {loadingViews && !viewStats ? (
+                                    <CardSkeleton variant="integration" />
+                                ) : (() => {
+                                    const titleById = new Map(activities.map(a => [a.showcaseId, a.title]));
+                                    const perShowcase = [...(viewStats?.showcases ?? [])]
+                                        .sort((a, b) => viewCount(b.views) - viewCount(a.views));
+                                    const hasAny = viewCount(viewStats?.totalViews) > 0 || perShowcase.length > 0;
+
+                                    const StatTile = ({ label, value }: { label: string; value: number }) => (
+                                        <Card className="showcase-mgmt__view-tile">
+                                            <Paragraph className="showcase-mgmt__view-tile-num">{value.toLocaleString()}</Paragraph>
+                                            <Paragraph size="sm" muted>{label}</Paragraph>
+                                        </Card>
+                                    );
+
+                                    if (!hasAny) {
+                                        return (
+                                            <Stack className="showcase-mgmt__empty" align="center">
+                                                <Paragraph size="sm">
+                                                    No views recorded yet. Share your showcase link to start tracking.
+                                                </Paragraph>
+                                            </Stack>
+                                        );
+                                    }
+
+                                    return (
+                                        <>
+                                            <Stack direction="horizontal" gap="sm" className="showcase-mgmt__view-tiles">
+                                                <StatTile label="Total views" value={viewCount(viewStats?.totalViews)} />
+                                                <StatTile label="Unique visitors" value={viewCount(viewStats?.totalVisitors)} />
+                                            </Stack>
+
+                                            <Stack className="showcase-mgmt__view-list" gap="sm">
+                                                {viewStats?.profile && (
+                                                    <Card className="showcase-mgmt__activity-item">
+                                                        <Stack direction="horizontal" align="center" justify="between">
+                                                            <Paragraph className="showcase-mgmt__activity-title">Profile page</Paragraph>
+                                                            <Paragraph size="sm" muted>
+                                                                {viewCount(viewStats.profile.views).toLocaleString()} views · {viewCount(viewStats.profile.visitors).toLocaleString()} visitors
+                                                            </Paragraph>
+                                                        </Stack>
+                                                    </Card>
+                                                )}
+                                                {perShowcase.map((s: ShowcaseViewStats) => {
+                                                    const showcaseId = (s.targetKey ?? '').replace(/^activity:/, '');
+                                                    return (
+                                                        <Card key={s.targetKey} className="showcase-mgmt__activity-item">
+                                                            <Stack direction="horizontal" align="center" justify="between">
+                                                                <Paragraph className="showcase-mgmt__activity-title">
+                                                                    {titleById.get(showcaseId) || 'Untitled Activity'}
+                                                                </Paragraph>
+                                                                <Paragraph size="sm" muted>
+                                                                    {viewCount(s.views).toLocaleString()} views · {viewCount(s.visitors).toLocaleString()} visitors
+                                                                </Paragraph>
+                                                            </Stack>
+                                                        </Card>
+                                                    );
+                                                })}
+                                            </Stack>
+                                        </>
+                                    );
+                                })()}
                             </Stack>
                         </Card>
                     )}

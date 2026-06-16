@@ -969,6 +969,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/me/showcase-management/profile/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_GetShowcaseProfileViewStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/me/showcase-management/roundup-settings": {
         parameters: {
             query?: never;
@@ -995,6 +1011,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["ClientGatewayService_RecomputeRoundup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcase-management/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientGatewayService_ListShowcaseViewStats"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1044,6 +1076,23 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["ClientGatewayService_GenerateShowcaseImages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/showcases/{id}/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Showcase View Metrics (owner-facing) ===================== */
+        get: operations["ClientGatewayService_GetShowcaseViewStats"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1653,6 +1702,12 @@ export interface components {
                 [key: string]: Record<string, never>;
             };
         };
+        ListShowcaseViewStatsGatewayResponse: {
+            profile?: components["schemas"]["ShowcaseViewStats"];
+            showcases?: components["schemas"]["ShowcaseViewStats"][];
+            totalViews?: string;
+            totalVisitors?: string;
+        };
         /** @description Showcases */
         ListShowcasesGatewayResponse: {
             showcases?: components["schemas"]["ShowcaseProfileEntry"][];
@@ -2123,6 +2178,12 @@ export interface components {
              */
             activityType?: "ACTIVITY_TYPE_UNSPECIFIED" | "ACTIVITY_TYPE_ALPINE_SKI" | "ACTIVITY_TYPE_BACKCOUNTRY_SKI" | "ACTIVITY_TYPE_BADMINTON" | "ACTIVITY_TYPE_CANOEING" | "ACTIVITY_TYPE_CROSSFIT" | "ACTIVITY_TYPE_EBIKE_RIDE" | "ACTIVITY_TYPE_ELLIPTICAL" | "ACTIVITY_TYPE_EMOUNTAIN_BIKE_RIDE" | "ACTIVITY_TYPE_GOLF" | "ACTIVITY_TYPE_GRAVEL_RIDE" | "ACTIVITY_TYPE_HANDCYCLE" | "ACTIVITY_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING" | "ACTIVITY_TYPE_HIKE" | "ACTIVITY_TYPE_ICE_SKATE" | "ACTIVITY_TYPE_INLINE_SKATE" | "ACTIVITY_TYPE_KAYAKING" | "ACTIVITY_TYPE_KITESURF" | "ACTIVITY_TYPE_MOUNTAIN_BIKE_RIDE" | "ACTIVITY_TYPE_NORDIC_SKI" | "ACTIVITY_TYPE_PICKLEBALL" | "ACTIVITY_TYPE_PILATES" | "ACTIVITY_TYPE_RACQUETBALL" | "ACTIVITY_TYPE_RIDE" | "ACTIVITY_TYPE_ROCK_CLIMBING" | "ACTIVITY_TYPE_ROLLER_SKI" | "ACTIVITY_TYPE_ROWING" | "ACTIVITY_TYPE_RUN" | "ACTIVITY_TYPE_SAIL" | "ACTIVITY_TYPE_SKATEBOARD" | "ACTIVITY_TYPE_SNOWBOARD" | "ACTIVITY_TYPE_SNOWSHOE" | "ACTIVITY_TYPE_SOCCER" | "ACTIVITY_TYPE_SQUASH" | "ACTIVITY_TYPE_STAIR_STEPPER" | "ACTIVITY_TYPE_STAND_UP_PADDLING" | "ACTIVITY_TYPE_SURFING" | "ACTIVITY_TYPE_SWIM" | "ACTIVITY_TYPE_TABLE_TENNIS" | "ACTIVITY_TYPE_TENNIS" | "ACTIVITY_TYPE_TRAIL_RUN" | "ACTIVITY_TYPE_VELOMOBILE" | "ACTIVITY_TYPE_VIRTUAL_RIDE" | "ACTIVITY_TYPE_VIRTUAL_ROW" | "ACTIVITY_TYPE_VIRTUAL_RUN" | "ACTIVITY_TYPE_WALK" | "ACTIVITY_TYPE_WEIGHT_TRAINING" | "ACTIVITY_TYPE_WHEELCHAIR" | "ACTIVITY_TYPE_WINDSURF" | "ACTIVITY_TYPE_WORKOUT" | "ACTIVITY_TYPE_YOGA";
         };
+        /** @description ShowcaseDailyViewCount is one day's view/visitor counts for a sparkline/trend. */
+        ShowcaseDailyViewCount: {
+            day?: string;
+            views?: string;
+            visitors?: string;
+        };
         ShowcaseLink: {
             label?: string;
             url?: string;
@@ -2313,6 +2374,19 @@ export interface components {
             achievedAt?: string;
             /** Format: double */
             previousValue?: number;
+        };
+        /**
+         * @description ShowcaseViewStats holds de-duplicated view metrics for one public showcase
+         *      surface. `views` is total pageviews (bot-filtered, owner's own visits excluded);
+         *      `visitors` is unique visitors deduped per (visitor, day) via a daily-salted hash.
+         */
+        ShowcaseViewStats: {
+            targetKey?: string;
+            views?: string;
+            visitors?: string;
+            /** Format: date-time */
+            lastViewedAt?: string;
+            daily?: components["schemas"]["ShowcaseDailyViewCount"][];
         };
         /** @description ShowcasedActivity represents a publicly shareable activity snapshot. */
         ShowcasedActivity: {
@@ -5018,6 +5092,35 @@ export interface operations {
             };
         };
     };
+    ClientGatewayService_GetShowcaseProfileViewStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcaseViewStats"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
     ClientGatewayService_UpdateRoundupSettings: {
         parameters: {
             query?: never;
@@ -5069,6 +5172,35 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ShowcaseRoundup"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_ListShowcaseViewStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListShowcaseViewStatsGatewayResponse"];
                 };
             };
             /** @description Default error response */
@@ -5256,6 +5388,37 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    ClientGatewayService_GetShowcaseViewStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShowcaseViewStats"];
+                };
             };
             /** @description Default error response */
             default: {

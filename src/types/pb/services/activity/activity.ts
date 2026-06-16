@@ -13,6 +13,8 @@ import type {
   ShowcasedActivity,
   ShowcaseProfile,
   ShowcaseProfileEntry,
+  ShowcaseViewStats,
+  ShowcaseViewTarget,
 } from "../../models/activity/uploaded";
 
 export const protobufPackage = "fitglue.services.activity";
@@ -237,6 +239,43 @@ export interface RecomputeRoundupRequest {
   periodKey: string;
 }
 
+/** Showcase View Metrics messages */
+export interface RecordShowcaseViewRequest {
+  /**
+   * target_key is resolved by the gateway: "activity:{showcaseId}",
+   * "profile:{slug}" or "roundup:{slug}:{periodKey}".
+   */
+  targetKey: string;
+  /**
+   * visitor_hash is the daily-salted SHA-256 of (salt|ip|user-agent|target_key)
+   * computed at the gateway, so raw IPs never reach this service.
+   */
+  visitorHash: string;
+}
+
+export interface GetShowcaseViewStatsRequest {
+  /** authed owner — ownership is enforced */
+  userId: string;
+  target: ShowcaseViewTarget;
+  /** showcase_id (ACTIVITY) or slug (PROFILE) */
+  targetId: string;
+}
+
+export interface ListShowcaseViewStatsRequest {
+  userId: string;
+}
+
+export interface ListShowcaseViewStatsResponse {
+  /** profile-page metrics (may be empty) */
+  profile?:
+    | ShowcaseViewStats
+    | undefined;
+  /** one per showcased activity */
+  showcases: ShowcaseViewStats[];
+  totalViews: number;
+  totalVisitors: number;
+}
+
 export interface ActivityService {
   GetActivity(request: GetActivityRequest): Promise<StandardizedActivity>;
   ListActivities(request: ListActivitiesRequest): Promise<ListActivitiesResponse>;
@@ -268,4 +307,22 @@ export interface ActivityService {
   GetRecentPublicRoundups(request: GetRecentPublicRoundupsRequest): Promise<GetRecentPublicRoundupsResponse>;
   UpdateRoundupSettings(request: UpdateRoundupSettingsRequest): Promise<ShowcaseProfile>;
   RecomputeRoundup(request: RecomputeRoundupRequest): Promise<ShowcaseRoundup>;
+  /**
+   * ===================== Showcase View Metrics =====================
+   * RecordShowcaseView increments view/visitor counters for a public showcase
+   * surface. The caller (api-public gateway) is responsible for bot filtering
+   * and computing the daily-salted visitor_hash; this RPC does the de-duplicated
+   * counting transactionally.
+   */
+  RecordShowcaseView(request: RecordShowcaseViewRequest): Promise<Empty>;
+  /**
+   * GetShowcaseViewStats returns metrics for a single showcase surface. Ownership
+   * is enforced against user_id.
+   */
+  GetShowcaseViewStats(request: GetShowcaseViewStatsRequest): Promise<ShowcaseViewStats>;
+  /**
+   * ListShowcaseViewStats returns per-showcase + profile metrics and aggregate
+   * totals for all of a user's showcased activities.
+   */
+  ListShowcaseViewStats(request: ListShowcaseViewStatsRequest): Promise<ListShowcaseViewStatsResponse>;
 }

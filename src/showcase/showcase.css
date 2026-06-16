@@ -174,6 +174,28 @@ body:has(#showcase-root) {
   color: var(--fg-ink);
 }
 
+/* Owner-only view-metrics chip — shown only to the logged-in athlete the page
+   pertains to; visitors never see it. */
+.showcase-view-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid color-mix(in srgb, var(--fg-cyan) 45%, transparent);
+  color: var(--fg-cyan);
+  font-family: var(--fg-font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.showcase-view-badge__sep {
+  opacity: 0.5;
+}
+
 /* Floating share button — in-app only, owner's own activities */
 .showcase-fab-share {
   position: fixed;

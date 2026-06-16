@@ -180,6 +180,26 @@
     border-color: rgba(245, 243, 235, 0.3);
 }
 
+/* View metrics tiles */
+.showcase-mgmt__view-tiles {
+    flex-wrap: wrap;
+}
+
+.showcase-mgmt__view-tile {
+    flex: 1 1 140px;
+    padding: var(--spacing-md);
+    background: var(--fg-ink-2, #0d0c18);
+    border: var(--fg-rule-thin, 1.5px solid rgba(245, 243, 235, 0.16));
+    text-align: center;
+}
+
+.showcase-mgmt__view-tile-num {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--fg-cyan, #4fd1ff);
+}
+
 .showcase-mgmt__activity-info {
     display: flex;
     flex-direction: column;

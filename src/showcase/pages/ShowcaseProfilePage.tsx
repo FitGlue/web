@@ -11,7 +11,12 @@ import RouteMosaic from '../components/layout/RouteMosaic';
 import ActivityGrid from '../components/layout/ActivityGrid';
 import { PhotoGallery } from '../components/PhotoGallery';
 import { useShowcaseMeta } from '../utils/useShowcaseMeta';
+import { useShowcaseOwner } from '../utils/useShowcaseOwner';
+import { recordShowcaseView } from '../utils/recordView';
 import ShowcaseNotFound from '../components/ShowcaseNotFound';
+import { ViewCountBadge } from '../components/ViewCountBadge';
+import client from '../../shared/api/client';
+import type { components as clientComponents } from '../../shared/api/schema-client';
 import { isNativeApp } from '../../shared/nativeBridge';
 
 type ShowcaseProfile = components['schemas']['ShowcaseProfile'];
@@ -82,6 +87,8 @@ export default function ShowcaseProfilePage() {
   const [roundups, setRoundups] = useState<ShowcaseRoundup[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(false);
+  const { isOwner, resolved: ownershipResolved } = useShowcaseOwner(slug);
+  const [viewStats, setViewStats] = useState<clientComponents['schemas']['ShowcaseViewStats'] | null>(null);
 
   useEffect(() => {
     if (!slug) { setError(true); setLoading(false); return; }
@@ -102,6 +109,24 @@ export default function ShowcaseProfilePage() {
       .then(({ data }) => { if (data?.roundups) setRoundups(data.roundups); })
       .catch(() => {/* roundups optional — fail silently */});
   }, [slug]);
+
+  // Record a profile view once both the profile and ownership have resolved —
+  // but never for the owner's own visits.
+  useEffect(() => {
+    if (loading || error || !profile || !slug || !ownershipResolved || isOwner) return;
+    recordShowcaseView({ kind: 'profile', slug });
+  }, [loading, error, profile, slug, ownershipResolved, isOwner]);
+
+  // Owner-only: fetch de-duplicated view metrics for the inline badge.
+  useEffect(() => {
+    if (!isOwner) { setViewStats(null); return; }
+    let cancelled = false;
+    client
+      .GET('/users/me/showcase-management/profile/views')
+      .then(({ data }) => { if (!cancelled && data) setViewStats(data); })
+      .catch(() => { /* not the owner — leave badge hidden */ });
+    return () => { cancelled = true; };
+  }, [isOwner]);
 
   const profileMeta = useMemo(() => profile ? ({
     type: 'profile' as const,
@@ -151,6 +176,7 @@ export default function ShowcaseProfilePage() {
               <span className="showcase-pubbar__brand-wordmark" aria-hidden="true">FITGLUE</span>
             </a>
             <div className="showcase-pubbar__actions">
+              {isOwner && <ViewCountBadge stats={viewStats} />}
               <a href="/" style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-cyan)', textDecoration: 'none' }}>
                 TRY FITGLUE →
               </a>

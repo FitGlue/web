@@ -12,6 +12,21 @@ import type { StandardizedActivity } from "./standardized";
 
 export const protobufPackage = "fitglue.models.activity";
 
+/**
+ * ShowcaseViewTarget identifies which kind of public showcase surface a view
+ * metric belongs to. Used by the owner-facing stats read path.
+ */
+export enum ShowcaseViewTarget {
+  SHOWCASE_VIEW_TARGET_UNSPECIFIED = 0,
+  /** SHOWCASE_VIEW_TARGET_ACTIVITY - a single showcased activity page */
+  SHOWCASE_VIEW_TARGET_ACTIVITY = 1,
+  /** SHOWCASE_VIEW_TARGET_PROFILE - the athlete's profile page */
+  SHOWCASE_VIEW_TARGET_PROFILE = 2,
+  /** SHOWCASE_VIEW_TARGET_ROUNDUP - a roundup page */
+  SHOWCASE_VIEW_TARGET_ROUNDUP = 3,
+  UNRECOGNIZED = -1,
+}
+
 export interface UploadedActivityRecord {
   id: string;
   userId: string;
@@ -207,4 +222,29 @@ export interface WeeklyStreakHistory {
   missedWeeks: number;
   /** most-recent-last; true = had at least one activity */
   weeklyActive: boolean[];
+}
+
+/** ShowcaseDailyViewCount is one day's view/visitor counts for a sparkline/trend. */
+export interface ShowcaseDailyViewCount {
+  /** YYYY-MM-DD (UTC) */
+  day: string;
+  views: number;
+  visitors: number;
+}
+
+/**
+ * ShowcaseViewStats holds de-duplicated view metrics for one public showcase
+ * surface. `views` is total pageviews (bot-filtered, owner's own visits excluded);
+ * `visitors` is unique visitors deduped per (visitor, day) via a daily-salted hash.
+ */
+export interface ShowcaseViewStats {
+  /** "activity:{showcaseId}" | "profile:{slug}" | "roundup:{slug}:{periodKey}" */
+  targetKey: string;
+  views: number;
+  visitors: number;
+  lastViewedAt?:
+    | Date
+    | undefined;
+  /** recent daily timeseries (most-recent-last) */
+  daily: ShowcaseDailyViewCount[];
 }

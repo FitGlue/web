@@ -101,6 +101,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/showcase/profile/{slug}/view": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PublicGatewayService_RecordShowcaseProfileView"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/showcase/{id}": {
         parameters: {
             query?: never;
@@ -118,6 +134,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/showcase/{id}/view": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description ===================== Showcase View Beacons =====================
+         *      Fire-and-forget view beacons fired by the public showcase SPA on page load.
+         *      Always respond 204; counts are never returned here.
+         */
+        post: operations["PublicGatewayService_RecordShowcaseActivityView"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/showcase/{slug}/roundup/{periodKey}": {
         parameters: {
             query?: never;
@@ -128,6 +165,22 @@ export interface paths {
         get: operations["PublicGatewayService_GetPublicRoundup"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/showcase/{slug}/roundup/{periodKey}/view": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PublicGatewayService_RecordShowcaseRoundupView"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1326,6 +1379,35 @@ export interface operations {
             };
         };
     };
+    PublicGatewayService_RecordShowcaseProfileView: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
     PublicGatewayService_GetPublicShowcase: {
         parameters: {
             query?: never;
@@ -1345,6 +1427,35 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ShowcasedActivity"];
                 };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    PublicGatewayService_RecordShowcaseActivityView: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Default error response */
             default: {
@@ -1377,6 +1488,36 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ShowcaseRoundup"];
                 };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    PublicGatewayService_RecordShowcaseRoundupView: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                periodKey: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Default error response */
             default: {
