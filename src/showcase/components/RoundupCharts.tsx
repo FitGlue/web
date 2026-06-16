@@ -97,7 +97,8 @@ export function HRRingsChart({
   const zoneMin = [1, 2, 3, 4, 5].map((i) => minutes[i] ?? 0);
   const total = zoneMin.reduce((a, b) => a + b, 0) || 1;
   const cx = 100, cy = 100;
-  const radii = [86, 70, 54, 38, 22]; // outer Z1 → inner Z5
+  const sw = 9;
+  const radii = [92, 76, 60, 44, 32]; // outer Z1 → inner Z5; inner hole ~54px for the count
   return (
     <svg viewBox="0 0 200 200" role="img" aria-label="Time in heart-rate zones"
       style={{ width, maxWidth, height: 'auto', display: 'block', margin: '0 auto' }}>
@@ -107,8 +108,8 @@ export function HRRingsChart({
         const z = HR_ZONES[idx];
         return (
           <g key={z.z} transform={`rotate(-90 ${cx} ${cy})`}>
-            <circle cx={cx} cy={cy} r={R} fill="none" stroke={trackColor} strokeWidth="11" />
-            <circle cx={cx} cy={cy} r={R} fill="none" stroke={z.color} strokeWidth="11" strokeLinecap="round"
+            <circle cx={cx} cy={cy} r={R} fill="none" stroke={trackColor} strokeWidth={sw} />
+            <circle cx={cx} cy={cy} r={R} fill="none" stroke={z.color} strokeWidth={sw} strokeLinecap="round"
               strokeDasharray={`${frac * C} ${C}`}
               style={{ filter: idx >= 3 ? `drop-shadow(0 0 4px ${z.color})` : 'none' }}>
               <title>{`${z.z} ${z.name}: ${Math.round(zoneMin[idx] / 60)}h (${Math.round(frac * 100)}%)`}</title>
@@ -116,12 +117,12 @@ export function HRRingsChart({
           </g>
         );
       })}
-      <text x="100" y="103" textAnchor="middle"
-        style={{ fontFamily: 'var(--fg-font-display)', fontSize: '26px', letterSpacing: '-0.04em', fill: textColor }}>
+      <text x="100" y="100" textAnchor="middle"
+        style={{ fontFamily: 'var(--fg-font-display)', fontSize: '24px', letterSpacing: '-0.04em', fill: textColor }}>
         {Math.round(total / 60)}h
       </text>
-      <text x="100" y="119" textAnchor="middle"
-        style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '7px', fontWeight: 700, letterSpacing: '0.16em', fill: mutedColor }}>
+      <text x="100" y="114" textAnchor="middle"
+        style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '6.5px', fontWeight: 700, letterSpacing: '0.14em', fill: mutedColor }}>
         HR TRACKED
       </text>
     </svg>
@@ -243,24 +244,23 @@ export function ConsistencyCalendar({
 
   return (
     <div style={{ overflowX: 'auto', color: textColor }}>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'inline-flex', flexDirection: 'column' }}>
         {/* month labels */}
-        <div style={{ display: 'grid', gridAutoFlow: 'column', gap: `${gap}px`,
-          marginLeft: `${labelW}px`, marginBottom: '6px',
-          gridTemplateColumns: `repeat(${weeks.length}, ${cell}px)` }}>
+        <div style={{ display: 'flex', gap: `${gap}px`, marginLeft: `${labelW + gap}px`, marginBottom: '6px' }}>
           {weeks.map((_, wi) => {
             const mk = monthMarks.find((m) => m.wi === wi);
-            return <div key={wi} style={{ ...monoLabel, gridColumn: `${wi + 1}` }}>{mk ? MONTHS[mk.mo] : ''}</div>;
+            return <div key={wi} style={{ ...monoLabel, width: `${cell}px`, flex: '0 0 auto', whiteSpace: 'nowrap' }}>{mk ? MONTHS[mk.mo] : ''}</div>;
           })}
         </div>
-        <div style={{ display: 'flex', gap: `${gap + 5}px` }}>
-          <div style={{ display: 'grid', gridTemplateRows: `repeat(7, ${cell}px)`, gap: `${gap}px`, width: `${labelW}px` }}>
-            {DOW.map((d, i) => <div key={i} style={{ ...monoLabel, lineHeight: `${cell}px` }}>{d}</div>)}
+        <div style={{ display: 'flex', gap: `${gap}px` }}>
+          {/* day-of-week labels */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: `${gap}px`, width: `${labelW}px`, flex: '0 0 auto' }}>
+            {DOW.map((d, i) => <div key={i} style={{ ...monoLabel, height: `${cell}px`, lineHeight: `${cell}px` }}>{d}</div>)}
           </div>
-          <div style={{ display: 'grid', gridAutoFlow: 'column', gap: `${gap}px`,
-            gridTemplateColumns: `repeat(${weeks.length}, ${cell}px)`, gridTemplateRows: `repeat(7, ${cell}px)` }}>
+          {/* week columns */}
+          <div style={{ display: 'flex', gap: `${gap}px` }}>
             {weeks.map((wk, wi) => (
-              <div key={wi} style={{ display: 'grid', gridTemplateRows: `repeat(7, ${cell}px)`, gap: `${gap}px` }}>
+              <div key={wi} style={{ display: 'flex', flexDirection: 'column', gap: `${gap}px`, flex: '0 0 auto' }}>
                 {wk.map((d, di) => (
                   <div key={di}
                     style={{
