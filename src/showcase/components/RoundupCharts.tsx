@@ -96,6 +96,10 @@ export function HRRingsChart({
 } & ChartColors) {
   const zoneMin = [1, 2, 3, 4, 5].map((i) => minutes[i] ?? 0);
   const total = zoneMin.reduce((a, b) => a + b, 0) || 1;
+  // Ring fill is relative to the biggest zone, so the longest zone fills the
+  // ring and the others scale off it (like bars bent into circles). The legend
+  // still shows each zone's share of total time.
+  const max = Math.max(...zoneMin) || 1;
   const cx = 100, cy = 100;
   const sw = 9;
   const radii = [92, 76, 60, 44, 32]; // outer Z1 → inner Z5; inner hole ~54px for the count
@@ -104,7 +108,7 @@ export function HRRingsChart({
       style={{ width, maxWidth, height: 'auto', display: 'block', margin: '0 auto' }}>
       {radii.map((R, idx) => {
         const C = 2 * Math.PI * R;
-        const frac = zoneMin[idx] / total;
+        const frac = zoneMin[idx] / max;
         const z = HR_ZONES[idx];
         return (
           <g key={z.z} transform={`rotate(-90 ${cx} ${cy})`}>
@@ -112,7 +116,7 @@ export function HRRingsChart({
             <circle cx={cx} cy={cy} r={R} fill="none" stroke={z.color} strokeWidth={sw} strokeLinecap="round"
               strokeDasharray={`${frac * C} ${C}`}
               style={{ filter: idx >= 3 ? `drop-shadow(0 0 4px ${z.color})` : 'none' }}>
-              <title>{`${z.z} ${z.name}: ${Math.round(zoneMin[idx] / 60)}h (${Math.round(frac * 100)}%)`}</title>
+              <title>{`${z.z} ${z.name}: ${Math.round(zoneMin[idx] / 60)}h (${Math.round((zoneMin[idx] / total) * 100)}% of tracked time)`}</title>
             </circle>
           </g>
         );
@@ -294,4 +298,137 @@ export function ConsistencyCalendar({
       )}
     </div>
   );
+}
+
+const WEEKDAY_SHORT = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+const LEVEL_NAMES = ['Rest', 'Easy', 'Moderate', 'Hard', 'Peak'];
+
+interface ConsistencyProps {
+  days: CalDay[];
+  yearLabel: string;
+  cell?: number;
+  gap?: number;
+  levelColors?: string[];
+  showFoot?: boolean;
+}
+
+function ConsistencyFoot({ active, hard, total, label, textColor, mutedColor }: {
+  active: number; hard: number; total: number; label: string;
+} & ChartColors) {
+  return (
+    <div className="rp-cal-foot" style={{ color: textColor }}>
+      <div className="rp-cal-stats">
+        <div className="rp-cal-stat"><b>{active}</b><span style={{ color: mutedColor }}>Active Days</span></div>
+        <div className="rp-cal-stat"><b>{total > 0 ? Math.round((active / total) * 100) : 0}%</b><span style={{ color: mutedColor }}>{label}</span></div>
+        <div className="rp-cal-stat"><b>{hard}</b><span style={{ color: mutedColor }}>Hard / Peak</span></div>
+      </div>
+    </div>
+  );
+}
+
+/* Week roundup — a 7-across bar strip (one column per day, height = effort). */
+export function WeekStrip({
+  days,
+  levelColors = DEFAULT_LEVEL_COLORS,
+  showFoot = true,
+  textColor = DEFAULT_TEXT,
+  mutedColor = DEFAULT_MUTED,
+}: ConsistencyProps & ChartColors) {
+  const active = days.filter((d) => d.level > 0).length;
+  const hard = days.filter((d) => d.level >= 3).length;
+  return (
+    <div style={{ color: textColor }}>
+      <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-end' }}>
+        {days.map((d, i) => {
+          const fillPct = d.level > 0 ? Math.max(14, (d.level / 4) * 100) : 0;
+          return (
+            <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', minWidth: 0 }}>
+              <div style={{ fontFamily: 'var(--fg-font-display)', fontSize: '1.4rem', letterSpacing: '-0.02em' }}>
+                {new Date(d.ts).getUTCDate()}
+              </div>
+              <div style={{ width: '100%', height: '160px', background: 'rgba(245,243,235,0.06)', display: 'flex', alignItems: 'flex-end' }}>
+                <div style={{
+                  width: '100%', height: `${fillPct}%`,
+                  background: d.level > 0 ? levelColors[d.level] : 'transparent',
+                  boxShadow: d.level >= 4 ? '0 0 12px rgba(34,211,238,0.6)' : undefined,
+                  transition: 'height 0.7s cubic-bezier(0.16,1,0.3,1)',
+                }}
+                title={`${new Date(d.ts).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'short' })} · ${LEVEL_NAMES[d.level]}`}
+                />
+              </div>
+              <div style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.12em', color: mutedColor }}>
+                {WEEKDAY_SHORT[d.dow]}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {showFoot && <ConsistencyFoot active={active} hard={hard} total={days.length} label="Of the week" textColor={textColor} mutedColor={mutedColor} />}
+    </div>
+  );
+}
+
+/* Month roundup — a wall-calendar matrix (weeks as rows, Mon→Sun columns). */
+export function MonthGrid({
+  days,
+  levelColors = DEFAULT_LEVEL_COLORS,
+  showFoot = true,
+  textColor = DEFAULT_TEXT,
+  mutedColor = DEFAULT_MUTED,
+}: ConsistencyProps & ChartColors) {
+  const rows = useMemo(() => {
+    const out: (CalDay | null)[][] = [];
+    let cur: (CalDay | null)[] = new Array(7).fill(null);
+    let placed = false;
+    days.forEach((d) => {
+      const col = (d.dow + 6) % 7; // Monday-first
+      cur[col] = d;
+      placed = true;
+      if (col === 6) { out.push(cur); cur = new Array(7).fill(null); placed = false; }
+    });
+    if (placed) out.push(cur);
+    return out;
+  }, [days]);
+
+  const active = days.filter((d) => d.level > 0).length;
+  const hard = days.filter((d) => d.level >= 3).length;
+  const head: React.CSSProperties = {
+    fontFamily: 'var(--fg-font-mono)', fontSize: '0.625rem', fontWeight: 700,
+    letterSpacing: '0.14em', color: mutedColor, textAlign: 'center', padding: '0 0 8px',
+  };
+
+  return (
+    <div style={{ color: textColor }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', maxWidth: '720px' }}>
+        {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((d) => <div key={d} style={head}>{d}</div>)}
+        {rows.flatMap((wk, wi) => wk.map((d, di) => (
+          <div key={`${wi}-${di}`} style={{
+            aspectRatio: '1 / 1', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end',
+            padding: '6px 8px',
+            background: d ? (d.level > 0 ? levelColors[d.level] : 'rgba(245,243,235,0.05)') : 'transparent',
+            boxShadow: d && d.level >= 4 ? '0 0 10px rgba(34,211,238,0.5)' : undefined,
+          }}
+          title={d ? `${new Date(d.ts).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} · ${LEVEL_NAMES[d.level]}` : undefined}>
+            {d && (
+              <span style={{
+                fontFamily: 'var(--fg-font-display)', fontSize: '0.9rem', letterSpacing: '-0.02em',
+                color: d.level >= 3 ? '#070710' : textColor, opacity: d.level > 0 ? 1 : 0.5,
+              }}>{new Date(d.ts).getUTCDate()}</span>
+            )}
+          </div>
+        )))}
+      </div>
+      {showFoot && <ConsistencyFoot active={active} hard={hard} total={days.length} label="Of the month" textColor={textColor} mutedColor={mutedColor} />}
+    </div>
+  );
+}
+
+/* Picks the right consistency visual for the period: week strip, month grid, or year heatmap. */
+export function ConsistencyViz({
+  periodType,
+  ...props
+}: { periodType?: string } & ConsistencyProps & ChartColors) {
+  if (periodType === 'ROUNDUP_PERIOD_TYPE_WEEK') return <WeekStrip {...props} />;
+  if (periodType === 'ROUNDUP_PERIOD_TYPE_MONTH') return <MonthGrid {...props} />;
+  return <ConsistencyCalendar {...props} />;
 }

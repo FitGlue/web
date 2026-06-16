@@ -36,7 +36,7 @@ import {
   HRRingsChart,
   HRLegend,
   StackedDistance,
-  ConsistencyCalendar,
+  ConsistencyViz,
 } from '../components/RoundupCharts';
 
 /* ============================================================
@@ -92,7 +92,10 @@ function SecHead({ eyebrow, title, note }: { eyebrow: string; title: React.React
    ============================================================ */
 
 // Entrance reveal — adds .rp-reveal to .rp-anim elements as they scroll in.
-function useReveal(active: boolean) {
+// `rev` re-runs the scan when late-loading sections mount (e.g. the comparison
+// band appears only after the previous-period fetch resolves; without this it
+// never gets observed and stays at opacity:0 — an empty bar).
+function useReveal(active: boolean, rev?: unknown) {
   useEffect(() => {
     if (!active) return;
     const els = document.querySelectorAll('.rp-anim:not(.rp-reveal)');
@@ -110,7 +113,7 @@ function useReveal(active: boolean) {
     }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
     els.forEach((e) => io.observe(e));
     return () => io.disconnect();
-  }, [active]);
+  }, [active, rev]);
 }
 
 function usePreviousRoundup(slug: string | undefined, prevKey: string | null): ShowcaseRoundup | null {
@@ -185,7 +188,7 @@ export default function ShowcaseRoundupPage() {
   const prevKey = useMemo(() => (roundup ? computePrevPeriodKey(roundup) : null), [roundup]);
   const previousRoundup = usePreviousRoundup(slug, prevKey);
 
-  useReveal(!!roundup);
+  useReveal(!!roundup, previousRoundup);
 
   // Sticky share bar appears after the hero.
   useEffect(() => {
@@ -640,13 +643,23 @@ export default function ShowcaseRoundupPage() {
           );
         })()}
 
-        {/* 6 · Consistency calendar */}
+        {/* 6 · Consistency — adaptive: week strip / month grid / year heatmap */}
         {calDays.length > 1 && (
           <section className="rp-sec" id="sec-cal">
             <div className="rp-wrap">
               <ShareStat onShare={onShare} card="calendar" />
-              <SecHead eyebrow="Consistency" title="Every day, accounted for" note="Cell intensity = effort level" />
-              <div className="rp-anim"><ConsistencyCalendar days={calDays} yearLabel={calYearLabel} /></div>
+              <SecHead
+                eyebrow="Consistency"
+                title={
+                  roundup.periodType === 'ROUNDUP_PERIOD_TYPE_WEEK' ? 'The week, day by day'
+                    : roundup.periodType === 'ROUNDUP_PERIOD_TYPE_MONTH' ? 'The month, day by day'
+                      : 'Every day, accounted for'
+                }
+                note="Intensity = effort level"
+              />
+              <div className="rp-anim">
+                <ConsistencyViz periodType={roundup.periodType} days={calDays} yearLabel={calYearLabel} />
+              </div>
             </div>
           </section>
         )}

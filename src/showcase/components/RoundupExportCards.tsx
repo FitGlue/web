@@ -6,7 +6,7 @@
  */
 import React from 'react';
 import type { components } from '../../shared/api/schema-public';
-import { DonutChart, HRRingsChart, ConsistencyCalendar } from './RoundupCharts';
+import { DonutChart, HRRingsChart, ConsistencyViz } from './RoundupCharts';
 import {
   buildSportVMs,
   buildCalendarDays,
@@ -190,8 +190,8 @@ export const ChartCardFrame = React.forwardRef<HTMLDivElement, {
     : [];
   const yearLabel = roundup.periodStart ? String(new Date(roundup.periodStart).getUTCFullYear()) : '';
   return (
-    <Shell ref={ref} cfg={cfg} colors={colors} typeLabel={periodTypeLabel(periodKey)} title="Consistency" note="Cell intensity = effort level">
-      <ConsistencyCalendar days={days} yearLabel={yearLabel} cell={isStory ? 18 : 22} gap={4}
+    <Shell ref={ref} cfg={cfg} colors={colors} typeLabel={periodTypeLabel(periodKey)} title="Consistency" note="Intensity = effort level">
+      <ConsistencyViz periodType={roundup.periodType} days={days} yearLabel={yearLabel} cell={isStory ? 18 : 22} gap={4}
         textColor={colors.text} mutedColor={colors.muted} />
     </Shell>
   );
