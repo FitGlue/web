@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.78.0](https://github.com/fitglue/web/compare/v11.77.0...v11.78.0) (2026-06-16)
+
+
+### Features
+
+* **showcase:** show view & visitor counts and fire view beacons ([e5293dc](https://github.com/fitglue/web/commit/e5293dc9a850c1072716f9d479611f4f4e204dab))
+
+
+### Bug Fixes
+
+* **showcase:** bridge image share/download to native app WebView ([d3980c6](https://github.com/fitglue/web/commit/d3980c6565541551ac68609877bbabc082337d6a))
+
 ## [11.77.0](https://github.com/fitglue/web/compare/v11.76.0...v11.77.0) (2026-06-16)
 
 
