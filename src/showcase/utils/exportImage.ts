@@ -1,23 +1,18 @@
-import { isNativeApp } from '../../shared/nativeBridge';
+import { isNativeApp, sendToNative } from '../../shared/nativeBridge';
 
 /**
- * Downloads a PNG data URL. In the native app WebView, `<a download>` is
- * silently ignored, so we use the Web Share API instead — iOS/Android show
- * a native share sheet with "Save to Photos" as an option.
+ * Downloads a PNG data URL.
+ *
+ * In the native app WebView, `<a download>` is silently ignored and the Web
+ * Share API is not exposed, so neither in-page strategy works. Instead we hand
+ * the bytes to the native shell via the bridge — it writes a temp file and
+ * opens the OS share sheet ("Save to Photos", send to apps, etc.). In a real
+ * browser we fall back to a standard `<a download>`.
  */
 export async function saveImage(dataUrl: string, filename: string): Promise<void> {
-  if (isNativeApp && typeof navigator.canShare === 'function') {
-    try {
-      const response = await fetch(dataUrl);
-      const blob = await response.blob();
-      const file = new File([blob], filename, { type: 'image/png' });
-      if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: filename });
-        return;
-      }
-    } catch {
-      // fall through to link download
-    }
+  if (isNativeApp) {
+    sendToNative({ type: 'saveImage', dataUrl, filename });
+    return;
   }
   const link = document.createElement('a');
   link.download = filename;

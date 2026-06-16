@@ -10,7 +10,8 @@ export type NativeBridgeMessage =
   | { type: 'routeChange'; path: string }
   | { type: 'openShowcase'; url: string }
   | { type: 'ready' }
-  | { type: 'authExpired' };
+  | { type: 'authExpired' }
+  | { type: 'saveImage'; dataUrl: string; filename: string };
 
 export const isNativeApp =
   typeof window !== 'undefined' && !!window.ReactNativeWebView;
