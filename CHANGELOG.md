@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.80.1](https://github.com/fitglue/web/compare/v11.80.0...v11.80.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* **roundup:** adaptive consistency viz, HR ring fill, comparison reveal ([e4580e5](https://github.com/fitglue/web/commit/e4580e5d632c91f220a5761cb14cdd98570bde14))
+
 ## [11.80.0](https://github.com/fitglue/web/compare/v11.79.0...v11.80.0) (2026-06-16)
 
 
