@@ -53,6 +53,8 @@ export interface RoundupPhoto {
   /** e.g. "14 Sep" */
   date: string;
   activityType: ActivityType;
+  /** source showcase activity, for click-through */
+  showcaseId: string;
 }
 
 /** A GPS route thumbnail surfaced in the roundup route wall. */
@@ -63,6 +65,8 @@ export interface RoundupRoute {
   date: string;
   distanceMeters: number;
   activityType: ActivityType;
+  /** source showcase activity, for click-through */
+  showcaseId: string;
 }
 
 /** A place trained at during the period (from LocationSummary). */

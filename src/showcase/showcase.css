@@ -4081,6 +4081,9 @@ a.rp-callout { text-decoration: none; color: inherit; cursor: pointer; }
 
 /* ---- Route wall ---- */
 .rp-routes { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+/* Photo/route cards can render as <a> when they link to their activity */
+a.rp-photo, a.rp-route { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+
 .rp-route {
   position: relative; aspect-ratio: 16 / 10; overflow: hidden;
   border: 1px solid rgba(245,243,235,0.1); background: var(--fg-ink-2);

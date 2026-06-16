@@ -489,18 +489,22 @@ export default function ShowcaseRoundupPage() {
                 note={`${roundup.photos!.length} ${roundup.photos!.length === 1 ? 'photo' : 'photos'} this period`}
               />
               <div className="rp-photos rp-anim">
-                {roundup.photos!.map((p, i) => (
-                  <figure
-                    key={i}
-                    className={`rp-photo${i === 0 && roundup.photos!.length >= 5 ? ' rp-photo--feature' : ''}`}
-                  >
-                    <img src={p.url} alt={p.activityTitle ?? 'Activity photo'} loading="lazy" />
-                    <figcaption className="rp-photo__cap">
-                      {p.activityTitle && <div className="rp-photo__t">{p.activityTitle}</div>}
-                      {p.date && <div className="rp-photo__d">{p.date}</div>}
-                    </figcaption>
-                  </figure>
-                ))}
+                {roundup.photos!.map((p, i) => {
+                  const cls = `rp-photo${i === 0 && roundup.photos!.length >= 5 ? ' rp-photo--feature' : ''}`;
+                  const href = p.showcaseId ? `${ownerProfileHref}/${p.showcaseId}` : undefined;
+                  const inner = (
+                    <>
+                      <img src={p.url} alt={p.activityTitle ?? 'Activity photo'} loading="lazy" />
+                      <figcaption className="rp-photo__cap">
+                        {p.activityTitle && <div className="rp-photo__t">{p.activityTitle}</div>}
+                        {p.date && <div className="rp-photo__d">{p.date}</div>}
+                      </figcaption>
+                    </>
+                  );
+                  return href
+                    ? <Link key={i} to={href} className={cls} aria-label={p.activityTitle ?? 'View activity'}>{inner}</Link>
+                    : <figure key={i} className={cls}>{inner}</figure>;
+                })}
               </div>
             </div>
           </section>
@@ -569,22 +573,28 @@ export default function ShowcaseRoundupPage() {
                 note={`${roundup.routes!.length} ${roundup.routes!.length === 1 ? 'route' : 'routes'} mapped`}
               />
               <div className="rp-routes rp-anim">
-                {roundup.routes!.map((r, i) => (
-                  <article key={i} className="rp-route">
-                    <img src={r.thumbnailUrl} alt={r.activityTitle ?? 'Route'} loading="lazy" />
-                    <div className="rp-route__grad" aria-hidden="true" />
-                    <span className="rp-route__glyph" aria-hidden="true">{activityGlyph(r.activityType)}</span>
-                    <div className="rp-route__meta">
-                      <div>
-                        <div className="rp-route__t">{r.activityTitle}</div>
-                        {r.date && <div className="rp-route__d">{r.date}</div>}
+                {roundup.routes!.map((r, i) => {
+                  const href = r.showcaseId ? `${ownerProfileHref}/${r.showcaseId}` : undefined;
+                  const inner = (
+                    <>
+                      <img src={r.thumbnailUrl} alt={r.activityTitle ?? 'Route'} loading="lazy" />
+                      <div className="rp-route__grad" aria-hidden="true" />
+                      <span className="rp-route__glyph" aria-hidden="true">{activityGlyph(r.activityType)}</span>
+                      <div className="rp-route__meta">
+                        <div>
+                          <div className="rp-route__t">{r.activityTitle}</div>
+                          {r.date && <div className="rp-route__d">{r.date}</div>}
+                        </div>
+                        {(r.distanceMeters ?? 0) > 500 && (
+                          <div className="rp-route__dist">{fmtKm(r.distanceMeters ?? 0)}<sub>km</sub></div>
+                        )}
                       </div>
-                      {(r.distanceMeters ?? 0) > 500 && (
-                        <div className="rp-route__dist">{fmtKm(r.distanceMeters ?? 0)}<sub>km</sub></div>
-                      )}
-                    </div>
-                  </article>
-                ))}
+                    </>
+                  );
+                  return href
+                    ? <Link key={i} to={href} className="rp-route" aria-label={r.activityTitle ?? 'View activity'}>{inner}</Link>
+                    : <article key={i} className="rp-route">{inner}</article>;
+                })}
               </div>
             </div>
           </section>
