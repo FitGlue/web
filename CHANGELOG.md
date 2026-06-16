@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.79.0](https://github.com/fitglue/web/compare/v11.78.0...v11.79.0) (2026-06-16)
+
+
+### Features
+
+* **roundup:** add roundup view stats and enhance showcase management page ([286f1b5](https://github.com/fitglue/web/commit/286f1b556b21b42c7188d4e7ebdf09bc62300a78))
+
+
+### Bug Fixes
+
+* **roundup:** repair calendar layout, HR-ring centre, PR wall scroll ([5d2b360](https://github.com/fitglue/web/commit/5d2b360e47b248c601375f5943010870d0badcf1))
+
 ## [11.78.0](https://github.com/fitglue/web/compare/v11.77.0...v11.78.0) (2026-06-16)
 
 
