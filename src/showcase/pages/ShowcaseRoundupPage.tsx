@@ -7,9 +7,6 @@ import { ShowcaseRoundupExportModal } from '../components/ShowcaseRoundupExportM
 import { formatSource, formatWeight } from '../utils/format';
 import {
   type ShowcaseRoundup,
-  type SportVM,
-  type CalDay,
-  HR_ZONES,
   SOURCE_PALETTE,
   fmtKm,
   fmtHM,
@@ -29,246 +26,13 @@ import {
   formatMuscle,
   elevationComparison,
 } from '../utils/roundup';
-
-const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-const DOW = ['', 'MON', '', 'WED', '', 'FRI', ''];
-
-/* ============================================================
-   SVG charts (pure, no chart lib)
-   ============================================================ */
-
-function SportDonut({ data, total }: { data: SportVM[]; total: number }) {
-  const R = 70, C = 2 * Math.PI * R, cx = 100, cy = 100;
-  let offset = 0;
-  const segs = data.map((d) => {
-    const frac = total > 0 ? d.count / total : 0;
-    const seg = { ...d, frac, dash: frac * C, offset: offset * C };
-    offset += frac;
-    return seg;
-  });
-  return (
-    <div className="rp-donut-wrap">
-      <svg className="rp-donut" viewBox="0 0 200 200" role="img" aria-label="Sessions by sport">
-        <circle cx={cx} cy={cy} r={R} fill="none" stroke="rgba(245,243,235,0.06)" strokeWidth="26" />
-        <g transform={`rotate(-90 ${cx} ${cy})`}>
-          {segs.map((s) => (
-            <circle
-              key={s.type}
-              cx={cx}
-              cy={cy}
-              r={R}
-              fill="none"
-              stroke={s.color}
-              strokeWidth="26"
-              strokeDasharray={`${s.dash} ${C - s.dash}`}
-              strokeDashoffset={-s.offset}
-            >
-              <title>{`${s.label}: ${s.count} sessions (${Math.round(s.frac * 100)}%)`}</title>
-            </circle>
-          ))}
-        </g>
-      </svg>
-      <div className="rp-donut__center">
-        <b>{total}</b>
-        <span>Sessions</span>
-      </div>
-    </div>
-  );
-}
-
-function StackedDistance({ data }: { data: SportVM[] }) {
-  const withDist = data.filter((d) => d.distanceMeters > 0);
-  if (withDist.length === 0) return null;
-  const total = withDist.reduce((a, d) => a + d.distanceMeters, 0);
-  return (
-    <div className="rp-stack">
-      <div className="rp-stack__head">
-        <span className="rp-stack__title">Distance by sport</span>
-        <span className="rp-stack__total">{fmtKm(total)} km</span>
-      </div>
-      <div className="rp-stack__bar">
-        {withDist.map((d) => {
-          const pct = (d.distanceMeters / total) * 100;
-          return (
-            <div
-              key={d.type}
-              className="rp-stack__seg"
-              style={{ width: `${pct}%`, background: d.color }}
-              title={`${d.label}: ${fmtKm(d.distanceMeters)} km`}
-            >
-              {pct > 12 && <b>{fmtKm(d.distanceMeters)} km</b>}
-            </div>
-          );
-        })}
-      </div>
-      <div className="rp-stack__legend">
-        {withDist.map((d) => (
-          <span key={d.type} className="rp-stack__item">
-            <i style={{ background: d.color }} />
-            {d.label} <b>{fmtKm(d.distanceMeters)} km</b>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function HRRings({ minutes }: { minutes: number[] }) {
-  const zoneMin = [1, 2, 3, 4, 5].map((i) => minutes[i] ?? 0);
-  const total = zoneMin.reduce((a, b) => a + b, 0) || 1;
-  const cx = 100, cy = 100;
-  const radii = [86, 70, 54, 38, 22]; // outer Z1 → inner Z5
-  return (
-    <div className="rp-hrring-wrap">
-      <svg className="rp-hrring" viewBox="0 0 200 200" role="img" aria-label="Time in heart-rate zones">
-        {radii.map((R, idx) => {
-          const C = 2 * Math.PI * R;
-          const frac = zoneMin[idx] / total;
-          const z = HR_ZONES[idx];
-          return (
-            <g key={z.z} transform={`rotate(-90 ${cx} ${cy})`}>
-              <circle cx={cx} cy={cy} r={R} fill="none" stroke="rgba(245,243,235,0.06)" strokeWidth="11" />
-              <circle
-                cx={cx}
-                cy={cy}
-                r={R}
-                fill="none"
-                stroke={z.color}
-                strokeWidth="11"
-                strokeLinecap="round"
-                strokeDasharray={`${frac * C} ${C}`}
-                style={{ filter: idx >= 3 ? `drop-shadow(0 0 4px ${z.color})` : 'none' }}
-              >
-                <title>{`${z.z} ${z.name}: ${Math.round(zoneMin[idx] / 60)}h (${Math.round(frac * 100)}%)`}</title>
-              </circle>
-            </g>
-          );
-        })}
-      </svg>
-      <div className="rp-hrring__center">
-        <b>{Math.round(total / 60)}h</b>
-        <span>HR Tracked</span>
-      </div>
-    </div>
-  );
-}
-
-function HRLegend({ minutes }: { minutes: number[] }) {
-  const zoneMin = [1, 2, 3, 4, 5].map((i) => minutes[i] ?? 0);
-  const total = zoneMin.reduce((a, b) => a + b, 0) || 1;
-  return (
-    <div className="rp-hrlegend">
-      {HR_ZONES.map((z, idx) => {
-        const { h, m } = fmtHM(zoneMin[idx] * 60);
-        return (
-          <div key={z.z} className="rp-hrlegend__row">
-            <span className="rp-hrlegend__dot" style={{ background: z.color }} />
-            <span className="rp-hrlegend__name">{z.z}<span>{z.name}</span></span>
-            <span className="rp-hrlegend__time">{h}h {m}m</span>
-            <span className="rp-hrlegend__pct">{Math.round((zoneMin[idx] / total) * 100)}%</span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function ConsistencyCalendar({ days, yearLabel }: { days: CalDay[]; yearLabel: string }) {
-  const weeks = useMemo(() => {
-    const cols: (CalDay | null)[][] = [];
-    let cur: (CalDay | null)[] = [];
-    if (days.length === 0) return cols;
-    const first = days[0];
-    for (let i = 0; i < first.dow; i++) cur.push(null);
-    days.forEach((d) => {
-      cur.push(d);
-      if (d.dow === 6) { cols.push(cur); cur = []; }
-    });
-    if (cur.length) { while (cur.length < 7) cur.push(null); cols.push(cur); }
-    return cols;
-  }, [days]);
-
-  const monthMarks = useMemo(() => {
-    const marks: { wi: number; mo: number }[] = [];
-    let lastMonth = -1;
-    weeks.forEach((wk, wi) => {
-      const firstReal = wk.find((d) => d);
-      if (!firstReal) return;
-      const mo = new Date(firstReal.ts).getUTCMonth();
-      if (mo !== lastMonth) { marks.push({ wi, mo }); lastMonth = mo; }
-    });
-    return marks;
-  }, [weeks]);
-
-  const active = days.filter((d) => d.level > 0).length;
-  const hard = days.filter((d) => d.level >= 3).length;
-  const levelNames = ['Rest', 'Easy', 'Moderate', 'Hard', 'Peak'];
-
-  return (
-    <div>
-      <div className="rp-cal">
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridAutoFlow: 'column',
-              gap: '3px',
-              marginLeft: '34px',
-              marginBottom: '6px',
-              gridTemplateColumns: `repeat(${weeks.length}, 14px)`,
-            }}
-          >
-            {weeks.map((_, wi) => {
-              const mk = monthMarks.find((m) => m.wi === wi);
-              return (
-                <div key={wi} className="rp-cal__monthlbl" style={{ gridColumn: `${wi + 1}` }}>
-                  {mk ? MONTHS[mk.mo] : ''}
-                </div>
-              );
-            })}
-          </div>
-          <div className="rp-cal__row">
-            <div className="rp-cal__days">
-              {DOW.map((d, i) => <div key={i} className="rp-cal__daylbl">{d}</div>)}
-            </div>
-            <div className="rp-cal__weeks" style={{ gridTemplateColumns: `repeat(${weeks.length}, 14px)` }}>
-              {weeks.map((wk, wi) => (
-                <div key={wi} className="rp-cal__week">
-                  {wk.map((d, di) => d
-                    ? (
-                      <div
-                        key={di}
-                        className="rp-cal__cell"
-                        data-l={d.level}
-                        title={`${new Date(d.ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${levelNames[d.level]}`}
-                      />
-                    )
-                    : <div key={di} className="rp-cal__cell rp-cal__cell--empty" />)}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="rp-cal-foot">
-        <div className="rp-cal-legend">
-          Less
-          <i style={{ background: 'rgba(245,243,235,0.05)' }} />
-          <i style={{ background: 'rgba(139,92,246,0.4)' }} />
-          <i style={{ background: 'rgba(139,92,246,0.7)' }} />
-          <i style={{ background: 'var(--fg-pink)' }} />
-          <i style={{ background: 'var(--fg-cyan)', boxShadow: '0 0 8px rgba(34,211,238,0.7)' }} />
-          More
-        </div>
-        <div className="rp-cal-stats">
-          <div className="rp-cal-stat"><b>{active}</b><span>Active Days</span></div>
-          <div className="rp-cal-stat"><b>{days.length > 0 ? Math.round((active / days.length) * 100) : 0}%</b><span>Of {yearLabel}</span></div>
-          <div className="rp-cal-stat"><b>{hard}</b><span>Hard / Peak</span></div>
-        </div>
-      </div>
-    </div>
-  );
-}
+import {
+  DonutChart,
+  HRRingsChart,
+  HRLegend,
+  StackedDistance,
+  ConsistencyCalendar,
+} from '../components/RoundupCharts';
 
 /* ============================================================
    Small shared bits
@@ -654,7 +418,7 @@ export default function ShowcaseRoundupPage() {
                 note={`${sportVMs.length} ${sportVMs.length === 1 ? 'sport' : 'sports'} · ${sportTotal} sessions`}
               />
               <div className="rp-sport rp-anim">
-                <SportDonut data={sportVMs} total={sportTotal} />
+                <DonutChart data={sportVMs} total={sportTotal} />
                 <div className="rp-legend">
                   {sportVMs.map((s) => (
                     <div key={s.type} className="rp-legend__row">
@@ -799,7 +563,7 @@ export default function ShowcaseRoundupPage() {
                 <ShareStat onShare={onShare} />
                 <SecHead eyebrow="Effort" title="Time under tension" note={`${Math.round(hrTracked / 60)}h tracked · Z1 easy → Z5 max`} />
                 <div className="rp-effort rp-anim">
-                  <HRRings minutes={hrMinutes} />
+                  <HRRingsChart minutes={hrMinutes} />
                   <HRLegend minutes={hrMinutes} />
                 </div>
               </>
