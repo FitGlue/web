@@ -100,7 +100,7 @@ export function useFCM() {
 
             if (notificationType) {
               const urlMap: Record<string, string> = {
-                'PENDING_INPUT': '/inputs',
+                'PENDING_INPUT': activityId ? `/activities/${activityId}` : '/inputs',
                 'PIPELINE_SUCCESS': `/activities/${activityId}`,
                 'PIPELINE_FAILED': `/activities/${activityId}`,
                 'CONNECTION_ACTION': `/connections/${sourceId}`,

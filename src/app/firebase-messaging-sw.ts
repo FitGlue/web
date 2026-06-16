@@ -94,7 +94,7 @@ self.addEventListener('notificationclick', (event) => {
 
     if (notificationType) {
         const urlMap: Record<string, string> = {
-            'PENDING_INPUT': '/app/inputs',
+            'PENDING_INPUT': activityId ? `/app/activities/${activityId}` : '/app/inputs',
             'PIPELINE_SUCCESS': `/app/activities/${activityId}`,
             'PIPELINE_FAILED': `/app/activities/${activityId}`,
             'CONNECTION_ACTION': `/app/connections/${sourceId}`,
