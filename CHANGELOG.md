@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.76.0](https://github.com/fitglue/web/compare/v11.75.0...v11.76.0) (2026-06-16)
+
+
+### Features
+
+* **roundup:** 3D tilt on the share-card preview ([a953c14](https://github.com/fitglue/web/commit/a953c149a1c292ee9e956b70ef9c01032fd02fc1))
+
 ## [11.75.0](https://github.com/fitglue/web/compare/v11.74.1...v11.75.0) (2026-06-16)
 
 
