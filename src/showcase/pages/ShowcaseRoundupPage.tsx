@@ -727,8 +727,9 @@ export default function ShowcaseRoundupPage() {
             <span className="rp-lbl-long">Copy Link</span>
           </button>
           <div className="rp-sharebar__div" />
-          <button className="rp-sharebtn rp-sharebtn--soon" disabled type="button">
-            Create Reel <span className="rp-soon">Soon</span>
+          <button className="rp-sharebtn rp-sharebtn--ghost" onClick={() => onShare('reel')} type="button">
+            <span aria-hidden="true">▶</span>
+            <span className="rp-lbl-long">Create Reel</span>
           </button>
         </div>
 

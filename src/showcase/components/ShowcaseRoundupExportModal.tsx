@@ -7,11 +7,12 @@ import type { components } from '../../shared/api/schema-public';
 import { formatActivityType, formatSource } from '../utils/format';
 import { ACCENTS, accentSwatchStyle, TEXT_SWATCHES, textSwatchStyle } from './ShowcaseExportModal';
 import { ChartCardFrame, ComparisonCardFrame, MediaCardFrame, type CardConfig } from './RoundupExportCards';
+import { RoundupReelPanel } from './RoundupReelPanel';
 import { buildDeltas } from '../utils/roundup';
 
 type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
 
-export type RoundupExportTab = 'overview' | 'prs' | 'story' | 'sport' | 'hr' | 'calendar' | 'vs' | 'photo' | 'route';
+export type RoundupExportTab = 'overview' | 'prs' | 'story' | 'sport' | 'hr' | 'calendar' | 'vs' | 'photo' | 'route' | 'reel';
 
 // ─── Shared constants ─────────────────────────────────────────────────────────
 
@@ -664,11 +665,16 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
             {hasVs && <button className={`export-tab${activeTab === 'vs' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('vs')}>Vs ↑</button>}
             {hasRoute && <button className={`export-tab${activeTab === 'route' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('route')}>Route</button>}
             {hasPhoto && <button className={`export-tab${activeTab === 'photo' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('photo')}>Photo</button>}
+            <button className={`export-tab${activeTab === 'reel' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('reel')}>Reel ▶</button>
           </div>
           <button className="export-modal-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
 
         <div className="export-modal-body">
+          {activeTab === 'reel' ? (
+            <RoundupReelPanel roundup={roundup} periodKey={periodKey} accent={accent} onAccent={setAccent} />
+          ) : (
+          <>
           <div className="export-modal-preview-col">
             <div style={{ perspective: '1200px' }} onMouseMove={onTiltMove} onMouseLeave={onTiltLeave}>
             <div ref={tiltRef} className="export-preview-wrapper" style={{
@@ -992,6 +998,8 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
 
             </div>
           </div>
+          </>
+          )}
         </div>
 
       </div>
