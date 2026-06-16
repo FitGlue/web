@@ -633,6 +633,21 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
 
   const bgPickerId = `bg-${activeTab}`;
 
+  // ── 3D tilt on the preview card ──
+  const tiltRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const onTiltMove = (e: React.MouseEvent) => {
+    const el = tiltRef.current;
+    if (!el || reduceMotion) return;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    el.style.transform = `rotateY(${(px * 10).toFixed(2)}deg) rotateX(${(-py * 10).toFixed(2)}deg)`;
+  };
+  const onTiltLeave = () => {
+    if (tiltRef.current) tiltRef.current.style.transform = 'rotateY(0deg) rotateX(0deg)';
+  };
+
   return createPortal(
     <div className="export-modal-overlay" onClick={onClose}>
       <div className="export-modal" onClick={(e) => e.stopPropagation()}>
@@ -655,12 +670,15 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
 
         <div className="export-modal-body">
           <div className="export-modal-preview-col">
-            <div className="export-preview-wrapper" style={{
+            <div style={{ perspective: '1200px' }} onMouseMove={onTiltMove} onMouseLeave={onTiltLeave}>
+            <div ref={tiltRef} className="export-preview-wrapper" style={{
               width: PREVIEW_SIZE,
               height: previewH,
               backgroundImage: 'repeating-conic-gradient(#2a2a2a 0% 25%, #1a1a1a 0% 50%) 0 0 / 12px 12px',
               position: 'relative',
               overflow: 'hidden',
+              transition: 'transform 0.12s ease-out',
+              transformStyle: 'preserve-3d',
             }}>
               <div style={{ position: 'absolute', top: 0, left: 0, transform: `scale(${previewScale})`, transformOrigin: 'top left', pointerEvents: 'none', width: EXPORT_W }}>
                 {activeTab === 'overview' && (
@@ -739,6 +757,7 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
                   />
                 )}
               </div>
+            </div>
             </div>
             <button className="export-download-btn" onClick={handleExport} disabled={exporting}>
               {exporting ? 'Exporting…' : '⬇ Download PNG'}
