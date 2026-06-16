@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.75.0](https://github.com/fitglue/web/compare/v11.74.1...v11.75.0) (2026-06-16)
+
+
+### Features
+
+* **roundup:** add chart + comparison share cards with per-section targeting ([46601ec](https://github.com/fitglue/web/commit/46601ec227c690c52a346a2d72908fcfc0100821))
+* **roundup:** add photo and route share cards ([e56fd8e](https://github.com/fitglue/web/commit/e56fd8e9cc494d7c68189b758672bce2231b91dc))
+
 ### [11.74.1](https://github.com/fitglue/web/compare/v11.74.0...v11.74.1) (2026-06-16)
 
 ## [11.74.0](https://github.com/fitglue/web/compare/v11.73.0...v11.74.0) (2026-06-15)
