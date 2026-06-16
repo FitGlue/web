@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.80.0](https://github.com/fitglue/web/compare/v11.79.0...v11.80.0) (2026-06-16)
+
+
+### Features
+
+* **export:** implement asynchronous data export and update export job handling ([5bafd1f](https://github.com/fitglue/web/commit/5bafd1f7ea45c1d7b04cb3d3ae9f28c533b6bf8c))
+
 ## [11.79.0](https://github.com/fitglue/web/compare/v11.78.0...v11.79.0) (2026-06-16)
 
 
