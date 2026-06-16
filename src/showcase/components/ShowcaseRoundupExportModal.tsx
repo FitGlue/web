@@ -6,12 +6,12 @@ import { saveImage } from '../utils/exportImage';
 import type { components } from '../../shared/api/schema-public';
 import { formatActivityType, formatSource } from '../utils/format';
 import { ACCENTS, accentSwatchStyle, TEXT_SWATCHES, textSwatchStyle } from './ShowcaseExportModal';
-import { ChartCardFrame, ComparisonCardFrame, type CardConfig } from './RoundupExportCards';
+import { ChartCardFrame, ComparisonCardFrame, MediaCardFrame, type CardConfig } from './RoundupExportCards';
 import { buildDeltas } from '../utils/roundup';
 
 type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
 
-export type RoundupExportTab = 'overview' | 'prs' | 'story' | 'sport' | 'hr' | 'calendar' | 'vs';
+export type RoundupExportTab = 'overview' | 'prs' | 'story' | 'sport' | 'hr' | 'calendar' | 'vs' | 'photo' | 'route';
 
 // ─── Shared constants ─────────────────────────────────────────────────────────
 
@@ -525,6 +525,8 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
   const hasHR = (roundup.hrZoneMinutes ?? []).slice(1, 6).reduce((a, b) => a + (b ?? 0), 0) > 0;
   const hasCal = (roundup.dayEntries?.length ?? 0) > 1;
   const hasVs = !!previousRoundup && buildDeltas(roundup, previousRoundup).length > 0;
+  const hasPhoto = (roundup.photos?.length ?? 0) > 0;
+  const hasRoute = (roundup.routes?.length ?? 0) > 0;
 
   const tabAvailable = (t: RoundupExportTab): boolean => {
     switch (t) {
@@ -533,6 +535,8 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
       case 'hr': return hasHR;
       case 'calendar': return hasCal;
       case 'vs': return hasVs;
+      case 'photo': return hasPhoto;
+      case 'route': return hasRoute;
       default: return true;
     }
   };
@@ -580,6 +584,7 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
   const [xShape, setXShape] = useState(CARD_SHAPES[1]); // square default
   const [xText, setXText] = useState('#ffffff');
   const [xWatermark, setXWatermark] = useState(true);
+  const [mediaIdx, setMediaIdx] = useState(0);
 
   const overviewRef = useRef<HTMLDivElement>(null);
   const prRef = useRef<HTMLDivElement>(null);
@@ -587,11 +592,14 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
   const extraRef = useRef<HTMLDivElement>(null);
 
   const isExtra = activeTab === 'sport' || activeTab === 'hr' || activeTab === 'calendar' || activeTab === 'vs';
+  const isMedia = activeTab === 'photo' || activeTab === 'route';
   const activeRef = activeTab === 'overview' ? overviewRef
     : activeTab === 'prs' ? prRef
     : activeTab === 'story' ? storyRef
     : extraRef;
   const xCfg: CardConfig = { bg: xBg, shape: xShape, accent, textColor: xText, showWatermark: xWatermark };
+  const mediaList = activeTab === 'route' ? (roundup.routes ?? []) : (roundup.photos ?? []);
+  const mediaItem = mediaList[Math.min(mediaIdx, Math.max(0, mediaList.length - 1))];
   const previewScale = PREVIEW_SIZE / EXPORT_W;
 
   useLayoutEffect(() => {
@@ -639,6 +647,8 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
             {hasCal && <button className={`export-tab${activeTab === 'calendar' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('calendar')}>Calendar</button>}
             {hasHR && <button className={`export-tab${activeTab === 'hr' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('hr')}>HR</button>}
             {hasVs && <button className={`export-tab${activeTab === 'vs' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('vs')}>Vs ↑</button>}
+            {hasRoute && <button className={`export-tab${activeTab === 'route' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('route')}>Route</button>}
+            {hasPhoto && <button className={`export-tab${activeTab === 'photo' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('photo')}>Photo</button>}
           </div>
           <button className="export-modal-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
@@ -716,6 +726,15 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
                     roundup={roundup}
                     periodKey={periodKey}
                     previousRoundup={previousRoundup}
+                    cfg={xCfg}
+                  />
+                )}
+                {isMedia && mediaItem && (
+                  <MediaCardFrame
+                    ref={extraRef}
+                    variant={activeTab === 'route' ? 'route' : 'photo'}
+                    item={mediaItem}
+                    periodKey={periodKey}
                     cfg={xCfg}
                   />
                 )}
@@ -910,6 +929,45 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
                       <button className={`export-pill${xWatermark ? ' export-pill--active' : ''}`} onClick={() => setXWatermark(v => !v)}>Watermark</button>
                     </div>
                   </div>
+                </>
+              )}
+
+              {/* ── MEDIA-CARD options (photo / route) ── */}
+              {isMedia && (
+                <>
+                  <div className="export-option-group">
+                    <span className="export-option-label">Shape</span>
+                    <div className="export-option-row export-option-row--wrap">
+                      {CARD_SHAPES.map((s) => (
+                        <button key={s.id} className={`export-pill${xShape.id === s.id ? ' export-pill--active' : ''}`} onClick={() => setXShape(s)}>{s.label}</button>
+                      ))}
+                    </div>
+                  </div>
+                  {mediaList.length > 1 && (
+                    <div className="export-option-group">
+                      <span className="export-option-label">{activeTab === 'route' ? 'Route' : 'Photo'}</span>
+                      <div className="export-option-row export-option-row--wrap">
+                        {mediaList.slice(0, 12).map((_, i) => (
+                          <button key={i} className={`export-pill${Math.min(mediaIdx, mediaList.length - 1) === i ? ' export-pill--active' : ''}`} onClick={() => setMediaIdx(i)}>{i + 1}</button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="export-option-group">
+                    <span className="export-option-label">Accent</span>
+                    <div className="export-option-row">
+                      {ACCENTS.map((a) => (
+                        <button key={a.id} className={`export-swatch${accent === a.color ? ' export-swatch--active' : ''}`} style={{ background: a.color, ...accentSwatchStyle(a.color) }} onClick={() => setAccent(a.color)} aria-label={a.id} />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="export-option-group">
+                    <span className="export-option-label">Include</span>
+                    <div className="export-option-row export-option-row--wrap">
+                      <button className={`export-pill${xWatermark ? ' export-pill--active' : ''}`} onClick={() => setXWatermark(v => !v)}>Watermark</button>
+                    </div>
+                  </div>
+                  <p className="export-stats-hint">Cross-origin photos may not appear in the exported PNG.</p>
                 </>
               )}
 

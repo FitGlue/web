@@ -12,9 +12,12 @@ import {
   buildCalendarDays,
   buildDeltas,
   periodShortLabel,
+  fmtKm,
   HR_ZONES,
   fmtHM,
   type ShowcaseRoundup as RoundupT,
+  type RoundupPhoto,
+  type RoundupRoute,
 } from '../utils/roundup';
 
 type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
@@ -227,3 +230,58 @@ export const ComparisonCardFrame = React.forwardRef<HTMLDivElement, {
   );
 });
 ComparisonCardFrame.displayName = 'ComparisonCardFrame';
+
+/* ---- Media card (photo / route) ----
+   The image is captured by html-to-image at export; cross-origin images need
+   the host to allow CORS, otherwise the on-screen preview still works but the
+   exported PNG may omit the image. */
+
+export const MediaCardFrame = React.forwardRef<HTMLDivElement, {
+  variant: 'photo' | 'route';
+  item: RoundupPhoto | RoundupRoute;
+  periodKey: string;
+  cfg: CardConfig;
+}>(({ variant, item, periodKey, cfg }, ref) => {
+  const accent = cfg.accent;
+  const url = variant === 'photo' ? (item as RoundupPhoto).url : (item as RoundupRoute).thumbnailUrl;
+  const title = item.activityTitle || (variant === 'photo' ? 'Moment' : 'Route');
+  const date = item.date ?? '';
+  const dist = variant === 'route' ? ((item as RoundupRoute).distanceMeters ?? 0) : 0;
+  return (
+    <div ref={ref} style={{
+      width: `${EXPORT_W}px`, aspectRatio: cfg.shape.ratio, position: 'relative', overflow: 'hidden',
+      background: '#070710', fontFamily: DISPLAY,
+    }}>
+      {url && (
+        <img src={url} crossOrigin="anonymous" alt=""
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+      )}
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, rgba(7,7,16,0.12) 28%, rgba(7,7,16,0.92) 100%)' }} />
+      <div style={{ position: 'absolute', top: '56px', left: '64px', right: '64px',
+        fontFamily: MONO, fontSize: '20px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: accent }}>
+        {periodTypeLabel(periodKey)}
+      </div>
+      <div style={{ position: 'absolute', left: '64px', right: '64px', bottom: '72px' }}>
+        <div style={{ fontFamily: DISPLAY, fontSize: '72px', lineHeight: 0.9, letterSpacing: '-0.03em', textTransform: 'uppercase', color: '#f5f3eb' }}>
+          {title}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '24px', marginTop: '18px' }}>
+          {date && (
+            <span style={{ fontFamily: MONO, fontSize: '22px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(245,243,235,0.7)' }}>{date}</span>
+          )}
+          {variant === 'route' && dist > 500 && (
+            <span style={{ fontFamily: DISPLAY, fontSize: '44px', letterSpacing: '-0.03em', color: accent }}>
+              {fmtKm(dist)}<span style={{ fontSize: '0.5em', color: 'rgba(245,243,235,0.6)' }}>km</span>
+            </span>
+          )}
+        </div>
+      </div>
+      {cfg.showWatermark && (
+        <div style={{ position: 'absolute', bottom: '24px', right: '40px', fontFamily: DISPLAY, fontSize: '22px', color: 'rgba(245,243,235,0.85)', letterSpacing: '0.04em' }}>
+          FIT<span style={{ color: accent }}>GLUE</span>
+        </div>
+      )}
+    </div>
+  );
+});
+MediaCardFrame.displayName = 'MediaCardFrame';

@@ -464,7 +464,7 @@ export default function ShowcaseRoundupPage() {
         {(roundup.routes?.length ?? 0) > 0 && (
           <section className="rp-sec" id="sec-routes">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} />
+              <ShareStat onShare={onShare} card="route" />
               <SecHead
                 eyebrow="Terrain"
                 title="Ground covered"
@@ -662,7 +662,7 @@ export default function ShowcaseRoundupPage() {
         {(roundup.photos?.length ?? 0) > 0 && (
           <section className="rp-sec" id="sec-photos">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} />
+              <ShareStat onShare={onShare} card="photo" />
               <SecHead
                 eyebrow="Moments"
                 title="Caught in motion"
