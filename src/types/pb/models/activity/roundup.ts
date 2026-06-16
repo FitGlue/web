@@ -42,6 +42,8 @@ export interface ShowcaseCalloutActivity {
   /** e.g. "14 Sep" */
   date: string;
   activityType: ActivityType;
+  /** source showcase activity, if this callout maps to one */
+  showcaseId: string;
 }
 
 /** A photo surfaced in the roundup photo mosaic. */
@@ -144,4 +146,10 @@ export interface ShowcaseRoundup {
   /** fastest per distance across the period */
   bestEfforts: BestEffort[];
   muscles: RoundupMuscle[];
+  /** More single-session peaks for the "ceiling raised" highlights band */
+  furthestActivityMeters: number;
+  /** most calories burned in one session */
+  mostCaloriesSingleKcal: number;
+  /** heaviest single strength session (reps × weight) */
+  biggestSessionVolumeKg: number;
 }

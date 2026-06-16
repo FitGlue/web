@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import publicClient from '../../shared/api/public-client';
+import client from '../../shared/api/client';
+import type { components as clientComponents } from '../../shared/api/schema-client';
 import { recordShowcaseView } from '../utils/recordView';
+import { useShowcaseOwner } from '../utils/useShowcaseOwner';
+import { ViewCountBadge } from '../components/ViewCountBadge';
 import { isNativeApp } from '../../shared/nativeBridge';
 import ShowcaseNotFound from '../components/ShowcaseNotFound';
 import { ShowcaseRoundupExportModal, type RoundupExportTab } from '../components/ShowcaseRoundupExportModal';
@@ -38,6 +42,21 @@ import {
 /* ============================================================
    Small shared bits
    ============================================================ */
+
+const REDUCE_MOTION = typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+// Cursor-following 3D tilt for cards (no re-render — mutates the element directly).
+function tiltCard(e: React.MouseEvent<HTMLElement>) {
+  if (REDUCE_MOTION) return;
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  const px = (e.clientX - r.left) / r.width - 0.5;
+  const py = (e.clientY - r.top) / r.height - 0.5;
+  el.style.transform = `translateY(-4px) rotateX(${(-py * 7).toFixed(2)}deg) rotateY(${(px * 7).toFixed(2)}deg)`;
+}
+function untiltCard(e: React.MouseEvent<HTMLElement>) {
+  e.currentTarget.style.transform = '';
+}
 
 function ShareIcon() {
   return (
@@ -128,6 +147,8 @@ export default function ShowcaseRoundupPage() {
   const [barVisible, setBarVisible] = useState(false);
   const [toast, setToast] = useState('');
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { isOwner, resolved: ownershipResolved } = useShowcaseOwner(slug);
+  const [viewStats, setViewStats] = useState<clientComponents['schemas']['ShowcaseViewStats'] | null>(null);
 
   useEffect(() => {
     if (!slug || !periodKeyParam) { setNotFound(true); setLoading(false); return; }
@@ -143,12 +164,23 @@ export default function ShowcaseRoundupPage() {
       .finally(() => setLoading(false));
   }, [slug, periodKeyParam]);
 
-  // Record a view once the roundup loads (session-debounced server-side dedup
-  // handles refreshes/repeat visitors).
+  // Record a view once the roundup and ownership resolve — but never for the
+  // owner's own visits.
   useEffect(() => {
-    if (loading || notFound || !roundup || !slug || !periodKeyParam) return;
+    if (loading || notFound || !roundup || !slug || !periodKeyParam || !ownershipResolved || isOwner) return;
     recordShowcaseView({ kind: 'roundup', slug, periodKey: periodKeyParam });
-  }, [loading, notFound, roundup, slug, periodKeyParam]);
+  }, [loading, notFound, roundup, slug, periodKeyParam, ownershipResolved, isOwner]);
+
+  // Owner-only: fetch de-duplicated view metrics for the inline badge.
+  useEffect(() => {
+    if (!isOwner || !periodKeyParam) { setViewStats(null); return; }
+    let cancelled = false;
+    client
+      .GET('/users/me/showcase-management/roundup/{periodKey}/views', { params: { path: { periodKey: periodKeyParam } } })
+      .then(({ data }) => { if (!cancelled && data) setViewStats(data); })
+      .catch(() => { /* not the owner — leave badge hidden */ });
+    return () => { cancelled = true; };
+  }, [isOwner, periodKeyParam]);
 
   const prevKey = useMemo(() => (roundup ? computePrevPeriodKey(roundup) : null), [roundup]);
   const previousRoundup = usePreviousRoundup(slug, prevKey);
@@ -270,6 +302,19 @@ export default function ShowcaseRoundupPage() {
       sub: elevationComparison(elevation) ?? '',
     });
   }
+  const furthest = roundup.furthestActivityMeters ?? 0;
+  if (furthest > 500) {
+    highlights.push({ value: fmtKm(furthest), unit: 'km', label: 'Furthest Session', sub: 'Longest single distance' });
+  }
+  const mostCal = roundup.mostCaloriesSingleKcal ?? 0;
+  if (mostCal > 0) {
+    highlights.push({ value: mostCal.toLocaleString(), unit: 'kcal', label: 'Biggest Burn', sub: 'Most in one session' });
+  }
+  const biggestVol = roundup.biggestSessionVolumeKg ?? 0;
+  if (biggestVol > 0) {
+    const t = biggestVol / 1000;
+    highlights.push({ value: t >= 1 ? t.toFixed(1) : String(Math.round(biggestVol)), unit: t >= 1 ? 't' : 'kg', label: 'Heaviest Session', sub: 'Total volume moved' });
+  }
 
   const bestEfforts = roundup.bestEfforts ?? [];
 
@@ -300,7 +345,10 @@ export default function ShowcaseRoundupPage() {
               </a>{' '}
               · {periodShortLabel(key)} ROUNDUP
             </span>
-            <button className="rp-bar__share" onClick={() => onShare()} type="button">↑ Share</button>
+            <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              {isOwner && <ViewCountBadge stats={viewStats} />}
+              <button className="rp-bar__share" onClick={() => onShare()} type="button">↑ Share</button>
+            </span>
           </nav>
         )}
 
@@ -395,8 +443,9 @@ export default function ShowcaseRoundupPage() {
                 {callouts.map((c, i) => {
                   const { glyph, color } = calloutVisual(c);
                   const subParts = [c.sub, c.date].filter((p): p is string => !!p);
-                  return (
-                    <article key={i} className="rp-callout rp-anim" style={{ transitionDelay: `${i * 80}ms` }}>
+                  const href = c.showcaseId ? `${ownerProfileHref}/${c.showcaseId}` : undefined;
+                  const inner = (
+                    <>
                       <div className="rp-callout__glow" style={{ background: color }} />
                       <div className="rp-callout__top">
                         <span className="rp-callout__kind">{c.kind}</span>
@@ -408,9 +457,47 @@ export default function ShowcaseRoundupPage() {
                         <div className="rp-callout__u">{c.statUnit}</div>
                         {subParts.length > 0 && <div className="rp-callout__sub">{subParts.join(' · ')}</div>}
                       </div>
+                      {href && <span className="rp-callout__open">View session →</span>}
+                    </>
+                  );
+                  return href ? (
+                    <Link key={i} to={href} className="rp-callout rp-anim" style={{ transitionDelay: `${i * 80}ms` }} onMouseMove={tiltCard} onMouseLeave={untiltCard}>
+                      {inner}
+                    </Link>
+                  ) : (
+                    <article key={i} className="rp-callout rp-anim" style={{ transitionDelay: `${i * 80}ms` }} onMouseMove={tiltCard} onMouseLeave={untiltCard}>
+                      {inner}
                     </article>
                   );
                 })}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 4b · Photo mosaic — moved up: an early, emotional hook */}
+        {(roundup.photos?.length ?? 0) > 0 && (
+          <section className="rp-sec" id="sec-photos">
+            <div className="rp-wrap">
+              <ShareStat onShare={onShare} card="photo" />
+              <SecHead
+                eyebrow="Moments"
+                title="Caught in motion"
+                note={`${roundup.photos!.length} ${roundup.photos!.length === 1 ? 'photo' : 'photos'} this period`}
+              />
+              <div className="rp-photos rp-anim">
+                {roundup.photos!.map((p, i) => (
+                  <figure
+                    key={i}
+                    className={`rp-photo${i === 0 && roundup.photos!.length >= 5 ? ' rp-photo--feature' : ''}`}
+                  >
+                    <img src={p.url} alt={p.activityTitle ?? 'Activity photo'} loading="lazy" />
+                    <figcaption className="rp-photo__cap">
+                      {p.activityTitle && <div className="rp-photo__t">{p.activityTitle}</div>}
+                      {p.date && <div className="rp-photo__d">{p.date}</div>}
+                    </figcaption>
+                  </figure>
+                ))}
               </div>
             </div>
           </section>
@@ -665,34 +752,6 @@ export default function ShowcaseRoundupPage() {
             )}
           </div>
         </section>
-
-        {/* 9b · Photo mosaic */}
-        {(roundup.photos?.length ?? 0) > 0 && (
-          <section className="rp-sec" id="sec-photos">
-            <div className="rp-wrap">
-              <ShareStat onShare={onShare} card="photo" />
-              <SecHead
-                eyebrow="Moments"
-                title="Caught in motion"
-                note={`${roundup.photos!.length} ${roundup.photos!.length === 1 ? 'photo' : 'photos'} this period`}
-              />
-              <div className="rp-photos rp-anim">
-                {roundup.photos!.map((p, i) => (
-                  <figure
-                    key={i}
-                    className={`rp-photo${i === 0 && roundup.photos!.length >= 5 ? ' rp-photo--feature' : ''}`}
-                  >
-                    <img src={p.url} alt={p.activityTitle ?? 'Activity photo'} loading="lazy" />
-                    <figcaption className="rp-photo__cap">
-                      {p.activityTitle && <div className="rp-photo__t">{p.activityTitle}</div>}
-                      {p.date && <div className="rp-photo__d">{p.date}</div>}
-                    </figcaption>
-                  </figure>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* Footer */}
         <footer className="rp-foot">

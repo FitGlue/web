@@ -257,8 +257,10 @@ export interface GetShowcaseViewStatsRequest {
   /** authed owner — ownership is enforced */
   userId: string;
   target: ShowcaseViewTarget;
-  /** showcase_id (ACTIVITY) or slug (PROFILE) */
+  /** showcase_id (ACTIVITY); ignored for PROFILE/ROUNDUP (owner's own slug is used) */
   targetId: string;
+  /** required for ROUNDUP */
+  periodKey: string;
 }
 
 export interface ListShowcaseViewStatsRequest {
@@ -274,6 +276,8 @@ export interface ListShowcaseViewStatsResponse {
   showcases: ShowcaseViewStats[];
   totalViews: number;
   totalVisitors: number;
+  /** one per recent roundup */
+  roundups: ShowcaseViewStats[];
 }
 
 export interface ActivityService {

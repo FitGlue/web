@@ -350,6 +350,11 @@ export interface ListShowcaseViewStatsGatewayResponse {
   showcases: ShowcaseViewStats[];
   totalViews: number;
   totalVisitors: number;
+  roundups: ShowcaseViewStats[];
+}
+
+export interface GetShowcaseRoundupViewStatsGatewayRequest {
+  periodKey: string;
 }
 
 export interface UpdateShowcaseSlugGatewayResponse {
@@ -574,6 +579,7 @@ export interface ClientGatewayService {
   /** ===================== Showcase View Metrics (owner-facing) ===================== */
   GetShowcaseViewStats(request: ShowcaseIdRequest): Promise<ShowcaseViewStats>;
   GetShowcaseProfileViewStats(request: EmptyRequest): Promise<ShowcaseViewStats>;
+  GetShowcaseRoundupViewStats(request: GetShowcaseRoundupViewStatsGatewayRequest): Promise<ShowcaseViewStats>;
   ListShowcaseViewStats(request: EmptyRequest): Promise<ListShowcaseViewStatsGatewayResponse>;
   /** ===================== Data Export ===================== */
   ExportData(request: EmptyRequest): Promise<ExportDataGatewayResponse>;

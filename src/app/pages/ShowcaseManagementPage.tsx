@@ -853,7 +853,9 @@ const ShowcaseManagementPage: React.FC = () => {
                                     const titleById = new Map(activities.map(a => [a.showcaseId, a.title]));
                                     const perShowcase = [...(viewStats?.showcases ?? [])]
                                         .sort((a, b) => viewCount(b.views) - viewCount(a.views));
-                                    const hasAny = viewCount(viewStats?.totalViews) > 0 || perShowcase.length > 0;
+                                    const perRoundup = [...(viewStats?.roundups ?? [])]
+                                        .sort((a, b) => viewCount(b.views) - viewCount(a.views));
+                                    const hasAny = viewCount(viewStats?.totalViews) > 0 || perShowcase.length > 0 || perRoundup.length > 0;
 
                                     const StatTile = ({ label, value }: { label: string; value: number }) => (
                                         <Card className="showcase-mgmt__view-tile">
@@ -897,6 +899,22 @@ const ShowcaseManagementPage: React.FC = () => {
                                                             <Stack direction="horizontal" align="center" justify="between">
                                                                 <Paragraph className="showcase-mgmt__activity-title">
                                                                     {titleById.get(showcaseId) || 'Untitled Activity'}
+                                                                </Paragraph>
+                                                                <Paragraph size="sm" muted>
+                                                                    {viewCount(s.views).toLocaleString()} views · {viewCount(s.visitors).toLocaleString()} visitors
+                                                                </Paragraph>
+                                                            </Stack>
+                                                        </Card>
+                                                    );
+                                                })}
+                                                {perRoundup.map((s: ShowcaseViewStats) => {
+                                                    // target_key: "roundup:{slug}:{periodKey}"
+                                                    const periodKey = (s.targetKey ?? '').split(':').slice(2).join(':');
+                                                    return (
+                                                        <Card key={s.targetKey} className="showcase-mgmt__activity-item">
+                                                            <Stack direction="horizontal" align="center" justify="between">
+                                                                <Paragraph className="showcase-mgmt__activity-title">
+                                                                    📅 Roundup · {periodKey}
                                                                 </Paragraph>
                                                                 <Paragraph size="sm" muted>
                                                                     {viewCount(s.views).toLocaleString()} views · {viewCount(s.visitors).toLocaleString()} visitors
