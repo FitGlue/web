@@ -1,0 +1,229 @@
+/**
+ * Export card frames for the roundup share modal. Each is a forwardRef 1080px
+ * card that reuses the configurable RoundupCharts and honours the shared card
+ * config (background, shape, accent, text). Chart/text colours resolve against
+ * the chosen background so cards read on dark, aurora (light) or transparent.
+ */
+import React from 'react';
+import type { components } from '../../shared/api/schema-public';
+import { DonutChart, HRRingsChart, ConsistencyCalendar } from './RoundupCharts';
+import {
+  buildSportVMs,
+  buildCalendarDays,
+  buildDeltas,
+  periodShortLabel,
+  HR_ZONES,
+  fmtHM,
+  type ShowcaseRoundup as RoundupT,
+} from '../utils/roundup';
+
+type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
+
+export const EXPORT_W = 1080;
+const DISPLAY = "'Archivo Black','Arial Black',system-ui,sans-serif";
+const MONO = "'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace";
+
+export type ExportCardVariant = 'sport' | 'hr' | 'calendar' | 'vs';
+
+export interface CardConfig {
+  bg: { id: string; style: string };
+  shape: { id: string; ratio: string };
+  accent: string;
+  textColor: string;
+  showWatermark: boolean;
+}
+
+function periodTypeLabel(periodKey: string): string {
+  if (periodKey.startsWith('week-')) return 'WEEKLY ROUNDUP';
+  if (periodKey.startsWith('month-')) return 'MONTHLY ROUNDUP';
+  if (periodKey.startsWith('year-')) return 'YEAR IN REVIEW';
+  return 'TRAINING ROUNDUP';
+}
+
+function cardColors(cfg: CardConfig) {
+  const isClear = cfg.bg.id === 'clear';
+  const isAurora = cfg.bg.id === 'aurora';
+  const text = isAurora ? '#070710' : cfg.textColor;
+  const accent = isAurora ? '#070710' : cfg.accent;
+  const muted = isAurora ? 'rgba(7,7,16,0.55)' : 'rgba(245,243,235,0.55)';
+  const track = isAurora ? 'rgba(7,7,16,0.12)' : 'rgba(245,243,235,0.08)';
+  const bg = isClear
+    ? 'transparent'
+    : cfg.bg.style !== 'transparent'
+      ? cfg.bg.style
+      : 'linear-gradient(135deg,#0a0a0a 0%,#1a0a20 50%,#0a0a0a 100%)';
+  const shadow = isClear ? '0 2px 18px rgba(0,0,0,0.9)' : undefined;
+  return { isClear, isAurora, text, accent, muted, track, bg, shadow };
+}
+
+type Colors = ReturnType<typeof cardColors>;
+
+function Grain() {
+  return (
+    <div style={{
+      position: 'absolute', inset: 0, opacity: 0.12, mixBlendMode: 'overlay', pointerEvents: 'none',
+      backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+    }} />
+  );
+}
+
+function Watermark({ colors }: { colors: Colors }) {
+  return (
+    <div style={{
+      position: 'absolute', bottom: '24px', right: '40px', fontFamily: DISPLAY, fontSize: '22px',
+      color: colors.isClear || colors.isAurora ? 'rgba(7,7,16,0.3)' : 'rgba(245,243,235,0.22)', letterSpacing: '0.04em',
+    }}>
+      FIT<span style={{ color: colors.accent }}>GLUE</span>
+    </div>
+  );
+}
+
+const Shell = React.forwardRef<HTMLDivElement, {
+  cfg: CardConfig;
+  colors: Colors;
+  typeLabel: string;
+  title: string;
+  note?: string;
+  children: React.ReactNode;
+}>(({ cfg, colors, typeLabel, title, note, children }, ref) => {
+  const isStory = cfg.shape.id === 'story';
+  return (
+    <div ref={ref} style={{
+      width: `${EXPORT_W}px`, aspectRatio: cfg.shape.ratio, background: colors.bg,
+      position: 'relative', overflow: 'hidden', boxSizing: 'border-box',
+      padding: isStory ? '96px 72px' : '72px', display: 'flex', flexDirection: 'column', fontFamily: DISPLAY,
+    }}>
+      {!colors.isClear && <Grain />}
+      <div style={{ position: 'relative', marginBottom: '36px' }}>
+        <div style={{ fontFamily: MONO, fontSize: '20px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: colors.accent, marginBottom: '14px', textShadow: colors.shadow }}>
+          {typeLabel}
+        </div>
+        <div style={{ fontFamily: DISPLAY, fontSize: isStory ? '64px' : '72px', lineHeight: 0.9, letterSpacing: '-0.03em', textTransform: 'uppercase', color: colors.text, textShadow: colors.shadow }}>
+          {title}
+        </div>
+        {note && (
+          <div style={{ fontFamily: MONO, fontSize: '18px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: colors.muted, marginTop: '14px' }}>
+            {note}
+          </div>
+        )}
+      </div>
+      <div style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 0 }}>
+        {children}
+      </div>
+      {cfg.showWatermark && <Watermark colors={colors} />}
+    </div>
+  );
+});
+Shell.displayName = 'Shell';
+
+/* ---- Chart card (sport / hr / calendar) ---- */
+
+export const ChartCardFrame = React.forwardRef<HTMLDivElement, {
+  roundup: ShowcaseRoundup;
+  periodKey: string;
+  variant: 'sport' | 'hr' | 'calendar';
+  cfg: CardConfig;
+}>(({ roundup, periodKey, variant, cfg }, ref) => {
+  const colors = cardColors(cfg);
+  const isStory = cfg.shape.id === 'story';
+  const chartSize = isStory ? 560 : 440;
+  const rowMono: React.CSSProperties = {
+    fontFamily: MONO, fontSize: '20px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
+  };
+
+  if (variant === 'sport') {
+    const vms = buildSportVMs(roundup.activityTypeBreakdowns ?? []);
+    const total = vms.reduce((a, s) => a + s.count, 0);
+    return (
+      <Shell ref={ref} cfg={cfg} colors={colors} typeLabel={periodTypeLabel(periodKey)} title="By Sport" note={`${vms.length} sports · ${total} sessions`}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '56px', flexDirection: isStory ? 'column' : 'row' }}>
+          <DonutChart data={vms} total={total} width={chartSize} maxWidth={chartSize}
+            trackColor={colors.track} textColor={colors.text} mutedColor={colors.muted} />
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px', width: isStory ? '100%' : undefined }}>
+            {vms.slice(0, 6).map((s) => (
+              <div key={s.type} style={{ display: 'flex', alignItems: 'center', gap: '18px', padding: '14px 0', borderTop: `1px solid ${colors.track}` }}>
+                <span style={{ width: '16px', height: '16px', background: s.color, flexShrink: 0 }} />
+                <span style={{ fontFamily: DISPLAY, fontSize: '26px', textTransform: 'uppercase', letterSpacing: '-0.01em', color: colors.text, flex: 1 }}>{s.label}</span>
+                <span style={{ fontFamily: DISPLAY, fontSize: '30px', letterSpacing: '-0.02em', color: colors.accent }}>{s.count}</span>
+                <span style={{ ...rowMono, fontSize: '18px', color: colors.muted, minWidth: '64px', textAlign: 'right' }}>{total > 0 ? Math.round((s.count / total) * 100) : 0}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Shell>
+    );
+  }
+
+  if (variant === 'hr') {
+    const minutes = roundup.hrZoneMinutes ?? [];
+    const zoneMin = [1, 2, 3, 4, 5].map((i) => minutes[i] ?? 0);
+    const total = zoneMin.reduce((a, b) => a + b, 0) || 1;
+    return (
+      <Shell ref={ref} cfg={cfg} colors={colors} typeLabel={periodTypeLabel(periodKey)} title="Heart-Rate Zones" note={`${Math.round(total / 60)}h tracked · Z1 → Z5`}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '56px', flexDirection: isStory ? 'column' : 'row' }}>
+          <HRRingsChart minutes={minutes} width={chartSize} maxWidth={chartSize}
+            trackColor={colors.track} textColor={colors.text} mutedColor={colors.muted} />
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px', width: isStory ? '100%' : undefined }}>
+            {HR_ZONES.map((z, idx) => {
+              const { h, m } = fmtHM(zoneMin[idx] * 60);
+              return (
+                <div key={z.z} style={{ display: 'flex', alignItems: 'center', gap: '18px', padding: '14px 0', borderTop: `1px solid ${colors.track}` }}>
+                  <span style={{ width: '16px', height: '16px', background: z.color, flexShrink: 0 }} />
+                  <span style={{ fontFamily: DISPLAY, fontSize: '26px', textTransform: 'uppercase', letterSpacing: '-0.01em', color: colors.text, flex: 1 }}>{z.z} <span style={{ color: colors.muted, fontSize: '20px' }}>{z.name}</span></span>
+                  <span style={{ ...rowMono, color: colors.muted }}>{h}h {m}m</span>
+                  <span style={{ fontFamily: DISPLAY, fontSize: '28px', letterSpacing: '-0.02em', color: colors.accent, minWidth: '80px', textAlign: 'right' }}>{Math.round((zoneMin[idx] / total) * 100)}%</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Shell>
+    );
+  }
+
+  // calendar
+  const days = (roundup.periodStart && roundup.periodEnd)
+    ? buildCalendarDays(roundup.periodStart, roundup.periodEnd, roundup.dayEntries ?? [])
+    : [];
+  const yearLabel = roundup.periodStart ? String(new Date(roundup.periodStart).getUTCFullYear()) : '';
+  return (
+    <Shell ref={ref} cfg={cfg} colors={colors} typeLabel={periodTypeLabel(periodKey)} title="Consistency" note="Cell intensity = effort level">
+      <ConsistencyCalendar days={days} yearLabel={yearLabel} cell={isStory ? 18 : 22} gap={4}
+        textColor={colors.text} mutedColor={colors.muted} />
+    </Shell>
+  );
+});
+ChartCardFrame.displayName = 'ChartCardFrame';
+
+/* ---- Comparison card ---- */
+
+export const ComparisonCardFrame = React.forwardRef<HTMLDivElement, {
+  roundup: ShowcaseRoundup;
+  periodKey: string;
+  previousRoundup: ShowcaseRoundup;
+  cfg: CardConfig;
+}>(({ roundup, periodKey, previousRoundup, cfg }, ref) => {
+  const colors = cardColors(cfg);
+  const deltas = buildDeltas(roundup as RoundupT, previousRoundup as RoundupT);
+  const prevLabel = periodShortLabel(previousRoundup.periodKey ?? '');
+  const upColor = '#a3ff3d';
+  const downColor = colors.isAurora ? '#b81d57' : '#ff5d6c';
+  return (
+    <Shell ref={ref} cfg={cfg} colors={colors} typeLabel={periodTypeLabel(periodKey)} title="Vs Last Period" note={`Versus ${prevLabel}`}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+        {deltas.map((d) => {
+          const arrow = d.dir === 'up' ? '↑' : d.dir === 'down' ? '↓' : '→';
+          const c = d.dir === 'up' ? upColor : d.dir === 'down' ? downColor : colors.muted;
+          return (
+            <div key={d.label} style={{ display: 'flex', alignItems: 'center', gap: '24px', padding: '22px 0', borderTop: `1px solid ${colors.track}` }}>
+              <span style={{ fontFamily: DISPLAY, fontSize: '44px', lineHeight: 1, color: c, width: '44px' }}>{arrow}</span>
+              <span style={{ fontFamily: DISPLAY, fontSize: '52px', letterSpacing: '-0.03em', color: c, minWidth: '180px' }}>{d.value}</span>
+              <span style={{ fontFamily: MONO, fontSize: '22px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: colors.text }}>{d.label}</span>
+            </div>
+          );
+        })}
+      </div>
+    </Shell>
+  );
+});
+ComparisonCardFrame.displayName = 'ComparisonCardFrame';

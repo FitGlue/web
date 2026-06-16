@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import publicClient from '../../shared/api/public-client';
 import { isNativeApp } from '../../shared/nativeBridge';
 import ShowcaseNotFound from '../components/ShowcaseNotFound';
-import { ShowcaseRoundupExportModal } from '../components/ShowcaseRoundupExportModal';
+import { ShowcaseRoundupExportModal, type RoundupExportTab } from '../components/ShowcaseRoundupExportModal';
 import { formatSource, formatWeight } from '../utils/format';
 import {
   type ShowcaseRoundup,
@@ -47,9 +47,9 @@ function ShareIcon() {
   );
 }
 
-function ShareStat({ onShare }: { onShare: () => void }) {
+function ShareStat({ onShare, card }: { onShare: (card?: RoundupExportTab) => void; card?: RoundupExportTab }) {
   return (
-    <button className="rp-share-stat" onClick={onShare} type="button">
+    <button className="rp-share-stat" onClick={() => onShare(card)} type="button">
       <ShareIcon /> Share
     </button>
   );
@@ -123,6 +123,7 @@ export default function ShowcaseRoundupPage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [shareCard, setShareCard] = useState<RoundupExportTab | undefined>(undefined);
   const [barVisible, setBarVisible] = useState(false);
   const [toast, setToast] = useState('');
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -161,7 +162,7 @@ export default function ShowcaseRoundupPage() {
     toastTimer.current = setTimeout(() => setToast(''), 2400);
   }, []);
 
-  const onShare = useCallback(() => setShareOpen(true), []);
+  const onShare = useCallback((card?: RoundupExportTab) => { setShareCard(card); setShareOpen(true); }, []);
   const onCopy = useCallback(() => {
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
       navigator.clipboard.writeText(window.location.href).catch(() => { /* noop */ });
@@ -291,7 +292,7 @@ export default function ShowcaseRoundupPage() {
               </a>{' '}
               · {periodShortLabel(key)} ROUNDUP
             </span>
-            <button className="rp-bar__share" onClick={onShare} type="button">↑ Share</button>
+            <button className="rp-bar__share" onClick={() => onShare()} type="button">↑ Share</button>
           </nav>
         )}
 
@@ -411,7 +412,7 @@ export default function ShowcaseRoundupPage() {
         {sportVMs.length > 0 && (
           <section className="rp-sec" id="sec-sport">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} />
+              <ShareStat onShare={onShare} card="sport" />
               <SecHead
                 eyebrow="Discipline"
                 title="Where the work went"
@@ -548,7 +549,7 @@ export default function ShowcaseRoundupPage() {
         {calDays.length > 1 && (
           <section className="rp-sec" id="sec-cal">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} />
+              <ShareStat onShare={onShare} card="calendar" />
               <SecHead eyebrow="Consistency" title="Every day, accounted for" note="Cell intensity = effort level" />
               <div className="rp-anim"><ConsistencyCalendar days={calDays} yearLabel={calYearLabel} /></div>
             </div>
@@ -560,7 +561,7 @@ export default function ShowcaseRoundupPage() {
           <div className="rp-wrap">
             {hasHR ? (
               <>
-                <ShareStat onShare={onShare} />
+                <ShareStat onShare={onShare} card="hr" />
                 <SecHead eyebrow="Effort" title="Time under tension" note={`${Math.round(hrTracked / 60)}h tracked · Z1 easy → Z5 max`} />
                 <div className="rp-effort rp-anim">
                   <HRRingsChart minutes={hrMinutes} />
@@ -624,7 +625,7 @@ export default function ShowcaseRoundupPage() {
           <div className="rp-wrap">
             {prTotal > 0 ? (
               <>
-                <ShareStat onShare={onShare} />
+                <ShareStat onShare={onShare} card="prs" />
                 <SecHead eyebrow="Records" title="The records wall" note={`${prTotal} broken`} />
                 <div className="rp-pr-count rp-anim">
                   <b className="rp-grad">{prTotal}</b>
@@ -714,7 +715,7 @@ export default function ShowcaseRoundupPage() {
 
         {/* Sticky share bar */}
         <div className={`rp-sharebar ${barVisible ? 'is-visible' : ''}`}>
-          <button className="rp-sharebtn rp-sharebtn--primary" onClick={onShare} type="button">
+          <button className="rp-sharebtn rp-sharebtn--primary" onClick={() => onShare()} type="button">
             <ShareIcon /> Share Card
           </button>
           <div className="rp-sharebar__div" />
@@ -739,6 +740,8 @@ export default function ShowcaseRoundupPage() {
         <ShowcaseRoundupExportModal
           roundup={roundup}
           periodKey={key}
+          previousRoundup={previousRoundup}
+          initialCard={shareCard}
           onClose={() => setShareOpen(false)}
         />
       )}

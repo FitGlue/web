@@ -6,10 +6,12 @@ import { saveImage } from '../utils/exportImage';
 import type { components } from '../../shared/api/schema-public';
 import { formatActivityType, formatSource } from '../utils/format';
 import { ACCENTS, accentSwatchStyle, TEXT_SWATCHES, textSwatchStyle } from './ShowcaseExportModal';
+import { ChartCardFrame, ComparisonCardFrame, type CardConfig } from './RoundupExportCards';
+import { buildDeltas } from '../utils/roundup';
 
 type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
 
-type RoundupExportTab = 'overview' | 'prs' | 'story';
+export type RoundupExportTab = 'overview' | 'prs' | 'story' | 'sport' | 'hr' | 'calendar' | 'vs';
 
 // ─── Shared constants ─────────────────────────────────────────────────────────
 
@@ -509,15 +511,36 @@ StoryFrame.displayName = 'StoryFrame';
 interface Props {
   roundup: ShowcaseRoundup;
   periodKey: string;
+  previousRoundup?: ShowcaseRoundup | null;
+  initialCard?: RoundupExportTab;
   onClose: () => void;
 }
 
-export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey, onClose }) => {
+export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey, previousRoundup, initialCard, onClose }) => {
   const hasPRs = (roundup.prsAchieved?.length ?? 0) > 0;
   const allStats = buildRoundupStats(roundup);
 
+  // ── Available extra cards ──
+  const hasSport = (roundup.activityTypeBreakdowns?.length ?? 0) > 0;
+  const hasHR = (roundup.hrZoneMinutes ?? []).slice(1, 6).reduce((a, b) => a + (b ?? 0), 0) > 0;
+  const hasCal = (roundup.dayEntries?.length ?? 0) > 1;
+  const hasVs = !!previousRoundup && buildDeltas(roundup, previousRoundup).length > 0;
+
+  const tabAvailable = (t: RoundupExportTab): boolean => {
+    switch (t) {
+      case 'prs': return hasPRs;
+      case 'sport': return hasSport;
+      case 'hr': return hasHR;
+      case 'calendar': return hasCal;
+      case 'vs': return hasVs;
+      default: return true;
+    }
+  };
+
   // ── Shared state ──
-  const [activeTab, setActiveTab] = useState<RoundupExportTab>('overview');
+  const [activeTab, setActiveTab] = useState<RoundupExportTab>(
+    initialCard && tabAvailable(initialCard) ? initialCard : 'overview',
+  );
   const [accent, setAccent] = useState(ACCENTS[0].color);
   const [exporting, setExporting] = useState(false);
   const [previewH, setPreviewH] = useState(PREVIEW_SIZE);
@@ -552,11 +575,23 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
   const [stShowWatermark, setStShowWatermark] = useState(true);
   const [stTextColor, setStTextColor] = useState('#ffffff');
 
+  // ── Extra-card (sport/hr/calendar/vs) shared state ──
+  const [xBg, setXBg] = useState(CARD_BACKGROUNDS[1]); // dark default
+  const [xShape, setXShape] = useState(CARD_SHAPES[1]); // square default
+  const [xText, setXText] = useState('#ffffff');
+  const [xWatermark, setXWatermark] = useState(true);
+
   const overviewRef = useRef<HTMLDivElement>(null);
   const prRef = useRef<HTMLDivElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
+  const extraRef = useRef<HTMLDivElement>(null);
 
-  const activeRef = activeTab === 'overview' ? overviewRef : activeTab === 'prs' ? prRef : storyRef;
+  const isExtra = activeTab === 'sport' || activeTab === 'hr' || activeTab === 'calendar' || activeTab === 'vs';
+  const activeRef = activeTab === 'overview' ? overviewRef
+    : activeTab === 'prs' ? prRef
+    : activeTab === 'story' ? storyRef
+    : extraRef;
+  const xCfg: CardConfig = { bg: xBg, shape: xShape, accent, textColor: xText, showWatermark: xWatermark };
   const previewScale = PREVIEW_SIZE / EXPORT_W;
 
   useLayoutEffect(() => {
@@ -600,6 +635,10 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
             <button className={`export-tab${activeTab === 'overview' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('overview')}>Overview</button>
             {hasPRs && <button className={`export-tab${activeTab === 'prs' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('prs')}>PRs ★</button>}
             <button className={`export-tab${activeTab === 'story' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('story')}>Story</button>
+            {hasSport && <button className={`export-tab${activeTab === 'sport' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('sport')}>Sport</button>}
+            {hasCal && <button className={`export-tab${activeTab === 'calendar' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('calendar')}>Calendar</button>}
+            {hasHR && <button className={`export-tab${activeTab === 'hr' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('hr')}>HR</button>}
+            {hasVs && <button className={`export-tab${activeTab === 'vs' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('vs')}>Vs ↑</button>}
           </div>
           <button className="export-modal-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
@@ -660,6 +699,24 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
                     showHRZones={stShowHRZones}
                     showPRCallout={stShowPRCallout}
                     showWatermark={stShowWatermark}
+                  />
+                )}
+                {(activeTab === 'sport' || activeTab === 'hr' || activeTab === 'calendar') && (
+                  <ChartCardFrame
+                    ref={extraRef}
+                    roundup={roundup}
+                    periodKey={periodKey}
+                    variant={activeTab}
+                    cfg={xCfg}
+                  />
+                )}
+                {activeTab === 'vs' && previousRoundup && (
+                  <ComparisonCardFrame
+                    ref={extraRef}
+                    roundup={roundup}
+                    periodKey={periodKey}
+                    previousRoundup={previousRoundup}
+                    cfg={xCfg}
                   />
                 )}
               </div>
@@ -807,6 +864,50 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
                       <button className={`export-pill${stShowHRZones ? ' export-pill--active' : ''}`} onClick={() => setStShowHRZones(v => !v)}>HR Zones</button>
                       {hasPRs && <button className={`export-pill${stShowPRCallout ? ' export-pill--active' : ''}`} onClick={() => setStShowPRCallout(v => !v)}>PRs Callout</button>}
                       <button className={`export-pill${stShowWatermark ? ' export-pill--active' : ''}`} onClick={() => setStShowWatermark(v => !v)}>Watermark</button>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* ── EXTRA-CARD options (sport / hr / calendar / vs) ── */}
+              {isExtra && (
+                <>
+                  <div className="export-option-group">
+                    <span className="export-option-label">Shape</span>
+                    <div className="export-option-row export-option-row--wrap">
+                      {CARD_SHAPES.map((s) => (
+                        <button key={s.id} className={`export-pill${xShape.id === s.id ? ' export-pill--active' : ''}`} onClick={() => setXShape(s)}>{s.label}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="export-option-group">
+                    <span className="export-option-label">Card</span>
+                    <div className="export-option-row export-option-row--wrap">
+                      {CARD_BACKGROUNDS.map((b) => (
+                        <button key={`x-${b.id}`} className={`export-pill${xBg.id === b.id ? ' export-pill--active' : ''}`} onClick={() => setXBg(b)}>{b.label}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="export-option-group">
+                    <span className="export-option-label">Accent</span>
+                    <div className="export-option-row">
+                      {ACCENTS.map((a) => (
+                        <button key={a.id} className={`export-swatch${accent === a.color ? ' export-swatch--active' : ''}`} style={{ background: a.color, ...accentSwatchStyle(a.color) }} onClick={() => setAccent(a.color)} aria-label={a.id} />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="export-option-group">
+                    <span className="export-option-label">Text</span>
+                    <div className="export-option-row">
+                      {TEXT_SWATCHES.map((a) => (
+                        <button key={a.id} className={`export-swatch${xText === a.color ? ' export-swatch--active' : ''}`} style={{ background: a.color, ...textSwatchStyle(a.color) }} onClick={() => setXText(a.color)} aria-label={a.id} />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="export-option-group">
+                    <span className="export-option-label">Include</span>
+                    <div className="export-option-row export-option-row--wrap">
+                      <button className={`export-pill${xWatermark ? ' export-pill--active' : ''}`} onClick={() => setXWatermark(v => !v)}>Watermark</button>
                     </div>
                   </div>
                 </>
