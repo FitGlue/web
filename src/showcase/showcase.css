@@ -3620,7 +3620,22 @@ body:has(#showcase-root) {
 }
 
 .roundup-profile-tile:hover {
-  border-color: var(--fg-cyan);
+  border-color: var(--tile-accent, var(--fg-cyan));
+}
+
+/* Per-period-type accent — distinguishes weekly / monthly / yearly tiles. */
+.roundup-profile-tile--weekly  { --tile-accent: var(--fg-cyan); }
+.roundup-profile-tile--monthly { --tile-accent: var(--fg-violet); }
+.roundup-profile-tile--yearly  { --tile-accent: var(--fg-gold); }
+
+/* Coloured top strip on non-latest tiles. */
+.roundup-profile-tile:not(.roundup-profile-tile--latest) {
+  border-top: 3px solid var(--tile-accent, var(--color-text-muted));
+}
+
+.roundup-profile-tile:not(.roundup-profile-tile--latest) .roundup-profile-tile__type {
+  color: var(--tile-accent, inherit);
+  opacity: 1;
 }
 
 .roundup-profile-tile--latest {
@@ -4045,6 +4060,11 @@ a.rp-callout { text-decoration: none; color: inherit; cursor: pointer; }
 .rp-highlight__u { font-family: var(--fg-font-mono); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.14em; color: var(--color-text-muted); text-transform: uppercase; }
 .rp-highlight__l { font-family: var(--fg-font-mono); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-paper); margin-top: 6px; }
 .rp-highlight__sub { font-family: var(--fg-font-mono); font-size: 0.625rem; letter-spacing: 0.1em; color: var(--color-text-subtle); text-transform: uppercase; }
+/* Highlight cells that link through to their session */
+a.rp-highlight { text-decoration: none; color: inherit; cursor: pointer; transition: background var(--transition-fast); }
+a.rp-highlight:hover { background: rgba(34,211,238,0.06); }
+.rp-highlight__open { position: absolute; top: 18px; right: 20px; font-family: var(--fg-font-mono); font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-cyan); opacity: 0; transform: translateY(-3px); transition: opacity var(--transition-fast), transform var(--transition-fast); }
+a.rp-highlight:hover .rp-highlight__open { opacity: 1; transform: none; }
 
 /* ---- 9 · PR wall ---- */
 .rp-pr-count { display: flex; align-items: baseline; gap: 18px; margin-bottom: 36px; }

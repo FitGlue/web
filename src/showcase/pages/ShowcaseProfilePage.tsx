@@ -13,6 +13,7 @@ import { PhotoGallery } from '../components/PhotoGallery';
 import { useShowcaseMeta } from '../utils/useShowcaseMeta';
 import { useShowcaseOwner } from '../utils/useShowcaseOwner';
 import { recordShowcaseView } from '../utils/recordView';
+import { roundupTypeClass } from '../utils/roundup';
 import ShowcaseNotFound from '../components/ShowcaseNotFound';
 import { ViewCountBadge } from '../components/ViewCountBadge';
 import client from '../../shared/api/client';
@@ -230,7 +231,7 @@ export default function ShowcaseProfilePage() {
                   <Link
                     key={r.roundupId}
                     to={`/@${slug}/${r.periodKey}`}
-                    className={`roundup-profile-tile${i === 0 ? ' roundup-profile-tile--latest' : ''}`}
+                    className={`roundup-profile-tile ${roundupTypeClass(r.periodKey ?? '')}${i === 0 ? ' roundup-profile-tile--latest' : ''}`}
                   >
                     <div className="roundup-profile-tile__type">{roundupTypeLabel(r.periodKey ?? '')}</div>
                     <div className="roundup-profile-tile__period">{roundupPeriodLabel(r.periodKey ?? '')}</div>

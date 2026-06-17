@@ -156,4 +156,11 @@ export interface ShowcaseRoundup {
   mostCaloriesSingleKcal: number;
   /** heaviest single strength session (reps × weight) */
   biggestSessionVolumeKg: number;
+  /** Source showcase activity for each single-session peak, for click-through. */
+  longestSessionShowcaseId: string;
+  highestBurnRateShowcaseId: string;
+  highestAvgBpmShowcaseId: string;
+  furthestShowcaseId: string;
+  mostCaloriesShowcaseId: string;
+  biggestVolumeShowcaseId: string;
 }

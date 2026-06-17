@@ -282,22 +282,24 @@ export default function ShowcaseRoundupPage() {
   const hrTracked = [1, 2, 3, 4, 5].reduce((s, i) => s + (hrMinutes[i] ?? 0), 0);
   const hasHR = hrTracked >= 30;
 
-  const highlights: Array<{ value: string; unit: string; label: string; sub: string }> = [];
+  const sessionHref = (id?: string) => (id ? `${ownerProfileHref}/${id}` : undefined);
+  const highlights: Array<{ value: string; unit: string; label: string; sub: string; href?: string }> = [];
   const longest = roundup.longestActivityDurationSeconds ?? 0;
   if (longest > 60) {
     const { h, m } = fmtHM(longest);
-    highlights.push({ value: h > 0 ? `${h}h ${m}m` : `${m}m`, unit: '', label: 'Longest Session', sub: '' });
+    highlights.push({ value: h > 0 ? `${h}h ${m}m` : `${m}m`, unit: '', label: 'Longest Session', sub: '', href: sessionHref(roundup.longestSessionShowcaseId) });
   }
   const cph = roundup.highestCaloriesPerHourKcal ?? 0;
   if (cph > 0) {
-    highlights.push({ value: String(Math.round(cph)), unit: 'kcal/h', label: 'Highest Burn Rate', sub: '' });
+    highlights.push({ value: String(Math.round(cph)), unit: 'kcal/h', label: 'Highest Burn Rate', sub: '', href: sessionHref(roundup.highestBurnRateShowcaseId) });
   }
   const bpm = roundup.highestAvgBpm ?? 0;
   if (bpm > 0) {
-    highlights.push({ value: String(bpm), unit: 'bpm', label: 'Peak Avg HR', sub: roundup.highestAvgBpmActivityTitle ?? '' });
+    highlights.push({ value: String(bpm), unit: 'bpm', label: 'Peak Avg HR', sub: roundup.highestAvgBpmActivityTitle ?? '', href: sessionHref(roundup.highestAvgBpmShowcaseId) });
   }
   const elevation = roundup.totalElevationGainMeters ?? 0;
   if (elevation > 50) {
+    // Aggregate across sessions — intentionally no link.
     highlights.push({
       value: `+${Math.round(elevation).toLocaleString()}`,
       unit: 'm climbed',
@@ -307,16 +309,16 @@ export default function ShowcaseRoundupPage() {
   }
   const furthest = roundup.furthestActivityMeters ?? 0;
   if (furthest > 500) {
-    highlights.push({ value: fmtKm(furthest), unit: 'km', label: 'Furthest Session', sub: 'Longest single distance' });
+    highlights.push({ value: fmtKm(furthest), unit: 'km', label: 'Furthest Session', sub: 'Longest single distance', href: sessionHref(roundup.furthestShowcaseId) });
   }
   const mostCal = roundup.mostCaloriesSingleKcal ?? 0;
   if (mostCal > 0) {
-    highlights.push({ value: mostCal.toLocaleString(), unit: 'kcal', label: 'Biggest Burn', sub: 'Most in one session' });
+    highlights.push({ value: mostCal.toLocaleString(), unit: 'kcal', label: 'Biggest Burn', sub: 'Most in one session', href: sessionHref(roundup.mostCaloriesShowcaseId) });
   }
   const biggestVol = roundup.biggestSessionVolumeKg ?? 0;
   if (biggestVol > 0) {
     const t = biggestVol / 1000;
-    highlights.push({ value: t >= 1 ? t.toFixed(1) : String(Math.round(biggestVol)), unit: t >= 1 ? 't' : 'kg', label: 'Heaviest Session', sub: 'Total volume moved' });
+    highlights.push({ value: t >= 1 ? t.toFixed(1) : String(Math.round(biggestVol)), unit: t >= 1 ? 't' : 'kg', label: 'Heaviest Session', sub: 'Total volume moved', href: sessionHref(roundup.biggestVolumeShowcaseId) });
   }
 
   const bestEfforts = roundup.bestEfforts ?? [];
@@ -725,14 +727,19 @@ export default function ShowcaseRoundupPage() {
               <ShareStat onShare={onShare} />
               <SecHead eyebrow="Personal Bests" title="The ceiling, raised" note="Single-session peaks" />
               <div className="rp-highlights rp-anim">
-                {highlights.map((hl, i) => (
-                  <div key={i} className="rp-highlight">
-                    <div className="rp-highlight__n">{hl.value}</div>
-                    <div className="rp-highlight__u">{hl.unit}</div>
-                    <div className="rp-highlight__l">{hl.label}</div>
-                    <div className="rp-highlight__sub">{hl.sub}</div>
-                  </div>
-                ))}
+                {highlights.map((hl, i) => {
+                  const inner = (
+                    <>
+                      <div className="rp-highlight__n">{hl.value}</div>
+                      <div className="rp-highlight__u">{hl.unit}</div>
+                      <div className="rp-highlight__l">{hl.label}</div>
+                      <div className="rp-highlight__sub">{hl.sub}</div>
+                    </>
+                  );
+                  return hl.href
+                    ? <Link key={i} to={hl.href} className="rp-highlight rp-highlight--link">{inner}<span className="rp-highlight__open">View session →</span></Link>
+                    : <div key={i} className="rp-highlight">{inner}</div>;
+                })}
               </div>
             </div>
           </section>

@@ -100,6 +100,17 @@ export function periodWord(periodType?: string): string {
   }
 }
 
+/**
+ * CSS modifier class keyed to the roundup's period type, so weekly / monthly /
+ * yearly tiles can carry distinct accent colours on the profile page.
+ */
+export function roundupTypeClass(periodKey: string): string {
+  if (periodKey.startsWith('week-')) return 'roundup-profile-tile--weekly';
+  if (periodKey.startsWith('month-')) return 'roundup-profile-tile--monthly';
+  if (periodKey.startsWith('year-')) return 'roundup-profile-tile--yearly';
+  return '';
+}
+
 // Big gradient hero title — concise per period.
 export function heroTitle(periodKey: string): string {
   if (periodKey.startsWith('week-')) {

@@ -2438,6 +2438,13 @@ export interface components {
             mostCaloriesSingleKcal?: number;
             /** Format: double */
             biggestSessionVolumeKg?: number;
+            /** @description Source showcase activity for each single-session peak, for click-through. */
+            longestSessionShowcaseId?: string;
+            highestBurnRateShowcaseId?: string;
+            highestAvgBpmShowcaseId?: string;
+            furthestShowcaseId?: string;
+            mostCaloriesShowcaseId?: string;
+            biggestVolumeShowcaseId?: string;
         };
         ShowcaseTheme: {
             themeId?: string;

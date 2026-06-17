@@ -20,6 +20,7 @@ import {
   buildPRVM,
   pctDelta,
   buildDeltas,
+  roundupTypeClass,
   SPORT_PALETTE,
   type ShowcaseRoundup,
 } from '../roundup';
@@ -97,6 +98,14 @@ describe('period labels', () => {
     expect(periodShortLabel('week-24-2025')).toBe('WEEK 24 · 2025');
     expect(periodShortLabel('month-06-2025')).toBe('JUNE 2025');
     expect(periodShortLabel('year-2025')).toBe('2025');
+  });
+
+  it('roundupTypeClass maps each period type to its accent modifier', () => {
+    expect(roundupTypeClass('week-24-2025')).toBe('roundup-profile-tile--weekly');
+    expect(roundupTypeClass('month-06-2025')).toBe('roundup-profile-tile--monthly');
+    expect(roundupTypeClass('year-2025')).toBe('roundup-profile-tile--yearly');
+    expect(roundupTypeClass('')).toBe('');
+    expect(roundupTypeClass('unknown')).toBe('');
   });
 });
 
