@@ -1,6 +1,23 @@
 # FitGlue Changelog
 
-<!-- LAST_PUBLISHED: server=v16.24.2, web=v11.39.2 -->
+<!-- LAST_PUBLISHED: server=v16.55.3, web=v11.85.0 -->
+
+## Server v16.55.3 / Web v11.85.0 - June 17, 2026
+
+### ✨ New Features
+
+- Get more insightful and visually rich summaries of your training with our redesigned Showcase and Roundup pages. You'll see weekly, monthly, and yearly overviews, including your best efforts, consistency calendar, photos, routes, and even AI-generated summaries. You can also track who views your showcases!
+- Easily export your fitness data for personal backups or further analysis, with improved handling for large exports.
+- Stay better informed with enhanced notifications. Get direct links from push notifications, new alerts for billing events, trial expiry, and sync issues, and more control over your notification preferences.
+- Enjoy more reliable and comprehensive syncing from Strava and Fitbit. We now prevent duplicate uploads, handle time zones better, and pull in richer data like heart rate and GPS streams. Plus, you can easily search and filter your historical imports.
+- Discover new insights with hDrop Sweat Analysis integration, and share your activities with more style. We've added new options for creating beautiful shareable "Story" cards, including direct export for Instagram Stories, better photo controls, and improved image quality.
+
+### 🐛 Bug Fixes
+
+- Improved the reliability and completeness of AI-generated summaries in your Roundups.
+- Fixed various issues that could cause duplicate activities, notifications, or sync errors, making your activity syncing more reliable.
+- Addressed several issues to improve the accuracy of your activity data (like Fitbit HR), ensure your Roundups display correctly, and make sharing your activities more visually appealing. We also fixed minor display and navigation bugs across the app.
+
 
 ## Server v16.24.2 / Web v11.39.2 - May 28, 2026
 
