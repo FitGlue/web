@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.83.0](https://github.com/fitglue/web/compare/v11.82.0...v11.83.0) (2026-06-17)
+
+
+### Features
+
+* **roundup-reel:** page-grade scenes, photo montage, adaptive director ([239deb5](https://github.com/fitglue/web/commit/239deb57e836dd9395747916e186333422a66696))
+* **roundup-shareables:** rebuild Story with real charts + Best Efforts card ([50b3e3c](https://github.com/fitglue/web/commit/50b3e3c59ce4d5c79657d0df3e09c226f1ca2d27))
+
 ## [11.82.0](https://github.com/fitglue/web/compare/v11.81.0...v11.82.0) (2026-06-17)
 
 
