@@ -16,6 +16,7 @@ import {
   HR_ZONES,
   fmtHM,
   formatClock,
+  formatMuscle,
   type ShowcaseRoundup as RoundupT,
   type RoundupPhoto,
   type RoundupRoute,
@@ -300,6 +301,94 @@ export const EffortsCardFrame = React.forwardRef<HTMLDivElement, {
   );
 });
 EffortsCardFrame.displayName = 'EffortsCardFrame';
+
+/* ---- Muscles card ---- */
+
+export const MusclesCardFrame = React.forwardRef<HTMLDivElement, {
+  roundup: ShowcaseRoundup;
+  periodKey: string;
+  cfg: CardConfig;
+}>(({ roundup, periodKey, cfg }, ref) => {
+  const colors = cardColors(cfg);
+  const muscles = (roundup.muscles ?? []).filter((m) => (m.count ?? 0) > 0).slice(0, 8);
+  const max = Math.max(...muscles.map((m) => m.count ?? 0), 1);
+  return (
+    <Shell ref={ref} cfg={cfg} colors={colors} typeLabel={periodTypeLabel(periodKey)} title="Muscles Worked" note="Primary movers, by session count">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        {muscles.map((m, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '14px 0', borderTop: `1px solid ${colors.track}` }}>
+            <span style={{ fontFamily: DISPLAY, fontSize: '26px', textTransform: 'uppercase', letterSpacing: '-0.01em', color: colors.text, width: '300px', flexShrink: 0 }}>{formatMuscle(m.name ?? '')}</span>
+            <span style={{ flex: 1, height: '18px', background: colors.track, position: 'relative' }}>
+              <span style={{ position: 'absolute', inset: 0, width: `${((m.count ?? 0) / max) * 100}%`, background: colors.accent }} />
+            </span>
+            <span style={{ fontFamily: DISPLAY, fontSize: '30px', letterSpacing: '-0.02em', color: colors.accent, minWidth: '56px', textAlign: 'right' }}>{m.count}</span>
+          </div>
+        ))}
+      </div>
+    </Shell>
+  );
+});
+MusclesCardFrame.displayName = 'MusclesCardFrame';
+
+/* ---- Places card ---- */
+
+export const PlacesCardFrame = React.forwardRef<HTMLDivElement, {
+  roundup: ShowcaseRoundup;
+  periodKey: string;
+  cfg: CardConfig;
+}>(({ roundup, periodKey, cfg }, ref) => {
+  const colors = cardColors(cfg);
+  const places = (roundup.places ?? []).slice(0, 8);
+  const countries = new Set(places.map((p) => p.country).filter((c): c is string => !!c));
+  const note = countries.size > 1
+    ? `${places.length} places · ${countries.size} countries`
+    : `${places.length} ${places.length === 1 ? 'place' : 'places'}`;
+  return (
+    <Shell ref={ref} cfg={cfg} colors={colors} typeLabel={periodTypeLabel(periodKey)} title="Where It Happened" note={note}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        {places.map((p, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: '20px', padding: '16px 0', borderTop: `1px solid ${colors.track}` }}>
+            <span style={{ fontFamily: DISPLAY, fontSize: '30px', textTransform: 'uppercase', letterSpacing: '-0.01em', color: colors.text, flex: 1 }}>{p.name}</span>
+            {p.country && <span style={{ fontFamily: MONO, fontSize: '18px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: colors.muted }}>{p.country}</span>}
+            <span style={{ fontFamily: DISPLAY, fontSize: '30px', letterSpacing: '-0.02em', color: colors.accent, minWidth: '64px', textAlign: 'right' }}>×{p.activityCount}</span>
+          </div>
+        ))}
+      </div>
+    </Shell>
+  );
+});
+PlacesCardFrame.displayName = 'PlacesCardFrame';
+
+/* ---- Weather card ---- */
+
+export const WeatherCardFrame = React.forwardRef<HTMLDivElement, {
+  roundup: ShowcaseRoundup;
+  periodKey: string;
+  cfg: CardConfig;
+}>(({ roundup, periodKey, cfg }, ref) => {
+  const colors = cardColors(cfg);
+  const w = roundup.weather;
+  const cells: Array<{ n: string; l: string }> = [];
+  if (w) {
+    if ((w.rainCount ?? 0) > 0) cells.push({ n: String(w.rainCount), l: 'Sessions in the wet' });
+    if (w.coldestTempC != null) cells.push({ n: `${Math.round(w.coldestTempC)}°`, l: 'Coldest start' });
+    if (w.hottestTempC != null) cells.push({ n: `${Math.round(w.hottestTempC)}°`, l: 'Hottest start' });
+    cells.push({ n: String(w.sessionCount ?? 0), l: 'Sessions tracked' });
+  }
+  return (
+    <Shell ref={ref} cfg={cfg} colors={colors} typeLabel={periodTypeLabel(periodKey)} title="Whatever the Weather" note="The grit index">
+      <div style={{ display: 'grid', gridTemplateColumns: cells.length >= 3 ? '1fr 1fr' : '1fr', gap: '24px' }}>
+        {cells.map((c, i) => (
+          <div key={i} style={{ border: `1px solid ${colors.track}`, padding: '32px' }}>
+            <div style={{ fontFamily: DISPLAY, fontSize: '72px', letterSpacing: '-0.03em', color: colors.accent, lineHeight: 1 }}>{c.n}</div>
+            <div style={{ fontFamily: MONO, fontSize: '17px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: colors.muted, marginTop: '12px' }}>{c.l}</div>
+          </div>
+        ))}
+      </div>
+    </Shell>
+  );
+});
+WeatherCardFrame.displayName = 'WeatherCardFrame';
 
 /* ---- Comparison card ---- */
 

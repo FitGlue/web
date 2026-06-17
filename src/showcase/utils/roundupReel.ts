@@ -14,6 +14,7 @@ import {
   periodWord,
   formatDateRange,
   formatClock,
+  formatMuscle,
   ownerInitials,
   HR_ZONES,
   type CalDay,
@@ -38,10 +39,13 @@ const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t 
 interface ReelStat { num: number; suffix: string; label: string; }
 interface ReelSport { label: string; color: string; count: number; pct: number; }
 
-export type SceneId = 'cover' | 'stats' | 'donut' | 'photos' | 'heatmap' | 'hr' | 'efforts' | 'highlight' | 'outro';
+export type SceneId = 'cover' | 'stats' | 'donut' | 'photos' | 'heatmap' | 'hr' | 'efforts' | 'muscles' | 'places' | 'weather' | 'highlight' | 'outro';
 export interface Scene { id: SceneId; dur: number; }
 
 interface ReelEffort { label: string; time: string; }
+interface ReelMuscle { label: string; count: number; }
+interface ReelPlace { name: string; country: string; count: number; }
+interface ReelWeather { rainCount: number; coldest: number | null; hottest: number | null; sessions: number; }
 
 export interface ReelData {
   eyebrow: string;
@@ -55,6 +59,9 @@ export interface ReelData {
   periodType: string;
   hrMinutes: number[];
   efforts: ReelEffort[];
+  muscles: ReelMuscle[];
+  places: ReelPlace[];
+  weather: ReelWeather | null;
   photos: string[];
   highlight: { big: string; label: string; sub: string } | null;
   name: string;
@@ -75,6 +82,9 @@ export function buildReelData(roundup: ShowcaseRoundup, periodKey: string): Reel
     stats.push({ num: Math.round((roundup.totalDistanceMeters ?? 0) / 1000), suffix: 'km', label: 'Distance' });
   } else if (hasStrength && totalWeightKg > 0) {
     stats.push({ num: Math.round(totalWeightKg / 1000), suffix: 't', label: 'Moved' });
+  }
+  if ((roundup.totalElevationGainMeters ?? 0) > 50) {
+    stats.push({ num: Math.round(roundup.totalElevationGainMeters ?? 0), suffix: 'm', label: 'Climbed' });
   }
   if ((roundup.totalCaloriesKcal ?? 0) > 0) {
     stats.push({ num: roundup.totalCaloriesKcal ?? 0, suffix: '', label: 'Calories' });
@@ -125,6 +135,21 @@ export function buildReelData(roundup: ShowcaseRoundup, periodKey: string): Reel
       .filter((be) => (be.timeSeconds ?? 0) > 0)
       .slice(0, 4)
       .map((be) => ({ label: (be.display ?? be.distanceKey ?? '').toUpperCase(), time: formatClock(be.timeSeconds ?? 0) })),
+    muscles: (roundup.muscles ?? [])
+      .filter((m) => (m.count ?? 0) > 0)
+      .slice(0, 5)
+      .map((m) => ({ label: formatMuscle(m.name ?? '').toUpperCase(), count: m.count ?? 0 })),
+    places: (roundup.places ?? [])
+      .slice(0, 5)
+      .map((p) => ({ name: (p.name ?? '').toUpperCase(), country: (p.country ?? '').toUpperCase(), count: p.activityCount ?? 0 })),
+    weather: roundup.weather && (roundup.weather.sessionCount ?? 0) > 0
+      ? {
+          rainCount: roundup.weather.rainCount ?? 0,
+          coldest: roundup.weather.coldestTempC ?? null,
+          hottest: roundup.weather.hottestTempC ?? null,
+          sessions: roundup.weather.sessionCount ?? 0,
+        }
+      : null,
     photos,
     highlight,
     name: roundup.ownerDisplayName ?? '',
@@ -146,6 +171,9 @@ export function planScenes(d: ReelData, hasUsablePhotos: boolean): Scene[] {
   if (d.calDays.length > 1) scenes.push({ id: 'heatmap', dur: 2.6 });
   if (hrTrackedMinutes(d.hrMinutes) >= 30) scenes.push({ id: 'hr', dur: 2.6 });
   if (d.efforts.length) scenes.push({ id: 'efforts', dur: 2.6 });
+  if (d.muscles.length) scenes.push({ id: 'muscles', dur: 2.4 });
+  if (d.places.length) scenes.push({ id: 'places', dur: 2.4 });
+  if (d.weather) scenes.push({ id: 'weather', dur: 2.4 });
   if (d.highlight) scenes.push({ id: 'highlight', dur: 2.4 });
   scenes.push({ id: 'outro', dur: 2.4 });
   return scenes;
@@ -617,6 +645,72 @@ function renderScene(ctx: CanvasRenderingContext2D, id: SceneId, d: ReelData, lt
         text(ctx, 'FASTEST', cardX + cardW - 40, ey + 120, `26px ${MONO}`, 'rgba(245,243,235,0.4)', 'right', 4);
         ctx.globalAlpha = 1;
         ey += 170;
+      });
+      break;
+    }
+    case 'muscles': {
+      text(ctx, 'ANATOMY', cx, REEL_H * 0.2, `34px ${MONO}`, withAlpha(accent, 0.85), 'center', 7);
+      text(ctx, 'MUSCLES UNDER LOAD', cx, REEL_H * 0.26, `46px ${DISPLAY}`, PAPER, 'center', 1);
+      const mx = REEL_W * 0.14, mw = REEL_W * 0.72;
+      const peak = Math.max(...d.muscles.map((m) => m.count), 1);
+      let my = REEL_H * 0.38;
+      d.muscles.forEach((m, i) => {
+        const lp = clamp(lt * 2.6 - i * 0.22, 0, 1);
+        if (lp <= 0) return;
+        ctx.globalAlpha = lp;
+        text(ctx, m.label, mx, my - 16, `34px ${DISPLAY}`, PAPER, 'left');
+        text(ctx, String(m.count), mx + mw, my - 16, `34px ${DISPLAY}`, accent, 'right');
+        ctx.fillStyle = 'rgba(245,243,235,0.08)';
+        roundRect(ctx, mx, my, mw, 22, 11); ctx.fill();
+        ctx.fillStyle = accent;
+        roundRect(ctx, mx, my, mw * (m.count / peak) * easeOut(lp), 22, 11); ctx.fill();
+        ctx.globalAlpha = 1;
+        my += 96;
+      });
+      break;
+    }
+    case 'places': {
+      text(ctx, 'GEOGRAPHY', cx, REEL_H * 0.2, `34px ${MONO}`, withAlpha(accent, 0.85), 'center', 7);
+      text(ctx, 'WHERE IT HAPPENED', cx, REEL_H * 0.26, `46px ${DISPLAY}`, PAPER, 'center', 1);
+      const px = REEL_W * 0.14, pw = REEL_W * 0.72;
+      let py = REEL_H * 0.38;
+      d.places.forEach((p, i) => {
+        const lp = clamp(lt * 2.6 - i * 0.22, 0, 1);
+        if (lp <= 0) return;
+        ctx.globalAlpha = lp;
+        text(ctx, p.name, px, py, `42px ${DISPLAY}`, PAPER, 'left');
+        if (p.country) text(ctx, p.country, px, py + 36, `24px ${MONO}`, 'rgba(245,243,235,0.5)', 'left', 3);
+        text(ctx, `×${p.count}`, px + pw, py, `42px ${DISPLAY}`, accent, 'right');
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = 'rgba(245,243,235,0.12)';
+        ctx.fillRect(px, py + 58, pw, 2);
+        py += 112;
+      });
+      break;
+    }
+    case 'weather': {
+      if (!d.weather) break;
+      text(ctx, 'CONDITIONS', cx, REEL_H * 0.22, `34px ${MONO}`, withAlpha(accent, 0.85), 'center', 7);
+      text(ctx, 'WHATEVER THE WEATHER', cx, REEL_H * 0.28, `46px ${DISPLAY}`, PAPER, 'center', 1);
+      const cells: { n: string; l: string }[] = [];
+      if (d.weather.rainCount > 0) cells.push({ n: String(d.weather.rainCount), l: 'IN THE WET' });
+      if (d.weather.coldest != null) cells.push({ n: `${Math.round(d.weather.coldest)}°`, l: 'COLDEST START' });
+      if (d.weather.hottest != null) cells.push({ n: `${Math.round(d.weather.hottest)}°`, l: 'HOTTEST START' });
+      cells.push({ n: String(d.weather.sessions), l: 'SESSIONS TRACKED' });
+      const cols = 2;
+      const cellW = REEL_W * 0.36;
+      const startX = cx - (cols * cellW) / 2;
+      const startY = REEL_H * 0.4;
+      cells.slice(0, 4).forEach((c, i) => {
+        const col = i % cols, row = Math.floor(i / cols);
+        const lp = clamp(lt * 2.6 - i * 0.2, 0, 1);
+        if (lp <= 0) return;
+        ctx.globalAlpha = lp;
+        const x = startX + col * cellW + cellW / 2;
+        const y = startY + row * 280;
+        text(ctx, c.n, x, y + 90, `110px ${DISPLAY}`, accent, 'center');
+        text(ctx, c.l, x, y + 144, `26px ${MONO}`, 'rgba(245,243,235,0.6)', 'center', 4);
+        ctx.globalAlpha = 1;
       });
       break;
     }

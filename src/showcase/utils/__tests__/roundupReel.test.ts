@@ -145,6 +145,31 @@ describe('planScenes', () => {
     expect(planScenes(d, false).map((s) => s.id)).toContain('efforts');
   });
 
+  it('adds muscles / places / weather scenes from enrichment data', () => {
+    const d = buildReelData(
+      {
+        ...rich,
+        muscles: [{ name: 'upper_back', count: 5 }, { name: 'chest', count: 3 }],
+        places: [{ name: 'Bushy Park', country: 'England', activityCount: 4 }],
+        weather: { sessionCount: 6, rainCount: 2, coldestTempC: 3.2, hottestTempC: 21.8 },
+      },
+      'month-05-2026',
+    );
+    expect(d.muscles[0]).toEqual({ label: 'UPPER BACK', count: 5 });
+    expect(d.places[0]).toEqual({ name: 'BUSHY PARK', country: 'ENGLAND', count: 4 });
+    expect(d.weather).toEqual({ rainCount: 2, coldest: 3.2, hottest: 21.8, sessions: 6 });
+    const ids = planScenes(d, false).map((s) => s.id);
+    expect(ids).toEqual(expect.arrayContaining(['muscles', 'places', 'weather']));
+  });
+
+  it('promotes elevation into the stats when there is meaningful vertical', () => {
+    const d = buildReelData(
+      { totalActivities: 8, totalDurationSeconds: 36000, totalElevationGainMeters: 1200 },
+      'month-05-2026',
+    );
+    expect(d.stats.find((s) => s.label === 'Climbed')).toEqual({ num: 1200, suffix: 'm', label: 'Climbed' });
+  });
+
   it('adds the photo scene only when usable photos exist', () => {
     const d = buildReelData(rich, 'month-05-2026');
     expect(planScenes(d, false).map((s) => s.id)).not.toContain('photos');

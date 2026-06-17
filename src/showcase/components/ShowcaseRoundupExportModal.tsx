@@ -6,14 +6,14 @@ import { saveImage } from '../utils/exportImage';
 import type { components } from '../../shared/api/schema-public';
 import { formatSource } from '../utils/format';
 import { ACCENTS, accentSwatchStyle, TEXT_SWATCHES, textSwatchStyle } from './ShowcaseExportModal';
-import { ChartCardFrame, ComparisonCardFrame, MediaCardFrame, EffortsCardFrame, PhotoWall, cardColors, type CardConfig } from './RoundupExportCards';
+import { ChartCardFrame, ComparisonCardFrame, MediaCardFrame, EffortsCardFrame, MusclesCardFrame, PlacesCardFrame, WeatherCardFrame, PhotoWall, cardColors, type CardConfig } from './RoundupExportCards';
 import { DonutChart, HRRingsChart, ConsistencyViz } from './RoundupCharts';
 import { RoundupReelPanel } from './RoundupReelPanel';
-import { buildDeltas, buildSportVMs, buildCalendarDays, formatClock, HR_ZONES } from '../utils/roundup';
+import { buildDeltas, buildSportVMs, buildCalendarDays, formatClock, formatMuscle, HR_ZONES } from '../utils/roundup';
 
 type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
 
-export type RoundupExportTab = 'overview' | 'prs' | 'story' | 'sport' | 'hr' | 'calendar' | 'efforts' | 'vs' | 'photo' | 'route' | 'reel';
+export type RoundupExportTab = 'overview' | 'prs' | 'story' | 'sport' | 'hr' | 'calendar' | 'efforts' | 'muscles' | 'places' | 'weather' | 'vs' | 'photo' | 'route' | 'reel';
 
 // ─── Shared constants ─────────────────────────────────────────────────────────
 
@@ -382,13 +382,16 @@ interface StoryFrameProps {
   showHR: boolean;
   showConsistency: boolean;
   showEfforts: boolean;
+  showMuscles: boolean;
+  showPlaces: boolean;
+  showWeather: boolean;
   showPhotos: boolean;
   showPRCallout: boolean;
   showWatermark: boolean;
 }
 
 const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
-  ({ roundup, periodKey, layout, accent, textColor, showTypeLabel, showAthleteName, showAvatar, showDateRange, showSport, showHR, showConsistency, showEfforts, showPhotos, showPRCallout, showWatermark }, ref) => {
+  ({ roundup, periodKey, layout, accent, textColor, showTypeLabel, showAthleteName, showAvatar, showDateRange, showSport, showHR, showConsistency, showEfforts, showMuscles, showPlaces, showWeather, showPhotos, showPRCallout, showWatermark }, ref) => {
     const dateRange = fmtDateRange(roundup);
     // Resolve chart colours the same way ChartCardFrame does, on a dark story bg.
     const cfg: CardConfig = {
@@ -410,11 +413,17 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
     const photos = roundup.photos ?? [];
     const prCount = roundup.prsAchieved?.length ?? 0;
     const efforts = (roundup.bestEfforts ?? []).filter((be) => (be.timeSeconds ?? 0) > 0);
+    const muscles = (roundup.muscles ?? []).filter((m) => (m.count ?? 0) > 0);
+    const places = roundup.places ?? [];
+    const weather = roundup.weather;
 
     const hasSport = showSport && sportVMs.length > 0;
     const hasHR = showHR && hrTracked >= 30;
     const hasCal = showConsistency && calDays.length > 1;
     const hasEff = showEfforts && efforts.length > 0;
+    const hasMus = showMuscles && muscles.length > 0;
+    const hasPl = showPlaces && places.length > 0;
+    const hasWx = showWeather && !!weather && (weather.sessionCount ?? 0) > 0;
     const hasPhotos = showPhotos && photos.length > 0;
     const hasPR = showPRCallout && prCount > 0;
 
@@ -510,6 +519,55 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
       </div>
     );
 
+    const MuscleRows = ({ max }: { max: number }) => {
+      const top = muscles.slice(0, max);
+      const peak = Math.max(...top.map((m) => m.count ?? 0), 1);
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+          {top.map((m, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '10px 0', borderTop: `1px solid ${colors.track}` }}>
+              <span style={{ fontFamily: DISPLAY, fontSize: '20px', textTransform: 'uppercase', color: colors.text, width: '180px', flexShrink: 0 }}>{formatMuscle(m.name ?? '')}</span>
+              <span style={{ flex: 1, height: '14px', background: colors.track, position: 'relative' }}>
+                <span style={{ position: 'absolute', inset: 0, width: `${((m.count ?? 0) / peak) * 100}%`, background: colors.accent }} />
+              </span>
+              <span style={{ fontFamily: DISPLAY, fontSize: '22px', color: colors.accent, minWidth: '40px', textAlign: 'right' }}>{m.count}</span>
+            </div>
+          ))}
+        </div>
+      );
+    };
+
+    const PlaceRows = ({ max }: { max: number }) => (
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        {places.slice(0, max).map((p, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: '12px', padding: '12px 0', borderTop: `1px solid ${colors.track}` }}>
+            <span style={{ fontFamily: DISPLAY, fontSize: '22px', textTransform: 'uppercase', color: colors.text, flex: 1 }}>{p.name}</span>
+            {p.country && <span style={{ fontFamily: MONO, fontSize: '14px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: colors.muted }}>{p.country}</span>}
+            <span style={{ fontFamily: DISPLAY, fontSize: '22px', color: colors.accent }}>×{p.activityCount}</span>
+          </div>
+        ))}
+      </div>
+    );
+
+    const WeatherCells = () => {
+      const w = weather!;
+      const cells: Array<{ n: string; l: string }> = [];
+      if ((w.rainCount ?? 0) > 0) cells.push({ n: String(w.rainCount), l: 'In the wet' });
+      if (w.coldestTempC != null) cells.push({ n: `${Math.round(w.coldestTempC)}°`, l: 'Coldest' });
+      if (w.hottestTempC != null) cells.push({ n: `${Math.round(w.hottestTempC)}°`, l: 'Hottest' });
+      cells.push({ n: String(w.sessionCount ?? 0), l: 'Tracked' });
+      return (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', width: '100%' }}>
+          {cells.map((c, i) => (
+            <div key={i}>
+              <div style={{ fontFamily: DISPLAY, fontSize: '44px', letterSpacing: '-0.03em', color: colors.accent, lineHeight: 1 }}>{c.n}</div>
+              <div style={{ fontFamily: MONO, fontSize: '14px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: colors.muted, marginTop: '6px' }}>{c.l}</div>
+            </div>
+          ))}
+        </div>
+      );
+    };
+
     const PRBar = () => (
       <div style={{ display: 'flex', alignItems: 'center', gap: '24px', padding: '28px 32px', background: `${colors.accent}1f`, border: `1px solid ${colors.accent}44` }}>
         <span style={{ fontFamily: DISPLAY, fontSize: '88px', color: colors.accent, lineHeight: 0.9 }}>{prCount}</span>
@@ -592,6 +650,15 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
       if (hasEff) cells.push(
         <Panel key="eff" title="Best Efforts"><EffortRows max={5} /></Panel>
       );
+      if (hasMus) cells.push(
+        <Panel key="mus" title="Muscles Worked"><MuscleRows max={6} /></Panel>
+      );
+      if (hasPl) cells.push(
+        <Panel key="pl" title="Where It Happened"><PlaceRows max={5} /></Panel>
+      );
+      if (hasWx) cells.push(
+        <Panel key="wx" title="Whatever the Weather"><WeatherCells /></Panel>
+      );
       if (hasPR) cells.push(
         <Panel key="pr" title="Records"><div style={{ textAlign: 'center' }}><div style={{ fontFamily: DISPLAY, fontSize: '120px', color: colors.accent, lineHeight: 0.9 }}>{prCount}</div><div style={{ fontFamily: MONO, fontSize: '16px', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: colors.muted, marginTop: '10px' }}>Personal Records 🏆</div></div></Panel>
       );
@@ -646,6 +713,15 @@ const StoryFrame = React.forwardRef<HTMLDivElement, StoryFrameProps>(
         {hasEff && (
           <Panel title="Best Efforts"><EffortRows max={6} /></Panel>
         )}
+        {(hasMus || hasPl) && (
+          <div style={{ display: 'grid', gridTemplateColumns: hasMus && hasPl ? '1fr 1fr' : '1fr', gap: '20px' }}>
+            {hasMus && <Panel title="Muscles Worked"><MuscleRows max={6} /></Panel>}
+            {hasPl && <Panel title="Where It Happened"><PlaceRows max={6} /></Panel>}
+          </div>
+        )}
+        {hasWx && (
+          <Panel title="Whatever the Weather"><WeatherCells /></Panel>
+        )}
         {hasPR && <PRBar />}
       </>,
     );
@@ -672,6 +748,9 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
   const hasHR = (roundup.hrZoneMinutes ?? []).slice(1, 6).reduce((a, b) => a + (b ?? 0), 0) > 0;
   const hasCal = (roundup.dayEntries?.length ?? 0) > 1;
   const hasEfforts = (roundup.bestEfforts?.filter((be) => (be.timeSeconds ?? 0) > 0).length ?? 0) > 0;
+  const hasMuscles = (roundup.muscles?.filter((m) => (m.count ?? 0) > 0).length ?? 0) > 0;
+  const hasPlaces = (roundup.places?.length ?? 0) > 0;
+  const hasWeather = !!roundup.weather && (roundup.weather.sessionCount ?? 0) > 0;
   const hasVs = !!previousRoundup && buildDeltas(roundup, previousRoundup).length > 0;
   const hasPhoto = (roundup.photos?.length ?? 0) > 0;
   const hasRoute = (roundup.routes?.length ?? 0) > 0;
@@ -683,6 +762,9 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
       case 'hr': return hasHR;
       case 'calendar': return hasCal;
       case 'efforts': return hasEfforts;
+      case 'muscles': return hasMuscles;
+      case 'places': return hasPlaces;
+      case 'weather': return hasWeather;
       case 'vs': return hasVs;
       case 'photo': return hasPhoto;
       case 'route': return hasRoute;
@@ -727,6 +809,9 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
   const [stShowHR, setStShowHR] = useState(true);
   const [stShowConsistency, setStShowConsistency] = useState(true);
   const [stShowEfforts, setStShowEfforts] = useState(true);
+  const [stShowMuscles, setStShowMuscles] = useState(true);
+  const [stShowPlaces, setStShowPlaces] = useState(true);
+  const [stShowWeather, setStShowWeather] = useState(true);
   const [stShowPhotos, setStShowPhotos] = useState(true);
   const [stShowPRCallout, setStShowPRCallout] = useState(true);
   const [stShowWatermark, setStShowWatermark] = useState(true);
@@ -744,7 +829,7 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
   const storyRef = useRef<HTMLDivElement>(null);
   const extraRef = useRef<HTMLDivElement>(null);
 
-  const isExtra = activeTab === 'sport' || activeTab === 'hr' || activeTab === 'calendar' || activeTab === 'efforts' || activeTab === 'vs';
+  const isExtra = activeTab === 'sport' || activeTab === 'hr' || activeTab === 'calendar' || activeTab === 'efforts' || activeTab === 'muscles' || activeTab === 'places' || activeTab === 'weather' || activeTab === 'vs';
   const isMedia = activeTab === 'photo' || activeTab === 'route';
   const activeRef = activeTab === 'overview' ? overviewRef
     : activeTab === 'prs' ? prRef
@@ -815,6 +900,9 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
             {hasCal && <button className={`export-tab${activeTab === 'calendar' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('calendar')}>Calendar</button>}
             {hasHR && <button className={`export-tab${activeTab === 'hr' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('hr')}>HR</button>}
             {hasEfforts && <button className={`export-tab${activeTab === 'efforts' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('efforts')}>Efforts</button>}
+            {hasMuscles && <button className={`export-tab${activeTab === 'muscles' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('muscles')}>Muscles</button>}
+            {hasPlaces && <button className={`export-tab${activeTab === 'places' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('places')}>Places</button>}
+            {hasWeather && <button className={`export-tab${activeTab === 'weather' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('weather')}>Weather</button>}
             {hasVs && <button className={`export-tab${activeTab === 'vs' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('vs')}>Vs ↑</button>}
             {hasRoute && <button className={`export-tab${activeTab === 'route' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('route')}>Route</button>}
             {hasPhoto && <button className={`export-tab${activeTab === 'photo' ? ' export-tab--active' : ''}`} onClick={() => setActiveTab('photo')}>Photo</button>}
@@ -887,6 +975,9 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
                     showHR={stShowHR}
                     showConsistency={stShowConsistency}
                     showEfforts={stShowEfforts}
+                    showMuscles={stShowMuscles}
+                    showPlaces={stShowPlaces}
+                    showWeather={stShowWeather}
                     showPhotos={stShowPhotos}
                     showPRCallout={stShowPRCallout}
                     showWatermark={stShowWatermark}
@@ -902,12 +993,16 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
                   />
                 )}
                 {activeTab === 'efforts' && (
-                  <EffortsCardFrame
-                    ref={extraRef}
-                    roundup={roundup}
-                    periodKey={periodKey}
-                    cfg={xCfg}
-                  />
+                  <EffortsCardFrame ref={extraRef} roundup={roundup} periodKey={periodKey} cfg={xCfg} />
+                )}
+                {activeTab === 'muscles' && (
+                  <MusclesCardFrame ref={extraRef} roundup={roundup} periodKey={periodKey} cfg={xCfg} />
+                )}
+                {activeTab === 'places' && (
+                  <PlacesCardFrame ref={extraRef} roundup={roundup} periodKey={periodKey} cfg={xCfg} />
+                )}
+                {activeTab === 'weather' && (
+                  <WeatherCardFrame ref={extraRef} roundup={roundup} periodKey={periodKey} cfg={xCfg} />
                 )}
                 {activeTab === 'vs' && previousRoundup && (
                   <ComparisonCardFrame
@@ -1082,6 +1177,9 @@ export const ShowcaseRoundupExportModal: React.FC<Props> = ({ roundup, periodKey
                       {hasHR && <button className={`export-pill${stShowHR ? ' export-pill--active' : ''}`} onClick={() => setStShowHR(v => !v)}>HR Rings</button>}
                       {hasCal && <button className={`export-pill${stShowConsistency ? ' export-pill--active' : ''}`} onClick={() => setStShowConsistency(v => !v)}>Consistency</button>}
                       {hasEfforts && <button className={`export-pill${stShowEfforts ? ' export-pill--active' : ''}`} onClick={() => setStShowEfforts(v => !v)}>Best Efforts</button>}
+                      {hasMuscles && <button className={`export-pill${stShowMuscles ? ' export-pill--active' : ''}`} onClick={() => setStShowMuscles(v => !v)}>Muscles</button>}
+                      {hasPlaces && <button className={`export-pill${stShowPlaces ? ' export-pill--active' : ''}`} onClick={() => setStShowPlaces(v => !v)}>Places</button>}
+                      {hasWeather && <button className={`export-pill${stShowWeather ? ' export-pill--active' : ''}`} onClick={() => setStShowWeather(v => !v)}>Weather</button>}
                       {hasPRs && <button className={`export-pill${stShowPRCallout ? ' export-pill--active' : ''}`} onClick={() => setStShowPRCallout(v => !v)}>PRs Callout</button>}
                       <button className={`export-pill${stShowWatermark ? ' export-pill--active' : ''}`} onClick={() => setStShowWatermark(v => !v)}>Watermark</button>
                     </div>
