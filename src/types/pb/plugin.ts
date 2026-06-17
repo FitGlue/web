@@ -30,6 +30,8 @@ export enum ConfigFieldType {
   CONFIG_FIELD_TYPE_KEY_VALUE_MAP = 6,
   /** CONFIG_FIELD_TYPE_DYNAMIC_SELECT - Dropdown with options fetched from API + allows new entry */
   CONFIG_FIELD_TYPE_DYNAMIC_SELECT = 7,
+  /** CONFIG_FIELD_TYPE_LOCATION_SEARCH - Title→place rules with a Nominatim place-search picker */
+  CONFIG_FIELD_TYPE_LOCATION_SEARCH = 8,
   UNRECOGNIZED = -1,
 }
 

@@ -290,7 +290,7 @@ export interface components {
              * Format: enum
              * @enum {string}
              */
-            fieldType?: "CONFIG_FIELD_TYPE_UNSPECIFIED" | "CONFIG_FIELD_TYPE_STRING" | "CONFIG_FIELD_TYPE_NUMBER" | "CONFIG_FIELD_TYPE_BOOLEAN" | "CONFIG_FIELD_TYPE_SELECT" | "CONFIG_FIELD_TYPE_MULTI_SELECT" | "CONFIG_FIELD_TYPE_KEY_VALUE_MAP" | "CONFIG_FIELD_TYPE_DYNAMIC_SELECT";
+            fieldType?: "CONFIG_FIELD_TYPE_UNSPECIFIED" | "CONFIG_FIELD_TYPE_STRING" | "CONFIG_FIELD_TYPE_NUMBER" | "CONFIG_FIELD_TYPE_BOOLEAN" | "CONFIG_FIELD_TYPE_SELECT" | "CONFIG_FIELD_TYPE_MULTI_SELECT" | "CONFIG_FIELD_TYPE_KEY_VALUE_MAP" | "CONFIG_FIELD_TYPE_DYNAMIC_SELECT" | "CONFIG_FIELD_TYPE_LOCATION_SEARCH";
             required?: boolean;
             defaultValue?: string;
             options?: components["schemas"]["ConfigFieldOption"][];
@@ -1095,6 +1095,13 @@ export interface components {
             hybridRaceSummary?: components["schemas"]["HybridRaceSummary"];
             id?: string;
             pipelineRunStatus?: string;
+            /**
+             * @description Transient, pipeline-only location hint set by the location-pinner enricher when an
+             *      activity has no GPS. Consumed by the weather and location-naming enrichers as a fallback.
+             *      NOT written to records and NOT serialized into the generated FIT file, so it never produces
+             *      an uploaded GPS track/map on destinations (Strava, TrainingPeaks, etc.).
+             */
+            hintLocation?: components["schemas"]["LocationSummary"];
         };
         /** @description The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors). */
         Status: {

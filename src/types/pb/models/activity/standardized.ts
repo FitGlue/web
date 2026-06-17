@@ -5,6 +5,7 @@
 // source: models/activity/standardized.proto
 
 /* eslint-disable */
+import type { LocationSummary } from "./enrichments";
 import type { ActivitySource, ActivityType } from "./source";
 
 export const protobufPackage = "fitglue.models.activity";
@@ -50,6 +51,13 @@ export interface StandardizedActivity {
   hybridRaceSummary?: HybridRaceSummary | undefined;
   id: string;
   pipelineRunStatus: string;
+  /**
+   * Transient, pipeline-only location hint set by the location-pinner enricher when an
+   * activity has no GPS. Consumed by the weather and location-naming enrichers as a fallback.
+   * NOT written to records and NOT serialized into the generated FIT file, so it never produces
+   * an uploaded GPS track/map on destinations (Strava, TrainingPeaks, etc.).
+   */
+  hintLocation?: LocationSummary | undefined;
 }
 
 export interface HybridRaceSummary {

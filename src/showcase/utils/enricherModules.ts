@@ -128,6 +128,7 @@ const ENRICHER_TO_MODULE: Record<string, ModuleKey | null> = {
   ENRICHER_PROVIDER_AI_BANNER:            null, // handled separately (page-level hero)
   ENRICHER_PROVIDER_ROUTE_THUMBNAIL:      null, // handled separately (map module)
   ENRICHER_PROVIDER_LOCATION_NAMING:      null, // folds into hero meta
+  ENRICHER_PROVIDER_LOCATION_PINNER:      null, // pipeline-only; surfaces via weather + location naming
   ENRICHER_PROVIDER_ICAL_TITLE:           null, // pipeline-only, no showcase panel
   ENRICHER_PROVIDER_WORKOUT_SUMMARY:      null,
 };

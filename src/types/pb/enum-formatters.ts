@@ -1452,6 +1452,10 @@ const EnricherProviderTypeNames: Record<string, string> = {
     'HDROP': 'Hdrop',
     'Hdrop': 'Hdrop',
     '46': 'Hdrop',
+    'ENRICHER_PROVIDER_LOCATION_PINNER': 'Location Pinner',
+    'LOCATION_PINNER': 'Location Pinner',
+    'Location Pinner': 'Location Pinner',
+    '47': 'Location Pinner',
     'ENRICHER_PROVIDER_MOCK': 'Mock',
     'MOCK': 'Mock',
     'Mock': 'Mock',
@@ -1523,6 +1527,7 @@ export function formatEnricherProviderType(value: EnricherProviderType | number 
     case EnricherProviderType.ENRICHER_PROVIDER_TEMPERATURE_SUMMARY: return 'Temperature Summary';
     case EnricherProviderType.ENRICHER_PROVIDER_BEST_EFFORTS: return 'Best Efforts';
     case EnricherProviderType.ENRICHER_PROVIDER_HDROP: return 'Hdrop';
+    case EnricherProviderType.ENRICHER_PROVIDER_LOCATION_PINNER: return 'Location Pinner';
     case EnricherProviderType.ENRICHER_PROVIDER_MOCK: return 'Mock';
     default: return 'Unknown';
   }
@@ -1709,6 +1714,10 @@ const EnricherProviderTypeValues: Record<string, EnricherProviderType> = {
     'enricher_provider_hdrop': EnricherProviderType.ENRICHER_PROVIDER_HDROP,
     'hdrop': EnricherProviderType.ENRICHER_PROVIDER_HDROP,
     '46': EnricherProviderType.ENRICHER_PROVIDER_HDROP,
+    'enricher_provider_location_pinner': EnricherProviderType.ENRICHER_PROVIDER_LOCATION_PINNER,
+    'location_pinner': EnricherProviderType.ENRICHER_PROVIDER_LOCATION_PINNER,
+    'location pinner': EnricherProviderType.ENRICHER_PROVIDER_LOCATION_PINNER,
+    '47': EnricherProviderType.ENRICHER_PROVIDER_LOCATION_PINNER,
     'enricher_provider_mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     'mock': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
     '99': EnricherProviderType.ENRICHER_PROVIDER_MOCK,
@@ -1914,6 +1923,10 @@ const ConfigFieldTypeNames: Record<string, string> = {
     'DYNAMIC_SELECT': 'Dynamic Select',
     'Dynamic Select': 'Dynamic Select',
     '7': 'Dynamic Select',
+    'CONFIG_FIELD_TYPE_LOCATION_SEARCH': 'Location Search',
+    'LOCATION_SEARCH': 'Location Search',
+    'Location Search': 'Location Search',
+    '8': 'Location Search',
 };
 
 export function formatConfigFieldType(value: ConfigFieldType | number | string | undefined | null): string {
@@ -1943,6 +1956,7 @@ export function formatConfigFieldType(value: ConfigFieldType | number | string |
     case ConfigFieldType.CONFIG_FIELD_TYPE_MULTI_SELECT: return 'Multi Select';
     case ConfigFieldType.CONFIG_FIELD_TYPE_KEY_VALUE_MAP: return 'Key Value Map';
     case ConfigFieldType.CONFIG_FIELD_TYPE_DYNAMIC_SELECT: return 'Dynamic Select';
+    case ConfigFieldType.CONFIG_FIELD_TYPE_LOCATION_SEARCH: return 'Location Search';
     default: return 'String';
   }
 }
@@ -1975,6 +1989,10 @@ const ConfigFieldTypeValues: Record<string, ConfigFieldType> = {
     'dynamic_select': ConfigFieldType.CONFIG_FIELD_TYPE_DYNAMIC_SELECT,
     'dynamic select': ConfigFieldType.CONFIG_FIELD_TYPE_DYNAMIC_SELECT,
     '7': ConfigFieldType.CONFIG_FIELD_TYPE_DYNAMIC_SELECT,
+    'config_field_type_location_search': ConfigFieldType.CONFIG_FIELD_TYPE_LOCATION_SEARCH,
+    'location_search': ConfigFieldType.CONFIG_FIELD_TYPE_LOCATION_SEARCH,
+    'location search': ConfigFieldType.CONFIG_FIELD_TYPE_LOCATION_SEARCH,
+    '8': ConfigFieldType.CONFIG_FIELD_TYPE_LOCATION_SEARCH,
 };
 
 export function parseConfigFieldType(input: string | number | undefined | null): ConfigFieldType {

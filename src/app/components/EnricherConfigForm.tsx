@@ -9,6 +9,7 @@ import { Checkbox } from './library/forms/Checkbox';
 import { FormField } from './library/forms/FormField';
 import { KeyValueMapEditor } from './KeyValueMapEditor';
 import { DynamicSelectField } from './DynamicSelectField';
+import { LocationSearchMapEditor } from './LocationSearchMapEditor';
 
 interface Props {
   schema: ConfigFieldSchema[];
@@ -159,6 +160,14 @@ export const EnricherConfigForm: React.FC<Props> = ({ schema, initialValues = {}
         return (
           <DynamicSelectField
             field={field}
+            value={value}
+            onChange={v => handleChange(field.key, v)}
+          />
+        );
+
+      case ConfigFieldType.CONFIG_FIELD_TYPE_LOCATION_SEARCH:
+        return (
+          <LocationSearchMapEditor
             value={value}
             onChange={v => handleChange(field.key, v)}
           />
