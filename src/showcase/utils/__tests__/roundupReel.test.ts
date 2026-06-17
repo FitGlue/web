@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildReelData, REEL_W, REEL_H, REEL_DURATION } from '../roundupReel';
+import { buildReelData, planScenes, reelDuration, REEL_W, REEL_H, REEL_DURATION } from '../roundupReel';
 import type { ShowcaseRoundup } from '../roundup';
 
 describe('reel constants', () => {
@@ -71,7 +71,7 @@ describe('buildReelData', () => {
     expect(none.highlight).toBeNull();
   });
 
-  it('caps sports at four with percentages', () => {
+  it('caps sports at five with percentages', () => {
     const r: ShowcaseRoundup = {
       activityTypeBreakdowns: [
         { activityType: 'ACTIVITY_TYPE_RUN', activityCount: 10 },
@@ -79,11 +79,82 @@ describe('buildReelData', () => {
         { activityType: 'ACTIVITY_TYPE_SWIM', activityCount: 3 },
         { activityType: 'ACTIVITY_TYPE_HIKE', activityCount: 2 },
         { activityType: 'ACTIVITY_TYPE_YOGA', activityCount: 1 },
+        { activityType: 'ACTIVITY_TYPE_WALK', activityCount: 1 },
       ],
     };
     const d = buildReelData(r, 'year-2025');
-    expect(d.sports.length).toBe(4);
+    expect(d.sports.length).toBe(5);
     expect(d.sports[0].count).toBe(10);
-    expect(d.sports[0].pct).toBeCloseTo(10 / 22, 5);
+    expect(d.sports[0].pct).toBeCloseTo(10 / 23, 5);
+  });
+
+  it('exposes page-style data sources (date range, photos, cal days, hr)', () => {
+    const r: ShowcaseRoundup = {
+      periodType: 'ROUNDUP_PERIOD_TYPE_MONTH',
+      periodStart: '2026-05-01T00:00:00Z',
+      periodEnd: '2026-06-01T00:00:00Z',
+      ownerDisplayName: 'James King',
+      ownerProfileSlug: 'jamesking',
+      hrZoneMinutes: [0, 100, 200, 50, 20, 5],
+      dayEntries: [{ date: '2026-05-03', effortLevel: 3 }],
+      photos: [{ url: 'https://cdn.example/p1.jpg' }, { url: '' }],
+      routes: [{ thumbnailUrl: 'https://cdn.example/r1.png' }],
+    };
+    const d = buildReelData(r, 'month-05-2026');
+    expect(d.dateRange).toContain('MAY');
+    expect(d.handle).toBe('jamesking');
+    expect(d.photos).toEqual(['https://cdn.example/p1.jpg', 'https://cdn.example/r1.png']);
+    expect(d.calDays.length).toBeGreaterThan(1);
+    expect(d.hrMinutes).toEqual([0, 100, 200, 50, 20, 5]);
+  });
+});
+
+describe('planScenes', () => {
+  const rich: ShowcaseRoundup = {
+    periodType: 'ROUNDUP_PERIOD_TYPE_MONTH',
+    periodStart: '2026-05-01T00:00:00Z',
+    periodEnd: '2026-06-01T00:00:00Z',
+    totalActivities: 20,
+    totalDurationSeconds: 72000,
+    activityTypeBreakdowns: [{ activityType: 'ACTIVITY_TYPE_RUN', activityCount: 20 }],
+    hrZoneMinutes: [0, 100, 200, 50, 20, 5],
+    dayEntries: [{ date: '2026-05-03', effortLevel: 3 }],
+    prsAchieved: [{}, {}],
+  };
+
+  it('always includes cover, stats and outro', () => {
+    const ids = planScenes(buildReelData({ totalActivities: 1 }, 'year-2025'), false).map((s) => s.id);
+    expect(ids[0]).toBe('cover');
+    expect(ids).toContain('stats');
+    expect(ids[ids.length - 1]).toBe('outro');
+  });
+
+  it('includes data-driven scenes only when supported', () => {
+    const ids = planScenes(buildReelData(rich, 'month-05-2026'), false).map((s) => s.id);
+    expect(ids).toEqual(expect.arrayContaining(['donut', 'heatmap', 'hr', 'highlight']));
+    expect(ids).not.toContain('photos'); // no usable photos passed
+    expect(ids).not.toContain('efforts'); // no best efforts on `rich`
+  });
+
+  it('adds the efforts scene when best efforts exist', () => {
+    const d = buildReelData(
+      { ...rich, bestEfforts: [{ distanceKey: '5k', display: '5K', timeSeconds: 1200, distanceM: 5000 }] },
+      'month-05-2026',
+    );
+    expect(d.efforts).toEqual([{ label: '5K', time: '20:00' }]);
+    expect(planScenes(d, false).map((s) => s.id)).toContain('efforts');
+  });
+
+  it('adds the photo scene only when usable photos exist', () => {
+    const d = buildReelData(rich, 'month-05-2026');
+    expect(planScenes(d, false).map((s) => s.id)).not.toContain('photos');
+    expect(planScenes(d, true).map((s) => s.id)).toContain('photos');
+  });
+
+  it('reelDuration sums scene durations and grows with content', () => {
+    const lean = reelDuration(planScenes(buildReelData({ totalActivities: 1 }, 'year-2025'), false));
+    const full = reelDuration(planScenes(buildReelData(rich, 'month-05-2026'), true));
+    expect(lean).toBeGreaterThan(0);
+    expect(full).toBeGreaterThan(lean);
   });
 });

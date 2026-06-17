@@ -1,14 +1,44 @@
 /**
  * Reel tab for the share modal: a looping canvas preview of the Roundup Reel
- * plus a "Download Reel" button that records a single pass to WebM.
+ * plus a "Download Reel" button that records a single pass to WebM. Photos and
+ * the avatar are preloaded with CORS and taint-tested up front — a tainted
+ * canvas would make MediaRecorder throw, so unusable images are dropped and the
+ * reel falls back to its purely-graphical scenes.
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { components } from '../../shared/api/schema-public';
 import { logger } from '../../shared/logger';
 import { ACCENTS, accentSwatchStyle } from './ShowcaseExportModal';
-import { REEL_W, REEL_H, buildReelData, drawReelFrame, recordReel } from '../utils/roundupReel';
+import { REEL_W, REEL_H, buildReelData, drawReelFrame, recordReel, planScenes, reelDuration } from '../utils/roundupReel';
 
 type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
+
+type LoadedImages = { images: HTMLImageElement[]; hasPhotos: boolean };
+
+/** Loads an image with CORS and resolves null if it fails or is cross-origin tainted. */
+function loadUsableImage(url: string, kind: 'photo' | 'avatar'): Promise<HTMLImageElement | null> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      // Taint test: drawing then reading back throws on a CORS-tainted canvas.
+      try {
+        const test = document.createElement('canvas');
+        test.width = test.height = 1;
+        const tctx = test.getContext('2d');
+        if (!tctx) { resolve(null); return; }
+        tctx.drawImage(img, 0, 0, 1, 1);
+        tctx.getImageData(0, 0, 1, 1);
+        img.dataset.kind = kind;
+        resolve(img);
+      } catch {
+        resolve(null);
+      }
+    };
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
+}
 
 export const RoundupReelPanel: React.FC<{
   roundup: ShowcaseRoundup;
@@ -20,7 +50,33 @@ export const RoundupReelPanel: React.FC<{
   const [recording, setRecording] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState<LoadedImages>({ images: [], hasPhotos: false });
   const data = useMemo(() => buildReelData(roundup, periodKey), [roundup, periodKey]);
+
+  const duration = useMemo(
+    () => reelDuration(planScenes(data, loaded.hasPhotos)),
+    [data, loaded.hasPhotos],
+  );
+
+  // Preload avatar + photos with CORS; keep only usable (non-tainted) images.
+  useEffect(() => {
+    let cancelled = false;
+    const jobs: Promise<HTMLImageElement | null>[] = [];
+    if (data.avatarUrl) jobs.push(loadUsableImage(data.avatarUrl, 'avatar'));
+    data.photos.forEach((u) => jobs.push(loadUsableImage(u, 'photo')));
+    if (jobs.length === 0) { setLoaded({ images: [], hasPhotos: false }); return; }
+    Promise.all(jobs).then((res) => {
+      if (cancelled) return;
+      const images = res.filter((i): i is HTMLImageElement => !!i);
+      setLoaded({ images, hasPhotos: images.some((i) => i.dataset.kind === 'photo') });
+    });
+    return () => { cancelled = true; };
+  }, [data]);
+
+  const drawCtx = useMemo(
+    () => ({ images: loaded.images, hasPhotos: loaded.hasPhotos }),
+    [loaded],
+  );
 
   // Looping preview — paused while recording so the two loops don't fight.
   useEffect(() => {
@@ -33,13 +89,13 @@ export const RoundupReelPanel: React.FC<{
     const start = performance.now();
     const loop = (now: number) => {
       if (!active) return;
-      const t = ((now - start) / 1000) % 12;
-      drawReelFrame(ctx, data, t, accent);
+      const t = ((now - start) / 1000) % duration;
+      drawReelFrame(ctx, data, t, accent, drawCtx);
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => { active = false; cancelAnimationFrame(raf); };
-  }, [data, accent, recording]);
+  }, [data, accent, recording, duration, drawCtx]);
 
   const onDownload = async () => {
     const canvas = canvasRef.current;
@@ -49,7 +105,7 @@ export const RoundupReelPanel: React.FC<{
     setRecording(true);
     setProgress(0);
     try {
-      const blob = await recordReel(canvas, (t) => drawReelFrame(ctx, data, t, accent), setProgress);
+      const blob = await recordReel(canvas, (t) => drawReelFrame(ctx, data, t, accent, drawCtx), duration, setProgress);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -94,7 +150,7 @@ export const RoundupReelPanel: React.FC<{
         {recording ? `Recording… ${Math.round(progress * 100)}%` : '⬇ Download Reel (WebM)'}
       </button>
       {error && <p className="export-stats-hint" style={{ color: 'var(--fg-rose)' }}>{error}</p>}
-      {!error && <p className="export-stats-hint">12-second 9:16 clip · recorded in your browser · great for Stories &amp; Reels</p>}
+      {!error && <p className="export-stats-hint">{Math.round(duration)}-second 9:16 clip · recorded in your browser · great for Stories &amp; Reels</p>}
     </div>
   );
 };
