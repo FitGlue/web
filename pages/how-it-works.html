@@ -16,6 +16,33 @@
   .step__n { font-family: var(--fg-font-display); font-size: 5rem; line-height: 1; letter-spacing: -.04em; background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .step__t { font-family: var(--fg-font-display); font-size: 1.5rem; letter-spacing: -.015em; margin-top: 8px; text-transform: uppercase; }
   .step__d { font-family: var(--fg-font-body); font-size: .9375rem; color: var(--color-text-muted); line-height: 1.55; margin-top: 8px; }
+  .step__link { font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .1em; color: var(--fg-cyan); text-transform: uppercase; text-decoration: none; display: inline-block; margin-top: 12px; }
+
+  /* ── Pipeline illustration ── */
+  .pipeline-ill { padding: 48px 32px; max-width: 800px; margin: 0 auto; display: flex; align-items: center; gap: 0; }
+  .pipe-node { flex: 0 0 auto; text-align: center; }
+  .pipe-node__box { padding: 18px 24px; background: var(--fg-ink-2); border: var(--fg-rule-thin); display: inline-flex; flex-direction: column; align-items: center; gap: 8px; min-width: 140px; }
+  .pipe-node__box--aurora { background: var(--gradient-primary); border: 0; }
+  .pipe-node__icon { font-size: 1.75rem; line-height: 1; }
+  .pipe-node__label { font-family: var(--fg-font-display); font-size: .9375rem; letter-spacing: -.01em; text-transform: uppercase; }
+  .pipe-node__box--aurora .pipe-node__label { color: var(--fg-ink); }
+  .pipe-line { flex: 1; height: 2px; background: var(--gradient-primary); position: relative; }
+  .pipe-line::after { content: '→'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); font-size: 1.125rem; color: var(--fg-cyan); background: var(--fg-ink); padding: 0 2px; }
+
+  /* ── Booster grid ── */
+  .feat-grid { padding: 0 32px 64px; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .feat { padding: 24px; background: var(--fg-ink-2); display: flex; flex-direction: column; gap: 12px; min-height: 220px; text-decoration: none; color: inherit; transition: box-shadow 0.15s ease; }
+  .feat:hover { box-shadow: inset 0 0 0 1.5px var(--fg-cyan); }
+  .feat--premium { box-shadow: inset 0 0 0 2px var(--fg-paper); }
+  .feat--premium:hover { box-shadow: inset 0 0 0 2px var(--fg-cyan); }
+  .feat--unavailable { opacity: .5; pointer-events: none; }
+  .feat__icon { font-size: 2rem; line-height: 1; }
+  .feat__title { font-family: var(--fg-font-display); font-size: 1.25rem; letter-spacing: -.015em; text-transform: uppercase; }
+  .feat__body { font-family: var(--fg-font-body); font-size: .9375rem; line-height: 1.5; color: var(--color-text-muted); }
+  .feat__tag { font-family: var(--fg-font-mono); font-size: .5625rem; font-weight: 700; letter-spacing: .14em; padding: 2px 8px; display: inline-block; text-transform: uppercase; margin-top: auto; align-self: flex-start; }
+  .feat__tag--free { background: var(--fg-paper); color: var(--fg-ink); }
+  .feat__tag--athlete { background: var(--gradient-primary); color: var(--fg-ink); }
+  .feat__tag--soon { background: var(--fg-ink-3, #333); color: var(--color-text-muted); }
 
   /* ── FAQ section ── */
   .hiw-faq { padding: 64px 32px; max-width: 1280px; margin: 0 auto; }
@@ -30,36 +57,44 @@
   .hiw-cta { padding: 64px 32px; text-align: center; border-top: var(--fg-rule-thin); }
   .hiw-cta__title { font-family: var(--fg-font-display); font-size: clamp(1.75rem, 4vw, 2.5rem); letter-spacing: -.025em; text-transform: uppercase; margin-bottom: 24px; }
   .hiw-cta__title .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .btn-aurora { display: inline-flex; align-items: center; gap: 6px; padding: 14px 24px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; }
+  .btn-aurora { display: inline-flex; align-items: center; gap: 6px; padding: 14px 24px; background: var(--gradient-primary); color: var(--fg-ink); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; text-decoration: none; }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 6px; padding: 14px 24px; background: transparent; color: var(--fg-paper); box-shadow: inset 0 0 0 1.5px var(--fg-paper); font-family: var(--fg-font-display); font-size: .875rem; letter-spacing: .04em; text-transform: uppercase; border: 0; cursor: pointer; text-decoration: none; margin-left: 12px; }
 
   /* ── Dark info band ── */
   .dark-band { padding: 14px 32px; background: var(--fg-ink-2); border-bottom: var(--fg-rule-thin); border-top: var(--fg-rule-thin); display: flex; justify-content: space-between; align-items: center; }
   .dark-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-paper); text-transform: uppercase; }
   .dark-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
 
+  /* ── Aurora band ── */
+  .feat-band { padding: 14px 32px; background: var(--gradient-primary); display: flex; justify-content: space-between; align-items: center; }
+  .feat-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-ink); text-transform: uppercase; }
+  .feat-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--fg-ink); opacity: .7; text-transform: uppercase; }
+
   @media (max-width: 900px) {
     .steps-grid { grid-template-columns: repeat(2, 1fr); }
     .step:nth-child(2) { border-right: 0; }
     .step:nth-child(3) { border-top: var(--fg-rule-thin); }
     .step:nth-child(4) { border-top: var(--fg-rule-thin); border-right: 0; }
+    .feat-grid { grid-template-columns: repeat(2, 1fr); }
+    .pipeline-ill { flex-direction: column; gap: 18px; }
+    .pipe-line { width: 2px; height: 32px; background: var(--gradient-primary); }
+    .pipe-line::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -14px; transform: translateX(-50%); }
   }
   @media (max-width: 720px) {
     .steps-grid { grid-template-columns: 1fr; }
-    .step { border-right: 0; border-bottom: var(--fg-rule-thin); padding: 28px 20px; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 16px; }
+    .step { border-right: 0; border-bottom: var(--fg-rule-thin); padding: 28px 20px; }
     .step:nth-child(3) { border-top: 0; }
     .step:nth-child(4) { border-top: 0; }
     .step:last-child { border-bottom: 0; }
-    .step__n { font-size: 2.5rem; grid-row: 1; grid-column: 1; align-self: baseline; line-height: 1; }
-    .step__t { grid-row: 1; grid-column: 2; align-self: end; margin-top: 0; font-size: 1.25rem; }
-    .step__d { grid-row: 2; grid-column: 2; margin-top: 8px; }
   }
   @media (max-width: 600px) {
     .steps-grid { padding: 0 16px 48px; }
+    .feat-grid { grid-template-columns: 1fr; padding: 0 16px 48px; }
     .ph { padding: 40px 16px; }
     .hiw-faq { padding: 48px 16px; }
     .faq-item { padding: 18px 16px; }
     .hiw-cta { padding: 48px 16px; }
-    .dark-band { flex-wrap: wrap; gap: 4px; }
+    .dark-band, .feat-band { flex-wrap: wrap; gap: 4px; }
   }
 </style>
 
@@ -67,7 +102,35 @@
   <div class="ph">
     <div class="ph__eyebrow">HOW IT WORKS · ~5 MINUTES FROM ZERO TO ENRICHED</div>
     <h1 class="ph__title">Plug it in.<br><span class="gr">Magic out.</span></h1>
-    <p class="ph__sub">Four steps. No code. No spreadsheets. Each activity from any source lands in your dashboard within seconds, enriched with everything the boosters add.</p>
+    <p class="ph__sub">Pick your sources. Stack the boosters you want in the middle. Choose where it all lands. No code, no spreadsheets — every activity flows through automatically, enriched and ready to share.</p>
+  </div>
+
+  <!-- Pipeline illustration -->
+  <div class="dark-band">
+    <span class="dark-band__label">THE PIPELINE</span>
+    <span class="dark-band__right">SOURCE → FITGLUE → DESTINATION</span>
+  </div>
+  <div class="pipeline-ill">
+    <div class="pipe-node">
+      <div class="pipe-node__box">
+        <span class="pipe-node__icon">📥</span>
+        <span class="pipe-node__label">Source</span>
+      </div>
+    </div>
+    <div class="pipe-line"></div>
+    <div class="pipe-node">
+      <div class="pipe-node__box pipe-node__box--aurora">
+        <span class="pipe-node__icon">⚡</span>
+        <span class="pipe-node__label">FitGlue</span>
+      </div>
+    </div>
+    <div class="pipe-line"></div>
+    <div class="pipe-node">
+      <div class="pipe-node__box">
+        <span class="pipe-node__icon">📤</span>
+        <span class="pipe-node__label">Destination</span>
+      </div>
+    </div>
   </div>
 
   <!-- Steps grid -->
@@ -94,9 +157,40 @@
     <div class="step">
       <div class="step__n">4</div>
       <div class="step__t">Share</div>
-      <div class="step__d">Public showcase profile, Strava posts that actually say something, personal feed, fan-out to multiple platforms simultaneously.</div>
+      <div class="step__d">Fan out to Strava, TrainingPeaks and Intervals.icu — or your own public Showcase page that anyone can open.</div>
+      <a href="/showcase" class="step__link">EXPLORE SHOWCASE →</a>
     </div>
   </div>
+
+  <!-- Booster catalogue (merged from Features) -->
+  <div class="ph">
+    <div class="ph__eyebrow">THE BOOSTERS · {{boosters.length}} AND COUNTING</div>
+    <h2 class="ph__title" style="font-size:clamp(2rem,5vw,3.25rem)">Stack the <span class="gr">middle.</span></h2>
+    <p class="ph__sub">Boosters are the magic in step 2. Drop as many as you like into a pipeline — they run in order, every time, automatically.</p>
+  </div>
+
+  {{#each boostersByCategory}}
+  <div class="feat-band">
+    <span class="feat-band__label">{{emoji}} {{name}} · {{plugins.length}}</span>
+    <span class="feat-band__right">{{rightLabel}}</span>
+  </div>
+  <div class="feat-grid">
+    {{#each plugins}}
+    <a href="{{detailsUrl}}" class="feat{{#if isPremium}} feat--premium{{/if}}{{#if isTemporarilyUnavailable}} feat--unavailable{{/if}}">
+      <div class="feat__icon">{{icon}}</div>
+      <div class="feat__title">{{name}}</div>
+      <div class="feat__body">{{description}}</div>
+      {{#if isTemporarilyUnavailable}}
+        <span class="feat__tag feat__tag--soon">COMING SOON</span>
+      {{else if isPremium}}
+        <span class="feat__tag feat__tag--athlete">✦ ATHLETE</span>
+      {{else}}
+        <span class="feat__tag feat__tag--free">FREE</span>
+      {{/if}}
+    </a>
+    {{/each}}
+  </div>
+  {{/each}}
 
   <!-- FAQ -->
   <div class="hiw-faq">
@@ -132,6 +226,7 @@
   <div class="hiw-cta">
     <p class="hiw-cta__title">Ready to <span class="gr">try it?</span></p>
     <a href="/auth/register" class="btn-aurora">GET STARTED FREE →</a>
+    <a href="/showcase" class="btn-ghost">SEE SHOWCASE</a>
   </div>
 </main>
 

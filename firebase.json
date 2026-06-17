@@ -10,6 +10,13 @@
       "**/node_modules/**"
     ],
     "cleanUrls": true,
+    "redirects": [
+      {
+        "source": "/features",
+        "destination": "/how-it-works",
+        "type": 301
+      }
+    ],
     "headers": [
       {
         "source": "**",
@@ -86,15 +93,15 @@
       },
       {
         "source": "/@*/**",
-        "destination": "/showcase/index.html"
+        "destination": "/showcase-app/index.html"
       },
       {
         "source": "/@*",
-        "destination": "/showcase/index.html"
+        "destination": "/showcase-app/index.html"
       },
       {
         "source": "/showcase/**",
-        "destination": "/showcase/index.html"
+        "destination": "/showcase-app/index.html"
       }
     ]
   }

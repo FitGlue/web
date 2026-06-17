@@ -5,6 +5,7 @@ import client from '../../shared/api/client';
 import type { components as clientComponents } from '../../shared/api/schema-client';
 import { recordShowcaseView } from '../utils/recordView';
 import { useShowcaseOwner } from '../utils/useShowcaseOwner';
+import { useShowcaseMeta } from '../utils/useShowcaseMeta';
 import { ViewCountBadge } from '../components/ViewCountBadge';
 import { isNativeApp } from '../../shared/nativeBridge';
 import ShowcaseNotFound from '../components/ShowcaseNotFound';
@@ -189,6 +190,19 @@ export default function ShowcaseRoundupPage() {
   const previousRoundup = usePreviousRoundup(slug, prevKey);
 
   useReveal(!!roundup, previousRoundup);
+
+  // Set the page <head> title + share meta, like the other showcase pages do.
+  useShowcaseMeta(roundup ? {
+    type: 'roundup',
+    // periodShortLabel is all-caps for the on-page crumb; title-case it for the tab.
+    periodLabel: periodShortLabel(periodKeyParam ?? '')
+      .toLowerCase()
+      .replace(/\b\w/g, (c) => c.toUpperCase()),
+    ownerName: roundup.ownerDisplayName ?? undefined,
+    avatarUrl: roundup.ownerProfilePictureUrl ?? undefined,
+    aiSummary: roundup.aiSummary ?? undefined,
+    url: window.location.href,
+  } : null);
 
   // Sticky share bar appears after the hero.
   useEffect(() => {

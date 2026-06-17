@@ -47,7 +47,18 @@ interface ProfileMeta {
   url: string;
 }
 
-type ShowcaseMeta = ActivityMeta | ProfileMeta;
+interface RoundupMeta {
+  type: 'roundup';
+  /** Human period label, e.g. "Week 24 · 2025" or "June 2025". */
+  periodLabel: string;
+  ownerName?: string;
+  avatarUrl?: string;
+  /** AI-written recap — preferred description. */
+  aiSummary?: string;
+  url: string;
+}
+
+type ShowcaseMeta = ActivityMeta | ProfileMeta | RoundupMeta;
 
 export function useShowcaseMeta(meta: ShowcaseMeta | null) {
   useEffect(() => {
@@ -78,7 +89,7 @@ export function useShowcaseMeta(meta: ShowcaseMeta | null) {
       setMetaTag('twitter:description', ogDesc);
 
       setEmojiCfavicon(meta.emoji);
-    } else {
+    } else if (meta.type === 'profile') {
       const pageTitle = `${meta.displayName} · ${siteName}`;
       document.title = pageTitle;
 
@@ -99,6 +110,30 @@ export function useShowcaseMeta(meta: ShowcaseMeta | null) {
       if (ogImage) setMetaTag('twitter:image', ogImage);
 
       setEmojiCfavicon('🏅');
+    } else {
+      const pageTitle = meta.ownerName
+        ? `${meta.periodLabel} Roundup · ${meta.ownerName} · ${siteName}`
+        : `${meta.periodLabel} Roundup · ${siteName}`;
+      document.title = pageTitle;
+
+      const owner = meta.ownerName ?? 'An athlete';
+      const ogDesc = (meta.aiSummary || `${owner}'s ${meta.periodLabel} in sport on ${siteName}.`).slice(0, 200);
+      const ogImage = meta.avatarUrl || '';
+
+      setMetaTag('description', ogDesc);
+      setMetaTag('og:title', pageTitle, true);
+      setMetaTag('og:description', ogDesc, true);
+      setMetaTag('og:url', meta.url, true);
+      setMetaTag('og:type', 'article', true);
+      setMetaTag('og:site_name', siteName, true);
+      if (ogImage) setMetaTag('og:image', ogImage, true);
+
+      setMetaTag('twitter:card', ogImage ? 'summary' : 'summary');
+      setMetaTag('twitter:title', pageTitle);
+      setMetaTag('twitter:description', ogDesc);
+      if (ogImage) setMetaTag('twitter:image', ogImage);
+
+      setEmojiCfavicon('📊');
     }
   }, [meta]);
 }
