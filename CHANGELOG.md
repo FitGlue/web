@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.86.0](https://github.com/fitglue/web/compare/v11.85.0...v11.86.0) (2026-06-17)
+
+
+### Features
+
+* **roundup-reel:** rainbow PR-card scene + per-scene toggles ([d8033e8](https://github.com/fitglue/web/commit/d8033e8a825e6c65f0092cf65f677735d94bc23f))
+
+
+### Bug Fixes
+
+* **roundup:** masonry PR wall + per-exercise colour ([1e47500](https://github.com/fitglue/web/commit/1e475000aaa09a5c3a658b665adfd6295c73c41d))
+
 ## [11.85.0](https://github.com/fitglue/web/compare/v11.84.0...v11.85.0) (2026-06-17)
 
 
