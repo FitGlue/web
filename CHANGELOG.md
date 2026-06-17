@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.86.1](https://github.com/fitglue/web/compare/v11.86.0...v11.86.1) (2026-06-17)
+
+
+### Bug Fixes
+
+* **roundup-reel:** use the standard two-column modal layout ([868b5e7](https://github.com/fitglue/web/commit/868b5e7dd56a8724b026ae9b7c6e68145176825b))
+
 ## [11.86.0](https://github.com/fitglue/web/compare/v11.85.0...v11.86.0) (2026-06-17)
 
 
