@@ -16,6 +16,7 @@ import {
   formatClock,
   formatMuscle,
   ownerInitials,
+  buildPRGroupVMs,
   HR_ZONES,
   type CalDay,
 } from './roundup';
@@ -39,13 +40,15 @@ const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t 
 interface ReelStat { num: number; suffix: string; label: string; }
 interface ReelSport { label: string; color: string; count: number; pct: number; }
 
-export type SceneId = 'cover' | 'stats' | 'donut' | 'photos' | 'heatmap' | 'hr' | 'efforts' | 'muscles' | 'places' | 'weather' | 'highlight' | 'outro';
+export type SceneId = 'cover' | 'stats' | 'donut' | 'photos' | 'heatmap' | 'hr' | 'efforts' | 'muscles' | 'places' | 'weather' | 'prcards' | 'highlight' | 'outro';
 export interface Scene { id: SceneId; dur: number; }
 
 interface ReelEffort { label: string; time: string; }
 interface ReelMuscle { label: string; count: number; }
 interface ReelPlace { name: string; country: string; count: number; }
 interface ReelWeather { rainCount: number; coldest: number | null; hottest: number | null; sessions: number; }
+interface ReelPRMetric { type: string; value: string; unit: string; }
+interface ReelPRGroup { label: string; color: string; metrics: ReelPRMetric[]; }
 
 export interface ReelData {
   eyebrow: string;
@@ -62,6 +65,8 @@ export interface ReelData {
   muscles: ReelMuscle[];
   places: ReelPlace[];
   weather: ReelWeather | null;
+  prCount: number;
+  prGroups: ReelPRGroup[];
   photos: string[];
   highlight: { big: string; label: string; sub: string } | null;
   name: string;
@@ -96,13 +101,23 @@ export function buildReelData(roundup: ShowcaseRoundup, periodKey: string): Reel
     label: s.label, color: s.color, count: s.count, pct: s.count / sportTotal,
   }));
 
-  let highlight: ReelData['highlight'] = null;
+  // Personal records get their own colourful card scene; cherry-pick the
+  // richest cards (most metrics) first when there are many to show.
   const prCount = roundup.prsAchieved?.length ?? 0;
+  const prGroups: ReelPRGroup[] = [...buildPRGroupVMs(roundup.prsAchieved ?? [])]
+    .sort((a, b) => b.metrics.length - a.metrics.length)
+    .slice(0, 6)
+    .map((g) => ({
+      label: g.label.toUpperCase(),
+      color: g.color,
+      metrics: g.metrics.slice(0, 3).map((m) => ({ type: m.type || 'PR', value: m.value, unit: m.unit })),
+    }));
+
+  // The generic highlight now covers the non-PR climax (vertical / longest).
+  let highlight: ReelData['highlight'] = null;
   const elevation = roundup.totalElevationGainMeters ?? 0;
   const longest = roundup.longestActivityDurationSeconds ?? 0;
-  if (prCount > 0) {
-    highlight = { big: String(prCount), label: prCount === 1 ? 'Personal Record' : 'Personal Records', sub: 'New bests this period' };
-  } else if (elevation > 50) {
+  if (elevation > 50) {
     highlight = { big: `+${Math.round(elevation).toLocaleString()}m`, label: 'Total Vertical', sub: 'Climbed this period' };
   } else if (longest > 60) {
     const h = Math.floor(longest / 3600);
@@ -150,6 +165,8 @@ export function buildReelData(roundup: ShowcaseRoundup, periodKey: string): Reel
           sessions: roundup.weather.sessionCount ?? 0,
         }
       : null,
+    prCount,
+    prGroups,
     photos,
     highlight,
     name: roundup.ownerDisplayName ?? '',
@@ -163,7 +180,26 @@ export function buildReelData(roundup: ShowcaseRoundup, periodKey: string): Reel
  * the rest appear only when their source data exists (and photos only when the
  * caller confirms at least one image is usable — tainted images break recording).
  */
-export function planScenes(d: ReelData, hasUsablePhotos: boolean): Scene[] {
+/** Cover and outro are structural and always present; everything else is toggleable. */
+export const SCENE_LABELS: Record<SceneId, string> = {
+  cover: 'Intro',
+  stats: 'Stats',
+  donut: 'Sports',
+  photos: 'Photos',
+  heatmap: 'Consistency',
+  hr: 'HR Zones',
+  efforts: 'Best Efforts',
+  muscles: 'Muscles',
+  places: 'Places',
+  weather: 'Weather',
+  prcards: 'Records',
+  highlight: 'Highlight',
+  outro: 'Outro',
+};
+
+export const LOCKED_SCENES: ReadonlySet<SceneId> = new Set<SceneId>(['cover', 'outro']);
+
+export function planScenes(d: ReelData, hasUsablePhotos: boolean, disabled?: ReadonlySet<SceneId>): Scene[] {
   const scenes: Scene[] = [{ id: 'cover', dur: 2.6 }];
   if (d.stats.length) scenes.push({ id: 'stats', dur: 2.6 });
   if (d.sports.length) scenes.push({ id: 'donut', dur: 2.8 });
@@ -174,9 +210,11 @@ export function planScenes(d: ReelData, hasUsablePhotos: boolean): Scene[] {
   if (d.muscles.length) scenes.push({ id: 'muscles', dur: 2.4 });
   if (d.places.length) scenes.push({ id: 'places', dur: 2.4 });
   if (d.weather) scenes.push({ id: 'weather', dur: 2.4 });
+  if (d.prGroups.length) scenes.push({ id: 'prcards', dur: 3.2 });
   if (d.highlight) scenes.push({ id: 'highlight', dur: 2.4 });
   scenes.push({ id: 'outro', dur: 2.4 });
-  return scenes;
+  // Drop user-disabled scenes (cover/outro can never be disabled).
+  return disabled ? scenes.filter((s) => LOCKED_SCENES.has(s.id) || !disabled.has(s.id)) : scenes;
 }
 
 export function reelDuration(scenes: Scene[]): number {
@@ -234,6 +272,15 @@ function text(
   const total = widths.reduce((a, b) => a + b, 0) - spacing;
   let cx = align === 'center' ? x - total / 2 : align === 'right' ? x - total : x;
   for (let i = 0; i < s.length; i++) { ctx.fillText(s[i], cx, y); cx += widths[i]; }
+}
+
+/** Truncates a string with an ellipsis so it fits within maxW at the given font. */
+function fitText(ctx: CanvasRenderingContext2D, s: string, font: string, maxW: number): string {
+  ctx.font = font;
+  if (ctx.measureText(s).width <= maxW) return s;
+  let t = s;
+  while (t.length > 1 && ctx.measureText(t + '…').width > maxW) t = t.slice(0, -1);
+  return t + '…';
 }
 
 function drawBackground(ctx: CanvasRenderingContext2D, t: number, accent: string) {
@@ -512,7 +559,7 @@ function drawPhotoMontage(ctx: CanvasRenderingContext2D, images: HTMLImageElemen
 /* Scene renderers                                                     */
 /* ------------------------------------------------------------------ */
 
-interface DrawCtx { images: HTMLImageElement[]; hasPhotos: boolean; }
+interface DrawCtx { images: HTMLImageElement[]; hasPhotos: boolean; disabled?: ReadonlySet<SceneId>; }
 
 function renderScene(ctx: CanvasRenderingContext2D, id: SceneId, d: ReelData, lt: number, accent: string, dc: DrawCtx) {
   const cx = REEL_W / 2;
@@ -714,6 +761,43 @@ function renderScene(ctx: CanvasRenderingContext2D, id: SceneId, d: ReelData, lt
       });
       break;
     }
+    case 'prcards': {
+      text(ctx, 'THE RECORDS WALL', cx, REEL_H * 0.13, `34px ${MONO}`, withAlpha(accent, 0.85), 'center', 7);
+      text(ctx, `${d.prCount} ${d.prCount === 1 ? 'RECORD' : 'RECORDS'} BROKEN`, cx, REEL_H * 0.19, `64px ${DISPLAY}`, PAPER, 'center', 1);
+      const marginX = REEL_W * 0.09;
+      const gapX = 24, gapY = 24;
+      const cardW = (REEL_W - marginX * 2 - gapX) / 2;
+      const cardH = 330;
+      const startY = REEL_H * 0.26;
+      const pad = 28;
+      d.prGroups.forEach((g, i) => {
+        const lp = clamp(lt * 2.4 - i * 0.16, 0, 1);
+        if (lp <= 0) return;
+        ctx.globalAlpha = lp;
+        const col = i % 2, row = Math.floor(i / 2);
+        const x = marginX + col * (cardW + gapX);
+        const y = startY + row * (cardH + gapY);
+        // tinted body + colour top bar (clipped to rounded corners)
+        ctx.save();
+        roundRect(ctx, x, y, cardW, cardH, 18); ctx.clip();
+        ctx.fillStyle = withAlpha(g.color, 0.16); ctx.fillRect(x, y, cardW, cardH);
+        ctx.fillStyle = g.color; ctx.fillRect(x, y, cardW, 8);
+        ctx.restore();
+        ctx.lineWidth = 2; ctx.strokeStyle = withAlpha(g.color, 0.5);
+        roundRect(ctx, x, y, cardW, cardH, 18); ctx.stroke();
+        // exercise label (truncated to fit)
+        text(ctx, fitText(ctx, g.label, `30px ${DISPLAY}`, cardW - pad * 2), x + pad, y + 64, `30px ${DISPLAY}`, PAPER, 'left');
+        // metric rows
+        let my = y + 124;
+        g.metrics.forEach((m) => {
+          text(ctx, m.type, x + pad, my, `22px ${MONO}`, g.color, 'left', 2);
+          text(ctx, m.unit ? `${m.value} ${m.unit}` : m.value, x + cardW - pad, my, `38px ${DISPLAY}`, PAPER, 'right');
+          my += 64;
+        });
+        ctx.globalAlpha = 1;
+      });
+      break;
+    }
     case 'highlight': {
       if (!d.highlight) break;
       const pop = 0.85 + easeOut(clamp(lt * 2.4, 0, 1)) * 0.15;
@@ -751,7 +835,7 @@ export function drawReelFrame(
   ctx: CanvasRenderingContext2D, d: ReelData, t: number, accent: string, dc?: DrawCtx,
 ) {
   const ctxd: DrawCtx = dc ?? { images: [], hasPhotos: false };
-  const scenes = planScenes(d, ctxd.hasPhotos);
+  const scenes = planScenes(d, ctxd.hasPhotos, ctxd.disabled);
   const total = reelDuration(scenes);
   const tt = clamp(t, 0, total);
 

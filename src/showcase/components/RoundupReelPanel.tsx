@@ -9,7 +9,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { components } from '../../shared/api/schema-public';
 import { logger } from '../../shared/logger';
 import { ACCENTS, accentSwatchStyle } from './ShowcaseExportModal';
-import { REEL_W, REEL_H, buildReelData, drawReelFrame, recordReel, planScenes, reelDuration } from '../utils/roundupReel';
+import { REEL_W, REEL_H, buildReelData, drawReelFrame, recordReel, planScenes, reelDuration, SCENE_LABELS, LOCKED_SCENES, type SceneId } from '../utils/roundupReel';
 
 type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
 
@@ -51,12 +51,25 @@ export const RoundupReelPanel: React.FC<{
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState<LoadedImages>({ images: [], hasPhotos: false });
+  const [disabled, setDisabled] = useState<ReadonlySet<SceneId>>(new Set());
   const data = useMemo(() => buildReelData(roundup, periodKey), [roundup, periodKey]);
 
-  const duration = useMemo(
-    () => reelDuration(planScenes(data, loaded.hasPhotos)),
+  // Scenes the data supports (ignoring toggles) — drives the toggle list.
+  const available = useMemo(
+    () => planScenes(data, loaded.hasPhotos).filter((s) => !LOCKED_SCENES.has(s.id)),
     [data, loaded.hasPhotos],
   );
+  const duration = useMemo(
+    () => reelDuration(planScenes(data, loaded.hasPhotos, disabled)),
+    [data, loaded.hasPhotos, disabled],
+  );
+
+  const toggleScene = (id: SceneId) =>
+    setDisabled((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
 
   // Preload avatar + photos with CORS; keep only usable (non-tainted) images.
   useEffect(() => {
@@ -74,8 +87,8 @@ export const RoundupReelPanel: React.FC<{
   }, [data]);
 
   const drawCtx = useMemo(
-    () => ({ images: loaded.images, hasPhotos: loaded.hasPhotos }),
-    [loaded],
+    () => ({ images: loaded.images, hasPhotos: loaded.hasPhotos, disabled }),
+    [loaded, disabled],
   );
 
   // Looping preview — paused while recording so the two loops don't fight.
@@ -145,6 +158,24 @@ export const RoundupReelPanel: React.FC<{
           ))}
         </div>
       </div>
+
+      {available.length > 0 && (
+        <div className="export-option-group">
+          <span className="export-option-label">Scenes</span>
+          <div className="export-option-row export-option-row--wrap">
+            {available.map((s) => (
+              <button
+                key={s.id}
+                className={`export-pill${disabled.has(s.id) ? '' : ' export-pill--active'}`}
+                onClick={() => toggleScene(s.id)}
+              >
+                {SCENE_LABELS[s.id]}
+              </button>
+            ))}
+          </div>
+          <p className="export-stats-hint">Tap to drop a scene · Intro &amp; outro always included</p>
+        </div>
+      )}
 
       <button className="export-download-btn" onClick={onDownload} disabled={recording}>
         {recording ? `Recording… ${Math.round(progress * 100)}%` : '⬇ Download Reel (WebM)'}

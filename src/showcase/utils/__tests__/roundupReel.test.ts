@@ -47,16 +47,24 @@ describe('buildReelData', () => {
     expect(d.stats.find((s) => s.label === 'Distance')).toBeUndefined();
   });
 
-  it('prioritises PRs for the highlight scene', () => {
+  it('routes PRs into their own card scene (count + groups), leaving highlight for vertical', () => {
     const r: ShowcaseRoundup = {
       periodType: 'ROUNDUP_PERIOD_TYPE_WEEK',
       totalActivities: 5,
       totalElevationGainMeters: 800,
-      prsAchieved: [{}, {}, {}],
+      prsAchieved: [
+        { recordType: 'bench_press_1rm', value: 100, unit: 'kg', previousValue: 90 },
+        { recordType: 'bench_press_reps', value: 10, unit: 'reps' },
+        { recordType: 'squat_1rm', value: 140, unit: 'kg' },
+      ],
     };
     const d = buildReelData(r, 'week-24-2025');
-    expect(d.highlight?.big).toBe('3');
-    expect(d.highlight?.label).toBe('Personal Records');
+    expect(d.prCount).toBe(3);
+    expect(d.prGroups.map((g) => g.label)).toEqual(['Bench Press'.toUpperCase(), 'Squat'.toUpperCase()]);
+    expect(d.prGroups[0].color).toMatch(/^#/);
+    // PRs no longer occupy the generic highlight — elevation does.
+    expect(d.highlight?.label).toBe('Total Vertical');
+    expect(planScenes(d, false).map((s) => s.id)).toContain('prcards');
   });
 
   it('falls back to elevation, then longest session, then null', () => {
@@ -131,7 +139,7 @@ describe('planScenes', () => {
 
   it('includes data-driven scenes only when supported', () => {
     const ids = planScenes(buildReelData(rich, 'month-05-2026'), false).map((s) => s.id);
-    expect(ids).toEqual(expect.arrayContaining(['donut', 'heatmap', 'hr', 'highlight']));
+    expect(ids).toEqual(expect.arrayContaining(['donut', 'heatmap', 'hr', 'prcards']));
     expect(ids).not.toContain('photos'); // no usable photos passed
     expect(ids).not.toContain('efforts'); // no best efforts on `rich`
   });
@@ -174,6 +182,19 @@ describe('planScenes', () => {
     const d = buildReelData(rich, 'month-05-2026');
     expect(planScenes(d, false).map((s) => s.id)).not.toContain('photos');
     expect(planScenes(d, true).map((s) => s.id)).toContain('photos');
+  });
+
+  it('drops disabled scenes but always keeps cover and outro', () => {
+    const d = buildReelData(rich, 'month-05-2026');
+    const disabled = new Set<'donut' | 'hr'>(['donut', 'hr']);
+    const ids = planScenes(d, false, disabled as Set<never>).map((s) => s.id);
+    expect(ids).not.toContain('donut');
+    expect(ids).not.toContain('hr');
+    expect(ids[0]).toBe('cover');
+    expect(ids[ids.length - 1]).toBe('outro');
+    // a disabled scene shortens the reel
+    expect(reelDuration(planScenes(d, false, disabled as Set<never>)))
+      .toBeLessThan(reelDuration(planScenes(d, false)));
   });
 
   it('reelDuration sums scene durations and grows with content', () => {
