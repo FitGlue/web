@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.85.0](https://github.com/fitglue/web/compare/v11.84.0...v11.85.0) (2026-06-17)
+
+
+### Features
+
+* **roundup:** group PR wall by exercise; port wall to activity page ([2ba37d0](https://github.com/fitglue/web/commit/2ba37d054efb446bbdd23ca8c2d8c67c0d92e746))
+
 ## [11.84.0](https://github.com/fitglue/web/compare/v11.83.0...v11.84.0) (2026-06-17)
 
 
