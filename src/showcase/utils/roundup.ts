@@ -291,9 +291,17 @@ export interface PRGroupVM {
   label: string;  // exercise / record name, e.g. "Bicep Curl"
   glyph: string;
   sport: string;
+  color: string;  // stable accent for this exercise's card
   date: string;   // most recent achievedAt in the group (may be '')
   count: number;  // number of PRs collapsed into this card
   metrics: PRMetricVM[];
+}
+
+// Stable hash → aurora palette, so an exercise always gets the same card colour.
+function prColor(key: string): string {
+  let h = 0;
+  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
+  return SPORT_PALETTE[h % SPORT_PALETTE.length];
 }
 
 /** A PR shaped loosely enough to cover ShowcaseTopPR and PersonalRecord. */
@@ -331,7 +339,7 @@ export function buildPRGroupVMs(prs: RawPRLike[]): PRGroupVM[] {
     let g = groups.get(parsed.label);
     if (!g) {
       const { glyph, sport } = prGlyphSport(pr.unit, parsed.isStrength);
-      g = { label: parsed.label, glyph, sport, date: '', count: 0, metrics: [], _ts: -1 };
+      g = { label: parsed.label, glyph, sport, color: prColor(parsed.label), date: '', count: 0, metrics: [], _ts: -1 };
       groups.set(parsed.label, g);
       order.push(parsed.label);
     }
@@ -351,7 +359,7 @@ export function buildPRGroupVMs(prs: RawPRLike[]): PRGroupVM[] {
       const bi = PR_METRIC_ORDER.indexOf(b.type);
       return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
     });
-    return { label: g.label, glyph: g.glyph, sport: g.sport, date: g.date, count: g.count, metrics: g.metrics };
+    return { label: g.label, glyph: g.glyph, sport: g.sport, color: g.color, date: g.date, count: g.count, metrics: g.metrics };
   });
 }
 

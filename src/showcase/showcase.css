@@ -4013,16 +4013,17 @@ a.rp-highlight:hover .rp-highlight__open { opacity: 1; transform: none; }
 .rp-pr-count b { font-family: var(--fg-font-display); font-size: clamp(3.5rem, 8vw, 7rem); line-height: 0.82; letter-spacing: -0.05em; }
 .rp-pr-count span { font-family: var(--fg-font-display); font-size: clamp(1.2rem, 2.4vw, 2rem); text-transform: uppercase; letter-spacing: -0.01em; color: var(--color-text-muted); }
 .rp-prs {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px; align-items: start;
+  columns: 300px; column-gap: 16px;
 }
 .rp-pr {
   position: relative; overflow: hidden;
-  padding: 22px 22px 20px;
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+  break-inside: avoid; -webkit-column-break-inside: avoid;
+  margin: 0 0 16px;
+  padding: 19px 22px 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1); border-top: 3px solid var(--fg-pink);
   display: flex; flex-direction: column; gap: 14px;
-  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 /* Grouped card: exercise headline + per-metric rows */
 .rp-pr__ex { font-family: var(--fg-font-display); font-size: 1.4rem; line-height: 0.95; letter-spacing: -0.02em; text-transform: uppercase; color: var(--fg-paper); }
@@ -4033,7 +4034,7 @@ a.rp-highlight:hover .rp-highlight__open { opacity: 1; transform: none; }
 .rp-pr__metric-val { font-family: var(--fg-font-display); font-size: 1.5rem; line-height: 0.9; letter-spacing: -0.03em; color: var(--fg-paper); text-align: right; }
 .rp-pr__metric-val i { font-family: var(--fg-font-mono); font-size: 0.6875rem; font-style: normal; font-weight: 700; letter-spacing: 0.06em; color: var(--color-text-muted); margin-left: 4px; }
 .rp-pr__metric .rp-pr__delta { grid-column: 2; justify-self: end; margin-top: 4px; }
-.rp-pr:hover { transform: translateY(-3px); border-color: rgba(139,92,246,0.45); box-shadow: 0 0 24px rgba(139,92,246,0.16); }
+.rp-pr:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.35); }
 .rp-pr__top { display: flex; align-items: center; justify-content: space-between; }
 .rp-pr__sport { display: inline-flex; align-items: center; gap: 8px; font-family: var(--fg-font-mono); font-size: 0.625rem; font-weight: 700; letter-spacing: 0.14em; color: var(--color-text-muted); text-transform: uppercase; }
 .rp-pr__date { font-family: var(--fg-font-mono); font-size: 0.625rem; font-weight: 700; letter-spacing: 0.1em; color: var(--color-text-subtle); text-transform: uppercase; }
@@ -4193,13 +4194,13 @@ a.rp-photo, a.rp-route { display: block; text-decoration: none; color: inherit; 
   .rp-hrring { max-width: 280px; margin: 0 auto; }
   .rp-highlights { grid-template-columns: 1fr; }
   .rp-highlight + .rp-highlight { border-left: 0; border-top: 1px solid rgba(245,243,235,0.12); }
-  .rp-prs { grid-template-columns: 1fr 1fr; }
+  .rp-prs { columns: 240px; }
   .rp-sharebar { width: calc(100% - 24px); justify-content: space-between; }
   .rp-sharebtn { padding: 12px 12px; font-size: 0.75rem; }
   .rp-sharebtn .rp-lbl-long { display: none; }
 }
 @media (max-width: 480px) {
-  .rp-prs { grid-template-columns: 1fr; }
+  .rp-prs { columns: 1; }
   .rp-bar__crumb { display: none; }
   .rp-stack__seg b { display: none; }
   .rp-photo--feature { grid-column: auto; grid-row: auto; }

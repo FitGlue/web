@@ -302,11 +302,14 @@ const PRWallFrame = React.forwardRef<HTMLDivElement, PRWallFrameProps>(
         )}
 
         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${gridCols}, 1fr)`, gap: '10px', flex: 1 }}>
-          {display.map((g, i) => (
+          {display.map((g, i) => {
+            const typeColor = isAurora ? '#070710' : g.color;
+            return (
             <div key={i} style={{
-              background: isClear ? `${resolvedAccent}18` : `${resolvedAccent}22`,
-              border: `1px solid ${resolvedAccent}${isClear ? '55' : '33'}`,
-              padding: '18px',
+              background: isClear ? `${g.color}1c` : `linear-gradient(165deg, ${g.color}30 0%, rgba(255,255,255,0.03) 60%)`,
+              border: `1px solid ${g.color}${isClear ? '66' : '40'}`,
+              borderTop: `3px solid ${g.color}`,
+              padding: '15px 18px 18px',
               display: 'flex',
               flexDirection: 'column',
               gap: '12px',
@@ -317,7 +320,7 @@ const PRWallFrame = React.forwardRef<HTMLDivElement, PRWallFrameProps>(
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {g.metrics.map((m, mi) => (
                   <div key={mi} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '10px' }}>
-                    <span style={{ fontFamily: MONO, fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: resolvedAccent, opacity: 0.85 }}>{m.type || 'PR'}</span>
+                    <span style={{ fontFamily: MONO, fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: typeColor, opacity: 0.95 }}>{m.type || 'PR'}</span>
                     <span style={{ fontFamily: DISPLAY, fontSize: isStory ? '22px' : '26px', letterSpacing: '-0.02em', color: resolvedText, textShadow: shadow }}>
                       {m.value}{m.unit && <span style={{ fontFamily: MONO, fontSize: '11px', fontWeight: 700, color: resolvedText, opacity: 0.6, marginLeft: '3px' }}>{m.unit}</span>}
                     </span>
@@ -325,7 +328,8 @@ const PRWallFrame = React.forwardRef<HTMLDivElement, PRWallFrameProps>(
                 ))}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {groups.length > maxGroups && (
