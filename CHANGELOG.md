@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.84.0](https://github.com/fitglue/web/compare/v11.83.0...v11.84.0) (2026-06-17)
+
+
+### Features
+
+* **roundup:** surface muscles, places, weather + elevation across artefacts ([47d4558](https://github.com/fitglue/web/commit/47d4558ac6e261719a34b94f1a65bb20c1fff5ef))
+* update links and content for Showcase feature ([60195fb](https://github.com/fitglue/web/commit/60195fb19c81ecb4649ff7f25a75fe0ca9eabcc7))
+
 ## [11.83.0](https://github.com/fitglue/web/compare/v11.82.0...v11.83.0) (2026-06-17)
 
 
