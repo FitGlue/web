@@ -15,6 +15,7 @@ import {
   fmtKm,
   HR_ZONES,
   fmtHM,
+  formatClock,
   type ShowcaseRoundup as RoundupT,
   type RoundupPhoto,
   type RoundupRoute,
@@ -43,7 +44,7 @@ function periodTypeLabel(periodKey: string): string {
   return 'TRAINING ROUNDUP';
 }
 
-function cardColors(cfg: CardConfig) {
+export function cardColors(cfg: CardConfig) {
   const isClear = cfg.bg.id === 'clear';
   const isAurora = cfg.bg.id === 'aurora';
   const text = isAurora ? '#070710' : cfg.textColor;
@@ -59,7 +60,76 @@ function cardColors(cfg: CardConfig) {
   return { isClear, isAurora, text, accent, muted, track, bg, shadow };
 }
 
-type Colors = ReturnType<typeof cardColors>;
+export type Colors = ReturnType<typeof cardColors>;
+
+/* ---- Photo wall ----
+   A mosaic of roundup photos, feature-first like the page's rp-photos grid.
+   Reused by the Story card's photo-hero and photo-wall layouts. Cross-origin
+   images need host CORS to survive html-to-image export (same caveat as
+   MediaCardFrame); the on-screen preview always works. */
+
+export function PhotoWall({
+  photos,
+  height,
+  radius = 0,
+  gap = 8,
+  accent,
+}: {
+  photos: RoundupPhoto[];
+  height: number | string;
+  radius?: number;
+  gap?: number;
+  accent: string;
+}) {
+  const list = photos.filter((p) => !!p.url).slice(0, 6);
+  if (list.length === 0) return null;
+  const feature = list.length >= 5;
+  const cols = list.length <= 2 ? list.length : list.length === 4 ? 2 : 3;
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: `repeat(${cols}, 1fr)`,
+      gridAutoRows: '1fr',
+      gap: `${gap}px`,
+      height: typeof height === 'number' ? `${height}px` : height,
+      width: '100%',
+    }}>
+      {list.map((p, i) => {
+        const span = feature && i === 0;
+        return (
+          <figure key={i} style={{
+            position: 'relative', margin: 0, overflow: 'hidden',
+            borderRadius: `${radius}px`,
+            gridColumn: span ? 'span 2' : undefined,
+            gridRow: span ? 'span 2' : undefined,
+            background: 'rgba(245,243,235,0.04)',
+            boxShadow: `inset 0 0 0 1px ${accent}22`,
+          }}>
+            <img src={p.url} crossOrigin="anonymous" alt={p.activityTitle ?? ''}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            {(p.activityTitle || p.date) && (
+              <figcaption style={{
+                position: 'absolute', left: 0, right: 0, bottom: 0, padding: span ? '20px' : '12px',
+                background: 'linear-gradient(0deg, rgba(7,7,16,0.85) 0%, rgba(7,7,16,0) 100%)',
+              }}>
+                {p.activityTitle && (
+                  <div style={{ fontFamily: DISPLAY, fontSize: span ? '24px' : '16px', textTransform: 'uppercase', letterSpacing: '-0.01em', color: '#f5f3eb', lineHeight: 1.05 }}>
+                    {p.activityTitle}
+                  </div>
+                )}
+                {p.date && (
+                  <div style={{ fontFamily: MONO, fontSize: span ? '14px' : '11px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(245,243,235,0.6)', marginTop: '4px' }}>
+                    {p.date}
+                  </div>
+                )}
+              </figcaption>
+            )}
+          </figure>
+        );
+      })}
+    </div>
+  );
+}
 
 function Grain() {
   return (
@@ -197,6 +267,39 @@ export const ChartCardFrame = React.forwardRef<HTMLDivElement, {
   );
 });
 ChartCardFrame.displayName = 'ChartCardFrame';
+
+/* ---- Best efforts card ---- */
+
+export const EffortsCardFrame = React.forwardRef<HTMLDivElement, {
+  roundup: ShowcaseRoundup;
+  periodKey: string;
+  cfg: CardConfig;
+}>(({ roundup, periodKey, cfg }, ref) => {
+  const colors = cardColors(cfg);
+  const isStory = cfg.shape.id === 'story';
+  const efforts = (roundup.bestEfforts ?? []).filter((be) => (be.timeSeconds ?? 0) > 0);
+  const cols = isStory ? 2 : efforts.length > 4 ? 3 : 2;
+  return (
+    <Shell ref={ref} cfg={cfg} colors={colors} typeLabel={periodTypeLabel(periodKey)} title="Best Efforts" note="Fastest known times this period">
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: '16px' }}>
+        {efforts.slice(0, cols * 3).map((be, i) => (
+          <div key={i} style={{
+            border: `1px solid ${colors.track}`, padding: '24px', display: 'flex', flexDirection: 'column', gap: '8px',
+          }}>
+            <div style={{ fontFamily: MONO, fontSize: '18px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: colors.accent }}>
+              {be.display ?? be.distanceKey}
+            </div>
+            <div style={{ fontFamily: DISPLAY, fontSize: isStory ? '44px' : '52px', letterSpacing: '-0.03em', color: colors.text, lineHeight: 1 }}>
+              {formatClock(be.timeSeconds ?? 0)}
+            </div>
+            <div style={{ fontFamily: MONO, fontSize: '14px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: colors.muted }}>Fastest</div>
+          </div>
+        ))}
+      </div>
+    </Shell>
+  );
+});
+EffortsCardFrame.displayName = 'EffortsCardFrame';
 
 /* ---- Comparison card ---- */
 
