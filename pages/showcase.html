@@ -18,20 +18,42 @@
   .dark-band__label { font-family: var(--fg-font-mono); font-size: .8125rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-paper); text-transform: uppercase; }
   .dark-band__right { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .14em; color: var(--color-text-muted); text-transform: uppercase; }
 
-  /* ── Mock showcase card ── */
-  .sc-stage { padding: 48px 32px; max-width: 880px; margin: 0 auto; }
-  .sc-card { background: var(--fg-ink-2); border: var(--fg-rule-thin); overflow: hidden; }
-  .sc-card__banner { height: 132px; background: var(--gradient-primary); position: relative; display: flex; align-items: flex-end; padding: 16px 20px; }
-  .sc-card__banner-tag { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .14em; color: var(--fg-ink); text-transform: uppercase; background: rgba(0,0,0,.14); padding: 3px 8px; }
-  .sc-card__body { padding: 22px 24px 26px; }
-  .sc-card__title { font-family: var(--fg-font-display); font-size: 1.5rem; letter-spacing: -.02em; text-transform: uppercase; }
-  .sc-card__handle { font-family: var(--fg-font-mono); font-size: .75rem; color: var(--fg-cyan); margin-top: 4px; }
-  .sc-card__stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--color-border, #2a2a2a); margin: 20px 0; border: var(--fg-rule-thin); }
-  .sc-stat { background: var(--fg-ink); padding: 14px 12px; text-align: center; }
-  .sc-stat__v { font-family: var(--fg-font-display); font-size: 1.25rem; letter-spacing: -.02em; }
-  .sc-stat__k { font-family: var(--fg-font-mono); font-size: .5625rem; letter-spacing: .12em; color: var(--color-text-muted); text-transform: uppercase; margin-top: 4px; }
-  .sc-card__chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .sc-chip { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .1em; padding: 4px 9px; background: var(--fg-ink); box-shadow: inset 0 0 0 1px var(--fg-cyan); color: var(--fg-cyan); text-transform: uppercase; }
+  /* ── Gallery / frames ── */
+  .sc-gallery { padding: 48px 32px; max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+  .sc-duo { display: grid; grid-template-columns: minmax(0, 320px) 1fr; gap: 40px; align-items: center; }
+
+  .sc-cap { margin-top: 18px; }
+  .sc-cap__t { font-family: var(--fg-font-display); font-size: 1.375rem; letter-spacing: -.015em; text-transform: uppercase; }
+  .sc-cap__d { font-family: var(--fg-font-body); font-size: .9375rem; line-height: 1.5; color: var(--color-text-muted); margin-top: 6px; max-width: 520px; }
+  .sc-live { display: inline-block; margin-top: 12px; font-family: var(--fg-font-mono); font-size: .6875rem; font-weight: 700; letter-spacing: .1em; color: var(--fg-cyan); text-transform: uppercase; text-decoration: none; }
+  .sc-live:hover { text-decoration: underline; }
+
+  /* Browser frame */
+  .sc-browser { border: var(--fg-rule-thin); border-radius: 10px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.55); background: var(--fg-ink-2); }
+  .sc-browser__bar { display: flex; align-items: center; gap: 12px; padding: 11px 16px; background: var(--fg-ink); border-bottom: var(--fg-rule-thin); }
+  .sc-browser__dots { display: flex; gap: 7px; flex: 0 0 auto; }
+  .sc-browser__dot { width: 11px; height: 11px; border-radius: 50%; background: #34343f; }
+  .sc-browser__url { flex: 1; font-family: var(--fg-font-mono); font-size: .6875rem; color: var(--color-text-muted); background: var(--fg-ink-2); padding: 6px 14px; border-radius: 6px; text-align: center; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sc-browser__img { display: block; width: 100%; height: auto; }
+
+  /* Phone frame */
+  .sc-phone { width: 300px; max-width: 100%; margin: 0 auto; border-radius: 40px; background: #0b0b14; padding: 12px; box-shadow: 0 24px 70px rgba(0,0,0,.55), inset 0 0 0 2px #2a2a36; }
+  .sc-phone__screen { border-radius: 30px; overflow: hidden; background: #070710; line-height: 0; }
+  .sc-phone__media { display: block; width: 100%; height: auto; }
+
+  /* ── Shareables ── */
+  .sc-shares { padding: 0 32px 64px; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; align-items: start; }
+  .sc-share { display: flex; flex-direction: column; gap: 12px; }
+  .sc-share__img { display: block; width: 100%; height: auto; border: var(--fg-rule-thin); box-shadow: 0 14px 40px rgba(0,0,0,.45); }
+  .sc-share__cap { font-family: var(--fg-font-mono); font-size: .625rem; font-weight: 700; letter-spacing: .1em; color: var(--color-text-muted); text-transform: uppercase; }
+  .sc-share__cap b { color: var(--fg-paper); }
+
+  /* ── Reel ── */
+  .sc-reel { padding: 56px 32px; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 320px) 1fr; gap: 48px; align-items: center; }
+  .sc-reel__copy-t { font-family: var(--fg-font-display); font-size: clamp(1.75rem, 4vw, 2.75rem); letter-spacing: -.025em; text-transform: uppercase; line-height: .95; }
+  .sc-reel__copy-t .gr { background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sc-reel__copy-d { font-family: var(--fg-font-body); font-size: 1.0625rem; line-height: 1.55; color: var(--color-text-muted); margin-top: 18px; max-width: 560px; }
+  .sc-reel__note { font-family: var(--fg-font-mono); font-size: .6875rem; letter-spacing: .08em; color: var(--fg-cyan); text-transform: uppercase; margin-top: 16px; }
 
   /* ── Card grid (what's on a page / why) ── */
   .sc-grid { padding: 0 32px 64px; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
@@ -61,12 +83,16 @@
 
   @media (max-width: 900px) {
     .sc-grid { grid-template-columns: repeat(2, 1fr); }
+    .sc-shares { grid-template-columns: repeat(2, 1fr); }
+    .sc-duo { grid-template-columns: 1fr; gap: 28px; }
+    .sc-reel { grid-template-columns: 1fr; gap: 28px; }
+    .sc-phone { margin: 0 auto; }
   }
   @media (max-width: 600px) {
     .sc-grid, .sc-tiers { grid-template-columns: 1fr; padding: 0 16px 48px; }
-    .sc-stage { padding: 32px 16px; }
+    .sc-shares { grid-template-columns: 1fr; padding: 0 16px 48px; }
+    .sc-gallery, .sc-reel { padding: 32px 16px; }
     .ph { padding: 40px 16px; }
-    .sc-card__stats { grid-template-columns: repeat(2, 1fr); }
     .dark-band, .feat-band { flex-wrap: wrap; gap: 4px; }
   }
 </style>
@@ -78,35 +104,59 @@
     <p class="ph__sub">Showcase turns every boosted activity into a beautiful public page — stats, maps, heart rate, muscle heatmaps and AI banners, all on one link. No Strava account needed to view it. Send it to a friend, a coach, or the whole internet.</p>
     <div class="ph__cta">
       <a href="/auth/register" class="btn-aurora">START FREE →</a>
-      <a href="/how-it-works" class="btn-ghost">SEE HOW IT WORKS</a>
+      <a href="https://fitglue.tech/@james" class="btn-ghost" target="_blank" rel="noopener">SEE A LIVE PROFILE</a>
     </div>
   </div>
 
-  <!-- Mock showcase card -->
+  <!-- Live gallery -->
   <div class="dark-band">
-    <span class="dark-band__label">A SHOWCASE PAGE</span>
-    <span class="dark-band__right">FITGLUE.TECH/@YOU</span>
+    <span class="dark-band__label">SEE IT LIVE</span>
+    <span class="dark-band__right">REAL PAGES · REAL DATA · @JAMES</span>
   </div>
-  <div class="sc-stage">
-    <div class="sc-card">
-      <div class="sc-card__banner">
-        <span class="sc-card__banner-tag">✦ AI-GENERATED BANNER</span>
-      </div>
-      <div class="sc-card__body">
-        <div class="sc-card__title">Saturday Long Run</div>
-        <div class="sc-card__handle">fitglue.tech/@you</div>
-        <div class="sc-card__stats">
-          <div class="sc-stat"><div class="sc-stat__v">21.1<span style="font-size:.7rem"> km</span></div><div class="sc-stat__k">Distance</div></div>
-          <div class="sc-stat"><div class="sc-stat__v">1:42</div><div class="sc-stat__k">Duration</div></div>
-          <div class="sc-stat"><div class="sc-stat__v">152</div><div class="sc-stat__k">Avg HR</div></div>
-          <div class="sc-stat"><div class="sc-stat__v">1,684</div><div class="sc-stat__k">Calories</div></div>
+  <div class="sc-gallery">
+
+    <!-- Profile (desktop) -->
+    <div class="sc-show">
+      <div class="sc-browser">
+        <div class="sc-browser__bar">
+          <div class="sc-browser__dots"><span class="sc-browser__dot"></span><span class="sc-browser__dot"></span><span class="sc-browser__dot"></span></div>
+          <div class="sc-browser__url">fitglue.tech/@james</div>
         </div>
-        <div class="sc-card__chips">
-          <span class="sc-chip">🗺️ Route Map</span>
-          <span class="sc-chip">💓 HR Zones</span>
-          <span class="sc-chip">🌦️ Weather</span>
-          <span class="sc-chip">🤖 AI Summary</span>
-          <span class="sc-chip">🏆 PR</span>
+        <img class="sc-browser__img" src="/images/showcase/profile.webp" width="1920" height="1440" loading="lazy" alt="A FitGlue Showcase profile page showing lifetime stats, streaks, distance, weight lifted and heart-rate zones.">
+      </div>
+      <div class="sc-cap">
+        <div class="sc-cap__t">A profile that's a portfolio</div>
+        <p class="sc-cap__d">Every Showcase profile gathers your lifetime story in one place — streaks, totals, personal records, effort zones and a feed of every activity you've boosted.</p>
+        <a class="sc-live" href="https://fitglue.tech/@james" target="_blank" rel="noopener">View the live profile →</a>
+      </div>
+    </div>
+
+    <!-- Activity (mobile) + Roundup (desktop) -->
+    <div class="sc-duo">
+      <div class="sc-show">
+        <div class="sc-phone">
+          <div class="sc-phone__screen">
+            <img class="sc-phone__media" src="/images/showcase/activity.webp" width="828" height="1792" loading="lazy" alt="A FitGlue Showcase activity page on mobile showing a chest and triceps session with sets, volume and personal records.">
+          </div>
+        </div>
+        <div class="sc-cap">
+          <div class="sc-cap__t">Every activity, in full</div>
+          <p class="sc-cap__d">Sets, volume, duration, PRs, an AI write-up and every booster you stacked — rendered into one shareable page the moment your workout syncs.</p>
+          <a class="sc-live" href="https://fitglue.tech/@james/chest-triceps-pt-2026-06-16" target="_blank" rel="noopener">View a live activity →</a>
+        </div>
+      </div>
+      <div class="sc-show">
+        <div class="sc-browser">
+          <div class="sc-browser__bar">
+            <div class="sc-browser__dots"><span class="sc-browser__dot"></span><span class="sc-browser__dot"></span><span class="sc-browser__dot"></span></div>
+            <div class="sc-browser__url">fitglue.tech/@james/month-05-2026</div>
+          </div>
+          <img class="sc-browser__img" src="/images/showcase/roundup.webp" width="1920" height="1440" loading="lazy" alt="A FitGlue Showcase monthly roundup page summarising May with total sessions, time, distance and calories.">
+        </div>
+        <div class="sc-cap">
+          <div class="sc-cap__t">Weekly &amp; monthly roundups</div>
+          <p class="sc-cap__d">FitGlue automatically wraps your week, month and year into a recap page — your sport mix, zones, distances and every new record, ready to share.</p>
+          <a class="sc-live" href="https://fitglue.tech/@james/month-05-2026" target="_blank" rel="noopener">View a live roundup →</a>
         </div>
       </div>
     </div>
@@ -147,6 +197,54 @@
       <div class="sc-tile__icon">🔗</div>
       <div class="sc-tile__title">Rich Social Previews</div>
       <div class="sc-tile__body">Paste the link anywhere — Twitter, LinkedIn, WhatsApp — and it unfurls into an eye-catching card.</div>
+    </div>
+  </div>
+
+  <!-- Shareables -->
+  <div class="dark-band">
+    <span class="dark-band__label">SHAREABLES</span>
+    <span class="dark-band__right">ONE TAP · BUILT-IN EXPORT STUDIO</span>
+  </div>
+  <div class="ph" style="padding-bottom:24px">
+    <p class="ph__sub" style="max-width:760px">Every activity and roundup comes with an export studio — pick a shape, drop it straight onto your story, grid or group chat. No design tools, no screenshots.</p>
+  </div>
+  <div class="sc-shares">
+    <div class="sc-share">
+      <img class="sc-share__img" src="/images/showcase/share-activity-story.webp" width="1080" height="1920" loading="lazy" alt="An activity story card sized for Instagram and TikTok stories.">
+      <div class="sc-share__cap"><b>Activity</b> · Story 9∶16</div>
+    </div>
+    <div class="sc-share">
+      <img class="sc-share__img" src="/images/showcase/share-activity-square.webp" width="1080" height="1002" loading="lazy" alt="A square activity card with duration and heart-rate stats.">
+      <div class="sc-share__cap"><b>Activity</b> · Square 1∶1</div>
+    </div>
+    <div class="sc-share">
+      <img class="sc-share__img" src="/images/showcase/share-roundup-story.webp" width="1080" height="1920" loading="lazy" alt="A monthly roundup story card with sport mix, zones and new records.">
+      <div class="sc-share__cap"><b>Roundup</b> · Story 9∶16</div>
+    </div>
+    <div class="sc-share">
+      <img class="sc-share__img" src="/images/showcase/share-roundup-square.webp" width="1080" height="1080" loading="lazy" alt="A square monthly roundup card with sessions, time, distance and weight moved.">
+      <div class="sc-share__cap"><b>Roundup</b> · Square 1∶1</div>
+    </div>
+  </div>
+
+  <!-- Roundup reel -->
+  <div class="feat-band">
+    <span class="feat-band__label">🎬 ROUNDUP REEL</span>
+    <span class="feat-band__right">AUTO-GENERATED · MADE FOR STORIES</span>
+  </div>
+  <div class="sc-reel">
+    <div class="sc-phone">
+      <div class="sc-phone__screen">
+        <video class="sc-phone__media" autoplay muted loop playsinline preload="metadata" poster="/images/showcase/reel-poster.jpg" width="1080" height="1920" aria-label="An auto-generated FitGlue roundup reel animating through a month of activity.">
+          <source src="/images/showcase/reel.mp4" type="video/mp4">
+          <source src="/images/showcase/reel.webm" type="video/webm">
+        </video>
+      </div>
+    </div>
+    <div class="sc-reel__copy">
+      <div class="sc-reel__copy-t">Your month,<br><span class="gr">as a reel.</span></div>
+      <p class="sc-reel__copy-d">Every roundup also renders a vertical highlight reel — your sessions, records and standout stats animated into a ready-to-post clip. Drop it straight onto a Story or Reel and let your month speak for itself.</p>
+      <div class="sc-reel__note">9∶16 video · recorded in your browser · no editing required</div>
     </div>
   </div>
 
