@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.82.0](https://github.com/fitglue/web/compare/v11.81.0...v11.82.0) (2026-06-17)
+
+
+### Features
+
+* **showcase:** enhance session highlights with click-through showcase IDs and styles ([e93cecc](https://github.com/fitglue/web/commit/e93cecc39294fd8b62526677dde345bdc31433c8))
+
 ## [11.81.0](https://github.com/fitglue/web/compare/v11.80.1...v11.81.0) (2026-06-16)
 
 
