@@ -137,51 +137,57 @@ export const RoundupReelPanel: React.FC<{
   };
 
   return (
-    <div className="export-modal-preview-col">
-      <div className="export-preview-wrapper" style={{ width: 300, height: 300 * (REEL_H / REEL_W), position: 'relative', overflow: 'hidden', background: '#070710' }}>
-        <canvas
-          ref={canvasRef}
-          width={REEL_W}
-          height={REEL_H}
-          style={{ width: '100%', height: '100%', display: 'block' }}
-        />
-        {recording && (
-          <div style={{ position: 'absolute', left: 0, bottom: 0, height: '4px', width: `${Math.round(progress * 100)}%`, background: accent, transition: 'width 0.1s linear' }} />
-        )}
-      </div>
-
-      <div className="export-option-group" style={{ marginTop: '14px' }}>
-        <span className="export-option-label">Accent</span>
-        <div className="export-option-row">
-          {ACCENTS.map((a) => (
-            <button key={a.id} className={`export-swatch${accent === a.color ? ' export-swatch--active' : ''}`} style={{ background: a.color, ...accentSwatchStyle(a.color) }} onClick={() => onAccent(a.color)} aria-label={a.id} />
-          ))}
+    <>
+      <div className="export-modal-preview-col">
+        <div className="export-preview-wrapper" style={{ width: 300, height: 300 * (REEL_H / REEL_W), position: 'relative', overflow: 'hidden', background: '#070710' }}>
+          <canvas
+            ref={canvasRef}
+            width={REEL_W}
+            height={REEL_H}
+            style={{ width: '100%', height: '100%', display: 'block' }}
+          />
+          {recording && (
+            <div style={{ position: 'absolute', left: 0, bottom: 0, height: '4px', width: `${Math.round(progress * 100)}%`, background: accent, transition: 'width 0.1s linear' }} />
+          )}
         </div>
+
+        <button className="export-download-btn" onClick={onDownload} disabled={recording}>
+          {recording ? `Recording… ${Math.round(progress * 100)}%` : '⬇ Download Reel (WebM)'}
+        </button>
+        {error && <p className="export-stats-hint" style={{ color: 'var(--fg-rose)' }}>{error}</p>}
+        {!error && <p className="export-stats-hint">{Math.round(duration)}-second 9:16 clip · recorded in your browser · great for Stories &amp; Reels</p>}
       </div>
 
-      {available.length > 0 && (
-        <div className="export-option-group">
-          <span className="export-option-label">Scenes</span>
-          <div className="export-option-row export-option-row--wrap">
-            {available.map((s) => (
-              <button
-                key={s.id}
-                className={`export-pill${disabled.has(s.id) ? '' : ' export-pill--active'}`}
-                onClick={() => toggleScene(s.id)}
-              >
-                {SCENE_LABELS[s.id]}
-              </button>
-            ))}
+      <div className="export-modal-options-col">
+        <div className="export-options">
+          <div className="export-option-group">
+            <span className="export-option-label">Accent</span>
+            <div className="export-option-row">
+              {ACCENTS.map((a) => (
+                <button key={a.id} className={`export-swatch${accent === a.color ? ' export-swatch--active' : ''}`} style={{ background: a.color, ...accentSwatchStyle(a.color) }} onClick={() => onAccent(a.color)} aria-label={a.id} />
+              ))}
+            </div>
           </div>
-          <p className="export-stats-hint">Tap to drop a scene · Intro &amp; outro always included</p>
-        </div>
-      )}
 
-      <button className="export-download-btn" onClick={onDownload} disabled={recording}>
-        {recording ? `Recording… ${Math.round(progress * 100)}%` : '⬇ Download Reel (WebM)'}
-      </button>
-      {error && <p className="export-stats-hint" style={{ color: 'var(--fg-rose)' }}>{error}</p>}
-      {!error && <p className="export-stats-hint">{Math.round(duration)}-second 9:16 clip · recorded in your browser · great for Stories &amp; Reels</p>}
-    </div>
+          {available.length > 0 && (
+            <div className="export-option-group">
+              <span className="export-option-label">Scenes</span>
+              <div className="export-option-row export-option-row--wrap">
+                {available.map((s) => (
+                  <button
+                    key={s.id}
+                    className={`export-pill${disabled.has(s.id) ? '' : ' export-pill--active'}`}
+                    onClick={() => toggleScene(s.id)}
+                  >
+                    {SCENE_LABELS[s.id]}
+                  </button>
+                ))}
+              </div>
+              <p className="export-stats-hint">Tap to drop a scene · Intro &amp; outro always included</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 };
