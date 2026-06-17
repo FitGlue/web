@@ -18,6 +18,7 @@ import {
   buildCalendarDays,
   calloutVisual,
   buildPRVM,
+  buildPRGroupVMs,
   pctDelta,
   buildDeltas,
   roundupTypeClass,
@@ -192,6 +193,40 @@ describe('buildSportVMs', () => {
 
   it('handles an empty breakdown', () => {
     expect(buildSportVMs([])).toEqual([]);
+  });
+});
+
+describe('buildPRGroupVMs', () => {
+  it('collapses per-metric PRs into one card per exercise, keeping the total count', () => {
+    const groups = buildPRGroupVMs([
+      { recordType: 'bicep_curl_reps', value: 21, unit: 'reps', previousValue: 20, achievedAt: '2026-06-10T10:00:00Z' },
+      { recordType: 'bicep_curl_1rm', value: 30, unit: 'kg', achievedAt: '2026-06-09T10:00:00Z' },
+      { recordType: 'deadlift_set_volume', value: 1600, unit: 'kg', previousValue: 1000, achievedAt: '2026-06-11T18:00:00Z' },
+    ]);
+    expect(groups).toHaveLength(2); // bicep curl + deadlift
+    const totalPRs = groups.reduce((s, g) => s + g.count, 0);
+    expect(totalPRs).toBe(3);
+
+    const bicep = groups.find((g) => g.label === 'Bicep Curl')!;
+    expect(bicep.count).toBe(2);
+    expect(bicep.sport).toBe('STRENGTH');
+    // metrics sorted: 1RM before REPS
+    expect(bicep.metrics.map((m) => m.type)).toEqual(['1RM', 'REPS']);
+    expect(bicep.metrics[1]).toMatchObject({ type: 'REPS', value: '21', unit: 'reps', delta: '+1 reps' });
+    // group date is the most recent achievedAt across its metrics
+    expect(bicep.date).toBe('10 JUN');
+  });
+
+  it('keeps cardio / hybrid records as their own single-metric cards', () => {
+    const groups = buildPRGroupVMs([
+      { recordType: 'fastest_5k', value: 1200, unit: 'seconds' },
+      { recordType: 'longest_run', value: 21097, unit: 'meters' },
+    ]);
+    expect(groups).toHaveLength(2);
+    const fivek = groups.find((g) => g.label === 'fastest 5k')!;
+    expect(fivek.sport).toBe('ENDURANCE');
+    expect(fivek.metrics).toHaveLength(1);
+    expect(fivek.metrics[0].value).toBe('20:00');
   });
 });
 

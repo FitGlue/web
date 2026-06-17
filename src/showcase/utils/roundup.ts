@@ -5,6 +5,7 @@
 import type { components } from '../../shared/api/schema-public';
 import { ACTIVITY_TYPE_ICONS } from './activityMeta';
 import { formatActivityType } from './format';
+import { parseRecordType, prValueString, prDeltaString } from './prFormat';
 
 export type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
 export type RoundupActivityTypeBreakdown = components['schemas']['RoundupActivityTypeBreakdown'];
@@ -273,6 +274,85 @@ export interface PRVm {
   value: string;
   unit: string;
   delta: string;
+}
+
+/* ------------------------------------------------------------------ */
+/* PR grouping — collapse per-metric PRs into one card per exercise     */
+/* ------------------------------------------------------------------ */
+
+export interface PRMetricVM {
+  type: string;   // "1RM", "SET VOLUME", "VOLUME", "REPS" (empty for cardio)
+  value: string;
+  unit: string;
+  delta: string | null;
+}
+
+export interface PRGroupVM {
+  label: string;  // exercise / record name, e.g. "Bicep Curl"
+  glyph: string;
+  sport: string;
+  date: string;   // most recent achievedAt in the group (may be '')
+  count: number;  // number of PRs collapsed into this card
+  metrics: PRMetricVM[];
+}
+
+/** A PR shaped loosely enough to cover ShowcaseTopPR and PersonalRecord. */
+export interface RawPRLike {
+  recordType?: string;
+  value?: number;
+  previousValue?: number | null;
+  unit?: string;
+  achievedAt?: string;
+}
+
+const PR_METRIC_ORDER = ['1RM', 'SET VOLUME', 'VOLUME', 'REPS'];
+
+function prGlyphSport(unit: string | undefined, isStrength: boolean): { glyph: string; sport: string } {
+  if (unit === 'kg' || isStrength) return { glyph: '🏋️', sport: 'STRENGTH' };
+  if (unit === 'seconds') return { glyph: '🏃', sport: 'ENDURANCE' };
+  return { glyph: '🏅', sport: 'GENERAL' };
+}
+
+/**
+ * Groups PRs by exercise/record so each card carries every metric for that
+ * exercise (1RM, best set, total volume, reps) instead of one card per PR.
+ * Cardio/hybrid records (no strength suffix) form single-metric groups. Reuses
+ * the shared parsing in prFormat so it matches the activity page exactly.
+ */
+export function buildPRGroupVMs(prs: RawPRLike[]): PRGroupVM[] {
+  const order: string[] = [];
+  const groups = new Map<string, PRGroupVM & { _ts: number }>();
+  for (const pr of prs) {
+    const rt = pr.recordType ?? '';
+    const parsed = parseRecordType(rt);
+    const { val, unit } = prValueString(pr.value ?? 0, pr.unit ?? '');
+    const delta = prDeltaString(pr.value ?? 0, pr.previousValue ?? null, pr.unit ?? '');
+    const ts = pr.achievedAt ? Date.parse(pr.achievedAt) : 0;
+    let g = groups.get(parsed.label);
+    if (!g) {
+      const { glyph, sport } = prGlyphSport(pr.unit, parsed.isStrength);
+      g = { label: parsed.label, glyph, sport, date: '', count: 0, metrics: [], _ts: -1 };
+      groups.set(parsed.label, g);
+      order.push(parsed.label);
+    }
+    g.metrics.push({ type: parsed.prType, value: val, unit, delta });
+    g.count++;
+    if (ts > g._ts) {
+      g._ts = ts;
+      g.date = pr.achievedAt
+        ? new Date(pr.achievedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).toUpperCase()
+        : '';
+    }
+  }
+  return order.map((k) => {
+    const g = groups.get(k)!;
+    g.metrics.sort((a, b) => {
+      const ai = PR_METRIC_ORDER.indexOf(a.type);
+      const bi = PR_METRIC_ORDER.indexOf(b.type);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    });
+    return { label: g.label, glyph: g.glyph, sport: g.sport, date: g.date, count: g.count, metrics: g.metrics };
+  });
 }
 
 export function buildPRVM(pr: ShowcaseTopPR): PRVm {

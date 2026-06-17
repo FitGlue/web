@@ -25,7 +25,7 @@ import {
   buildSportVMs,
   buildCalendarDays,
   calloutVisual,
-  buildPRVM,
+  buildPRGroupVMs,
   buildDeltas,
   activityGlyph,
   formatClock,
@@ -39,6 +39,7 @@ import {
   StackedDistance,
   ConsistencyViz,
 } from '../components/RoundupCharts';
+import { RoundupPRWall } from '../components/RoundupPRWall';
 
 /* ============================================================
    Small shared bits
@@ -337,8 +338,8 @@ export default function ShowcaseRoundupPage() {
 
   const bestEfforts = roundup.bestEfforts ?? [];
 
-  const prVMs = (roundup.prsAchieved ?? []).map(buildPRVM);
-  const prTotal = prVMs.length;
+  const prGroups = buildPRGroupVMs(roundup.prsAchieved ?? []);
+  const prTotal = roundup.prsAchieved?.length ?? 0;
 
   const sources = roundup.sources ?? [];
   const deltas = previousRoundup ? buildDeltas(roundup, previousRoundup) : [];
@@ -770,19 +771,7 @@ export default function ShowcaseRoundupPage() {
                   <b className="rp-grad">{prTotal}</b>
                   <span>Personal records<br />broken in {periodShortLabel(key)}</span>
                 </div>
-                <div className="rp-prs">
-                  {prVMs.map((pr, i) => (
-                    <article key={i} className="rp-pr rp-anim" style={{ transitionDelay: `${(i % 6) * 50}ms` }}>
-                      <div className="rp-pr__top">
-                        <span className="rp-pr__sport">{pr.glyph} {pr.sport}</span>
-                        {pr.date && <span className="rp-pr__date">{pr.date}</span>}
-                      </div>
-                      <div className="rp-pr__label">{pr.label}</div>
-                      <div className="rp-pr__val"><b>{pr.value}</b>{pr.unit && <i>{pr.unit}</i>}</div>
-                      {pr.delta && <span className={`rp-pr__delta ${pr.delta === 'NEW' ? 'rp-pr__delta--new' : ''}`}>{pr.delta}</span>}
-                    </article>
-                  ))}
-                </div>
+                <RoundupPRWall groups={prGroups} animate />
               </>
             ) : (
               <>

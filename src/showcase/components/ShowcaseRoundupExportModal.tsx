@@ -9,7 +9,7 @@ import { ACCENTS, accentSwatchStyle, TEXT_SWATCHES, textSwatchStyle } from './Sh
 import { ChartCardFrame, ComparisonCardFrame, MediaCardFrame, EffortsCardFrame, MusclesCardFrame, PlacesCardFrame, WeatherCardFrame, PhotoWall, cardColors, type CardConfig } from './RoundupExportCards';
 import { DonutChart, HRRingsChart, ConsistencyViz } from './RoundupCharts';
 import { RoundupReelPanel } from './RoundupReelPanel';
-import { buildDeltas, buildSportVMs, buildCalendarDays, formatClock, formatMuscle, HR_ZONES } from '../utils/roundup';
+import { buildDeltas, buildSportVMs, buildCalendarDays, buildPRGroupVMs, formatClock, formatMuscle, HR_ZONES } from '../utils/roundup';
 
 type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
 
@@ -73,21 +73,6 @@ function fmtDuration(seconds: number): string {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   return h > 0 ? `${h}h ${m}m` : `${m}m`;
-}
-
-function fmtVal(pr: NonNullable<ShowcaseRoundup['prsAchieved']>[number]): string {
-  const { value, unit } = pr;
-  if (!value) return '—';
-  if (unit === 'seconds') {
-    const h = Math.floor(value / 3600);
-    const m = Math.floor((value % 3600) / 60);
-    const s = Math.floor(value % 60);
-    return h > 0
-      ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-      : `${m}:${String(s).padStart(2, '0')}`;
-  }
-  if (unit === 'kg') return `${Math.round(value)}kg`;
-  return `${Math.round(value)}${unit ?? ''}`;
 }
 
 // ─── Stat system ──────────────────────────────────────────────────────────────
@@ -276,10 +261,11 @@ const PRWallFrame = React.forwardRef<HTMLDivElement, PRWallFrameProps>(
     const resolvedText = isAurora ? '#070710' : textColor;
     const resolvedAccent = isAurora ? '#070710' : accent;
     const prs = roundup.prsAchieved ?? [];
+    const groups = buildPRGroupVMs(prs);
     const isStory = cardShape.id === 'story';
     const gridCols = isStory ? 2 : 3;
-    const maxPRs = isStory ? 8 : 9;
-    const display = prs.slice(0, maxPRs);
+    const maxGroups = isStory ? 6 : 9;
+    const display = groups.slice(0, maxGroups);
     const shadow = isClear ? '0 2px 18px rgba(0,0,0,0.9)' : undefined;
 
     return (
@@ -316,37 +302,35 @@ const PRWallFrame = React.forwardRef<HTMLDivElement, PRWallFrameProps>(
         )}
 
         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${gridCols}, 1fr)`, gap: '10px', flex: 1 }}>
-          {display.map((pr, i) => (
+          {display.map((g, i) => (
             <div key={i} style={{
               background: isClear ? `${resolvedAccent}18` : `${resolvedAccent}22`,
               border: `1px solid ${resolvedAccent}${isClear ? '55' : '33'}`,
               padding: '18px',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
+              gap: '12px',
             }}>
-              <div style={{ fontFamily: MONO, fontSize: '12px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: resolvedAccent, opacity: 0.8, textShadow: shadow }}>
-                {(pr.recordType ?? '').replace(/_/g, ' ')}
+              <div style={{ fontFamily: DISPLAY, fontSize: isStory ? '22px' : '24px', textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.95, color: resolvedText, textShadow: shadow }}>
+                {g.label}
               </div>
-              <div>
-                <div style={{ fontFamily: DISPLAY, fontSize: isStory ? '28px' : '34px', color: resolvedText, lineHeight: 1, letterSpacing: '-0.02em', textShadow: shadow }}>
-                  {fmtVal(pr)}
-                </div>
-                {pr.previousValue != null && pr.value != null && (
-                  <div style={{ fontFamily: MONO, fontSize: '12px', color: resolvedAccent, marginTop: '4px', opacity: 0.7 }}>
-                    {pr.unit === 'kg'
-                      ? `+${Math.round(pr.value - pr.previousValue)}kg`
-                      : `−${Math.round(pr.previousValue - pr.value)}s`}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {g.metrics.map((m, mi) => (
+                  <div key={mi} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '10px' }}>
+                    <span style={{ fontFamily: MONO, fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: resolvedAccent, opacity: 0.85 }}>{m.type || 'PR'}</span>
+                    <span style={{ fontFamily: DISPLAY, fontSize: isStory ? '22px' : '26px', letterSpacing: '-0.02em', color: resolvedText, textShadow: shadow }}>
+                      {m.value}{m.unit && <span style={{ fontFamily: MONO, fontSize: '11px', fontWeight: 700, color: resolvedText, opacity: 0.6, marginLeft: '3px' }}>{m.unit}</span>}
+                    </span>
                   </div>
-                )}
+                ))}
               </div>
             </div>
           ))}
         </div>
 
-        {prs.length > maxPRs && (
+        {groups.length > maxGroups && (
           <div style={{ fontFamily: MONO, fontSize: '14px', color: isClear ? `${resolvedText}99` : 'rgba(245,243,235,0.4)', marginTop: '12px', letterSpacing: '0.1em' }}>
-            + {prs.length - maxPRs} more
+            + {groups.length - maxGroups} more exercises
           </div>
         )}
 

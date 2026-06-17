@@ -1272,65 +1272,7 @@ body:has(#showcase-root) {
    PERSONAL RECORDS MODULE
    ===================================================== */
 
-.pr-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.pr-ex-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: start;
-  gap: var(--space-xs);
-  padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.pr-ex-row:last-child { border-bottom: none; }
-
-.pr-ex-row__name {
-  font-family: var(--fg-font-display);
-  font-size: 0.875rem;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  padding-top: 2px;
-}
-
-.pr-ex-row__types {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  justify-content: flex-end;
-}
-
-.pr-type-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  background: rgba(255,255,255,0.06);
-  font-family: var(--fg-font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.pr-type-chip__label {
-  color: var(--fg-pink);
-  font-weight: 700;
-}
-
-.pr-type-chip__val {
-  color: var(--color-text-main);
-}
-
-.pr-type-chip__delta {
-  background: var(--fg-green);
-  color: var(--fg-ink);
-  padding: 0 4px;
-  font-weight: 700;
-}
+/* Activity-page Personal Records reuse the roundup grouped wall (.rp-prs / .rp-pr*). */
 
 /* =====================================================
    SET LIST
@@ -4071,23 +4013,26 @@ a.rp-highlight:hover .rp-highlight__open { opacity: 1; transform: none; }
 .rp-pr-count b { font-family: var(--fg-font-display); font-size: clamp(3.5rem, 8vw, 7rem); line-height: 0.82; letter-spacing: -0.05em; }
 .rp-pr-count span { font-family: var(--fg-font-display); font-size: clamp(1.2rem, 2.4vw, 2rem); text-transform: uppercase; letter-spacing: -0.01em; color: var(--color-text-muted); }
 .rp-prs {
-  display: grid; grid-auto-flow: column;
-  grid-template-rows: repeat(3, auto); grid-auto-columns: 300px;
-  gap: 16px; overflow-x: auto; overflow-y: hidden;
-  scroll-snap-type: x proximity;
-  padding-bottom: 16px; margin: 0 -40px; padding-left: 40px; padding-right: 40px;
-  scrollbar-width: thin; scrollbar-color: rgba(245,243,235,0.25) transparent;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px; align-items: start;
 }
-.rp-prs::-webkit-scrollbar { height: 8px; }
-.rp-prs::-webkit-scrollbar-thumb { background: rgba(245,243,235,0.22); }
-.rp-prs::-webkit-scrollbar-track { background: transparent; }
 .rp-pr {
-  position: relative; overflow: hidden; scroll-snap-align: start;
+  position: relative; overflow: hidden;
   padding: 22px 22px 20px;
   background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
   display: flex; flex-direction: column; gap: 14px;
   transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
+/* Grouped card: exercise headline + per-metric rows */
+.rp-pr__ex { font-family: var(--fg-font-display); font-size: 1.4rem; line-height: 0.95; letter-spacing: -0.02em; text-transform: uppercase; color: var(--fg-paper); }
+.rp-pr__metrics { display: flex; flex-direction: column; gap: 10px; }
+.rp-pr__metric { display: grid; grid-template-columns: 1fr auto; align-items: baseline; column-gap: 12px; row-gap: 2px; padding-top: 10px; border-top: 1px solid rgba(245,243,235,0.08); }
+.rp-pr__metric:first-child { padding-top: 0; border-top: none; }
+.rp-pr__metric-type { font-family: var(--fg-font-mono); font-size: 0.625rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-muted); align-self: center; }
+.rp-pr__metric-val { font-family: var(--fg-font-display); font-size: 1.5rem; line-height: 0.9; letter-spacing: -0.03em; color: var(--fg-paper); text-align: right; }
+.rp-pr__metric-val i { font-family: var(--fg-font-mono); font-size: 0.6875rem; font-style: normal; font-weight: 700; letter-spacing: 0.06em; color: var(--color-text-muted); margin-left: 4px; }
+.rp-pr__metric .rp-pr__delta { grid-column: 2; justify-self: end; margin-top: 4px; }
 .rp-pr:hover { transform: translateY(-3px); border-color: rgba(139,92,246,0.45); box-shadow: 0 0 24px rgba(139,92,246,0.16); }
 .rp-pr__top { display: flex; align-items: center; justify-content: space-between; }
 .rp-pr__sport { display: inline-flex; align-items: center; gap: 8px; font-family: var(--fg-font-mono); font-size: 0.625rem; font-weight: 700; letter-spacing: 0.14em; color: var(--color-text-muted); text-transform: uppercase; }
@@ -4248,13 +4193,13 @@ a.rp-photo, a.rp-route { display: block; text-decoration: none; color: inherit; 
   .rp-hrring { max-width: 280px; margin: 0 auto; }
   .rp-highlights { grid-template-columns: 1fr; }
   .rp-highlight + .rp-highlight { border-left: 0; border-top: 1px solid rgba(245,243,235,0.12); }
-  .rp-prs { grid-template-rows: repeat(2, auto); grid-auto-columns: 78vw; margin: 0 -20px; padding-left: 20px; padding-right: 20px; }
+  .rp-prs { grid-template-columns: 1fr 1fr; }
   .rp-sharebar { width: calc(100% - 24px); justify-content: space-between; }
   .rp-sharebtn { padding: 12px 12px; font-size: 0.75rem; }
   .rp-sharebtn .rp-lbl-long { display: none; }
 }
 @media (max-width: 480px) {
-  .rp-prs { grid-template-rows: repeat(2, auto); grid-auto-columns: 84vw; }
+  .rp-prs { grid-template-columns: 1fr; }
   .rp-bar__crumb { display: none; }
   .rp-stack__seg b { display: none; }
   .rp-photo--feature { grid-column: auto; grid-row: auto; }
