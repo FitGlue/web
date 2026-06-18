@@ -110,7 +110,10 @@ export function decodePipeline(encoded: string): PortablePipeline {
 
     return parsed as PortablePipeline;
   } catch (err) {
-    if (err instanceof SyntaxError) {
+    // SyntaxError = bad JSON; InvalidCharacterError = atob() given non-base64
+    // input (the most common bad paste). Both mean "this code is garbage" — give
+    // the same friendly message. Deliberate version/format Errors propagate as-is.
+    if (err instanceof SyntaxError || (err instanceof Error && err.name === 'InvalidCharacterError')) {
       throw new Error('Invalid pipeline code: failed to parse');
     }
     throw err;
