@@ -26,10 +26,10 @@ export default defineConfig({
       // Ratchet floor: set to the current whole-codebase coverage so it can
       // never regress. Raise these as untested files gain tests.
       thresholds: {
-        lines: 13,
-        functions: 9,
+        lines: 14,
+        functions: 10,
         branches: 9,
-        statements: 13,
+        statements: 14,
       },
     },
   },
