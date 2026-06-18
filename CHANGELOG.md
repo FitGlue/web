@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.87.2](https://github.com/fitglue/web/compare/v11.87.1...v11.87.2) (2026-06-18)
+
+
+### Bug Fixes
+
+* **pipeline-sharing:** show friendly error for malformed pipeline codes ([11ecfb7](https://github.com/fitglue/web/commit/11ecfb7d149a9d83ed4d4bcacfb5cf5e1c83d60a))
+* **showcase:** title-case activity, source and enricher labels ([6126629](https://github.com/fitglue/web/commit/61266297340a4f08581eb6d0dc74f68dd9d7cb89))
+
 ### [11.87.1](https://github.com/fitglue/web/compare/v11.87.0...v11.87.1) (2026-06-18)
 
 ## [11.87.0](https://github.com/fitglue/web/compare/v11.86.1...v11.87.0) (2026-06-17)
