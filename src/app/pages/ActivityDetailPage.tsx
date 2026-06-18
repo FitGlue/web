@@ -589,11 +589,11 @@ const ActivityDetailPage: React.FC = () => {
 
                 {/* Right body */}
                 <div className="rd-body">
-                    {/* AI Activity Companion summary — preserves newlines and bullets */}
+                    {/* Enriched activity description (aggregate of all enrichers) — preserves newlines and bullets */}
                     {pipelineRun.description && (
                         <div className="ai-card">
                             <div className="ai-card__head">
-                                <h3>✨ AI Activity Companion</h3>
+                                <h3>✨ Activity Description</h3>
                             </div>
                             <div className="ai-card__body">
                                 {pipelineRun.description.replace(/^✨ AI Summary:\n?/, '')}

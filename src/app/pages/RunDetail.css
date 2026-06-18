@@ -691,7 +691,7 @@
     align-items: flex-start;
 }
 
-/* ── AI Activity Companion card ── */
+/* ── Activity description card ── */
 .ai-card {
     margin: 24px 32px;
     background: var(--fg-ink-2);
