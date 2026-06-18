@@ -21,6 +21,9 @@ vi.mock('firebase/firestore', () => ({
   collection: () => ({}),
   query: () => ({}),
   doc: () => ({}),
+  where: () => ({}),
+  orderBy: () => ({}),
+  limit: () => ({}),
 }));
 vi.mock('../../../shared/firebase', () => ({
   getFirebaseFirestore: () => state.firestore,
@@ -31,9 +34,12 @@ vi.mock('../../../shared/logger', () => ({ logger: { error: vi.fn(), warn: vi.fn
 import { useRealtimePipelines } from '../useRealtimePipelines';
 import { useRealtimeIntegrations } from '../useRealtimeIntegrations';
 import { useRealtimeStats } from '../useRealtimeStats';
+import { useRealtimeInputs } from '../useRealtimeInputs';
+import { useRealtimePipelineRuns } from '../useRealtimePipelineRuns';
 import { pipelinesAtom } from '../../state/pipelinesState';
 import { integrationsAtom } from '../../state/integrationsState';
-import { activityStatsAtom } from '../../state/activitiesState';
+import { activityStatsAtom, pipelineRunsAtom } from '../../state/activitiesState';
+import { pendingInputsAtom } from '../../state/inputsState';
 
 beforeEach(() => {
   state.auth = { currentUser: { uid: 'u1' } };
@@ -127,5 +133,68 @@ describe('useRealtimeStats', () => {
     const { wrapper } = withStore();
     renderHook(() => useRealtimeStats(false), { wrapper });
     expect(state.onNext).toBeUndefined();
+  });
+});
+
+describe('useRealtimeInputs', () => {
+  it('maps pending-input docs and parses display config from provider metadata', () => {
+    const { store, wrapper } = withStore();
+    renderHook(() => useRealtimeInputs(), { wrapper });
+    act(() => state.onNext?.({
+      docs: [
+        {
+          id: 'in1',
+          data: () => ({
+            activity_id: 'act-1',
+            user_id: 'u1',
+            status: 1,
+            required_fields: ['weight'],
+            provider_metadata: {
+              'display.title': 'Add your weight',
+              'display.field_labels': '{"weight":"Body weight"}',
+            },
+            created_at: '2026-05-01T00:00:00Z',
+          }),
+        },
+      ],
+    }));
+    const inputs = store.get(pendingInputsAtom);
+    expect(inputs).toHaveLength(1);
+    expect(inputs[0]).toMatchObject({ id: 'in1', activityId: 'act-1', requiredFields: ['weight'] });
+    expect(inputs[0].displayConfig).toMatchObject({
+      title: 'Add your weight',
+      fieldLabels: { weight: 'Body weight' },
+    });
+    expect(inputs[0].createdAt).toBeInstanceOf(Date);
+  });
+});
+
+describe('useRealtimePipelineRuns', () => {
+  it('maps pipeline-run docs including boosters, destinations and steps', () => {
+    const { store, wrapper } = withStore();
+    renderHook(() => useRealtimePipelineRuns(), { wrapper });
+    act(() => state.onNext?.({
+      docs: [
+        {
+          id: 'run1',
+          data: () => ({
+            pipeline_id: 'p1',
+            activity_id: 'a1',
+            source: 'hevy',
+            status: 2,
+            boosters: [{ provider_name: 'weather', status: 'ok', duration_ms: 120 }],
+            destinations: [{ Destination: 3, Status: 1, ExternalId: 'ext-9' }],
+            steps: [{ id: 's1', ordinal: 0, display_name: 'Fetch', offset_ms: 0, duration_ms: 50 }],
+            created_at: '2026-05-01T00:00:00Z',
+          }),
+        },
+      ],
+    }));
+    const runs = store.get(pipelineRunsAtom);
+    expect(runs).toHaveLength(1);
+    expect(runs[0]).toMatchObject({ id: 'run1', pipelineId: 'p1', source: 'hevy' });
+    expect(runs[0].boosters[0]).toMatchObject({ providerName: 'weather', durationMs: 120 });
+    expect(runs[0].destinations[0]).toMatchObject({ destination: 3, externalId: 'ext-9' });
+    expect(runs[0].steps[0]).toMatchObject({ id: 's1', displayName: 'Fetch', durationMs: 50 });
   });
 });
