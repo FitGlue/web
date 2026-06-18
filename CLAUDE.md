@@ -126,7 +126,11 @@ The only files exempt from this rule (they may import Sentry directly):
 
 ### Test Coverage
 
-Vitest coverage thresholds are currently set to 0% (not enforced by CI). Tests are still required per workspace policy — write them even though the threshold won't fail the build. Improve coverage incrementally.
+Coverage is measured honestly across the **whole** `src/` tree (`coverage.all` + `include: src/**`), not just files a test imports — so the reported number reflects every source file. Generated code (`schema*`, `types/pb`), static `app/data`, and test files are excluded.
+
+Thresholds in `vitest.config.ts` are a **ratchet floor** set to the current whole-codebase coverage. They are enforced by `npm run test:coverage`, which `npm run preflight` (and the pre-push hook) runs — so a drop below the floor fails the build. **When you add tests, raise the floor** to the new level so coverage can only go up.
+
+Every source file should have at least *some* test coverage; many still sit at 0% and need at least a smoke test. Improve coverage incrementally and ratchet the thresholds up as you go.
 
 ### Marketing Site (Skier)
 

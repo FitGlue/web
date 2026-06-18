@@ -31,7 +31,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "preflight": "echo '\n========== PREFLIGHT: Web ==========' && echo '\n[1/5] Proto sync check...' && npm run check-proto-sync && echo '\n[2/5] Type checking...' && tsc --noEmit && echo '\n[3/5] Linting...' && npm run lint && echo '\n[4/5] Tests...' && npm run test && echo '\n[5/5] Building...' && npm run build && echo '\n========== ✅ Web preflight passed =========='"
+    "preflight": "echo '\n========== PREFLIGHT: Web ==========' && echo '\n[1/5] Proto sync check...' && npm run check-proto-sync && echo '\n[2/5] Type checking...' && tsc --noEmit && echo '\n[3/5] Linting...' && npm run lint && echo '\n[4/5] Tests + coverage...' && npm run test:coverage && echo '\n[5/5] Building...' && npm run build && echo '\n========== ✅ Web preflight passed =========='"
   },
   "repository": {
     "type": "git",
