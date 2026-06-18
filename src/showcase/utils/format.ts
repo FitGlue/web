@@ -33,6 +33,7 @@ export function formatActivityType(type: string | undefined): string {
     return type
       .replace('ACTIVITY_TYPE_', '')
       .replace(/_/g, ' ')
+      .toLowerCase()
       .replace(/\b\w/g, (c) => c.toUpperCase());
   }
   return type;
@@ -44,6 +45,7 @@ export function formatSource(source: string | undefined): string {
     const name = source
       .replace('SOURCE_', '')
       .replace(/_/g, ' ')
+      .toLowerCase()
       .replace(/\b\w/g, (c) => c.toUpperCase());
     if (name === 'File Upload') return 'FIT Upload';
     return name;
@@ -127,7 +129,7 @@ export function getEnricherInfo(key: string): { icon: string; name: string; desc
   };
   return REGISTRY[key] ?? {
     icon: '✨',
-    name: key.replace('ENRICHER_PROVIDER_', '').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+    name: key.replace('ENRICHER_PROVIDER_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()),
     description: 'Activity data booster',
   };
 }
