@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.89.0](https://github.com/fitglue/web/compare/v11.88.0...v11.89.0) (2026-06-19)
+
+
+### Features
+
+* **admin:** billing panel on the User 360° page ([574b052](https://github.com/fitglue/web/commit/574b052bde87003133ed65f74a87d36fe0798ce8))
+* **admin:** run operations — execution timeline and remediation actions ([d9980dd](https://github.com/fitglue/web/commit/d9980dd2851fc2e4981d10c8292b3e9d6deb5179))
+
 ## [11.88.0](https://github.com/fitglue/web/compare/v11.87.8...v11.88.0) (2026-06-19)
 
 
