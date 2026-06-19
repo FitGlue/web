@@ -1,88 +1,45 @@
 import React from 'react';
-import { Stack } from '../library/layout';
-import { Card, Badge, EmptyState, Code, Text, Button } from '../library/ui';
-import './admin.css';
-import { DataTable, DataTableColumn } from '../library/ui';
 import { useAdminAuditLog } from '../../hooks/admin';
-import { AdminAuditEntry } from '../../state/adminState';
+import './admin.css';
 
-const formatTime = (s?: string): string => (s ? new Date(s).toLocaleString() : '—');
+const fmt = (s?: string): string => (s ? new Date(s).toLocaleString() : '—');
 
 /**
- * AdminAuditLog lists every recorded admin mutation (who did what, to whom, when,
- * and whether it succeeded) — the audit trail the console promises.
+ * AdminAuditLog — dense audit trail of every recorded admin mutation.
  */
 export const AdminAuditLog: React.FC = () => {
   const { entries, loading, error, refresh } = useAdminAuditLog();
 
-  const columns: DataTableColumn<AdminAuditEntry>[] = [
-    {
-      key: 'timestamp',
-      header: 'When',
-      render: (e) => <Text variant="small">{formatTime(e.timestamp)}</Text>,
-      width: '180px',
-    },
-    {
-      key: 'action',
-      header: 'Action',
-      render: (e) => <Text variant="body">{e.action || '—'}</Text>,
-      width: '180px',
-    },
-    {
-      key: 'actorEmail',
-      header: 'Actor',
-      render: (e) => <Text variant="small">{e.actorEmail || e.actorUid || '—'}</Text>,
-    },
-    {
-      key: 'targetUserId',
-      header: 'Target',
-      render: (e) => (e.targetUserId ? <Code>{e.targetUserId.slice(0, 8)}...</Code> : <Text variant="muted">—</Text>),
-      width: '120px',
-    },
-    {
-      key: 'params',
-      header: 'Details',
-      render: (e) => {
-        const params = e.params ?? {};
-        const keys = Object.keys(params);
-        return keys.length === 0
-          ? <Text variant="muted">—</Text>
-          : <Text variant="small">{keys.map((k) => `${k}=${params[k]}`).join(', ')}</Text>;
-      },
-    },
-    {
-      key: 'result',
-      header: 'Result',
-      render: (e) => (
-        <Badge variant={e.result === 'error' ? 'error' : 'success'} size="sm">
-          {e.result || 'ok'}
-        </Badge>
-      ),
-      width: '90px',
-    },
-  ];
-
   if (error) {
-    return (
-      <Card>
-        <EmptyState title="Error loading audit log" description={error} actionLabel="Retry" onAction={refresh} />
-      </Card>
-    );
+    return <div className="adm__empty adm-bad">{error} <button className="adm__btn" onClick={refresh}>retry</button></div>;
   }
 
   return (
-    <Stack gap="md">
-      <Stack direction="horizontal" justify="between" align="center">
-        <Text variant="muted">{entries.length} recent entries</Text>
-        <Button variant="secondary" size="small" onClick={refresh} disabled={loading}>Refresh</Button>
-      </Stack>
-      <DataTable
-        data={entries}
-        columns={columns}
-        rowKey="id"
-        loading={loading}
-        emptyState={<EmptyState title="No audit entries" description="No admin actions have been recorded yet." />}
-      />
-    </Stack>
+    <div className="adm">
+      <div className="adm__sechead">
+        <span>audit log ({entries.length})</span>
+        <button className="adm__btn" onClick={refresh} disabled={loading}>↻</button>
+      </div>
+      <table className="adm__table">
+        <thead><tr><th>when</th><th>action</th><th>actor</th><th>target</th><th>details</th><th>result</th></tr></thead>
+        <tbody>
+          {entries.map((e) => {
+            const params = e.params ?? {};
+            const detail = Object.keys(params).map((k) => `${k}=${params[k]}`).join(' ');
+            return (
+              <tr key={e.id} style={{ cursor: 'default' }}>
+                <td className="adm-dim">{fmt(e.timestamp)}</td>
+                <td>{e.action || '—'}</td>
+                <td className="adm-dim">{e.actorEmail || e.actorUid || '—'}</td>
+                <td>{e.targetUserId ? e.targetUserId.slice(0, 8) : '—'}</td>
+                <td className="adm-dim">{detail || '—'}</td>
+                <td className={e.result === 'error' ? 'adm-bad' : 'adm-ok'}>{e.result || 'ok'}</td>
+              </tr>
+            );
+          })}
+          {entries.length === 0 && !loading && <tr style={{ cursor: 'default' }}><td colSpan={6} className="adm__empty">no audit entries yet</td></tr>}
+        </tbody>
+      </table>
+    </div>
   );
 };

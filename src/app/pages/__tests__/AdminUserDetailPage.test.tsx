@@ -78,11 +78,11 @@ beforeEach(() => {
 });
 
 describe('AdminUserDetailPage', () => {
-  it('renders the 360° sections for the user', () => {
+  it('renders the dense 360° record for the user', () => {
     renderPage();
     expect(screen.getByText('a@b.com')).toBeTruthy();
-    expect(screen.getByText('Integrations (1)')).toBeTruthy();
-    expect(screen.getByText('Pipelines (1)')).toBeTruthy();
+    expect(screen.getByText('integrations')).toBeTruthy();
+    expect(screen.getByText('pipelines')).toBeTruthy();
     expect(screen.getByText('My Pipe')).toBeTruthy();
   });
 
@@ -94,21 +94,20 @@ describe('AdminUserDetailPage', () => {
 
   it('sends a password reset', async () => {
     renderPage();
-    fireEvent.click(screen.getByText('Send password reset'));
+    fireEvent.click(screen.getByText('Password reset'));
     await waitFor(() => expect(sendPasswordReset).toHaveBeenCalled());
   });
 
   it('disables an integration', async () => {
     renderPage();
-    fireEvent.click(screen.getByText('Disable'));
+    fireEvent.click(screen.getByText('off'));
     await waitFor(() => expect(setIntegrationEnabled).toHaveBeenCalledWith('strava', false));
   });
 
   it('renders the billing panel and opens the Stripe portal', async () => {
     renderPage();
-    expect(screen.getByText('Billing')).toBeTruthy();
-    expect(screen.getByText('active')).toBeTruthy();
-    fireEvent.click(screen.getByText('Open Stripe portal'));
+    expect(screen.getByText('billing')).toBeTruthy();
+    fireEvent.click(screen.getByText('Stripe portal'));
     await waitFor(() => expect(openBillingPortal).toHaveBeenCalled());
   });
 

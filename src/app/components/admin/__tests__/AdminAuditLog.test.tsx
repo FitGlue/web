@@ -13,7 +13,7 @@ describe('AdminAuditLog', () => {
   it('renders an error state', () => {
     useAdminAuditLog.mockReturnValue({ entries: [], loading: false, error: 'nope', refresh: vi.fn() });
     render(<AdminAuditLog />);
-    expect(screen.getByText('Error loading audit log')).toBeTruthy();
+    expect(screen.getByText(/nope/)).toBeTruthy();
   });
 
   it('renders audit entries', () => {

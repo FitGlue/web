@@ -1,11 +1,11 @@
 /**
- * Admin Components - Barrel Export
+ * Admin Components - Barrel Export (dense ops console)
  */
-export { AdminOverview } from './AdminOverview';
-export { AdminUsers } from './AdminUsers';
-export { AdminPipelineRuns } from './AdminPipelineRuns';
+export { AdminUsersConsole } from './AdminUsersConsole';
+export { AdminRunsConsole } from './AdminRunsConsole';
+export { AdminUserPane } from './AdminUserPane';
+export { AdminRunPane } from './AdminRunPane';
 export { AdminBilling } from './AdminBilling';
-export { PipelineRunDetailModal } from './PipelineRunDetailModal';
-export { AdminErrorBoundary } from './AdminErrorBoundary';
 export { AdminAuditLog } from './AdminAuditLog';
+export { AdminErrorBoundary } from './AdminErrorBoundary';
 export { AdminPipelineInspector } from './AdminPipelineInspector';

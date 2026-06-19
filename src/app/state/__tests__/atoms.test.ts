@@ -96,7 +96,7 @@ describe('pluginRegistryState defaults', () => {
 describe('adminState defaults', () => {
   const store = createStore();
   it('has sensible initial values', () => {
-    expect(store.get(adminActiveTabAtom)).toBe('overview');
+    expect(store.get(adminActiveTabAtom)).toBe('users');
     expect(store.get(selectedPipelineRunIdAtom)).toBeNull();
     expect(store.get(userFiltersAtom)).toEqual({});
     expect(store.get(pipelineRunFiltersAtom)).toEqual({ limit: 50 });

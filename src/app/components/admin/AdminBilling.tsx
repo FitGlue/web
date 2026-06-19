@@ -1,112 +1,45 @@
 import React, { useEffect } from 'react';
-import { Stack } from '../library/layout';
-import { Card, Text, Heading, EmptyState, Code } from '../library/ui';
-import './admin.css';
-import { Link } from '../library/navigation';
-import {
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableHeaderCell,
-  TableCell,
-  TableEmpty,
-} from '../library/ui';
 import { useAdminUsers } from '../../hooks/admin';
-import { UserTier } from '../../../types/pb/user';
-import { resolveEnum } from '../../utils/resolveEnum';
+import './admin.css';
+
+const fmt = (s?: string): string => (s ? new Date(s).toLocaleDateString() : '—');
 
 /**
- * AdminBilling displays billing-related user information
+ * AdminBilling — dense table of athlete / Stripe-backed users with quick links
+ * into the Stripe dashboard.
  */
 export const AdminBilling: React.FC = () => {
   const { users, loading, error, fetchUsers } = useAdminUsers();
 
-  // Fetch users on mount
   useEffect(() => {
     fetchUsers(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Filter to athlete users or users with Stripe. Tier may arrive as a string
-  // enum name from the gateway, so normalise before comparing.
-  const billingUsers = users.filter(
-    u => resolveEnum(u.tier, UserTier) === UserTier.USER_TIER_ATHLETE || u.stripeCustomerId
-  );
+  const billingUsers = users.filter((u) => u.tier === 'USER_TIER_ATHLETE' || u.stripeCustomerId);
 
-  if (error) {
-    return (
-      <Card>
-        <EmptyState
-          title="Error loading billing data"
-          description={error}
-        />
-      </Card>
-    );
-  }
+  if (error) return <div className="adm__empty adm-bad">{error}</div>;
 
   return (
-    <Stack gap="md">
-      <Card>
-        <Heading level={4}>Athlete Users with Stripe</Heading>
-
-        <Stack gap="md">
-          <Table loading={loading}>
-            <TableHead>
-              <TableRow hoverable={false}>
-                <TableHeaderCell>User</TableHeaderCell>
-                <TableHeaderCell>Stripe Customer</TableHeaderCell>
-                <TableHeaderCell>Trial Ends</TableHeaderCell>
-                <TableHeaderCell>Syncs</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {billingUsers.length === 0 && !loading && (
-                <TableEmpty colSpan={4}>
-                  <EmptyState
-                    title="No billing users"
-                    description="No users with billing information found."
-                  />
-                </TableEmpty>
-              )}
-              {billingUsers.map((user) => (
-                <TableRow
-                  key={user.userId}
-                  onClick={user.stripeCustomerId
-                    ? () => window.open(`https://dashboard.stripe.com/customers/${user.stripeCustomerId}`, '_blank')
-                    : undefined
-                  }
-                >
-                  <TableCell>
-                    <Code>{(user.userId ?? '').slice(0, 8)}...</Code>
-                  </TableCell>
-                  <TableCell>
-                    {user.stripeCustomerId ? (
-                      <Link
-                        to={`https://dashboard.stripe.com/customers/${user.stripeCustomerId}`}
-                        variant="primary"
-                        external
-                      >
-                        {user.stripeCustomerId.slice(0, 12)}...
-                      </Link>
-                    ) : (
-                      <Text variant="muted">-</Text>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {user.trialEndsAt ? (
-                      <Text variant="body">{new Date(user.trialEndsAt).toLocaleDateString()}</Text>
-                    ) : (
-                      <Text variant="muted">-</Text>
-                    )}
-                  </TableCell>
-                  <TableCell><Text variant="body">{user.syncCountThisMonth ?? 0}</Text></TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Stack>
-      </Card>
-    </Stack>
+    <div className="adm">
+      <div className="adm__sechead">athlete / stripe users ({billingUsers.length})</div>
+      <table className="adm__table">
+        <thead><tr><th>id</th><th>email</th><th>tier</th><th>stripe</th><th>trial ends</th><th>sync/mo</th></tr></thead>
+        <tbody>
+          {billingUsers.map((u) => (
+            <tr key={u.userId} style={{ cursor: u.stripeCustomerId ? 'pointer' : 'default' }}
+              onClick={() => u.stripeCustomerId && window.open(`https://dashboard.stripe.com/customers/${u.stripeCustomerId}`, '_blank')}>
+              <td>{(u.userId ?? '').slice(0, 8)}</td>
+              <td>{u.email || '—'}</td>
+              <td className={u.tier === 'USER_TIER_ATHLETE' ? 'adm-vio' : ''}>{u.tier === 'USER_TIER_ATHLETE' ? 'ath' : 'hob'}</td>
+              <td className={u.stripeCustomerId ? 'adm-ok' : 'adm-dim'}>{u.stripeCustomerId ? u.stripeCustomerId.slice(0, 14) : '—'}</td>
+              <td className="adm-dim">{fmt(u.trialEndsAt)}</td>
+              <td>{u.syncCountThisMonth ?? 0}</td>
+            </tr>
+          ))}
+          {billingUsers.length === 0 && !loading && <tr style={{ cursor: 'default' }}><td colSpan={6} className="adm__empty">no billing users</td></tr>}
+        </tbody>
+      </table>
+    </div>
   );
 };

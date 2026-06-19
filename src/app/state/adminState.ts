@@ -4,17 +4,14 @@ import type { components } from '../../shared/api/schema-admin';
 // ============================================================================
 // Tab State
 // ============================================================================
-export type AdminTabId = 'overview' | 'users' | 'pipeline-runs' | 'billing' | 'audit';
-export const adminActiveTabAtom = atom<AdminTabId>('overview');
+export type AdminTabId = 'users' | 'pipeline-runs' | 'billing' | 'audit';
+export const adminActiveTabAtom = atom<AdminTabId>('users');
 
 // ============================================================================
 // Selected Item Detail State (shared across components)
 // ============================================================================
 export const selectedPipelineRunIdAtom = atom<string | null>(null);
 export const selectedPipelineRunDetailAtom = atom<AdminPipelineRun | null>(null);
-
-// Bumped after a run-ops action to signal the pipeline-runs list to refetch.
-export const adminRunsRefreshAtom = atom<number>(0);
 
 // ============================================================================
 // Filter State

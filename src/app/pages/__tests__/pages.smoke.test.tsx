@@ -113,10 +113,9 @@ vi.mock('../../hooks/useGuidedTour', () => ({
 }));
 vi.mock('../../hooks/admin', () => ({
   useAdminStats: () => ({ stats: null, loading: false, error: null, refresh: vi.fn() }),
-  useAdminUsers: () => ({ users: [], loading: false, refresh: vi.fn() }),
-  useAdminPipelineRuns: () => ({ runs: [], loading: false, refresh: vi.fn() }),
+  useAdminUsers: () => ({ users: [], loading: false, error: null, fetchUsers: vi.fn(), updateUser: vi.fn() }),
+  useAdminPipelineRuns: () => ({ runs: [], stats: null, loading: false, error: null, hasMore: false, fetchRuns: vi.fn(), loadMore: vi.fn(), selectRun: vi.fn() }),
   useAdminRunOps: () => ({ repost: vi.fn(), cancelRun: vi.fn(), resolvePendingInput: vi.fn() }),
-  useAdminRecentFailures: () => ({ runs: [], loading: false }),
   useAdminAuditLog: () => ({ entries: [], loading: false, error: null, refresh: vi.fn() }),
 }));
 
