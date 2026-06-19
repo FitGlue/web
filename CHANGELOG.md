@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.88.0](https://github.com/fitglue/web/compare/v11.87.8...v11.88.0) (2026-06-19)
+
+
+### Features
+
+* **admin:** add User 360° support page and align admin types to the new contract ([2e172b2](https://github.com/fitglue/web/commit/2e172b2937dc08e1d7e773178b4a6fb99764b50c))
+
 ### [11.87.8](https://github.com/fitglue/web/compare/v11.87.7...v11.87.8) (2026-06-19)
 
 ### [11.87.7](https://github.com/fitglue/web/compare/v11.87.6...v11.87.7) (2026-06-19)
