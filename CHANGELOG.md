@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.91.0](https://github.com/fitglue/web/compare/v11.90.0...v11.91.0) (2026-06-19)
+
+
+### Features
+
+* **admin:** pipeline config inspector/editor on the User 360° page ([7ecd317](https://github.com/fitglue/web/commit/7ecd3173aa4fa766a8bea273f773605f6920728e))
+
 ## [11.90.0](https://github.com/fitglue/web/compare/v11.89.0...v11.90.0) (2026-06-19)
 
 
