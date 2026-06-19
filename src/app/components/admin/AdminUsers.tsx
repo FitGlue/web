@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { useAtom } from 'jotai';
+import { useNavigate } from 'react-router-dom';
 import { logger } from '../../../shared/logger';
 import { Stack } from '../library/layout';
 import { Card, Button, Badge, EmptyState, useToast, Code, Text } from '../library/ui';
@@ -12,7 +13,7 @@ import {
   Pagination,
 } from '../library/ui';
 import { useAdminUsers } from '../../hooks/admin';
-import { userFiltersAtom, AdminUser, selectedUserIdAtom } from '../../state/adminState';
+import { userFiltersAtom, AdminUser } from '../../state/adminState';
 import { UserTier } from '../../../types/pb/user';
 import { resolveEnum } from '../../utils/resolveEnum';
 
@@ -21,7 +22,7 @@ import { resolveEnum } from '../../utils/resolveEnum';
  */
 export const AdminUsers: React.FC = () => {
   const [filters, setFilters] = useAtom(userFiltersAtom);
-  const [, setSelectedUserId] = useAtom(selectedUserIdAtom);
+  const navigate = useNavigate();
   const toast = useToast();
   const {
     users,
@@ -29,7 +30,6 @@ export const AdminUsers: React.FC = () => {
     loading,
     error,
     fetchUsers,
-    fetchUserDetail,
     updateUser,
   } = useAdminUsers();
 
@@ -49,12 +49,12 @@ export const AdminUsers: React.FC = () => {
   }, [setFilters, fetchUsers]);
 
   const handleRowClick = useCallback((user: AdminUser) => {
-    setSelectedUserId(user.userId);
-    fetchUserDetail(user.userId);
-  }, [setSelectedUserId, fetchUserDetail]);
+    if (user.userId) navigate(`/admin/users/${user.userId}`);
+  }, [navigate]);
 
   const handleToggleAccess = useCallback(async (e: React.MouseEvent, user: AdminUser) => {
     e.stopPropagation();
+    if (!user.userId) return;
     try {
       await updateUser(user.userId, { accessEnabled: !user.accessEnabled });
       toast.success(
@@ -71,7 +71,7 @@ export const AdminUsers: React.FC = () => {
     {
       key: 'userId',
       header: 'User',
-      render: (user) => <Code>{user.userId.slice(0, 8)}...</Code>,
+      render: (user) => <Code>{(user.userId ?? '').slice(0, 8)}...</Code>,
       width: '120px',
     },
     {

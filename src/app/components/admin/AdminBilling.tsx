@@ -78,7 +78,7 @@ export const AdminBilling: React.FC = () => {
                   }
                 >
                   <TableCell>
-                    <Code>{user.userId.slice(0, 8)}...</Code>
+                    <Code>{(user.userId ?? '').slice(0, 8)}...</Code>
                   </TableCell>
                   <TableCell>
                     {user.stripeCustomerId ? (

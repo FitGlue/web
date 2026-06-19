@@ -1,6 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'jotai';
 
 vi.mock('../../../shared/logger', () => ({ logger: { error: vi.fn(), warn: vi.fn() } }));
@@ -21,9 +22,11 @@ import { AdminUsers } from '../AdminUsers';
 
 function Wrapper({ children }: { children: React.ReactNode }) {
   return (
-    <Provider>
-      <ToastProvider>{children}</ToastProvider>
-    </Provider>
+    <MemoryRouter>
+      <Provider>
+        <ToastProvider>{children}</ToastProvider>
+      </Provider>
+    </MemoryRouter>
   );
 }
 

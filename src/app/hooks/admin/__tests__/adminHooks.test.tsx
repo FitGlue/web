@@ -5,15 +5,22 @@ import { Provider, createStore } from 'jotai';
 
 const GET = vi.fn();
 const PUT = vi.fn();
+const POST = vi.fn();
 const DELETE = vi.fn();
 vi.mock('../../../../shared/api/admin-client', () => {
-  const c = { GET: (...a: unknown[]) => GET(...a), PUT: (...a: unknown[]) => PUT(...a), DELETE: (...a: unknown[]) => DELETE(...a) };
+  const c = {
+    GET: (...a: unknown[]) => GET(...a),
+    PUT: (...a: unknown[]) => PUT(...a),
+    POST: (...a: unknown[]) => POST(...a),
+    DELETE: (...a: unknown[]) => DELETE(...a),
+  };
   return { adminClient: c, default: c };
 });
 vi.mock('../../../../shared/logger', () => ({ logger: { error: vi.fn(), warn: vi.fn() } }));
 
 import { useAdminStats } from '../useAdminStats';
 import { useAdminUsers } from '../useAdminUsers';
+import { useAdminUserDetail } from '../useAdminUserDetail';
 import { useAdminPipelineRuns } from '../useAdminPipelineRuns';
 
 function wrapper() {
@@ -26,6 +33,7 @@ function wrapper() {
 beforeEach(() => {
   GET.mockReset();
   PUT.mockReset();
+  POST.mockReset();
   DELETE.mockReset();
 });
 
@@ -64,13 +72,6 @@ describe('useAdminUsers', () => {
     expect(result.current.error).toMatch(/Admin access required/);
   });
 
-  it('fetches user detail into the shared atom', async () => {
-    GET.mockResolvedValue({ data: { userId: 'u1', email: 'a@b.com' } });
-    const { result } = renderHook(() => useAdminUsers(), { wrapper: wrapper() });
-    await act(async () => { await result.current.fetchUserDetail('u1'); });
-    expect(result.current.selectedUser).toMatchObject({ userId: 'u1', email: 'a@b.com' });
-  });
-
   it('updateUser PUTs then refreshes', async () => {
     GET.mockResolvedValue({ data: { users: [] } });
     PUT.mockResolvedValue({ data: {} });
@@ -81,13 +82,65 @@ describe('useAdminUsers', () => {
       body: { id: 'u1', accessEnabled: true },
     }));
   });
+});
 
-  it('deleteUserData DELETEs then refreshes detail', async () => {
-    GET.mockResolvedValue({ data: { userId: 'u1' } });
+describe('useAdminUserDetail', () => {
+  it('loads the aggregated detail on mount', async () => {
+    GET.mockResolvedValue({ data: { profile: { userId: 'u1', email: 'a@b.com' } } });
+    const { result } = renderHook(() => useAdminUserDetail('u1'), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.detail?.profile?.userId).toBe('u1');
+  });
+
+  it('updateUser PUTs the changed fields then reloads', async () => {
+    GET.mockResolvedValue({ data: { profile: { userId: 'u1' } } });
+    PUT.mockResolvedValue({ data: {} });
+    const { result } = renderHook(() => useAdminUserDetail('u1'), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await act(async () => { await result.current.updateUser({ isAdmin: true }); });
+    expect(PUT).toHaveBeenCalledWith('/users/{id}', expect.objectContaining({
+      params: { path: { id: 'u1' } },
+      body: { id: 'u1', isAdmin: true },
+    }));
+  });
+
+  it('setIntegrationEnabled POSTs to the provider endpoint', async () => {
+    GET.mockResolvedValue({ data: { profile: { userId: 'u1' } } });
+    POST.mockResolvedValue({ data: {} });
+    const { result } = renderHook(() => useAdminUserDetail('u1'), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await act(async () => { await result.current.setIntegrationEnabled('strava', false); });
+    expect(POST).toHaveBeenCalledWith('/users/{id}/integrations/{provider}/enabled', expect.objectContaining({
+      params: { path: { id: 'u1', provider: 'strava' } },
+      body: { enabled: false },
+    }));
+  });
+
+  it('sendPasswordReset POSTs to the reset endpoint', async () => {
+    GET.mockResolvedValue({ data: { profile: { userId: 'u1' } } });
+    POST.mockResolvedValue({ data: {} });
+    const { result } = renderHook(() => useAdminUserDetail('u1'), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await act(async () => { await result.current.sendPasswordReset(); });
+    expect(POST).toHaveBeenCalledWith('/users/{id}/send-password-reset', expect.anything());
+  });
+
+  it('deleteUserData DELETEs the data-type endpoint', async () => {
+    GET.mockResolvedValue({ data: { profile: { userId: 'u1' } } });
     DELETE.mockResolvedValue({ data: {} });
-    const { result } = renderHook(() => useAdminUsers(), { wrapper: wrapper() });
-    await act(async () => { await result.current.deleteUserData('u1', 'pipelines', 'p1'); });
-    expect(DELETE).toHaveBeenCalledWith('/admin/users/u1/pipelines/p1', {});
+    const { result } = renderHook(() => useAdminUserDetail('u1'), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await act(async () => { await result.current.deleteUserData('pipelines'); });
+    expect(DELETE).toHaveBeenCalledWith('/users/{id}/{dataType}', expect.objectContaining({
+      params: { path: { id: 'u1', dataType: 'pipelines' } },
+    }));
+  });
+
+  it('records an error when the detail fetch fails', async () => {
+    GET.mockRejectedValue(new Error('403'));
+    const { result } = renderHook(() => useAdminUserDetail('u1'), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.error).toMatch(/Failed to load user/);
   });
 });
 

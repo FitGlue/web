@@ -9,3 +9,6 @@ export type { UseAdminUsersResult } from './useAdminUsers';
 
 export { useAdminPipelineRuns } from './useAdminPipelineRuns';
 export type { UseAdminPipelineRunsResult, PipelineRunStats } from './useAdminPipelineRuns';
+
+export { useAdminUserDetail } from './useAdminUserDetail';
+export type { UseAdminUserDetailResult, UpdateUserFields } from './useAdminUserDetail';

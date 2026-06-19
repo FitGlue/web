@@ -12,7 +12,6 @@ import {
   AdminUsers,
   AdminPipelineRuns,
   AdminBilling,
-  UserDetailModal,
   PipelineRunDetailModal,
   AdminErrorBoundary,
 } from '../components/admin';
@@ -152,7 +151,6 @@ const AdminPage: React.FC = () => {
       </div>
 
       {/* Modals */}
-      <UserDetailModal />
       <PipelineRunDetailModal />
     </PageLayout>
   );

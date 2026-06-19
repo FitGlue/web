@@ -1,6 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'jotai';
 
 vi.mock('../../../../shared/logger', () => ({ logger: { error: vi.fn(), warn: vi.fn() } }));
@@ -22,7 +23,6 @@ vi.mock('../../../hooks/admin', () => ({
     loading: false,
     error: null,
     fetchUsers: vi.fn(),
-    fetchUserDetail: vi.fn(),
     updateUser: vi.fn(),
   }),
 }));
@@ -32,9 +32,11 @@ import { AdminUsers } from '../AdminUsers';
 
 function Wrapper({ children }: { children: React.ReactNode }) {
   return (
-    <Provider>
-      <ToastProvider>{children}</ToastProvider>
-    </Provider>
+    <MemoryRouter>
+      <Provider>
+        <ToastProvider>{children}</ToastProvider>
+      </Provider>
+    </MemoryRouter>
   );
 }
 
