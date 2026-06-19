@@ -10,7 +10,7 @@ import {
   FilterField,
 } from '../library/ui';
 import { useAdminPipelineRuns } from '../../hooks/admin';
-import { pipelineRunFiltersAtom, AdminPipelineRun, selectedPipelineRunIdAtom } from '../../state/adminState';
+import { pipelineRunFiltersAtom, AdminPipelineRun, selectedPipelineRunIdAtom, adminRunsRefreshAtom } from '../../state/adminState';
 import { PipelineRunStatus } from '../../../types/pb/models/pipeline/execution';
 import { ActivitySource } from '../../../types/pb/models/activity/source';
 import {
@@ -71,6 +71,7 @@ const statusBadgeClass: Record<string, string> = {
 export const AdminPipelineRuns: React.FC = () => {
   const [filters, setFilters] = useAtom(pipelineRunFiltersAtom);
   const [, setSelectedRunId] = useAtom(selectedPipelineRunIdAtom);
+  const [refreshTick] = useAtom(adminRunsRefreshAtom);
   const {
     runs,
     stats,
@@ -87,6 +88,12 @@ export const AdminPipelineRuns: React.FC = () => {
     fetchRuns();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Refetch after a run-ops action (repost / cancel / resolve) elsewhere.
+  useEffect(() => {
+    if (refreshTick > 0) fetchRuns();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshTick]);
 
   const handleApplyFilters = useCallback(() => {
     fetchRuns();

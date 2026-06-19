@@ -13,6 +13,9 @@ export const adminActiveTabAtom = atom<AdminTabId>('overview');
 export const selectedPipelineRunIdAtom = atom<string | null>(null);
 export const selectedPipelineRunDetailAtom = atom<AdminPipelineRun | null>(null);
 
+// Bumped after a run-ops action to signal the pipeline-runs list to refetch.
+export const adminRunsRefreshAtom = atom<number>(0);
+
 // ============================================================================
 // Filter State
 // ============================================================================

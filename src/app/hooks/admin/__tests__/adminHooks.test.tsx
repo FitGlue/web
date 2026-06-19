@@ -21,6 +21,7 @@ vi.mock('../../../../shared/logger', () => ({ logger: { error: vi.fn(), warn: vi
 import { useAdminStats } from '../useAdminStats';
 import { useAdminUsers } from '../useAdminUsers';
 import { useAdminUserDetail } from '../useAdminUserDetail';
+import { useAdminRunOps } from '../useAdminRunOps';
 import { useAdminPipelineRuns } from '../useAdminPipelineRuns';
 
 function wrapper() {
@@ -141,6 +142,36 @@ describe('useAdminUserDetail', () => {
     const { result } = renderHook(() => useAdminUserDetail('u1'), { wrapper: wrapper() });
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.error).toMatch(/Failed to load user/);
+  });
+});
+
+describe('useAdminRunOps', () => {
+  it('repost POSTs mode and destination', async () => {
+    POST.mockResolvedValue({ data: {} });
+    const { result } = renderHook(() => useAdminRunOps(), { wrapper: wrapper() });
+    await act(async () => { await result.current.repost('u1', 'a1', 'retry-destination', 'strava'); });
+    expect(POST).toHaveBeenCalledWith('/users/{id}/activities/{activityId}/repost', expect.objectContaining({
+      params: { path: { id: 'u1', activityId: 'a1' } },
+      body: { mode: 'retry-destination', destination: 'strava' },
+    }));
+  });
+
+  it('cancelRun POSTs to the cancel endpoint', async () => {
+    POST.mockResolvedValue({ data: {} });
+    const { result } = renderHook(() => useAdminRunOps(), { wrapper: wrapper() });
+    await act(async () => { await result.current.cancelRun('u1', 'r1'); });
+    expect(POST).toHaveBeenCalledWith('/users/{id}/pipeline-runs/{runId}/cancel', expect.objectContaining({
+      params: { path: { id: 'u1', runId: 'r1' } },
+    }));
+  });
+
+  it('resolvePendingInput POSTs to the resolve endpoint', async () => {
+    POST.mockResolvedValue({ data: {} });
+    const { result } = renderHook(() => useAdminRunOps(), { wrapper: wrapper() });
+    await act(async () => { await result.current.resolvePendingInput('u1', 'i1'); });
+    expect(POST).toHaveBeenCalledWith('/users/{id}/pending-inputs/{inputId}/resolve', expect.objectContaining({
+      params: { path: { id: 'u1', inputId: 'i1' } },
+    }));
   });
 });
 

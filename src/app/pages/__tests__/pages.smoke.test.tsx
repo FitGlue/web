@@ -115,6 +115,7 @@ vi.mock('../../hooks/admin', () => ({
   useAdminStats: () => ({ stats: null, loading: false, error: null, refresh: vi.fn() }),
   useAdminUsers: () => ({ users: [], loading: false, refresh: vi.fn() }),
   useAdminPipelineRuns: () => ({ runs: [], loading: false, refresh: vi.fn() }),
+  useAdminRunOps: () => ({ repost: vi.fn(), cancelRun: vi.fn(), resolvePendingInput: vi.fn() }),
 }));
 
 // Pages
