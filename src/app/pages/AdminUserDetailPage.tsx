@@ -54,6 +54,9 @@ const AdminUserDetailPage: React.FC = () => {
     setIntegrationEnabled,
     deleteIntegration,
     deleteUserData,
+    startTrial,
+    cancelSubscription,
+    openBillingPortal,
   } = useAdminUserDetail(id);
 
   const [confirm, setConfirm] = useState<ConfirmState>(null);
@@ -103,6 +106,9 @@ const AdminUserDetailPage: React.FC = () => {
   const integrations = detail.integrations ?? [];
   const pipelines = detail.pipelines ?? [];
   const pendingInputs = detail.pendingInputs ?? [];
+  const billing = detail.billing;
+  const sub = billing?.subscription;
+  const hasStripe = !!sub?.stripeCustomerId;
 
   return (
     <PageLayout title={p.displayName || p.email || 'User'} backTo="/admin" backLabel="Admin" fullWidth>
@@ -285,6 +291,62 @@ const AdminUserDetailPage: React.FC = () => {
                 ))}
               </Stack>
             )}
+          </Stack>
+        </Card>
+
+        {/* ---- Billing ---- */}
+        <Card>
+          <Stack gap="md">
+            <Heading level={4}>Billing</Heading>
+            <Grid cols={3} gap="md">
+              <KeyValue label="Status" value={sub?.status || 'no subscription'} />
+              <KeyValue label="Effective tier" value={(billing?.effectiveTier ?? 'USER_TIER_HOBBYIST').replace('USER_TIER_', '')} />
+              <KeyValue label="On trial" value={billing?.isTrial ? 'Yes' : 'No'} />
+              <KeyValue label="Stripe customer" value={sub?.stripeCustomerId || '—'} format="code" />
+              <KeyValue label="Subscription" value={sub?.stripeSubscriptionId || '—'} format="code" />
+              <KeyValue label="Cancel at period end" value={sub?.cancelAtPeriodEnd ? 'Yes' : 'No'} />
+              <KeyValue label="Current period ends" value={formatDate(sub?.currentPeriodEnd)} />
+              <KeyValue label="Trial ends" value={formatDate(sub?.trialEndsAt)} />
+            </Grid>
+            <Stack direction="horizontal" gap="sm" wrap>
+              {hasStripe && (
+                <Button
+                  variant="secondary"
+                  size="small"
+                  disabled={busy}
+                  onClick={() => run('Opened Stripe portal', openBillingPortal)}
+                >
+                  Open Stripe portal
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="small"
+                disabled={busy}
+                onClick={() => askConfirm({
+                  title: 'Start Athlete trial?',
+                  message: `Start an Athlete trial for ${p.email || p.userId}.`,
+                  confirmLabel: 'Start trial',
+                  onConfirm: () => run('Trial started', startTrial),
+                })}
+              >
+                Start trial
+              </Button>
+              <Button
+                variant="ghost"
+                size="small"
+                disabled={busy}
+                onClick={() => askConfirm({
+                  title: 'Cancel subscription?',
+                  message: `Cancel ${p.email || p.userId}'s subscription.`,
+                  danger: true,
+                  confirmLabel: 'Cancel subscription',
+                  onConfirm: () => run('Subscription cancelled', cancelSubscription),
+                })}
+              >
+                Cancel subscription
+              </Button>
+            </Stack>
           </Stack>
         </Card>
 

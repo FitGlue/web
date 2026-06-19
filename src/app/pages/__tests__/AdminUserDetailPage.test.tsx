@@ -8,6 +8,7 @@ vi.mock('../../../shared/logger', () => ({ logger: { error: vi.fn(), warn: vi.fn
 const updateUser = vi.fn().mockResolvedValue(undefined);
 const setIntegrationEnabled = vi.fn().mockResolvedValue(undefined);
 const sendPasswordReset = vi.fn().mockResolvedValue(undefined);
+const openBillingPortal = vi.fn().mockResolvedValue(undefined);
 
 const baseDetail = {
   profile: {
@@ -25,7 +26,11 @@ const baseDetail = {
   activityCount: 5,
   pipelineRunCount: 2,
   pendingInputs: [],
-  billing: {},
+  billing: {
+    subscription: { status: 'active', stripeCustomerId: 'cus_x', stripeSubscriptionId: 'sub_x' },
+    effectiveTier: 'USER_TIER_ATHLETE',
+    isTrial: false,
+  },
 };
 
 vi.mock('../../hooks/admin', () => ({
@@ -43,7 +48,7 @@ vi.mock('../../hooks/admin', () => ({
     deleteUser: vi.fn(),
     startTrial: vi.fn(),
     cancelSubscription: vi.fn(),
-    openBillingPortal: vi.fn(),
+    openBillingPortal,
   }),
 }));
 
@@ -93,5 +98,13 @@ describe('AdminUserDetailPage', () => {
     renderPage();
     fireEvent.click(screen.getByText('Disable'));
     await waitFor(() => expect(setIntegrationEnabled).toHaveBeenCalledWith('strava', false));
+  });
+
+  it('renders the billing panel and opens the Stripe portal', async () => {
+    renderPage();
+    expect(screen.getByText('Billing')).toBeTruthy();
+    expect(screen.getByText('active')).toBeTruthy();
+    fireEvent.click(screen.getByText('Open Stripe portal'));
+    await waitFor(() => expect(openBillingPortal).toHaveBeenCalled());
   });
 });
