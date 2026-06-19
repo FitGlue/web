@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/audit-log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Audit Log ===================== */
+        get: operations["AdminGatewayService_ListAuditLog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/pipeline-runs": {
         parameters: {
             query?: never;
@@ -87,6 +104,216 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/{id}/activities/{activityId}/repost": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminGatewayService_RepostActivity"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/billing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ===================== Billing ===================== */
+        get: operations["AdminGatewayService_GetUserBilling"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/billing/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminGatewayService_CancelSubscription"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/billing/portal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminGatewayService_CreateBillingPortalSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/billing/trial": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminGatewayService_StartTrial"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/integrations/{provider}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["AdminGatewayService_DeleteIntegration"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/integrations/{provider}/enabled": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminGatewayService_SetIntegrationEnabled"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/pending-inputs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AdminGatewayService_ListPendingInputs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/pending-inputs/{inputId}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminGatewayService_ResolvePendingInput"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/pipeline-runs/{runId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AdminGatewayService_GetPipelineRun"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/pipeline-runs/{runId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminGatewayService_CancelPipelineRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/send-password-reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description ===================== User Actions ===================== */
+        post: operations["AdminGatewayService_SendPasswordReset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/send-verification-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminGatewayService_SendVerificationEmail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/{id}/{dataType}": {
         parameters: {
             query?: never;
@@ -107,7 +334,115 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description ----------------------- Audit Log ----------------------- */
+        AdminAuditLogEntry: {
+            id?: string;
+            actorUid?: string;
+            actorEmail?: string;
+            action?: string;
+            targetUserId?: string;
+            params?: {
+                [key: string]: string;
+            };
+            result?: string;
+            error?: string;
+            /** Format: date-time */
+            timestamp?: string;
+        };
         AdminEmptyResponse: Record<string, never>;
+        /**
+         * @description AdminIntegrationSummary is a redacted view of a connected provider — it never
+         *      includes tokens or secrets, only status/health metadata.
+         */
+        AdminIntegrationSummary: {
+            provider?: string;
+            enabled?: boolean;
+            connected?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            /** @description "valid" | "expired" | "n/a" (n/a = provider has no expiring token) */
+            tokenHealth?: string;
+        };
+        AdminPendingInputSummary: {
+            id?: string;
+            activityId?: string;
+            enricherProviderId?: string;
+            status?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        AdminPipelineRunStats: {
+            /** Format: int32 */
+            total?: number;
+            byStatus?: {
+                [key: string]: number;
+            };
+            bySource?: {
+                [key: string]: number;
+            };
+        };
+        AdminPipelineSummary: {
+            id?: string;
+            name?: string;
+            source?: string;
+            destinations?: string[];
+            enabled?: boolean;
+        };
+        AdminUserBilling: {
+            subscription?: components["schemas"]["SubscriptionState"];
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            effectiveTier?: "USER_TIER_UNSPECIFIED" | "USER_TIER_HOBBYIST" | "USER_TIER_ATHLETE";
+            isTrial?: boolean;
+        };
+        /** @description AdminUserDetail is the aggregated 360-degree view of a single user. */
+        AdminUserDetail: {
+            profile?: components["schemas"]["UserProfile"];
+            integrations?: components["schemas"]["AdminIntegrationSummary"][];
+            pipelines?: components["schemas"]["AdminPipelineSummary"][];
+            /** Format: int32 */
+            activityCount?: number;
+            /** Format: int32 */
+            pipelineRunCount?: number;
+            pendingInputs?: components["schemas"]["AdminPendingInputSummary"][];
+            billing?: components["schemas"]["AdminUserBilling"];
+        };
+        /**
+         * @description AdminUserSummary is the per-row shape for the user directory. It carries the
+         *      derived counts the table needs without the client having to aggregate.
+         */
+        AdminUserSummary: {
+            userId?: string;
+            email?: string;
+            displayName?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            tier?: "USER_TIER_UNSPECIFIED" | "USER_TIER_HOBBYIST" | "USER_TIER_ATHLETE";
+            isAdmin?: boolean;
+            accessEnabled?: boolean;
+            /** Format: int32 */
+            syncCountThisMonth?: number;
+            /** Format: int32 */
+            preventedSyncCount?: number;
+            /** Format: int32 */
+            integrationCount?: number;
+            /** Format: int32 */
+            pipelineCount?: number;
+            /** Format: date-time */
+            trialEndsAt?: string;
+            stripeCustomerId?: string;
+            integrations?: string[];
+        };
         BoosterExecution: {
             providerName?: string;
             durationMs?: string;
@@ -120,6 +455,18 @@ export interface components {
              * @enum {string}
              */
             status?: "EXECUTION_STEP_STATUS_UNSPECIFIED" | "EXECUTION_STEP_STATUS_QUEUED" | "EXECUTION_STEP_STATUS_RUNNING" | "EXECUTION_STEP_STATUS_OK" | "EXECUTION_STEP_STATUS_PASS" | "EXECUTION_STEP_STATUS_SKIPPED" | "EXECUTION_STEP_STATUS_FAILED" | "EXECUTION_STEP_STATUS_RETRIED";
+        };
+        CancelPipelineRunAdminRequest: {
+            id?: string;
+            runId?: string;
+        };
+        /** @description ----------------------- Billing ----------------------- */
+        CreateBillingPortalAdminRequest: {
+            id?: string;
+            returnUrl?: string;
+        };
+        CreateBillingPortalAdminResponse: {
+            url?: string;
         };
         DestinationConfig: {
             config?: {
@@ -200,12 +547,21 @@ export interface components {
         ListAllPipelinesAdminResponse: {
             pipelines?: components["schemas"]["PipelineConfig"][];
         };
+        ListAuditLogAdminResponse: {
+            entries?: components["schemas"]["AdminAuditLogEntry"][];
+            nextPageToken?: string;
+        };
+        ListPendingInputsAdminResponse: {
+            inputs?: components["schemas"]["AdminPendingInputSummary"][];
+        };
         ListPipelineRunsAdminResponse: {
             runs?: components["schemas"]["PipelineRun"][];
             nextPageToken?: string;
+            hasMore?: boolean;
+            stats?: components["schemas"]["AdminPipelineRunStats"];
         };
         ListUsersAdminResponse: {
-            users?: components["schemas"]["UserProfile"][];
+            users?: components["schemas"]["AdminUserSummary"][];
             nextPageToken?: string;
         };
         NotificationPreferences: {
@@ -289,6 +645,23 @@ export interface components {
             /** Format: int32 */
             started?: number;
         };
+        RepostActivityAdminRequest: {
+            id?: string;
+            activityId?: string;
+            /** @description "missed-destination" | "retry-destination" | "full-pipeline" */
+            mode?: string;
+            destination?: string;
+        };
+        ResolvePendingInputAdminRequest: {
+            id?: string;
+            inputId?: string;
+        };
+        /** @description ----------------------- User Actions ----------------------- */
+        SetIntegrationEnabledAdminRequest: {
+            id?: string;
+            provider?: string;
+            enabled?: boolean;
+        };
         /** @description The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors). */
         Status: {
             /**
@@ -301,9 +674,43 @@ export interface components {
             /** @description A list of messages that carry the error details.  There is a common set of message types for APIs to use. */
             details?: components["schemas"]["GoogleProtobufAny"][];
         };
+        /** @description SubscriptionState tracks the user's billing info, decoupled from core profile. */
+        SubscriptionState: {
+            userId?: string;
+            /** @description Stripe customer ID for billing */
+            stripeCustomerId?: string;
+            stripeSubscriptionId?: string;
+            /**
+             * Format: date-time
+             * @description Athlete trial end date (null = no trial)
+             */
+            trialEndsAt?: string;
+            /**
+             * Format: enum
+             * @description The actual purchased tier (free users won't have this record or it will be free)
+             * @enum {string}
+             */
+            subscriptionTier?: "USER_TIER_UNSPECIFIED" | "USER_TIER_HOBBYIST" | "USER_TIER_ATHLETE";
+            /** Format: date-time */
+            currentPeriodStart?: string;
+            /** Format: date-time */
+            currentPeriodEnd?: string;
+            cancelAtPeriodEnd?: boolean;
+            status?: string;
+        };
         UpdateUserAdminRequest: {
             id?: string;
             accessEnabled?: boolean;
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            tier?: "USER_TIER_UNSPECIFIED" | "USER_TIER_HOBBYIST" | "USER_TIER_ATHLETE";
+            isAdmin?: boolean;
+            displayName?: string;
+        };
+        UserIdAdminRequest: {
+            id?: string;
         };
         /**
          * @description UserProfile represents the core user identity and preferences,
@@ -356,6 +763,39 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    AdminGatewayService_ListAuditLog: {
+        parameters: {
+            query?: {
+                targetUserId?: string;
+                limit?: number;
+                pageToken?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListAuditLogAdminResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
     AdminGatewayService_ListPipelineRuns: {
         parameters: {
             query?: {
@@ -500,7 +940,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    "application/json": components["schemas"]["AdminUserDetail"];
                 };
             };
             /** @description Default error response */
@@ -535,7 +975,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    "application/json": components["schemas"]["AdminUserDetail"];
                 };
             };
             /** @description Default error response */
@@ -559,6 +999,451 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminEmptyResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_RepostActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                activityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RepostActivityAdminRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminEmptyResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_GetUserBilling: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserBilling"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_CancelSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserIdAdminRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminEmptyResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_CreateBillingPortalSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBillingPortalAdminRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateBillingPortalAdminResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_StartTrial: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserIdAdminRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminEmptyResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_DeleteIntegration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminEmptyResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_SetIntegrationEnabled: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetIntegrationEnabledAdminRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminEmptyResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_ListPendingInputs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListPendingInputsAdminResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_ResolvePendingInput: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                inputId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResolvePendingInputAdminRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminEmptyResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_GetPipelineRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                runId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PipelineRun"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_CancelPipelineRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                runId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelPipelineRunAdminRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminEmptyResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_SendPasswordReset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserIdAdminRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminEmptyResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_SendVerificationEmail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserIdAdminRequest"];
+            };
+        };
         responses: {
             /** @description OK */
             200: {

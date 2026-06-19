@@ -7,14 +7,15 @@
 /* eslint-disable */
 import type { PipelineConfig } from "../models/pipeline/config";
 import type { PipelineRun } from "../models/pipeline/execution";
-import type { UserProfile } from "../models/user/profile";
+import type { SubscriptionState } from "../models/user/billing";
+import type { UserProfile, UserTier } from "../models/user/profile";
 
 export const protobufPackage = "fitglue.gateway";
 
 export interface AdminEmptyResponse {
 }
 
-/** Platform Stats */
+/** ----------------------- Platform Stats ----------------------- */
 export interface GetAdminStatsRequest {
 }
 
@@ -32,14 +33,36 @@ export interface GetAdminStatsResponse {
   recentExecutions?: RecentPipelineRunCounts | undefined;
 }
 
-/** User Management */
+/** ----------------------- User Management ----------------------- */
 export interface ListUsersAdminRequest {
   limit: number;
   pageToken: string;
 }
 
+/**
+ * AdminUserSummary is the per-row shape for the user directory. It carries the
+ * derived counts the table needs without the client having to aggregate.
+ */
+export interface AdminUserSummary {
+  userId: string;
+  email: string;
+  displayName: string;
+  createdAt?: Date | undefined;
+  tier: UserTier;
+  isAdmin: boolean;
+  accessEnabled: boolean;
+  syncCountThisMonth: number;
+  preventedSyncCount: number;
+  integrationCount: number;
+  pipelineCount: number;
+  trialEndsAt?: Date | undefined;
+  stripeCustomerId: string;
+  /** connected provider names */
+  integrations: string[];
+}
+
 export interface ListUsersAdminResponse {
-  users: UserProfile[];
+  users: AdminUserSummary[];
   nextPageToken: string;
 }
 
@@ -49,7 +72,10 @@ export interface UserIdAdminRequest {
 
 export interface UpdateUserAdminRequest {
   id: string;
-  accessEnabled: boolean;
+  accessEnabled?: boolean | undefined;
+  tier?: UserTier | undefined;
+  isAdmin?: boolean | undefined;
+  displayName?: string | undefined;
 }
 
 export interface DeleteUserDataAdminRequest {
@@ -57,7 +83,69 @@ export interface DeleteUserDataAdminRequest {
   dataType: string;
 }
 
-/** Pipeline Management */
+/**
+ * AdminIntegrationSummary is a redacted view of a connected provider — it never
+ * includes tokens or secrets, only status/health metadata.
+ */
+export interface AdminIntegrationSummary {
+  provider: string;
+  enabled: boolean;
+  connected: boolean;
+  createdAt?: Date | undefined;
+  lastUsedAt?: Date | undefined;
+  expiresAt?:
+    | Date
+    | undefined;
+  /** "valid" | "expired" | "n/a" (n/a = provider has no expiring token) */
+  tokenHealth: string;
+}
+
+export interface AdminPipelineSummary {
+  id: string;
+  name: string;
+  source: string;
+  destinations: string[];
+  enabled: boolean;
+}
+
+export interface AdminPendingInputSummary {
+  id: string;
+  activityId: string;
+  enricherProviderId: string;
+  status: string;
+  createdAt?: Date | undefined;
+}
+
+export interface AdminUserBilling {
+  subscription?: SubscriptionState | undefined;
+  effectiveTier: UserTier;
+  isTrial: boolean;
+}
+
+/** AdminUserDetail is the aggregated 360-degree view of a single user. */
+export interface AdminUserDetail {
+  profile?: UserProfile | undefined;
+  integrations: AdminIntegrationSummary[];
+  pipelines: AdminPipelineSummary[];
+  activityCount: number;
+  pipelineRunCount: number;
+  pendingInputs: AdminPendingInputSummary[];
+  billing?: AdminUserBilling | undefined;
+}
+
+/** ----------------------- User Actions ----------------------- */
+export interface SetIntegrationEnabledAdminRequest {
+  id: string;
+  provider: string;
+  enabled: boolean;
+}
+
+export interface DeleteIntegrationAdminRequest {
+  id: string;
+  provider: string;
+}
+
+/** ----------------------- Pipeline Management ----------------------- */
 export interface ListAllPipelinesAdminRequest {
   /** required query param */
   userId: string;
@@ -65,6 +153,22 @@ export interface ListAllPipelinesAdminRequest {
 
 export interface ListAllPipelinesAdminResponse {
   pipelines: PipelineConfig[];
+}
+
+export interface AdminPipelineRunStats {
+  total: number;
+  byStatus: { [key: string]: number };
+  bySource: { [key: string]: number };
+}
+
+export interface AdminPipelineRunStats_ByStatusEntry {
+  key: string;
+  value: number;
+}
+
+export interface AdminPipelineRunStats_BySourceEntry {
+  key: string;
+  value: number;
 }
 
 export interface ListPipelineRunsAdminRequest {
@@ -78,24 +182,117 @@ export interface ListPipelineRunsAdminRequest {
 export interface ListPipelineRunsAdminResponse {
   runs: PipelineRun[];
   nextPageToken: string;
+  hasMore: boolean;
+  stats?: AdminPipelineRunStats | undefined;
+}
+
+export interface GetPipelineRunAdminRequest {
+  /** user id */
+  id: string;
+  runId: string;
+}
+
+export interface RepostActivityAdminRequest {
+  /** user id */
+  id: string;
+  activityId: string;
+  /** "missed-destination" | "retry-destination" | "full-pipeline" */
+  mode: string;
+  destination: string;
+}
+
+export interface CancelPipelineRunAdminRequest {
+  /** user id */
+  id: string;
+  runId: string;
+}
+
+export interface ListPendingInputsAdminResponse {
+  inputs: AdminPendingInputSummary[];
+}
+
+export interface ResolvePendingInputAdminRequest {
+  /** user id */
+  id: string;
+  inputId: string;
+}
+
+/** ----------------------- Billing ----------------------- */
+export interface CreateBillingPortalAdminRequest {
+  /** user id */
+  id: string;
+  returnUrl: string;
+}
+
+export interface CreateBillingPortalAdminResponse {
+  url: string;
+}
+
+/** ----------------------- Audit Log ----------------------- */
+export interface AdminAuditLogEntry {
+  id: string;
+  actorUid: string;
+  actorEmail: string;
+  action: string;
+  targetUserId: string;
+  params: { [key: string]: string };
+  /** "ok" | "error" */
+  result: string;
+  error: string;
+  timestamp?: Date | undefined;
+}
+
+export interface AdminAuditLogEntry_ParamsEntry {
+  key: string;
+  value: string;
+}
+
+export interface ListAuditLogAdminRequest {
+  /** optional filter */
+  targetUserId: string;
+  limit: number;
+  pageToken: string;
+}
+
+export interface ListAuditLogAdminResponse {
+  entries: AdminAuditLogEntry[];
+  nextPageToken: string;
 }
 
 /**
  * AdminGatewayService describes the admin REST API surface
  * served by api-admin at /api/admin/*.
  *
- * Requires admin authentication via AdminMiddleware.
+ * Requires admin authentication via AdminMiddleware. Every mutating RPC is
+ * recorded to the admin audit log.
  */
 export interface AdminGatewayService {
   /** ===================== Platform Stats ===================== */
   GetStats(request: GetAdminStatsRequest): Promise<GetAdminStatsResponse>;
   /** ===================== User Management ===================== */
   ListUsers(request: ListUsersAdminRequest): Promise<ListUsersAdminResponse>;
-  GetUser(request: UserIdAdminRequest): Promise<UserProfile>;
-  UpdateUser(request: UpdateUserAdminRequest): Promise<UserProfile>;
+  GetUser(request: UserIdAdminRequest): Promise<AdminUserDetail>;
+  UpdateUser(request: UpdateUserAdminRequest): Promise<AdminUserDetail>;
   DeleteUser(request: UserIdAdminRequest): Promise<AdminEmptyResponse>;
   DeleteUserData(request: DeleteUserDataAdminRequest): Promise<AdminEmptyResponse>;
+  /** ===================== User Actions ===================== */
+  SendPasswordReset(request: UserIdAdminRequest): Promise<AdminEmptyResponse>;
+  SendVerificationEmail(request: UserIdAdminRequest): Promise<AdminEmptyResponse>;
+  SetIntegrationEnabled(request: SetIntegrationEnabledAdminRequest): Promise<AdminEmptyResponse>;
+  DeleteIntegration(request: DeleteIntegrationAdminRequest): Promise<AdminEmptyResponse>;
   /** ===================== Pipeline Management ===================== */
   ListAllPipelines(request: ListAllPipelinesAdminRequest): Promise<ListAllPipelinesAdminResponse>;
   ListPipelineRuns(request: ListPipelineRunsAdminRequest): Promise<ListPipelineRunsAdminResponse>;
+  GetPipelineRun(request: GetPipelineRunAdminRequest): Promise<PipelineRun>;
+  RepostActivity(request: RepostActivityAdminRequest): Promise<AdminEmptyResponse>;
+  CancelPipelineRun(request: CancelPipelineRunAdminRequest): Promise<AdminEmptyResponse>;
+  ListPendingInputs(request: UserIdAdminRequest): Promise<ListPendingInputsAdminResponse>;
+  ResolvePendingInput(request: ResolvePendingInputAdminRequest): Promise<AdminEmptyResponse>;
+  /** ===================== Billing ===================== */
+  GetUserBilling(request: UserIdAdminRequest): Promise<AdminUserBilling>;
+  StartTrial(request: UserIdAdminRequest): Promise<AdminEmptyResponse>;
+  CancelSubscription(request: UserIdAdminRequest): Promise<AdminEmptyResponse>;
+  CreateBillingPortalSession(request: CreateBillingPortalAdminRequest): Promise<CreateBillingPortalAdminResponse>;
+  /** ===================== Audit Log ===================== */
+  ListAuditLog(request: ListAuditLogAdminRequest): Promise<ListAuditLogAdminResponse>;
 }
