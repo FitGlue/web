@@ -14,6 +14,7 @@ import {
   AdminBilling,
   UserDetailModal,
   PipelineRunDetailModal,
+  AdminErrorBoundary,
 } from '../components/admin';
 
 /**
@@ -91,10 +92,18 @@ const AdminPage: React.FC = () => {
               activeTab={activeTab}
               onTabChange={(id) => setActiveTab(id as AdminTabId)}
             >
-              {activeTab === 'overview' && <AdminOverview />}
-              {activeTab === 'users' && <AdminUsers />}
-              {activeTab === 'pipeline-runs' && <AdminPipelineRuns />}
-              {activeTab === 'billing' && <AdminBilling />}
+              {activeTab === 'overview' && (
+                <AdminErrorBoundary label="Overview"><AdminOverview /></AdminErrorBoundary>
+              )}
+              {activeTab === 'users' && (
+                <AdminErrorBoundary label="Users"><AdminUsers /></AdminErrorBoundary>
+              )}
+              {activeTab === 'pipeline-runs' && (
+                <AdminErrorBoundary label="Pipeline Runs"><AdminPipelineRuns /></AdminErrorBoundary>
+              )}
+              {activeTab === 'billing' && (
+                <AdminErrorBoundary label="Billing"><AdminBilling /></AdminErrorBoundary>
+              )}
             </TabbedCard>
           </Container>
         </div>

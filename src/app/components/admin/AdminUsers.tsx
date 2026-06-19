@@ -14,6 +14,7 @@ import {
 import { useAdminUsers } from '../../hooks/admin';
 import { userFiltersAtom, AdminUser, selectedUserIdAtom } from '../../state/adminState';
 import { UserTier } from '../../../types/pb/user';
+import { resolveEnum } from '../../utils/resolveEnum';
 
 /**
  * AdminUsers displays and manages platform users
@@ -100,15 +101,20 @@ export const AdminUsers: React.FC = () => {
     {
       key: 'tier',
       header: 'Tier',
-      render: (user) => (
-        <Badge
-          variant={user.tier === UserTier.USER_TIER_ATHLETE ? 'premium' : 'default'}
-          size="sm"
-          className={user.tier === UserTier.USER_TIER_ATHLETE ? 'admin-badge--premium' : 'admin-badge--muted'}
-        >
-          {user.tier === UserTier.USER_TIER_ATHLETE ? 'Athlete' : 'Hobbyist'}
-        </Badge>
-      ),
+      render: (user) => {
+        // Gateway protobufs serialize the tier enum as a string name; resolveEnum
+        // normalises both string and numeric forms to the numeric enum.
+        const isAthlete = resolveEnum(user.tier, UserTier) === UserTier.USER_TIER_ATHLETE;
+        return (
+          <Badge
+            variant={isAthlete ? 'premium' : 'default'}
+            size="sm"
+            className={isAthlete ? 'admin-badge--premium' : 'admin-badge--muted'}
+          >
+            {isAthlete ? 'Athlete' : 'Hobbyist'}
+          </Badge>
+        );
+      },
       width: '100px',
     },
     {
@@ -116,8 +122,8 @@ export const AdminUsers: React.FC = () => {
       header: 'Syncs',
       render: (user) => (
         <Stack direction="horizontal" gap="xs" align="center">
-          <Text variant="body">{user.syncCountThisMonth}</Text>
-          {user.preventedSyncCount > 0 && (
+          <Text variant="body">{user.syncCountThisMonth ?? 0}</Text>
+          {(user.preventedSyncCount ?? 0) > 0 && (
             <Text variant="muted">(+{user.preventedSyncCount})</Text>
           )}
         </Stack>
@@ -127,11 +133,14 @@ export const AdminUsers: React.FC = () => {
     {
       key: 'integrations',
       header: 'Integrations',
-      render: (user) => (
-        <Text variant="body">
-          {user.integrations.length > 0 ? user.integrations.join(', ') : '-'}
-        </Text>
-      ),
+      render: (user) => {
+        const integrations = user.integrations ?? [];
+        return (
+          <Text variant="body">
+            {integrations.length > 0 ? integrations.join(', ') : '-'}
+          </Text>
+        );
+      },
     },
     {
       key: 'actions',

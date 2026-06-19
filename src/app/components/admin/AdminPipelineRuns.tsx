@@ -11,6 +11,37 @@ import {
 } from '../library/ui';
 import { useAdminPipelineRuns } from '../../hooks/admin';
 import { pipelineRunFiltersAtom, AdminPipelineRun, selectedPipelineRunIdAtom } from '../../state/adminState';
+import { PipelineRunStatus } from '../../../types/pb/models/pipeline/execution';
+import { ActivitySource } from '../../../types/pb/models/activity/source';
+import {
+  formatPipelineRunStatus,
+  formatActivitySource,
+  formatDestination,
+} from '../../../types/pb/enum-formatters';
+
+// Build filter options from the generated enums so the values stay in sync with
+// the proto. Option values are the enum *name* strings, which is how runs store
+// status/source (e.g. "PIPELINE_RUN_STATUS_SYNCED", "SOURCE_STRAVA").
+type EnumOption = { value: string; label: string };
+
+const STATUS_OPTIONS: EnumOption[] = Object.values(PipelineRunStatus)
+  .filter(
+    (v): v is PipelineRunStatus =>
+      typeof v === 'number' &&
+      v !== PipelineRunStatus.PIPELINE_RUN_STATUS_UNSPECIFIED &&
+      v !== PipelineRunStatus.UNRECOGNIZED,
+  )
+  .map((v) => ({ value: PipelineRunStatus[v], label: formatPipelineRunStatus(v) }));
+
+const SOURCE_OPTIONS: EnumOption[] = Object.values(ActivitySource)
+  .filter(
+    (v): v is ActivitySource =>
+      typeof v === 'number' &&
+      v > 0 &&
+      v !== ActivitySource.SOURCE_TEST &&
+      v !== ActivitySource.UNRECOGNIZED,
+  )
+  .map((v) => ({ value: ActivitySource[v], label: formatActivitySource(v) }));
 
 // Status badge variant mapping — keys match schema enum strings.
 const statusVariants: Record<string, 'success' | 'warning' | 'error' | 'info' | 'default'> = {
@@ -101,7 +132,7 @@ export const AdminPipelineRuns: React.FC = () => {
       render: (run) => (
         <Stack gap="xs">
           <Text variant="body">{run.title || 'Untitled'}</Text>
-          <Text variant="small">{run.source}</Text>
+          <Text variant="small">{formatActivitySource(run.source)}</Text>
         </Stack>
       ),
     },
@@ -120,7 +151,7 @@ export const AdminPipelineRuns: React.FC = () => {
         const v = statusVariants[run.status ?? ''] || 'default';
         return (
           <Badge variant={v} size="sm" className={statusBadgeClass[v]}>
-            {run.status}
+            {formatPipelineRunStatus(run.status)}
           </Badge>
         );
       },
@@ -151,7 +182,7 @@ export const AdminPipelineRuns: React.FC = () => {
               : 'default';
             return (
               <Badge key={i} variant={v} size="sm" className={statusBadgeClass[v]}>
-                {d.destination}
+                {formatDestination(d.destination)}
               </Badge>
             );
           })}
@@ -193,12 +224,9 @@ export const AdminPipelineRuns: React.FC = () => {
             onChange={(e) => setFilters({ ...filters, status: e.target.value })}
           >
             <option value="">All Statuses</option>
-            <option value="1">In Progress</option>
-            <option value="2">Synced</option>
-            <option value="3">Partial</option>
-            <option value="4">Failed</option>
-            <option value="5">Pending</option>
-            <option value="6">Skipped</option>
+            {STATUS_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
           </select>
         </FilterField>
         <FilterField label="Source">
@@ -207,11 +235,9 @@ export const AdminPipelineRuns: React.FC = () => {
             onChange={(e) => setFilters({ ...filters, source: e.target.value })}
           >
             <option value="">All Sources</option>
-            <option value="1">Hevy</option>
-            <option value="6">Strava</option>
-            <option value="3">Fitbit</option>
-            <option value="11">Polar</option>
-            <option value="12">Wahoo</option>
+            {SOURCE_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
           </select>
         </FilterField>
         <FilterField label="User ID">

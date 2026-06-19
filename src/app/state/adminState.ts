@@ -62,15 +62,19 @@ export type AdminPipelineRun = components['schemas']['PipelineRun'] & {
 export interface AdminUser {
   userId: string;
   createdAt: string;
-  tier: UserTier;
+  // Gateway protobufs serialize enums as their string name; the raw value may be
+  // a string ("USER_TIER_ATHLETE") or numeric. Normalise with resolveEnum.
+  tier: UserTier | string;
   trialEndsAt?: string;
   isAdmin: boolean;
   accessEnabled: boolean;
-  syncCountThisMonth: number;
-  preventedSyncCount: number;
+  syncCountThisMonth?: number;
+  preventedSyncCount?: number;
   stripeCustomerId?: string;
-  integrations: string[];
-  pipelineCount: number;
+  // Enriched fields not present on the base UserProfile payload — optional until
+  // the admin user-list endpoint provides them (Phase 1).
+  integrations?: string[];
+  pipelineCount?: number;
 }
 
 export interface PendingInputDetail {

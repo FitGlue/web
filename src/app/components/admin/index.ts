@@ -7,3 +7,4 @@ export { AdminPipelineRuns } from './AdminPipelineRuns';
 export { AdminBilling } from './AdminBilling';
 export { UserDetailModal } from './UserDetailModal';
 export { PipelineRunDetailModal } from './PipelineRunDetailModal';
+export { AdminErrorBoundary } from './AdminErrorBoundary';

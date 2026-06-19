@@ -14,6 +14,7 @@ import {
 } from '../library/ui';
 import { useAdminUsers } from '../../hooks/admin';
 import { UserTier } from '../../../types/pb/user';
+import { resolveEnum } from '../../utils/resolveEnum';
 
 /**
  * AdminBilling displays billing-related user information
@@ -27,9 +28,10 @@ export const AdminBilling: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Filter to athlete users or users with Stripe
+  // Filter to athlete users or users with Stripe. Tier may arrive as a string
+  // enum name from the gateway, so normalise before comparing.
   const billingUsers = users.filter(
-    u => u.tier === UserTier.USER_TIER_ATHLETE || u.stripeCustomerId
+    u => resolveEnum(u.tier, UserTier) === UserTier.USER_TIER_ATHLETE || u.stripeCustomerId
   );
 
   if (error) {
@@ -98,7 +100,7 @@ export const AdminBilling: React.FC = () => {
                       <Text variant="muted">-</Text>
                     )}
                   </TableCell>
-                  <TableCell><Text variant="body">{user.syncCountThisMonth}</Text></TableCell>
+                  <TableCell><Text variant="body">{user.syncCountThisMonth ?? 0}</Text></TableCell>
                 </TableRow>
               ))}
             </TableBody>
