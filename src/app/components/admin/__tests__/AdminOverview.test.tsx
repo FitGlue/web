@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react';
 const useAdminStats = vi.fn();
 vi.mock('../../../hooks/admin', () => ({
   useAdminStats: () => useAdminStats(),
+  useAdminRecentFailures: () => ({ runs: [], loading: false }),
 }));
 
 import { AdminOverview } from '../AdminOverview';

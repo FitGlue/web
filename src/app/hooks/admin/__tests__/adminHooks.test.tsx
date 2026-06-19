@@ -22,6 +22,8 @@ import { useAdminStats } from '../useAdminStats';
 import { useAdminUsers } from '../useAdminUsers';
 import { useAdminUserDetail } from '../useAdminUserDetail';
 import { useAdminRunOps } from '../useAdminRunOps';
+import { useAdminAuditLog } from '../useAdminAuditLog';
+import { useAdminRecentFailures } from '../useAdminRecentFailures';
 import { useAdminPipelineRuns } from '../useAdminPipelineRuns';
 
 function wrapper() {
@@ -171,6 +173,34 @@ describe('useAdminRunOps', () => {
     await act(async () => { await result.current.resolvePendingInput('u1', 'i1'); });
     expect(POST).toHaveBeenCalledWith('/users/{id}/pending-inputs/{inputId}/resolve', expect.objectContaining({
       params: { path: { id: 'u1', inputId: 'i1' } },
+    }));
+  });
+});
+
+describe('useAdminAuditLog', () => {
+  it('loads audit entries on mount', async () => {
+    GET.mockResolvedValue({ data: { entries: [{ id: 'e1', action: 'update_user' }] } });
+    const { result } = renderHook(() => useAdminAuditLog(), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.entries).toEqual([{ id: 'e1', action: 'update_user' }]);
+  });
+
+  it('records an error on failure', async () => {
+    GET.mockRejectedValue(new Error('boom'));
+    const { result } = renderHook(() => useAdminAuditLog('u1'), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.error).toMatch(/audit log/);
+  });
+});
+
+describe('useAdminRecentFailures', () => {
+  it('loads failed runs on mount', async () => {
+    GET.mockResolvedValue({ data: { runs: [{ id: 'r1', status: 'PIPELINE_RUN_STATUS_FAILED' }] } });
+    const { result } = renderHook(() => useAdminRecentFailures(5), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.runs).toHaveLength(1);
+    expect(GET).toHaveBeenCalledWith('/pipeline-runs', expect.objectContaining({
+      params: { query: { status: 'PIPELINE_RUN_STATUS_FAILED', limit: 5 } },
     }));
   });
 });

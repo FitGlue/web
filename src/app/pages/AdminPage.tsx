@@ -1,10 +1,11 @@
-import React from 'react';
-import { useAtom } from 'jotai';
+import React, { useEffect } from 'react';
+import { useAtom, useSetAtom } from 'jotai';
+import { useSearchParams } from 'react-router-dom';
 import { Container, PageLayout } from '../components/library/layout';
 import { TabbedCard } from '../components/library/ui';
 import { useUser } from '../hooks/useUser';
 import { useAdminStats } from '../hooks/admin';
-import { adminActiveTabAtom, AdminTabId } from '../state/adminState';
+import { adminActiveTabAtom, AdminTabId, pipelineRunFiltersAtom } from '../state/adminState';
 
 // Admin tab components
 import {
@@ -12,6 +13,7 @@ import {
   AdminUsers,
   AdminPipelineRuns,
   AdminBilling,
+  AdminAuditLog,
   PipelineRunDetailModal,
   AdminErrorBoundary,
 } from '../components/admin';
@@ -28,7 +30,19 @@ import {
 const AdminPage: React.FC = () => {
   const { user: currentUser, loading } = useUser();
   const [activeTab, setActiveTab] = useAtom(adminActiveTabAtom);
+  const setRunFilters = useSetAtom(pipelineRunFiltersAtom);
+  const [searchParams] = useSearchParams();
   const { stats } = useAdminStats();
+
+  // Honor deep-links like /admin?tab=pipeline-runs&userId=... (e.g. from the
+  // User 360° "View runs" link).
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab) setActiveTab(tab as AdminTabId);
+    const userId = searchParams.get('userId');
+    if (userId) setRunFilters((f) => ({ ...f, userId }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   // Access check (AdminRoute wrapper should handle this, but double-check)
   if (!loading && !currentUser?.isAdmin) {
@@ -48,6 +62,7 @@ const AdminPage: React.FC = () => {
     { id: 'users', icon: '👥', label: 'Users' },
     { id: 'pipeline-runs', icon: '🔄', label: 'Pipeline Runs' },
     { id: 'billing', icon: '💳', label: 'Billing' },
+    { id: 'audit', icon: '📜', label: 'Audit Log' },
   ];
 
   return (
@@ -103,6 +118,9 @@ const AdminPage: React.FC = () => {
               {activeTab === 'billing' && (
                 <AdminErrorBoundary label="Billing"><AdminBilling /></AdminErrorBoundary>
               )}
+              {activeTab === 'audit' && (
+                <AdminErrorBoundary label="Audit Log"><AdminAuditLog /></AdminErrorBoundary>
+              )}
             </TabbedCard>
           </Container>
         </div>
@@ -112,7 +130,12 @@ const AdminPage: React.FC = () => {
           <div className="admin-side-panel__band">System Health</div>
           <div className="admin-stat-row">
             <span className="admin-stat-row__label">API Health</span>
-            <span className="admin-stat-row__value" style={{ color: 'var(--fg-green)' }}>OK</span>
+            <span
+              className="admin-stat-row__value"
+              style={{ color: (stats?.recentExecutions?.failed ?? 0) > 0 ? 'var(--fg-rose)' : 'var(--fg-green)' }}
+            >
+              {(stats?.recentExecutions?.failed ?? 0) > 0 ? 'Degraded' : 'OK'}
+            </span>
           </div>
           <div className="admin-stat-row">
             <span className="admin-stat-row__label">DB Connections</span>

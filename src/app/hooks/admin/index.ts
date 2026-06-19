@@ -15,3 +15,9 @@ export type { UseAdminUserDetailResult, UpdateUserFields } from './useAdminUserD
 
 export { useAdminRunOps } from './useAdminRunOps';
 export type { UseAdminRunOpsResult, RepostMode } from './useAdminRunOps';
+
+export { useAdminAuditLog } from './useAdminAuditLog';
+export type { UseAdminAuditLogResult } from './useAdminAuditLog';
+
+export { useAdminRecentFailures } from './useAdminRecentFailures';
+export type { UseAdminRecentFailuresResult } from './useAdminRecentFailures';

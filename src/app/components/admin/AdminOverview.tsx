@@ -1,7 +1,10 @@
 import React from 'react';
+import { useSetAtom } from 'jotai';
 import { Grid, Stack } from '../library/layout';
-import { Card, CardSkeleton, Text, Badge } from '../library/ui';
-import { useAdminStats } from '../../hooks/admin';
+import { Card, CardSkeleton, Text, Badge, Code, Heading } from '../library/ui';
+import { useAdminStats, useAdminRecentFailures } from '../../hooks/admin';
+import { selectedPipelineRunIdAtom, selectedPipelineRunDetailAtom, AdminPipelineRun } from '../../state/adminState';
+import { formatActivitySource } from '../../../types/pb/enum-formatters';
 import './admin.css';
 
 /**
@@ -9,6 +12,14 @@ import './admin.css';
  */
 export const AdminOverview: React.FC = () => {
   const { stats, loading, error } = useAdminStats();
+  const { runs: failures } = useAdminRecentFailures();
+  const setRunId = useSetAtom(selectedPipelineRunIdAtom);
+  const setRunDetail = useSetAtom(selectedPipelineRunDetailAtom);
+
+  const openRun = (run: AdminPipelineRun) => {
+    setRunId(run.id ?? null);
+    setRunDetail(run);
+  };
 
   if (error) {
     return (
@@ -83,6 +94,34 @@ export const AdminOverview: React.FC = () => {
         </div>
       </Grid>
 
+      {/* Recent failures triage feed */}
+      <div className="admin-section-head">
+        <span className="admin-section-head__label">Recent Failures</span>
+      </div>
+      {failures.length === 0 ? (
+        <Text variant="muted">No recent failures 🎉</Text>
+      ) : (
+        <Stack gap="xs">
+          {failures.map((run) => (
+            <div
+              key={run.id}
+              className="admin-failure-row"
+              role="button"
+              tabIndex={0}
+              onClick={() => openRun(run)}
+              onKeyDown={(e) => { if (e.key === 'Enter') openRun(run); }}
+            >
+              <Stack gap="xs">
+                <Heading level={5}>{run.title || 'Untitled activity'}</Heading>
+                <Text variant="small">
+                  {formatActivitySource(run.source)} · user <Code>{(run.userId ?? '').slice(0, 8)}…</Code>
+                </Text>
+              </Stack>
+              <Badge variant="error" size="sm">Failed</Badge>
+            </div>
+          ))}
+        </Stack>
+      )}
     </Stack>
   );
 };
