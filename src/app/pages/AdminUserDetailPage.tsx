@@ -17,6 +17,7 @@ import {
 } from '../components/library/ui';
 import { Link } from '../components/library/navigation';
 import { useAdminUserDetail } from '../hooks/admin';
+import { AdminPipelineInspector } from '../components/admin';
 import { AdminIntegration } from '../state/adminState';
 import { logger } from '../../shared/logger';
 import './AdminUserDetailPage.css';
@@ -57,10 +58,14 @@ const AdminUserDetailPage: React.FC = () => {
     startTrial,
     cancelSubscription,
     openBillingPortal,
+    getPipeline,
+    updatePipeline,
+    deletePipeline,
   } = useAdminUserDetail(id);
 
   const [confirm, setConfirm] = useState<ConfirmState>(null);
   const [busy, setBusy] = useState(false);
+  const [inspectPipelineId, setInspectPipelineId] = useState<string | null>(null);
 
   // run wraps an admin action with busy state + success/error toasts.
   const run = useCallback(async (label: string, fn: () => Promise<void> | void) => {
@@ -274,7 +279,14 @@ const AdminUserDetailPage: React.FC = () => {
             ) : (
               <Stack gap="sm">
                 {pipelines.map((pl) => (
-                  <div key={pl.id} className="admin-user-row">
+                  <div
+                    key={pl.id}
+                    className="admin-user-row admin-user-row--clickable"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => pl.id && setInspectPipelineId(pl.id)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' && pl.id) setInspectPipelineId(pl.id); }}
+                  >
                     <Stack gap="xs">
                       <Stack direction="horizontal" gap="sm" align="center">
                         <Text variant="body"><strong>{pl.name || 'Untitled pipeline'}</strong></Text>
@@ -286,7 +298,7 @@ const AdminUserDetailPage: React.FC = () => {
                         {pl.source || '—'} → {(pl.destinations ?? []).join(', ') || '—'}
                       </Text>
                     </Stack>
-                    <Code>{pl.id}</Code>
+                    <Text variant="small">Inspect →</Text>
                   </div>
                 ))}
               </Stack>
@@ -407,6 +419,16 @@ const AdminUserDetailPage: React.FC = () => {
           </Stack>
         </div>
       </Stack>
+
+      {inspectPipelineId && (
+        <AdminPipelineInspector
+          pipelineId={inspectPipelineId}
+          onClose={() => setInspectPipelineId(null)}
+          getPipeline={getPipeline}
+          updatePipeline={updatePipeline}
+          deletePipeline={deletePipeline}
+        />
+      )}
 
       <ConfirmDialog
         isOpen={!!confirm}

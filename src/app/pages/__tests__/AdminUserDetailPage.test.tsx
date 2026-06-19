@@ -9,6 +9,7 @@ const updateUser = vi.fn().mockResolvedValue(undefined);
 const setIntegrationEnabled = vi.fn().mockResolvedValue(undefined);
 const sendPasswordReset = vi.fn().mockResolvedValue(undefined);
 const openBillingPortal = vi.fn().mockResolvedValue(undefined);
+const getPipeline = vi.fn().mockResolvedValue({ id: 'p1', name: 'My Pipe', disabled: false, enrichers: [], destinations: [] });
 
 const baseDetail = {
   profile: {
@@ -49,6 +50,9 @@ vi.mock('../../hooks/admin', () => ({
     startTrial: vi.fn(),
     cancelSubscription: vi.fn(),
     openBillingPortal,
+    getPipeline,
+    updatePipeline: vi.fn(),
+    deletePipeline: vi.fn(),
   }),
 }));
 
@@ -106,5 +110,12 @@ describe('AdminUserDetailPage', () => {
     expect(screen.getByText('active')).toBeTruthy();
     fireEvent.click(screen.getByText('Open Stripe portal'));
     await waitFor(() => expect(openBillingPortal).toHaveBeenCalled());
+  });
+
+  it('opens the pipeline inspector when a pipeline is clicked', async () => {
+    renderPage();
+    fireEvent.click(screen.getByText('My Pipe'));
+    await waitFor(() => expect(getPipeline).toHaveBeenCalledWith('p1'));
+    expect(screen.getByText('Pipeline Config')).toBeTruthy();
   });
 });

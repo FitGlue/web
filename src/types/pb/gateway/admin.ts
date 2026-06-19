@@ -155,6 +155,25 @@ export interface ListAllPipelinesAdminResponse {
   pipelines: PipelineConfig[];
 }
 
+export interface GetPipelineAdminRequest {
+  /** user id */
+  id: string;
+  pipelineId: string;
+}
+
+export interface UpdatePipelineAdminRequest {
+  /** user id */
+  id: string;
+  pipelineId: string;
+  pipeline?: PipelineConfig | undefined;
+}
+
+export interface DeletePipelineAdminRequest {
+  /** user id */
+  id: string;
+  pipelineId: string;
+}
+
 export interface AdminPipelineRunStats {
   total: number;
   byStatus: { [key: string]: number };
@@ -282,6 +301,9 @@ export interface AdminGatewayService {
   DeleteIntegration(request: DeleteIntegrationAdminRequest): Promise<AdminEmptyResponse>;
   /** ===================== Pipeline Management ===================== */
   ListAllPipelines(request: ListAllPipelinesAdminRequest): Promise<ListAllPipelinesAdminResponse>;
+  GetPipeline(request: GetPipelineAdminRequest): Promise<PipelineConfig>;
+  UpdatePipeline(request: UpdatePipelineAdminRequest): Promise<PipelineConfig>;
+  DeletePipeline(request: DeletePipelineAdminRequest): Promise<AdminEmptyResponse>;
   ListPipelineRuns(request: ListPipelineRunsAdminRequest): Promise<ListPipelineRunsAdminResponse>;
   GetPipelineRun(request: GetPipelineRunAdminRequest): Promise<PipelineRun>;
   RepostActivity(request: RepostActivityAdminRequest): Promise<AdminEmptyResponse>;

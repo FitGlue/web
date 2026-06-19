@@ -389,3 +389,25 @@
 .admin-failure-row:hover {
   border-color: var(--fg-rose, #f43f7e);
 }
+
+/* Admin pipeline raw-config editor */
+.admin-json-editor {
+  width: 100%;
+  font-family: var(--fg-font-mono, monospace);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.12));
+  border-radius: 0.4rem;
+  background: var(--color-surface, rgba(0, 0, 0, 0.25));
+  color: var(--color-text, #e7e7ea);
+  resize: vertical;
+}
+
+/* Clickable pipeline/integration rows on the user detail page */
+.admin-user-row--clickable {
+  cursor: pointer;
+}
+.admin-user-row--clickable:hover {
+  background: var(--color-surface, rgba(255, 255, 255, 0.03));
+}

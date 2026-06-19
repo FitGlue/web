@@ -281,6 +281,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/{id}/pipelines/{pipelineId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AdminGatewayService_GetPipeline"];
+        put: operations["AdminGatewayService_UpdatePipeline"];
+        post?: never;
+        delete: operations["AdminGatewayService_DeletePipeline"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/{id}/send-password-reset": {
         parameters: {
             query?: never;
@@ -636,6 +652,12 @@ export interface components {
              *      boosters[] is preserved for existing documents; new clients should prefer steps[].
              */
             steps?: components["schemas"]["ExecutionStep"][];
+            /**
+             * @description Owning user id. Not persisted on the per-user run documents (it is implied by
+             *      the document path); populated by the admin cross-user listing so callers can
+             *      act on the run. Empty on the user-facing API.
+             */
+            userId?: string;
         };
         RecentPipelineRunCounts: {
             /** Format: int32 */
@@ -697,6 +719,11 @@ export interface components {
             currentPeriodEnd?: string;
             cancelAtPeriodEnd?: boolean;
             status?: string;
+        };
+        UpdatePipelineAdminRequest: {
+            id?: string;
+            pipelineId?: string;
+            pipeline?: components["schemas"]["PipelineConfig"];
         };
         UpdateUserAdminRequest: {
             id?: string;
@@ -1374,6 +1401,106 @@ export interface operations {
                 "application/json": components["schemas"]["CancelPipelineRunAdminRequest"];
             };
         };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminEmptyResponse"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_GetPipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                pipelineId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PipelineConfig"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_UpdatePipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                pipelineId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePipelineAdminRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PipelineConfig"];
+                };
+            };
+            /** @description Default error response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    AdminGatewayService_DeletePipeline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                pipelineId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description OK */
             200: {

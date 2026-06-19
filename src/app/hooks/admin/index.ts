@@ -11,7 +11,7 @@ export { useAdminPipelineRuns } from './useAdminPipelineRuns';
 export type { UseAdminPipelineRunsResult, PipelineRunStats } from './useAdminPipelineRuns';
 
 export { useAdminUserDetail } from './useAdminUserDetail';
-export type { UseAdminUserDetailResult, UpdateUserFields } from './useAdminUserDetail';
+export type { UseAdminUserDetailResult, UpdateUserFields, AdminPipelineConfig } from './useAdminUserDetail';
 
 export { useAdminRunOps } from './useAdminRunOps';
 export type { UseAdminRunOpsResult, RepostMode } from './useAdminRunOps';

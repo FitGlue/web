@@ -1,7 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
 import { adminClient } from '../../../shared/api/admin-client';
 import { logger } from '../../../shared/logger';
+import type { components } from '../../../shared/api/schema-admin';
 import { AdminUserDetail } from '../../state/adminState';
+
+export type AdminPipelineConfig = components['schemas']['PipelineConfig'];
 
 export interface UpdateUserFields {
   accessEnabled?: boolean;
@@ -25,6 +28,9 @@ export interface UseAdminUserDetailResult {
   startTrial: () => Promise<void>;
   cancelSubscription: () => Promise<void>;
   openBillingPortal: () => Promise<void>;
+  getPipeline: (pipelineId: string) => Promise<AdminPipelineConfig | null>;
+  updatePipeline: (pipelineId: string, pipeline: AdminPipelineConfig) => Promise<void>;
+  deletePipeline: (pipelineId: string) => Promise<void>;
 }
 
 /**
@@ -145,6 +151,31 @@ export function useAdminUserDetail(userId: string | undefined): UseAdminUserDeta
     if (url) window.open(url, '_blank');
   }, [userId]);
 
+  const getPipeline = useCallback(async (pipelineId: string): Promise<AdminPipelineConfig | null> => {
+    if (!userId) return null;
+    const { data } = await adminClient.GET('/users/{id}/pipelines/{pipelineId}', {
+      params: { path: { id: userId, pipelineId } },
+    });
+    return (data as AdminPipelineConfig) ?? null;
+  }, [userId]);
+
+  const updatePipeline = useCallback(async (pipelineId: string, pipeline: AdminPipelineConfig) => {
+    if (!userId) return;
+    await adminClient.PUT('/users/{id}/pipelines/{pipelineId}', {
+      params: { path: { id: userId, pipelineId } },
+      body: { id: userId, pipelineId, pipeline },
+    });
+    await reload();
+  }, [userId, reload]);
+
+  const deletePipeline = useCallback(async (pipelineId: string) => {
+    if (!userId) return;
+    await adminClient.DELETE('/users/{id}/pipelines/{pipelineId}', {
+      params: { path: { id: userId, pipelineId } },
+    });
+    await reload();
+  }, [userId, reload]);
+
   return {
     detail,
     loading,
@@ -160,5 +191,8 @@ export function useAdminUserDetail(userId: string | undefined): UseAdminUserDeta
     startTrial,
     cancelSubscription,
     openBillingPortal,
+    getPipeline,
+    updatePipeline,
+    deletePipeline,
   };
 }

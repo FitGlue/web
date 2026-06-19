@@ -145,6 +145,42 @@ describe('useAdminUserDetail', () => {
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.error).toMatch(/Failed to load user/);
   });
+
+  it('getPipeline GETs the pipeline config', async () => {
+    GET.mockResolvedValue({ data: { profile: { userId: 'u1' } } });
+    const { result } = renderHook(() => useAdminUserDetail('u1'), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    GET.mockResolvedValue({ data: { id: 'p1', name: 'Pipe' } });
+    let cfg;
+    await act(async () => { cfg = await result.current.getPipeline('p1'); });
+    expect(cfg).toEqual({ id: 'p1', name: 'Pipe' });
+    expect(GET).toHaveBeenCalledWith('/users/{id}/pipelines/{pipelineId}', expect.objectContaining({
+      params: { path: { id: 'u1', pipelineId: 'p1' } },
+    }));
+  });
+
+  it('updatePipeline PUTs the config then reloads', async () => {
+    GET.mockResolvedValue({ data: { profile: { userId: 'u1' } } });
+    PUT.mockResolvedValue({ data: {} });
+    const { result } = renderHook(() => useAdminUserDetail('u1'), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await act(async () => { await result.current.updatePipeline('p1', { id: 'p1', name: 'X' }); });
+    expect(PUT).toHaveBeenCalledWith('/users/{id}/pipelines/{pipelineId}', expect.objectContaining({
+      params: { path: { id: 'u1', pipelineId: 'p1' } },
+      body: { id: 'u1', pipelineId: 'p1', pipeline: { id: 'p1', name: 'X' } },
+    }));
+  });
+
+  it('deletePipeline DELETEs then reloads', async () => {
+    GET.mockResolvedValue({ data: { profile: { userId: 'u1' } } });
+    DELETE.mockResolvedValue({ data: {} });
+    const { result } = renderHook(() => useAdminUserDetail('u1'), { wrapper: wrapper() });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    await act(async () => { await result.current.deletePipeline('p1'); });
+    expect(DELETE).toHaveBeenCalledWith('/users/{id}/pipelines/{pipelineId}', expect.objectContaining({
+      params: { path: { id: 'u1', pipelineId: 'p1' } },
+    }));
+  });
 });
 
 describe('useAdminRunOps', () => {
