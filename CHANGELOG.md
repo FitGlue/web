@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.90.0](https://github.com/fitglue/web/compare/v11.89.0...v11.90.0) (2026-06-19)
+
+
+### Features
+
+* **admin:** audit log tab, failures triage feed, deep-links and command palette ([3911da4](https://github.com/fitglue/web/commit/3911da4df6e115963102fcbaf7b0df0bcd5d91ff))
+
 ## [11.89.0](https://github.com/fitglue/web/compare/v11.88.0...v11.89.0) (2026-06-19)
 
 
