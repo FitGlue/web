@@ -255,7 +255,15 @@ export default function ShowcaseProfilePage() {
 
         {/* Activity photo gallery — aggregated from all entries with photos */}
         {profile.showPhotoGallery && (() => {
-          const allPhotos = entries.flatMap((e) => e.photoUrls ?? []).slice(0, 30);
+          const allPhotos = entries
+            .flatMap((e) =>
+              (e.photoUrls ?? []).map((url) => ({
+                url,
+                activityTitle: e.title,
+                activityHref: e.showcaseId ? `/@${slug}/${e.showcaseId}` : undefined,
+              })),
+            )
+            .slice(0, 30);
           return allPhotos.length > 0 ? <PhotoGallery photos={allPhotos} title="📷 Activity Photos" layout="strip" /> : null;
         })()}
 

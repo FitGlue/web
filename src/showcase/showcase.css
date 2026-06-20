@@ -3178,6 +3178,54 @@ body:has(#showcase-root) {
   color: var(--color-text-muted);
 }
 
+.photo-lightbox-caption {
+  position: absolute;
+  bottom: calc(var(--space-sm) + 1.75rem);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90vw;
+  text-align: center;
+}
+
+.photo-lightbox-caption__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--fg-ink-2);
+  border: var(--fg-rule-thin);
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.photo-lightbox-caption__link:hover {
+  background: var(--fg-ink-3);
+  border-color: transparent;
+}
+
+.photo-lightbox-caption__title {
+  color: var(--fg-paper);
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60vw;
+}
+
+.photo-lightbox-caption__cta {
+  font-family: var(--fg-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.photo-lightbox-caption__link:hover .photo-lightbox-caption__cta {
+  color: var(--fg-paper);
+}
+
 @media (max-width: 640px) {
   .photo-gallery-grid--2,
   .photo-gallery-grid--3,
