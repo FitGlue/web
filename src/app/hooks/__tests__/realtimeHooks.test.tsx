@@ -13,7 +13,13 @@ const { state } = vi.hoisted(() => ({
 }));
 
 vi.mock('firebase/firestore', () => ({
-  onSnapshot: (_q: unknown, next: (s: unknown) => void, err: (e: Error) => void) => {
+  // Supports both onSnapshot(query, next, err) and
+  // onSnapshot(query, options, next, err) signatures.
+  onSnapshot: (_q: unknown, ...rest: unknown[]) => {
+    const [next, err] = (typeof rest[0] === 'function' ? rest : rest.slice(1)) as [
+      (s: unknown) => void,
+      (e: Error) => void,
+    ];
     state.onNext = next;
     state.onError = err;
     return () => {};

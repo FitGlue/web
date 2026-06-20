@@ -27,9 +27,9 @@ export default defineConfig({
       // never regress. Raise these as untested files gain tests.
       thresholds: {
         lines: 63,
-        functions: 49,
-        branches: 47,
-        statements: 60,
+        functions: 50,
+        branches: 48,
+        statements: 61,
       },
     },
   },

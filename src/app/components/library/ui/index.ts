@@ -47,6 +47,7 @@ export { FlowNode } from './FlowNode';
 
 // Connection status
 export { ConnectionStatusItem } from './ConnectionStatusItem';
+export { ConnectionBanner } from './ConnectionBanner';
 
 // Statistics
 export { StatInline } from './StatInline';

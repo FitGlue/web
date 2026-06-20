@@ -2,6 +2,12 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { Query, DocumentReference, onSnapshot, Unsubscribe } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../../shared/firebase';
 import { logger } from '../../shared/logger';
+import {
+    reportFirestoreListenerAdded,
+    reportFirestoreSnapshot,
+    reportFirestoreError,
+    reportFirestoreListenerRemoved,
+} from './useFirestoreConnection';
 
 export type FirestoreQueryFactory<T> = (
     firestore: ReturnType<typeof getFirebaseFirestore>,
@@ -153,6 +159,7 @@ export function useFirestoreListener<TData>(
                         entry.unsubscribe();
                         listenerRegistry.delete(fullKey);
                         listenerCallbacks.delete(fullKey);
+                        reportFirestoreListenerRemoved(fullKey);
                     }
                 }
                 setIsListening(false);
@@ -188,8 +195,13 @@ export function useFirestoreListener<TData>(
             };
             listenerCallbacks.get(fullKey)!.add(callback);
 
+            // Listen with metadata changes so we observe the cache → server
+            // transition even when the data itself is unchanged (e.g. an empty
+            // collection). That transition is how we know we're actually
+            // connected vs. serving an offline cache snapshot.
             const unsubscribe = onSnapshot(
                 queryOrRef as Query,
+                { includeMetadataChanges: true },
                 (snapshot) => {
                     const entry = listenerRegistry.get(fullKey);
                     if (entry) {
@@ -197,6 +209,12 @@ export function useFirestoreListener<TData>(
                         entry.isListening = true;
                         entry.error = null;
                     }
+
+                    // Report connection state from snapshot metadata. A snapshot
+                    // served from cache means we haven't reached the server yet.
+                    const fromCache =
+                        (snapshot as { metadata?: { fromCache?: boolean } })?.metadata?.fromCache ?? false;
+                    reportFirestoreSnapshot(fullKey, fromCache);
 
                     // Notify all subscribers
                     const callbacks = listenerCallbacks.get(fullKey);
@@ -221,6 +239,7 @@ export function useFirestoreListener<TData>(
                         entry.error = err;
                         entry.isListening = false;
                     }
+                    reportFirestoreError(fullKey);
                     setError(err);
                     setLoading(false);
                     setIsListening(false);
@@ -235,6 +254,7 @@ export function useFirestoreListener<TData>(
                 error: null,
                 isListening: false,
             });
+            reportFirestoreListenerAdded(fullKey);
 
             return () => {
                 listenerCallbacks.get(fullKey)?.delete(callback);
@@ -247,6 +267,7 @@ export function useFirestoreListener<TData>(
                         entry.unsubscribe();
                         listenerRegistry.delete(fullKey);
                         listenerCallbacks.delete(fullKey);
+                        reportFirestoreListenerRemoved(fullKey);
                     }
                 }
                 setIsListening(false);

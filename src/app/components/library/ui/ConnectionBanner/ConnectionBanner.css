@@ -1,0 +1,69 @@
+/* ==========================================================================
+   ConnectionBanner — Brutal × Aurora
+   Fixed, top-centre status pill for global Firestore connection state.
+   ========================================================================== */
+
+.fg-conn-banner {
+  position: fixed;
+  top: var(--spacing-md);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-tooltip);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  max-width: calc(100vw - 2 * var(--spacing-md));
+  background: var(--fg-ink-2);
+  color: var(--fg-paper);
+  box-shadow: inset 0 -2px 0 var(--fg-cyan);
+  font-family: var(--fg-font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+  animation: fg-conn-slide-in 0.3s ease;
+}
+
+.fg-conn-banner--connecting { box-shadow: inset 0 -2px 0 var(--fg-cyan); }
+.fg-conn-banner--offline    { box-shadow: inset 0 -2px 0 var(--fg-gold); }
+.fg-conn-banner--connected  { box-shadow: inset 0 -2px 0 var(--fg-green); }
+
+.fg-conn-banner__icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.fg-conn-banner--connecting .fg-conn-banner__icon {
+  color: var(--fg-cyan);
+  display: inline-block;
+  animation: fg-conn-spin 1s linear infinite;
+}
+.fg-conn-banner--offline   .fg-conn-banner__icon { color: var(--fg-gold); }
+.fg-conn-banner--connected .fg-conn-banner__icon { color: var(--fg-green); }
+
+.fg-conn-banner__label {
+  white-space: nowrap;
+}
+
+.fg-conn-banner__message {
+  font-family: var(--fg-font-body);
+  font-size: 0.8125rem;
+  text-transform: none;
+  color: var(--fg-paper-dim);
+}
+
+@keyframes fg-conn-slide-in {
+  from { transform: translate(-50%, -120%); opacity: 0; }
+  to   { transform: translate(-50%, 0);     opacity: 1; }
+}
+
+@keyframes fg-conn-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Respect reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+  .fg-conn-banner { animation: none; }
+  .fg-conn-banner--connecting .fg-conn-banner__icon { animation: none; }
+}

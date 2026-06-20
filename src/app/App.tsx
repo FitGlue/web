@@ -7,7 +7,7 @@ import { isNativeApp, sendToNative } from '../shared/nativeBridge';
 import { userAtom, authLoadingAtom } from './state/authState';
 import { initSentry, setUser as setSentryUser, Sentry } from './infrastructure/sentry';
 import { Stack } from './components/library/layout';
-import { Card, Heading, Paragraph, Button, Code, ToastProvider, AppLoadingScreen } from './components/library/ui';
+import { Card, Heading, Paragraph, Button, Code, ToastProvider, AppLoadingScreen, ConnectionBanner } from './components/library/ui';
 import { Link } from './components/library/navigation';
 
 // App pages (protected)
@@ -208,6 +208,7 @@ const App: React.FC = () => {
       )}
     >
       <ToastProvider>
+          <ConnectionBanner />
           <Router basename="/app">
             <NativeBridge />
             <Routes>
