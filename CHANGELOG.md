@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.92.0](https://github.com/fitglue/web/compare/v11.91.1...v11.92.0) (2026-06-20)
+
+
+### Features
+
+* **connection:** global "Connecting…" banner for Firestore sync state ([2235573](https://github.com/fitglue/web/commit/22355738f53db69c2386157ef8f023a6ab9c6b4b))
+* **photo-gallery:** enhance lightbox with activity titles and links, update styles ([04878f5](https://github.com/fitglue/web/commit/04878f5c5ca777e6b53504992ed553e8922fb2ec))
+
+
+### Bug Fixes
+
+* **showcase:** tidy milestone/goal display and add speed chart ([fc6b492](https://github.com/fitglue/web/commit/fc6b492374a37b1043a242078b4008d748e96209))
+
 ### [11.91.1](https://github.com/fitglue/web/compare/v11.91.0...v11.91.1) (2026-06-19)
 
 ## [11.91.0](https://github.com/fitglue/web/compare/v11.90.0...v11.91.0) (2026-06-19)
