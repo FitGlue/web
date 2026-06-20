@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { client } from '../../../shared/api/client';
 import { logger } from '../../../shared/logger';
+import { resizeImageFile } from '../../utils/imageResize';
+import { mapWithConcurrency } from '../../utils/mapWithConcurrency';
 
 interface UploadedPhoto {
     publicUrl: string;
@@ -15,50 +17,10 @@ interface Props {
 
 const MAX_PHOTOS = 10;
 const MAX_SIZE_BYTES = 10 * 1024 * 1024;
-const MAX_CLIENT_DIM = 1920;
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic'];
-
-/**
- * Resize an image to at most MAX_CLIENT_DIM on the longest side and re-encode as JPEG.
- * HEIC files are returned unchanged — browsers can't decode them via Canvas.
- * Falls back to the original file on any error.
- */
-async function resizeImage(file: File): Promise<{ blob: Blob; contentType: string }> {
-    if (file.type === 'image/heic') {
-        return { blob: file, contentType: file.type };
-    }
-    try {
-        const bitmap = await createImageBitmap(file);
-        const { width, height } = bitmap;
-
-        let newW = width;
-        let newH = height;
-        if (width > MAX_CLIENT_DIM || height > MAX_CLIENT_DIM) {
-            if (width > height) {
-                newW = MAX_CLIENT_DIM;
-                newH = Math.round(height * MAX_CLIENT_DIM / width);
-            } else {
-                newH = MAX_CLIENT_DIM;
-                newW = Math.round(width * MAX_CLIENT_DIM / height);
-            }
-        }
-
-        const canvas = document.createElement('canvas');
-        canvas.width = newW;
-        canvas.height = newH;
-        const ctx = canvas.getContext('2d')!;
-        ctx.drawImage(bitmap, 0, 0, newW, newH);
-        bitmap.close();
-
-        const blob = await new Promise<Blob>((resolve, reject) => {
-            canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/jpeg', 0.85);
-        });
-        return { blob, contentType: 'image/jpeg' };
-    } catch (err) {
-        logger.warn('Photo resize failed, uploading original', err);
-        return { blob: file, contentType: file.type };
-    }
-}
+// How many photos to resize+upload at once. Keeps the network busy (uploads
+// overlap resizes) without swamping a phone's CPU/memory with parallel decodes.
+const UPLOAD_CONCURRENCY = 3;
 
 export const PhotoUploadInput: React.FC<Props> = ({ activityId, value, onChange }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -102,14 +64,15 @@ export const PhotoUploadInput: React.FC<Props> = ({ activityId, value, onChange 
 
         setUploading(true);
 
-        const newPhotos: UploadedPhoto[] = [];
-        for (let i = 0; i < toUpload.length; i++) {
-            const file = toUpload[i];
-            setUploadStatus(`Resizing ${i + 1} of ${toUpload.length}…`);
-            const { blob: uploadBlob, contentType: uploadContentType } = await resizeImage(file);
-
-            setUploadStatus(`Uploading ${i + 1} of ${toUpload.length}…`);
+        // Resize and upload photos with bounded concurrency so a slow upload
+        // doesn't hold up resizing the next photo, and uploads overlap each
+        // other. Each task handles its own failure so one bad photo doesn't
+        // abort the rest.
+        let completed = 0;
+        const results = await mapWithConcurrency(toUpload, UPLOAD_CONCURRENCY, async (file) => {
             try {
+                const { blob: uploadBlob, contentType: uploadContentType } = await resizeImageFile(file);
+
                 const { data, error: apiErr } = await client.POST('/users/me/activity-photos/upload-url', {
                     body: {
                         activityId,
@@ -136,19 +99,27 @@ export const PhotoUploadInput: React.FC<Props> = ({ activityId, value, onChange 
                 });
                 if (!uploadRes.ok) throw new Error(`Upload failed: ${uploadRes.status}`);
 
-                newPhotos.push({
-                    publicUrl: typed.publicUrl,
-                    previewUrl: URL.createObjectURL(file),
-                });
+                return {
+                    ok: true as const,
+                    photo: { publicUrl: typed.publicUrl, previewUrl: URL.createObjectURL(file) },
+                };
             } catch (err) {
-                setError(`Failed to upload ${file.name}. Please try again.`);
                 logger.error('Photo upload error:', err);
-                break;
+                return { ok: false as const, name: file.name };
+            } finally {
+                completed += 1;
+                setUploadStatus(`Uploaded ${completed} of ${toUpload.length}…`);
             }
-        }
+        });
+
+        const newPhotos = results.flatMap(r => (r.ok ? [r.photo] : []));
+        const failedCount = results.length - newPhotos.length;
 
         setUploading(false);
         setUploadStatus('');
+        if (failedCount > 0) {
+            setError(`Failed to upload ${failedCount} photo${failedCount === 1 ? '' : 's'}. Please try again.`);
+        }
 
         if (newPhotos.length > 0) {
             const updated = [...photos, ...newPhotos];
