@@ -6,6 +6,12 @@ interface Props {
   data?: GoalTrackerSummary;
 }
 
+// Show whole numbers as integers and fractional progress to one decimal,
+// so a raw value like 10.0102001953125 renders as "10".
+function formatGoalValue(n: number): string {
+  return Number.isInteger(n) ? String(n) : Number(n.toFixed(1)).toString();
+}
+
 export default function GoalTrackerModule({ data }: Props): React.ReactElement | null {
   if (!data || !data.goals?.length) return null;
 
@@ -17,9 +23,9 @@ export default function GoalTrackerModule({ data }: Props): React.ReactElement |
           <div key={i} className="goal-entry">
             <div className="goal-entry__header">
               <span>{g.label}</span>
-              <span>{g.current}/{g.target} {g.unit}</span>
+              <span>{formatGoalValue(g.current)}/{g.target} {g.unit}</span>
             </div>
-            <small>{g.daysRemaining} days left</small>
+            <small>{g.daysRemaining} day{g.daysRemaining === 1 ? '' : 's'} left</small>
             <div className="goal-entry__bar">
               <div className="goal-entry__bar-fill" style={{ width: `${pct}%` }} />
             </div>

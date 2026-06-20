@@ -209,7 +209,7 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
               case 'pace':
                 return <PaceModule key={key} data={enrichments?.pace} records={flatRecords} />;
               case 'speed':
-                return <SpeedModule key={key} data={enrichments?.speed} />;
+                return <SpeedModule key={key} data={enrichments?.speed} records={flatRecords} />;
               case 'cadence':
                 return <CadenceModule key={key} data={enrichments?.cadence} records={flatRecords} />;
               case 'power':

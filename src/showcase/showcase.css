@@ -645,6 +645,39 @@ body:has(#showcase-root) {
   border-bottom: var(--fg-rule-thin);
 }
 
+.milestone-callout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.milestone-callout__label {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.milestone-callout__value {
+  font-family: var(--fg-font-display);
+  font-size: 2rem;
+  line-height: 0.9;
+  color: var(--fg-paper);
+}
+
+.milestone-callout__next,
+.milestone-callout__achieved {
+  font-family: var(--fg-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+
+.milestone-callout__achieved {
+  color: var(--fg-gold);
+}
+
 .callout-band {
   display: flex;
   align-items: center;

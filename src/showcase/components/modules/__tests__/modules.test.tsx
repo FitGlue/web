@@ -84,6 +84,21 @@ describe('SpeedModule', () => {
     const { getByText } = render(<SpeedModule data={as({ avgSpeedKmh: 30.5, maxSpeedKmh: 45 })} />);
     expect(getByText('30.5')).toBeInTheDocument();
   });
+
+  it('renders per-km splits with genuine per-km speeds, not the average repeated', () => {
+    // km 1: 5 m/s (18 km/h), km 2: 10 m/s (36 km/h) — distinct values
+    const records = as<unknown[]>([
+      { distance: 200, speed: 5 },
+      { distance: 600, speed: 5 },
+      { distance: 1200, speed: 10 },
+      { distance: 1800, speed: 10 },
+    ]);
+    const { getByText } = render(
+      <SpeedModule data={as({ avgSpeedKmh: 27, maxSpeedKmh: 36 })} records={records as never} />,
+    );
+    expect(getByText('18.0 km/h')).toBeInTheDocument();
+    expect(getByText('36.0 km/h')).toBeInTheDocument();
+  });
 });
 
 describe('CadenceModule', () => {
@@ -268,6 +283,20 @@ describe('GoalTrackerModule', () => {
     );
     expect(getByText('Weekly km')).toBeInTheDocument();
     expect(getByText('ON PACE ✓')).toBeInTheDocument();
+  });
+
+  it('rounds a noisy float progress value and pluralises days', () => {
+    const { getByText } = render(
+      <GoalTrackerModule
+        data={as({
+          goals: [
+            { label: 'Weekly', current: 10.0102001953125, target: 20, unit: 'KM', daysRemaining: 1, onPace: false },
+          ],
+        })}
+      />,
+    );
+    expect(getByText('10/20 KM')).toBeInTheDocument();
+    expect(getByText('1 day left')).toBeInTheDocument();
   });
 });
 
