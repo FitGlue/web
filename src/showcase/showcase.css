@@ -1468,11 +1468,38 @@ body:has(#showcase-root) {
   background: var(--gradient-primary);
 }
 
-.goal-entry__on-pace {
+.goal-entry__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: 0.5rem;
+}
+
+.goal-entry__days {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.goal-entry__status {
+  font-family: var(--fg-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2em 0.6em;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.goal-entry__status--on {
   color: var(--fg-green);
 }
 
-.goal-entry__off-pace {
+.goal-entry__status--off {
   color: var(--fg-rose);
 }
 

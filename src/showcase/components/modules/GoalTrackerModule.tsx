@@ -25,14 +25,18 @@ export default function GoalTrackerModule({ data }: Props): React.ReactElement |
               <span>{g.label}</span>
               <span>{formatGoalValue(g.current)}/{g.target} {g.unit}</span>
             </div>
-            <small>{g.daysRemaining} day{g.daysRemaining === 1 ? '' : 's'} left</small>
             <div className="goal-entry__bar">
               <div className="goal-entry__bar-fill" style={{ width: `${pct}%` }} />
             </div>
-            {g.onPace
-              ? <span className="goal-entry__on-pace">ON PACE ✓</span>
-              : <span className="goal-entry__off-pace">BEHIND ✗</span>
-            }
+            <div className="goal-entry__footer">
+              <span className="goal-entry__days">
+                {g.daysRemaining} day{g.daysRemaining === 1 ? '' : 's'} left
+              </span>
+              {g.onPace
+                ? <span className="goal-entry__status goal-entry__status--on">ON PACE ✓</span>
+                : <span className="goal-entry__status goal-entry__status--off">BEHIND ✗</span>
+              }
+            </div>
           </div>
         );
       })}

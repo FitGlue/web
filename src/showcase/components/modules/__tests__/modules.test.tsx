@@ -357,11 +357,34 @@ describe('PersonalRecordsModule', () => {
 });
 
 describe('MilestoneCallout', () => {
-  it('renders the milestone band', () => {
+  it('renders nothing without lifetime distance', () => {
+    const { container } = render(<MilestoneCallout data={as({ lifetimeDistanceKm: 0 })} />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('renders lifetime distance and next-milestone progress', () => {
     const { getByText } = render(
-      <MilestoneCallout data={as({ milestoneKm: 1000, lifetimeDistanceKm: 1002.5 })} />,
+      <MilestoneCallout
+        data={as({
+          milestoneKm: 0,
+          lifetimeDistanceKm: 1094.1,
+          nextMilestoneKm: 2500,
+          activityTypeLabel: 'running',
+        })}
+      />,
     );
-    expect(getByText(/1000 km lifetime/)).toBeInTheDocument();
+    expect(getByText(/Lifetime running/)).toBeInTheDocument();
+    expect(getByText('1094.1 km')).toBeInTheDocument();
+    expect(getByText(/Next milestone: 2500 km · 1405.9 km to go/)).toBeInTheDocument();
+  });
+
+  it('shows a reached-milestone line when one was crossed', () => {
+    const { getByText } = render(
+      <MilestoneCallout
+        data={as({ milestoneKm: 1000, lifetimeDistanceKm: 1002.5, activityTypeLabel: 'running' })}
+      />,
+    );
+    expect(getByText(/1000 km milestone reached/)).toBeInTheDocument();
   });
 });
 

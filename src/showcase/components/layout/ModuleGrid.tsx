@@ -26,6 +26,7 @@ import IntervalsModule from '../modules/IntervalsModule';
 import RunningDynamicsModule from '../modules/RunningDynamicsModule';
 import SpotifyModule from '../modules/SpotifyModule';
 import GoalTrackerModule from '../modules/GoalTrackerModule';
+import MilestoneCallout from '../modules/MilestoneCallout';
 import MuscleHeatmapModule from '../modules/MuscleHeatmapModule';
 import SetListModule from '../modules/SetListModule';
 import PersonalRecordsModule from '../modules/PersonalRecordsModule';
@@ -119,31 +120,8 @@ export default function ModuleGrid({ moduleOrder, enrichments, activity }: Props
                 />
               </div>
             ) : null;
-          case 'milestone-callout': {
-            const ms = enrichments?.distanceMilestone;
-            if (!ms || ms.lifetimeDistanceKm === 0) return null;
-            const toGo = ms.nextMilestoneKm ? ms.nextMilestoneKm - ms.lifetimeDistanceKm : null;
-            return (
-              <div key={key} className="milestone-callout">
-                <span className="milestone-callout__label">
-                  📊 Lifetime {ms.activityTypeLabel}
-                </span>
-                <span className="milestone-callout__value">
-                  {ms.lifetimeDistanceKm.toFixed(1)} km
-                </span>
-                {ms.nextMilestoneKm && toGo !== null && toGo > 0 && (
-                  <span className="milestone-callout__next">
-                    Next milestone: {ms.nextMilestoneKm} km · {toGo.toFixed(1)} km to go
-                  </span>
-                )}
-                {ms.milestoneKm > 0 && (
-                  <span className="milestone-callout__achieved">
-                    🎉 {ms.milestoneKm} km milestone reached!
-                  </span>
-                )}
-              </div>
-            );
-          }
+          case 'milestone-callout':
+            return <MilestoneCallout key={key} data={enrichments?.distanceMilestone} />;
           // pr-callout moved to grid — handled in gridModules switch below
           case 'description':
             return userDescription ? (

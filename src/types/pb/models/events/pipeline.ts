@@ -57,7 +57,6 @@ export interface ActivityPayload {
   activityId?: string | undefined;
   pipelineId?: string | undefined;
   isResume: boolean;
-  resumeOnlyEnrichers: string[];
   useUpdateMethod: boolean;
   resumePendingInputId?: string | undefined;
   originDestination?: string | undefined;
