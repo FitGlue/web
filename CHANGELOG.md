@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.92.2](https://github.com/fitglue/web/compare/v11.92.1...v11.92.2) (2026-07-01)
+
+
+### Bug Fixes
+
+* **showcase:** gate roundup share controls behind ownership ([7ecc7c7](https://github.com/fitglue/web/commit/7ecc7c7d05ca34d4bcae35b88df202d21d4b114a))
+
 ### [11.92.1](https://github.com/fitglue/web/compare/v11.92.0...v11.92.1) (2026-06-20)
 
 ## [11.92.0](https://github.com/fitglue/web/compare/v11.91.1...v11.92.0) (2026-06-20)
