@@ -25,6 +25,10 @@ type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
 type ShowcaseLink = components['schemas']['ShowcaseLink'];
 type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
 
+// How many roundups to show initially and reveal per "load more" — roughly two
+// months of monthly + weekly roundups.
+const ROUNDUPS_PAGE_SIZE = 12;
+
 function roundupPeriodLabel(periodKey: string): string {
   if (periodKey.startsWith('week-')) {
     const [, week, year] = periodKey.split('-');
@@ -86,6 +90,9 @@ export default function ShowcaseProfilePage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [roundups, setRoundups] = useState<ShowcaseRoundup[]>([]);
+  const [roundupLimit, setRoundupLimit] = useState(ROUNDUPS_PAGE_SIZE);
+  const [hasMoreRoundups, setHasMoreRoundups] = useState(false);
+  const [loadingMoreRoundups, setLoadingMoreRoundups] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(false);
   const { isOwner, resolved: ownershipResolved } = useShowcaseOwner(slug);
@@ -104,12 +111,28 @@ export default function ShowcaseProfilePage() {
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-
-    publicClient
-      .GET('/showcase/{slug}/roundups/recent', { params: { path: { slug }, query: { limit: 6 } } })
-      .then(({ data }) => { if (data?.roundups) setRoundups(data.roundups); })
-      .catch(() => {/* roundups optional — fail silently */});
   }, [slug]);
+
+  // Roundups are fetched separately and grow via "load more". The endpoint only
+  // returns the most-recent N (stably ordered by period_end desc), so each
+  // larger limit is a superset — refetch and replace. hasMore is inferred from
+  // whether the server filled the requested limit.
+  useEffect(() => {
+    if (!slug) return;
+    let cancelled = false;
+    setLoadingMoreRoundups(true);
+    publicClient
+      .GET('/showcase/{slug}/roundups/recent', { params: { path: { slug }, query: { limit: roundupLimit } } })
+      .then(({ data }) => {
+        if (cancelled) return;
+        const list = data?.roundups ?? [];
+        setRoundups(list);
+        setHasMoreRoundups(list.length === roundupLimit);
+      })
+      .catch(() => {/* roundups optional — fail silently */})
+      .finally(() => { if (!cancelled) setLoadingMoreRoundups(false); });
+    return () => { cancelled = true; };
+  }, [slug, roundupLimit]);
 
   // Record a profile view once both the profile and ownership have resolved —
   // but never for the owner's own visits.
@@ -138,6 +161,11 @@ export default function ShowcaseProfilePage() {
   }) : null, [profile]);
 
   useShowcaseMeta(profileMeta);
+
+  const loadMoreRoundups = useCallback(() => {
+    if (loadingMoreRoundups || !hasMoreRoundups) return;
+    setRoundupLimit((n) => n + ROUNDUPS_PAGE_SIZE);
+  }, [loadingMoreRoundups, hasMoreRoundups]);
 
   const loadMore = useCallback(async () => {
     if (!slug || loadingMore || currentPage >= totalPages) return;
@@ -250,6 +278,28 @@ export default function ShowcaseProfilePage() {
                 );
               })}
             </div>
+            {hasMoreRoundups && (
+              <div className="roundup-profile-band__more">
+                <button
+                  onClick={loadMoreRoundups}
+                  disabled={loadingMoreRoundups}
+                  style={{
+                    fontFamily: 'var(--fg-font-mono)',
+                    fontSize: '0.75rem',
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: loadingMoreRoundups ? 'var(--color-text-muted)' : 'var(--fg-paper)',
+                    background: 'none',
+                    border: '1px solid var(--color-border, rgba(255,255,255,0.15))',
+                    borderRadius: 6,
+                    padding: '8px 18px',
+                    cursor: loadingMoreRoundups ? 'default' : 'pointer',
+                  }}
+                >
+                  {loadingMoreRoundups ? 'Loading…' : 'Load more roundups →'}
+                </button>
+              </div>
+            )}
           </div>
         )}
 

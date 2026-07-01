@@ -3656,6 +3656,12 @@ body:has(#showcase-root) {
 
 .roundup-profile-mosaic::-webkit-scrollbar { display: none; }
 
+.roundup-profile-band__more {
+  display: flex;
+  justify-content: center;
+  padding: 16px 32px 0 0;
+}
+
 .roundup-profile-tile {
   flex: 0 0 220px;
   background: var(--fg-ink-2);
@@ -3807,6 +3813,7 @@ body:has(#showcase-root) {
   .roundup-profile-band { padding: 20px 0 20px 20px; }
   .roundup-profile-band__header { padding-right: 20px; }
   .roundup-profile-mosaic { padding-right: 20px; }
+  .roundup-profile-band__more { padding-right: 20px; }
   .roundup-sources { padding: 16px 20px; }
   .roundup-back { padding: 24px 20px; }
 }
