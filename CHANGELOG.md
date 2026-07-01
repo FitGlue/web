@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.93.0](https://github.com/fitglue/web/compare/v11.92.2...v11.93.0) (2026-07-01)
+
+
+### Features
+
+* **showcase:** show more roundups on profile with load-more ([10a0d1e](https://github.com/fitglue/web/commit/10a0d1eded8985096de69599c1ad04f7bc9f9b6a))
+
 ### [11.92.2](https://github.com/fitglue/web/compare/v11.92.1...v11.92.2) (2026-07-01)
 
 
