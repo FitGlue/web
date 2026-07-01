@@ -238,7 +238,7 @@ const ShowcaseManagementPage: React.FC = () => {
     useEffect(() => {
         if (activeSection !== 'roundup' || !profile?.slug) return;
         publicClient
-            .GET('/showcase/{slug}/roundups/recent', { params: { path: { slug: profile.slug }, query: { limit: 10 } } })
+            .GET('/showcase/{slug}/roundups/recent', { params: { path: { slug: profile.slug }, query: { page: 1 } } })
             .then(({ data }) => { if (data?.roundups) setRecentRoundups(data.roundups as ShowcaseRoundup[]); })
             .catch(() => { /* non-critical */ });
     }, [activeSection, profile?.slug]);

@@ -355,6 +355,10 @@ export interface components {
         };
         GetRecentPublicRoundupsGatewayResponse: {
             roundups?: components["schemas"]["ShowcaseRoundup"][];
+            /** Format: int32 */
+            totalPages?: number;
+            /** Format: int32 */
+            currentPage?: number;
         };
         GoalEntry: {
             label?: string;
@@ -1559,7 +1563,7 @@ export interface operations {
     PublicGatewayService_GetRecentPublicRoundups: {
         parameters: {
             query?: {
-                limit?: number;
+                page?: number;
             };
             header?: never;
             path: {

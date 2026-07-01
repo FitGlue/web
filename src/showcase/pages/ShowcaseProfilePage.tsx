@@ -25,10 +25,6 @@ type ShowcaseProfileEntry = components['schemas']['ShowcaseProfileEntry'];
 type ShowcaseLink = components['schemas']['ShowcaseLink'];
 type ShowcaseRoundup = components['schemas']['ShowcaseRoundup'];
 
-// How many roundups to show initially and reveal per "load more" — roughly two
-// months of monthly + weekly roundups.
-const ROUNDUPS_PAGE_SIZE = 12;
-
 function roundupPeriodLabel(periodKey: string): string {
   if (periodKey.startsWith('week-')) {
     const [, week, year] = periodKey.split('-');
@@ -90,8 +86,8 @@ export default function ShowcaseProfilePage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [roundups, setRoundups] = useState<ShowcaseRoundup[]>([]);
-  const [roundupLimit, setRoundupLimit] = useState(ROUNDUPS_PAGE_SIZE);
-  const [hasMoreRoundups, setHasMoreRoundups] = useState(false);
+  const [roundupPage, setRoundupPage] = useState(1);
+  const [roundupTotalPages, setRoundupTotalPages] = useState(1);
   const [loadingMoreRoundups, setLoadingMoreRoundups] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(false);
@@ -113,26 +109,22 @@ export default function ShowcaseProfilePage() {
       .finally(() => setLoading(false));
   }, [slug]);
 
-  // Roundups are fetched separately and grow via "load more". The endpoint only
-  // returns the most-recent N (stably ordered by period_end desc), so each
-  // larger limit is a superset — refetch and replace. hasMore is inferred from
-  // whether the server filled the requested limit.
+  // Roundups page 1 loads with the rest of the profile; subsequent pages are
+  // appended via "load more", mirroring the activity feed's pagination below.
   useEffect(() => {
     if (!slug) return;
     let cancelled = false;
-    setLoadingMoreRoundups(true);
     publicClient
-      .GET('/showcase/{slug}/roundups/recent', { params: { path: { slug }, query: { limit: roundupLimit } } })
+      .GET('/showcase/{slug}/roundups/recent', { params: { path: { slug }, query: { page: 1 } } })
       .then(({ data }) => {
         if (cancelled) return;
-        const list = data?.roundups ?? [];
-        setRoundups(list);
-        setHasMoreRoundups(list.length === roundupLimit);
+        setRoundups(data?.roundups ?? []);
+        setRoundupPage(data?.currentPage ?? 1);
+        setRoundupTotalPages(data?.totalPages ?? 1);
       })
-      .catch(() => {/* roundups optional — fail silently */})
-      .finally(() => { if (!cancelled) setLoadingMoreRoundups(false); });
+      .catch(() => {/* roundups optional — fail silently */});
     return () => { cancelled = true; };
-  }, [slug, roundupLimit]);
+  }, [slug]);
 
   // Record a profile view once both the profile and ownership have resolved —
   // but never for the owner's own visits.
@@ -162,10 +154,23 @@ export default function ShowcaseProfilePage() {
 
   useShowcaseMeta(profileMeta);
 
-  const loadMoreRoundups = useCallback(() => {
-    if (loadingMoreRoundups || !hasMoreRoundups) return;
-    setRoundupLimit((n) => n + ROUNDUPS_PAGE_SIZE);
-  }, [loadingMoreRoundups, hasMoreRoundups]);
+  const loadMoreRoundups = useCallback(async () => {
+    if (!slug || loadingMoreRoundups || roundupPage >= roundupTotalPages) return;
+    setLoadingMoreRoundups(true);
+    try {
+      const nextPage = roundupPage + 1;
+      const { data } = await publicClient.GET('/showcase/{slug}/roundups/recent', {
+        params: { path: { slug }, query: { page: nextPage } },
+      });
+      if (data?.roundups) {
+        setRoundups((prev) => [...prev, ...data.roundups!]);
+        setRoundupPage(data.currentPage ?? nextPage);
+        setRoundupTotalPages(data.totalPages ?? roundupTotalPages);
+      }
+    } finally {
+      setLoadingMoreRoundups(false);
+    }
+  }, [slug, roundupPage, roundupTotalPages, loadingMoreRoundups]);
 
   const loadMore = useCallback(async () => {
     if (!slug || loadingMore || currentPage >= totalPages) return;
@@ -278,7 +283,7 @@ export default function ShowcaseProfilePage() {
                 );
               })}
             </div>
-            {hasMoreRoundups && (
+            {roundupPage < roundupTotalPages && (
               <div className="roundup-profile-band__more">
                 <button
                   onClick={loadMoreRoundups}

@@ -62,11 +62,14 @@ export interface GetPublicRoundupGatewayRequest {
 
 export interface GetRecentPublicRoundupsGatewayRequest {
   slug: string;
-  limit: number;
+  /** optional query param — 1-indexed, defaults to 1 */
+  page: number;
 }
 
 export interface GetRecentPublicRoundupsGatewayResponse {
   roundups: ShowcaseRoundup[];
+  totalPages: number;
+  currentPage: number;
 }
 
 /** Showcase view beacons (visitor identity is derived server-side from IP/UA) */

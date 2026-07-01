@@ -263,11 +263,14 @@ export interface GetPublicRoundupRequest {
 
 export interface GetRecentPublicRoundupsRequest {
   slug: string;
-  limit: number;
+  /** optional query param — 1-indexed, defaults to 1 */
+  page: number;
 }
 
 export interface GetRecentPublicRoundupsResponse {
   roundups: ShowcaseRoundup[];
+  totalPages: number;
+  currentPage: number;
 }
 
 export interface UpdateRoundupSettingsRequest {
