@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.94.0](https://github.com/fitglue/web/compare/v11.93.0...v11.94.0) (2026-07-01)
+
+
+### Features
+
+* **showcase:** use real server pagination for roundup "load more" ([c64eade](https://github.com/fitglue/web/commit/c64eaded777073542c1c375adbc6195c4f1fadb2))
+
 ## [11.93.0](https://github.com/fitglue/web/compare/v11.92.2...v11.93.0) (2026-07-01)
 
 
