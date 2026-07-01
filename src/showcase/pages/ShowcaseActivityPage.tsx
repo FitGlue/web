@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
 import publicClient from '../../shared/api/public-client';
 import client from '../../shared/api/client';
 import type { components } from '../../shared/api/schema-public';
 import type { components as clientComponents } from '../../shared/api/schema-client';
 import type { ActivityEnrichments } from '../../types/pb/models/activity/enrichments';
-import { initFirebase } from '../../shared/firebase';
 import { isNativeApp } from '../../shared/nativeBridge';
 import { resolveCategory } from '../utils/activityCategory';
 import { buildModuleOrder } from '../utils/enricherModules';
 import { getActivityIcon } from '../utils/activityMeta';
 import { useShowcaseMeta } from '../utils/useShowcaseMeta';
+import { useShowcaseOwner } from '../utils/useShowcaseOwner';
 import ShowcaseNotFound from '../components/ShowcaseNotFound';
 import { ViewCountBadge } from '../components/ViewCountBadge';
 import { recordShowcaseView } from '../utils/recordView';
@@ -43,8 +42,11 @@ export default function ShowcaseActivityPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [shareOpen, setShareOpen] = useState(false);
-  const [isOwner, setIsOwner] = useState(false);
   const [viewStats, setViewStats] = useState<clientComponents['schemas']['ShowcaseViewStats'] | null>(null);
+
+  // Single source of truth for "the logged-in user owns this showcase" — shared
+  // with the roundup page. Resolves once the activity's owner slug is known.
+  const { isOwner, resolved: ownershipResolved } = useShowcaseOwner(activity?.ownerProfileSlug ?? undefined);
 
   useEffect(() => {
     if (!id) {
@@ -53,71 +55,35 @@ export default function ShowcaseActivityPage() {
       return;
     }
 
-    const showcaseId = id;
-    let unsubscribe: (() => void) | undefined;
-
-    async function init() {
+    let cancelled = false;
+    (async () => {
       try {
-        const fb = await initFirebase();
-        if (!fb) {
-          // No firebase — fetch without auth
-          const { data, error: apiError } = await publicClient.GET('/showcase/{id}', {
-            params: { path: { id: showcaseId } },
-          });
-          if (apiError || !data) {
-            setError('This activity is not available or has expired.');
-          } else {
-            setActivity(data);
-          }
-          setLoading(false);
-          return;
-        }
-
-        unsubscribe = onAuthStateChanged(fb.auth, async (user) => {
-          try {
-            const { data, error: apiError } = await publicClient.GET('/showcase/{id}', {
-              params: { path: { id: showcaseId } },
-            });
-
-            if (apiError || !data) {
-              setError('This activity is not available or has expired.');
-            } else {
-              setActivity(data);
-              if (user && data.ownerProfileSlug) {
-                try {
-                  const { data: profileData } = await client.GET('/users/me/showcase-management/profile');
-                  const mySlug = (profileData as { profile?: { slug?: string } | null })?.profile?.slug;
-                  if (mySlug && mySlug === data.ownerProfileSlug) setIsOwner(true);
-                } catch {
-                  // not authenticated or no showcase — not the owner
-                }
-              }
-            }
-          } catch {
-            setError('Failed to load activity.');
-          } finally {
-            setLoading(false);
-          }
+        const { data, error: apiError } = await publicClient.GET('/showcase/{id}', {
+          params: { path: { id } },
         });
+        if (cancelled) return;
+        if (apiError || !data) {
+          setError('This activity is not available or has expired.');
+        } else {
+          setActivity(data);
+        }
       } catch {
-        setError('Failed to load activity.');
-        setLoading(false);
+        if (!cancelled) setError('Failed to load activity.');
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-    }
+    })();
 
-    init();
-
-    return () => unsubscribe?.();
+    return () => { cancelled = true; };
   }, [id]);
 
-  // Record a view once loading settles — but never for the owner's own visits.
-  // By the time `loading` is false, ownership has been resolved (the owner check
-  // is awaited before setLoading(false)), so this won't count the owner.
+  // Record a view once loading and ownership settle — but never for the owner's
+  // own visits.
   useEffect(() => {
-    if (loading || error || !activity || isOwner) return;
+    if (loading || error || !activity || !ownershipResolved || isOwner) return;
     const showcaseId = activity.showcaseId ?? id;
     if (showcaseId) recordShowcaseView({ kind: 'activity', id: showcaseId });
-  }, [loading, error, activity, isOwner, id]);
+  }, [loading, error, activity, ownershipResolved, isOwner, id]);
 
   // Owner-only: fetch de-duplicated view metrics for the inline badge.
   useEffect(() => {

@@ -69,7 +69,12 @@ function ShareIcon() {
   );
 }
 
-function ShareStat({ onShare, card }: { onShare: (card?: RoundupExportTab) => void; card?: RoundupExportTab }) {
+// Per-section share affordance. Share controls are owner-only, so this renders
+// nothing unless the viewer owns the roundup (see useShowcaseOwner). Defaulting
+// to hidden means any call site that forgets `owner` fails safe — never leaking
+// share controls to visitors.
+function ShareStat({ owner, onShare, card }: { owner: boolean; onShare: (card?: RoundupExportTab) => void; card?: RoundupExportTab }) {
+  if (!owner) return null;
   return (
     <button className="rp-share-stat" onClick={() => onShare(card)} type="button">
       <ShareIcon /> Share
@@ -367,7 +372,16 @@ export default function ShowcaseRoundupPage() {
             </span>
             <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               {isOwner && <ViewCountBadge stats={viewStats} />}
-              <button className="rp-bar__share" onClick={() => onShare()} type="button">↑ Share</button>
+              {isOwner ? (
+                <button className="rp-bar__share" onClick={() => onShare()} type="button">↑ Share</button>
+              ) : (
+                <a
+                  href="/"
+                  style={{ fontFamily: 'var(--fg-font-mono)', fontSize: '0.6875rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--fg-cyan)', textDecoration: 'none' }}
+                >
+                  Try FitGlue →
+                </a>
+              )}
             </span>
           </nav>
         )}
@@ -410,7 +424,7 @@ export default function ShowcaseRoundupPage() {
         {roundup.aiSummary && (
           <section className="rp-sec" id="sec-summary">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} />
+              <ShareStat owner={isOwner} onShare={onShare} />
               <div className="rp-quote rp-anim">
                 <div className="rp-quote__bar" />
                 <div className="rp-quote__body">
@@ -457,7 +471,7 @@ export default function ShowcaseRoundupPage() {
         {callouts.length > 0 && (
           <section className="rp-sec" id="sec-callouts">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} />
+              <ShareStat owner={isOwner} onShare={onShare} />
               <SecHead eyebrow="Spotlight" title={<>The moments<br />that defined it</>} note="Sessions that earned their place" />
               <div className="rp-callouts">
                 {callouts.map((c, i) => {
@@ -499,7 +513,7 @@ export default function ShowcaseRoundupPage() {
         {(roundup.photos?.length ?? 0) > 0 && (
           <section className="rp-sec" id="sec-photos">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} card="photo" />
+              <ShareStat owner={isOwner} onShare={onShare} card="photo" />
               <SecHead
                 eyebrow="Moments"
                 title="Caught in motion"
@@ -531,7 +545,7 @@ export default function ShowcaseRoundupPage() {
         {sportVMs.length > 0 && (
           <section className="rp-sec" id="sec-sport">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} card="sport" />
+              <ShareStat owner={isOwner} onShare={onShare} card="sport" />
               <SecHead
                 eyebrow="Discipline"
                 title="Where the work went"
@@ -561,7 +575,7 @@ export default function ShowcaseRoundupPage() {
           return (
             <section className="rp-sec" id="sec-muscles">
               <div className="rp-wrap">
-                <ShareStat onShare={onShare} />
+                <ShareStat owner={isOwner} onShare={onShare} />
                 <SecHead eyebrow="Anatomy" title="Muscles under load" note="Primary movers, by session count" />
                 <div className="rp-muscles rp-anim">
                   {roundup.muscles!.map((m, i) => (
@@ -583,7 +597,7 @@ export default function ShowcaseRoundupPage() {
         {(roundup.routes?.length ?? 0) > 0 && (
           <section className="rp-sec" id="sec-routes">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} card="route" />
+              <ShareStat owner={isOwner} onShare={onShare} card="route" />
               <SecHead
                 eyebrow="Terrain"
                 title="Ground covered"
@@ -628,7 +642,7 @@ export default function ShowcaseRoundupPage() {
           return (
             <section className="rp-sec" id="sec-places">
               <div className="rp-wrap">
-                <ShareStat onShare={onShare} />
+                <ShareStat owner={isOwner} onShare={onShare} />
                 <SecHead eyebrow="Geography" title="Where it happened" note={note} />
                 <div className="rp-places rp-anim">
                   {roundup.places!.map((p, i) => (
@@ -655,7 +669,7 @@ export default function ShowcaseRoundupPage() {
           return (
             <section className="rp-sec" id="sec-weather">
               <div className="rp-wrap">
-                <ShareStat onShare={onShare} />
+                <ShareStat owner={isOwner} onShare={onShare} />
                 <SecHead eyebrow="Conditions" title="Whatever the weather" note="The grit index" />
                 <div className="rp-weather rp-anim">
                   {cells.map((c, i) => (
@@ -674,7 +688,7 @@ export default function ShowcaseRoundupPage() {
         {calDays.length > 1 && (
           <section className="rp-sec" id="sec-cal">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} card="calendar" />
+              <ShareStat owner={isOwner} onShare={onShare} card="calendar" />
               <SecHead
                 eyebrow="Consistency"
                 title={
@@ -696,7 +710,7 @@ export default function ShowcaseRoundupPage() {
           <div className="rp-wrap">
             {hasHR ? (
               <>
-                <ShareStat onShare={onShare} card="hr" />
+                <ShareStat owner={isOwner} onShare={onShare} card="hr" />
                 <SecHead eyebrow="Effort" title="Time under tension" note={`${Math.round(hrTracked / 60)}h tracked · Z1 easy → Z5 max`} />
                 <div className="rp-effort rp-anim">
                   <HRRingsChart minutes={hrMinutes} />
@@ -720,7 +734,7 @@ export default function ShowcaseRoundupPage() {
         {bestEfforts.length > 0 && (
           <section className="rp-sec" id="sec-efforts">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} />
+              <ShareStat owner={isOwner} onShare={onShare} />
               <SecHead eyebrow="Benchmarks" title="Fastest known times" note="Quickest effort at each distance this period" />
               <div className="rp-efforts rp-anim">
                 {bestEfforts.map((be, i) => (
@@ -739,7 +753,7 @@ export default function ShowcaseRoundupPage() {
         {highlights.length > 0 && (
           <section className="rp-sec" id="sec-highlights">
             <div className="rp-wrap">
-              <ShareStat onShare={onShare} />
+              <ShareStat owner={isOwner} onShare={onShare} />
               <SecHead eyebrow="Personal Bests" title="The ceiling, raised" note="Single-session peaks" />
               <div className="rp-highlights rp-anim">
                 {highlights.map((hl, i) => {
@@ -765,7 +779,7 @@ export default function ShowcaseRoundupPage() {
           <div className="rp-wrap">
             {prTotal > 0 ? (
               <>
-                <ShareStat onShare={onShare} card="prs" />
+                <ShareStat owner={isOwner} onShare={onShare} card="prs" />
                 <SecHead eyebrow="Records" title="The records wall" note={`${prTotal} broken`} />
                 <div className="rp-pr-count rp-anim">
                   <b className="rp-grad">{prTotal}</b>
@@ -813,25 +827,27 @@ export default function ShowcaseRoundupPage() {
           </div>
         </footer>
 
-        {/* Sticky share bar */}
-        <div className={`rp-sharebar ${barVisible ? 'is-visible' : ''}`}>
-          <button className="rp-sharebtn rp-sharebtn--primary" onClick={() => onShare()} type="button">
-            <ShareIcon /> Share Card
-          </button>
-          <div className="rp-sharebar__div" />
-          <button className="rp-sharebtn rp-sharebtn--ghost" onClick={onCopy} type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" />
-              <path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" />
-            </svg>
-            <span className="rp-lbl-long">Copy Link</span>
-          </button>
-          <div className="rp-sharebar__div" />
-          <button className="rp-sharebtn rp-sharebtn--ghost" onClick={() => onShare('reel')} type="button">
-            <span aria-hidden="true">▶</span>
-            <span className="rp-lbl-long">Create Reel</span>
-          </button>
-        </div>
+        {/* Sticky share bar — owner-only, like every other share control. */}
+        {isOwner && (
+          <div className={`rp-sharebar ${barVisible ? 'is-visible' : ''}`}>
+            <button className="rp-sharebtn rp-sharebtn--primary" onClick={() => onShare()} type="button">
+              <ShareIcon /> Share Card
+            </button>
+            <div className="rp-sharebar__div" />
+            <button className="rp-sharebtn rp-sharebtn--ghost" onClick={onCopy} type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" />
+                <path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" />
+              </svg>
+              <span className="rp-lbl-long">Copy Link</span>
+            </button>
+            <div className="rp-sharebar__div" />
+            <button className="rp-sharebtn rp-sharebtn--ghost" onClick={() => onShare('reel')} type="button">
+              <span aria-hidden="true">▶</span>
+              <span className="rp-lbl-long">Create Reel</span>
+            </button>
+          </div>
+        )}
 
         <div className={`rp-toast ${toast ? 'is-visible' : ''}`}>{toast}</div>
       </div>
